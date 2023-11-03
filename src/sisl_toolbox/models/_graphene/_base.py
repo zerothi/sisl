@@ -7,7 +7,6 @@ __all__ = ["GrapheneModel"]
 
 
 class GrapheneModel(BaseModel):
-
     # copy the dispatcher method
     ref = BaseModel.ref.copy()
 
@@ -16,7 +15,7 @@ class GrapheneModel(BaseModel):
     # The distances are here kept
     @classmethod
     def distance(cls, n=1, a=1.42):
-        """ Return the distance to the nearest neighbour according to the bond-length `a`
+        """Return the distance to the nearest neighbour according to the bond-length `a`
 
         Currently only up to 3rd nearest neighbour is implemneted
 
@@ -28,9 +27,9 @@ class GrapheneModel(BaseModel):
            the bond length of the intrinsic graphene lattice
         """
         dist = {
-            0: 0.,
+            0: 0.0,
             1: a,
-            2: a * 3 ** 0.5,
+            2: a * 3**0.5,
             3: a * 2,
         }
         return dist[n]

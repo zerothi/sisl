@@ -11,9 +11,13 @@ pytestmark = [pytest.mark.physics, pytest.mark.physics_feature]
 
 
 def test_yield_manifolds_eigenvalues():
-    g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice([10, 1, 5.], nsc=[3, 3, 1]))
+    g = Geometry(
+        [[i, 0, 0] for i in range(10)],
+        Atom(6, R=1.01),
+        lattice=Lattice([10, 1, 5.0], nsc=[3, 3, 1]),
+    )
     H = Hamiltonian(g, dtype=np.float64)
-    H.construct([(0.1, 1.5), (1., 0.1)])
+    H.construct([(0.1, 1.5), (1.0, 0.1)])
 
     all_manifolds = []
     for manifold in yield_manifolds(H.eigh()):

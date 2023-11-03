@@ -13,7 +13,7 @@ import sisl
 bond = 1.42
 # Construct the atom with the appropriate orbital range
 # Note the 0.01 which is for numerical accuracy.
-C = sisl.Atom(6, R = bond + 0.01)
+C = sisl.Atom(6, R=bond + 0.01)
 # Create graphene unit-cell
 gr = sisl.geom.graphene(bond, C)
 
@@ -22,8 +22,8 @@ H = sisl.Hamiltonian(gr)
 
 # Create function to be passed to the construct method.
 # This method is *much* faster for large scale simulations.
-func = H.create_construct([0.1 * bond, bond + 0.01], [0., -2.7])
+func = H.create_construct([0.1 * bond, bond + 0.01], [0.0, -2.7])
 H.construct(func)
 
 # Calculate eigenvalues at K-point
-print(H.eigh([2./3, 1./3, 0.]))
+print(H.eigh([2.0 / 3, 1.0 / 3, 0.0]))

@@ -26,9 +26,9 @@ from functools import wraps
 from ._environ import get_environ_variable
 from ._internal import set_module
 
-__all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
-__all__ += ['warn', 'info', 'deprecate', "deprecation", "deprecate_argument"]
-__all__ += ['progressbar', 'tqdm_eta']
+__all__ = ["SislDeprecation", "SislInfo", "SislWarning", "SislException", "SislError"]
+__all__ += ["warn", "info", "deprecate", "deprecation", "deprecate_argument"]
+__all__ += ["progressbar", "tqdm_eta"]
 
 # The local registry for warnings issued
 _sisl_warn_registry = {}
@@ -36,37 +36,42 @@ _sisl_warn_registry = {}
 
 @set_module("sisl")
 class SislException(Exception):
-    """ Sisl exception """
+    """Sisl exception"""
+
     pass
 
 
 @set_module("sisl")
 class SislError(SislException):
-    """ Sisl error """
+    """Sisl error"""
+
     pass
 
 
 @set_module("sisl")
 class SislWarning(SislException, UserWarning):
-    """ Sisl warnings """
+    """Sisl warnings"""
+
     pass
 
 
 @set_module("sisl")
 class SislDeprecation(SislWarning, FutureWarning):
-    """ Sisl deprecation warnings for end-users """
+    """Sisl deprecation warnings for end-users"""
+
     pass
 
 
 @set_module("sisl")
 class SislInfo(SislWarning):
-    """ Sisl informations """
+    """Sisl informations"""
+
     pass
 
 
 @set_module("sisl")
 def deprecate(message, from_version=None):
-    """ Issue sisl deprecation warnings
+    """Issue sisl deprecation warnings
 
     Parameters
     ----------
@@ -77,17 +82,20 @@ def deprecate(message, from_version=None):
     """
     if from_version is not None:
         message = f"{message} [>={from_version}]"
-    warnings.warn_explicit(message, SislDeprecation, 'dep', 0, registry=_sisl_warn_registry)
+    warnings.warn_explicit(
+        message, SislDeprecation, "dep", 0, registry=_sisl_warn_registry
+    )
 
 
 @set_module("sisl")
 def deprecate_argument(old, new, message, from_version=None):
-    """ Decorator for deprecating `old` argument, and replacing it with `new`
+    """Decorator for deprecating `old` argument, and replacing it with `new`
 
     The old keyword argument is still retained.
 
     If `new` is none, it will be deleted.
     """
+
     def deco(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
@@ -96,13 +104,15 @@ def deprecate_argument(old, new, message, from_version=None):
                 if new is not None:
                     kwargs[new] = kwargs.pop(old)
             return func(*args, **kwargs)
+
         return wrapped
+
     return deco
 
 
 @set_module("sisl")
 def deprecation(message, from_version=None):
-    """ Decorator for deprecating a method or a class
+    """Decorator for deprecating a method or a class
 
     Parameters
     ----------
@@ -111,6 +121,7 @@ def deprecation(message, from_version=None):
     from_version : optional
        which version to deprecate this method from
     """
+
     def install_deprecate(cls_or_func):
         if isinstance(cls_or_func, type):
             # we have a class
@@ -118,18 +129,22 @@ def deprecation(message, from_version=None):
                 @deprecation(message, from_version)
                 def __init__(self, *args, **kwargs):
                     super().__init__(*args, **kwargs)
+
         else:
+
             @wraps(cls_or_func)
             def wrapped(*args, **kwargs):
                 deprecate(message, from_version)
                 return cls_or_func(*args, **kwargs)
+
         return wrapped
+
     return install_deprecate
 
 
 @set_module("sisl")
 def warn(message, category=None, register=False):
-    """ Show warnings in short context form with sisl
+    """Show warnings in short context form with sisl
 
     Parameters
     ----------
@@ -146,14 +161,16 @@ def warn(message, category=None, register=False):
     elif category is None:
         category = SislWarning
     if register:
-        warnings.warn_explicit(message, category, 'warn', 0, registry=_sisl_warn_registry)
+        warnings.warn_explicit(
+            message, category, "warn", 0, registry=_sisl_warn_registry
+        )
     else:
-        warnings.warn_explicit(message, category, 'warn', 0)
+        warnings.warn_explicit(message, category, "warn", 0)
 
 
 @set_module("sisl")
 def info(message, category=None, register=False):
-    """ Show info in short context form with sisl
+    """Show info in short context form with sisl
 
     Parameters
     ----------
@@ -170,23 +187,26 @@ def info(message, category=None, register=False):
     elif category is None:
         category = SislInfo
     if register:
-        warnings.warn_explicit(message, category, 'info', 0, registry=_sisl_warn_registry)
+        warnings.warn_explicit(
+            message, category, "info", 0, registry=_sisl_warn_registry
+        )
     else:
-        warnings.warn_explicit(message, category, 'info', 0)
+        warnings.warn_explicit(message, category, "info", 0)
 
 
 # https://stackoverflow.com/a/39662359/827281
 def is_jupyter_notebook():
     try:
         shell = get_ipython().__class__.__name__
-        if shell == 'ZMQInteractiveShell':
+        if shell == "ZMQInteractiveShell":
             return True
-        elif shell == 'TerminalInteractiveShell':
+        elif shell == "TerminalInteractiveShell":
             return False
         else:
             return False
     except NameError:
         return False
+
 
 # Figure out if we can import tqdm.
 # If so, simply use the progressbar class there.
@@ -198,14 +218,18 @@ try:
         from tqdm import tqdm as _tqdm
 except ImportError:
     # Notify user of better option
-    info('Please install tqdm (pip install tqdm) for better looking progress bars', register=True)
+    info(
+        "Please install tqdm (pip install tqdm) for better looking progress bars",
+        register=True,
+    )
 
     # Necessary methods used
     from sys import stdout as _stdout
     from time import time as _time
 
     class _tqdm:
-        """ Fake tqdm progress-bar. I should update this to also work in regular instances """
+        """Fake tqdm progress-bar. I should update this to also work in regular instances"""
+
         __slots__ = ["total", "desc", "t0", "n", "l"]
 
         def __init__(self, total, desc, unit):
@@ -228,7 +252,9 @@ except ImportError:
         def close(self):
             m, s = divmod(_time() - self.t0, 60)
             h, m = divmod(m, 60)
-            _stdout.write(f"{self.desc} finished after {int(h):d}h {int(m):d}m {s:.1f}s\r")
+            _stdout.write(
+                f"{self.desc} finished after {int(h):d}h {int(m):d}m {s:.1f}s\r"
+            )
             _stdout.flush()
 
 
@@ -237,7 +263,7 @@ _default_eta = get_environ_variable("SISL_SHOW_PROGRESS")
 
 @set_module("sisl")
 def progressbar(total, desc, unit, eta, **kwargs):
-    """ Create a progress bar in when it is requested. Otherwise returns a fake object
+    """Create a progress bar in when it is requested. Otherwise returns a fake object
 
     Parameters
     ----------
@@ -268,9 +294,12 @@ def progressbar(total, desc, unit, eta, **kwargs):
         # has the required 2 methods, update and close.
         class Fake:
             __slots__ = []
+
             def update(self, n=1):
                 pass
+
             def close(self):
                 pass
+
         bar = Fake()
     return bar

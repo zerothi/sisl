@@ -21,13 +21,13 @@ import numpy as np
 
 import sisl
 
-method = 'cube'
-if 'cube' in sys.argv:
-    method = 'cube'
-    sys.argv.remove('cube')
-elif 'sphere' in sys.argv:
-    method = 'sphere'
-    sys.argv.remove('sphere')
+method = "cube"
+if "cube" in sys.argv:
+    method = "cube"
+    sys.argv.remove("cube")
+elif "sphere" in sys.argv:
+    method = "sphere"
+    sys.argv.remove("sphere")
 
 if len(sys.argv) > 1:
     N = int(sys.argv[1])
@@ -37,5 +37,5 @@ print(f"N = {N}")
 
 gr = sisl.geom.graphene(orthogonal=True).tile(N, 0).tile(N, 1)
 H = sisl.Hamiltonian(gr)
-H.construct([(0.1, 1.44), (0., -2.7)], method=method, eta=True)
+H.construct([(0.1, 1.44), (0.0, -2.7)], method=method, eta=True)
 H.finalize()

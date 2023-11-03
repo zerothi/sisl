@@ -5,10 +5,13 @@ from ..plot import Plot
 from ..plotters.plot_actions import combined
 
 
-def merge_plots(*figures: Figure, 
-    composite_method: Optional[Literal["multiple", "subplots", "multiple_x", "multiple_y", "animation"]] = "multiple", 
+def merge_plots(
+    *figures: Figure,
+    composite_method: Optional[
+        Literal["multiple", "subplots", "multiple_x", "multiple_y", "animation"]
+    ] = "multiple",
     backend: Literal["plotly", "matplotlib", "py3dmol", "blender"] = "plotly",
-    **kwargs
+    **kwargs,
 ) -> Figure:
     """Combines multiple plots into a single figure.
 
@@ -30,7 +33,7 @@ def merge_plots(*figures: Figure,
     plot_actions = combined(
         *[fig.plot_actions for fig in figures],
         composite_method=composite_method,
-        **kwargs
+        **kwargs,
     )
 
     return get_figure(plot_actions=plot_actions, backend=backend)

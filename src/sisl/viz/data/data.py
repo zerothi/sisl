@@ -13,24 +13,24 @@ class Data:
         self._data = data
 
     def sanity_check(self):
-
         def is_valid(data, expected_type) -> bool:
             if expected_type is Any:
                 return True
-            
+
             return isinstance(data, expected_type)
 
-        expected_type = get_type_hints(self.__class__)['_data']
+        expected_type = get_type_hints(self.__class__)["_data"]
         if get_origin(expected_type) is Union:
-
             valid = False
             for valid_type in get_args(expected_type):
                 valid = valid | is_valid(self._data, valid_type)
-                
+
         else:
             valid = is_valid(self._data, expected_type)
 
-        assert valid, f"Data must be of type {expected_type} but is {type(self._data).__name__}"
+        assert (
+            valid
+        ), f"Data must be of type {expected_type} but is {type(self._data).__name__}"
 
     def __getattr__(self, key):
         return getattr(self._data, key)

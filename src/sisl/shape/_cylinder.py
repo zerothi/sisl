@@ -18,7 +18,7 @@ __all__ = ["EllipticalCylinder"]
 
 @set_module("sisl.shape")
 class EllipticalCylinder(PureShape):
-    r""" 3D elliptical cylinder
+    r"""3D elliptical cylinder
 
     Parameters
     ----------
@@ -47,7 +47,7 @@ class EllipticalCylinder(PureShape):
     >>> shape.within([1.4, 0, 1.1])
     False
     """
-    __slots__ = ('_v', '_nh', '_iv', '_h')
+    __slots__ = ("_v", "_nh", "_iv", "_h")
 
     def __init__(self, v, h: float, axes=(0, 1), center=None):
         super().__init__(center)
@@ -59,13 +59,17 @@ class EllipticalCylinder(PureShape):
         elif v.size == 6:
             vv[:, :] = v
         else:
-            raise ValueError(f"{self.__class__.__name__} expected 'v' to be of size (1,), (2,) or (2, 3), got {v.shape}")
+            raise ValueError(
+                f"{self.__class__.__name__} expected 'v' to be of size (1,), (2,) or (2, 3), got {v.shape}"
+            )
 
         # If the vectors are not orthogonal, orthogonalize them and issue a warning
         vv_ortho = np.fabs(vv @ vv.T - np.diag(fnorm2(vv)))
         if vv_ortho.sum() > 1e-9:
-            warn(f"{self.__class__.__name__ } principal vectors are not orthogonal. "
-                 "sisl orthogonalizes the vectors (retaining 1st vector)!")
+            warn(
+                f"{self.__class__.__name__ } principal vectors are not orthogonal. "
+                "sisl orthogonalizes the vectors (retaining 1st vector)!"
+            )
 
         vv[1] = orthogonalize(vv[0], vv[1])
 
@@ -89,11 +93,11 @@ class EllipticalCylinder(PureShape):
         return self.__class__(self.radial_vector, self.height, self.center)
 
     def volume(self):
-        """ Return the volume of the shape """
+        """Return the volume of the shape"""
         return pi * np.product(self.radius) * self.height
 
     def scale(self, scale: float):
-        """ Create a new shape with all dimensions scaled according to `scale`
+        """Create a new shape with all dimensions scaled according to `scale`
 
         Parameters
         ----------
@@ -111,7 +115,7 @@ class EllipticalCylinder(PureShape):
         return self.__class__(v, h, self.center)
 
     def expand(self, radius):
-        """ Expand elliptical cylinder by a constant value along each vector and height
+        """Expand elliptical cylinder by a constant value along each vector and height
 
         Parameters
         ----------
@@ -128,11 +132,13 @@ class EllipticalCylinder(PureShape):
             v1 = expand(self._v[1], radius[1])
             h = self.height + radius[2]
         else:
-            raise ValueError(f"{self.__class__.__name__}.expand requires the radius to be either (1,) or (3,)")
+            raise ValueError(
+                f"{self.__class__.__name__}.expand requires the radius to be either (1,) or (3,)"
+            )
         return self.__class__([v0, v1], h, self.center)
 
-    def within_index(self, other, tol=1.e-8):
-        r""" Return indices of the points that are within the shape
+    def within_index(self, other, tol=1.0e-8):
+        r"""Return indices of the points that are within the shape
 
         Parameters
         ----------
@@ -150,30 +156,30 @@ class EllipticalCylinder(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        return indices_in_cylinder(tmp, 1. + tol, 1. + tol)
+        return indices_in_cylinder(tmp, 1.0 + tol, 1.0 + tol)
 
     @property
     def height(self):
-        """ Height of the cylinder """
+        """Height of the cylinder"""
         return self._h
 
     @property
     def radius(self):
-        """ Radius of the ellipse base vectors """
+        """Radius of the ellipse base vectors"""
         return fnorm(self._v)
 
     @property
     def radial_vector(self):
-        """ The radial vectors """
+        """The radial vectors"""
         return self._v
 
     @property
     def height_vector(self):
-        """ The height vector """
+        """The height vector"""
         return self._nh
 
     def toSphere(self):
-        """ Convert to a sphere """
+        """Convert to a sphere"""
         from .ellipsoid import Sphere
 
         # figure out the distance from the center to the edge (along longest radius)
@@ -185,8 +191,9 @@ class EllipticalCylinder(PureShape):
         return Sphere(r, self.center.copy())
 
     def toCuboid(self):
-        """ Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors """
+        """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""
         from .prism4 import Cuboid
+
         return Cuboid([self._v[0], self._v[1], self._nh], self.center)
 
 
@@ -196,6 +203,7 @@ to_dispatch = EllipticalCylinder.to
 class EllipticalCylinderToSphere(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .ellipsoid import Sphere
+
         shape = self._get_object()
         # figure out the distance from the center to the edge (along longest radius)
         h = shape.height / 2
@@ -205,14 +213,17 @@ class EllipticalCylinderToSphere(ShapeToDispatch):
         # Rescale each vector
         return Sphere(r, shape.center.copy())
 
+
 to_dispatch.register("Sphere", EllipticalCylinderToSphere)
 
 
 class EllipticalCylinderToCuboid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .prism4 import Cuboid
+
         shape = self._get_object()
         return Cuboid([shape._v[0], shape._v[1], shape._nh], shape.center)
+
 
 to_dispatch.register("Cuboid", EllipticalCylinderToCuboid)
 

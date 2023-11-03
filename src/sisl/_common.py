@@ -9,10 +9,11 @@ __all__ = ["Opt"]
 
 @unique
 class Opt(Flag):
-    """ Global option arguments used throughout sisl
+    """Global option arguments used throughout sisl
 
     These flags may be combined via bit-wise operations
     """
+
     NONE = auto()
     ANY = auto()
     ALL = auto()

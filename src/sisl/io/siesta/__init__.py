@@ -45,7 +45,7 @@ The TranSiesta specific output files are:
    tsvncSileSiesta - TranSiesta potential solution input file
 
 """
-from .sile import * # isort: split
+from .sile import *  # isort: split
 from .ani import *
 from .bands import *
 from .basis import *

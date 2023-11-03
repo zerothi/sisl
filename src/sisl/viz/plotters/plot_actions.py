@@ -9,14 +9,15 @@ from ..figure import Figure
 
 
 def _register_actions(figure_cls: Type[Figure]):
-
     # Take all actions possible from the Figure class
     module = sys.modules[__name__]
 
-    actions = inspect.getmembers(figure_cls, predicate=lambda x: inspect.isfunction(x) and not x.__name__.startswith("_"))
+    actions = inspect.getmembers(
+        figure_cls,
+        predicate=lambda x: inspect.isfunction(x) and not x.__name__.startswith("_"),
+    )
 
     for name, function in actions:
-        
         sig = inspect.signature(function)
 
         @functools.wraps(function)
@@ -25,15 +26,20 @@ def _register_actions(figure_cls: Type[Figure]):
 
         a.__signature__ = sig.replace(parameters=list(sig.parameters.values())[1:])
         a.__module__ = module
-        
+
         setattr(module, name, a)
+
 
 _register_actions(Figure)
 
-def combined(*plotters, 
-    composite_method: Optional[Literal["multiple", "subplots", "multiple_x", "multiple_y", "animation"]] = None, 
-    provided_list: bool = False, 
-    **kwargs
+
+def combined(
+    *plotters,
+    composite_method: Optional[
+        Literal["multiple", "subplots", "multiple_x", "multiple_y", "animation"]
+    ] = None,
+    provided_list: bool = False,
+    **kwargs,
 ):
     if provided_list:
         plotters = plotters[0]
@@ -41,5 +47,5 @@ def combined(*plotters,
     return {
         "composite_method": composite_method,
         "plot_actions": plotters,
-        "init_kwargs": kwargs
+        "init_kwargs": kwargs,
     }

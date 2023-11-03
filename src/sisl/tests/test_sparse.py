@@ -12,16 +12,20 @@ from sisl._array import array_arange
 from sisl.sparse import *
 from sisl.sparse import indices
 
-pytestmark = [pytest.mark.sparse, pytest.mark.filterwarnings("ignore", category=sc.sparse.SparseEfficiencyWarning)]
+pytestmark = [
+    pytest.mark.sparse,
+    pytest.mark.filterwarnings("ignore", category=sc.sparse.SparseEfficiencyWarning),
+]
 
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
             self.s1 = SparseCSR((10, 100), dtype=np.int32)
             self.s1d = SparseCSR((10, 100))
             self.s2 = SparseCSR((10, 100, 2))
+
     return t()
 
 
@@ -231,9 +235,9 @@ def test_create2(setup):
     s1 = setup.s1
     assert len(s1) == s1.shape[0]
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
-        assert s1.nnz == (i+1)*3
+        assert s1.nnz == (i + 1) * 3
         for jj in j:
             assert s1[0, jj] == i
             assert s1[1, jj] == 0
@@ -243,11 +247,11 @@ def test_create2(setup):
 def test_create3(setup):
     s1 = setup.s1
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
-        assert s1.nnz == (i+1)*3
-        s1[0, range((i+1)*4, (i+1)*4+3)] = None
-        assert s1.nnz == (i+1)*3
+        assert s1.nnz == (i + 1) * 3
+        s1[0, range((i + 1) * 4, (i + 1) * 4 + 3)] = None
+        assert s1.nnz == (i + 1) * 3
         for jj in j:
             assert s1[0, jj] == i
             assert s1[1, jj] == 0
@@ -257,7 +261,7 @@ def test_create3(setup):
 def test_create_1d_bcasting_data_1d(setup):
     s1 = setup.s1.copy()
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
         s1[1, j] = i
         s1[2, j] = i
@@ -272,12 +276,14 @@ def test_create_1d_bcasting_data_1d(setup):
     assert np.sum(s1 - s2) == 0
 
 
-@pytest.mark.xfail(sys.platform.startswith("win"), reason="Unknown windows error in b-casting")
+@pytest.mark.xfail(
+    sys.platform.startswith("win"), reason="Unknown windows error in b-casting"
+)
 def test_create_1d_bcasting_data_2d(setup):
     s1 = setup.s1.copy()
     data = np.random.randint(1, 100, (4, 3))
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         s1[0, j] = data[0, :]
         s1[1, j] = data[1, :]
         s1[2, j] = data[2, :]
@@ -364,7 +370,7 @@ def test_create_2d_data_2d(setup):
     s1 = setup.s2.copy()
     # matrix assignment
     I = np.arange(len(s1) // 2)
-    data = np.random.randint(1, 100, I.size ** 2).reshape(I.size, I.size)
+    data = np.random.randint(1, 100, I.size**2).reshape(I.size, I.size)
     for i in I:
         s1[i, I, 0] = data[i]
         s1[i, I, 1] = data[i]
@@ -387,7 +393,7 @@ def test_create_2d_data_3d(setup):
     s1 = setup.s2.copy()
     # matrix assignment
     I = np.arange(len(s1) // 2)
-    data = np.random.randint(1, 100, I.size ** 2 * 2).reshape(I.size, I.size, 2)
+    data = np.random.randint(1, 100, I.size**2 * 2).reshape(I.size, I.size, 2)
     for i in I:
         s1[i, I] = data[i]
 
@@ -424,7 +430,7 @@ def test_fail_data_2d_to_2d(setup):
     s2 = setup.s2
     # matrix assignment
     I = np.arange(len(s2) // 2).reshape(-1, 1)
-    data = np.random.randint(1, 100, I.size **2).reshape(I.size, I.size)
+    data = np.random.randint(1, 100, I.size**2).reshape(I.size, I.size)
     with pytest.raises(ValueError):
         s2[I, I.T] = data
     s2.empty()
@@ -434,7 +440,7 @@ def test_fail_data_2d_to_3d(setup):
     s2 = setup.s2
     # matrix assignment
     I = np.arange(len(s2) // 2).reshape(-1, 1)
-    data = np.random.randint(1, 100, I.size **2).reshape(I.size, I.size)
+    data = np.random.randint(1, 100, I.size**2).reshape(I.size, I.size)
     with pytest.raises(ValueError):
         s2[I, I.T, [0, 1]] = data
     s2.empty()
@@ -443,17 +449,17 @@ def test_fail_data_2d_to_3d(setup):
 def test_finalize1(setup):
     s1 = setup.s1
     s1[0, [1, 2, 3]] = 1
-    s1[2, [1, 2, 3]] = 1.
-    s1[1, [3, 2, 1]] = 1.
+    s1[2, [1, 2, 3]] = 1.0
+    s1[1, [3, 2, 1]] = 1.0
     assert not s1.finalized
     p = s1.ptr.view()
     n = s1.ncol.view()
     # Assert that the ordering is good
-    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+    assert np.allclose(s1.col[p[1] : p[1] + n[1]], [3, 2, 1])
     s1.finalize()
     # This also asserts that we do not change the memory-locations
     # of the pointers and ncol
-    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [1, 2, 3])
+    assert np.allclose(s1.col[p[1] : p[1] + n[1]], [1, 2, 3])
     assert s1.finalized
     s1.empty(keep_nnz=True)
     assert s1.finalized
@@ -464,17 +470,17 @@ def test_finalize1(setup):
 def test_finalize2(setup):
     s1 = setup.s1
     s1[0, [1, 2, 3]] = 1
-    s1[2, [1, 2, 3]] = 1.
-    s1[1, [3, 2, 1]] = 1.
+    s1[2, [1, 2, 3]] = 1.0
+    s1[1, [3, 2, 1]] = 1.0
     assert not s1.finalized
     p = s1.ptr.view()
     n = s1.ncol.view()
     # Assert that the ordering is good
-    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+    assert np.allclose(s1.col[p[1] : p[1] + n[1]], [3, 2, 1])
     s1.finalize(False)
     # This also asserts that we do not change the memory-locations
     # of the pointers and ncol
-    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+    assert np.allclose(s1.col[p[1] : p[1] + n[1]], [3, 2, 1])
     assert not s1.finalized
     assert len(s1.col) == 9
     s1.empty()
@@ -483,7 +489,7 @@ def test_finalize2(setup):
 def test_iterator1(setup):
     s1 = setup.s1
     s1[0, [1, 2, 3]] = 1
-    s1[2, [1, 2, 4]] = 1.
+    s1[2, [1, 2, 4]] = 1.0
     e = [[1, 2, 3], [], [1, 2, 4]]
     for i, j in s1:
         assert j in e[i]
@@ -498,14 +504,14 @@ def test_iterator1(setup):
     for i, j in ispmatrix(s1):
         assert j in e[i]
 
-    for i, j in ispmatrix(s1, map_col = lambda x: x):
+    for i, j in ispmatrix(s1, map_col=lambda x: x):
         assert j in e[i]
-    for i, j in ispmatrix(s1, map_row = lambda x: x):
+    for i, j in ispmatrix(s1, map_row=lambda x: x):
         assert j in e[i]
 
     for i, j, d in ispmatrixd(s1):
         assert j in e[i]
-        assert d == 1.
+        assert d == 1.0
 
     s1.empty()
 
@@ -514,20 +520,20 @@ def test_iterator2(setup):
     s1 = setup.s1
     e = [[1, 2, 3], [], [1, 2, 4]]
     s1[0, [1, 2, 3]] = 1
-    s1[2, [1, 2, 4]] = 1.
+    s1[2, [1, 2, 4]] = 1.0
     a = s1.tocsr()
-    for func in ['csr', 'csc', 'coo', 'lil']:
-        a = getattr(a, 'to' + func)()
+    for func in ["csr", "csc", "coo", "lil"]:
+        a = getattr(a, "to" + func)()
         for r, c in ispmatrix(a):
             assert r in [0, 2]
             assert c in e[r]
 
-    for func in ['csr', 'csc', 'coo', 'lil']:
-        a = getattr(a, 'to' + func)()
+    for func in ["csr", "csc", "coo", "lil"]:
+        a = getattr(a, "to" + func)()
         for r, c, d in ispmatrixd(a):
             assert r in [0, 2]
             assert c in e[r]
-            assert d == 1.
+            assert d == 1.0
 
     s1.empty()
 
@@ -536,20 +542,20 @@ def test_iterator3(setup):
     s1 = setup.s1
     e = [[1, 2, 3], [], [1, 2, 4]]
     s1[0, [1, 2, 3]] = 1
-    s1[2, [1, 2, 4]] = 1.
+    s1[2, [1, 2, 4]] = 1.0
     a = s1.tocsr()
-    for func in ['csr', 'csc', 'coo', 'lil']:
-        a = getattr(a, 'to' + func)()
+    for func in ["csr", "csc", "coo", "lil"]:
+        a = getattr(a, "to" + func)()
         for r, c in ispmatrix(a):
             assert r in [0, 2]
             assert c in e[r]
 
     # number of mapped values
     nvals = 2
-    for func in ['csr', 'lil']:
-        a = getattr(a, 'to' + func)()
+    for func in ["csr", "lil"]:
+        a = getattr(a, "to" + func)()
         n = 0
-        for r, c in ispmatrix(a, lambda x: x%2, lambda x: x%2):
+        for r, c in ispmatrix(a, lambda x: x % 2, lambda x: x % 2):
             assert r == 0
             assert c in [0, 1]
             n += 1
@@ -722,7 +728,7 @@ def test_delete_col3(setup):
         s2[i, 2] = 1
     s1.finalize()
     s2.finalize()
-    assert s1.nnz == 10*3
+    assert s1.nnz == 10 * 3
     s1.delete_columns([3, 1], keep_shape=True)
     assert s1.ptr[-1] == s1.nnz
     assert s2.ptr[-1] == s2.nnz
@@ -739,7 +745,7 @@ def test_delete_col4():
         s2[i, 1] = 1
     s1.finalize()
     s2.finalize()
-    assert s1.nnz == 10*3
+    assert s1.nnz == 10 * 3
     s1.delete_columns([3, 1])
     assert s1.ptr[-1] == s1.nnz
     assert s2.ptr[-1] == s2.nnz
@@ -887,13 +893,13 @@ def test_nonzero1(setup):
 def test_op1(setup):
     s1 = setup.s1
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
 
         # i+
         s1 += 1
         for jj in j:
-            assert s1[0, jj] == i+1
+            assert s1[0, jj] == i + 1
             assert s1[1, jj] == 0
 
         # i-
@@ -905,7 +911,7 @@ def test_op1(setup):
         # i*
         s1 *= 2
         for jj in j:
-            assert s1[0, jj] == i*2
+            assert s1[0, jj] == i * 2
             assert s1[1, jj] == 0
 
         # //
@@ -925,20 +931,20 @@ def test_op1(setup):
 def test_op2(setup):
     s1 = setup.s1
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
 
         # +
         s = s1 + 1
         for jj in j:
-            assert s[0, jj] == i+1
+            assert s[0, jj] == i + 1
             assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # -
         s = s1 - 1
         for jj in j:
-            assert s[0, jj] == i-1
+            assert s[0, jj] == i - 1
             assert s1[0, jj] == i
             assert s[1, jj] == 0
 
@@ -952,21 +958,21 @@ def test_op2(setup):
         # *
         s = s1 * 2
         for jj in j:
-            assert s[0, jj] == i*2
+            assert s[0, jj] == i * 2
             assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # *
         s = np.multiply(s1, 2)
         for jj in j:
-            assert s[0, jj] == i*2
+            assert s[0, jj] == i * 2
             assert s1[0, jj] == i
             assert s[1, jj] == 0
         # *
         s.empty()
         np.multiply(s1, 2, out=s)
         for jj in j:
-            assert s[0, jj] == i*2
+            assert s[0, jj] == i * 2
             assert s1[0, jj] == i
             assert s[1, jj] == 0
 
@@ -978,14 +984,14 @@ def test_op2(setup):
             assert s[1, jj] == 0
 
         # **
-        s = s1 ** 2
+        s = s1**2
         for jj in j:
             assert s[0, jj] == i**2
             assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # ** (r)
-        s = 2 ** s1
+        s = 2**s1
         for jj in j:
             assert s[0, jj], 2 ** s1[0 == jj]
             assert s1[0, jj] == i
@@ -1005,7 +1011,8 @@ def test_op_csr(setup):
         # +
         s = s1 + csr
         for jj in j:
-            if jj == 0: continue
+            if jj == 0:
+                continue
             assert s[0, jj] == i
             assert s1[0, jj] == i
             assert s[1, jj] == 0
@@ -1014,7 +1021,8 @@ def test_op_csr(setup):
         # -
         s = s1 - csr
         for jj in j:
-            if jj == 0: continue
+            if jj == 0:
+                continue
             assert s[0, jj] == i
             assert s1[0, jj] == i
             assert s[1, jj] == 0
@@ -1023,7 +1031,8 @@ def test_op_csr(setup):
         # - (r)
         s = csr - s1
         for jj in j:
-            if jj == 0: continue
+            if jj == 0:
+                continue
             assert s[0, jj] == -i
             assert s1[0, jj] == i
             assert s[1, jj] == 0
@@ -1034,7 +1043,8 @@ def test_op_csr(setup):
         # *
         s = s1 * csr
         for jj in j:
-            if jj == 0: continue
+            if jj == 0:
+                continue
             assert s[0, jj] == 0
             assert s1[0, jj] == i
             assert s[1, jj] == 0
@@ -1045,13 +1055,14 @@ def test_op_csr(setup):
         assert s[0, 0] == i
 
         # **
-        s = s1 ** csr
+        s = s1**csr
         for jj in j:
-            if jj == 0: continue
+            if jj == 0:
+                continue
             assert s[0, jj] == 1
             assert s1[0, jj] == i
             assert s[1, jj] == 0
-        assert s[0, 0] == i ** 2
+        assert s[0, 0] == i**2
     s1.empty()
 
 
@@ -1059,39 +1070,39 @@ def test_op3():
     S = SparseCSR((10, 100), dtype=np.int32)
     # Create initial stuff
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         S[0, j] = i
 
-    for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, f'__{op}__')
+    for op in ["add", "sub", "mul", "pow"]:
+        func = getattr(S, f"__{op}__")
         s = func(1)
         assert s.dtype == np.int32
-        s = func(1.)
+        s = func(1.0)
         assert s.dtype == np.float64
-        if op != 'pow':
-            s = func(1.j)
+        if op != "pow":
+            s = func(1.0j)
             assert s.dtype == np.complex128
 
     S = S.copy(dtype=np.float64)
-    for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, f'__{op}__')
+    for op in ["add", "sub", "mul", "pow"]:
+        func = getattr(S, f"__{op}__")
         s = func(1)
         assert s.dtype == np.float64
-        s = func(1.)
+        s = func(1.0)
         assert s.dtype == np.float64
-        if op != 'pow':
-            s = func(1.j)
+        if op != "pow":
+            s = func(1.0j)
             assert s.dtype == np.complex128
 
     S = S.copy(dtype=np.complex128)
-    for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, f'__{op}__')
+    for op in ["add", "sub", "mul", "pow"]:
+        func = getattr(S, f"__{op}__")
         s = func(1)
         assert s.dtype == np.complex128
-        s = func(1.)
+        s = func(1.0)
         assert s.dtype == np.complex128
-        if op != 'pow':
-            s = func(1.j)
+        if op != "pow":
+            s = func(1.0j)
             assert s.dtype == np.complex128
 
 
@@ -1099,35 +1110,35 @@ def test_op4():
     S = SparseCSR((10, 100), dtype=np.int32)
     # Create initial stuff
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         S[0, j] = i
 
     s = 1 + S
     assert s.dtype == np.int32
-    s = 1. + S
+    s = 1.0 + S
     assert s.dtype == np.float64
-    s = 1.j + S
+    s = 1.0j + S
     assert s.dtype == np.complex128
 
     s = 1 - S
     assert s.dtype == np.int32
-    s = 1. - S
+    s = 1.0 - S
     assert s.dtype == np.float64
-    s = 1.j - S
+    s = 1.0j - S
     assert s.dtype == np.complex128
 
     s = 1 * S
     assert s.dtype == np.int32
-    s = 1. * S
+    s = 1.0 * S
     assert s.dtype == np.float64
-    s = 1.j * S
+    s = 1.0j * S
     assert s.dtype == np.complex128
 
-    s = 1 ** S
+    s = 1**S
     assert s.dtype == np.int32
-    s = 1. ** S
+    s = 1.0**S
     assert s.dtype == np.float64
-    s = 1.j ** S
+    s = 1.0j**S
     assert s.dtype == np.complex128
 
 
@@ -1137,7 +1148,7 @@ def test_op5():
     S3 = SparseCSR((10, 100), dtype=np.int32)
     # Create initial stuff
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         S1[0, j] = i
         S2[0, j] = i
 
@@ -1166,7 +1177,7 @@ def test_op5():
     S //= 2
     assert np.allclose(S.todense(), S1.todense())
 
-    S = S1 / 2.
+    S = S1 / 2.0
     S *= 2
     assert np.allclose(S.todense(), S1.todense())
 
@@ -1176,7 +1187,7 @@ def test_op_numpy_scalar():
     I = np.ones(1, dtype=np.complex64)[0]
     # Create initial stuff
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         S[0, j] = i
     S.finalize()
 
@@ -1212,12 +1223,12 @@ def test_op_numpy_scalar():
     assert s.dtype == np.complex64
     assert s._D.sum() == Ssum
 
-    s = S ** I
+    s = S**I
     assert isinstance(s, SparseCSR)
     assert s.dtype == np.complex64
     assert s._D.sum() == Ssum
 
-    s = I ** S
+    s = I**S
     assert isinstance(s, SparseCSR)
     assert s.dtype == np.complex64
 
@@ -1232,7 +1243,7 @@ def test_op_sparse_dim():
     I = np.ones(1, dtype=np.complex64)[0]
     # Create initial stuff
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         S[0, j] = i
     S.finalize()
 
@@ -1258,7 +1269,7 @@ def test_sparse_transpose():
     I = np.ones(1, dtype=np.complex64)[0]
     # Create initial stuff
     for i in range(10):
-        j = range(i*4, i*4+3)
+        j = range(i * 4, i * 4 + 3)
         S[0, j] = i
     S.finalize()
 
@@ -1303,17 +1314,15 @@ def test_op_reduce():
 def test_unfinalized_math():
     S1 = SparseCSR((4, 4, 1))
     S2 = SparseCSR((4, 4, 1))
-    S1[0, 0] = 2.
-    S1[1, 2] = 3.
-    S2[2, 3] = 4.
-    S2[2, 2] = 3.
+    S1[0, 0] = 2.0
+    S1[1, 2] = 3.0
+    S2[2, 3] = 4.0
+    S2[2, 2] = 3.0
     S2[0, 0] = 4
 
     for i in range(3):
-        assert np.allclose(S1.todense() + S2.todense(),
-                           (S1 + S2).todense())
-        assert np.allclose(S1.todense() * S2.todense(),
-                           (S1 * S2).todense())
+        assert np.allclose(S1.todense() + S2.todense(), (S1 + S2).todense())
+        assert np.allclose(S1.todense() * S2.todense(), (S1 * S2).todense())
         sin = np.sin(S1.todense()) + np.sin(S2.todense())
         sins = (np.sin(S1) + np.sin(S2)).todense()
         assert np.allclose(sin, sins)
@@ -1335,6 +1344,7 @@ def test_unfinalized_math():
 
 def test_pickle():
     import pickle as p
+
     S = SparseCSR((10, 10, 2), dtype=np.int32)
     S[0, 0] = [1, 2]
     S[2, 0] = [1, 2]
@@ -1357,6 +1367,7 @@ def test_sparse_column_out_of_bounds(j):
     with pytest.raises(IndexError):
         S[0, j] = 1
 
+
 def test_fromsp_csr():
     csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
     csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
@@ -1365,8 +1376,8 @@ def test_fromsp_csr():
     csr_1 = csr.tocsr(0)
     csr_2 = csr.tocsr(1)
 
-    assert np.abs(csr1 - csr_1).sum() == 0.
-    assert np.abs(csr2 - csr_2).sum() == 0.
+    assert np.abs(csr1 - csr_1).sum() == 0.0
+    assert np.abs(csr2 - csr_2).sum() == 0.0
 
 
 def test_transform1():
@@ -1380,7 +1391,7 @@ def test_transform1():
 
     assert tr.shape[:2] == csr.shape[:2]
     assert tr.shape[2] == len(matrix)
-    assert np.abs(tr.tocsr(0) - 0.3 * csr1 - 0.7 * csr2).sum() == 0.
+    assert np.abs(tr.tocsr(0) - 0.3 * csr1 - 0.7 * csr2).sum() == 0.0
 
 
 def test_transform2():
@@ -1394,8 +1405,8 @@ def test_transform2():
 
     assert tr.shape[:2] == csr.shape[:2]
     assert tr.shape[2] == len(matrix)
-    assert np.abs(tr.tocsr(0) - 0.3 * csr1).sum() == 0.
-    assert np.abs(tr.tocsr(1) - 0.7 * csr2).sum() == 0.
+    assert np.abs(tr.tocsr(0) - 0.3 * csr1).sum() == 0.0
+    assert np.abs(tr.tocsr(1) - 0.7 * csr2).sum() == 0.0
 
 
 def test_transform3():
@@ -1409,9 +1420,9 @@ def test_transform3():
 
     assert tr.shape[:2] == csr.shape[:2]
     assert tr.shape[2] == len(matrix)
-    assert np.abs(tr.tocsr(0) - 0.3 * csr1).sum() == 0.
-    assert np.abs(tr.tocsr(1) - 0.7 * csr2).sum() == 0.
-    assert np.abs(tr.tocsr(2) - 0.1 * csr1 - 0.2 * csr2).sum() == 0.
+    assert np.abs(tr.tocsr(0) - 0.3 * csr1).sum() == 0.0
+    assert np.abs(tr.tocsr(1) - 0.7 * csr2).sum() == 0.0
+    assert np.abs(tr.tocsr(2) - 0.1 * csr1 - 0.2 * csr2).sum() == 0.0
 
 
 def test_transform4():
@@ -1425,7 +1436,7 @@ def test_transform4():
 
     assert tr.shape[:2] == csr.shape[:2]
     assert tr.shape[2] == len(matrix)
-    assert np.abs(tr.tocsr(0) - 0.3j * csr1 - 0.7j * csr2).sum() == 0.
+    assert np.abs(tr.tocsr(0) - 0.3j * csr1 - 0.7j * csr2).sum() == 0.0
 
 
 def test_transform_fail():
@@ -1434,7 +1445,7 @@ def test_transform_fail():
     csr = SparseCSR.fromsp(csr1, csr2)
 
     # complex 1x3 matrix
-    matrix = [[0.3j, 0.7j, 1.]]
+    matrix = [[0.3j, 0.7j, 1.0]]
     with pytest.raises(ValueError):
         csr.transform(matrix=matrix)
 
@@ -1453,7 +1464,7 @@ def test_fromsp_csr_large():
     indices = row.indices
     if len(indices) == 0:
         indices = np.arange(3)
-    csr2[9948, (indices + 1) % 10] = 1.
+    csr2[9948, (indices + 1) % 10] = 1.0
     assert csr1.getnnz() != csr2.getnnz()
 
     t0 = time()
@@ -1463,10 +1474,10 @@ def test_fromsp_csr_large():
     csr_1 = csr.tocsr(0)
     csr_2 = csr.tocsr(1)
 
-    assert np.abs(csr1 - csr_1).sum() == 0.
-    assert np.abs(csr2 - csr_2).sum() == 0.
+    assert np.abs(csr1 - csr_1).sum() == 0.0
+    assert np.abs(csr2 - csr_2).sum() == 0.0
 
-    csr_ = SparseCSR(csr1.shape + (2, ), nnzpr=1)
+    csr_ = SparseCSR(csr1.shape + (2,), nnzpr=1)
 
     t0 = time()
     for ic, c in enumerate([csr1, csr2]):
@@ -1474,17 +1485,17 @@ def test_fromsp_csr_large():
 
         # Loop stuff
         for r in range(c.shape[0]):
-            idx = csr_._extend(r, c.indices[ptr[r]:ptr[r+1]])
-            csr_._D[idx, ic] += c.data[ptr[r]:ptr[r+1]]
+            idx = csr_._extend(r, c.indices[ptr[r] : ptr[r + 1]])
+            csr_._D[idx, ic] += c.data[ptr[r] : ptr[r + 1]]
     if print_time:
         print(f"timing: 2 x ptr[]:ptr[] {time() - t0}")
 
     dcsr = csr - csr_
 
-    assert np.abs(dcsr.tocsr(0)).sum() == 0.
-    assert np.abs(dcsr.tocsr(1)).sum() == 0.
+    assert np.abs(dcsr.tocsr(0)).sum() == 0.0
+    assert np.abs(dcsr.tocsr(1)).sum() == 0.0
 
-    csr_ = SparseCSR(csr1.shape + (2, ), nnzpr=1)
+    csr_ = SparseCSR(csr1.shape + (2,), nnzpr=1)
 
     t0 = time()
     for ic, c in enumerate([csr1, csr2]):
@@ -1492,7 +1503,7 @@ def test_fromsp_csr_large():
 
         # Loop stuff
         for r in range(c.shape[0]):
-            sl = slice(ptr[r], ptr[r+1])
+            sl = slice(ptr[r], ptr[r + 1])
             idx = csr_._extend(r, c.indices[sl])
             csr_._D[idx, ic] += c.data[sl]
     if print_time:

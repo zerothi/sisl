@@ -17,22 +17,26 @@ pytestmark = [pytest.mark.supercell, pytest.mark.sc, pytest.mark.lattice]
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
             alat = 1.42
-            sq3h = 3.**.5 * 0.5
-            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
-                                             [1.5, -sq3h, 0.],
-                                             [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
+            sq3h = 3.0**0.5 * 0.5
+            self.lattice = Lattice(
+                np.array(
+                    [[1.5, sq3h, 0.0], [1.5, -sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+                )
+                * alat,
+                nsc=[3, 3, 1],
+            )
+
     return t()
 
 
 class TestLattice:
-
     def test_str(self, setup):
         str(setup.lattice)
         str(setup.lattice)
-        assert setup.lattice != 'Not a Lattice'
+        assert setup.lattice != "Not a Lattice"
 
     def test_nsc1(self, setup):
         lattice = setup.lattice.copy()
@@ -80,10 +84,10 @@ class TestLattice:
         sc = setup.lattice.swapaxes(1, 2)
         i = sc._fill([1, 1])
         assert i.dtype == np.int32
-        i = sc._fill([1., 1.])
+        i = sc._fill([1.0, 1.0])
         assert i.dtype == np.float64
         for dt in [np.int32, np.float32, np.float64, np.complex64]:
-            i = sc._fill([1., 1.], dt)
+            i = sc._fill([1.0, 1.0], dt)
             assert i.dtype == dt
             i = sc._fill(np.ones([2], dt))
             assert i.dtype == dt
@@ -93,7 +97,7 @@ class TestLattice:
         for i in range(3):
             s = sc.add_vacuum(10, i)
             ax = setup.lattice.cell[i, :]
-            ax += ax / np.sum(ax ** 2) ** .5 * 10
+            ax += ax / np.sum(ax**2) ** 0.5 * 10
             assert np.allclose(ax, s.cell[i, :])
 
     def test_add_vacuum_orthogonal(self, setup):
@@ -103,11 +107,15 @@ class TestLattice:
 
         # now check for the skewed ones
         s = sc.add_vacuum(sc.length[0], 0, orthogonal_to_plane=True)
-        assert (s.length[0] / sc.length[0] - 1) * m.cos(m.radians(30)) == pytest.approx(1.)
+        assert (s.length[0] / sc.length[0] - 1) * m.cos(m.radians(30)) == pytest.approx(
+            1.0
+        )
 
         # now check for the skewed ones
         s = sc.add_vacuum(sc.length[1], 1, orthogonal_to_plane=True)
-        assert (s.length[1] / sc.length[1] - 1) * m.cos(m.radians(30)) == pytest.approx(1.)
+        assert (s.length[1] / sc.length[1] - 1) * m.cos(m.radians(30)) == pytest.approx(
+            1.0
+        )
 
     def test_add1(self, setup):
         sc = setup.lattice.copy()
@@ -170,7 +178,6 @@ class TestLattice:
         assert np.allclose(lattice.origin[[b, a]], sab.origin[[a, b]])
 
     def test_swapaxes_complicated(self, setup):
-
         # swap a couple of lattice vectors and cartesian coordinates
         a = "azby"
         b = "bxcz"
@@ -201,8 +208,7 @@ class TestLattice:
         assert len(sc_index) == setup.lattice.nsc[2]
 
     def test_sc_index2(self, setup):
-        sc_index = setup.lattice.sc_index([[0, 0, 0],
-                                      [1, 1, 0]])
+        sc_index = setup.lattice.sc_index([[0, 0, 0], [1, 1, 0]])
         s = str(sc_index)
         assert len(sc_index) == 2
 
@@ -238,11 +244,11 @@ class TestLattice:
     def test_creation2(self, setup):
         # full cell
         class P(LatticeChild):
-
             def copy(self):
                 a = P()
                 a.set_lattice(setup.lattice)
                 return a
+
         tmp1 = P()
         tmp1.set_lattice([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         # diagonal cell
@@ -284,14 +290,18 @@ class TestLattice:
         assert np.allclose(param, lattice.parameters())
         assert np.allclose(parama, lattice.parameters(True))
         for ang in range(0, 91, 5):
-            s = lattice.rotate(ang, lattice.cell[0, :]).rotate(ang, lattice.cell[1, :]).rotate(ang, lattice.cell[2, :])
+            s = (
+                lattice.rotate(ang, lattice.cell[0, :])
+                .rotate(ang, lattice.cell[1, :])
+                .rotate(ang, lattice.cell[2, :])
+            )
             assert np.allclose(param, s.parameters())
             assert np.allclose(parama, s.parameters(True))
 
     def test_rcell(self, setup):
         # LAPACK inverse algorithm implicitly does
         # a transpose.
-        rcell = lin.inv(setup.lattice.cell) * 2. * np.pi
+        rcell = lin.inv(setup.lattice.cell) * 2.0 * np.pi
         assert np.allclose(rcell.T, setup.lattice.rcell)
         assert np.allclose(rcell.T / (2 * np.pi), setup.lattice.icell)
 
@@ -301,15 +311,18 @@ class TestLattice:
     def test_translate1(self, setup):
         lattice = setup.lattice.translate([0, 0, 10])
         assert np.allclose(lattice.cell[2, :2], setup.lattice.cell[2, :2])
-        assert np.allclose(lattice.cell[2, 2], setup.lattice.cell[2, 2]+10)
+        assert np.allclose(lattice.cell[2, 2], setup.lattice.cell[2, 2] + 10)
 
     def test_center1(self, setup):
-        assert np.allclose(setup.lattice.center(), np.sum(setup.lattice.cell, axis=0) / 2)
+        assert np.allclose(
+            setup.lattice.center(), np.sum(setup.lattice.cell, axis=0) / 2
+        )
         for i in [0, 1, 2]:
             assert np.allclose(setup.lattice.center(i), setup.lattice.cell[i, :] / 2)
 
     def test_pickle(self, setup):
         import pickle as p
+
         s = p.dumps(setup.lattice)
         n = p.loads(s)
         assert setup.lattice == n
@@ -359,15 +372,23 @@ class TestLattice:
 
     def test_tile_multiply_orthogonal(self):
         lattice = graphene(orthogonal=True).lattice
-        assert np.allclose(lattice.tile(3, 0).tile(2, 1).tile(4, 2).cell, (lattice * (3, 2, 4)).cell)
+        assert np.allclose(
+            lattice.tile(3, 0).tile(2, 1).tile(4, 2).cell, (lattice * (3, 2, 4)).cell
+        )
         assert np.allclose(lattice.tile(3, 0).tile(2, 1).cell, (lattice * [3, 2]).cell)
-        assert np.allclose(lattice.tile(3, 0).tile(3, 1).tile(3, 2).cell, (lattice * 3).cell)
+        assert np.allclose(
+            lattice.tile(3, 0).tile(3, 1).tile(3, 2).cell, (lattice * 3).cell
+        )
 
     def test_tile_multiply_non_orthogonal(self):
         lattice = graphene(orthogonal=False).lattice
-        assert np.allclose(lattice.tile(3, 0).tile(2, 1).tile(4, 2).cell, (lattice * (3, 2, 4)).cell)
+        assert np.allclose(
+            lattice.tile(3, 0).tile(2, 1).tile(4, 2).cell, (lattice * (3, 2, 4)).cell
+        )
         assert np.allclose(lattice.tile(3, 0).tile(2, 1).cell, (lattice * [3, 2]).cell)
-        assert np.allclose(lattice.tile(3, 0).tile(3, 1).tile(3, 2).cell, (lattice * 3).cell)
+        assert np.allclose(
+            lattice.tile(3, 0).tile(3, 1).tile(3, 2).cell, (lattice * 3).cell
+        )
 
     def test_angle1(self, setup):
         g = graphene(orthogonal=True)
@@ -379,15 +400,11 @@ class TestLattice:
         assert lattice.angle(0, 1) == 90
         assert lattice.angle(0, 2) == 90
         assert lattice.angle(1, 2) == 90
-        lattice = Lattice([[1, 1, 0],
-                        [1, -1, 0],
-                        [0, 0, 2]])
+        lattice = Lattice([[1, 1, 0], [1, -1, 0], [0, 0, 2]])
         assert lattice.angle(0, 1) == 90
         assert lattice.angle(0, 2) == 90
         assert lattice.angle(1, 2) == 90
-        lattice = Lattice([[3, 4, 0],
-                        [4, 3, 0],
-                        [0, 0, 2]])
+        lattice = Lattice([[3, 4, 0], [4, 3, 0], [0, 0, 2]])
         assert lattice.angle(0, 1, rad=True) == approx(0.28379, abs=1e-4)
         assert lattice.angle(0, 2) == 90
         assert lattice.angle(1, 2) == 90
@@ -395,7 +412,9 @@ class TestLattice:
     def test_cell2length(self):
         gr = graphene(orthogonal=True)
         lattice = (gr * (40, 40, 1)).rotate(24, gr.cell[2, :]).lattice
-        assert np.allclose(lattice.length, (lattice.cell2length(lattice.length) ** 2).sum(1) ** 0.5)
+        assert np.allclose(
+            lattice.length, (lattice.cell2length(lattice.length) ** 2).sum(1) ** 0.5
+        )
         assert np.allclose(1, (lattice.cell2length(1) ** 2).sum(0))
 
     def test_set_lattice_off_wrong_size(self, setup):
@@ -405,7 +424,7 @@ class TestLattice:
 
 
 def _dot(u, v):
-    """ Dot product u . v """
+    """Dot product u . v"""
     return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
 
 
@@ -493,13 +512,13 @@ def test_supercell_warn():
 # boundary-condition tests
 #####
 
+
 @pytest.mark.parametrize("bc", list(BoundaryCondition))
 def test_lattice_bc_init(bc):
     Lattice(1, boundary_condition=bc)
     Lattice(1, boundary_condition=[bc, bc, bc])
-    Lattice(1, boundary_condition=[[bc, bc],
-                                   [bc, bc],
-                                   [bc, bc]])
+    Lattice(1, boundary_condition=[[bc, bc], [bc, bc], [bc, bc]])
+
 
 def test_lattice_bc_set():
     lat = Lattice(1, boundary_condition=Lattice.BC.PERIODIC)
@@ -508,24 +527,26 @@ def test_lattice_bc_set():
     assert not lat.pbc.any()
     assert (lat.boundary_condition == Lattice.BC.UNKNOWN).all()
 
-    lat.boundary_condition = ['per', "unkn", [3, 4]]
+    lat.boundary_condition = ["per", "unkn", [3, 4]]
 
     for n in "abc":
         lat.set_boundary_condition(**{n: "per"})
         lat.set_boundary_condition(**{n: [3, Lattice.BC.UNKNOWN]})
         lat.set_boundary_condition(**{n: [True, Lattice.BC.PERIODIC]})
 
-    bc = [
-            "per",
-            ["Dirichlet", Lattice.BC.NEUMANN],
-            ["un", "neu"]
-    ]
+    bc = ["per", ["Dirichlet", Lattice.BC.NEUMANN], ["un", "neu"]]
     lat.set_boundary_condition(bc)
-    assert np.all(lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN])
+    assert np.all(
+        lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN]
+    )
     assert np.all(lat.boundary_condition[2] == [Lattice.BC.UNKNOWN, Lattice.BC.NEUMANN])
     lat.set_boundary_condition(["per", None, ["dirichlet", "unkno"]])
-    assert np.all(lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN])
-    assert np.all(lat.boundary_condition[2] == [Lattice.BC.DIRICHLET, Lattice.BC.UNKNOWN])
+    assert np.all(
+        lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN]
+    )
+    assert np.all(
+        lat.boundary_condition[2] == [Lattice.BC.DIRICHLET, Lattice.BC.UNKNOWN]
+    )
     lat.set_boundary_condition("ppu")
     assert np.all(lat.pbc == [True, True, False])
 
@@ -546,4 +567,3 @@ def test_lattice_info():
         lat.set_boundary_condition(b=Lattice.BC.DIRICHLET)
         lat.set_boundary_condition(c=Lattice.BC.PERIODIC)
         assert len(record) == 1
-

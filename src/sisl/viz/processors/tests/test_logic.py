@@ -6,15 +6,14 @@ pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
 
 def test_swap():
-
     assert swap(1, (1, 2)) == 2
     assert swap(2, (1, 2)) == 1
 
     with pytest.raises(ValueError):
         swap(3, (1, 2))
 
-def test_matches():
 
+def test_matches():
     assert matches(1, 1) == True
     assert matches(1, 2) == False
 
@@ -27,8 +26,7 @@ def test_matches():
     assert matches(1, 1, ret_false="b") == True
     assert matches(1, 2, ret_false="b") == "b"
 
-def test_switch():
 
+def test_switch():
     assert switch(True, "a", "b") == "a"
     assert switch(False, "a", "b") == "b"
-

@@ -3,7 +3,7 @@ from ..plot import Plot
 
 class OrbitalGroupsPlot(Plot):
     """Contains methods to manipulate an input accepting groups of orbitals.
-    
+
     Plots that need this functionality should inherit from this class.
     """
 
@@ -19,7 +19,7 @@ class OrbitalGroupsPlot(Plot):
             return True
 
         return ("name" in group and group.get("name") in query) or iReq in query
-    
+
     def groups(self, *i_or_names):
         """Gets the groups that match your query
 
@@ -34,11 +34,15 @@ class OrbitalGroupsPlot(Plot):
 
             If no query is provided, all the groups will be matched
         """
-        return [req for i, req in enumerate(self.get_input(self._orbital_groups_input_key)) if self._matches_group(req, i_or_names, i)]
+        return [
+            req
+            for i, req in enumerate(self.get_input(self._orbital_groups_input_key))
+            if self._matches_group(req, i_or_names, i)
+        ]
 
-    def add_group(self, group = {}, clean=False, **kwargs):
-        """Adds a new orbitals group. 
-        
+    def add_group(self, group={}, clean=False, **kwargs):
+        """Adds a new orbitals group.
+
         The new group can be passed as a dict or as keyword arguments.
         The keyword arguments will overwrite what has been passed as a dict if there is conflict.
 
@@ -55,7 +59,11 @@ class OrbitalGroupsPlot(Plot):
         """
         group = {**group, **kwargs}
 
-        groups = [group] if clean else [*self.get_input(self._orbital_groups_input_key), group]
+        groups = (
+            [group]
+            if clean
+            else [*self.get_input(self._orbital_groups_input_key), group]
+        )
         return self.update_inputs(**{self._orbital_groups_input_key: groups})
 
     def remove_groups(self, *i_or_names, all=False):
@@ -75,7 +83,11 @@ class OrbitalGroupsPlot(Plot):
         if all:
             groups = []
         else:
-            groups = [req for i, req in enumerate(self.get_input(self._orbital_groups_input_key)) if not self._matches_group(req, i_or_names, i)]
+            groups = [
+                req
+                for i, req in enumerate(self.get_input(self._orbital_groups_input_key))
+                if not self._matches_group(req, i_or_names, i)
+            ]
 
         return self.update_inputs(**{self._orbital_groups_input_key: groups})
 
@@ -104,7 +116,17 @@ class OrbitalGroupsPlot(Plot):
 
         return self.update_inputs(**{self._orbital_groups_input_key: groups})
 
-    def split_groups(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, ignore_constraints=False, **kwargs):
+    def split_groups(
+        self,
+        *i_or_names,
+        on="species",
+        only=None,
+        exclude=None,
+        remove=True,
+        clean=False,
+        ignore_constraints=False,
+        **kwargs,
+    ):
         """Splits the orbital groups into multiple groups.
 
         Parameters
@@ -134,7 +156,7 @@ class OrbitalGroupsPlot(Plot):
             If False, all the groups that come from the method will
             be drawn on top of what is already there.
         ignore_constraints: boolean or array-like, optional
-            determines whether constraints (imposed by the group to be splitted) 
+            determines whether constraints (imposed by the group to be splitted)
             on the parameters that we want to split along should be taken into consideration.
 
             If `False`: all constraints considered.
@@ -172,20 +194,28 @@ class OrbitalGroupsPlot(Plot):
             groups = []
             for req in reqs:
                 new_groups = queries_manager._split_query(
-                    req, on=on, only=only, exclude=exclude,
-                    ignore_constraints=ignore_constraints, **kwargs
+                    req,
+                    on=on,
+                    only=only,
+                    exclude=exclude,
+                    ignore_constraints=ignore_constraints,
+                    **kwargs,
                 )
 
                 groups.extend(new_groups)
 
             if remove:
-                old_groups = [req for i, req in enumerate(old_groups) if not self._matches_group(req, i_or_names, i)]
+                old_groups = [
+                    req
+                    for i, req in enumerate(old_groups)
+                    if not self._matches_group(req, i_or_names, i)
+                ]
 
         if not clean:
             groups = [*old_groups, *groups]
 
         return self.update_inputs(**{self._orbital_groups_input_key: groups})
-    
+
     def split_orbs(self, on="species", only=None, exclude=None, clean=True, **kwargs):
         """
         Splits the orbitals into different groups.
@@ -213,4 +243,6 @@ class OrbitalGroupsPlot(Plot):
             will split on the different orbitals but will take
             only those that belong to carbon atoms.
         """
-        return self.split_groups(on=on, only=only, exclude=exclude, clean=clean, **kwargs)
+        return self.split_groups(
+            on=on, only=only, exclude=exclude, clean=clean, **kwargs
+        )

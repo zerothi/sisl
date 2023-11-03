@@ -6,7 +6,6 @@ pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
 
 def test_get_spin_options():
-
     # Unpolarized spin
     assert len(get_spin_options("unpolarized")) == 0
 
@@ -28,4 +27,3 @@ def test_get_spin_options():
 
     options = get_spin_options("noncolinear", only_if_polarized=True)
     assert len(options) == 0
-

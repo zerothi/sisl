@@ -16,7 +16,6 @@ pytestmark = [pytest.mark.geom]
 
 
 class CellDirect(Lattice):
-
     @property
     def volume(self):
         return dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :]))
@@ -24,32 +23,33 @@ class CellDirect(Lattice):
 
 def is_right_handed(geometry):
     sc = CellDirect(geometry.lattice.cell)
-    return sc.volume > 0.
+    return sc.volume > 0.0
 
 
 def test_basic():
-    a = sc(2.52, Atom['Fe'])
+    a = sc(2.52, Atom["Fe"])
     assert is_right_handed(a)
-    a = bcc(2.52, Atom['Fe'])
+    a = bcc(2.52, Atom["Fe"])
     assert is_right_handed(a)
-    a = bcc(2.52, Atom['Fe'], orthogonal=True)
-    a = fcc(2.52, Atom['Au'])
+    a = bcc(2.52, Atom["Fe"], orthogonal=True)
+    a = fcc(2.52, Atom["Au"])
     assert is_right_handed(a)
-    a = fcc(2.52, Atom['Au'], orthogonal=True)
-    a = hcp(2.52, Atom['Au'])
+    a = fcc(2.52, Atom["Au"], orthogonal=True)
+    a = hcp(2.52, Atom["Au"])
     assert is_right_handed(a)
-    a = hcp(2.52, Atom['Au'], orthogonal=True)
-    a = rocksalt(5.64, ['Na', 'Cl'])
+    a = hcp(2.52, Atom["Au"], orthogonal=True)
+    a = rocksalt(5.64, ["Na", "Cl"])
     assert is_right_handed(a)
-    a = rocksalt(5.64, [Atom('Na', R=3), Atom('Cl', R=4)], orthogonal=True)
+    a = rocksalt(5.64, [Atom("Na", R=3), Atom("Cl", R=4)], orthogonal=True)
 
 
 def test_flat():
     a = graphene()
     assert is_right_handed(a)
-    graphene(atoms='C')
+    graphene(atoms="C")
     a = graphene(orthogonal=True)
     assert is_right_handed(a)
+
 
 def test_flat_flakes():
     g = graphene_flake(shells=0, bond=1.42)
@@ -65,11 +65,14 @@ def test_flat_flakes():
     assert len(g.axyz(AtomNeighbours(min=2, max=2, R=1.44))) == 12
     assert len(g.axyz(AtomNeighbours(min=3, max=3, R=1.44))) == 12
 
-    bn = honeycomb_flake(shells=1, atoms=['B', 'N'], bond=1.42)
+    bn = honeycomb_flake(shells=1, atoms=["B", "N"], bond=1.42)
     assert bn.na == 24
     assert np.allclose(bn.xyz, g.xyz)
     # Check that atoms are alternated.
-    assert len(bn.axyz(AtomZ(5) & AtomNeighbours(min=1, R=1.44, neighbour=AtomZ(5)))) == 0
+    assert (
+        len(bn.axyz(AtomZ(5) & AtomNeighbours(min=1, R=1.44, neighbour=AtomZ(5)))) == 0
+    )
+
 
 def test_nanotube():
     a = nanotube(1.42)
@@ -88,40 +91,40 @@ def test_diamond():
 def test_bilayer():
     a = bilayer(1.42)
     assert is_right_handed(a)
-    bilayer(1.42, stacking='AA')
-    bilayer(1.42, stacking='BA')
-    bilayer(1.42, stacking='AB')
+    bilayer(1.42, stacking="AA")
+    bilayer(1.42, stacking="BA")
+    bilayer(1.42, stacking="AB")
     for m in range(7):
         bilayer(1.42, twist=(m, m + 1))
-    bilayer(1.42, twist=(6, 7), layer='bottom')
-    bilayer(1.42, twist=(6, 7), layer='TOP')
-    bilayer(1.42, bottom_atoms=(Atom['B'], Atom['N']), twist=(6, 7))
+    bilayer(1.42, twist=(6, 7), layer="bottom")
+    bilayer(1.42, twist=(6, 7), layer="TOP")
+    bilayer(1.42, bottom_atoms=(Atom["B"], Atom["N"]), twist=(6, 7))
     bilayer(1.42, top_atoms=(Atom(5), Atom(7)), twist=(6, 7))
     _, _ = bilayer(1.42, twist=(6, 7), ret_angle=True)
 
     with pytest.raises(ValueError):
-        bilayer(1.42, twist=(6, 7), layer='undefined')
+        bilayer(1.42, twist=(6, 7), layer="undefined")
 
     with pytest.raises(ValueError):
-        bilayer(1.42, twist=(6, 7), stacking='undefined')
+        bilayer(1.42, twist=(6, 7), stacking="undefined")
 
     with pytest.raises(ValueError):
-        bilayer(1.42, twist=('str', 7), stacking='undefined')
+        bilayer(1.42, twist=("str", 7), stacking="undefined")
 
 
 def test_nanoribbon():
     for w in range(0, 5):
-        nanoribbon(w, 1.42, Atom(6), kind='armchair')
-        nanoribbon(w, 1.42, Atom(6), kind='zigzag')
-        nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='armchair')
-        a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='zigzag')
+        nanoribbon(w, 1.42, Atom(6), kind="armchair")
+        nanoribbon(w, 1.42, Atom(6), kind="zigzag")
+        nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="armchair")
+        a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="zigzag")
         assert is_right_handed(a)
 
     with pytest.raises(ValueError):
-        nanoribbon(6, 1.42, (Atom(5), Atom(7)), kind='undefined')
+        nanoribbon(6, 1.42, (Atom(5), Atom(7)), kind="undefined")
 
     with pytest.raises(ValueError):
-        nanoribbon('str', 1.42, (Atom(5), Atom(7)), kind='undefined')
+        nanoribbon("str", 1.42, (Atom(5), Atom(7)), kind="undefined")
 
 
 def test_graphene_nanoribbon():
@@ -140,11 +143,14 @@ def test_zgnr():
 
 
 @pytest.mark.parametrize(
-    "W, invert_first", itertools.product(range(3, 20), [True, False]),
+    "W, invert_first",
+    itertools.product(range(3, 20), [True, False]),
 )
 def test_heteroribbon_one_unit(W, invert_first):
     # Check that all ribbon widths are properly cut into one unit
-    geometry = heteroribbon([(W, 1)], bond=1.42, atoms=Atom(6, 1.43), invert_first=invert_first)
+    geometry = heteroribbon(
+        [(W, 1)], bond=1.42, atoms=Atom(6, 1.43), invert_first=invert_first
+    )
 
     assert geometry.na == W
 
@@ -158,7 +164,9 @@ def test_heteroribbon():
     L = itertools.repeat(2)
 
     for Ws in combinations:
-        geom = heteroribbon(zip(Ws, L), bond=1.42, atoms=Atom(6, 1.43), align="auto", shift_quantum=True)
+        geom = heteroribbon(
+            zip(Ws, L), bond=1.42, atoms=Atom(6, 1.43), align="auto", shift_quantum=True
+        )
 
         # Assert no dangling bonds.
         assert len(geom.asc2uc({"neighbours": 1})) == 0
@@ -172,7 +180,9 @@ def test_graphene_heteroribbon_errors():
     # 7-open with 9 can only be perfectly aligned.
     graphene_heteroribbon([(7, 1), (9, 1)], align="center", on_lone_atom="raise")
     with pytest.raises(SislError):
-        graphene_heteroribbon([(7, 1), (9, 1, -1)], align="center", on_lone_atom="raise")
+        graphene_heteroribbon(
+            [(7, 1), (9, 1, -1)], align="center", on_lone_atom="raise"
+        )
     # From the bottom
     graphene_heteroribbon([(7, 1), (9, 1, -1)], align="bottom", on_lone_atom="raise")
     with pytest.raises(SislError):
@@ -182,10 +192,7 @@ def test_graphene_heteroribbon_errors():
     with pytest.raises(SislError):
         graphene_heteroribbon([(7, 1), (9, 1, -1)], align="top", on_lone_atom="raise")
 
-
-    grap_heteroribbon = partial(
-        graphene_heteroribbon, align="auto", shift_quantum=True
-    )
+    grap_heteroribbon = partial(graphene_heteroribbon, align="auto", shift_quantum=True)
 
     # Odd section with open end
     with pytest.raises(SislError):
@@ -209,105 +216,127 @@ def test_graphene_heteroribbon_errors():
     grap_heteroribbon([(10, 2), (8, 2, -1)])
     with pytest.raises(SislError):
         grap_heteroribbon([(10, 2), (8, 2, 1)])
-    grap_heteroribbon([(10, 1), (8, 2, 1)],) #pbc=False)
+    grap_heteroribbon(
+        [(10, 1), (8, 2, 1)],
+    )  # pbc=False)
     with pytest.raises(SislError):
-        grap_heteroribbon([(10, 1), (8, 2, -1)],) #pbc=False)
+        grap_heteroribbon(
+            [(10, 1), (8, 2, -1)],
+        )  # pbc=False)
 
 
 def test_fcc_slab():
     for o in [True, False]:
-        fcc_slab(alat=4.08, atoms='Au', miller=(1, 0, 0), orthogonal=o)
-        fcc_slab(4.08, 'Au', 100, orthogonal=o)
-        fcc_slab(4.08, 'Au', 110, orthogonal=o)
-        fcc_slab(4.08, 'Au', 111, orthogonal=o)
-        fcc_slab(4.08, 79, '100', layers=5, vacuum=None, orthogonal=o)
-        fcc_slab(4.08, 79, '110', layers=5, orthogonal=o)
-        fcc_slab(4.08, 79, '111', layers=5, start=1, orthogonal=o)
-        fcc_slab(4.08, 79, '111', layers=5, start='C', orthogonal=o)
-        fcc_slab(4.08, 79, '111', layers=5, end=2, orthogonal=o)
-        a = fcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
+        fcc_slab(alat=4.08, atoms="Au", miller=(1, 0, 0), orthogonal=o)
+        fcc_slab(4.08, "Au", 100, orthogonal=o)
+        fcc_slab(4.08, "Au", 110, orthogonal=o)
+        fcc_slab(4.08, "Au", 111, orthogonal=o)
+        fcc_slab(4.08, 79, "100", layers=5, vacuum=None, orthogonal=o)
+        fcc_slab(4.08, 79, "110", layers=5, orthogonal=o)
+        fcc_slab(4.08, 79, "111", layers=5, start=1, orthogonal=o)
+        fcc_slab(4.08, 79, "111", layers=5, start="C", orthogonal=o)
+        fcc_slab(4.08, 79, "111", layers=5, end=2, orthogonal=o)
+        a = fcc_slab(4.08, 79, "111", layers=5, end="B", orthogonal=o)
         assert is_right_handed(a)
 
     with pytest.raises(ValueError):
-        fcc_slab(4.08, 'Au', 100, start=0, end=0)
+        fcc_slab(4.08, "Au", 100, start=0, end=0)
     with pytest.raises(ValueError):
-        fcc_slab(4.08, 'Au', 1000)
+        fcc_slab(4.08, "Au", 1000)
     with pytest.raises(NotImplementedError):
-        fcc_slab(4.08, 'Au', 200)
+        fcc_slab(4.08, "Au", 200)
     assert not np.allclose(
-        fcc_slab(5.64, 'Au', 100, end=1, layers='BABAB').xyz,
-        fcc_slab(5.64, 'Au', 100, end=1, layers=' BABAB ').xyz)
+        fcc_slab(5.64, "Au", 100, end=1, layers="BABAB").xyz,
+        fcc_slab(5.64, "Au", 100, end=1, layers=" BABAB ").xyz,
+    )
     assert np.allclose(
-        fcc_slab(5.64, 'Au', 100, layers=' AB AB BA ', vacuum=2).xyz,
-        fcc_slab(5.64, 'Au', 100, layers=(None, 2, 2, 2, None), vacuum=2, start=(0, 0, 1)).xyz)
+        fcc_slab(5.64, "Au", 100, layers=" AB AB BA ", vacuum=2).xyz,
+        fcc_slab(
+            5.64, "Au", 100, layers=(None, 2, 2, 2, None), vacuum=2, start=(0, 0, 1)
+        ).xyz,
+    )
     assert np.allclose(
-        fcc_slab(5.64, 'Au', 100, layers=' AB AB BA ', vacuum=(2, 1)).xyz,
-        fcc_slab(5.64, 'Au', 100, layers=(None, 2, ' ', 2, None, 2, None), vacuum=(2, 1), end=(1, 1, 0)).xyz)
+        fcc_slab(5.64, "Au", 100, layers=" AB AB BA ", vacuum=(2, 1)).xyz,
+        fcc_slab(
+            5.64,
+            "Au",
+            100,
+            layers=(None, 2, " ", 2, None, 2, None),
+            vacuum=(2, 1),
+            end=(1, 1, 0),
+        ).xyz,
+    )
 
     # example in documentation
     assert np.allclose(
-        fcc_slab(4., 'Au', 100, layers=(' ', 3, 5, 3), start=(0, 1, 0), vacuum=(10, 1, 2)).xyz,
-        fcc_slab(4., 'Au', 100, layers=' ABA BABAB ABA', vacuum=(10, 1, 2)).xyz)
+        fcc_slab(
+            4.0, "Au", 100, layers=(" ", 3, 5, 3), start=(0, 1, 0), vacuum=(10, 1, 2)
+        ).xyz,
+        fcc_slab(4.0, "Au", 100, layers=" ABA BABAB ABA", vacuum=(10, 1, 2)).xyz,
+    )
 
     assert np.allclose(
-        fcc_slab(4., 'Au', 100, layers=(' ', 3, 5, 3), start=(1, 0), vacuum=(10, 1, 2)).xyz,
-        fcc_slab(4., 'Au', 100, layers=' BAB ABABA ABA', vacuum=(10, 1, 2)).xyz)
+        fcc_slab(
+            4.0, "Au", 100, layers=(" ", 3, 5, 3), start=(1, 0), vacuum=(10, 1, 2)
+        ).xyz,
+        fcc_slab(4.0, "Au", 100, layers=" BAB ABABA ABA", vacuum=(10, 1, 2)).xyz,
+    )
 
 
 def test_bcc_slab():
     for o in [True, False]:
-        bcc_slab(alat=4.08, atoms='Au', miller=(1, 0, 0), orthogonal=o)
-        bcc_slab(4.08, 'Au', 100, orthogonal=o)
-        bcc_slab(4.08, 'Au', 110, orthogonal=o)
-        bcc_slab(4.08, 'Au', 111, orthogonal=o)
-        bcc_slab(4.08, 79, '100', layers=5, vacuum=None, orthogonal=o)
-        bcc_slab(4.08, 79, '110', layers=5, orthogonal=o)
-        assert (bcc_slab(4.08, 79, '111', layers=5, start=1, orthogonal=o)
-                .equal(
-                    bcc_slab(4.08, 79, '111', layers="BCABC", orthogonal=o)
-                ))
-        bcc_slab(4.08, 79, '111', layers="BCABC", start='B', orthogonal=o)
-        bcc_slab(4.08, 79, '111', layers="BCABC", start=1, orthogonal=o)
-        bcc_slab(4.08, 79, '111', layers=5, start='C', orthogonal=o)
-        bcc_slab(4.08, 79, '111', layers=5, end=2, orthogonal=o)
-        a = bcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
+        bcc_slab(alat=4.08, atoms="Au", miller=(1, 0, 0), orthogonal=o)
+        bcc_slab(4.08, "Au", 100, orthogonal=o)
+        bcc_slab(4.08, "Au", 110, orthogonal=o)
+        bcc_slab(4.08, "Au", 111, orthogonal=o)
+        bcc_slab(4.08, 79, "100", layers=5, vacuum=None, orthogonal=o)
+        bcc_slab(4.08, 79, "110", layers=5, orthogonal=o)
+        assert bcc_slab(4.08, 79, "111", layers=5, start=1, orthogonal=o).equal(
+            bcc_slab(4.08, 79, "111", layers="BCABC", orthogonal=o)
+        )
+        bcc_slab(4.08, 79, "111", layers="BCABC", start="B", orthogonal=o)
+        bcc_slab(4.08, 79, "111", layers="BCABC", start=1, orthogonal=o)
+        bcc_slab(4.08, 79, "111", layers=5, start="C", orthogonal=o)
+        bcc_slab(4.08, 79, "111", layers=5, end=2, orthogonal=o)
+        a = bcc_slab(4.08, 79, "111", layers=5, end="B", orthogonal=o)
         assert is_right_handed(a)
 
     with pytest.raises(ValueError):
-        bcc_slab(4.08, 'Au', 100, start=0, end=0)
+        bcc_slab(4.08, "Au", 100, start=0, end=0)
     with pytest.raises(ValueError):
-        bcc_slab(4.08, 'Au', 1000)
+        bcc_slab(4.08, "Au", 1000)
     with pytest.raises(NotImplementedError):
-        bcc_slab(4.08, 'Au', 200)
+        bcc_slab(4.08, "Au", 200)
     assert not np.allclose(
-        bcc_slab(5.64, 'Au', 100, end=1, layers='BABAB').xyz,
-        bcc_slab(5.64, 'Au', 100, end=1, layers=' BABAB ').xyz)
+        bcc_slab(5.64, "Au", 100, end=1, layers="BABAB").xyz,
+        bcc_slab(5.64, "Au", 100, end=1, layers=" BABAB ").xyz,
+    )
 
 
 def test_rocksalt_slab():
     rocksalt_slab(5.64, [Atom(11, R=3), Atom(17, R=4)], 100)
-    assert (rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=5)
-            .equal(
-                rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers="ABABA")
-            ))
-    rocksalt_slab(5.64, ['Na', 'Cl'], 110, vacuum=None)
-    rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=False)
-    rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=True)
-    a = rocksalt_slab(5.64, 'Na', 100)
+    assert rocksalt_slab(5.64, ["Na", "Cl"], 100, layers=5).equal(
+        rocksalt_slab(5.64, ["Na", "Cl"], 100, layers="ABABA")
+    )
+    rocksalt_slab(5.64, ["Na", "Cl"], 110, vacuum=None)
+    rocksalt_slab(5.64, ["Na", "Cl"], 111, orthogonal=False)
+    rocksalt_slab(5.64, ["Na", "Cl"], 111, orthogonal=True)
+    a = rocksalt_slab(5.64, "Na", 100)
     assert is_right_handed(a)
 
     with pytest.raises(ValueError):
-        rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=0, end=0)
+        rocksalt_slab(5.64, ["Na", "Cl"], 100, start=0, end=0)
     with pytest.raises(ValueError):
-        rocksalt_slab(5.64, ['Na', 'Cl'], 1000)
+        rocksalt_slab(5.64, ["Na", "Cl"], 1000)
     with pytest.raises(NotImplementedError):
-        rocksalt_slab(5.64, ['Na', 'Cl'], 200)
+        rocksalt_slab(5.64, ["Na", "Cl"], 200)
     with pytest.raises(ValueError):
-        rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=0, layers='BABAB')
-    rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=1, layers='BABAB')
+        rocksalt_slab(5.64, ["Na", "Cl"], 100, start=0, layers="BABAB")
+    rocksalt_slab(5.64, ["Na", "Cl"], 100, start=1, layers="BABAB")
     with pytest.raises(ValueError):
-        rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=0, layers='BABAB')
-    rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=1, layers='BABAB')
+        rocksalt_slab(5.64, ["Na", "Cl"], 100, end=0, layers="BABAB")
+    rocksalt_slab(5.64, ["Na", "Cl"], 100, end=1, layers="BABAB")
     assert not np.allclose(
-        rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=1, layers='BABAB').xyz,
-        rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=1, layers=' BABAB ').xyz)
+        rocksalt_slab(5.64, ["Na", "Cl"], 100, end=1, layers="BABAB").xyz,
+        rocksalt_slab(5.64, ["Na", "Cl"], 100, end=1, layers=" BABAB ").xyz,
+    )

@@ -14,7 +14,7 @@ def sanitize_axis(ax) -> Union[str, int, np.ndarray]:
             ax = ax.replace("0", "a").replace("1", "b").replace("2", "c")
         ax = ax.lower().replace("+", "")
     elif isinstance(ax, int):
-        ax = 'abc'[ax]
+        ax = "abc"[ax]
     elif isinstance(ax, (list, tuple)):
         ax = np.array(ax)
 
@@ -26,15 +26,21 @@ def sanitize_axis(ax) -> Union[str, int, np.ndarray]:
         invalid = ax.shape != (3,)
 
     if invalid:
-        raise ValueError(f"Incorrect axis passed. Axes must be one of [+-]('x', 'y', 'z', 'a', 'b', 'c', '0', '1', '2', 0, 1, 2)" +
-                            " or a numpy array/list/tuple of shape (3, )")
+        raise ValueError(
+            f"Incorrect axis passed. Axes must be one of [+-]('x', 'y', 'z', 'a', 'b', 'c', '0', '1', '2', 0, 1, 2)"
+            + " or a numpy array/list/tuple of shape (3, )"
+        )
 
     return ax
 
-def sanitize_axes(val: Union[str, Sequence[Union[str, int, np.ndarray]]]) -> List[Union[str, int, np.ndarray]]:
+
+def sanitize_axes(
+    val: Union[str, Sequence[Union[str, int, np.ndarray]]]
+) -> List[Union[str, int, np.ndarray]]:
     if isinstance(val, str):
         val = re.findall("[+-]?[xyzabc012]", val)
     return [sanitize_axis(ax) for ax in val]
+
 
 def get_ax_title(ax: Union[Axis, Callable], cartesian_units: str = "Ang") -> str:
     """Generates the title for a given axis"""
@@ -45,15 +51,18 @@ def get_ax_title(ax: Union[Axis, Callable], cartesian_units: str = "Ang") -> str
     elif not isinstance(ax, str):
         title = ""
     elif re.match("[+-]?[xXyYzZ]", ax):
-        title = f'{ax.upper()} axis [{cartesian_units}]'
+        title = f"{ax.upper()} axis [{cartesian_units}]"
     elif re.match("[+-]?[aAbBcC]", ax):
-        title = f'{ax.upper()} lattice vector'
+        title = f"{ax.upper()} lattice vector"
     else:
         title = ax
 
     return title
 
-def axis_direction(ax: Axis, cell: Optional[Union[npt.ArrayLike, Lattice]] = None) -> npt.NDArray[np.float64]:
+
+def axis_direction(
+    ax: Axis, cell: Optional[Union[npt.ArrayLike, Lattice]] = None
+) -> npt.NDArray[np.float64]:
     """Returns the vector direction of a given axis.
 
     Parameters
@@ -76,11 +85,14 @@ def axis_direction(ax: Axis, cell: Optional[Union[npt.ArrayLike, Lattice]] = Non
         if isinstance(ax, str) and ax[0] == "-":
             sign = -1
             ax = ax[1]
-        ax = sign * direction(ax, abc=cell, xyz=np.diag([1., 1., 1.]))
+        ax = sign * direction(ax, abc=cell, xyz=np.diag([1.0, 1.0, 1.0]))
 
     return ax
 
-def axes_cross_product(v1: Axis, v2: Axis, cell: Optional[Union[npt.ArrayLike, Lattice]] = None):
+
+def axes_cross_product(
+    v1: Axis, v2: Axis, cell: Optional[Union[npt.ArrayLike, Lattice]] = None
+):
     """An enhanced version of the cross product.
 
     It is an enhanced version because both vectors accept strings that represent
@@ -110,4 +122,3 @@ def axes_cross_product(v1: Axis, v2: Axis, cell: Optional[Union[npt.ArrayLike, L
 
     # If the vectors are not abc, we just need to take the cross product.
     return np.cross(axis_direction(v1, cell), axis_direction(v2, cell))
-

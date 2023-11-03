@@ -32,13 +32,16 @@ _log = logging.getLogger(__name__)
 class _Dispatchs:
     """Subclassable for creating the new/to arguments"""
 
-    def __init_subclass__(cls, /,
-                          dispatchs: Optional[Union[str, Sequence[Any]]]=None,
-                          when_subclassing: Optional[str] = None,
-                          **kwargs):
+    def __init_subclass__(
+        cls,
+        /,
+        dispatchs: Optional[Union[str, Sequence[Any]]] = None,
+        when_subclassing: Optional[str] = None,
+        **kwargs,
+    ):
         # complete the init_subclass
         super().__init_subclass__(**kwargs)
-        
+
         # Get the allowed actions for subclassing
         prefix = "_tonew"
         allowed_subclassing = ("keep", "new", "copy")
@@ -60,7 +63,6 @@ class _Dispatchs:
 
         loop = []
         for attr in dispatchs:
-
             # argument could be:
             #  dispatchs = [
             #       ("new", "keep"),
@@ -95,7 +97,6 @@ class _Dispatchs:
                     obj = getattr(base, attr).copy()
             loop.append((attr, obj, when_subcls))
 
-
         if when_subclassing is None:
             # first non-None value
             when_subclassing = "copy"
@@ -105,10 +106,11 @@ class _Dispatchs:
         _log.debug(f"{cls!r} when_subclassing = {when_subclassing}")
 
         if when_subclassing not in allowed_subclassing:
-            raise ValueError(f"when_subclassing should be one of {allowed_subclassing}, got {when_subclassing}")
+            raise ValueError(
+                f"when_subclassing should be one of {allowed_subclassing}, got {when_subclassing}"
+            )
 
         for attr, obj, _ in loop:
-        
             if obj is None:
                 _log.debug(f"Doing nothing for {attr} on class {cls!r}")
             else:

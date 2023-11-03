@@ -11,16 +11,16 @@ from ..sile import add_sile, sile_raise_write
 from .siesta_grid import gridncSileSiesta
 from .sile import SileCDFSiesta
 
-__all__ = ['tsvncSileSiesta']
+__all__ = ["tsvncSileSiesta"]
 
 
-_eV2Ry = unit_convert('eV', 'Ry')
-_Ry2eV = 1. / _eV2Ry
+_eV2Ry = unit_convert("eV", "Ry")
+_Ry2eV = 1.0 / _eV2Ry
 
 
 @set_module("sisl.io.siesta")
 class tsvncSileSiesta(gridncSileSiesta):
-    """ TranSiesta potential input Grid file object
+    """TranSiesta potential input Grid file object
 
     This potential input file is mainly intended for the Hartree solution
     which complements N-electrode calculations in TranSiesta.
@@ -31,15 +31,15 @@ class tsvncSileSiesta(gridncSileSiesta):
     """
 
     def read_grid(self, *args, **kwargs):
-        """ Reads the TranSiesta potential input grid """
+        """Reads the TranSiesta potential input grid"""
         lattice = self.read_lattice().swapaxes(0, 2)
 
         # Create the grid
-        na = len(self._dimension('a'))
-        nb = len(self._dimension('b'))
-        nc = len(self._dimension('c'))
+        na = len(self._dimension("a"))
+        nb = len(self._dimension("b"))
+        nc = len(self._dimension("c"))
 
-        v = self._variable('V')
+        v = self._variable("V")
 
         # Create the grid, Siesta uses periodic, always
         grid = Grid([nc, nb, na], bc=Grid.PERIODIC, lattice=lattice, dtype=v.dtype)
@@ -51,30 +51,34 @@ class tsvncSileSiesta(gridncSileSiesta):
         return grid.swapaxes(0, 2)
 
     def write_grid(self, grid):
-        """ Write the Poisson solution to the TSV.nc file """
+        """Write the Poisson solution to the TSV.nc file"""
         sile_raise_write(self)
 
         self.write_lattice(grid.lattice)
 
-        self._crt_dim(self, 'one', 1)
-        self._crt_dim(self, 'a', grid.shape[0])
-        self._crt_dim(self, 'b', grid.shape[1])
-        self._crt_dim(self, 'c', grid.shape[2])
+        self._crt_dim(self, "one", 1)
+        self._crt_dim(self, "a", grid.shape[0])
+        self._crt_dim(self, "b", grid.shape[1])
+        self._crt_dim(self, "c", grid.shape[2])
 
-        vmin = self._crt_var(self, 'Vmin', 'f8', ('one',))
-        vmin.info = 'Minimum value in the Poisson solution (for TranSiesta interpolation)'
-        vmin.unit = 'Ry'
-        vmax = self._crt_var(self, 'Vmax', 'f8', ('one',))
-        vmax.info = 'Maximum value in the Poisson solution (for TranSiesta interpolation)'
-        vmax.unit = 'Ry'
+        vmin = self._crt_var(self, "Vmin", "f8", ("one",))
+        vmin.info = (
+            "Minimum value in the Poisson solution (for TranSiesta interpolation)"
+        )
+        vmin.unit = "Ry"
+        vmax = self._crt_var(self, "Vmax", "f8", ("one",))
+        vmax.info = (
+            "Maximum value in the Poisson solution (for TranSiesta interpolation)"
+        )
+        vmax.unit = "Ry"
 
-        v = self._crt_var(self, 'V', grid.dtype, ('c', 'b', 'a'))
-        v.info = 'Poisson solution with custom boundary conditions'
-        v.unit = 'Ry'
+        v = self._crt_var(self, "V", grid.dtype, ("c", "b", "a"))
+        v.info = "Poisson solution with custom boundary conditions"
+        v.unit = "Ry"
 
         vmin[:] = grid.grid.min() * _eV2Ry
         vmax[:] = grid.grid.max() * _eV2Ry
         v[:, :, :] = np.swapaxes(grid.grid, 0, 2) * _eV2Ry
 
 
-add_sile('TSV.nc', tsvncSileSiesta)
+add_sile("TSV.nc", tsvncSileSiesta)

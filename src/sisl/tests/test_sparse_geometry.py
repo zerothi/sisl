@@ -16,16 +16,16 @@ pytestmark = [pytest.mark.sparse, pytest.mark.sparse_geometry]
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
-            self.g = fcc(1., Atom(1, R=1.495)) * 2
+            self.g = fcc(1.0, Atom(1, R=1.495)) * 2
             self.s1 = SparseAtom(self.g)
             self.s2 = SparseAtom(self.g, 2)
+
     return t()
 
 
 class TestSparseAtom:
-
     def test_fail_align1(self, setup):
         s = SparseAtom(setup.g * 2)
         str(s)
@@ -133,7 +133,7 @@ class TestSparseAtom:
 
     def test_untile_wrong_usage(self):
         # one should not untile
-        geometry = Geometry([0] * 3, Atom(1, R=1.001), Lattice(1, nsc=[1]* 3))
+        geometry = Geometry([0] * 3, Atom(1, R=1.001), Lattice(1, nsc=[1] * 3))
         geometry = geometry.tile(4, 0)
         s = SparseAtom(geometry)
         s.construct([[0.1, 1.01], [1, 2]])
@@ -149,7 +149,7 @@ class TestSparseAtom:
 
     def test_untile_segment_single(self):
         # one should not untile
-        geometry = Geometry([0] * 3, Atom(1, R=1.001), Lattice(1, nsc=[1]* 3))
+        geometry = Geometry([0] * 3, Atom(1, R=1.001), Lattice(1, nsc=[1] * 3))
         geometry = geometry.tile(4, 0)
         s = SparseAtom(geometry)
         s.construct([[0.1, 1.01], [1, 2]])
@@ -162,7 +162,7 @@ class TestSparseAtom:
             sx = s.untile(4, 0, segment=seg).tile(2, 0)
             ds = s4 - sx
             ds.finalize()
-            assert np.absolute(ds)._csr._D.sum() == pytest.approx(0.)
+            assert np.absolute(ds)._csr._D.sum() == pytest.approx(0.0)
 
     @pytest.mark.parametrize("axis", [0, 1, 2])
     def test_untile_segment_three(self, axis):
@@ -182,26 +182,26 @@ class TestSparseAtom:
             sx = s.untile(4, axis, segment=seg).tile(2, axis)
             ds = s4 - sx
             ds.finalize()
-            assert np.absolute(ds)._csr._D.sum() == pytest.approx(0.)
+            assert np.absolute(ds)._csr._D.sum() == pytest.approx(0.0)
 
     def test_unrepeat_setup(self, setup):
         s1 = SparseAtom(setup.g)
         s1.construct([[0.1, 1.5], [1, 2]])
-        s2 = SparseAtom(setup.g * ((2, 2, 2), 'r'))
+        s2 = SparseAtom(setup.g * ((2, 2, 2), "r"))
         s2.construct([[0.1, 1.5], [1, 2]])
         s2 = s2.unrepeat(2, 2).unrepeat(2, 1).unrepeat(2, 0)
         assert s1.spsame(s2)
 
         s1 = SparseAtom(setup.g)
         s1.construct([[0.1, 1.5], [1, 2]])
-        s2 = SparseAtom(setup.g * ([2, 1, 1], 'r'))
+        s2 = SparseAtom(setup.g * ([2, 1, 1], "r"))
         s2.construct([[0.1, 1.5], [1, 2]])
         s2 = s2.unrepeat(2, 0)
         assert s1.spsame(s2)
 
         s1 = SparseAtom(setup.g)
         s1.construct([[0.1, 1.5], [1, 2]])
-        s2 = SparseAtom(setup.g * ([1, 2, 1], 'r'))
+        s2 = SparseAtom(setup.g * ([1, 2, 1], "r"))
         s2.construct([[0.1, 1.5], [1, 2]])
         s2 = s2.unrepeat(2, 1)
         assert s1.spsame(s2)
@@ -218,7 +218,7 @@ class TestSparseAtom:
         s = SparseOrbital(setup.g.copy())
         s.construct([[0.1, 1.5], [1, 2]])
         with pytest.raises(ValueError):
-            s.rij(what='none')
+            s.rij(what="none")
 
     def test_rij_atom(self, setup):
         s = SparseAtom(setup.g.copy())
@@ -235,7 +235,7 @@ class TestSparseAtom:
         orbital = so.rij()
         assert atom.spsame(orbital)
         atom = sa.rij()
-        orbital = so.rij('atom')
+        orbital = so.rij("atom")
         assert atom.spsame(orbital)
         # This only works because there is 1 orbital per atom
         orbital = so.rij()
@@ -254,10 +254,10 @@ class TestSparseAtom:
         assert so.geometry.na - 1 == so2.geometry.na
 
     def test_sp_orb_remove_atom(self):
-        so = SparseOrbital(Geometry([[0] *3, [1]* 3], [Atom[1], Atom[2]], 2))
+        so = SparseOrbital(Geometry([[0] * 3, [1] * 3], [Atom[1], Atom[2]], 2))
         so2 = so.remove(Atom[1])
         assert so.geometry.na - 1 == so2.geometry.na
-        assert so.geometry.no -1 == so2.geometry.no
+        assert so.geometry.no - 1 == so2.geometry.no
 
     def test_remove1(self, setup):
         for i in range(len(setup.g)):
@@ -329,7 +329,7 @@ class TestSparseAtom:
         setup.s1.construct([[0.1, 1.5], [1, 2]])
         s1 = setup.s1.repeat(2, 0).repeat(2, 1)
         setup.s1.empty()
-        s2 = SparseAtom(setup.g * ([2, 2, 1], 'r'))
+        s2 = SparseAtom(setup.g * ([2, 2, 1], "r"))
         s2.construct([[0.1, 1.5], [1, 2]])
         assert s1.spsame(s2)
         s1.finalize()
@@ -341,7 +341,7 @@ class TestSparseAtom:
         setup.s1.finalize()
         s1 = setup.s1.repeat(2, 0).repeat(2, 1)
         setup.s1.empty()
-        s2 = SparseAtom(setup.g * ([2, 2, 1], 'r'))
+        s2 = SparseAtom(setup.g * ([2, 2, 1], "r"))
         s2.construct([[0.1, 1.5], [1, 2]])
         assert s1.spsame(s2)
         s1.finalize()
@@ -363,7 +363,7 @@ class TestSparseAtom:
         assert s1.spsame(s2)
 
     def test_set_nsc1(self, setup):
-        g = fcc(1., Atom(1, R=3.5))
+        g = fcc(1.0, Atom(1, R=3.5))
         s = SparseAtom(g)
         s.construct([[0.1, 1.5, 3.5], [1, 2, 3]])
         s.finalize()
@@ -421,7 +421,7 @@ class TestSparseAtom:
         I = np.float32(1)
         # Create initial stuff
         for i in range(10):
-            j = range(i, i*2)
+            j = range(i, i * 2)
             S[0, j] = i
         S.finalize()
 
@@ -453,7 +453,7 @@ class TestSparseAtom:
         I = np.ones(1, dtype=np.complex128)[0]
         # Create initial stuff
         for i in range(10):
-            j = range(i, i*2)
+            j = range(i, i * 2)
             S[0, j] = i
         S.finalize()
 
@@ -489,12 +489,12 @@ class TestSparseAtom:
         assert s.dtype == np.complex128
         assert s._csr._D.sum() == Ssum
 
-        s = S ** I
+        s = S**I
         assert isinstance(s, SparseAtom)
         assert s.dtype == np.complex128
         assert s._csr._D.sum() == Ssum
 
-        s = I ** S
+        s = I**S
         assert isinstance(s, SparseAtom)
         assert s.dtype == np.complex128
 
@@ -504,7 +504,7 @@ class TestSparseAtom:
         I = np.ones(1, dtype=np.complex128)[0]
         # Create initial stuff
         for i in range(2):
-            j = range(i, i+2)
+            j = range(i, i + 2)
             S[i, j] = 1
         S.finalize()
         assert np.sum(S, axis=(0, 1)) == pytest.approx(1 * 2 * 2)
@@ -519,7 +519,7 @@ class TestSparseAtom:
         assert np.allclose(s1.shape, [g.na, g.na_s, 1])
 
         assert np.allclose(s1[0, [1, 2, 3]], np.ones([3], np.int32))
-        assert np.allclose(s1[1, [1, 2, 4]], np.ones([3], np.int32)*2)
+        assert np.allclose(s1[1, [1, 2, 4]], np.ones([3], np.int32) * 2)
 
         # Different instantiating
         s2 = SparseAtom.fromsp(g, lil)
@@ -538,7 +538,7 @@ class TestSparseAtom:
         assert np.allclose(s1[0, [1, 2, 3], 0], np.ones([3], np.int32))
         assert np.allclose(s1[0, [1, 2, 3], 1], np.zeros([3], np.int32))
         assert np.allclose(s1[1, [1, 2, 4], 0], np.zeros([3], np.int32))
-        assert np.allclose(s1[1, [1, 2, 4], 1], np.ones([3], np.int32)*2)
+        assert np.allclose(s1[1, [1, 2, 4], 1], np.ones([3], np.int32) * 2)
 
     def test_fromsp4(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
@@ -569,7 +569,7 @@ class TestSparseAtom:
 @pytest.mark.parametrize("n1", [1, 3])
 @pytest.mark.parametrize("n2", [1, 4])
 def test_sparse_atom_symmetric(n0, n1, n2):
-    g = fcc(1., Atom(1, R=1.5)) * 2
+    g = fcc(1.0, Atom(1, R=1.5)) * 2
     s = SparseAtom(g)
     s.construct([[0.1, 1.51], [1, 2]])
     s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
@@ -580,7 +580,7 @@ def test_sparse_atom_symmetric(n0, n1, n2):
         # orbitals connecting to ia
         edges = s.edges(ia)
         # Figure out the transposed supercell indices of the edges
-        isc = - s.geometry.a2isc(edges)
+        isc = -s.geometry.a2isc(edges)
         # Convert to supercell
         IA = s.geometry.lattice.sc_index(isc) * na + ia
         # Figure out if 'ia' is also in the back-edges
@@ -594,64 +594,64 @@ def test_sparse_atom_symmetric(n0, n1, n2):
 
 @pytest.mark.parametrize("i", [0, 1, 2])
 def test_sparse_atom_transpose_single(i):
-    """ This is problematic when the sparsity pattern is not *filled* """
-    g = fcc(1., Atom(1, R=1.5)) * 3
+    """This is problematic when the sparsity pattern is not *filled*"""
+    g = fcc(1.0, Atom(1, R=1.5)) * 3
     s = SparseAtom(g)
-    s[i, 2] = 1.
-    s[i, 0] = 2.
+    s[i, 2] = 1.0
+    s[i, 0] = 2.0
     t = s.transpose()
 
     assert t.nnz == s.nnz
-    assert t[2, i] == pytest.approx(1.)
-    assert t[0, i] == pytest.approx(2.)
+    assert t[2, i] == pytest.approx(1.0)
+    assert t[0, i] == pytest.approx(2.0)
 
 
 @pytest.mark.parametrize("i", [0, 1, 2])
 def test_sparse_atom_transpose_more(i):
-    """ This is problematic when the sparsity pattern is not *filled* """
-    g = fcc(1., Atom(1, R=1.5)) * 3
+    """This is problematic when the sparsity pattern is not *filled*"""
+    g = fcc(1.0, Atom(1, R=1.5)) * 3
     s = SparseAtom(g)
-    s[i, 2] = 1.
-    s[i, 0] = 2.
-    s[i + 2, 3] = 1.
-    s[i + 2, 5] = 2.
+    s[i, 2] = 1.0
+    s[i, 0] = 2.0
+    s[i + 2, 3] = 1.0
+    s[i + 2, 5] = 2.0
     t = s.transpose()
 
     assert t.nnz == s.nnz
-    assert t[2, i] == pytest.approx(1.)
-    assert t[0, i] == pytest.approx(2.)
-    assert t[3, i + 2] == pytest.approx(1.)
-    assert t[5, i + 2] == pytest.approx(2.)
+    assert t[2, i] == pytest.approx(1.0)
+    assert t[0, i] == pytest.approx(2.0)
+    assert t[3, i + 2] == pytest.approx(1.0)
+    assert t[5, i + 2] == pytest.approx(2.0)
 
 
 @pytest.mark.parametrize("i", [0, 1, 2])
 def test_sparse_orbital_transpose_single(i):
-    g = fcc(1., Atom(1, R=(1.5, 2.1))) * 3
+    g = fcc(1.0, Atom(1, R=(1.5, 2.1))) * 3
     s = SparseOrbital(g)
-    s[i, 2] = 1.
-    s[i, 0] = 2.
+    s[i, 2] = 1.0
+    s[i, 0] = 2.0
     t = s.transpose()
 
     assert t.nnz == s.nnz
-    assert t[2, i] == pytest.approx(1.)
-    assert t[0, i] == pytest.approx(2.)
+    assert t[2, i] == pytest.approx(1.0)
+    assert t[0, i] == pytest.approx(2.0)
 
 
 @pytest.mark.parametrize("i", [0, 1, 2])
 def test_sparse_orbital_transpose_more(i):
-    g = fcc(1., Atom(1, R=(1.5, 2.1))) * 3
+    g = fcc(1.0, Atom(1, R=(1.5, 2.1))) * 3
     s = SparseOrbital(g)
-    s[i, 2] = 1.
-    s[i, 0] = 2.
-    s[i + 3, 4] = 1.
-    s[i + 2, 4] = 2.
+    s[i, 2] = 1.0
+    s[i, 0] = 2.0
+    s[i + 3, 4] = 1.0
+    s[i + 2, 4] = 2.0
     t = s.transpose()
 
     assert t.nnz == s.nnz
-    assert t[2, i] == pytest.approx(1.)
-    assert t[0, i] == pytest.approx(2.)
-    assert t[4, i + 3] == pytest.approx(1.)
-    assert t[4, i + 2] == pytest.approx(2.)
+    assert t[2, i] == pytest.approx(1.0)
+    assert t[0, i] == pytest.approx(2.0)
+    assert t[4, i + 3] == pytest.approx(1.0)
+    assert t[4, i + 2] == pytest.approx(2.0)
 
 
 def test_sparse_orbital_add_axis(setup):
@@ -666,7 +666,8 @@ def test_sparse_orbital_add_axis(setup):
 
 def test_sparse_orbital_add_no_axis():
     from sisl.geom import sc
-    g = (sc(1., Atom(1, R=1.5)) * 2).add(Lattice([0, 0, 5]))
+
+    g = (sc(1.0, Atom(1, R=1.5)) * 2).add(Lattice([0, 0, 5]))
     s = SparseOrbital(g)
     s.construct([[0.1, 1.5], [1, 2]])
     s1 = s.add(s, offset=[0, 0, 3])
@@ -677,7 +678,7 @@ def test_sparse_orbital_add_no_axis():
 
 def test_sparse_orbital_sub_orbital():
     atom = Atom(1, (1, 2, 3))
-    g = fcc(1., atom) * 2
+    g = fcc(1.0, atom) * 2
     s = SparseOrbital(g)
 
     # take out some orbitals
@@ -703,12 +704,12 @@ def test_translate_sparse_atoms():
 
     # Build a dummy matrix with onsite terms and just one coupling term
     matrix = SparseAtom(graph)
-    matrix[0,0] = 1
-    matrix[1,1] = 2
-    matrix[0,1] = 3
+    matrix[0, 0] = 1
+    matrix[1, 1] = 2
+    matrix[0, 1] = 3
 
     # Translate the second atom
-    transl = matrix._translate_atoms_sc([[0,0,0], [1, 0, 0]])
+    transl = matrix._translate_atoms_sc([[0, 0, 0], [1, 0, 0]])
 
     # Check that the new auxiliary cell is correct.
     assert np.allclose(transl.nsc, [3, 1, 1])
@@ -719,10 +720,10 @@ def test_translate_sparse_atoms():
     assert np.allclose(transl.geometry[1], matrix.geometry[1] + matrix.geometry.cell[0])
 
     # Assert that the matrix elements have been translated
-    assert transl[0,0] == 1
-    assert transl[1,1] == 2
-    assert transl[0,1] == 0
-    assert transl[0,3] == 3
+    assert transl[0, 0] == 1
+    assert transl[1, 1] == 2
+    assert transl[0, 1] == 0
+    assert transl[0, 3] == 3
 
     # Translate back to unit cell
     uc_matrix = transl.translate2uc()
@@ -733,13 +734,13 @@ def test_translate_sparse_atoms():
 
     assert np.allclose(uc_matrix.geometry.xyz, matrix.geometry.xyz)
 
-    assert uc_matrix[0,0] == 1
-    assert uc_matrix[1,1] == 2
-    assert uc_matrix[0,1] == 3
-    assert uc_matrix[0,3] == 0
+    assert uc_matrix[0, 0] == 1
+    assert uc_matrix[1, 1] == 2
+    assert uc_matrix[0, 1] == 3
+    assert uc_matrix[0, 3] == 0
 
     # Instead, test atoms and axes arguments to avoid any translation.
-    for kwargs in [{'atoms': [0]}, {'axes': [1, 2]}]:
+    for kwargs in [{"atoms": [0]}, {"axes": [1, 2]}]:
         not_uc_matrix = transl.translate2uc(**kwargs)
 
         # Check the auxiliary cell, coordinates and the matrix elements
@@ -751,16 +752,20 @@ def test_translate_sparse_atoms():
         assert np.allclose(not_uc_matrix._csr.todense(), transl._csr.todense())
 
     # Now, translate both atoms
-    transl_both = uc_matrix._translate_atoms_sc([[-1,0,0], [1, 0, 0]])
+    transl_both = uc_matrix._translate_atoms_sc([[-1, 0, 0], [1, 0, 0]])
 
     # Check the auxiliary cell, coordinates and the matrix elements
     assert np.allclose(transl_both.nsc, [5, 1, 1])
     assert np.allclose(transl_both.shape, [2, 10, 1])
 
-    assert np.allclose(transl_both.geometry[0], uc_matrix.geometry[0] - uc_matrix.geometry.cell[0])
-    assert np.allclose(transl_both.geometry[1], uc_matrix.geometry[1] + uc_matrix.geometry.cell[0])
+    assert np.allclose(
+        transl_both.geometry[0], uc_matrix.geometry[0] - uc_matrix.geometry.cell[0]
+    )
+    assert np.allclose(
+        transl_both.geometry[1], uc_matrix.geometry[1] + uc_matrix.geometry.cell[0]
+    )
 
-    assert transl_both[0,0] == 1
-    assert transl_both[1,1] == 2
-    assert transl_both[0,1] == 0
-    assert transl_both[0,3] == 3
+    assert transl_both[0, 0] == 1
+    assert transl_both[1, 1] == 2
+    assert transl_both[0, 1] == 0
+    assert transl_both[0, 3] == 3

@@ -11,17 +11,17 @@ from .data import Data
 
 class EigenstateData(Data):
     """Wavefunction data class"""
-    
+
     @singledispatchmethod
     @classmethod
     def new(cls, data):
         return cls(data)
-    
+
     @new.register
     @classmethod
     def from_eigenstate(cls, eigenstate: sisl.EigenstateElectron):
         return cls(eigenstate)
-    
+
     @new.register
     @classmethod
     def from_path(cls, path: Path, *args, **kwargs):
@@ -33,12 +33,15 @@ class EigenstateData(Data):
     def from_string(cls, string: str, *args, **kwargs):
         """Assumes the string is a path to a file"""
         return cls.new(Path(string), *args, **kwargs)
-    
+
     @new.register
     @classmethod
-    def from_fdf(cls, 
-        fdf: fdfSileSiesta, source: Literal["wfsx", "hamiltonian"] = "wfsx",
-        k: Tuple[float, float, float] = (0, 0, 0), spin: int = 0,
+    def from_fdf(
+        cls,
+        fdf: fdfSileSiesta,
+        source: Literal["wfsx", "hamiltonian"] = "wfsx",
+        k: Tuple[float, float, float] = (0, 0, 0),
+        spin: int = 0,
     ):
         if source == "wfsx":
             sile = FileDataSIESTA(fdf=fdf, cls=wfsxSileSiesta)
@@ -55,7 +58,13 @@ class EigenstateData(Data):
 
     @new.register
     @classmethod
-    def from_siesta_wfsx(cls, wfsx_file: wfsxSileSiesta, geometry: sisl.Geometry, k: Tuple[float, float, float] = (0, 0, 0), spin: int = 0):
+    def from_siesta_wfsx(
+        cls,
+        wfsx_file: wfsxSileSiesta,
+        geometry: sisl.Geometry,
+        k: Tuple[float, float, float] = (0, 0, 0),
+        spin: int = 0,
+    ):
         """Reads the wavefunction coefficients from a SIESTA WFSX file"""
         # Get the WFSX file. If not provided, it is inferred from the fdf.
         if not wfsx_file.file.is_file():
@@ -71,14 +80,19 @@ class EigenstateData(Data):
         if eigenstate is None:
             # We have not found it.
             raise ValueError(f"A state with k={k} was not found in file {wfsx.file}.")
-        
+
         return cls.new(eigenstate)
 
     @new.register
     @classmethod
-    def from_hamiltonian(cls, H: sisl.Hamiltonian, k: Tuple[float, float, float] = (0, 0, 0), spin: int = 0):
+    def from_hamiltonian(
+        cls,
+        H: sisl.Hamiltonian,
+        k: Tuple[float, float, float] = (0, 0, 0),
+        spin: int = 0,
+    ):
         """Calculates the eigenstates from a Hamiltonian and then generates the wavefunctions."""
         return cls.new(H.eigenstate(k, spin=spin))
-    
+
     def __getitem__(self, key):
         return self._data[key]

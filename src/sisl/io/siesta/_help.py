@@ -8,17 +8,18 @@ from sisl import SislError
 
 try:
     from . import _siesta
+
     has_fortran_module = True
 except ImportError:
     has_fortran_module = False
 
-__all__ = ['_csr_from_siesta', '_csr_from_sc_off']
-__all__ += ['_csr_to_siesta', '_csr_to_sc_off']
-__all__ += ['_mat_spin_convert', "_fc_correct"]
+__all__ = ["_csr_from_siesta", "_csr_from_sc_off"]
+__all__ += ["_csr_to_siesta", "_csr_to_sc_off"]
+__all__ += ["_mat_spin_convert", "_fc_correct"]
 
 
 def _ensure_diagonal(csr):
-    """ Ensures that the sparsity pattern has diagonal entries
+    """Ensures that the sparsity pattern has diagonal entries
 
     This will set the wrong values in non-orthogonal basis-sets
     since missing items will be set to 0 which should be 1 in
@@ -38,19 +39,21 @@ def _ensure_diagonal(csr):
     missing_diags = np.delete(np.arange(csr.shape[0]), present_diags)
 
     for row in missing_diags:
-        csr[row, row] = 0.
+        csr[row, row] = 0.0
 
 
 def _csr_from_siesta(geom, csr):
-    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
+    """Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc"""
     if not has_fortran_module:
-        raise SislError('sisl cannot convert the sparse matrix from a Siesta conforming sparsity pattern! Please install with fortran support!')
+        raise SislError(
+            "sisl cannot convert the sparse matrix from a Siesta conforming sparsity pattern! Please install with fortran support!"
+        )
 
     _csr_from_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
 
 
 def _csr_to_siesta(geom, csr, diag=True):
-    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc
+    """Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc
 
     Parameters
     ----------
@@ -59,7 +62,9 @@ def _csr_to_siesta(geom, csr, diag=True):
        whether the csr matrix will be ensured diagonal as well
     """
     if not has_fortran_module:
-        raise SislError('sisl cannot convert the sparse matrix into a Siesta conforming sparsity pattern! Please install with fortran support!')
+        raise SislError(
+            "sisl cannot convert the sparse matrix into a Siesta conforming sparsity pattern! Please install with fortran support!"
+        )
 
     if diag:
         _ensure_diagonal(csr)
@@ -67,34 +72,38 @@ def _csr_to_siesta(geom, csr, diag=True):
 
 
 def _csr_from_sc_off(geom, sc_off, csr):
-    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
+    """Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc"""
     nsc = geom.lattice.nsc.astype(np.int32)
     sc = geom.lattice.__class__([1], nsc=nsc)
     sc.sc_off = sc_off
     from_sc_off = sc.sc_index(geom.sc_off)
     # this transfers the local siesta csr matrix ordering to the geometry ordering
-    col_from = (from_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
+    col_from = (
+        from_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)
+    ).ravel()
     _csr_from(col_from, csr)
 
 
 def _csr_to_sc_off(geom, sc_off, csr):
-    """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
+    """Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc"""
     # Find the equivalent indices in the geometry supercell
     to_sc_off = geom.sc_index(sc_off)
     # this transfers the local csr matrix ordering to the geometry ordering
-    col_from = (to_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)).ravel()
+    col_from = (
+        to_sc_off.reshape(-1, 1) * geom.no + _a.arangei(geom.no).reshape(1, -1)
+    ).ravel()
     _csr_from(col_from, csr)
 
 
 def _csr_from(col_from, csr):
-    """ Internal routine to convert columns in a SparseCSR matrix """
+    """Internal routine to convert columns in a SparseCSR matrix"""
     # local csr matrix ordering
     col_to = _a.arangei(csr.shape[1])
     csr.translate_columns(col_from, col_to)
 
 
 def _mat_spin_convert(M, spin=None):
-    """ Conversion of Siesta spin matrices to sisl spin matrices
+    """Conversion of Siesta spin matrices to sisl spin matrices
 
     The matrices from Siesta are given in a format adheering to the following
     concept:
@@ -135,7 +144,7 @@ def _mat_spin_convert(M, spin=None):
 
 
 def _geom2hsx(geometry):
-    """ Convert the geometry into the correct lists of species and lists """
+    """Convert the geometry into the correct lists of species and lists"""
     atoms = geometry.atoms
     nspecie = atoms.nspecie
     isa = atoms.specie
@@ -157,7 +166,7 @@ def _geom2hsx(geometry):
 
 
 def _fc_correct(fc, trans_inv=True, sum0=True, hermitian=True):
-    r""" Correct a force-constant matrix to retain translational invariance and sum of forces == 0 on atoms
+    r"""Correct a force-constant matrix to retain translational invariance and sum of forces == 0 on atoms
 
     Parameters
     ----------
@@ -186,7 +195,9 @@ def _fc_correct(fc, trans_inv=True, sum0=True, hermitian=True):
 
     is_subset = shape[0] != shape[5]
     if is_subset:
-        raise ValueError(f"fc_correct cannot figure out the displaced atoms in the unit-cell, please limit atoms to the displaced atoms.")
+        raise ValueError(
+            f"fc_correct cannot figure out the displaced atoms in the unit-cell, please limit atoms to the displaced atoms."
+        )
 
     # NOTE:
     # This is not exactly the same as Vibra does it.

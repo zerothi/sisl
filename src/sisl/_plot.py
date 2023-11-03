@@ -10,6 +10,7 @@ try:
     import matplotlib as mlib
     import matplotlib.pyplot as mlibplt
     import mpl_toolkits.mplot3d as mlib3d
+
     has_matplotlib = True
 except Exception as _matplotlib_import_exception:
     mlib = NotImplementedError
@@ -17,7 +18,7 @@ except Exception as _matplotlib_import_exception:
     mlib3d = NotImplementedError
     has_matplotlib = False
 
-__all__ = ['plot', 'mlib', 'mlibplt', 'mlib3d', 'get_axes']
+__all__ = ["plot", "mlib", "mlibplt", "mlib3d", "get_axes"]
 
 
 def get_axes(axes=False, **kwargs):
@@ -33,16 +34,21 @@ def get_axes(axes=False, **kwargs):
 
 def _plot(obj, *args, **kwargs):
     try:
-        a = getattr(obj, '__plot__')
+        a = getattr(obj, "__plot__")
     except AttributeError:
-        raise NotImplementedError(f"{obj.__class__.__name__} does not implement the __plot__ method.")
+        raise NotImplementedError(
+            f"{obj.__class__.__name__} does not implement the __plot__ method."
+        )
     return a(*args, **kwargs)
+
 
 if has_matplotlib:
     plot = _plot
 else:
+
     def plot(obj, *args, **kwargs):
-        raise _matplotlib_import_exception   # pylint: disable=E0601
+        raise _matplotlib_import_exception  # pylint: disable=E0601
+
 
 # Clean up
 del has_matplotlib

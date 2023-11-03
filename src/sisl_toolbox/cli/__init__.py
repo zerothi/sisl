@@ -9,13 +9,13 @@ accessible.
 
 
 class SToolBoxCLI:
-    """ Run the CLI `stoolbox` """
+    """Run the CLI `stoolbox`"""
 
     def __init__(self):
         self._cmds = []
 
     def register(self, setup):
-        """ Register a setup callback function which creates the subparser
+        """Register a setup callback function which creates the subparser
 
         The ``setup(..)`` command must accept a sub-parser from `argparse` as its
         first argument.
@@ -42,8 +42,9 @@ class SToolBoxCLI:
 
         # Create command-line
         cmd = Path(sys.argv[0])
-        p = argparse.ArgumentParser(f"{cmd.name}",
-                                    description="Specific toolboxes to aid sisl users")
+        p = argparse.ArgumentParser(
+            f"{cmd.name}", description="Specific toolboxes to aid sisl users"
+        )
 
         info = {
             "title": "Toolboxes",

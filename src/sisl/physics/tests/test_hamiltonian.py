@@ -26,38 +26,49 @@ from sisl import (
 )
 from sisl.physics.electron import berry_phase, conductivity, spin_squared
 
-pytestmark = [pytest.mark.physics, pytest.mark.hamiltonian,
-              pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
+pytestmark = [
+    pytest.mark.physics,
+    pytest.mark.hamiltonian,
+    pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning),
+]
 
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
             bond = 1.42
-            sq3h = 3.**.5 * 0.5
-            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
-                                             [1.5, -sq3h, 0.],
-                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            sq3h = 3.0**0.5 * 0.5
+            self.lattice = Lattice(
+                np.array(
+                    [[1.5, sq3h, 0.0], [1.5, -sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+                )
+                * bond,
+                nsc=[3, 3, 1],
+            )
 
             C = Atom(Z=6, R=[bond * 1.01])
-            self.g = Geometry(np.array([[0., 0., 0.],
-                                        [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, lattice=self.lattice)
+            self.g = Geometry(
+                np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], np.float64) * bond,
+                atoms=C,
+                lattice=self.lattice,
+            )
             self.H = Hamiltonian(self.g)
             self.HS = Hamiltonian(self.g, orthogonal=False)
 
             C = Atom(Z=6, R=[bond * 1.01] * 2)
-            self.g2 = Geometry(np.array([[0., 0., 0.],
-                                         [1., 0., 0.]], np.float64) * bond,
-                               atoms=C, lattice=self.lattice)
+            self.g2 = Geometry(
+                np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], np.float64) * bond,
+                atoms=C,
+                lattice=self.lattice,
+            )
             self.H2 = Hamiltonian(self.g2)
             self.HS2 = Hamiltonian(self.g2, orthogonal=False)
+
     return t()
 
 
 class TestHamiltonian:
-
     def test_objects(self, setup):
         assert len(setup.H.xyz) == 2
         assert setup.g.no == len(setup.H)
@@ -82,45 +93,45 @@ class TestHamiltonian:
         assert setup.HS.non_orthogonal
 
     def test_set1(self, setup):
-        setup.H.H[0, 0] = 1.
-        assert setup.H[0, 0] == 1.
-        assert setup.H[1, 0] == 0.
+        setup.H.H[0, 0] = 1.0
+        assert setup.H[0, 0] == 1.0
+        assert setup.H[1, 0] == 0.0
         setup.H.empty()
 
-        setup.HS.H[0, 0] = 1.
-        assert setup.HS.H[0, 0] == 1.
-        assert setup.HS.H[1, 0] == 0.
-        assert setup.HS.S[0, 0] == 0.
-        assert setup.HS.S[1, 0] == 0.
-        setup.HS.S[0, 0] = 1.
-        assert setup.HS.H[0, 0] == 1.
-        assert setup.HS.H[1, 0] == 0.
-        assert setup.HS.S[0, 0] == 1.
-        assert setup.HS.S[1, 0] == 0.
+        setup.HS.H[0, 0] = 1.0
+        assert setup.HS.H[0, 0] == 1.0
+        assert setup.HS.H[1, 0] == 0.0
+        assert setup.HS.S[0, 0] == 0.0
+        assert setup.HS.S[1, 0] == 0.0
+        setup.HS.S[0, 0] = 1.0
+        assert setup.HS.H[0, 0] == 1.0
+        assert setup.HS.H[1, 0] == 0.0
+        assert setup.HS.S[0, 0] == 1.0
+        assert setup.HS.S[1, 0] == 0.0
 
         # delete before creating the same content
         setup.HS.empty()
         # THIS IS A CHECK FOR BACK_WARD COMPATIBILITY!
         with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            setup.HS[0, 0] = 1., 1.
-        assert setup.HS.H[0, 0] == 1.
-        assert setup.HS.S[0, 0] == 1.
+            warnings.simplefilter("ignore")
+            setup.HS[0, 0] = 1.0, 1.0
+        assert setup.HS.H[0, 0] == 1.0
+        assert setup.HS.S[0, 0] == 1.0
         setup.HS.empty()
 
     def test_set2(self, setup):
-        setup.H.construct([(0.1, 1.5), (1., 0.1)])
-        assert setup.H[0, 0] == 1.
+        setup.H.construct([(0.1, 1.5), (1.0, 0.1)])
+        assert setup.H[0, 0] == 1.0
         assert setup.H[1, 0] == 0.1
         assert setup.H[0, 1] == 0.1
         setup.H.empty()
 
     def test_set3(self, setup):
-        setup.HS.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        assert setup.HS.H[0, 0] == 1.
-        assert setup.HS.S[0, 0] == 2.
-        assert setup.HS.H[1, 1] == 1.
-        assert setup.HS.S[1, 1] == 2.
+        setup.HS.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
+        assert setup.HS.H[0, 0] == 1.0
+        assert setup.HS.S[0, 0] == 2.0
+        assert setup.HS.H[1, 1] == 1.0
+        assert setup.HS.S[1, 1] == 2.0
         assert setup.HS.H[1, 0] == 0.1
         assert setup.HS.H[0, 1] == 0.1
         assert setup.HS.S[1, 0] == 0.2
@@ -132,10 +143,10 @@ class TestHamiltonian:
         for ia in setup.H.geometry:
             # Find atoms close to 'ia'
             idx = setup.H.geometry.close(ia, R=(0.1, 1.5))
-            setup.H[ia, idx[0]] = 1.
+            setup.H[ia, idx[0]] = 1.0
             setup.H[ia, idx[1]] = 0.1
-        assert setup.H.H[0, 0] == 1.
-        assert setup.H.H[1, 1] == 1.
+        assert setup.H.H[0, 0] == 1.0
+        assert setup.H.H[1, 1] == 1.0
         assert setup.H.H[1, 0] == 0.1
         assert setup.H.H[0, 1] == 0.1
         assert setup.H.nnz == len(setup.H) * 4
@@ -146,9 +157,9 @@ class TestHamiltonian:
         # Test of HUGE construct
         g = setup.g.tile(10, 0).tile(10, 1).tile(10, 2)
         H = Hamiltonian(g)
-        H.construct([(0.1, 1.5), (1., 0.1)])
-        assert H.H[0, 0] == 1.
-        assert H.H[1, 1] == 1.
+        H.construct([(0.1, 1.5), (1.0, 0.1)])
+        assert H.H[0, 0] == 1.0
+        assert H.H[1, 1] == 1.0
         assert H.H[1, 0] == 0.1
         assert H.H[0, 1] == 0.1
         # This is graphene
@@ -158,7 +169,7 @@ class TestHamiltonian:
         del H
 
     def test_iter1(self, setup):
-        setup.HS.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        setup.HS.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
         nnz = 0
         for io, jo in setup.HS:
             nnz = nnz + 1
@@ -171,7 +182,7 @@ class TestHamiltonian:
         setup.HS.empty()
 
     def test_iter2(self, setup):
-        setup.HS.H[0, 0] = 1.
+        setup.HS.H[0, 0] = 1.0
         nnz = 0
         for io, jo in setup.HS:
             nnz = nnz + 1
@@ -179,10 +190,10 @@ class TestHamiltonian:
         assert nnz == 1
         setup.HS.empty()
 
-    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_Hk1(self, setup):
         H = setup.HS.copy()
-        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
         h = H.copy()
         assert h.Hk().dtype == np.float64
         assert h.Sk().dtype == np.float64
@@ -197,7 +208,7 @@ class TestHamiltonian:
 
     def test_Hk2(self, setup):
         H = setup.HS.copy()
-        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
+        H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
         h = H.copy()
         Hk = h.Hk(k=[0.15, 0.15, 0.15])
         assert Hk.dtype == np.complex128
@@ -208,7 +219,7 @@ class TestHamiltonian:
     @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
     def test_Hk5(self, setup, dtype):
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), (1., 0.1)])
+        H.construct([(0.1, 1.5), (1.0, 0.1)])
         Hk = H.Hk(k=[0.15, 0.15, 0.15], dtype=dtype)
         assert Hk.dtype == dtype
         Sk = H.Sk(k=[0.15, 0.15, 0.15])
@@ -221,21 +232,27 @@ class TestHamiltonian:
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.15, 0.15, 0.15]])
     def test_Hk_format(self, setup, k):
         H = setup.HS.copy()
-        H.construct([(0.1, 1.5), ((1., 2.), (0.1, 0.2))])
-        csr = H.Hk(k, format='csr').toarray()
-        mat = H.Hk(k, format='matrix')
-        arr = H.Hk(k, format='array')
-        coo = H.Hk(k, format='coo').toarray()
+        H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
+        csr = H.Hk(k, format="csr").toarray()
+        mat = H.Hk(k, format="matrix")
+        arr = H.Hk(k, format="array")
+        coo = H.Hk(k, format="coo").toarray()
         assert np.allclose(csr, mat)
         assert np.allclose(csr, arr)
         assert np.allclose(csr, coo)
 
     @pytest.mark.parametrize("orthogonal", [True, False])
     @pytest.mark.parametrize("gauge", ["R", "r"])
-    @pytest.mark.parametrize("spin", ["unpolarized", "polarized", "non-collinear", "spin-orbit"])
+    @pytest.mark.parametrize(
+        "spin", ["unpolarized", "polarized", "non-collinear", "spin-orbit"]
+    )
     @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
     def test_format_sc(self, orthogonal, gauge, spin, dtype):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice([10, 1, 5.], nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice([10, 1, 5.0], nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, orthogonal=orthogonal, spin=Spin(spin))
         nd = H._csr._D.shape[-1]
         # this will correctly account for the double size for NC/SOC
@@ -243,7 +260,7 @@ class TestHamiltonian:
         no_s = H.geometry.no_s
         for ia in g:
             idx = g.close(ia, R=(0.1, 1.01))[1]
-            H[ia, ia] = 1.
+            H[ia, ia] = 1.0
             H[ia, idx] = np.random.rand(nd)
         if dtype == np.complex64:
             atol = 1e-6
@@ -259,24 +276,24 @@ class TestHamiltonian:
         for k in [[0, 0, 0], [0.15, 0.1, 0.05]]:
             for attr, kwargs in [("Hk", {"gauge": gauge}), ("Sk", {})]:
                 Mk = getattr(H, attr)
-                csr = Mk(k, format='csr', **kwargs, dtype=dtype)
-                sc_csr1 = Mk(k, format='sc:csr', **kwargs, dtype=dtype)
-                sc_csr2 = Mk(k, format='sc', **kwargs, dtype=dtype)
-                sc_mat = Mk(k, format='sc:array', **kwargs, dtype=dtype)
+                csr = Mk(k, format="csr", **kwargs, dtype=dtype)
+                sc_csr1 = Mk(k, format="sc:csr", **kwargs, dtype=dtype)
+                sc_csr2 = Mk(k, format="sc", **kwargs, dtype=dtype)
+                sc_mat = Mk(k, format="sc:array", **kwargs, dtype=dtype)
                 mat = sc_mat.reshape(no, n_s, no).sum(1)
 
                 assert sc_mat.shape == sc_csr1.shape
                 assert allclose(csr.toarray(), mat)
                 assert allclose(sc_csr1.toarray(), sc_csr2.toarray())
                 for isc in range(n_s):
-                    csr -= sc_csr1[:, isc * no: (isc + 1) * no]
-                assert allclose(csr.toarray(), 0.)
+                    csr -= sc_csr1[:, isc * no : (isc + 1) * no]
+                assert allclose(csr.toarray(), 0.0)
 
     def test_construct_raise_default(self, setup):
         # Test that construct fails with more than one
         # orbital
         with pytest.raises(ValueError):
-            setup.H2.construct([(0.1, 1.5), (1., 0.1)])
+            setup.H2.construct([(0.1, 1.5), (1.0, 0.1)])
 
     def test_getitem1(self, setup):
         H = setup.H
@@ -306,7 +323,7 @@ class TestHamiltonian:
         H.empty()
 
     def test_fromsp1(self, setup):
-        setup.H.construct([(0.1, 1.5), (1., 0.1)])
+        setup.H.construct([(0.1, 1.5), (1.0, 0.1)])
         csr = setup.H.tocsr(0)
         H = Hamiltonian.fromsp(setup.H.geometry, csr)
         assert H.spsame(setup.H)
@@ -314,14 +331,14 @@ class TestHamiltonian:
 
     def test_fromsp2(self, setup):
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), (1., 0.1)])
+        H.construct([(0.1, 1.5), (1.0, 0.1)])
         csr = H.tocsr(0)
         with pytest.raises(ValueError):
             Hamiltonian.fromsp(setup.H.geometry.tile(2, 0), csr)
 
     def test_fromsp3(self, setup):
         H = setup.HS.copy()
-        H.construct([(0.1, 1.5), ([1., 1.], [0.1, 0])])
+        H.construct([(0.1, 1.5), ([1.0, 1.0], [0.1, 0])])
         h = Hamiltonian.fromsp(H.geometry.copy(), H.tocsr(0), H.tocsr(1))
         assert H.spsame(h)
 
@@ -329,13 +346,13 @@ class TestHamiltonian:
         g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), lattice=[100])
         H = Hamiltonian(g, dtype=np.int32)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i * 4, i * 4 + 3)
             H[0, j] = i
 
             # i+
             H += 1
             for jj in j:
-                assert H[0, jj] == i+1
+                assert H[0, jj] == i + 1
                 assert H[1, jj] == 0
 
             # i-
@@ -347,7 +364,7 @@ class TestHamiltonian:
             # i*
             H *= 2
             for jj in j:
-                assert H[0, jj] == i*2
+                assert H[0, jj] == i * 2
                 assert H[1, jj] == 0
 
             # //
@@ -366,34 +383,34 @@ class TestHamiltonian:
         g = Geometry([[i, 0, 0] for i in range(100)], Atom(6, R=1.01), lattice=[100])
         H = Hamiltonian(g, dtype=np.int32)
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i * 4, i * 4 + 3)
             H[0, j] = i
 
             # +
             s = H + 1
             for jj in j:
-                assert s[0, jj] == i+1
+                assert s[0, jj] == i + 1
                 assert H[0, jj] == i
                 assert s[1, jj] == 0
 
             # -
             s = H - 1
             for jj in j:
-                assert s[0, jj] == i-1
+                assert s[0, jj] == i - 1
                 assert H[0, jj] == i
                 assert s[1, jj] == 0
 
             # -
             s = 1 - H
             for jj in j:
-                assert s[0, jj] == 1-i
+                assert s[0, jj] == 1 - i
                 assert H[0, jj] == i
                 assert s[1, jj] == 0
 
             # *
             s = H * 2
             for jj in j:
-                assert s[0, jj] == i*2
+                assert s[0, jj] == i * 2
                 assert H[0, jj] == i
                 assert s[1, jj] == 0
 
@@ -405,14 +422,14 @@ class TestHamiltonian:
                 assert s[1, jj] == 0
 
             # **
-            s = H ** 2
+            s = H**2
             for jj in j:
                 assert s[0, jj] == i**2
                 assert H[0, jj] == i
                 assert s[1, jj] == 0
 
             # ** (r)
-            s = 2 ** H
+            s = 2**H
             for jj in j:
                 assert s[0, jj], 2 ** H[0 == jj]
                 assert H[0, jj] == i
@@ -426,39 +443,39 @@ class TestHamiltonian:
 
         # Create initial stuff
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i * 4, i * 4 + 3)
             H[0, j] = i
 
-        for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, f'__{op}__')
+        for op in ["add", "sub", "mul", "pow"]:
+            func = getattr(H, f"__{op}__")
             h = func(1)
             assert h.dtype == np.int32
-            h = func(1.)
+            h = func(1.0)
             assert h.dtype == np.float64
-            if op != 'pow':
-                h = func(1.j)
+            if op != "pow":
+                h = func(1.0j)
                 assert h.dtype == np.complex128
 
         H = H.copy(dtype=np.float64)
-        for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, f'__{op}__')
+        for op in ["add", "sub", "mul", "pow"]:
+            func = getattr(H, f"__{op}__")
             h = func(1)
             assert h.dtype == np.float64
-            h = func(1.)
+            h = func(1.0)
             assert h.dtype == np.float64
-            if op != 'pow':
-                h = func(1.j)
+            if op != "pow":
+                h = func(1.0j)
                 assert h.dtype == np.complex128
 
         H = H.copy(dtype=np.complex128)
-        for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, f'__{op}__')
+        for op in ["add", "sub", "mul", "pow"]:
+            func = getattr(H, f"__{op}__")
             h = func(1)
             assert h.dtype == np.complex128
-            h = func(1.)
+            h = func(1.0)
             assert h.dtype == np.complex128
-            if op != 'pow':
-                h = func(1.j)
+            if op != "pow":
+                h = func(1.0j)
                 assert h.dtype == np.complex128
 
     def test_op4(self, setup):
@@ -466,41 +483,41 @@ class TestHamiltonian:
         H = Hamiltonian(g, dtype=np.int32)
         # Create initial stuff
         for i in range(10):
-            j = range(i*4, i*4+3)
+            j = range(i * 4, i * 4 + 3)
             H[0, j] = i
 
         h = 1 + H
         assert h.dtype == np.int32
-        h = 1. + H
+        h = 1.0 + H
         assert h.dtype == np.float64
-        h = 1.j + H
+        h = 1.0j + H
         assert h.dtype == np.complex128
 
         h = 1 - H
         assert h.dtype == np.int32
-        h = 1. - H
+        h = 1.0 - H
         assert h.dtype == np.float64
-        h = 1.j - H
+        h = 1.0j - H
         assert h.dtype == np.complex128
 
         h = 1 * H
         assert h.dtype == np.int32
-        h = 1. * H
+        h = 1.0 * H
         assert h.dtype == np.float64
-        h = 1.j * H
+        h = 1.0j * H
         assert h.dtype == np.complex128
 
-        h = 1 ** H
+        h = 1**H
         assert h.dtype == np.int32
-        h = 1. ** H
+        h = 1.0**H
         assert h.dtype == np.float64
-        h = 1.j ** H
+        h = 1.0j**H
         assert h.dtype == np.complex128
 
     def test_untile1(self, setup):
         # Test of eigenvalues using a cut
         # Hamiltonian
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
 
         # Create reference
         Hg = Hamiltonian(setup.g)
@@ -519,7 +536,7 @@ class TestHamiltonian:
     def test_untile2(self, setup):
         # Test of eigenvalues using a cut
         # Hamiltonian
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        R, param = [0.1, 1.5], [(1.0, 1.0), (0.1, 0.1)]
 
         # Create reference
         Hg = Hamiltonian(setup.g, orthogonal=False)
@@ -537,7 +554,7 @@ class TestHamiltonian:
 
     def test_eigh_vs_eig(self, setup):
         # Test of eigenvalues
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param), eta=True)
@@ -549,13 +566,15 @@ class TestHamiltonian:
 
         eig1 = H.eigh([0.01] * 3, dtype=np.complex64)
         eig2 = np.sort(H.eig([0.01] * 3, dtype=np.complex64).real)
-        eig3 = np.sort(H.eig([0.01] * 3, eigvals_only=False, dtype=np.complex64)[0].real)
+        eig3 = np.sort(
+            H.eig([0.01] * 3, eigvals_only=False, dtype=np.complex64)[0].real
+        )
         assert np.allclose(eig1, eig2, atol=1e-5)
         assert np.allclose(eig1, eig3, atol=1e-5)
 
     def test_eig1(self, setup):
         # Test of eigenvalues
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param), eta=True)
@@ -568,13 +587,13 @@ class TestHamiltonian:
     def test_eig2(self, setup):
         # Test of eigenvalues
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
         eig1 = HS.eigh(dtype=np.complex64)
         assert np.allclose(eig1, HS.eigh(dtype=np.complex128))
         setup.HS.empty()
 
     def test_eig3(self, setup):
-        setup.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        setup.HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
         BS = BandStructure(setup.HS, [[0, 0, 0], [0.5, 0.5, 0]], 10)
         eigs = BS.apply.array.eigh()
         assert len(BS) == eigs.shape[0]
@@ -587,9 +606,9 @@ class TestHamiltonian:
     def test_eig4(self, setup):
         # Test of eigenvalues vs eigenstate class
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
 
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             e, v = HS.eigh(k, eigvals_only=False)
             es = HS.eigenstate(k)
             assert np.allclose(e, es.eig)
@@ -613,13 +632,14 @@ class TestHamiltonian:
             assert np.allclose(eig1, eig4, atol=1e-5)
             assert np.allclose(eig1, eig5, atol=1e-5)
 
-            assert es.inner(matrix=HS.Hk([0.1] * 3), ket=HS.eigenstate([0.3] * 3),
-                            diag=False).shape == (len(es), len(es))
+            assert es.inner(
+                matrix=HS.Hk([0.1] * 3), ket=HS.eigenstate([0.3] * 3), diag=False
+            ).shape == (len(es), len(es))
 
     @pytest.mark.filterwarnings("ignore", message="*uses an overlap matrix that")
     def test_inner(self, setup):
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((2., 1.), (3., 0.))])
+        HS.construct([(0.1, 1.5), ((2.0, 1.0), (3.0, 0.0))])
         HS = HS.tile(2, 0).tile(2, 1)
 
         es1 = HS.eigenstate([0.1] * 3)
@@ -640,25 +660,25 @@ class TestHamiltonian:
 
     def test_gauge_eig(self, setup):
         # Test of eigenvalues
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
 
         k = [0.1] * 3
-        es1 = H.eigenstate(k, gauge='R')
-        es2 = H.eigenstate(k, gauge='r')
+        es1 = H.eigenstate(k, gauge="R")
+        es2 = H.eigenstate(k, gauge="r")
         assert np.allclose(es1.eig, es2.eig)
         assert not np.allclose(es1.state, es2.state)
 
-        es1 = H.eigenstate(k, gauge='R', dtype=np.complex64)
-        es2 = H.eigenstate(k, gauge='r', dtype=np.complex64)
+        es1 = H.eigenstate(k, gauge="R", dtype=np.complex64)
+        es2 = H.eigenstate(k, gauge="r", dtype=np.complex64)
         assert np.allclose(es1.eig, es2.eig)
         assert not np.allclose(es1.state, es2.state)
 
     def test_eigenstate_ipr(self, setup):
         # Test of eigenvalues
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
@@ -670,7 +690,7 @@ class TestHamiltonian:
 
     def test_eigenstate_tile(self, setup):
         # Test of eigenvalues
-        R, param = [0.1, 1.5], [0., 2.7]
+        R, param = [0.1, 1.5], [0.0, 2.7]
         H1 = setup.H.copy()
         H1.construct((R, param))
         H2 = H1.tile(2, 1)
@@ -678,11 +698,11 @@ class TestHamiltonian:
         k = [0] * 3
         # we must select a k that does not fold on
         # itself which then creates degenerate states
-        for k1 in [0.5, 1/3]:
+        for k1 in [0.5, 1 / 3]:
             k[1] = k1
             es1 = H1.eigenstate(k)
             es1_2 = es1.tile(2, 1, normalize=True)
-            es2 = H2.eigenstate(es1_2.info['k'])
+            es2 = H2.eigenstate(es1_2.info["k"])
 
             # we need to check that these are somewhat the same
             out = es1_2.inner(es2, diag=False)
@@ -691,7 +711,7 @@ class TestHamiltonian:
 
     def test_eigenstate_tile_offset(self, setup):
         # Test of eigenvalues
-        R, param = [0.1, 1.5], [0., 2.7]
+        R, param = [0.1, 1.5], [0.0, 2.7]
         H1 = setup.H.copy()
         H1.construct((R, param))
         H2 = H1.tile(2, 1)
@@ -699,11 +719,11 @@ class TestHamiltonian:
         k = [0] * 3
         # we must select a k that does not fold on
         # itself which then creates degenerate states
-        for k1 in [0.5, 1/3]:
+        for k1 in [0.5, 1 / 3]:
             k[1] = k1
             es1 = H1.eigenstate(k)
             es1_2 = es1.tile(2, 1, normalize=True, offset=1)
-            es2 = H2.eigenstate(es1_2.info['k']).translate([0, 1, 0])
+            es2 = H2.eigenstate(es1_2.info["k"]).translate([0, 1, 0])
 
             # we need to check that these are somewhat the same
             out = es1_2.inner(es2, diag=False)
@@ -712,25 +732,23 @@ class TestHamiltonian:
 
     def test_eigenstate_translate(self, setup):
         # Test of eigenvalues
-        R, param = [0.1, 1.5], [0., 2.7]
+        R, param = [0.1, 1.5], [0.0, 2.7]
         H = setup.H.copy()
         H.construct((R, param))
 
         k = [0] * 3
         # we must select a k that does not fold on
         # itself which then creates degenerate states
-        for k1 in [0.5, 1/3]:
+        for k1 in [0.5, 1 / 3]:
             k[1] = k1
             es1 = H.eigenstate(k)
             es1_2 = es1.tile(2, 1)
             es2 = es1.translate([0, 1, 0])
-            assert np.allclose(es1_2.state[:, :len(es1)],
-                               es1.state)
-            assert np.allclose(es1_2.state[:, len(es1):],
-                               es2.state)
+            assert np.allclose(es1_2.state[:, : len(es1)], es1.state)
+            assert np.allclose(es1_2.state[:, len(es1) :], es2.state)
 
     def test_gauge_velocity(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
@@ -742,16 +760,16 @@ class TestHamiltonian:
         # This test is the reason why a default degenerate=1e-5 is used
         # since the gauge='R' yields the correct *decoupled* states
         # where as gauge='r' mixes them in a bad way.
-        es1 = H.eigenstate(k, gauge='R')
-        es2 = H.eigenstate(k, gauge='r')
+        es1 = H.eigenstate(k, gauge="R")
+        es2 = H.eigenstate(k, gauge="r")
         assert np.allclose(es1.velocity(), es2.velocity())
         assert np.allclose(es1.velocity(), es2.velocity(degenerate_dir=(1, 1, 0)))
 
-        es2.change_gauge('R')
+        es2.change_gauge("R")
         assert np.allclose(es1.velocity(), es2.velocity())
 
-        es2.change_gauge('r')
-        es1.change_gauge('r')
+        es2.change_gauge("r")
+        es1.change_gauge("r")
         v1 = es1.velocity()
         v2 = es2.velocity()
         assert np.allclose(v1, v2)
@@ -763,7 +781,7 @@ class TestHamiltonian:
         assert np.allclose(np.diagonal(vv2, axis1=1, axis2=2), v1)
 
     def test_derivative_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
@@ -775,7 +793,7 @@ class TestHamiltonian:
         assert np.allclose(v1, v)
 
     def test_derivative_non_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        R, param = [0.1, 1.5], [(1.0, 1.0), (0.1, 0.1)]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g, orthogonal=False)
         H.construct((R, param))
@@ -787,45 +805,47 @@ class TestHamiltonian:
         assert np.allclose(v1, v)
 
     def test_berry_phase(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
-        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1 / 3] * 3)
         berry_phase(bz)
         berry_phase(bz, sub=0)
-        berry_phase(bz, eigvals=True, sub=0, method='berry:svd')
+        berry_phase(bz, eigvals=True, sub=0, method="berry:svd")
 
     def test_berry_phase_fail_sc(self, setup):
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
-        bz = BandStructure.param_circle(H.geometry.lattice, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        bz = BandStructure.param_circle(
+            H.geometry.lattice, 20, 0.01, [0, 0, 1], [1 / 3] * 3
+        )
         with pytest.raises(SislError):
             berry_phase(bz)
 
     def test_berry_phase_loop(self, setup):
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
-        bz1 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
-        bz2 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3, loop=True)
+        bz1 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1 / 3] * 3)
+        bz2 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1 / 3] * 3, loop=True)
         assert np.allclose(berry_phase(bz1), berry_phase(bz2))
 
     def test_berry_phase_non_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        R, param = [0.1, 1.5], [(1.0, 1.0), (0.1, 0.1)]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g, orthogonal=False)
         H.construct((R, param))
 
-        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1 / 3] * 3)
         berry_phase(bz)
 
     def test_berry_phase_orthogonal_spin_down(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.2)]
+        R, param = [0.1, 1.5], [(1.0, 1.0), (0.1, 0.2)]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g, spin=Spin.POLARIZED)
         H.construct((R, param))
 
-        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1 / 3] * 3)
         bp1 = berry_phase(bz)
         bp2 = berry_phase(bz, eigenstate_kwargs={"spin": 1})
         assert bp1 != bp2
@@ -836,14 +856,16 @@ class TestHamiltonian:
         g = Geometry([[0, 0, 0], [1.2, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
-        H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
+        H.construct([(0.1, 1.0, 1.5), (0, 1.0, 0.5)])
+
         # Contour
         def func(parent, N, i):
-            return [i/N, 0, 0]
+            return [i / N, 0, 0]
+
         bz = BrillouinZone.parametrize(H, func, 101)
-        assert np.allclose(np.abs(berry_phase(bz, sub=0, method='zak')), np.pi)
+        assert np.allclose(np.abs(berry_phase(bz, sub=0, method="zak")), np.pi)
         # Just to do the other branch
-        berry_phase(bz, method='zak')
+        berry_phase(bz, method="zak")
 
     def test_berry_phase_zak_x_topological_non_orthogonal(self):
         # SSH model, topological cell
@@ -851,14 +873,16 @@ class TestHamiltonian:
         g = Geometry([[0, 0, 0], [1.2, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g, orthogonal=False)
-        H.construct([(0.1, 1.0, 1.5), ((0, 1), (1., 0.25), (0.5, 0.1))])
+        H.construct([(0.1, 1.0, 1.5), ((0, 1), (1.0, 0.25), (0.5, 0.1))])
+
         # Contour
         def func(parent, N, i):
-            return [i/N, 0, 0]
+            return [i / N, 0, 0]
+
         bz = BrillouinZone.parametrize(H, func, 101)
-        assert np.allclose(np.abs(berry_phase(bz, sub=0, method='zak')), np.pi)
+        assert np.allclose(np.abs(berry_phase(bz, sub=0, method="zak")), np.pi)
         # Just to do the other branch
-        berry_phase(bz, method='zak')
+        berry_phase(bz, method="zak")
 
     def test_berry_phase_zak_x_trivial(self):
         # SSH model, trivial cell
@@ -866,67 +890,75 @@ class TestHamiltonian:
         g = Geometry([[0, 0, 0], [1.2, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
-        H.construct([(0.1, 1.0, 1.5), (0, 0.5, 1.)])
+        H.construct([(0.1, 1.0, 1.5), (0, 0.5, 1.0)])
+
         # Contour
         def func(parent, N, i):
-            return [i/N, 0, 0]
+            return [i / N, 0, 0]
+
         bz = BrillouinZone.parametrize(H, func, 101)
-        assert np.allclose(np.abs(berry_phase(bz, sub=0, method='zak')), 0.)
+        assert np.allclose(np.abs(berry_phase(bz, sub=0, method="zak")), 0.0)
         # Just to do the other branch
-        berry_phase(bz, method='zak')
+        berry_phase(bz, method="zak")
 
     def test_berry_phase_zak_y(self):
         # SSH model, topological cell
-        g = Geometry([[0, -.6, 0], [0, 0.6, 0]], Atom(1, 1.001), lattice=[10, 2, 10])
+        g = Geometry([[0, -0.6, 0], [0, 0.6, 0]], Atom(1, 1.001), lattice=[10, 2, 10])
         g.set_nsc([1, 3, 1])
         H = Hamiltonian(g)
-        H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
+        H.construct([(0.1, 1.0, 1.5), (0, 1.0, 0.5)])
+
         # Contour
         def func(parent, N, i):
-            return [0, i/N, 0]
+            return [0, i / N, 0]
+
         bz = BrillouinZone.parametrize(H, func, 101)
-        assert np.allclose(np.abs(berry_phase(bz, sub=0, method='zak')), np.pi)
+        assert np.allclose(np.abs(berry_phase(bz, sub=0, method="zak")), np.pi)
         # Just to do the other branch
-        berry_phase(bz, method='zak')
+        berry_phase(bz, method="zak")
 
     def test_berry_phase_zak_offset(self):
         # SSH model, topological cell
-        g = Geometry([[0., 0, 0], [1.2, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
+        g = Geometry([[0.0, 0, 0], [1.2, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
-        H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
+        H.construct([(0.1, 1.0, 1.5), (0, 1.0, 0.5)])
+
         # Contour
         def func(parent, N, i):
-            return [i/N, 0, 0]
+            return [i / N, 0, 0]
+
         bz = BrillouinZone.parametrize(H, func, 101)
-        zak = berry_phase(bz, sub=0, method='zak')
+        zak = berry_phase(bz, sub=0, method="zak")
         assert np.allclose(np.abs(zak), np.pi)
 
     def test_berry_phase_method_fail(self):
         # wrong method keyword
-        g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
+        g = Geometry([[-0.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
+
         def func(parent, N, i):
-            return [0, i/N, 0]
+            return [0, i / N, 0]
+
         bz = BrillouinZone.parametrize(H, func, 101)
         with pytest.raises(ValueError):
-            berry_phase(bz, method='unknown')
+            berry_phase(bz, method="unknown")
 
     def test_berry_curvature(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
 
         k = [0.1] * 3
-        ie1 = H.eigenstate(k, gauge='R').berry_curvature()
-        ie2 = H.eigenstate(k, gauge='r').berry_curvature(degenerate_dir=(1, 1, 0))
+        ie1 = H.eigenstate(k, gauge="R").berry_curvature()
+        ie2 = H.eigenstate(k, gauge="r").berry_curvature(degenerate_dir=(1, 1, 0))
         assert np.allclose(ie1, ie2)
 
-    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_conductivity(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
@@ -934,9 +966,9 @@ class TestHamiltonian:
         mp = MonkhorstPack(H, [11, 11, 1])
         cond = conductivity(mp)
 
-    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_conductivity_spin(self, setup):
-        R, param = [0.1, 1.5], [[1., 2.], [0.1, 0.2]]
+        R, param = [0.1, 1.5], [[1.0, 2.0], [0.1, 0.2]]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g, spin=Spin.POLARIZED)
         H.construct((R, param))
@@ -947,59 +979,59 @@ class TestHamiltonian:
     @pytest.mark.xfail(reason="Gauges make different decouplings")
     def test_gauge_eff(self, setup):
         # it is not fully clear to me why they are different
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
 
         k = [0.1] * 3
-        ie1 = H.eigenstate(k, gauge='R').effective_mass()
-        ie2 = H.eigenstate(k, gauge='r').effective_mass()
+        ie1 = H.eigenstate(k, gauge="R").effective_mass()
+        ie2 = H.eigenstate(k, gauge="r").effective_mass()
         assert np.allclose(abs(ie1), abs(ie2))
 
     def test_eigenstate_polarized_orthogonal_sk(self, setup):
-        R, param = [0.1, 1.5], [1., [0.1, 0.1]]
-        H = Hamiltonian(setup.g, spin='P')
+        R, param = [0.1, 1.5], [1.0, [0.1, 0.1]]
+        H = Hamiltonian(setup.g, spin="P")
         H.construct((R, param))
 
         k = [0.1] * 3
-        ie1 = H.eigenstate(k, spin=0, format='array').Sk()
-        ie2 = H.eigenstate(k, spin=1, format='array').Sk()
-        assert np.allclose(ie1.dot(1.), 1.)
-        assert np.allclose(ie2.dot(1.), 1.)
+        ie1 = H.eigenstate(k, spin=0, format="array").Sk()
+        ie2 = H.eigenstate(k, spin=1, format="array").Sk()
+        assert np.allclose(ie1.dot(1.0), 1.0)
+        assert np.allclose(ie2.dot(1.0), 1.0)
 
     def test_eigenstate_polarized_non_ortogonal_sk(self, setup):
-        R, param = [0.1, 1.5], [[1., 1., 1.], [0.1, 0.1, 0.05]]
-        H = Hamiltonian(setup.g, spin='P', orthogonal=False)
+        R, param = [0.1, 1.5], [[1.0, 1.0, 1.0], [0.1, 0.1, 0.05]]
+        H = Hamiltonian(setup.g, spin="P", orthogonal=False)
         H.construct((R, param))
 
         k = [0.1] * 3
-        ie1 = H.eigenstate(k, spin=0, format='array').Sk()
-        ie2 = H.eigenstate(k, spin=1, format='array').Sk()
+        ie1 = H.eigenstate(k, spin=0, format="array").Sk()
+        ie2 = H.eigenstate(k, spin=1, format="array").Sk()
         assert np.allclose(ie1, ie2)
 
     def test_change_gauge(self, setup):
         # Test of eigenvalues vs eigenstate class
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
         es = HS.eigenstate()
         es2 = es.copy()
-        es2.change_gauge('r')
+        es2.change_gauge("r")
         assert np.allclose(es2.state, es.state)
 
         es = HS.eigenstate(k=(0.2, 0.2, 0.2))
         es2 = es.copy()
-        es2.change_gauge('r')
+        es2.change_gauge("r")
         assert not np.allclose(es2.state, es.state)
-        es2.change_gauge('R')
+        es2.change_gauge("R")
         assert np.allclose(es2.state, es.state)
 
     def test_expectation_value(self, setup):
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), ((1., 1.))])
+        H.construct([(0.1, 1.5), ((1.0, 1.0))])
         D = np.ones(len(H))
         I = np.identity(len(H))
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = H.eigenstate(k)
 
             d = es.inner(matrix=D)
@@ -1014,20 +1046,20 @@ class TestHamiltonian:
 
     def test_velocity_orthogonal(self, setup):
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), ((1., 1.))])
+        H.construct([(0.1, 1.5), ((1.0, 1.0))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = H.eigenstate(k)
             v = es.velocity()
             vsub = es.sub([0]).velocity()[:, 0]
             assert np.allclose(v[:, 0], vsub)
 
-    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_velocity_nonorthogonal(self, setup):
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = HS.eigenstate(k)
             v = es.velocity()
             vsub = es.sub([0]).velocity()
@@ -1035,20 +1067,20 @@ class TestHamiltonian:
 
     def test_velocity_matrix_orthogonal(self, setup):
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), ((1., 1.))])
+        H.construct([(0.1, 1.5), ((1.0, 1.0))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = H.eigenstate(k)
             v = es.velocity(matrix=True)
             vsub = es.sub([0, 1]).velocity(matrix=True)
             assert np.allclose(v[:, :2, :2], vsub)
 
-    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_velocity_matrix_nonorthogonal(self, setup):
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = HS.eigenstate(k)
             v = es.velocity(matrix=True)
             vsub = es.sub([0, 1]).velocity(matrix=True)
@@ -1056,24 +1088,24 @@ class TestHamiltonian:
 
     def test_dos1(self, setup):
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
+        HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
-            assert DOS.dtype.kind == 'f'
+            assert DOS.dtype.kind == "f"
             assert np.allclose(es.norm2(), 1)
             str(es)
 
     def test_pdos1(self, setup):
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        HS.construct([(0.1, 1.5), ((0.0, 1.0), (1.0, 0.1))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = HS.eigenstate(k)
-            DOS = es.DOS(E, 'lorentzian')
-            PDOS = es.PDOS(E, 'lorentzian')
-            assert PDOS.dtype.kind == 'f'
+            DOS = es.DOS(E, "lorentzian")
+            PDOS = es.PDOS(E, "lorentzian")
+            assert PDOS.dtype.kind == "f"
             assert PDOS.shape[0] == 1
             assert PDOS.shape[1] == len(HS)
             assert PDOS.shape[2] == len(E)
@@ -1081,13 +1113,13 @@ class TestHamiltonian:
 
     def test_pdos2(self, setup):
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), (0., 0.1)])
+        H.construct([(0.1, 1.5), (0.0, 0.1)])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = H.eigenstate(k)
             DOS = es.DOS(E)
             PDOS = es.PDOS(E)
-            assert PDOS.dtype.kind == 'f'
+            assert PDOS.dtype.kind == "f"
             assert np.allclose(PDOS.sum(1), DOS)
 
     def test_pdos3(self, setup):
@@ -1095,7 +1127,7 @@ class TestHamiltonian:
         # In this case we will assume an orthogonal
         # basis, however, the basis is not orthogonal.
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        HS.construct([(0.1, 1.5), ((0.0, 1.0), (1.0, 0.1))])
         E = np.linspace(-4, 4, 21)
         es = HS.eigenstate()
         es.parent = None
@@ -1109,19 +1141,19 @@ class TestHamiltonian:
         # basis. If the basis *is* orthogonal, then
         # regardless of k, the PDOS will be correct.
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), (0., 0.1)])
+        H.construct([(0.1, 1.5), (0.0, 0.1)])
         E = np.linspace(-4, 4, 21)
         es = H.eigenstate()
         es.parent = None
         DOS = es.DOS(E)
         PDOS = es.PDOS(E)
-        assert PDOS.dtype.kind == 'f'
+        assert PDOS.dtype.kind == "f"
         assert np.allclose(PDOS.sum(1), DOS)
         es = H.eigenstate([0.25] * 3)
         DOS = es.DOS(E)
         es.parent = None
         PDOS = es.PDOS(E)
-        assert PDOS.dtype.kind == 'f'
+        assert PDOS.dtype.kind == "f"
         assert np.allclose(PDOS.sum(1), DOS)
 
     def test_pdos_nc(self):
@@ -1131,6 +1163,7 @@ class TestHamiltonian:
         # this should be Hermitian
         H[0, 0] = np.array([1, 2, 3, 4])
         E = [0]
+
         def dist(E, *args):
             return np.ones(len(E))
 
@@ -1166,6 +1199,7 @@ class TestHamiltonian:
         # this should be Hermitian
         H[0, 0] = np.array([1, 2, 3, 4, 0, 0, 3, -4])
         E = [0]
+
         def dist(E, *args):
             return np.ones(len(E))
 
@@ -1196,38 +1230,38 @@ class TestHamiltonian:
 
     def test_coop_against_pdos_nonortho(self, setup):
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        HS.construct([(0.1, 1.5), ((0.0, 1.0), (1.0, 0.1))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = HS.eigenstate(k)
-            COOP = es.COOP(E, 'lorentzian')
+            COOP = es.COOP(E, "lorentzian")
 
-            DOS = es.DOS(E, 'lorentzian')
+            DOS = es.DOS(E, "lorentzian")
             COOP2DOS = np.array([C.sum() for C in COOP])
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 
             # This one returns sparse matrices, so we have to
             # deal with that.
-            DOS = es.PDOS(E, 'lorentzian')[0]
+            DOS = es.PDOS(E, "lorentzian")[0]
             COOP2DOS = np.array([C.sum(1).A.ravel() for C in COOP]).T
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 
     def test_coop_against_pdos_ortho(self, setup):
         H = setup.H.copy()
-        H.construct([(0.1, 1.5), (0., 1.)])
+        H.construct([(0.1, 1.5), (0.0, 1.0)])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = H.eigenstate(k)
-            COOP = es.COOP(E, 'lorentzian')
+            COOP = es.COOP(E, "lorentzian")
 
-            DOS = es.DOS(E, 'lorentzian')
+            DOS = es.DOS(E, "lorentzian")
             COOP2DOS = np.array([C.sum() for C in COOP])
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 
-            DOS = es.PDOS(E, 'lorentzian')
+            DOS = es.PDOS(E, "lorentzian")
             # matrix.A1 is np.array(matrix).ravel()
             COOP2DOS = np.array([C.sum(1).A1 for C in COOP]).T
             assert DOS.shape[1:] == COOP2DOS.shape
@@ -1235,60 +1269,72 @@ class TestHamiltonian:
 
     def test_coop_sp_vs_np(self, setup):
         HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        HS.construct([(0.1, 1.5), ((0.0, 1.0), (1.0, 0.1))])
         E = np.linspace(-4, 4, 21)
-        for k in ([0] *3, [0.2] * 3):
+        for k in ([0] * 3, [0.2] * 3):
             es = HS.eigenstate(k)
-            COOP_sp = es.COOP(E, 'lorentzian')
+            COOP_sp = es.COOP(E, "lorentzian")
             assert issparse(COOP_sp[0])
 
-            es = HS.eigenstate(k, format='array')
-            COOP_np = es.COOP(E, 'lorentzian')
+            es = HS.eigenstate(k, format="array")
+            COOP_np = es.COOP(E, "lorentzian")
             assert isinstance(COOP_np[0], np.ndarray)
 
             for c_sp, c_np in zip(COOP_sp, COOP_np):
                 assert np.allclose(c_sp.toarray(), c_np)
 
     def test_spin1(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
-            j = range(i*2, i*2+3)
-            H[0, j] = (i, i*2)
+            j = range(i * 2, i * 2 + 3)
+            H[0, j] = (i, i * 2)
 
         H2 = Hamiltonian(g, 2, dtype=np.int32)
         for i in range(10):
-            j = range(i*2, i*2+3)
-            H2[0, j] = (i, i*2)
+            j = range(i * 2, i * 2 + 3)
+            H2[0, j] = (i, i * 2)
         assert H.spsame(H2)
 
     def test_spin2(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
         for i in range(10):
-            j = range(i*2, i*2+3)
-            H[0, j] = (i, i*2)
+            j = range(i * 2, i * 2 + 3)
+            H[0, j] = (i, i * 2)
 
         H2 = Hamiltonian(g, 2, dtype=np.int32)
         for i in range(10):
-            j = range(i*2, i*2+3)
-            H2[0, j] = (i, i*2)
+            j = range(i * 2, i * 2 + 3)
+            H2[0, j] = (i, i * 2)
         assert H.spsame(H2)
 
         H2 = Hamiltonian(g, Spin(Spin.POLARIZED), dtype=np.int32)
         for i in range(10):
-            j = range(i*2, i*2+3)
-            H2[0, j] = (i, i*2)
+            j = range(i * 2, i * 2 + 3)
+            H2[0, j] = (i, i * 2)
         assert H.spsame(H2)
 
-        H2 = Hamiltonian(g, Spin('polarized'), dtype=np.int32)
+        H2 = Hamiltonian(g, Spin("polarized"), dtype=np.int32)
         for i in range(10):
-            j = range(i*2, i*2+3)
-            H2[0, j] = (i, i*2)
+            j = range(i * 2, i * 2 + 3)
+            H2[0, j] = (i, i * 2)
         assert H.spsame(H2)
 
     def test_transform_up(self):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.UNPOLARIZED)
         for i in range(10):
             H[0, i] = i + 0.1
@@ -1307,10 +1353,14 @@ class TestHamiltonian:
         assert np.abs(Hcsr[0] - Ht.tocsr(1)).sum() == 0
 
     def test_transform_up_nonortho(self):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.UNPOLARIZED, orthogonal=False)
         for i in range(10):
-            H[0, i] = (i + 0.1, 1.)
+            H[0, i] = (i + 0.1, 1.0)
         Hcsr = [H.tocsr(i) for i in range(H.shape[2])]
 
         Ht = H.transform(spin=Spin.POLARIZED)
@@ -1334,7 +1384,11 @@ class TestHamiltonian:
         assert np.abs(Hcsr[-1] - Ht.tocsr(-1)).sum() == 0
 
     def test_transform_down(self):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
             for j in range(8):
@@ -1355,16 +1409,20 @@ class TestHamiltonian:
         assert np.abs(Hcsr[3] - Ht.tocsr(3)).sum() == 0
 
     def test_transform_down_nonortho(self):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT, orthogonal=False)
         for i in range(10):
             for j in range(8):
                 H[0, i, j] = i + 0.1 + j
-            H[0, i, -1] = 1.
+            H[0, i, -1] = 1.0
         Hcsr = [H.tocsr(i) for i in range(H.shape[2])]
 
         Ht = H.transform(spin=Spin.UNPOLARIZED)
-        assert np.abs(0.5 * Hcsr[0]+ 0.5 * Hcsr[1] - Ht.tocsr(0)).sum() == 0
+        assert np.abs(0.5 * Hcsr[0] + 0.5 * Hcsr[1] - Ht.tocsr(0)).sum() == 0
         assert np.abs(Hcsr[-1] - Ht.tocsr(-1)).sum() == 0
 
         Ht = H.transform(spin=Spin.POLARIZED)
@@ -1381,10 +1439,14 @@ class TestHamiltonian:
 
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.1, 0, 0]])
     def test_spin_squared(self, setup, k):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(1, nsc=[3, 1, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(1, nsc=[3, 1, 1]),
+        )
         H = Hamiltonian(g, spin=Spin.POLARIZED)
         H.construct(([0.1, 1.1], [[0, 0.1], [1, 1.1]]))
-        H[0, 0] = (0.1, 0.)
+        H[0, 0] = (0.1, 0.0)
         H[0, 1] = (0.5, 0.4)
         es_alpha = H.eigenstate(k, spin=0)
         es_beta = H.eigenstate(k, spin=1)
@@ -1399,60 +1461,72 @@ class TestHamiltonian:
         assert len(sup) == 2
         assert len(sdn) == es_beta.shape[0]
 
-        sup, sdn = spin_squared(es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state)
+        sup, sdn = spin_squared(
+            es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state
+        )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 3
         assert len(sdn) == 2
 
-        sup, sdn = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state)
+        sup, sdn = spin_squared(
+            es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state
+        )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert sup.ndim == 1
         assert len(sup) == 1
         assert len(sdn) == 2
 
-        sup, sdn = spin_squared(es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel())
+        sup, sdn = spin_squared(
+            es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel()
+        )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert sup.ndim == 0
         assert sdn.ndim == 0
 
-        sup, sdn = spin_squared(es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel())
+        sup, sdn = spin_squared(
+            es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel()
+        )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 2
         assert len(sdn) == 1
 
     def test_non_colinear_orthogonal(self, setup):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.NONCOLINEAR)
         for i in range(10):
-            j = range(i*2, i*2+3)
+            j = range(i * 2, i * 2 + 3)
             H[i, i, 0] = 0.05
             H[i, i, 1] = 0.1
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             if i > 0:
-                H[i, i-1, 0] = 1.
-                H[i, i-1, 1] = 1.
+                H[i, i - 1, 0] = 1.0
+                H[i, i - 1, 1] = 1.0
             if i < 9:
-                H[i, i+1, 0] = 1.
-                H[i, i+1, 1] = 1.
+                H[i, i + 1, 0] = 1.0
+                H[i, i + 1, 1] = 1.0
         eig1 = H.eigh(dtype=np.complex64)
         assert np.allclose(H.eigh(dtype=np.complex128), eig1)
-        assert np.allclose(H.eigh(gauge='r', dtype=np.complex128), eig1)
+        assert np.allclose(H.eigh(gauge="r", dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
-        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
+        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin("non-collinear"))
         for i in range(10):
-            j = range(i*2, i*2+3)
+            j = range(i * 2, i * 2 + 3)
             H1[i, i, 0] = 0.05
             H1[i, i, 1] = 0.1
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
-                H1[i, i-1, 0] = 1.
-                H1[i, i-1, 1] = 1.
+                H1[i, i - 1, 0] = 1.0
+                H1[i, i - 1, 1] = 1.0
             if i < 9:
-                H1[i, i+1, 0] = 1.
-                H1[i, i+1, 1] = 1.
+                H1[i, i + 1, 0] = 1.0
+                H1[i, i + 1, 1] = 1.0
         assert H1.spsame(H)
         eig1 = H1.eigh(dtype=np.complex64)
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
@@ -1488,43 +1562,49 @@ class TestHamiltonian:
         assert np.allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for NC stuff
-        es.change_gauge('R')
-        es.change_gauge('r')
+        es.change_gauge("R")
+        es.change_gauge("r")
 
     def test_non_colinear_non_orthogonal(self):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin.NONCOLINEAR)
         for i in range(10):
-            j = range(i*2, i*2+3)
+            j = range(i * 2, i * 2 + 3)
             H[i, i, 0] = 0.1
             H[i, i, 1] = 0.05
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             if i > 0:
-                H[i, i-1, 0] = 1.
-                H[i, i-1, 1] = 1.
+                H[i, i - 1, 0] = 1.0
+                H[i, i - 1, 1] = 1.0
             if i < 9:
-                H[i, i+1, 0] = 1.
-                H[i, i+1, 1] = 1.
-            H.S[i, i] = 1.
+                H[i, i + 1, 0] = 1.0
+                H[i, i + 1, 1] = 1.0
+            H.S[i, i] = 1.0
         eig1 = H.eigh(dtype=np.complex64)
         assert np.allclose(H.eigh(dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
-        H1 = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin('non-collinear'))
+        H1 = Hamiltonian(
+            g, dtype=np.float64, orthogonal=False, spin=Spin("non-collinear")
+        )
         for i in range(10):
-            j = range(i*2, i*2+3)
+            j = range(i * 2, i * 2 + 3)
             H1[i, i, 0] = 0.1
             H1[i, i, 1] = 0.05
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
-                H1[i, i-1, 0] = 1.
-                H1[i, i-1, 1] = 1.
+                H1[i, i - 1, 0] = 1.0
+                H1[i, i - 1, 1] = 1.0
             if i < 9:
-                H1[i, i+1, 0] = 1.
-                H1[i, i+1, 1] = 1.
-            H1.S[i, i] = 1.
+                H1[i, i + 1, 0] = 1.0
+                H1[i, i + 1, 1] = 1.0
+            H1.S[i, i] = 1.0
         assert H1.spsame(H)
         eig1 = H1.eigh(dtype=np.complex64)
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
@@ -1551,14 +1631,18 @@ class TestHamiltonian:
         assert np.allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for NC stuff
-        es.change_gauge('R')
-        es.change_gauge('r')
+        es.change_gauge("R")
+        es.change_gauge("r")
 
     def test_spin_orbit_orthogonal(self):
-        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(100, nsc=[3, 3, 1]))
+        g = Geometry(
+            [[i, 0, 0] for i in range(10)],
+            Atom(6, R=1.01),
+            lattice=Lattice(100, nsc=[3, 3, 1]),
+        )
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
-            j = range(i*2, i*2+3)
+            j = range(i * 2, i * 2 + 3)
             H[i, i, 0] = 0.1
             H[i, i, 1] = 0.05
             H[i, i, 2] = 0.1
@@ -1568,18 +1652,18 @@ class TestHamiltonian:
             H[i, i, 6] = 0.1
             H[i, i, 7] = 0.1
             if i > 0:
-                H[i, i-1, 0] = 1.
-                H[i, i-1, 1] = 1.
+                H[i, i - 1, 0] = 1.0
+                H[i, i - 1, 1] = 1.0
             if i < 9:
-                H[i, i+1, 0] = 1.
-                H[i, i+1, 1] = 1.
+                H[i, i + 1, 0] = 1.0
+                H[i, i + 1, 1] = 1.0
         eig1 = H.eigh(dtype=np.complex64)
         assert np.allclose(H.eigh(dtype=np.complex128), eig1)
         assert len(H.eigh()) == len(H)
 
-        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('spin-orbit'))
+        H1 = Hamiltonian(g, dtype=np.float64, spin=Spin("spin-orbit"))
         for i in range(10):
-            j = range(i*2, i*2+3)
+            j = range(i * 2, i * 2 + 3)
             H1[i, i, 0] = 0.1
             H1[i, i, 1] = 0.05
             H1[i, i, 2] = 0.1
@@ -1589,15 +1673,17 @@ class TestHamiltonian:
             H1[i, i, 6] = 0.1
             H1[i, i, 7] = 0.1
             if i > 0:
-                H1[i, i-1, 0] = 1.
-                H1[i, i-1, 1] = 1.
+                H1[i, i - 1, 0] = 1.0
+                H1[i, i - 1, 1] = 1.0
             if i < 9:
-                H1[i, i+1, 0] = 1.
-                H1[i, i+1, 1] = 1.
+                H1[i, i + 1, 0] = 1.0
+                H1[i, i + 1, 1] = 1.0
         assert H1.spsame(H)
         eig1 = H1.eigh(dtype=np.complex64)
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1, atol=1e-5)
-        assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128), atol=1e-5)
+        assert np.allclose(
+            H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128), atol=1e-5
+        )
 
         # Create the block matrix for expectation
         SZ = block_diag(*([H1.spin.Z] * H1.no))
@@ -1627,19 +1713,19 @@ class TestHamiltonian:
         assert np.allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for SO stuff
-        es.change_gauge('R')
-        es.change_gauge('r')
+        es.change_gauge("R")
+        es.change_gauge("r")
 
     def test_finalized(self, setup):
         assert not setup.H.finalized
-        setup.H.H[0, 0] = 1.
+        setup.H.H[0, 0] = 1.0
         setup.H.finalize()
         assert setup.H.finalized
         assert setup.H.nnz == 1
         setup.H.empty()
         assert not setup.HS.finalized
-        setup.HS.H[0, 0] = 1.
-        setup.HS.S[0, 0] = 1.
+        setup.HS.H[0, 0] = 1.0
+        setup.HS.S[0, 0] = 1.0
         setup.HS.finalize()
         assert setup.HS.finalized
         assert setup.HS.nnz == 1
@@ -1650,7 +1736,7 @@ class TestHamiltonian:
     @pytest.mark.parametrize("ny", [1, 5])
     @pytest.mark.parametrize("nz", [1, 6])
     def test_tile_same(self, setup, nx, ny, nz):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
 
         # Create reference
         Hg = Hamiltonian(setup.g.tile(nx, 0).tile(ny, 1).tile(nz, 2))
@@ -1663,15 +1749,17 @@ class TestHamiltonian:
         H.finalize()
         Hg.finalize()
         assert np.allclose(H._csr._D, Hg._csr._D)
-        assert np.allclose(Hg.Hk([0.1, 0.2, 0.3], format='array'),
-                           H.Hk([0.1, 0.2, 0.3], format='array'))
+        assert np.allclose(
+            Hg.Hk([0.1, 0.2, 0.3], format="array"),
+            H.Hk([0.1, 0.2, 0.3], format="array"),
+        )
 
     @pytest.mark.slow
     def test_tile3(self, setup):
-        R, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
+        R, param = [0.1, 1.1, 2.1, 3.1], [1.0, 2.0, 3.0, 4.0]
 
         # Create reference
-        g = Geometry([[0] * 3], Atom('H', R=[4.]), lattice=[1.] * 3)
+        g = Geometry([[0] * 3], Atom("H", R=[4.0]), lattice=[1.0] * 3)
         g.set_nsc([7] * 3)
 
         # Now create bigger geometry
@@ -1695,15 +1783,15 @@ class TestHamiltonian:
             io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
             odx = self.geometry.a2o(idx[0])
-            self[io, odx] = -1.
-            self[io+1, odx+1] = 1.
+            self[io, odx] = -1.0
+            self[io + 1, odx + 1] = 1.0
 
             # Set connecting
             odx = self.geometry.a2o(idx[1])
             self[io, odx] = 0.2
-            self[io, odx+1] = 0.01
-            self[io+1, odx] = 0.01
-            self[io+1, odx+1] = 0.3
+            self[io, odx + 1] = 0.01
+            self[io + 1, odx] = 0.01
+            self[io + 1, odx + 1] = 0.3
 
         setup.H2.construct(func)
         Hbig = setup.H2.tile(3, 0).tile(3, 1)
@@ -1719,7 +1807,7 @@ class TestHamiltonian:
 
     @pytest.mark.slow
     def test_repeat1(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
 
         # Create reference
         Hg = Hamiltonian(setup.g.repeat(2, 0))
@@ -1735,7 +1823,7 @@ class TestHamiltonian:
 
     @pytest.mark.slow
     def test_repeat2(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
 
         # Create reference
         Hg = Hamiltonian(setup.g.repeat(2, 0).repeat(2, 1).repeat(2, 2))
@@ -1743,7 +1831,7 @@ class TestHamiltonian:
         Hg.finalize()
         H = Hamiltonian(setup.g)
         H.construct([R, param])
-        H = H.repeat(2, 0).repeat(2, 1). repeat(2, 2)
+        H = H.repeat(2, 0).repeat(2, 1).repeat(2, 2)
         assert Hg.spsame(H)
         H.finalize()
         Hg.finalize()
@@ -1751,10 +1839,10 @@ class TestHamiltonian:
 
     @pytest.mark.slow
     def test_repeat3(self, setup):
-        R, param = [0.1, 1.1, 2.1, 3.1], [1., 2., 3., 4.]
+        R, param = [0.1, 1.1, 2.1, 3.1], [1.0, 2.0, 3.0, 4.0]
 
         # Create reference
-        g = Geometry([[0] * 3], Atom('H', R=[4.]), lattice=[1.] * 3)
+        g = Geometry([[0] * 3], Atom("H", R=[4.0]), lattice=[1.0] * 3)
         g.set_nsc([7] * 3)
 
         # Now create bigger geometry
@@ -1779,15 +1867,15 @@ class TestHamiltonian:
             io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
             odx = self.geometry.a2o(idx[0])
-            self[io, odx] = -1.
-            self[io+1, odx+1] = 1.
+            self[io, odx] = -1.0
+            self[io + 1, odx + 1] = 1.0
 
             # Set connecting
             odx = self.geometry.a2o(idx[1])
             self[io, odx] = 0.2
-            self[io, odx+1] = 0.01
-            self[io+1, odx] = 0.01
-            self[io+1, odx+1] = 0.3
+            self[io, odx + 1] = 0.01
+            self[io + 1, odx] = 0.01
+            self[io + 1, odx + 1] = 0.3
 
         setup.H2.construct(func)
         Hbig = setup.H2.repeat(3, 0).repeat(3, 1)
@@ -1803,7 +1891,7 @@ class TestHamiltonian:
         setup.H2.empty()
 
     def test_sub1(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
 
         # Create reference
         H = Hamiltonian(setup.g)
@@ -1821,7 +1909,7 @@ class TestHamiltonian:
         assert len(Hg) == len(setup.g)
 
     def test_set_nsc1(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
 
         # Create reference
         H = Hamiltonian(setup.g.copy())
@@ -1842,7 +1930,7 @@ class TestHamiltonian:
         assert Hg.spsame(H)
 
     def test_shift1(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         H = Hamiltonian(setup.g.copy())
         H.construct([R, param])
         eig0 = H.eigh()[0]
@@ -1850,7 +1938,7 @@ class TestHamiltonian:
         assert H.eigh()[0] == pytest.approx(eig0 + 0.2)
 
     def test_shift2(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        R, param = [0.1, 1.5], [(1.0, 1.0), (0.1, 0.1)]
         H = Hamiltonian(setup.g.copy(), orthogonal=False)
         H.construct([R, param])
         eig0 = H.eigh()[0]
@@ -1858,8 +1946,8 @@ class TestHamiltonian:
         assert H.eigh()[0] == pytest.approx(eig0 + 0.2)
 
     def test_shift3(self, setup):
-        R, param = [0.1, 1.5], [(1., -1., 1.), (0.1, 0.1, 0.1)]
-        H = Hamiltonian(setup.g.copy(), spin=Spin('P'), orthogonal=False)
+        R, param = [0.1, 1.5], [(1.0, -1.0, 1.0), (0.1, 0.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), spin=Spin("P"), orthogonal=False)
         H.construct([R, param])
         eig0_0 = H.eigh(spin=0)[0]
         eig1_0 = H.eigh(spin=1)[0]
@@ -1871,36 +1959,36 @@ class TestHamiltonian:
         assert H.eigh(spin=1)[0] == pytest.approx(eig1_0)
 
     def test_fermi_level(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (2.1, 0.1)]
+        R, param = [0.1, 1.5], [(1.0, 1.0), (2.1, 0.1)]
         H = Hamiltonian(setup.g.copy(), orthogonal=False)
         H.construct([R, param])
         bz = MonkhorstPack(H, [10, 10, 1])
         q = 0.9
         Ef = H.fermi_level(bz, q=q)
         H.shift(-Ef)
-        assert H.fermi_level(bz, q=q) == pytest.approx(0., abs=1e-6)
+        assert H.fermi_level(bz, q=q) == pytest.approx(0.0, abs=1e-6)
 
     def test_fermi_level_spin(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (2.1, 0.1)]
-        H = Hamiltonian(setup.g.copy(), spin=Spin('P'))
+        R, param = [0.1, 1.5], [(1.0, 1.0), (2.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), spin=Spin("P"))
         H.construct([R, param])
         bz = MonkhorstPack(H, [10, 10, 1])
         q = 1.1
         Ef = H.fermi_level(bz, q=q)
         assert np.asarray(Ef).ndim == 0
         H.shift(-Ef)
-        assert H.fermi_level(bz, q=q) == pytest.approx(0., abs=1e-6)
+        assert H.fermi_level(bz, q=q) == pytest.approx(0.0, abs=1e-6)
 
     def test_fermi_level_spin_separate(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (2.1, 0.1)]
-        H = Hamiltonian(setup.g.copy(), spin=Spin('P'))
+        R, param = [0.1, 1.5], [(1.0, 1.0), (2.1, 0.1)]
+        H = Hamiltonian(setup.g.copy(), spin=Spin("P"))
         H.construct([R, param])
         bz = MonkhorstPack(H, [10, 10, 1])
         q = [0.5, 0.3]
         Ef = H.fermi_level(bz, q=q)
         assert len(Ef) == 2
         H.shift(-Ef)
-        assert np.allclose(H.fermi_level(bz, q=q), 0.)
+        assert np.allclose(H.fermi_level(bz, q=q), 0.0)
 
     def test_wrap_oplist(self, setup):
         R, param = [0.1, 1.5], [1, 2.1]
@@ -1908,25 +1996,31 @@ class TestHamiltonian:
         H.construct([R, param])
         bz = MonkhorstPack(H, [10, 10, 1])
         E = np.linspace(-4, 4, 21)
-        dist = get_distribution('gaussian', smearing=0.05)
+        dist = get_distribution("gaussian", smearing=0.05)
+
         def wrap(es, parent, k, weight):
             DOS = es.DOS(E, distribution=dist)
             PDOS = es.PDOS(E, distribution=dist)
             vel = es.velocity() * es.occupation()
             return oplist([DOS, PDOS, vel])
+
         bz_avg = bz.apply.average
         results = bz_avg.eigenstate(wrap=wrap)
-        assert np.allclose(bz_avg.eigenstate(wrap=lambda es: es.DOS(E, distribution=dist)), results[0])
-        assert np.allclose(bz_avg.eigenstate(wrap=lambda es: es.PDOS(E, distribution=dist)), results[1])
+        assert np.allclose(
+            bz_avg.eigenstate(wrap=lambda es: es.DOS(E, distribution=dist)), results[0]
+        )
+        assert np.allclose(
+            bz_avg.eigenstate(wrap=lambda es: es.PDOS(E, distribution=dist)), results[1]
+        )
 
     def test_edges1(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         H = Hamiltonian(setup.g)
         H.construct([R, param])
         assert len(H.edges(0)) == 4
 
     def test_edges2(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
+        R, param = [0.1, 1.5], [1.0, 0.1]
         H = Hamiltonian(setup.g)
         H.construct([R, param])
         with pytest.raises(ValueError):
@@ -1938,15 +2032,15 @@ class TestHamiltonian:
             io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
             odx = self.geometry.a2o(idx[0])
-            self[io, odx] = -1.
-            self[io+1, odx+1] = 1.
+            self[io, odx] = -1.0
+            self[io + 1, odx + 1] = 1.0
 
             # Set connecting
             odx = self.geometry.a2o(idx[1])
             self[io, odx] = 0.2
-            self[io, odx+1] = 0.01
-            self[io+1, odx] = 0.01
-            self[io+1, odx+1] = 0.3
+            self[io, odx + 1] = 0.01
+            self[io + 1, odx] = 0.01
+            self[io + 1, odx + 1] = 0.3
 
         H2 = setup.H2.copy()
         H2.construct(func)
@@ -1975,12 +2069,12 @@ def test_wavefunction1():
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), lattice=[4, 4, 4])
     H = Hamiltonian(G)
-    R, param = [0.1, 1.5], [1., 0.1]
+    R, param = [0.1, 1.5], [1.0, 0.1]
     H.construct([R, param])
     ES = H.eigenstate(dtype=np.float64)
     # Plot in the full thing
     grid = Grid(0.1, geometry=H.geometry)
-    grid.fill(0.)
+    grid.fill(0.0)
     ES.sub(0).wavefunction(grid)
 
 
@@ -1989,13 +2083,13 @@ def test_wavefunction2():
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), lattice=[4, 4, 4])
     H = Hamiltonian(G)
-    R, param = [0.1, 1.5], [1., 0.1]
+    R, param = [0.1, 1.5], [1.0, 0.1]
     H.construct([R, param])
     ES = H.eigenstate(dtype=np.float64)
     # This is effectively plotting outside where no atoms exists
     # (there could however still be psi weight).
     grid = Grid(0.1, lattice=Lattice([2, 2, 2], origin=[2] * 3))
-    grid.fill(0.)
+    grid.fill(0.0)
     ES.sub(0).wavefunction(grid)
 
 
@@ -2003,14 +2097,13 @@ def test_wavefunction3():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), lattice=[4, 4, 4])
-    H = Hamiltonian(G, spin=Spin('nc'))
-    R, param = [0.1, 1.5], [[0., 0., 0.1, -0.1],
-                            [1., 1., 0.1, -0.1]]
+    H = Hamiltonian(G, spin=Spin("nc"))
+    R, param = [0.1, 1.5], [[0.0, 0.0, 0.1, -0.1], [1.0, 1.0, 0.1, -0.1]]
     H.construct([R, param])
     ES = H.eigenstate()
     # Plot in the full thing
     grid = Grid(0.1, dtype=np.complex128, lattice=Lattice([2, 2, 2], origin=[-1] * 3))
-    grid.fill(0.)
+    grid.fill(0.0)
     ES.sub(0).wavefunction(grid)
 
 
@@ -2018,12 +2111,11 @@ def test_wavefunction_eta():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
     G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), lattice=[4, 4, 4])
-    H = Hamiltonian(G, spin=Spin('nc'))
-    R, param = [0.1, 1.5], [[0., 0., 0.1, -0.1],
-                            [1., 1., 0.1, -0.1]]
+    H = Hamiltonian(G, spin=Spin("nc"))
+    R, param = [0.1, 1.5], [[0.0, 0.0, 0.1, -0.1], [1.0, 1.0, 0.1, -0.1]]
     H.construct([R, param])
     ES = H.eigenstate()
     # Plot in the full thing
     grid = Grid(0.1, dtype=np.complex128, lattice=Lattice([2, 2, 2], origin=[-1] * 3))
-    grid.fill(0.)
+    grid.fill(0.0)
     ES.sub(0).wavefunction(grid, eta=True)

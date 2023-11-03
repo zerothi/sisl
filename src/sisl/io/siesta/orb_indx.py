@@ -9,19 +9,19 @@ from sisl.unit.siesta import unit_convert
 from ..sile import add_sile, sile_fh_open
 from .sile import SileSiesta
 
-__all__ = ['orbindxSileSiesta']
+__all__ = ["orbindxSileSiesta"]
 
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 
 
 @set_module("sisl.io.siesta")
 class orbindxSileSiesta(SileSiesta):
-    """ Orbital information file """
+    """Orbital information file"""
 
     @sile_fh_open()
     def read_lattice_nsc(self):
-        """ Reads the supercell number of supercell information """
+        """Reads the supercell number of supercell information"""
         # First line contains no no_s
         line = self.readline().split()
         no_s = int(line[1])
@@ -46,7 +46,7 @@ class orbindxSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_basis(self, atoms=None):
-        """ Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file
+        """Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file
 
         The specie names have a short field in the ORB_INDX file, hence the name may
         not necessarily be the same as provided in the species block
@@ -99,7 +99,7 @@ class orbindxSileSiesta(SileSiesta):
             if i_s in specs:
                 continue
             nlmz = list(map(int, line[5:9]))
-            P = line[9] == 'T'
+            P = line[9] == "T"
             rc = float(line[11]) * Bohr2Ang
             # Create the orbital
             o = AtomicOrbital(n=nlmz[0], l=nlmz[1], m=nlmz[2], zeta=nlmz[3], P=P, R=rc)
@@ -113,4 +113,4 @@ class orbindxSileSiesta(SileSiesta):
         return Atoms([atom[i] for i in specs])
 
 
-add_sile('ORB_INDX', orbindxSileSiesta, gzip=True)
+add_sile("ORB_INDX", orbindxSileSiesta, gzip=True)

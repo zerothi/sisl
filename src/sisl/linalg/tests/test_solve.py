@@ -28,7 +28,7 @@ def test_solve2():
     xs = sl.solve(a, b)
     x = solve(a, b)
     assert np.allclose(xs, x)
-    assert x.shape == (10, )
+    assert x.shape == (10,)
     assert np.allclose(a, ac)
     assert np.allclose(b, bc)
 
@@ -48,4 +48,4 @@ def test_solve4():
     xs = sl.solve(a, b)
     x = solve_destroy(a, b)
     assert np.allclose(xs, x)
-    assert x.shape == (10, )
+    assert x.shape == (10,)

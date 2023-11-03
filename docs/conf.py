@@ -26,12 +26,12 @@ from datetime import date
 _root = pathlib.Path(__file__).absolute().parent.parent / "src"
 
 # If building this on RTD, mock out fortran sources
-on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
+on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
 if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
     os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
-#sys.path.insert(0, str(_root))
+# sys.path.insert(0, str(_root))
 
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
@@ -62,7 +62,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_autodoc_typehints",
-    "sphinxcontrib.jquery", # a bug in 4.1.0 means search didn't work without explicit extension
+    "sphinxcontrib.jquery",  # a bug in 4.1.0 means search didn't work without explicit extension
     "sphinx_inline_tabs",
     # plotting and advanced usage
     "matplotlib.sphinxext.plot_directive",
@@ -80,22 +80,22 @@ napoleon_use_param = True
 
 # The default is MathJax 3.
 # In case we want to revert to 2.7.7, then use the below link:
-#mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
+# mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # Short-hand for :doi:
 extlinks = {
-    'issue': ('https://github.com/zerothi/sisl/issues/%s', 'issue %s'),
-    'pull': ('https://github.com/zerothi/sisl/pull/%s', 'pull request %s'),
-    'doi': ('https://doi.org/%s', '%s'),
+    "issue": ("https://github.com/zerothi/sisl/issues/%s", "issue %s"),
+    "pull": ("https://github.com/zerothi/sisl/pull/%s", "pull request %s"),
+    "doi": ("https://doi.org/%s", "%s"),
 }
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # prepend/append this snippet in _all_ sources
 rst_prolog = """
@@ -103,7 +103,7 @@ rst_prolog = """
 """
 # Insert the links into the epilog (globally)
 # This means that every document has access to the links
-rst_epilog = ''.join(open('epilog.dummy').readlines())
+rst_epilog = "".join(open("epilog.dummy").readlines())
 
 autosummary_generate = True
 
@@ -131,19 +131,25 @@ print(f"sisl version {version}")
 
 
 # Add __init__ classes to the documentation
-autoclass_content = 'class'
+autoclass_content = "class"
 autodoc_default_options = {
-    'members': True,
-    'undoc-members': True,
-    'special-members': '__init__,__call__',
-    'inherited-members': True,
-    'show-inheritance': True,
+    "members": True,
+    "undoc-members": True,
+    "special-members": "__init__,__call__",
+    "inherited-members": True,
+    "show-inheritance": True,
 }
 
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['build', '**/setupegg.py', '**/setup.rst', '**/tests', '**.ipynb_checkpoints']
+exclude_patterns = [
+    "build",
+    "**/setupegg.py",
+    "**/setup.rst",
+    "**/tests",
+    "**.ipynb_checkpoints",
+]
 exclude_patterns.append("**/GUI with Python Demo.ipynb")
 exclude_patterns.append("**/Building a plot class.ipynb")
 for _venv in pathlib.Path(".").glob("*venv*"):
@@ -151,7 +157,7 @@ for _venv in pathlib.Path(".").glob("*venv*"):
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-default_role = 'autolink'
+default_role = "autolink"
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = False
@@ -161,7 +167,7 @@ add_function_parentheses = False
 show_authors = False
 
 # A list of ignored prefixes for module index sorting.
-modindex_common_prefix = ['sisl.']
+modindex_common_prefix = ["sisl."]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -170,7 +176,7 @@ todo_include_todos = True
 # -- Options for HTML output ----------------------------------------------
 
 html_theme = "sphinx_rtd_theme"
-#html_theme = "furo"
+# html_theme = "furo"
 
 if html_theme == "furo":
     html_theme_options = {
@@ -189,14 +195,14 @@ html_short_title = "sisl"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-if os.path.exists('_static'):
-    html_static_path = ['_static']
+if os.path.exists("_static"):
+    html_static_path = ["_static"]
 else:
     html_static_path = []
 
 # Add any extra style files that we need
 html_css_files = [
-    'css/custom_styles.css',
+    "css/custom_styles.css",
 ]
 
 # If false, no index is generated.
@@ -206,25 +212,21 @@ html_use_index = True
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-'papersize': 'a4paper',
-
-# The font size ('10pt', '11pt' or '12pt').
-'pointsize': '11pt',
-
-# Additional stuff for the LaTeX preamble.
-'preamble': r"",
-
-# Latex figure (float) alignment
-'figure_align': '!htbp',
+    # The paper size ('letterpaper' or 'a4paper').
+    "papersize": "a4paper",
+    # The font size ('10pt', '11pt' or '12pt').
+    "pointsize": "11pt",
+    # Additional stuff for the LaTeX preamble.
+    "preamble": r"",
+    # Latex figure (float) alignment
+    "figure_align": "!htbp",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ("index", 'sisl.tex', 'sisl Documentation',
-   'Nick Papior', 'manual'),
+    ("index", "sisl.tex", "sisl Documentation", "Nick Papior", "manual"),
 ]
 
 #####
@@ -234,9 +236,9 @@ latex_documents = [
 # These two options should solve the "toctree contains reference to nonexisting document"
 # problem.
 # See here: numpydoc #69
-#class_members_toctree = False
+# class_members_toctree = False
 # If this is false we do not have double method sections
-#numpydoc_show_class_members = False
+# numpydoc_show_class_members = False
 
 # -----------------------------------------------------------------------------
 # Intersphinx configuration
@@ -244,14 +246,14 @@ latex_documents = [
 # Python, numpy, scipy and matplotlib specify https as the default objects.inv
 # directory. So please retain these links.
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'numpy': ('https://numpy.org/doc/stable/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
-    'matplotlib': ('https://matplotlib.org/stable/', None),
-    'xarray': ('https://docs.xarray.dev/en/stable/', None),
-    'plotly': ('https://plotly.com/python-api-reference/', None),
-    'skimage': ('https://scikit-image.org/docs/stable', None),
-    'pandas': ('https://pandas.pydata.org/pandas-docs/stable', None),
+    "python": ("https://docs.python.org/3/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "xarray": ("https://docs.xarray.dev/en/stable/", None),
+    "plotly": ("https://plotly.com/python-api-reference/", None),
+    "skimage": ("https://scikit-image.org/docs/stable", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
 }
 
 
@@ -278,14 +280,13 @@ from pybtex.style.sorting.author_year_title import SortingStyle as AYTSortingSty
 
 
 class YearMonthAuthorSortStyle(AYTSortingStyle):
-
     def sorting_key(self, entry):
         ayt = super().sorting_key(entry)
 
         year = self._year_number(entry)
         month = self._month_number(entry)
 
-        return (-year, -month , ayt[0], ayt[2])
+        return (-year, -month, ayt[0], ayt[2])
 
     def _year_number(self, entry):
         year = entry.fields.get("year", 0)
@@ -307,10 +308,13 @@ class YearMonthAuthorSortStyle(AYTSortingStyle):
 class RevYearPlain(PlainStyle):
     default_sorting_style = "sort_rev_year"
 
+
 import pybtex
 
-pybtex.plugin.register_plugin('pybtex.style.sorting', 'sort_rev_year', YearMonthAuthorSortStyle)
-pybtex.plugin.register_plugin('pybtex.style.formatting', 'rev_year', RevYearPlain)
+pybtex.plugin.register_plugin(
+    "pybtex.style.sorting", "sort_rev_year", YearMonthAuthorSortStyle
+)
+pybtex.plugin.register_plugin("pybtex.style.formatting", "rev_year", RevYearPlain)
 
 # Tell nbsphinx to wait, at least X seconds for each cell
 nbsphinx_timeout = 600
@@ -341,11 +345,14 @@ def sisl_method2class(meth):
             if cls.__dict__.get(meth.__name__) is meth:
                 return cls
     if inspect.isfunction(meth):
-        cls = getattr(inspect.getmodule(meth),
-                      meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
+        cls = getattr(
+            inspect.getmodule(meth),
+            meth.__qualname__.split(".<locals>", 1)[0].rsplit(".", 1)[0],
+        )
         if isinstance(cls, type):
             return cls
     return None  # not required since None would have been implicitly returned anyway
+
 
 # My custom detailed instructions for not documenting stuff
 
@@ -355,20 +362,31 @@ def sisl_skip(app, what, name, obj, skip, options):
     # When adding routines here, please also add them
     # to the _templates/autosummary/class.rst file to limit
     # the documentation.
-    if what == 'class':
-        if name in ['ArgumentParser', 'ArgumentParser_out',
-                    'is_keys', 'key2case', 'keys2case',
-                    'line_has_key', 'line_has_keys', 'readline',
-                    'step_to',
-                    'isDataset', 'isDimension', 'isGroup',
-                    'isRoot', 'isVariable']:
+    if what == "class":
+        if name in [
+            "ArgumentParser",
+            "ArgumentParser_out",
+            "is_keys",
+            "key2case",
+            "keys2case",
+            "line_has_key",
+            "line_has_keys",
+            "readline",
+            "step_to",
+            "isDataset",
+            "isDimension",
+            "isGroup",
+            "isRoot",
+            "isVariable",
+        ]:
             return True
-    #elif what == "attribute":
+    # elif what == "attribute":
     #    return True
 
     # check for special methods (we don't want all)
-    if (name.startswith("_") and
-        name not in autodoc_default_options.get("special-members", '').split(',')):
+    if name.startswith("_") and name not in autodoc_default_options.get(
+        "special-members", ""
+    ).split(","):
         return True
 
     try:
@@ -384,20 +402,34 @@ def sisl_skip(app, what, name, obj, skip, options):
     # Apparently they will be linked directly.
     # Now we have some things to disable the output of
     if "projncSile" in cls.__name__:
-        if name in ["current", "current_parameter", "shot_noise",
-                    "noise_power", "fano", "density_matrix",
-                    "write_tbtav",
-                    "orbital_COOP", "atom_COOP",
-                    "orbital_COHP", "atom_COHP"]:
+        if name in [
+            "current",
+            "current_parameter",
+            "shot_noise",
+            "noise_power",
+            "fano",
+            "density_matrix",
+            "write_tbtav",
+            "orbital_COOP",
+            "atom_COOP",
+            "orbital_COHP",
+            "atom_COHP",
+        ]:
             return True
     if "SilePHtrans" in cls.__name__:
-        if name in ["chemical_potential", "electron_temperature",
-                    "kT", "current", "current_parameter", "shot_noise",
-                    "noise_power"]:
+        if name in [
+            "chemical_potential",
+            "electron_temperature",
+            "kT",
+            "current",
+            "current_parameter",
+            "shot_noise",
+            "noise_power",
+        ]:
             return True
     return None
 
 
 def setup(app):
     # Setup autodoc skipping
-    app.connect('autodoc-skip-member', sisl_skip)
+    app.connect("autodoc-skip-member", sisl_skip)

@@ -12,7 +12,7 @@ from sisl.unit.siesta import units
 
 
 def read_yaml(file, nodes=()):
-    """ Reads a yaml-file and returns the dictionary for the yaml-file
+    """Reads a yaml-file and returns the dictionary for the yaml-file
 
     Parameters
     ----------
@@ -21,7 +21,7 @@ def read_yaml(file, nodes=()):
     nodes : iterable, optional
        extract the node in a consecutive manner
     """
-    dic = yaml.load(open(file, 'r'), Loader=Loader)
+    dic = yaml.load(open(file, "r"), Loader=Loader)
     if isinstance(nodes, str):
         nodes = [nodes]
     for node in nodes:
@@ -30,7 +30,7 @@ def read_yaml(file, nodes=()):
 
 
 def parse_value(value, unit=None, value_unit=None):
-    """ Converts a float/str to proper value """
+    """Converts a float/str to proper value"""
     if isinstance(value, str):
         value, value_unit = value.split()
         if len(value_unit) == 0:
@@ -44,8 +44,8 @@ def parse_value(value, unit=None, value_unit=None):
     return value * units(value_unit, unit)
 
 
-def parse_variable(value, default=None, unit=None, name='', update_func=None):
-    """ Parse a value to either a `Parameter` or `Variable` with defaults and units
+def parse_variable(value, default=None, unit=None, name="", update_func=None):
+    """Parse a value to either a `Parameter` or `Variable` with defaults and units
 
     Parameters
     ----------
@@ -62,9 +62,10 @@ def parse_variable(value, default=None, unit=None, name='', update_func=None):
        the update function to be called if required
     """
     from ._variable import Parameter, UpdateVariable, Variable
+
     attrs = {}
     if unit is not None:
-        attrs = {'unit': unit}
+        attrs = {"unit": unit}
 
     if isinstance(value, dict):
         value_unit = value.get("unit", unit)

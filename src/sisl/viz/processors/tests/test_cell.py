@@ -16,14 +16,13 @@ pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
 @pytest.fixture(scope="module", params=["numpy", "lattice"])
 def Cell(request):
-
     if request.param == "numpy":
         return np.array
     elif request.param == "lattice":
         return Lattice
-    
-def test_cartesian_unordered(Cell):
 
+
+def test_cartesian_unordered(Cell):
     assert is_cartesian_unordered(
         Cell([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
     )
@@ -36,39 +35,28 @@ def test_cartesian_unordered(Cell):
         Cell([[0, 2, 1], [1, 0, 0], [0, 1, 0]]),
     )
 
+
 def test_1D_cartesian(Cell):
+    assert is_1D_cartesian(Cell([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), "x")
 
-    assert is_1D_cartesian(
-        Cell([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
-        "x"
-    )
+    assert is_1D_cartesian(Cell([[1, 0, 0], [0, 1, 1], [0, 0, 1]]), "x")
 
-    assert is_1D_cartesian(
-        Cell([[1, 0, 0], [0, 1, 1], [0, 0, 1]]),
-        "x"
-    )
+    assert not is_1D_cartesian(Cell([[1, 0, 0], [1, 1, 0], [0, 0, 1]]), "x")
 
-    assert not is_1D_cartesian(
-        Cell([[1, 0, 0], [1, 1, 0], [0, 0, 1]]),
-        "x"
-    )
 
 def test_infer_cell_axes(Cell):
-
     assert infer_cell_axes(
-        Cell([[0, 1, 0], [1, 0, 0], [0, 0, 1]]),
-        axes=["x", "y", "z"]
+        Cell([[0, 1, 0], [1, 0, 0], [0, 0, 1]]), axes=["x", "y", "z"]
     ) == [1, 0, 2]
 
     assert infer_cell_axes(
-        Cell([[0, 1, 0], [1, 0, 0], [0, 0, 1]]),
-        axes=["b", "y"]
+        Cell([[0, 1, 0], [1, 0, 0], [0, 0, 1]]), axes=["b", "y"]
     ) == [1, 0]
 
-def test_gen_cell_dataset():
 
+def test_gen_cell_dataset():
     lattice = Lattice([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    
+
     cell_dataset = gen_cell_dataset(lattice)
 
     assert isinstance(cell_dataset, xr.Dataset)
@@ -80,11 +68,11 @@ def test_gen_cell_dataset():
     assert cell_dataset.xyz.shape == (2, 2, 2, 3)
     assert np.all(cell_dataset.xyz.values == lattice.vertices())
 
+
 @pytest.mark.parametrize("mode", ["box", "axes", "other"])
 def test_cell_to_lines(mode):
-
     lattice = Lattice([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    
+
     cell_dataset = gen_cell_dataset(lattice)
 
     if mode == "other":

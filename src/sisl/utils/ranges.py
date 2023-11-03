@@ -9,7 +9,7 @@ __all__ = ["strmap", "strseq", "lstranges", "erange", "list2str", "fileindex"]
 
 # Function to change a string to a range of integers
 def strmap(func, s, start=None, end=None, sep="b"):
-    """ Parse a string as though it was a slice and map all entries using ``func``.
+    """Parse a string as though it was a slice and map all entries using ``func``.
 
     Parameters
     ----------
@@ -65,8 +65,8 @@ def strmap(func, s, start=None, end=None, sep="b"):
             i = i + 1
         else:
             # there must be more [ than ]
-            commas[i] = commas[i] + "," + commas[i+1]
-            del commas[i+1]
+            commas[i] = commas[i] + "," + commas[i + 1]
+            del commas[i + 1]
 
     # Check the last input...
     i = len(commas) - 1
@@ -77,7 +77,6 @@ def strmap(func, s, start=None, end=None, sep="b"):
     # with collected brackets.
     l = []
     for seg in commas:
-
         # Split it in groups of reg-exps
         m = segment.findall(seg)[0]
 
@@ -89,8 +88,9 @@ def strmap(func, s, start=None, end=None, sep="b"):
 
         elif len(m[2]) > 0:
             # this is: ..[..]
-            l.append((strseq(func, m[2], start, end),
-                      strmap(func, m[3], start, end, sep)))
+            l.append(
+                (strseq(func, m[2], start, end), strmap(func, m[3], start, end, sep))
+            )
 
         elif len(m[4]) > 0:
             l.append(strseq(func, m[4], start, end))
@@ -99,7 +99,7 @@ def strmap(func, s, start=None, end=None, sep="b"):
 
 
 def strseq(cast, s, start=None, end=None):
-    """ Accept a string and return the casted tuples of content based on ranges.
+    """Accept a string and return the casted tuples of content based on ranges.
 
     Parameters
     ----------
@@ -154,14 +154,14 @@ def strseq(cast, s, start=None, end=None):
 
 
 def erange(start, step, end=None):
-    """ Returns the range with both ends includede """
+    """Returns the range with both ends includede"""
     if end is None:
         return range(start, step + 1)
     return range(start, end + 1, step)
 
 
 def lstranges(lst, cast=erange, end=None):
-    """ Convert a `strmap` list into expanded ranges """
+    """Convert a `strmap` list into expanded ranges"""
     l = []
     # If an entry is a tuple, it means it is either
     # a range 0-1 == tuple(0, 1), or
@@ -196,7 +196,7 @@ def lstranges(lst, cast=erange, end=None):
 
 
 def list2str(lst):
-    """ Convert a list of elements into a string of ranges
+    """Convert a list of elements into a string of ranges
 
     Examples
     --------
@@ -219,10 +219,10 @@ def list2str(lst):
         t += ln
         if ln == 1:
             rng += str(el)
-        #elif ln == 2:
+        # elif ln == 2:
         #    rng += "{}, {}".format(str(el), str(el+ln-1))
         else:
-            rng += "{}-{}".format(el, el+ln-1)
+            rng += "{}-{}".format(el, el + ln - 1)
     return rng
 
 
@@ -235,7 +235,7 @@ def list2str(lst):
 #   file[0-1] returns
 #     file, [0,1]
 def fileindex(f, cast=int):
-    """ Parses a filename string into the filename and the indices.
+    """Parses a filename string into the filename and the indices.
 
     This range can be formatted like this:
       file[1,2,3-6]

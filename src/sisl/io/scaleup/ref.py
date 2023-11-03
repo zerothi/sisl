@@ -12,22 +12,22 @@ from sisl.unit import unit_convert
 from ..sile import *
 from .sile import SileScaleUp
 
-__all__ = ['refSileScaleUp', 'restartSileScaleUp']
+__all__ = ["refSileScaleUp", "restartSileScaleUp"]
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
-Ang2Bohr = unit_convert('Ang', 'Bohr')
+Bohr2Ang = unit_convert("Bohr", "Ang")
+Ang2Bohr = unit_convert("Ang", "Bohr")
 
 
 class refSileScaleUp(SileScaleUp):
-    """ REF file object for ScaleUp """
+    """REF file object for ScaleUp"""
 
     @sile_fh_open()
     def read_lattice(self):
-        """ Reads a supercell from the Sile """
+        """Reads a supercell from the Sile"""
         # 1st line is number of supercells
         nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
-        self.readline() # natoms, nspecies
-        self.readline() # species
+        self.readline()  # natoms, nspecies
+        self.readline()  # species
         cell = _a.fromiterd(map(float, self.readline().split()[:9]))
         # Typically ScaleUp uses very large unit-cells
         # so supercells will typically be restricted to [3, 3, 3]
@@ -35,7 +35,7 @@ class refSileScaleUp(SileScaleUp):
 
     @sile_fh_open()
     def read_geometry(self, primary=False, **kwargs):
-        """ Reads a geometry from the Sile """
+        """Reads a geometry from the Sile"""
         # 1st line is number of supercells
         nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
         na, ns = map(int, self.readline().split()[:2])
@@ -61,15 +61,15 @@ class refSileScaleUp(SileScaleUp):
                 cell[2, :] /= nsc[2]
         except Exception:
             c = np.empty([3, 3], np.float64)
-            c[0, 0] = 1. + cell[0]
-            c[0, 1] = cell[5] / 2.
-            c[0, 2] = cell[4] / 2.
-            c[1, 0] = cell[5] / 2.
-            c[1, 1] = 1. + cell[1]
-            c[1, 2] = cell[3] / 2.
-            c[2, 0] = cell[4] / 2.
-            c[2, 1] = cell[3] / 2.
-            c[2, 2] = 1. + cell[2]
+            c[0, 0] = 1.0 + cell[0]
+            c[0, 1] = cell[5] / 2.0
+            c[0, 2] = cell[4] / 2.0
+            c[1, 0] = cell[5] / 2.0
+            c[1, 1] = 1.0 + cell[1]
+            c[1, 2] = cell[3] / 2.0
+            c[2, 0] = cell[4] / 2.0
+            c[2, 1] = cell[3] / 2.0
+            c[2, 2] = 1.0 + cell[2]
             cell = c * Ang2Bohr
         lattice = Lattice(cell * Bohr2Ang, nsc=nsc)
 
@@ -79,7 +79,6 @@ class refSileScaleUp(SileScaleUp):
 
         # Read the geometry
         for ia in range(na * ns):
-
             # Retrieve line
             #   ix  iy  iz  ia  is   x  y  z
             line = self.readline().split()
@@ -90,28 +89,28 @@ class refSileScaleUp(SileScaleUp):
         return Geometry(xyz * Bohr2Ang, atoms, lattice=lattice)
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='18.8e'):
-        """ Writes the geometry to the contained file """
+    def write_geometry(self, geometry, fmt="18.8e"):
+        """Writes the geometry to the contained file"""
         # Check that we can write to the file
         sile_raise_write(self)
 
         # 1st line is number of supercells
-        self._write('{:5d}{:5d}{:5d}\n'.format(*geometry.lattice.nsc // 2 + 1))
+        self._write("{:5d}{:5d}{:5d}\n".format(*geometry.lattice.nsc // 2 + 1))
         # natoms, nspecies
-        self._write('{:5d}{:5d}\n'.format(len(geometry), len(geometry.atoms.atom)))
+        self._write("{:5d}{:5d}\n".format(len(geometry), len(geometry.atoms.atom)))
 
-        s = ''
+        s = ""
         for a in geometry.atoms.atom:
             # Append the species label
-            s += f'{a.tag:<10}'
-        self._write(s + '\n')
+            s += f"{a.tag:<10}"
+        self._write(s + "\n")
 
-        fmt_str = f'{{:{fmt}}} ' * 9 + '\n'
-        self._write(fmt_str.format(*(geometry.cell*Ang2Bohr).reshape(-1)))
+        fmt_str = f"{{:{fmt}}} " * 9 + "\n"
+        self._write(fmt_str.format(*(geometry.cell * Ang2Bohr).reshape(-1)))
 
         # Create line
         #   ix  iy  iz  ia  is   x  y  z
-        line = '{:5d}{:5d}{:5d}{:5d}{:5d}' + f'{{:{fmt}}}' * 3 + '\n'
+        line = "{:5d}{:5d}{:5d}{:5d}{:5d}" + f"{{:{fmt}}}" * 3 + "\n"
 
         args = [None] * 8
         for _, isc in geometry.lattice:
@@ -120,7 +119,6 @@ class refSileScaleUp(SileScaleUp):
 
             # Write the geometry
             for ia in geometry:
-
                 args[0] = isc[0]
                 args[1] = isc[1]
                 args[2] = isc[2]
@@ -133,7 +131,7 @@ class refSileScaleUp(SileScaleUp):
                 self._write(line.format(*args))
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
@@ -141,10 +139,9 @@ class refSileScaleUp(SileScaleUp):
 
 # The restart file is _equivalent_ but with displacements
 class restartSileScaleUp(refSileScaleUp):
-
     @sile_fh_open()
     def read_geometry(self, *args, **kwargs):
-        """ Read geometry of the restart file
+        """Read geometry of the restart file
 
         This will also try and read the corresponding .REF file
         such that final coordinates are returned.
@@ -163,12 +160,13 @@ class restartSileScaleUp(refSileScaleUp):
 
         restart = super().read_geometry()
         if not ref is None:
-            restart.lattice = Lattice(np.dot(ref.lattice.cell, restart.lattice.cell.T),
-                                      nsc=restart.nsc)
+            restart.lattice = Lattice(
+                np.dot(ref.lattice.cell, restart.lattice.cell.T), nsc=restart.nsc
+            )
             restart.xyz += ref.xyz
 
         return restart
 
 
-add_sile('REF', refSileScaleUp, case=False, gzip=True)
-add_sile('restart', restartSileScaleUp, case=False, gzip=True)
+add_sile("REF", refSileScaleUp, case=False, gzip=True)
+add_sile("restart", restartSileScaleUp, case=False, gzip=True)

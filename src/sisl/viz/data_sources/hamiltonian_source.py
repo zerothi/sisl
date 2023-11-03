@@ -7,13 +7,12 @@ from .file.siesta import FileData
 
 
 class HamiltonianDataSource(DataSource):
-
     def __init__(self, H=None, kwargs={}):
         super().__init__(H=H, kwargs=kwargs)
 
     def get_hamiltonian(self, H, **kwargs):
-        """ Setup the Hamiltonian object.
-        
+        """Setup the Hamiltonian object.
+
         Parameters
         ----------
         H : sisl.Hamiltonian
@@ -29,6 +28,6 @@ class HamiltonianDataSource(DataSource):
             raise ValueError("No hamiltonian found.")
 
         return H
-    
+
     def function(self, H, kwargs):
         return self.get_hamiltonian(H=H, **kwargs)

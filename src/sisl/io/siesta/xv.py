@@ -10,19 +10,19 @@ from sisl.unit.siesta import unit_convert
 from ..sile import SileError, add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
-__all__ = ['xvSileSiesta']
+__all__ = ["xvSileSiesta"]
 
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 
 
 @set_module("sisl.io.siesta")
 class xvSileSiesta(SileSiesta):
-    """ Geometry file """
+    """Geometry file"""
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='.9f', velocity=None):
-        """ Writes the geometry to the contained file
+    def write_geometry(self, geometry, fmt=".9f", velocity=None):
+        """Writes the geometry to the contained file
 
         Parameters
         ----------
@@ -40,23 +40,25 @@ class xvSileSiesta(SileSiesta):
         if velocity is None:
             velocity = np.zeros([geometry.na, 3], np.float32)
         if geometry.xyz.shape != velocity.shape:
-            raise SileError(f'{self}.write_geometry requires the input'
-                            'velocity to have equal length to the input geometry.')
+            raise SileError(
+                f"{self}.write_geometry requires the input"
+                "velocity to have equal length to the input geometry."
+            )
 
         # Write unit-cell
         tmp = np.zeros(6, np.float64)
 
         # Create format string for the cell-parameters
-        fmt_str = ('   ' + ('{:' + fmt + '} ') * 3) * 2 + '\n'
+        fmt_str = ("   " + ("{:" + fmt + "} ") * 3) * 2 + "\n"
         for i in range(3):
             tmp[0:3] = geometry.cell[i, :] / Bohr2Ang
             self._write(fmt_str.format(*tmp))
-        self._write(f'{geometry.na:12d}\n')
+        self._write(f"{geometry.na:12d}\n")
 
         # Create format string for the atomic coordinates
-        fmt_str = '{:3d}{:6d} '
-        fmt_str += ('{:' + fmt + '} ') * 3 + '   '
-        fmt_str += ('{:' + fmt + '} ') * 3 + '\n'
+        fmt_str = "{:3d}{:6d} "
+        fmt_str += ("{:" + fmt + "} ") * 3 + "   "
+        fmt_str += ("{:" + fmt + "} ") * 3 + "\n"
         for ia, a, ips in geometry.iter_species():
             tmp[0:3] = geometry.xyz[ia, :] / Bohr2Ang
             tmp[3:] = velocity[ia, :] / Bohr2Ang
@@ -67,7 +69,7 @@ class xvSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_lattice(self):
-        """ Returns `Lattice` object from the XV file """
+        """Returns `Lattice` object from the XV file"""
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
@@ -78,7 +80,7 @@ class xvSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_geometry(self, velocity=False, species_Z=False):
-        """ Returns a `Geometry` object from the XV file
+        """Returns a `Geometry` object from the XV file
 
         Parameters
         ----------
@@ -134,11 +136,11 @@ class xvSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_velocity(self):
-        """ Returns an array with the velocities from the XV file
+        """Returns an array with the velocities from the XV file
 
         Returns
         -------
-        velocity : 
+        velocity :
         """
         self.read_lattice()
         na = int(self.readline())
@@ -153,10 +155,10 @@ class xvSileSiesta(SileSiesta):
     read_data = read_velocity
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-add_sile('XV', xvSileSiesta, gzip=True)
+add_sile("XV", xvSileSiesta, gzip=True)

@@ -21,12 +21,12 @@ from .messages import deprecation, info
 from .orbital import Orbital
 from .shape import Sphere
 
-__all__ = ['PeriodicTable', 'Atom', 'AtomUnknown', 'AtomGhost', 'Atoms']
+__all__ = ["PeriodicTable", "Atom", "AtomUnknown", "AtomGhost", "Atoms"]
 
 
 @set_module("sisl")
 class PeriodicTable:
-    r""" Periodic table for creating an `Atom`, or retrieval of atomic information via atomic numbers
+    r"""Periodic table for creating an `Atom`, or retrieval of atomic information via atomic numbers
 
     Enables *lookup* of atomic numbers/names/labels to get
     the atomic number.
@@ -800,7 +800,7 @@ class PeriodicTable:
     # fmt: on
 
     def Z(self, key):
-        """ Atomic number based on general input
+        """Atomic number based on general input
 
         Return the atomic number corresponding to the `key` lookup.
 
@@ -834,7 +834,7 @@ class PeriodicTable:
     Z_int = Z
 
     def Z_label(self, key):
-        """ Atomic label of the corresponding atom
+        """Atomic label of the corresponding atom
 
         Return the atomic short name corresponding to the `key` lookup.
 
@@ -859,7 +859,7 @@ class PeriodicTable:
     Z_short = Z_label
 
     def atomic_mass(self, key):
-        """ Atomic mass of the corresponding atom
+        """Atomic mass of the corresponding atom
 
         Return the atomic mass corresponding to the `key` lookup.
 
@@ -878,11 +878,11 @@ class PeriodicTable:
         Z = self.Z_int(key)
         get = self._atomic_mass.get
         if isinstance(Z, (Integral, Real)):
-            return get(Z, 0.)
+            return get(Z, 0.0)
         return _a.fromiterd(map(get, Z, iter(float, 1)))
 
-    def radius(self, key, method='calc'):
-        """ Atomic radii using different methods
+    def radius(self, key, method="calc"):
+        """Atomic radii using different methods
 
         Return the atomic radii.
 
@@ -908,7 +908,9 @@ class PeriodicTable:
         if isinstance(Z, Integral):
             return func(Z) / 100
         return _a.fromiterd(map(func, Z)) / 100
+
     radii = radius
+
 
 # Create a local instance of the periodic table to
 # faster look up
@@ -916,9 +918,10 @@ _ptbl = PeriodicTable()
 
 
 class AtomMeta(type):
-    """ Meta class for key-lookup on the class. """
+    """Meta class for key-lookup on the class."""
+
     def __getitem__(cls, key):
-        """ Create a new atom object """
+        """Create a new atom object"""
         if isinstance(key, Atom):
             # if the key already is an atomic object
             # return it
@@ -930,7 +933,7 @@ class AtomMeta(type):
         elif isinstance(key, (list, tuple)):
             # The key is a list,
             # we need to create a list of atoms
-            return [cls[k] for k in key] # pylint: disable=E1136
+            return [cls[k] for k in key]  # pylint: disable=E1136
         # Index Z based
         return cls(key)
 
@@ -940,14 +943,13 @@ class AtomMeta(type):
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
 @set_module("sisl")
-class Atom(_Dispatchs,
-           dispatchs=[("to",
-                       ClassDispatcher("to",
-                                       type_dispatcher=None))],
-           when_subclassing="keep",
-           metaclass=AtomMeta,
-           ):
-    """ Atomic information, mass, name number of orbitals and ranges
+class Atom(
+    _Dispatchs,
+    dispatchs=[("to", ClassDispatcher("to", type_dispatcher=None))],
+    when_subclassing="keep",
+    metaclass=AtomMeta,
+):
+    """Atomic information, mass, name number of orbitals and ranges
 
     Object to handle atomic mass, name, number of orbitals and
     orbital range.
@@ -974,8 +976,9 @@ class Atom(_Dispatchs,
         arbitrary designation for user handling similar atoms with
         different settings (defaults to the label of the atom)
     """
+
     def __new__(cls, *args, **kwargs):
-        """ Figure out which class to actually use """
+        """Figure out which class to actually use"""
         # Handle the case where no arguments are passed (e.g. for serializing stuff)
         if len(args) == 0 and "Z" not in kwargs:
             return super().__new__(cls)
@@ -1025,13 +1028,15 @@ class Atom(_Dispatchs,
 
         if self._orbitals is None:
             if orbitals is not None:
-                raise ValueError(f"{self.__class__.__name__}.__init__ got unparseable 'orbitals' argument: {orbitals}")
-            if 'R' in kwargs:
+                raise ValueError(
+                    f"{self.__class__.__name__}.__init__ got unparseable 'orbitals' argument: {orbitals}"
+                )
+            if "R" in kwargs:
                 # backwards compatibility (possibly remove this in the future)
-                R = _a.asarrayd(kwargs['R']).ravel()
+                R = _a.asarrayd(kwargs["R"]).ravel()
                 self._orbitals = [Orbital(r) for r in R]
             else:
-                self._orbitals = [Orbital(-1.)]
+                self._orbitals = [Orbital(-1.0)]
 
         if mass is None:
             self._mass = _ptbl.atomic_mass(self.Z)
@@ -1048,40 +1053,40 @@ class Atom(_Dispatchs,
 
     @property
     def Z(self) -> NDArray[np.int32]:
-        """ Atomic number """
+        """Atomic number"""
         return self._Z
 
     @property
     def orbitals(self):
-        """ List of orbitals """
+        """List of orbitals"""
         return self._orbitals
 
     @property
     def mass(self) -> NDArray[np.float64]:
-        """ Atomic mass """
+        """Atomic mass"""
         return self._mass
 
     @property
     def tag(self) -> str:
-        """ Tag for atom """
+        """Tag for atom"""
         return self._tag
 
     @property
     def no(self) -> int:
-        """ Number of orbitals on this atom """
+        """Number of orbitals on this atom"""
         return len(self.orbitals)
 
     def index(self, orbital):
-        """ Return the index of the orbital in the atom object """
+        """Return the index of the orbital in the atom object"""
         if not isinstance(orbital, Orbital):
             orbital = self[orbital]
         for i, o in enumerate(self.orbitals):
             if o == orbital:
                 return i
-        raise KeyError('Could not find `orbital` in the list of orbitals.')
+        raise KeyError("Could not find `orbital` in the list of orbitals.")
 
     def sub(self, orbitals):
-        """ Return the same atom with only a subset of the orbitals present
+        """Return the same atom with only a subset of the orbitals present
 
         Parameters
         ----------
@@ -1100,15 +1105,19 @@ class Atom(_Dispatchs,
         """
         orbitals = _a.arrayi(orbitals).ravel()
         if len(orbitals) > self.no:
-            raise ValueError(f"{self.__class__.__name__}.sub tries to remove more than the number of orbitals on an atom.")
+            raise ValueError(
+                f"{self.__class__.__name__}.sub tries to remove more than the number of orbitals on an atom."
+            )
         if np.any(orbitals >= self.no):
-            raise ValueError(f"{self.__class__.__name__}.sub tries to remove a non-existing orbital io > no.")
+            raise ValueError(
+                f"{self.__class__.__name__}.sub tries to remove a non-existing orbital io > no."
+            )
 
         orbs = [self.orbitals[o].copy() for o in orbitals]
         return self.copy(orbitals=orbs)
 
     def remove(self, orbitals):
-        """ Return the same atom without a specific set of orbitals
+        """Return the same atom without a specific set of orbitals
 
         Parameters
         ----------
@@ -1128,16 +1137,18 @@ class Atom(_Dispatchs,
         return self.sub(orbs)
 
     def copy(self, Z=None, orbitals=None, mass=None, tag=None):
-        """ Return copy of this object """
+        """Return copy of this object"""
         if orbitals is None:
             orbitals = [orb.copy() for orb in self]
-        return self.__class__(self.Z if Z is None else Z,
-                              orbitals,
-                              self.mass if mass is None else mass,
-                              self.tag if tag is None else tag)
+        return self.__class__(
+            self.Z if Z is None else Z,
+            orbitals,
+            self.mass if mass is None else mass,
+            self.tag if tag is None else tag,
+        )
 
-    def radius(self, method='calc'):
-        """ Return the atomic radii of the atom (in Ang)
+    def radius(self, method="calc"):
+        """Return the atomic radii of the atom (in Ang)
 
         See `PeriodicTable.radius` for details on the argument.
         """
@@ -1145,11 +1156,11 @@ class Atom(_Dispatchs,
 
     @property
     def symbol(self):
-        """ Return short atomic name (Au==79). """
+        """Return short atomic name (Au==79)."""
         return _ptbl.Z_short(self.Z)
 
     def __getitem__(self, key):
-        """ The orbital corresponding to index `key` """
+        """The orbital corresponding to index `key`"""
         if isinstance(key, slice):
             ol = key.indices(len(self))
             return [self.orbitals[o] for o in range(*ol)]
@@ -1164,14 +1175,14 @@ class Atom(_Dispatchs,
         return [self.orbitals[o] for o in key]
 
     def maxR(self):
-        """ Return the maximum range of orbitals. """
+        """Return the maximum range of orbitals."""
         mR = -1e10
         for o in self.orbitals:
             mR = max(mR, o.R)
         return mR
 
     def scale(self, scale):
-        """ Scale the atomic radii and return an equivalent atom.
+        """Scale the atomic radii and return an equivalent atom.
 
         Parameters
         ----------
@@ -1183,11 +1194,11 @@ class Atom(_Dispatchs,
         return new
 
     def __iter__(self):
-        """ Loop on all orbitals in this atom """
+        """Loop on all orbitals in this atom"""
         yield from self.orbitals
 
     def iter(self, group=False):
-        """ Loop on all orbitals in this atom
+        """Loop on all orbitals in this atom
 
         Parameters
         ----------
@@ -1219,18 +1230,23 @@ class Atom(_Dispatchs,
 
     def __str__(self):
         # Create orbitals output
-        orbs = ',\n '.join([str(o) for o in self.orbitals])
-        return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
+        orbs = ",\n ".join([str(o) for o in self.orbitals])
+        return (
+            self.__class__.__name__
+            + "{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}".format(
+                self.tag, self.Z, self.mass, self.maxR(), orbs
+            )
+        )
 
     def __repr__(self):
         return f"<{self.__module__}.{self.__class__.__name__} {self.tag}, Z={self.Z}, M={self.mass}, maxR={self.maxR()}, no={len(self.orbitals)}>"
 
     def __len__(self):
-        """ Return number of orbitals in this atom """
+        """Return number of orbitals in this atom"""
         return self.no
 
     def __getattr__(self, attr):
-        """ Pass attribute calls to the orbital classes and return lists/array
+        """Pass attribute calls to the orbital classes and return lists/array
 
         Parameters
         ----------
@@ -1254,7 +1270,9 @@ class Atom(_Dispatchs,
 
         if found == 0:
             # we never got any values, reraise the AttributeError
-            raise AttributeError(f"'{self.__class__.__name__}.orbitals' objects has no attribute '{attr}'")
+            raise AttributeError(
+                f"'{self.__class__.__name__}.orbitals' objects has no attribute '{attr}'"
+            )
 
         # Now parse the data, currently we'll only allow Integral, Real, Complex
         if is_Integral:
@@ -1265,11 +1283,13 @@ class Atom(_Dispatchs,
         elif is_Real:
             for io in range(len(vals)):
                 if vals[io] is None:
-                    vals[io] = 0.
+                    vals[io] = 0.0
             return _a.arrayd(vals)
         elif is_callable:
+
             def _ret_none(*args, **kwargs):
                 return None
+
             for io in range(len(vals)):
                 if vals[io] is None:
                     vals[io] = _ret_none
@@ -1278,16 +1298,20 @@ class Atom(_Dispatchs,
             class ArrayCall:
                 def __init__(self, methods):
                     self.methods = methods
+
                 def __call__(self, *args, **kwargs):
                     return [m(*args, **kwargs) for m in self.methods]
+
             return ArrayCall(vals)
 
         # We don't know how to handle this, simply return...
         return vals
 
-    @deprecation("toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+    )
     def toSphere(self, center=None):
-        """ Return a sphere with the maximum orbital radius equal
+        """Return a sphere with the maximum orbital radius equal
 
         Returns
         -------
@@ -1297,7 +1321,7 @@ class Atom(_Dispatchs,
         return self.to.Sphere(center=center)
 
     def equal(self, other, R=True, psi=False):
-        """ True if `other` is the same as this atomic specie
+        """True if `other` is the same as this atomic specie
 
         Parameters
         ----------
@@ -1313,14 +1337,19 @@ class Atom(_Dispatchs,
         same = self.Z == other.Z
         same &= self.no == other.no
         if same and R:
-            same &= all([self.orbitals[i].equal(other.orbitals[i], psi=psi) for i in range(self.no)])
+            same &= all(
+                [
+                    self.orbitals[i].equal(other.orbitals[i], psi=psi)
+                    for i in range(self.no)
+                ]
+            )
         same &= np.isclose(self.mass, other.mass)
         same &= self.tag == other.tag
         return same
 
     # Check whether they are equal
     def __eq__(self, b):
-        """ Return true if the saved quantities are the same """
+        """Return true if the saved quantities are the same"""
         return self.equal(b)
 
     def __ne__(self, b):
@@ -1328,18 +1357,23 @@ class Atom(_Dispatchs,
 
     # Create pickling routines
     def __getstate__(self):
-        """ Return the state of this object """
-        return {'Z': self.Z, 'orbitals': self.orbitals, 'mass': self.mass, 'tag': self.tag}
+        """Return the state of this object"""
+        return {
+            "Z": self.Z,
+            "orbitals": self.orbitals,
+            "mass": self.mass,
+            "tag": self.tag,
+        }
 
     def __setstate__(self, d):
-        """ Re-create the state of this object """
-        self.__init__(d['Z'], d['orbitals'], d['mass'], d['tag'])
+        """Re-create the state of this object"""
+        self.__init__(d["Z"], d["orbitals"], d["mass"], d["tag"])
 
 
 @set_module("sisl")
 class AtomUnknown(Atom):
     def __init__(self, Z, *args, **kwargs):
-        """ Instantiate with overridden tag """
+        """Instantiate with overridden tag"""
         if len(args) < 3 and "tag" not in kwargs:
             kwargs["tag"] = "unknown"
         super().__init__(Z, *args, **kwargs)
@@ -1348,9 +1382,9 @@ class AtomUnknown(Atom):
 @set_module("sisl")
 class AtomGhost(AtomUnknown):
     def __init__(self, Z, *args, **kwargs):
-        """ Instantiate with overridden tag and taking the absolute value of Z """
+        """Instantiate with overridden tag and taking the absolute value of Z"""
         if Z < 0:
-            Z = - Z
+            Z = -Z
         if len(args) < 3 and "tag" not in kwargs:
             kwargs["tag"] = "ghost"
         if len(args) < 2 and "mass" not in kwargs:
@@ -1360,18 +1394,23 @@ class AtomGhost(AtomUnknown):
 
 
 class AtomToDispatch(AbstractDispatch):
-    """ Base dispatcher from class passing from an Atom class """
+    """Base dispatcher from class passing from an Atom class"""
+
 
 to_dispatch = Atom.to
+
+
 class ToSphereDispatch(AtomToDispatch):
     def dispatch(self, *args, center=None, **kwargs):
         return Sphere(self._get_object().maxR(), center)
+
+
 to_dispatch.register("Sphere", ToSphereDispatch)
 
 
 @set_module("sisl")
 class Atoms:
-    """ A list-like object to contain a list of different atoms with minimum
+    """A list-like object to contain a list of different atoms with minimum
     data duplication.
 
     This holds multiple `Atom` objects which are indexed via a species
@@ -1400,7 +1439,7 @@ class Atoms:
 
     Creating a set of 4 atoms, 2 Hydrogen, 2 Helium, in an alternate
     ordere
-    
+
     >>> Z = [1, 2, 1, 2]
     >>> atoms = Atoms(Z)
 
@@ -1414,7 +1453,6 @@ class Atoms:
     __slots__ = ("_atom", "_specie", "_firsto")
 
     def __init__(self, atoms="H", na=None):
-
         # Default value of the atom object
         if atoms is None:
             atoms = Atom("H")
@@ -1470,13 +1508,13 @@ class Atoms:
         self._update_orbitals()
 
     def _update_orbitals(self):
-        """ Internal routine for updating the `firsto` attribute """
+        """Internal routine for updating the `firsto` attribute"""
         # Get number of orbitals per specie
         uorbs = _a.arrayi([a.no for a in self.atom])
         self._firsto = np.insert(_a.cumsumi(uorbs[self.specie]), 0, 0)
 
     def copy(self):
-        """ Return a copy of this atom """
+        """Return a copy of this atom"""
         atoms = Atoms()
         atoms._atom = [a.copy() for a in self._atom]
         atoms._specie = np.copy(self._specie)
@@ -1485,48 +1523,48 @@ class Atoms:
 
     @property
     def atom(self):
-        """ List of unique atoms in this group of atoms """
+        """List of unique atoms in this group of atoms"""
         return self._atom
 
     @property
     def nspecie(self):
-        """ Number of different species """
+        """Number of different species"""
         return len(self._atom)
 
     @property
     def specie(self):
-        """ List of atomic species """
+        """List of atomic species"""
         return self._specie
 
     @property
     def no(self):
-        """ Total number of orbitals in this list of atoms """
+        """Total number of orbitals in this list of atoms"""
         uorbs = _a.arrayi([a.no for a in self.atom])
         return uorbs[self.specie].sum()
 
     @property
     def orbitals(self):
-        """ Array of orbitals of the contained objects """
+        """Array of orbitals of the contained objects"""
         return np.diff(self.firsto)
 
     @property
     def firsto(self):
-        """ First orbital of the corresponding atom in the consecutive list of orbitals """
+        """First orbital of the corresponding atom in the consecutive list of orbitals"""
         return self._firsto
 
     @property
     def lasto(self):
-        """ Last orbital of the corresponding atom in the consecutive list of orbitals """
+        """Last orbital of the corresponding atom in the consecutive list of orbitals"""
         return self._firsto[1:] - 1
 
     @property
     def q0(self):
-        """ Initial charge per atom """
+        """Initial charge per atom"""
         q0 = _a.arrayd([a.q0.sum() for a in self.atom])
         return q0[self.specie]
 
     def orbital(self, io):
-        """ Return an array of orbital of the contained objects """
+        """Return an array of orbital of the contained objects"""
         io = _a.asarrayi(io)
         ndim = io.ndim
         io = io.ravel() % self.no
@@ -1539,7 +1577,7 @@ class Atoms:
         return [self.atom[ia].orbitals[o] for ia, o in zip(a, io)]
 
     def maxR(self, all=False):
-        """ The maximum radius of the atoms
+        """The maximum radius of the atoms
 
         Parameters
         ----------
@@ -1555,18 +1593,18 @@ class Atoms:
 
     @property
     def mass(self):
-        """ Array of masses of the contained objects """
+        """Array of masses of the contained objects"""
         umass = _a.arrayd([a.mass for a in self.atom])
         return umass[self.specie[:]]
 
     @property
     def Z(self):
-        """ Array of atomic numbers """
+        """Array of atomic numbers"""
         uZ = _a.arrayi([a.Z for a in self.atom])
         return uZ[self.specie[:]]
 
     def scale(self, scale):
-        """ Scale the atomic radii and return an equivalent atom.
+        """Scale the atomic radii and return an equivalent atom.
 
         Parameters
         ----------
@@ -1579,20 +1617,20 @@ class Atoms:
         return atoms
 
     def index(self, atom):
-        """ Return the indices of the atom object """
+        """Return the indices of the atom object"""
         return (self._specie == self.specie_index(atom)).nonzero()[0]
 
     def specie_index(self, atom):
-        """ Return the species index of the atom object """
+        """Return the species index of the atom object"""
         if not isinstance(atom, Atom):
             atom = self[atom]
         for s, a in enumerate(self.atom):
             if a == atom:
                 return s
-        raise KeyError('Could not find `atom` in the list of atoms.')
+        raise KeyError("Could not find `atom` in the list of atoms.")
 
     def group_atom_data(self, data, axis=0):
-        r""" Group data for each atom based on number of orbitals
+        r"""Group data for each atom based on number of orbitals
 
         This is useful for grouping data that is orbitally resolved.
         This will return a list of length ``len(self)`` and with each item
@@ -1619,7 +1657,7 @@ class Atoms:
         return np.split(data, self.lasto[:-1] + 1, axis=axis)
 
     def reorder(self, in_place=False):
-        """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists)
+        """Reorders the atoms and species index so that they are ascending (starting with a specie that exists)
 
         Parameters
         ----------
@@ -1674,6 +1712,7 @@ class Atoms:
         if systeml == "hill":
             # sort lexographically
             symbols = sorted(c.keys())
+
             def parse(symbol_c):
                 symbol, c = symbol_c
                 if c == 1:
@@ -1682,10 +1721,12 @@ class Atoms:
 
             return "".join(map(parse, sorted(c.items())))
 
-        raise ValueError(f"{self.__class__.__name__}.formula got unrecognized argument 'system' {system}")
+        raise ValueError(
+            f"{self.__class__.__name__}.formula got unrecognized argument 'system' {system}"
+        )
 
     def reduce(self, in_place=False):
-        """ Returns a new `Atoms` object by removing non-used atoms """
+        """Returns a new `Atoms` object by removing non-used atoms"""
         if in_place:
             atoms = self
         else:
@@ -1710,7 +1751,7 @@ class Atoms:
         return atoms
 
     def sub(self, atoms):
-        """ Return a subset of the list """
+        """Return a subset of the list"""
         atoms = _a.asarrayi(atoms).ravel()
         new_atoms = Atoms()
         new_atoms._atom = self._atom[:]
@@ -1719,27 +1760,27 @@ class Atoms:
         return new_atoms
 
     def remove(self, atoms):
-        """ Remove a set of atoms """
+        """Remove a set of atoms"""
         atoms = _a.asarrayi(atoms).ravel()
         idx = np.setdiff1d(np.arange(len(self)), atoms, assume_unique=True)
         return self.sub(idx)
 
     def tile(self, reps):
-        """ Tile this atom object """
+        """Tile this atom object"""
         atoms = self.copy()
         atoms._specie = np.tile(atoms._specie, reps)
         atoms._update_orbitals()
         return atoms
 
     def repeat(self, reps):
-        """ Repeat this atom object """
+        """Repeat this atom object"""
         atoms = self.copy()
         atoms._specie = np.repeat(atoms._specie, reps)
         atoms._update_orbitals()
         return atoms
 
     def swap(self, a, b):
-        """ Swaps all atoms """
+        """Swaps all atoms"""
         a = _a.asarrayi(a)
         b = _a.asarrayi(b)
         atoms = self.copy()
@@ -1750,7 +1791,7 @@ class Atoms:
         return atoms
 
     def swap_atom(self, a, b):
-        """ Swap specie index positions """
+        """Swap specie index positions"""
         speciea = self.specie_index(a)
         specieb = self.specie_index(b)
 
@@ -1758,14 +1799,17 @@ class Atoms:
         idx_b = (self._specie == specieb).nonzero()[0]
 
         atoms = self.copy()
-        atoms._atom[speciea], atoms._atom[specieb] = atoms._atom[specieb], atoms._atom[speciea]
+        atoms._atom[speciea], atoms._atom[specieb] = (
+            atoms._atom[specieb],
+            atoms._atom[speciea],
+        )
         atoms._specie[idx_a] = specieb
         atoms._specie[idx_b] = speciea
         atoms._update_orbitals()
         return atoms
 
     def append(self, other):
-        """ Append `other` to this list of atoms and return the appended version
+        """Append `other` to this list of atoms and return the appended version
 
         Parameters
         ----------
@@ -1801,7 +1845,7 @@ class Atoms:
         return other.append(self)
 
     def reverse(self, atoms=None):
-        """ Returns a reversed geometry
+        """Returns a reversed geometry
 
         Also enables reversing a subset of the atoms.
         """
@@ -1814,7 +1858,7 @@ class Atoms:
         return copy
 
     def insert(self, index, other):
-        """ Insert other atoms into the list of atoms at index """
+        """Insert other atoms into the list of atoms at index"""
         if isinstance(other, Atom):
             other = Atoms(other)
         else:
@@ -1836,21 +1880,21 @@ class Atoms:
         return atoms
 
     def __str__(self):
-        """ Return the `Atoms` in str """
+        """Return the `Atoms` in str"""
         s = f"{self.__class__.__name__}{{species: {len(self._atom)},\n"
         for a, idx in self.iter(True):
-            s += ' {1}: {0},\n'.format(len(idx), str(a).replace('\n', '\n '))
+            s += " {1}: {0},\n".format(len(idx), str(a).replace("\n", "\n "))
         return f"{s}}}"
 
     def __repr__(self):
         return f"<{self.__module__}.{self.__class__.__name__} nspecies={len(self._atom)}, na={len(self)}, no={self.no}>"
 
     def __len__(self):
-        """ Return number of atoms in the object """
+        """Return number of atoms in the object"""
         return len(self._specie)
 
     def iter(self, species=False):
-        """ Loop on all atoms
+        """Loop on all atoms
 
         This iterator may be used in two contexts:
 
@@ -1874,15 +1918,15 @@ class Atoms:
                 yield self._atom[s]
 
     def __iter__(self):
-        """ Loop on all atoms with the same specie in order of atoms """
+        """Loop on all atoms with the same specie in order of atoms"""
         yield from self.iter()
 
     def __contains__(self, key):
-        """ Determine whether the `key` is in the unique atoms list """
+        """Determine whether the `key` is in the unique atoms list"""
         return key in self.atom
 
     def __getitem__(self, key):
-        """ Return an `Atom` object corresponding to the key(s) """
+        """Return an `Atom` object corresponding to the key(s)"""
         if isinstance(key, slice):
             sl = key.indices(len(self))
             return [self.atom[self._specie[s]] for s in range(sl[0], sl[1], sl[2])]
@@ -1899,8 +1943,8 @@ class Atoms:
         return [self.atom[i] for i in self._specie[key]]
 
     def __setitem__(self, key, value):
-        """ Overwrite an `Atom` object corresponding to the key(s) """
-        #If key is a string, we replace the atom that matches 'key'
+        """Overwrite an `Atom` object corresponding to the key(s)"""
+        # If key is a string, we replace the atom that matches 'key'
         if isinstance(key, str):
             self.replace_atom(self[key], value)
             return
@@ -1928,7 +1972,7 @@ class Atoms:
         self._update_orbitals()
 
     def replace(self, index, atom):
-        """ Replace all atomic indices `index` with the atom `atom` (in-place)
+        """Replace all atomic indices `index` with the atom `atom` (in-place)
 
         This is the preferred way of replacing atoms in geometries.
 
@@ -1944,8 +1988,10 @@ class Atoms:
             self.replace_atom(index, atom)
             return
         if not isinstance(atom, Atom):
-            raise TypeError(f"{self.__class__.__name__}.replace requires input arguments to "
-                            "be of the type Atom")
+            raise TypeError(
+                f"{self.__class__.__name__}.replace requires input arguments to "
+                "be of the type Atom"
+            )
         index = _a.asarrayi(index).ravel()
 
         # Be sure to add the atom
@@ -1959,15 +2005,17 @@ class Atoms:
         for ius in np.unique(self._specie[index]):
             a = self._atom[ius]
             if a.no != atom.no:
-                a1 = '  ' + str(a).replace('\n', '\n  ')
-                a2 = '  ' + str(atom).replace('\n', '\n  ')
-                info(f'Substituting atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!')
+                a1 = "  " + str(a).replace("\n", "\n  ")
+                a2 = "  " + str(atom).replace("\n", "\n  ")
+                info(
+                    f"Substituting atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!"
+                )
         self._specie[index] = specie
         # Update orbital counts...
         self._update_orbitals()
 
     def replace_atom(self, atom_from, atom_to):
-        """ Replace all atoms equivalent to `atom_from` with `atom_to` (in-place)
+        """Replace all atoms equivalent to `atom_from` with `atom_to` (in-place)
 
         I.e. this is the preferred way of adapting all atoms of a specific type
         with another one.
@@ -1991,11 +2039,15 @@ class Atoms:
            if the atoms does not have the same number of orbitals.
         """
         if not isinstance(atom_from, Atom):
-            raise TypeError(f"{self.__class__.__name__}.replace_atom requires input arguments to "
-                             "be of the class Atom")
+            raise TypeError(
+                f"{self.__class__.__name__}.replace_atom requires input arguments to "
+                "be of the class Atom"
+            )
         if not isinstance(atom_to, Atom):
-            raise TypeError(f"{self.__class__.__name__}.replace_atom requires input arguments to "
-                             "be of the class Atom")
+            raise TypeError(
+                f"{self.__class__.__name__}.replace_atom requires input arguments to "
+                "be of the class Atom"
+            )
 
         # Get index of `atom_from`
         idx_from = self.specie_index(atom_from)
@@ -2016,15 +2068,17 @@ class Atoms:
             self._atom[idx_from] = atom_to
 
         if atom_from.no != atom_to.no:
-            a1 = '  ' + str(atom_from).replace('\n', '\n  ')
-            a2 = '  ' + str(atom_to).replace('\n', '\n  ')
-            info(f'Replacing atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!')
+            a1 = "  " + str(atom_from).replace("\n", "\n  ")
+            a2 = "  " + str(atom_to).replace("\n", "\n  ")
+            info(
+                f"Replacing atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!"
+            )
 
             # Update orbital counts...
             self._update_orbitals()
 
     def hassame(self, other, R=True):
-        """ True if the contained atoms are the same in the two lists
+        """True if the contained atoms are the same in the two lists
 
         Notes
         -----
@@ -2055,7 +2109,7 @@ class Atoms:
         return True
 
     def equal(self, other, R=True):
-        """ True if the contained atoms are the same in the two lists (also checks indices)
+        """True if the contained atoms are the same in the two lists (also checks indices)
 
         Parameters
         ----------
@@ -2078,8 +2132,10 @@ class Atoms:
                 if is_in == -1:
                     return False
                 # We should check that they also have the same indices
-                if not np.all(np.nonzero(self.specie == iA)[0] \
-                              == np.nonzero(other.specie == is_in)[0]):
+                if not np.all(
+                    np.nonzero(self.specie == iA)[0]
+                    == np.nonzero(other.specie == is_in)[0]
+                ):
                     return False
         else:
             for iB, B in enumerate(other.atom):
@@ -2091,23 +2147,24 @@ class Atoms:
                 if is_in == -1:
                     return False
                 # We should check that they also have the same indices
-                if not np.all(np.nonzero(other.specie == iB)[0] \
-                              == np.nonzero(self.specie == is_in)[0]):
+                if not np.all(
+                    np.nonzero(other.specie == iB)[0]
+                    == np.nonzero(self.specie == is_in)[0]
+                ):
                     return False
         return True
 
     def __eq__(self, b):
-        """ Returns true if the contained atoms are the same """
+        """Returns true if the contained atoms are the same"""
         return self.equal(b)
 
     # Create pickling routines
     def __getstate__(self):
-        """ Return the state of this object """
-        return {'atom': self.atom,
-                'specie': self.specie}
+        """Return the state of this object"""
+        return {"atom": self.atom, "specie": self.specie}
 
     def __setstate__(self, d):
-        """ Re-create the state of this object """
+        """Re-create the state of this object"""
         self.__init__()
-        self._atom = d['atom']
-        self._specie = d['specie']
+        self._atom = d["atom"]
+        self._specie = d["specie"]

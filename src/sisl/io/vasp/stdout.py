@@ -19,46 +19,72 @@ _A = SileVASP.InfoAttr
 
 @set_module("sisl.io.vasp")
 class stdoutSileVASP(SileVASP):
-    """ Output file from VASP """
+    """Output file from VASP"""
 
     _info_attributes_ = [
-        _A("completed", r".*General timing and accounting",
-           lambda attr, match: lambda : True, default=lambda : False),
-        _A("accuracy_reached", r".*reached required accuracy",
-           lambda attr, match: lambda : True, default=lambda : False),
+        _A(
+            "completed",
+            r".*General timing and accounting",
+            lambda attr, match: lambda: True,
+            default=lambda: False,
+        ),
+        _A(
+            "accuracy_reached",
+            r".*reached required accuracy",
+            lambda attr, match: lambda: True,
+            default=lambda: False,
+        ),
     ]
 
-    @deprecation("stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed", "0.16.0")
+    @deprecation(
+        "stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed",
+        "0.16.0",
+    )
     def completed(self):
-        """ True if the line "General timing and accounting" was found. """
+        """True if the line "General timing and accounting" was found."""
         return self.info.completed()
 
-    @deprecation("stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached", "0.16.0")
+    @deprecation(
+        "stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached",
+        "0.16.0",
+    )
     def accuracy_reached(self):
-        """ True if the line "reached required accuracy" was found. """
+        """True if the line "reached required accuracy" was found."""
         return self.info.accuracy_reached()
 
     @sile_fh_open()
     def cpu_time(self, flag="General timing and accounting"):
-        """ Returns the consumed cpu time (in seconds) from a given section """
+        """Returns the consumed cpu time (in seconds) from a given section"""
         if flag == "General timing and accounting":
             nskip, iplace = 3, 5
         else:
-            raise ValueError(f"{self.__class__.__name__}.cpu_time unknown flag '{flag}'")
+            raise ValueError(
+                f"{self.__class__.__name__}.cpu_time unknown flag '{flag}'"
+            )
 
         found = self.step_to(flag, allow_reread=False)[0]
         if found:
             for _ in range(nskip):
                 line = self.readline()
             return float(line.split()[iplace])
-        raise KeyError(f"{self.__class__.__name__}.cpu_time could not find flag '{flag}' in file")
+        raise KeyError(
+            f"{self.__class__.__name__}.cpu_time could not find flag '{flag}' in file"
+        )
 
     @SileBinder()
     @sile_fh_open()
-    @deprecate_argument("all", None, "use read_energy[:]() instead to get all entries", from_version="0.14")
-    @deprecation("WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.", from_version="0.14")
+    @deprecate_argument(
+        "all",
+        None,
+        "use read_energy[:]() instead to get all entries",
+        from_version="0.14",
+    )
+    @deprecation(
+        "WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.",
+        from_version="0.14",
+    )
     def read_energy(self):
-        """ Reads an energy specification block from OUTCAR
+        """Reads an energy specification block from OUTCAR
 
         The function steps to the next occurrence of the "Free energy of the ion-electron system" segment
 
@@ -101,10 +127,12 @@ class stdoutSileVASP(SileVASP):
         }
 
         # read the energy tables
-        f = self.step_to("Free energy of the ion-electron system", allow_reread=False)[0]
+        f = self.step_to("Free energy of the ion-electron system", allow_reread=False)[
+            0
+        ]
         if not f:
             return None
-        self.readline() # -----
+        self.readline()  # -----
         line = self.readline()
         E = PropertyDict()
         while "----" not in line:
@@ -127,7 +155,7 @@ class stdoutSileVASP(SileVASP):
     @SileBinder()
     @sile_fh_open()
     def read_trajectory(self):
-        """ Reads cell+position+force data from OUTCAR for an ionic trajectory step
+        """Reads cell+position+force data from OUTCAR for an ionic trajectory step
 
         The function steps to the block defined by the "VOLUME and BASIS-vectors are now :"
         line to first read the cell vectors, then it steps to the "TOTAL-FORCE (eV/Angst)" segment
@@ -142,17 +170,17 @@ class stdoutSileVASP(SileVASP):
         if not f:
             return None
         for i in range(4):
-            self.readline() # skip 4 lines
+            self.readline()  # skip 4 lines
         C = []
         for i in range(3):
             line = self.readline()
             v = line.split()
-            C.append(v[:3]) # direct lattice vectors
+            C.append(v[:3])  # direct lattice vectors
         # read a position-force table
         f = self.step_to("TOTAL-FORCE (eV/Angst)", allow_reread=False)[0]
         if not f:
             return None
-        self.readline() # -----
+        self.readline()  # -----
         P, F = [], []
         line = self.readline()
         while "----" not in line:
@@ -168,7 +196,9 @@ class stdoutSileVASP(SileVASP):
         return step
 
 
-outSileVASP = deprecation("outSileVASP has been deprecated in favor of stdoutSileVASP.", "0.15")(stdoutSileVASP)
+outSileVASP = deprecation(
+    "outSileVASP has been deprecated in favor of stdoutSileVASP.", "0.15"
+)(stdoutSileVASP)
 
 add_sile("OUTCAR", stdoutSileVASP, gzip=True)
 add_sile("vasp.out", stdoutSileVASP, case=False, gzip=True)

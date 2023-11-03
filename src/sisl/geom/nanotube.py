@@ -10,14 +10,12 @@ from sisl._internal import set_module
 
 from ._common import geometry_define_nsc
 
-__all__ = ['nanotube']
+__all__ = ["nanotube"]
 
 
 @set_module("sisl.geom")
-def nanotube(bond: float,
-             atoms=None,
-             chirality: Tuple[int, int]=(1, 1)):
-    """ Nanotube with user-defined chirality.
+def nanotube(bond: float, atoms=None, chirality: Tuple[int, int] = (1, 1)):
+    """Nanotube with user-defined chirality.
 
     This routine is implemented as in `ASE`_ with some cosmetic changes.
 
@@ -41,10 +39,10 @@ def nanotube(bond: float,
     else:
         sign = 1
 
-    sq3 = 3.0 ** .5
+    sq3 = 3.0**0.5
     a = sq3 * bond
     l2 = n * n + m * m + n * m
-    l = l2 ** .5
+    l = l2**0.5
 
     def gcd(a, b):
         while a != 0:
@@ -81,15 +79,15 @@ def nanotube(bond: float,
                     nnq.append(j)
 
     if ichk == 0:
-        raise RuntimeError('not found p, q strange!!')
+        raise RuntimeError("not found p, q strange!!")
     if ichk >= 2:
-        raise RuntimeError('more than 1 pair p, q strange!!')
+        raise RuntimeError("more than 1 pair p, q strange!!")
 
     nnnp = nnp[0]
     nnnq = nnq[0]
 
     lp = nnnp * nnnp + nnnq * nnnq + nnnp * nnnq
-    r = a * lp ** .5
+    r = a * lp**0.5
     c = a * l
     t = sq3 * c / ndr
 
@@ -105,7 +103,7 @@ def nanotube(bond: float,
     h1 = abs(t) / abs(np.sin(q3))
     h2 = bond * np.sin((np.pi / 6.0) - q1)
 
-    xyz = np.empty([nn*2, 3], np.float64)
+    xyz = np.empty([nn * 2, 3], np.float64)
     for i in range(nn):
         ix = i * 2
 

@@ -12,7 +12,7 @@ pytestmark = [pytest.mark.physics, pytest.mark.bloch]
 
 
 def get_H():
-    s = geom.sc(1., Atom(1, 1.001))
+    s = geom.sc(1.0, Atom(1, 1.001))
     H = Hamiltonian(s)
     H.construct([(0.1, 1.001), (0.1, 0.5)])
     return H.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -29,7 +29,7 @@ def test_bloch_create(nx, ny, nz):
 
 def test_bloch_method():
     b = Bloch([1] * 3)
-    assert 'Bloch' in str(b)
+    assert "Bloch" in str(b)
 
 
 def test_bloch_call():
@@ -38,11 +38,11 @@ def test_bloch_call():
 
     # Manual
     k_unfold = b.unfold_points([0] * 3)
-    m = b.unfold(np.stack([H.Hk(k, format='array') for k in k_unfold]), k_unfold)
-    m1 = b.unfold([H.Hk(k, format='array') for k in k_unfold], k_unfold)
+    m = b.unfold(np.stack([H.Hk(k, format="array") for k in k_unfold]), k_unfold)
+    m1 = b.unfold([H.Hk(k, format="array") for k in k_unfold], k_unfold)
 
     assert np.allclose(m, m1)
-    assert np.allclose(m, b(H.Hk, [0] * 3, format='array'))
+    assert np.allclose(m, b(H.Hk, [0] * 3, format="array"))
 
 
 @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
@@ -67,9 +67,9 @@ def test_bloch_H_same(nx, ny, nz, dtype):
         K = [kx, ky, kz]
         k_unfold = b.unfold_points(K)
 
-        HK = [H.Hk(k, format='array', dtype=dtype) for k in k_unfold]
+        HK = [H.Hk(k, format="array", dtype=dtype) for k in k_unfold]
         H_unfold = b.unfold(HK, k_unfold)
-        H_big = HB.Hk(K, format='array', dtype=dtype)
+        H_big = HB.Hk(K, format="array", dtype=dtype)
 
         assert np.allclose(H_big, H_big.T.conj(), atol=atol)
         assert np.allclose(H_unfold, H_unfold.T.conj(), atol=atol)

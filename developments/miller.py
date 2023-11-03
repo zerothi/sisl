@@ -60,13 +60,13 @@ def get_miller(rcell, hkl):
     r0, t0, p0 = si.utils.math.cart2spher(v0)
     # Create a rotation matrix that rotates the first vector to be along the
     # first lattice.
-    q0 = si.Quaternion(-p0, [0, 0, 1.], True)
-    q1 = si.Quaternion(-t0, [1., 0, 0], True)
+    q0 = si.Quaternion(-p0, [0, 0, 1.0], True)
+    q1 = si.Quaternion(-t0, [1.0, 0, 0], True)
     q = q0 * q1
     rv = q.rotate(rv)
     # Remove too small numbers
     rv = np.where(np.abs(rv) < 1e-10, 0, rv)
-    v = np.linalg.inv(rv) * 2. * np.pi
+    v = np.linalg.inv(rv) * 2.0 * np.pi
     print(v)
 
     return q.rotate(v)

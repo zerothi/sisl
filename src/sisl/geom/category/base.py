@@ -19,8 +19,10 @@ def _sanitize_loop(func):
         if atoms.ndim == 0:
             return func(self, geometry, atoms)
         return [func(self, geometry, ia) for ia in atoms]
+
     return loop_func
 
-#class AtomCategory(Category)
+
+# class AtomCategory(Category)
 # is defined in sisl/geometry.py since it is required in
 # that instance.

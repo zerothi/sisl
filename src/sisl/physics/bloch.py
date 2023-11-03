@@ -17,7 +17,7 @@ from sisl._internal import set_module
 
 from ._bloch import bloch_unfold
 
-__all__ = ['Bloch']
+__all__ = ["Bloch"]
 
 
 @set_module("sisl.physics")
@@ -64,30 +64,34 @@ class Bloch:
     """
 
     def __init__(self, *bloch):
-        """ Create `Bloch` object """
+        """Create `Bloch` object"""
         self._bloch = _a.arrayi(bloch).ravel()
-        self._bloch = np.where(self._bloch < 1, 1, self._bloch).astype(np.int32, copy=False)
+        self._bloch = np.where(self._bloch < 1, 1, self._bloch).astype(
+            np.int32, copy=False
+        )
         if len(self._bloch) != 3:
-            raise ValueError(self.__class__.__name__ + ' requires 3 input values')
+            raise ValueError(self.__class__.__name__ + " requires 3 input values")
         if np.any(self._bloch < 1):
-            raise ValueError(self.__class__.__name__ + ' requires all unfoldings to be larger than 0')
+            raise ValueError(
+                self.__class__.__name__ + " requires all unfoldings to be larger than 0"
+            )
 
     def __len__(self):
-        """ Return unfolded size """
+        """Return unfolded size"""
         return np.prod(self.bloch)
 
     def __str__(self):
-        """ Representation of the Bloch model """
+        """Representation of the Bloch model"""
         B = self._bloch
         return f"{self.__class__.__name__}{{{B[0]}, {B[1]}, {B[2]}}}"
 
     @property
     def bloch(self):
-        """ Number of Bloch expansions along each lattice vector """
+        """Number of Bloch expansions along each lattice vector"""
         return self._bloch
 
     def unfold_points(self, k):
-        r""" Return a list of k-points to be evaluated for this objects unfolding
+        r"""Return a list of k-points to be evaluated for this objects unfolding
 
         The k-point `k` is with respect to the unfolded geometry.
         The return list of `k` points are the k-points required to be sampled in the
@@ -116,7 +120,7 @@ class Bloch:
         return unfold.reshape(-1, 3)
 
     def __call__(self, func, k, *args, **kwargs):
-        """ Return a functions return values as the Bloch unfolded equivalent according to this object
+        """Return a functions return values as the Bloch unfolded equivalent according to this object
 
         Calling the `Bloch` object is a shorthand for the manual use of the `Bloch.unfold_points` and `Bloch.unfold`
         methods.
@@ -159,7 +163,7 @@ class Bloch:
         return bloch_unfold(self._bloch, K_unfold, M)
 
     def unfold(self, M, k_unfold):
-        r""" Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)
+        r"""Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)
 
         Parameters
         ----------

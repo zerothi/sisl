@@ -20,21 +20,26 @@ from .xarray import OrbitalData
 
 try:
     import pathos
+
     _do_parallel_calc = True
 except:
     _do_parallel_calc = False
 
+
 class PDOSData(OrbitalData):
     """Holds PDOS Data in a custom xarray DataArray.
-    
+
     The point of this class is to normalize the data coming from different sources
-    so that functions can use it without worrying where the data came from. 
+    so that functions can use it without worrying where the data came from.
     """
-    
-    def sanity_check(self, 
-        na: Optional[int] = None, no: Optional[int] = None,  n_spin: Optional[int] = None, 
+
+    def sanity_check(
+        self,
+        na: Optional[int] = None,
+        no: Optional[int] = None,
+        n_spin: Optional[int] = None,
         atom_tags: Optional[Sequence[str]] = None,
-        dos_checksum: Optional[float] = None
+        dos_checksum: Optional[float] = None,
     ):
         """Check that the dataarray satisfies the requirements to be treated as PDOSData."""
         super().sanity_check()
@@ -48,10 +53,15 @@ class PDOSData(OrbitalData):
         if no is not None:
             assert geometry.no == no
         if atom_tags is not None:
-            assert len(set(atom_tags) - set([atom.tag for atom in geometry.atoms.atom])) == 0
-        
+            assert (
+                len(set(atom_tags) - set([atom.tag for atom in geometry.atoms.atom]))
+                == 0
+            )
+
         for k in ("spin", "orb", "E"):
-            assert k in array.dims, f"'{k}' dimension missing, existing dimensions: {array.dims}"
+            assert (
+                k in array.dims
+            ), f"'{k}' dimension missing, existing dimensions: {array.dims}"
 
         # Check if we have the correct number of spin channels
         if n_spin is not None:
@@ -62,10 +72,17 @@ class PDOSData(OrbitalData):
         # Check if the checksum of the DOS is correct
         if dos_checksum is not None:
             this_dos_checksum = float(array.sum())
-            assert np.allclose(this_dos_checksum, dos_checksum), f"Checksum of the DOS is incorrect. Expected {dos_checksum} but got {this_dos_checksum}"
+            assert np.allclose(
+                this_dos_checksum, dos_checksum
+            ), f"Checksum of the DOS is incorrect. Expected {dos_checksum} but got {this_dos_checksum}"
 
     @classmethod
-    def toy_example(cls, geometry: Optional[Geometry] = None, spin: Union[str, int, Spin] = "", nE: int = 100):
+    def toy_example(
+        cls,
+        geometry: Optional[Geometry] = None,
+        spin: Union[str, int, Spin] = "",
+        nE: int = 100,
+    ):
         """Creates a toy example of a bands data array"""
 
         if geometry is None:
@@ -73,9 +90,9 @@ class PDOSData(OrbitalData):
                 sisl.AtomicOrbital("2s"),
                 sisl.AtomicOrbital("2px"),
                 sisl.AtomicOrbital("2py"),
-                sisl.AtomicOrbital("2pz")
+                sisl.AtomicOrbital("2pz"),
             ]
-            
+
             geometry = sisl.geom.graphene(atoms=sisl.Atom(Z=6, orbitals=orbitals))
 
         PDOS = np.random.rand(geometry.no, nE)
@@ -96,9 +113,14 @@ class PDOSData(OrbitalData):
 
     @new.register
     @classmethod
-    def from_numpy(cls, 
-        PDOS: np.ndarray, geometry: Geometry, E: Sequence[float], E_units: str = 'eV', 
-        spin: Optional[Union[sisl.Spin, str, int]] = None, extra_attrs: dict = {}
+    def from_numpy(
+        cls,
+        PDOS: np.ndarray,
+        geometry: Geometry,
+        E: Sequence[float],
+        E_units: str = "eV",
+        spin: Optional[Union[sisl.Spin, str, int]] = None,
+        extra_attrs: dict = {},
     ):
         """
 
@@ -119,7 +141,7 @@ class PDOSData(OrbitalData):
         E_units: str, optional
             The units of the energy. Defaults to 'eV'.
         extra_attrs: dict
-            A dictionary of extra attributes to be added to the DataArray. One of the attributes that 
+            A dictionary of extra attributes to be added to the DataArray. One of the attributes that
         """
         # Understand what the spin class is for this data.
         data_spin = sisl.Spin.UNPOLARIZED
@@ -127,7 +149,7 @@ class PDOSData(OrbitalData):
             data_spin = {
                 1: sisl.Spin.UNPOLARIZED,
                 2: sisl.Spin.POLARIZED,
-                4: sisl.Spin.NONCOLINEAR
+                4: sisl.Spin.NONCOLINEAR,
             }[PDOS.shape[0]]
         data_spin = sisl.Spin(data_spin)
 
@@ -150,29 +172,35 @@ class PDOSData(OrbitalData):
         orb_dim = PDOS.ndim - 2
         if geometry is not None:
             if geometry.no != PDOS.shape[orb_dim]:
-                raise ValueError(f"The geometry provided contains {geometry.no} orbitals, while we have PDOS information of {PDOS.shape[orb_dim]}.")
-        
+                raise ValueError(
+                    f"The geometry provided contains {geometry.no} orbitals, while we have PDOS information of {PDOS.shape[orb_dim]}."
+                )
+
         # Build the standardized dataarray, with everything needed to understand it.
         E_units = extra_attrs.pop("E_units", "eV")
 
         if spin.is_polarized:
-            spin_coords = ['total', 'z']
+            spin_coords = ["total", "z"]
         elif not spin.is_diagonal:
             spin_coords = get_spin_options(spin)
         else:
             spin_coords = ["total"]
 
-        coords = [("spin", spin_coords), ("orb", range(PDOS.shape[orb_dim])), ("E", E, {"units": E_units})]
-        
-        attrs = {"spin": spin, "geometry": geometry, "units": f"1/{E_units}", **extra_attrs}
+        coords = [
+            ("spin", spin_coords),
+            ("orb", range(PDOS.shape[orb_dim])),
+            ("E", E, {"units": E_units}),
+        ]
 
-        return cls.new(DataArray(
-            PDOS, 
-            coords=coords, 
-            name="PDOS",
-            attrs=attrs
-        ))
-    
+        attrs = {
+            "spin": spin,
+            "geometry": geometry,
+            "units": f"1/{E_units}",
+            **extra_attrs,
+        }
+
+        return cls.new(DataArray(PDOS, coords=coords, name="PDOS", attrs=attrs))
+
     @new.register
     @classmethod
     def from_path(cls, path: Path, *args, **kwargs):
@@ -187,14 +215,16 @@ class PDOSData(OrbitalData):
 
     @new.register
     @classmethod
-    def from_fdf(cls, 
-        fdf: fdfSileSiesta, source: Literal["pdos", "tbtnc", "wfsx", "hamiltonian"] = "pdos",
-        **kwargs
+    def from_fdf(
+        cls,
+        fdf: fdfSileSiesta,
+        source: Literal["pdos", "tbtnc", "wfsx", "hamiltonian"] = "pdos",
+        **kwargs,
     ):
         """Gets the PDOS from the fdf file.
 
         It uses the fdf file as the pivoting point to find the rest of files needed.
-        
+
         Parameters
         ----------
         fdf: fdfSileSiesta
@@ -203,7 +233,7 @@ class PDOSData(OrbitalData):
             The source to read the PDOS data from.
         **kwargs
             Extra arguments to be passed to the PDOSData constructor, which depends
-            on the source requested. 
+            on the source requested.
 
             Except for the hamiltonian source, no extra arguments are needed (and they
             won't be used). See PDOSData.from_hamiltonian for the extra arguments accepted
@@ -244,10 +274,12 @@ class PDOSData(OrbitalData):
         geometry, E, PDOS = pdos_file.read_data()
 
         return cls.new(PDOS, geometry, E)
-    
+
     @new.register
     @classmethod
-    def from_tbtrans(cls, tbt_nc: tbtncSileTBtrans, geometry: Union[Geometry, None] = None):
+    def from_tbtrans(
+        cls, tbt_nc: tbtncSileTBtrans, geometry: Union[Geometry, None] = None
+    ):
         """Reads the PDOS from a *.TBT.nc file coming from a TBtrans run."""
         PDOS = tbt_nc.DOS(sum=False).T
         E = tbt_nc.E
@@ -260,11 +292,19 @@ class PDOSData(OrbitalData):
         geometry = tbt_nc.read_geometry(**read_geometry_kwargs).sub(tbt_nc.a_dev)
 
         return cls.new(PDOS, geometry, E)
-    
+
     @new.register
     @classmethod
-    def from_hamiltonian(cls, H: Hamiltonian, kgrid=None, kgrid_displ=(0, 0, 0), Erange=(-2, 2),
-        E0=0, nE=100, distribution=get_distribution("gaussian")):
+    def from_hamiltonian(
+        cls,
+        H: Hamiltonian,
+        kgrid=None,
+        kgrid_displ=(0, 0, 0),
+        Erange=(-2, 2),
+        E0=0,
+        nE=100,
+        distribution=get_distribution("gaussian"),
+    ):
         """Calculates the PDOS from a sisl Hamiltonian."""
 
         # Get the kgrid or generate a default grid by checking the interaction between cells
@@ -275,7 +315,9 @@ class PDOSData(OrbitalData):
 
         Erange = Erange
         if Erange is None:
-            raise ValueError('You need to provide an energy range to calculate the PDOS from the Hamiltonian')
+            raise ValueError(
+                "You need to provide an energy range to calculate the PDOS from the Hamiltonian"
+            )
 
         E = np.linspace(Erange[0], Erange[-1], nE) + E0
 
@@ -291,8 +333,7 @@ class PDOSData(OrbitalData):
         for spin in spin_indices:
             with bz.apply(pool=_do_parallel_calc) as parallel:
                 spin_PDOS = parallel.average.eigenstate(
-                    spin=spin,
-                    wrap=lambda eig: eig.PDOS(E, distribution=distribution)
+                    spin=spin, wrap=lambda eig: eig.PDOS(E, distribution=distribution)
                 )
 
             PDOS.append(spin_PDOS)
@@ -308,30 +349,34 @@ class PDOSData(OrbitalData):
 
         PDOS = np.array(PDOS)
 
-        return cls.new(PDOS, H.geometry, E, spin=H.spin, extra_attrs={'bz': bz})
-    
+        return cls.new(PDOS, H.geometry, E, spin=H.spin, extra_attrs={"bz": bz})
+
     @new.register
     @classmethod
-    def from_wfsx(cls,
+    def from_wfsx(
+        cls,
         wfsx_file: wfsxSileSiesta,
-        H: Hamiltonian, geometry: Union[Geometry, None] = None, 
-        Erange=(-2, 2), nE: int = 100, E0: float = 0, distribution=get_distribution('gaussian')
+        H: Hamiltonian,
+        geometry: Union[Geometry, None] = None,
+        Erange=(-2, 2),
+        nE: int = 100,
+        E0: float = 0,
+        distribution=get_distribution("gaussian"),
     ):
         """Generates the PDOS values from a file containing eigenstates."""
         if geometry is None:
             geometry = getattr(H, "geometry", None)
 
         # Get the wfsx file
-        wfsx_sile = FileDataSIESTA(
-            path=wfsx_file, cls=sisl.io.wfsxSileSiesta, parent=H
-        )
+        wfsx_sile = FileDataSIESTA(path=wfsx_file, cls=sisl.io.wfsxSileSiesta, parent=H)
 
         # Read the sizes of the file, which contain the number of spin channels
         # and the number of orbitals and the number of k points.
         sizes = wfsx_sile.read_sizes()
         # Check that spin sizes of hamiltonian and wfsx file match
-        assert H.spin.size == sizes.nspin, \
-            f"Hamiltonian has spin size {H.spin.size} while file has spin size {sizes.nspin}"
+        assert (
+            H.spin.size == sizes.nspin
+        ), f"Hamiltonian has spin size {H.spin.size} while file has spin size {sizes.nspin}"
         # Get the size of the spin channel. The size returned might be 8 if it is a spin-orbit
         # calculation, but we need only 4 spin channels (total, x, y and z), same as with non-colinear
         nspin = min(4, sizes.nspin)
@@ -351,6 +396,8 @@ class PDOSData(OrbitalData):
             if nspin == 4:
                 spin = slice(None)
 
-            PDOS[spin] += eigenstate.PDOS(E, distribution=distribution) * eigenstate.info.get("weight", 1)
+            PDOS[spin] += eigenstate.PDOS(
+                E, distribution=distribution
+            ) * eigenstate.info.get("weight", 1)
 
         return cls.new(PDOS, geometry, E, spin=H.spin)

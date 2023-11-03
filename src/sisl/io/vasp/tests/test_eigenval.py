@@ -9,9 +9,9 @@ import pytest
 from sisl.io.vasp.eigenval import *
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
-_dir = osp.join('sisl', 'io', 'vasp')
+_dir = osp.join("sisl", "io", "vasp")
 
 
 def test_read_eigenval(sisl_files):
-    f = sisl_files(_dir, 'graphene', 'EIGENVAL')
+    f = sisl_files(_dir, "graphene", "EIGENVAL")
     eigs = eigenvalSileVASP(f).read_data()

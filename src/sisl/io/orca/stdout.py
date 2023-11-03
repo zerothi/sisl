@@ -20,39 +20,57 @@ _A = SileORCA.InfoAttr
 
 @set_module("sisl.io.orca")
 class stdoutSileORCA(SileORCA):
-    """ Output file from ORCA """
+    """Output file from ORCA"""
 
     _info_attributes_ = [
-        _A("na", r".*Number of atoms",
-           lambda attr, match: int(match.string.split()[-1])),
-        _A("no", r".*Number of basis functions",
-           lambda attr, match: int(match.string.split()[-1])),
-        _A("vdw_correction", r".*DFT DISPERSION CORRECTION",
-           lambda attr, match: True, default=False),
-        _A("completed", r".*ORCA TERMINATED NORMALLY",
-           lambda attr, match: True, default=False),
+        _A(
+            "na",
+            r".*Number of atoms",
+            lambda attr, match: int(match.string.split()[-1]),
+        ),
+        _A(
+            "no",
+            r".*Number of basis functions",
+            lambda attr, match: int(match.string.split()[-1]),
+        ),
+        _A(
+            "vdw_correction",
+            r".*DFT DISPERSION CORRECTION",
+            lambda attr, match: True,
+            default=False,
+        ),
+        _A(
+            "completed",
+            r".*ORCA TERMINATED NORMALLY",
+            lambda attr, match: True,
+            default=False,
+        ),
     ]
 
     def completed(self):
-        """ True if the full file has been read and "ORCA TERMINATED NORMALLY" was found. """
+        """True if the full file has been read and "ORCA TERMINATED NORMALLY" was found."""
         return self.info.completed
 
     @property
-    @deprecation("stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na", "0.16.0")
+    @deprecation(
+        "stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na", "0.16.0"
+    )
     def na(self):
-        """ Number of atoms """
+        """Number of atoms"""
         return self.info.na
 
     @property
-    @deprecation("stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no", "0.16.0")
+    @deprecation(
+        "stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no", "0.16.0"
+    )
     def no(self):
-        """ Number of orbitals (basis functions) """
+        """Number of orbitals (basis functions)"""
         return self.info.no
 
     @SileBinder(postprocess=np.array)
     @sile_fh_open()
     def read_electrons(self):
-        """ Read number of electrons (alpha, beta)
+        """Read number of electrons (alpha, beta)
 
         Returns
         -------
@@ -68,10 +86,15 @@ class stdoutSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_charge(self, name='mulliken', projection='orbital',
-                    orbitals=None,
-                    reduced=True, spin=False):
-        """ Reads from charge (or spin) population analysis
+    def read_charge(
+        self,
+        name="mulliken",
+        projection="orbital",
+        orbitals=None,
+        reduced=True,
+        spin=False,
+    ):
+        """Reads from charge (or spin) population analysis
 
         Parameters
         ----------
@@ -90,24 +113,24 @@ class stdoutSileORCA(SileORCA):
         -------
         PropertyDicts or ndarray or list thereof: atom/orbital-resolved charge (or spin) data
         """
-        if name.lower() in ('mulliken', 'm'):
-            name = 'mulliken'
-        elif name.lower() in ('loewdin', 'lowdin', 'löwdin', 'l'):
-            name = 'loewdin'
+        if name.lower() in ("mulliken", "m"):
+            name = "mulliken"
+        elif name.lower() in ("loewdin", "lowdin", "löwdin", "l"):
+            name = "loewdin"
         else:
             raise NotImplementedError(f"name={name} is not implemented")
 
-        if projection.lower() in ('atom', 'atoms', 'a'):
-            projection = 'atom'
-        elif projection.lower() in ('orbital', 'orbitals', 'orb', 'o'):
-            projection = 'orbital'
+        if projection.lower() in ("atom", "atoms", "a"):
+            projection = "atom"
+        elif projection.lower() in ("orbital", "orbitals", "orb", "o"):
+            projection = "orbital"
         else:
             raise ValueError(f"Projection must be atom or orbital")
 
-        if projection == 'atom':
-            if name == 'mulliken':
+        if projection == "atom":
+            if name == "mulliken":
                 step_to = "MULLIKEN ATOMIC CHARGES"
-            elif name == 'loewdin':
+            elif name == "loewdin":
                 step_to = "LOEWDIN ATOMIC CHARGES"
 
             def read_block(step_to):
@@ -119,7 +142,7 @@ class stdoutSileORCA(SileORCA):
                 else:
                     spin_block = False
 
-                self.readline() # skip ---
+                self.readline()  # skip ---
                 A = np.empty(self.info.na, np.float64)
                 for ia in range(self.info.na):
                     line = self.readline()
@@ -132,10 +155,10 @@ class stdoutSileORCA(SileORCA):
                         A[ia] = v[-1]
                 return A
 
-        elif projection == 'orbital' and reduced:
-            if name == 'mulliken':
+        elif projection == "orbital" and reduced:
+            if name == "mulliken":
                 step_to = "MULLIKEN REDUCED ORBITAL CHARGES"
-            elif name == 'loewdin':
+            elif name == "loewdin":
                 step_to = "LOEWDIN REDUCED ORBITAL CHARGES"
 
             def read_reduced_orbital_block():
@@ -169,7 +192,7 @@ class stdoutSileORCA(SileORCA):
                 elif spin_block:
                     self.step_to("CHARGE", allow_reread=False)
                 elif not spin:
-                    self.readline() # skip ---
+                    self.readline()  # skip ---
                 else:
                     return None
 
@@ -183,10 +206,10 @@ class stdoutSileORCA(SileORCA):
                             Da[ia] = d
                     return Da
 
-        elif projection == 'orbital' and not reduced:
-            if name == 'mulliken':
+        elif projection == "orbital" and not reduced:
+            if name == "mulliken":
                 step_to = "MULLIKEN ORBITAL CHARGES"
-            elif name == 'loewdin':
+            elif name == "loewdin":
                 step_to = "LOEWDIN ORBITAL CHARGES"
 
             def read_block(step_to):
@@ -199,17 +222,17 @@ class stdoutSileORCA(SileORCA):
                 if not f:
                     return None
 
-                self.readline() # skip ---
+                self.readline()  # skip ---
                 if "MULLIKEN" in step_to:
-                    self.readline() # skip line "The uncorrected..."
+                    self.readline()  # skip line "The uncorrected..."
 
-                Do = np.empty(self.info.no, np.float64) # orbital-resolved
-                Da = np.zeros(self.info.na, np.float64) # atom-resolved
+                Do = np.empty(self.info.no, np.float64)  # orbital-resolved
+                Da = np.zeros(self.info.na, np.float64)  # atom-resolved
                 for io in range(self.info.no):
-                    v = self.readline().split() # io, ia+element, orb, chg, (spin)
+                    v = self.readline().split()  # io, ia+element, orb, chg, (spin)
 
                     # split atom number and element from v[1]
-                    ia, element = '', ''
+                    ia, element = "", ""
                     for s in v[1]:
                         if s.isdigit():
                             ia += s
@@ -234,7 +257,7 @@ class stdoutSileORCA(SileORCA):
     @SileBinder()
     @sile_fh_open()
     def read_energy(self):
-        """ Reads the energy blocks
+        """Reads the energy blocks
 
         Returns
         -------
@@ -244,10 +267,10 @@ class stdoutSileORCA(SileORCA):
         if not f:
             return None
 
-        self.readline() # skip ---
-        self.readline() # skip blank line
+        self.readline()  # skip ---
+        self.readline()  # skip blank line
 
-        Ha2eV = units('Ha', 'eV')
+        Ha2eV = units("Ha", "eV")
         E = PropertyDict()
 
         line = self.readline()
@@ -275,7 +298,7 @@ class stdoutSileORCA(SileORCA):
     @SileBinder()
     @sile_fh_open()
     def read_orbital_energies(self):
-        """ Reads the "ORBITAL ENERGIES" blocks
+        """Reads the "ORBITAL ENERGIES" blocks
 
         Returns
         -------
@@ -285,7 +308,7 @@ class stdoutSileORCA(SileORCA):
         if not f:
             return None
 
-        self.readline() # skip ---
+        self.readline()  # skip ---
         if "SPIN UP ORBITALS" in self.readline():
             spin = True
             E = np.empty([self.info.no, 2], np.float64)
@@ -293,7 +316,7 @@ class stdoutSileORCA(SileORCA):
             spin = False
             E = np.empty([self.info.no, 1], np.float64)
 
-        self.readline() # Skip "NO OCC" header line
+        self.readline()  # Skip "NO OCC" header line
 
         v = self.readline().split()
         while len(v) > 0:
@@ -304,17 +327,19 @@ class stdoutSileORCA(SileORCA):
         if not spin:
             return E.ravel()
 
-        self.readline() # skip "SPIN DOWN ORBITALS"
-        self.readline() # Skip "NO OCC" header line
+        self.readline()  # skip "SPIN DOWN ORBITALS"
+        self.readline()  # Skip "NO OCC" header line
         v = self.readline().split()
-        while len(v) > 0 and '---' not in v[0]:
+        while len(v) > 0 and "---" not in v[0]:
             i = int(v[0])
             E[i, 1] = v[-1]
             v = self.readline().split()
         return E
 
 
-outputSileORCA = deprecation("outputSileORCA has been deprecated in favor of stdoutSileOrca.", "0.15")(stdoutSileORCA)
+outputSileORCA = deprecation(
+    "outputSileORCA has been deprecated in favor of stdoutSileOrca.", "0.15"
+)(stdoutSileORCA)
 
 add_sile("output", stdoutSileORCA, gzip=True, case=False)
 add_sile("orca.out", stdoutSileORCA, gzip=True, case=False)

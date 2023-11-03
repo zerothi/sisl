@@ -13,11 +13,14 @@ from sisl.utils.mathematics import fnorm
 
 from .axes import axes_cross_product, axis_direction, get_ax_title
 
-#from ...types import Axes, CellLike, Axis
+# from ...types import Axes, CellLike, Axis
 
 CoordsDataset = Dataset
 
-def projected_2Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], xaxis: Axis = "x", yaxis: Axis = "y") -> npt.NDArray[np.float64]:
+
+def projected_2Dcoords(
+    cell: CellLike, xyz: npt.NDArray[np.float64], xaxis: Axis = "x", yaxis: Axis = "y"
+) -> npt.NDArray[np.float64]:
     """Moves the 3D positions of the atoms to a 2D supspace.
 
     In this way, we can plot the structure from the "point of view" that we want.
@@ -33,9 +36,9 @@ def projected_2Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], xaxis: Axis
         the geometry for which you want the projected coords
     xyz: array-like of shape (natoms, 3), optional
         the 3D coordinates that we want to project.
-        otherwise they are taken from the geometry. 
+        otherwise they are taken from the geometry.
     xaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
-        the direction to be displayed along the X axis. 
+        the direction to be displayed along the X axis.
     yaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
         the direction to be displayed along the X axis.
 
@@ -70,6 +73,7 @@ def projected_2Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], xaxis: Axis
 
     return np.dot(xyz, icell.T)[..., coord_indices]
 
+
 def projected_1Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], axis: Axis = "x"):
     """
     Moves the 3D positions of the atoms to a 2D supspace.
@@ -87,7 +91,7 @@ def projected_1Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], axis: Axis 
         the geometry for which you want the projected coords
     xyz: array-like of shape (natoms, 3), optional
         the 3D coordinates that we want to project.
-        otherwise they are taken from the geometry. 
+        otherwise they are taken from the geometry.
     axis: {"x", "y", "z", "a", "b", "c", "1", "2", "3"} or array-like of shape 3, optional
         the direction to be displayed along the X axis.
     nsc: array-like of shape (3, ), optional
@@ -104,19 +108,19 @@ def projected_1Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], axis: Axis 
         cell = cell.cell
 
     if isinstance(axis, str) and axis in ("a", "b", "c", "0", "1", "2"):
-        return projected_2Dcoords(cell, xyz, xaxis=axis, yaxis="a" if axis == "c" else "c")[..., 0]
+        return projected_2Dcoords(
+            cell, xyz, xaxis=axis, yaxis="a" if axis == "c" else "c"
+        )[..., 0]
 
     # Get the direction that the axis represents
     axis = axis_direction(axis, cell)
 
-    return xyz.dot(axis/fnorm(axis)) / fnorm(axis)
+    return xyz.dot(axis / fnorm(axis)) / fnorm(axis)
 
-def coords_depth(
-    coords_data: CoordsDataset, 
-    axes: Axes
-) -> npt.NDArray[np.float64]:
+
+def coords_depth(coords_data: CoordsDataset, axes: Axes) -> npt.NDArray[np.float64]:
     """Computes the depth of 3D points as projected in a 2D plane
-    
+
     Parameters
     ----------
     coords_data: CoordsDataset
@@ -125,29 +129,31 @@ def coords_depth(
         The axes that define the plane where the coordinates are projected.
     """
     cell = _get_cell_from_dataset(coords_data=coords_data)
-    
+
     depth_vector = axes_cross_product(axes[0], axes[1], cell)
     depth = project_to_axes(coords_data, axes=[depth_vector]).x.values
-    
+
     return depth
 
+
 def sphere(
-    center: npt.ArrayLike = [0, 0, 0], 
-    r: float = 1, 
-    vertices: int = 10
+    center: npt.ArrayLike = [0, 0, 0], r: float = 1, vertices: int = 10
 ) -> Dict[str, np.ndarray]:
     """Computes a mesh defining a sphere."""
-    phi, theta = np.mgrid[0.0:np.pi: 1j*vertices, 0.0:2.0*np.pi: 1j*vertices]
+    phi, theta = np.mgrid[
+        0.0 : np.pi : 1j * vertices, 0.0 : 2.0 * np.pi : 1j * vertices
+    ]
     center = np.array(center)
 
     phi = np.ravel(phi)
     theta = np.ravel(theta)
 
-    x = center[0] + r*np.sin(phi)*np.cos(theta)
-    y = center[1] + r*np.sin(phi)*np.sin(theta)
-    z = center[2] + r*np.cos(phi)
+    x = center[0] + r * np.sin(phi) * np.cos(theta)
+    y = center[1] + r * np.sin(phi) * np.sin(theta)
+    z = center[2] + r * np.cos(phi)
 
-    return {'x': x, 'y': y, 'z': z}
+    return {"x": x, "y": y, "z": z}
+
 
 def _get_cell_from_dataset(coords_data: CoordsDataset) -> npt.NDArray[np.float64]:
     cell = coords_data.attrs.get("cell")
@@ -156,10 +162,15 @@ def _get_cell_from_dataset(coords_data: CoordsDataset) -> npt.NDArray[np.float64
             cell = coords_data.lattice.cell
         else:
             cell = coords_data.geometry.cell
-    
+
     return cell
 
-def projected_1D_data(coords_data: CoordsDataset, axis: Axis = "x", dataaxis_1d: Union[Callable, npt.NDArray, None] = None) -> CoordsDataset:
+
+def projected_1D_data(
+    coords_data: CoordsDataset,
+    axis: Axis = "x",
+    dataaxis_1d: Union[Callable, npt.NDArray, None] = None,
+) -> CoordsDataset:
     cell = _get_cell_from_dataset(coords_data=coords_data)
 
     xyz = coords_data.xyz.values
@@ -182,7 +193,13 @@ def projected_1D_data(coords_data: CoordsDataset, axis: Axis = "x", dataaxis_1d:
 
     return coords_data
 
-def projected_2D_data(coords_data: CoordsDataset, xaxis: Axis = "x", yaxis: Axis = "y", sort_by_depth: bool = False) -> CoordsDataset:
+
+def projected_2D_data(
+    coords_data: CoordsDataset,
+    xaxis: Axis = "x",
+    yaxis: Axis = "y",
+    sort_by_depth: bool = False,
+) -> CoordsDataset:
     cell = _get_cell_from_dataset(coords_data=coords_data)
 
     xyz = coords_data.xyz.values
@@ -202,6 +219,7 @@ def projected_2D_data(coords_data: CoordsDataset, xaxis: Axis = "x", yaxis: Axis
 
     return coords_data
 
+
 def projected_3D_data(coords_data: CoordsDataset) -> CoordsDataset:
     x, y, z = np.moveaxis(coords_data.xyz.values, -1, 0)
     dims = coords_data.xyz.dims[:-1]
@@ -210,23 +228,29 @@ def projected_3D_data(coords_data: CoordsDataset) -> CoordsDataset:
 
     return coords_data
 
+
 def project_to_axes(
-    coords_data: CoordsDataset, axes: Axes, 
-    dataaxis_1d: Optional[Union[npt.ArrayLike, Callable]] = None, 
+    coords_data: CoordsDataset,
+    axes: Axes,
+    dataaxis_1d: Optional[Union[npt.ArrayLike, Callable]] = None,
     sort_by_depth: bool = False,
-    cartesian_units: str = "Ang"
+    cartesian_units: str = "Ang",
 ) -> CoordsDataset:
-    ndim = len(axes) 
+    ndim = len(axes)
     if ndim == 3:
         xaxis, yaxis, zaxis = axes
         coords_data = projected_3D_data(coords_data)
     elif ndim == 2:
         xaxis, yaxis = axes
-        coords_data = projected_2D_data(coords_data, xaxis=xaxis, yaxis=yaxis, sort_by_depth=sort_by_depth)
+        coords_data = projected_2D_data(
+            coords_data, xaxis=xaxis, yaxis=yaxis, sort_by_depth=sort_by_depth
+        )
     elif ndim == 1:
         xaxis = axes[0]
         yaxis = dataaxis_1d
-        coords_data = projected_1D_data(coords_data, axis=xaxis, dataaxis_1d=dataaxis_1d)
+        coords_data = projected_1D_data(
+            coords_data, axis=xaxis, dataaxis_1d=dataaxis_1d
+        )
 
     plot_axes = ["x", "y", "z"][:ndim]
 
@@ -234,7 +258,7 @@ def project_to_axes(
         coords_data[plot_ax].attrs["axis"] = {
             "title": get_ax_title(ax, cartesian_units=cartesian_units),
         }
-    
-    coords_data.attrs['ndim'] = ndim
+
+    coords_data.attrs["ndim"] = ndim
 
     return coords_data

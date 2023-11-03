@@ -36,12 +36,12 @@ while one can just as easily convert the units (which ensures thay stay like ano
 from ._internal import set_module
 from .unit.base import units
 
-__all__ = ['PhysicalConstant']
+__all__ = ["PhysicalConstant"]
 
 
 @set_module("sisl")
 class PhysicalConstant(float):
-    """ Class to create a physical constant with unit-conversion capability, works exactly like a float.
+    """Class to create a physical constant with unit-conversion capability, works exactly like a float.
 
     To change the units simply call it like a method with the desired unit:
 
@@ -56,7 +56,8 @@ class PhysicalConstant(float):
     >>> m2nm * 2
     1000000000.0
     """
-    __slots__ = ['_unit']
+
+    __slots__ = ["_unit"]
 
     def __new__(cls, value, unit):
         constant = float.__new__(cls, value)
@@ -67,14 +68,14 @@ class PhysicalConstant(float):
 
     @property
     def unit(self):
-        """ Unit of constant """
+        """Unit of constant"""
         return self._unit
 
     def __str__(self):
-        return '{} {}'.format(float(self), self.unit)
+        return "{} {}".format(float(self), self.unit)
 
     def __call__(self, unit=None):
-        """ Return the value for the constant in the given unit, otherwise will return the units in SI units """
+        """Return the value for the constant in the given unit, otherwise will return the units in SI units"""
         if unit is None:
             return self
         return PhysicalConstant(self * units(self.unit, unit), unit)
@@ -85,7 +86,7 @@ class PhysicalConstant(float):
         return super().__eq__(self, other)
 
 
-__all__ += ['q', 'c', 'h', 'hbar', 'm_e', 'm_p', 'G', 'G0', 'a0']
+__all__ += ["q", "c", "h", "hbar", "m_e", "m_p", "G", "G0", "a0"]
 
 
 # These are CODATA-2018 values
@@ -109,7 +110,6 @@ c = PhysicalConstant(299792458.0, "m/s")
 
 # Values not found in the CODATA table
 #: Conductance quantum [S], or [m^2/s^2]
-G0 = PhysicalConstant(2 * (q ** 2 / h), 'm^2/s^2')
+G0 = PhysicalConstant(2 * (q**2 / h), "m^2/s^2")
 #: Gravitational constant [m^3/kg/s^2]
-G = PhysicalConstant(6.6740831e-11, 'm^3/kg/s^2')
-
+G = PhysicalConstant(6.6740831e-11, "m^3/kg/s^2")

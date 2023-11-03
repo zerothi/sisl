@@ -5,14 +5,16 @@ import numpy as np
 import sisl
 
 
-def get_eigenstate(eigenstate: sisl.EigenstateElectron, i: int) -> sisl.EigenstateElectron:
+def get_eigenstate(
+    eigenstate: sisl.EigenstateElectron, i: int
+) -> sisl.EigenstateElectron:
     """Gets the i-th wavefunction from the eigenstate.
 
     It takes into account if the info dictionary has an "index" key, which
     might be present for example if the eigenstate object does not contain
     the full set of wavefunctions, to indicate which wavefunctions are
     present.
-    
+
     Parameters
     ----------
     eigenstate : sisl.EigenstateElectron
@@ -24,19 +26,26 @@ def get_eigenstate(eigenstate: sisl.EigenstateElectron, i: int) -> sisl.Eigensta
     if "index" in eigenstate.info:
         wf_i = np.nonzero(eigenstate.info["index"] == i)[0]
         if len(wf_i) == 0:
-            raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available indices: {eigenstate.info['index']}.")
+            raise ValueError(
+                f"Wavefunction with index {i} is not present in the eigenstate. Available indices: {eigenstate.info['index']}."
+            )
         wf_i = wf_i[0]
     else:
         max_index = eigenstate.shape[0]
         if i > max_index:
-            raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available range: [0, {max_index}].")
+            raise ValueError(
+                f"Wavefunction with index {i} is not present in the eigenstate. Available range: [0, {max_index}]."
+            )
         wf_i = i
 
     return eigenstate[wf_i]
 
-def eigenstate_geometry(eigenstate: sisl.EigenstateElectron, geometry: Optional[sisl.Geometry] = None) -> Union[sisl.Geometry, None]:
+
+def eigenstate_geometry(
+    eigenstate: sisl.EigenstateElectron, geometry: Optional[sisl.Geometry] = None
+) -> Union[sisl.Geometry, None]:
     """Returns the geometry associated with the eigenstate.
-    
+
     Parameters
     ----------
     eigenstate : sisl.EigenstateElectron
@@ -49,10 +58,15 @@ def eigenstate_geometry(eigenstate: sisl.EigenstateElectron, geometry: Optional[
         geometry = getattr(eigenstate, "parent", None)
         if geometry is not None and not isinstance(geometry, sisl.Geometry):
             geometry = getattr(geometry, "geometry", None)
-    
+
     return geometry
 
-def tile_if_k(geometry: sisl.Geometry, nsc: Tuple[int, int, int], eigenstate: sisl.EigenstateElectron) -> sisl.Geometry:
+
+def tile_if_k(
+    geometry: sisl.Geometry,
+    nsc: Tuple[int, int, int],
+    eigenstate: sisl.EigenstateElectron,
+) -> sisl.Geometry:
     """Tiles the geometry if the eigenstate does not correspond to gamma.
 
     If we are calculating the wavefunction for any point other than gamma,
@@ -69,10 +83,12 @@ def tile_if_k(geometry: sisl.Geometry, nsc: Tuple[int, int, int], eigenstate: si
     eigenstate : sisl.EigenstateElectron
         The eigenstate for which the wavefunction was calculated.
     """
-    
+
     tiled_geometry = geometry
 
-    k = eigenstate.info.get("k", (1, 1, 1) if np.iscomplexobj(eigenstate.state) else (0, 0, 0))
+    k = eigenstate.info.get(
+        "k", (1, 1, 1) if np.iscomplexobj(eigenstate.state) else (0, 0, 0)
+    )
 
     for ax, sc_i in enumerate(nsc):
         if k[ax] != 0:
@@ -80,7 +96,10 @@ def tile_if_k(geometry: sisl.Geometry, nsc: Tuple[int, int, int], eigenstate: si
 
     return tiled_geometry
 
-def get_grid_nsc(nsc: Tuple[int, int, int], eigenstate: sisl.EigenstateElectron) -> Tuple[int, int, int]:
+
+def get_grid_nsc(
+    nsc: Tuple[int, int, int], eigenstate: sisl.EigenstateElectron
+) -> Tuple[int, int, int]:
     """Returns the supercell to display once the geometry is tiled.
 
     The geometry must be tiled if the eigenstate is not calculated at gamma,
@@ -94,13 +113,21 @@ def get_grid_nsc(nsc: Tuple[int, int, int], eigenstate: sisl.EigenstateElectron)
     eigenstate : sisl.EigenstateElectron
         The eigenstate for which the wavefunction was calculated.
     """
-    k = eigenstate.info.get("k", (1, 1, 1) if np.iscomplexobj(eigenstate.state) else (0, 0, 0))
+    k = eigenstate.info.get(
+        "k", (1, 1, 1) if np.iscomplexobj(eigenstate.state) else (0, 0, 0)
+    )
 
     return tuple(nx if kx == 0 else 1 for nx, kx in zip(nsc, k))
 
-def create_wf_grid(eigenstate: sisl.EigenstateElectron, grid_prec: float = 0.2, grid: Optional[sisl.Grid] = None, geometry: Optional[sisl.Geometry] = None) -> sisl.Grid:
+
+def create_wf_grid(
+    eigenstate: sisl.EigenstateElectron,
+    grid_prec: float = 0.2,
+    grid: Optional[sisl.Grid] = None,
+    geometry: Optional[sisl.Geometry] = None,
+) -> sisl.Grid:
     """Creates a grid to display the wavefunction.
-    
+
     Parameters
     ----------
     eigenstate : sisl.EigenstateElectron
@@ -121,7 +148,13 @@ def create_wf_grid(eigenstate: sisl.EigenstateElectron, grid_prec: float = 0.2, 
 
     return grid
 
-def project_wavefunction(eigenstate: sisl.EigenstateElectron, grid_prec: float = 0.2, grid: Optional[sisl.Grid] = None, geometry: Optional[sisl.Geometry] = None) -> sisl.Grid:
+
+def project_wavefunction(
+    eigenstate: sisl.EigenstateElectron,
+    grid_prec: float = 0.2,
+    grid: Optional[sisl.Grid] = None,
+    geometry: Optional[sisl.Geometry] = None,
+) -> sisl.Grid:
     """Projects the wavefunction from an eigenstate into a grid.
 
     Parameters
@@ -141,11 +174,14 @@ def project_wavefunction(eigenstate: sisl.EigenstateElectron, grid_prec: float =
     grid = create_wf_grid(eigenstate, grid_prec=grid_prec, grid=grid, geometry=geometry)
 
     # Ensure we are dealing with the R gauge
-    eigenstate.change_gauge('R')
+    eigenstate.change_gauge("R")
 
     # Finally, insert the wavefunction values into the grid.
     sisl.physics.electron.wavefunction(
-        eigenstate.state, grid, geometry=geometry, spinor=0,
+        eigenstate.state,
+        grid,
+        geometry=geometry,
+        spinor=0,
     )
 
     return grid

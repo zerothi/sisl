@@ -20,25 +20,24 @@ pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
 @pytest.fixture(scope="module", params=["numpy", "lattice"])
 def Cell(request):
-
     if request.param == "numpy":
         return np.array
     elif request.param == "lattice":
         return Lattice
+
 
 @pytest.fixture(scope="module")
 def coords_dataset():
     geometry = sisl.geom.bcc(2.93, "Au", False)
 
     return xr.Dataset(
-        {"xyz": (("atom", "axis"), geometry.xyz)}, 
-        coords={"axis": [0,1,2]}, 
-        attrs={"geometry": geometry}
+        {"xyz": (("atom", "axis"), geometry.xyz)},
+        coords={"axis": [0, 1, 2]},
+        attrs={"geometry": geometry},
     )
 
-    
+
 def test_projected_1D_coords(Cell):
-    
     cell = Cell([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
 
     x, y, z = 3, -4, 2
@@ -60,9 +59,8 @@ def test_projected_1D_coords(Cell):
     projected = projected_1Dcoords(cell, coords, [x, 0, z])
     assert np.allclose(projected, [[1]])
 
-    
-def test_projected_2D_coords(Cell):
 
+def test_projected_2D_coords(Cell):
     cell = Cell([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
 
     x, y, z = 3, -4, 2
@@ -90,21 +88,21 @@ def test_projected_2D_coords(Cell):
     projected = projected_2Dcoords(cell, coords, [x, y, 0], [0, 0, z])
     assert np.allclose(projected, [[1, 1]])
 
+
 def test_coords_depth(coords_dataset):
-    
     depth = coords_depth(coords_dataset, ["x", "y"])
     assert isinstance(depth, np.ndarray)
     assert np.allclose(depth, coords_dataset.xyz.sel(axis=2).values)
 
     depth = coords_depth(coords_dataset, ["y", "x"])
-    assert np.allclose(depth, - coords_dataset.xyz.sel(axis=2).values)
+    assert np.allclose(depth, -coords_dataset.xyz.sel(axis=2).values)
 
     depth = coords_depth(coords_dataset, [[1, 0, 0], [0, 0, 1]])
-    assert np.allclose(depth, - coords_dataset.xyz.sel(axis=1).values)
+    assert np.allclose(depth, -coords_dataset.xyz.sel(axis=1).values)
+
 
 @pytest.mark.parametrize("center", [[0, 0, 0], [1, 1, 0]])
 def test_sphere(center):
-
     coords = sphere(center=center, r=3.5, vertices=15)
 
     assert isinstance(coords, dict)
@@ -113,14 +111,16 @@ def test_sphere(center):
     assert "y" in coords
     assert "z" in coords
 
-    assert coords["x"].shape == coords["y"].shape == coords["z"].shape == (15 ** 2,)
+    assert coords["x"].shape == coords["y"].shape == coords["z"].shape == (15**2,)
 
-    R = np.linalg.norm(np.array([coords["x"], coords["y"], coords["z"]]).T - center, axis=1)
+    R = np.linalg.norm(
+        np.array([coords["x"], coords["y"], coords["z"]]).T - center, axis=1
+    )
 
     assert np.allclose(R, 3.5)
 
-def test_projected_1D_data(coords_dataset):
 
+def test_projected_1D_data(coords_dataset):
     # No data
     projected = projected_1D_data(coords_dataset, "y")
     assert isinstance(projected, xr.Dataset)
@@ -133,24 +133,26 @@ def test_projected_1D_data(coords_dataset):
     projected = projected_1D_data(coords_dataset, "-y", dataaxis_1d=np.sin)
     assert isinstance(projected, xr.Dataset)
     assert "x" in projected.data_vars
-    assert np.allclose(projected.x, - coords_dataset.xyz.sel(axis=1))
+    assert np.allclose(projected.x, -coords_dataset.xyz.sel(axis=1))
     assert "y" in projected.data_vars
-    assert np.allclose(projected.y, np.sin(- coords_dataset.xyz.sel(axis=1)))
+    assert np.allclose(projected.y, np.sin(-coords_dataset.xyz.sel(axis=1)))
 
     # Data from array
-    projected = projected_1D_data(coords_dataset, "-y", dataaxis_1d=coords_dataset.xyz.sel(axis=2).values)
+    projected = projected_1D_data(
+        coords_dataset, "-y", dataaxis_1d=coords_dataset.xyz.sel(axis=2).values
+    )
     assert isinstance(projected, xr.Dataset)
     assert "x" in projected.data_vars
-    assert np.allclose(projected.x, - coords_dataset.xyz.sel(axis=1))
+    assert np.allclose(projected.x, -coords_dataset.xyz.sel(axis=1))
     assert "y" in projected.data_vars
     assert np.allclose(projected.y, coords_dataset.xyz.sel(axis=2))
 
-def test_projected_2D_data(coords_dataset):
 
+def test_projected_2D_data(coords_dataset):
     projected = projected_2D_data(coords_dataset, "-y", "x")
     assert isinstance(projected, xr.Dataset)
     assert "x" in projected.data_vars
-    assert np.allclose(projected.x,  - coords_dataset.xyz.sel(axis=1))
+    assert np.allclose(projected.x, -coords_dataset.xyz.sel(axis=1))
     assert "y" in projected.data_vars
     assert np.allclose(projected.y, coords_dataset.xyz.sel(axis=0))
 
@@ -168,19 +170,19 @@ def test_projected_2D_data(coords_dataset):
     # Check that points are sorted by depth.
     assert np.all(np.diff(projected.depth) > 0)
 
-def test_projected_3D_data(coords_dataset):
 
+def test_projected_3D_data(coords_dataset):
     projected = projected_3D_data(coords_dataset)
     assert isinstance(projected, xr.Dataset)
     assert "x" in projected.data_vars
-    assert np.allclose(projected.x,  coords_dataset.xyz.sel(axis=0))
+    assert np.allclose(projected.x, coords_dataset.xyz.sel(axis=0))
     assert "y" in projected.data_vars
     assert np.allclose(projected.y, coords_dataset.xyz.sel(axis=1))
     assert "z" in projected.data_vars
     assert np.allclose(projected.z, coords_dataset.xyz.sel(axis=2))
 
-def test_project_to_axes(coords_dataset):
 
+def test_project_to_axes(coords_dataset):
     projected = project_to_axes(coords_dataset, ["z"], dataaxis_1d=4)
     assert isinstance(projected, xr.Dataset)
     assert "x" in projected.data_vars
@@ -192,7 +194,7 @@ def test_project_to_axes(coords_dataset):
     projected = project_to_axes(coords_dataset, ["-y", "x"])
     assert isinstance(projected, xr.Dataset)
     assert "x" in projected.data_vars
-    assert np.allclose(projected.x, - coords_dataset.xyz.sel(axis=1))
+    assert np.allclose(projected.x, -coords_dataset.xyz.sel(axis=1))
     assert "y" in projected.data_vars
     assert np.allclose(projected.y, coords_dataset.xyz.sel(axis=0))
     assert "z" not in projected.data_vars
@@ -205,4 +207,3 @@ def test_project_to_axes(coords_dataset):
     assert np.allclose(projected.y, coords_dataset.xyz.sel(axis=1))
     assert "z" in projected.data_vars
     assert np.allclose(projected.z, coords_dataset.xyz.sel(axis=2))
-

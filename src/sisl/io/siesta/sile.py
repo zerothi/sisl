@@ -4,6 +4,7 @@
 
 try:
     from . import _siesta
+
     has_fortran_module = True
 except ImportError:
     has_fortran_module = False
@@ -12,7 +13,7 @@ from sisl._internal import set_module
 
 from ..sile import Sile, SileBin, SileCDF, SileError
 
-__all__ = ['SileSiesta', 'SileCDFSiesta', 'SileBinSiesta']
+__all__ = ["SileSiesta", "SileCDFSiesta", "SileBinSiesta"]
 
 
 @set_module("sisl.io.siesta")
@@ -22,7 +23,6 @@ class SileSiesta(Sile):
 
 @set_module("sisl.io.siesta")
 class SileCDFSiesta(SileCDF):
-
     # all netcdf output should not be masked
     def _setup(self, *args, **kwargs):
         super()._setup(*args, **kwargs)
@@ -35,7 +35,6 @@ class SileCDFSiesta(SileCDF):
 
 @set_module("sisl.io.siesta")
 class SileBinSiesta(SileBin):
-
     def _setup(self, *args, **kwargs):
         """We set up everything to handle the fortran I/O unit"""
         super()._setup(*args, **kwargs)
@@ -43,9 +42,9 @@ class SileBinSiesta(SileBin):
 
     def _fortran_check(self, method, message, ret_msg=False):
         ierr = _siesta.io_m.iostat_query()
-        msg = ''
+        msg = ""
         if ierr != 0:
-            msg = f'{self!s}.{method} {message} (ierr={ierr})'
+            msg = f"{self!s}.{method} {message} (ierr={ierr})"
             if not ret_msg:
                 raise SileError(msg)
         if ret_msg:
@@ -62,13 +61,18 @@ class SileBinSiesta(SileBin):
                 # retain indices
                 return
         else:
-            if mode == 'r':
+            if mode == "r":
                 self._iu = _siesta.io_m.open_file_read(self.file)
-            elif mode == 'w':
+            elif mode == "w":
                 self._iu = _siesta.io_m.open_file_write(self.file)
             else:
-                raise SileError(f"Mode '{mode}' is not an accepted mode to open a fortran file unit. Use only 'r' or 'w'")
-        self._fortran_check('_fortran_open', 'could not open for {}.'.format({'r': 'reading', 'w': 'writing'}[mode]))
+                raise SileError(
+                    f"Mode '{mode}' is not an accepted mode to open a fortran file unit. Use only 'r' or 'w'"
+                )
+        self._fortran_check(
+            "_fortran_open",
+            "could not open for {}.".format({"r": "reading", "w": "writing"}[mode]),
+        )
 
     def _fortran_close(self):
         if not self._fortran_is_open():

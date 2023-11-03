@@ -5,7 +5,7 @@ from sisl._internal import set_module
 
 from ..sile import Sile, SileBin, SileCDF
 
-__all__ = ['SileTBtrans', 'SileCDFTBtrans', 'SileBinTBtrans']
+__all__ = ["SileTBtrans", "SileCDFTBtrans", "SileBinTBtrans"]
 
 
 @set_module("sisl.io.tbtrans")
@@ -15,7 +15,6 @@ class SileTBtrans(Sile):
 
 @set_module("sisl.io.tbtrans")
 class SileCDFTBtrans(SileCDF):
-
     # all netcdf output should not be masked
     def _setup(self, *args, **kwargs):
         super()._setup(*args, **kwargs)

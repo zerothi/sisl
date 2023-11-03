@@ -84,7 +84,7 @@ def get_authors(revision_range):
 
 
 def get_commit_date(repo, rev):
-    """ Retrive the object that defines the revision """
+    """Retrive the object that defines the revision"""
     return datetime.datetime.fromtimestamp(repo.commit(rev).committed_date)
 
 
@@ -121,6 +121,7 @@ def get_pull_requests(repo, revision_range):
             pass
     return prs
 
+
 def read_changelog(prior_rel, current_rel, format="md"):
     # rst search for item
     md_item = re.compile(r"^\s*-")
@@ -132,8 +133,7 @@ def read_changelog(prior_rel, current_rel, format="md"):
     # for getting the date
     date = None
     out = []
-    for line in open("../CHANGELOG.md", 'r'):
-
+    for line in open("../CHANGELOG.md", "r"):
         # ensure no tabs are present
         line = line.replace("\t", "  ")
 
@@ -187,12 +187,12 @@ def read_changelog(prior_rel, current_rel, format="md"):
             date = date2format(datetime.date(*[int(x) for x in date.split("-")]))
         except ValueError:
             pass
-            
+
     return "".join(out).strip(), date
 
 
 def date2format(date):
-    """ Convert the date to the output format we require """
+    """Convert the date to the output format we require"""
     date = date.strftime("%d of %B %Y")
     if date[0] == "0":
         date = date[1:]
@@ -271,7 +271,9 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description="Generate author/pr lists for release")
-    parser.add_argument("--format", choices=("md", "rst"), help="which format to write out in")
+    parser.add_argument(
+        "--format", choices=("md", "rst"), help="which format to write out in"
+    )
     parser.add_argument("token", help="github access token")
     parser.add_argument("revision_range", help="<revision>..<revision>")
     args = parser.parse_args()

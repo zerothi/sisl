@@ -5,11 +5,11 @@ import numpy as np
 
 from .base import eigh
 
-__all__ = ['signsqrt', 'sqrth', 'invsqrth', 'lowdin']
+__all__ = ["signsqrt", "sqrth", "invsqrth", "lowdin"]
 
 
 def signsqrt(a):
-    r""" Calculate the sqrt of the elements `a` by retaining the sign.
+    r"""Calculate the sqrt of the elements `a` by retaining the sign.
 
     This only influences negative values in `a` by returning ``-abs(a)**0.5``
 
@@ -37,7 +37,7 @@ def sqrth(a, overwrite_a=False):
 
 
 def invsqrth(a, overwrite_a=False):
-    """ Calculate the inverse sqrt of the Hermitian matrix `H`
+    """Calculate the inverse sqrt of the Hermitian matrix `H`
 
     We do this by using eigh and taking the sqrt of the eigenvalues.
 
@@ -52,7 +52,7 @@ def invsqrth(a, overwrite_a=False):
 
 
 def lowdin(a, b, overwrite_a=False):
-    r""" Convert the matrix `b` in the basis `a` into an orthogonal basis using the Lowdin transformation
+    r"""Convert the matrix `b` in the basis `a` into an orthogonal basis using the Lowdin transformation
 
     .. math::
 

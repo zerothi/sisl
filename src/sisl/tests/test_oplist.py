@@ -23,7 +23,9 @@ def test_oplist_creation():
     assert l[1] == 2
 
 
-@pytest.mark.parametrize("op", [ops.add, ops.floordiv, ops.sub, ops.mul, ops.truediv, ops.pow])
+@pytest.mark.parametrize(
+    "op", [ops.add, ops.floordiv, ops.sub, ops.mul, ops.truediv, ops.pow]
+)
 @pytest.mark.parametrize("key1", [1, 2])
 @pytest.mark.parametrize("key2", [1, 2])
 def test_oplist_math(op, key1, key2):
@@ -43,7 +45,9 @@ def test_oplist_single(op):
     op(d)
 
 
-@pytest.mark.parametrize("op", [ops.iadd, ops.ifloordiv, ops.isub, ops.imul, ops.itruediv, ops.ipow])
+@pytest.mark.parametrize(
+    "op", [ops.iadd, ops.ifloordiv, ops.isub, ops.imul, ops.itruediv, ops.ipow]
+)
 @pytest.mark.parametrize("key", [1, 2])
 def test_oplist_imath(op, key):
     d = {
@@ -87,6 +91,7 @@ def test_oplist_deco():
     @oplist.decorate
     def my_func():
         return 1
+
     a = my_func()
     assert isinstance(a, oplist)
     assert a[0] == 1
@@ -94,6 +99,7 @@ def test_oplist_deco():
     @oplist.decorate
     def my_func():
         return [2, 3]
+
     a = my_func()
     assert isinstance(a, oplist)
     assert len(a) == 2
@@ -102,6 +108,7 @@ def test_oplist_deco():
     @oplist.decorate
     def my_func():
         return oplist([1, 2])
+
     a = my_func()
     assert isinstance(a, oplist)
     assert len(a) == 2

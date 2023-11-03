@@ -34,25 +34,25 @@ except ImportError:
     has_fortran_module = False
 
 
-__all__ = ['ncSileSiesta']
+__all__ = ["ncSileSiesta"]
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
-Ry2eV = unit_convert('Ry', 'eV')
+Bohr2Ang = unit_convert("Bohr", "Ang")
+Ry2eV = unit_convert("Ry", "eV")
 
 
 @set_module("sisl.io.siesta")
 class ncSileSiesta(SileCDFSiesta):
-    """ Generic NetCDF output file containing a large variety of information """
+    """Generic NetCDF output file containing a large variety of information"""
 
     @lru_cache(maxsize=1)
     def read_lattice_nsc(self):
-        """ Returns number of supercell connections """
-        return np.array(self._value('nsc'), np.int32)
+        """Returns number of supercell connections"""
+        return np.array(self._value("nsc"), np.int32)
 
     @lru_cache(maxsize=1)
     def read_lattice(self):
-        """ Returns a Lattice object from a Siesta.nc file """
-        cell = np.array(self._value('cell'), np.float64)
+        """Returns a Lattice object from a Siesta.nc file"""
+        cell = np.array(self._value("cell"), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
         cell.shape = (3, 3)
@@ -63,18 +63,17 @@ class ncSileSiesta(SileCDFSiesta):
 
     @lru_cache(maxsize=1)
     def read_basis(self):
-        """ Returns a set of atoms corresponding to the basis-sets in the nc file """
-        if 'BASIS' not in self.groups:
+        """Returns a set of atoms corresponding to the basis-sets in the nc file"""
+        if "BASIS" not in self.groups:
             return None
 
-        basis = self.groups['BASIS']
+        basis = self.groups["BASIS"]
         atom = [None] * len(basis.groups)
 
         for a_str in basis.groups:
             a = basis.groups[a_str]
 
-            if 'orbnl_l' not in a.variables:
-
+            if "orbnl_l" not in a.variables:
                 # Do the easy thing.
 
                 # Get number of orbitals
@@ -87,23 +86,22 @@ class ncSileSiesta(SileCDFSiesta):
                 continue
 
             # Retrieve values
-            orb_l = a.variables['orbnl_l'][:] # angular quantum number
-            orb_n = a.variables['orbnl_n'][:] # principal quantum number
-            orb_z = a.variables['orbnl_z'][:] # zeta
-            orb_P = a.variables['orbnl_ispol'][:] > 0 # polarization shell, or not
-            orb_q0 = a.variables['orbnl_pop'][:] # q0 for the orbitals
-            orb_delta = a.variables['delta'][:] # delta for the functions
-            orb_psi = a.variables['orb'][:, :]
+            orb_l = a.variables["orbnl_l"][:]  # angular quantum number
+            orb_n = a.variables["orbnl_n"][:]  # principal quantum number
+            orb_z = a.variables["orbnl_z"][:]  # zeta
+            orb_P = a.variables["orbnl_ispol"][:] > 0  # polarization shell, or not
+            orb_q0 = a.variables["orbnl_pop"][:]  # q0 for the orbitals
+            orb_delta = a.variables["delta"][:]  # delta for the functions
+            orb_psi = a.variables["orb"][:, :]
 
             # Now loop over all orbitals
             orbital = []
 
             # Number of basis-orbitals (before m-expansion)
-            no = len(a.dimensions['norbs'])
+            no = len(a.dimensions["norbs"])
 
             # All orbital data
             for io in range(no):
-
                 n = orb_n[io]
                 l = orb_l[io]
                 z = orb_z[io]
@@ -122,7 +120,7 @@ class ncSileSiesta(SileCDFSiesta):
                 # The fact that we have to have it normalized means that we need
                 # to convert psi /sqrt(Bohr**3) -> /sqrt(Ang**3)
                 # \int psi^\dagger psi == 1
-                psi = orb_psi[io, :] * r ** l / Bohr2Ang ** (3./2.)
+                psi = orb_psi[io, :] * r**l / Bohr2Ang ** (3.0 / 2.0)
 
                 # Create the sphericalorbital and then the atomicorbital
                 sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), orb_q0[io])
@@ -141,17 +139,17 @@ class ncSileSiesta(SileCDFSiesta):
 
     @lru_cache(maxsize=1)
     def read_geometry(self):
-        """ Returns Geometry object from a Siesta.nc file """
+        """Returns Geometry object from a Siesta.nc file"""
 
         # Read supercell
         lattice = self.read_lattice()
 
-        xyz = np.array(self._value('xa'), np.float64)
+        xyz = np.array(self._value("xa"), np.float64)
         xyz.shape = (-1, 3)
 
-        if 'BASIS' in self.groups:
+        if "BASIS" in self.groups:
             basis = self.read_basis()
-            species = self.groups['BASIS'].variables['basis'][:] - 1
+            species = self.groups["BASIS"].variables["basis"][:] - 1
             atom = Atoms([basis[i] for i in species])
         else:
             atom = Atom(1)
@@ -164,13 +162,13 @@ class ncSileSiesta(SileCDFSiesta):
 
     @lru_cache(maxsize=1)
     def read_force(self):
-        """ Returns a vector with final forces contained. """
-        return np.array(self._value('fa')) * Ry2eV / Bohr2Ang
+        """Returns a vector with final forces contained."""
+        return np.array(self._value("fa")) * Ry2eV / Bohr2Ang
 
     @lru_cache(maxsize=1)
     def read_fermi_level(self):
-        """ Returns the fermi-level """
-        return self._value('Ef')[:] * Ry2eV
+        """Returns the fermi-level"""
+        return self._value("Ef")[:] * Ry2eV
 
     def _read_class(self, cls, dim=1, **kwargs):
         # Get the default spin channel
@@ -178,50 +176,50 @@ class ncSileSiesta(SileCDFSiesta):
         geom = self.read_geometry()
 
         # Populate the things
-        sp = self.groups['SPARSE']
+        sp = self.groups["SPARSE"]
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
         C = cls(geom, dim, nnzpr=1)
 
-        C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
+        C._csr.ncol = np.array(sp.variables["n_col"][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
         C._csr.ptr = _ncol_to_indptr(C._csr.ncol)
-        C._csr.col = np.array(sp.variables['list_col'][:], np.int32) - 1
+        C._csr.col = np.array(sp.variables["list_col"][:], np.int32) - 1
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)
         C._csr._D = np.empty([C._csr.ptr[-1], dim], np.float64)
 
         # Convert from isc to sisl isc
-        _csr_from_sc_off(C.geometry, sp.variables['isc_off'][:, :], C._csr)
+        _csr_from_sc_off(C.geometry, sp.variables["isc_off"][:, :], C._csr)
 
         return C
 
     def _read_class_spin(self, cls, **kwargs):
         # Get the default spin channel
-        spin = len(self._dimension('spin'))
+        spin = len(self._dimension("spin"))
 
         # First read the geometry
         geom = self.read_geometry()
 
         # Populate the things
-        sp = self.groups['SPARSE']
+        sp = self.groups["SPARSE"]
 
         # Since we may read in an orthogonal basis (stored in a Siesta compliant file)
         # we can check whether it is orthogonal by checking the sum of the absolute S
         # I.e. whether only diagonal elements are present.
-        S = np.array(sp.variables['S'][:], np.float64)
+        S = np.array(sp.variables["S"][:], np.float64)
         orthogonal = np.abs(S).sum() == geom.no
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
         C = cls(geom, spin, nnzpr=1, orthogonal=orthogonal)
 
-        C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
+        C._csr.ncol = np.array(sp.variables["n_col"][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
         C._csr.ptr = _ncol_to_indptr(C._csr.ncol)
-        C._csr.col = np.array(sp.variables['list_col'][:], np.int32) - 1
+        C._csr.col = np.array(sp.variables["list_col"][:], np.int32) - 1
 
         # Copy information over
         C._csr._nnz = len(C._csr.col)
@@ -232,62 +230,66 @@ class ncSileSiesta(SileCDFSiesta):
             C._csr._D[:, C.S_idx] = S
 
         # Convert from isc to sisl isc
-        _csr_from_sc_off(C.geometry, sp.variables['isc_off'][:, :], C._csr)
+        _csr_from_sc_off(C.geometry, sp.variables["isc_off"][:, :], C._csr)
 
         return C
 
     def read_overlap(self, **kwargs):
-        """ Returns a overlap matrix from the underlying NetCDF file """
+        """Returns a overlap matrix from the underlying NetCDF file"""
         S = self._read_class(Overlap, **kwargs)
 
-        sp = self.groups['SPARSE']
-        S._csr._D[:, 0] = sp.variables['S'][:]
+        sp = self.groups["SPARSE"]
+        S._csr._D[:, 0] = sp.variables["S"][:]
 
         return S.transpose(sort=kwargs.get("sort", True))
 
     def read_hamiltonian(self, **kwargs):
-        """ Returns a Hamiltonian from the underlying NetCDF file """
+        """Returns a Hamiltonian from the underlying NetCDF file"""
         H = self._read_class_spin(Hamiltonian, **kwargs)
 
-        sp = self.groups['SPARSE']
-        if sp.variables['H'].unit != 'Ry':
-            raise SileError(f'{self}.read_hamiltonian requires the stored matrix to be in Ry!')
+        sp = self.groups["SPARSE"]
+        if sp.variables["H"].unit != "Ry":
+            raise SileError(
+                f"{self}.read_hamiltonian requires the stored matrix to be in Ry!"
+            )
 
         for i in range(len(H.spin)):
-            H._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV
+            H._csr._D[:, i] = sp.variables["H"][i, :] * Ry2eV
 
         # fix siesta specific notation
         _mat_spin_convert(H)
 
         # Shift to the Fermi-level
-        Ef = - self._value('Ef')[:] * Ry2eV
+        Ef = -self._value("Ef")[:] * Ry2eV
         H.shift(Ef)
 
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_dynamical_matrix(self, **kwargs):
-        """ Returns a dynamical matrix from the underlying NetCDF file
+        """Returns a dynamical matrix from the underlying NetCDF file
 
         This assumes that the dynamical matrix is stored in the field "H" as would the
         Hamiltonian. This is counter-intuitive but is required when using PHtrans.
         """
         D = self._read_class_spin(DynamicalMatrix, **kwargs)
 
-        sp = self.groups['SPARSE']
-        if sp.variables['H'].unit != 'Ry**2':
-            raise SileError(f'{self}.read_dynamical_matrix requires the stored matrix to be in Ry**2!')
-        D._csr._D[:, 0] = sp.variables['H'][0, :] * Ry2eV ** 2
+        sp = self.groups["SPARSE"]
+        if sp.variables["H"].unit != "Ry**2":
+            raise SileError(
+                f"{self}.read_dynamical_matrix requires the stored matrix to be in Ry**2!"
+            )
+        D._csr._D[:, 0] = sp.variables["H"][0, :] * Ry2eV**2
 
         return D.transpose(sort=kwargs.get("sort", True))
 
     def read_density_matrix(self, **kwargs):
-        """ Returns a density matrix from the underlying NetCDF file """
+        """Returns a density matrix from the underlying NetCDF file"""
         # This also adds the spin matrix
         DM = self._read_class_spin(DensityMatrix, **kwargs)
 
-        sp = self.groups['SPARSE']
+        sp = self.groups["SPARSE"]
         for i in range(len(DM.spin)):
-            DM._csr._D[:, i] = sp.variables['DM'][i, :]
+            DM._csr._D[:, i] = sp.variables["DM"][i, :]
 
         # fix siesta specific notation
         _mat_spin_convert(DM)
@@ -295,19 +297,19 @@ class ncSileSiesta(SileCDFSiesta):
         return DM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_energy_density_matrix(self, **kwargs):
-        """ Returns energy density matrix from the underlying NetCDF file """
+        """Returns energy density matrix from the underlying NetCDF file"""
         EDM = self._read_class_spin(EnergyDensityMatrix, **kwargs)
 
         # Shift to the Fermi-level
-        Ef = self._value('Ef')[:] * Ry2eV
+        Ef = self._value("Ef")[:] * Ry2eV
         if Ef.size == 1:
             Ef = np.tile(Ef, 2)
 
-        sp = self.groups['SPARSE']
+        sp = self.groups["SPARSE"]
         for i in range(len(EDM.spin)):
-            EDM._csr._D[:, i] = sp.variables['EDM'][i, :] * Ry2eV
-            if i < 2 and 'DM' in sp.variables:
-                EDM._csr._D[:, i] -= sp.variables['DM'][i, :] * Ef[i]
+            EDM._csr._D[:, i] = sp.variables["EDM"][i, :] * Ry2eV
+            if i < 2 and "DM" in sp.variables:
+                EDM._csr._D[:, i] -= sp.variables["DM"][i, :] * Ef[i]
 
         # fix siesta specific notation
         _mat_spin_convert(EDM)
@@ -315,32 +317,32 @@ class ncSileSiesta(SileCDFSiesta):
         return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_force_constant(self):
-        """ Reads the force-constant stored in the nc file
+        """Reads the force-constant stored in the nc file
 
         Returns
         -------
         force constants : numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains
                  contains the directions, and 3rd dimensions contains -/+ displacements.
         """
-        if not 'FC' in self.groups:
-            raise SislError(f'{self}.read_force_constant cannot find the FC group.')
-        fc = self.groups['FC']
+        if not "FC" in self.groups:
+            raise SislError(f"{self}.read_force_constant cannot find the FC group.")
+        fc = self.groups["FC"]
 
-        disp = fc.variables['disp'][0] * Bohr2Ang
-        f0 = fc.variables['fa0'][:, :]
-        fc = (fc.variables['fa'][:, :, :, :, :] - f0.reshape(1, 1, 1, -1, 3)) / disp
+        disp = fc.variables["disp"][0] * Bohr2Ang
+        f0 = fc.variables["fa0"][:, :]
+        fc = (fc.variables["fa"][:, :, :, :, :] - f0.reshape(1, 1, 1, -1, 3)) / disp
         fc[:, :, 1, :, :] *= -1
         return fc * Ry2eV / Bohr2Ang
 
     @property
     @lru_cache(maxsize=1)
     def grids(self):
-        """ Return a list of available grids in this file. """
+        """Return a list of available grids in this file."""
 
-        return list(self.groups['GRID'].variables)
+        return list(self.groups["GRID"].variables)
 
     def read_grid(self, name, index=0, **kwargs):
-        """ Reads a grid in the current Siesta.nc file
+        """Reads a grid in the current Siesta.nc file
 
         Enables the reading and processing of the grids created by Siesta
 
@@ -360,12 +362,12 @@ class ncSileSiesta(SileCDFSiesta):
         geom = self.read_geometry()
 
         # Shorthand
-        g = self.groups['GRID']
+        g = self.groups["GRID"]
 
         # Create the grid
-        nx = len(g.dimensions['nx'])
-        ny = len(g.dimensions['ny'])
-        nz = len(g.dimensions['nz'])
+        nx = len(g.dimensions["nx"])
+        ny = len(g.dimensions["ny"])
+        nz = len(g.dimensions["nz"])
 
         # Shorthand variable name
         v = g.variables[name]
@@ -374,16 +376,17 @@ class ncSileSiesta(SileCDFSiesta):
         grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, geometry=geom, dtype=v.dtype)
 
         # Unit-conversion
-        BohrC2AngC = Bohr2Ang ** 3
+        BohrC2AngC = Bohr2Ang**3
 
-        unit = {'Rho': 1. / BohrC2AngC,
-                'RhoInit': 1. / BohrC2AngC,
-                'RhoTot': 1. / BohrC2AngC,
-                'RhoDelta': 1. / BohrC2AngC,
-                'RhoXC': 1. / BohrC2AngC,
-                'RhoBader': 1. / BohrC2AngC,
-                'Chlocal': 1. / BohrC2AngC,
-        }.get(name, 1.)
+        unit = {
+            "Rho": 1.0 / BohrC2AngC,
+            "RhoInit": 1.0 / BohrC2AngC,
+            "RhoTot": 1.0 / BohrC2AngC,
+            "RhoDelta": 1.0 / BohrC2AngC,
+            "RhoXC": 1.0 / BohrC2AngC,
+            "RhoBader": 1.0 / BohrC2AngC,
+            "Chlocal": 1.0 / BohrC2AngC,
+        }.get(name, 1.0)
 
         if len(v[:].shape) == 3:
             grid.grid = v[:, :, :] * unit
@@ -393,7 +396,7 @@ class ncSileSiesta(SileCDFSiesta):
             grid_reduce_indices(v, np.array(index) * unit, axis=0, out=grid.grid)
 
         try:
-            if v.unit == 'Ry':
+            if v.unit == "Ry":
                 # Convert to ev
                 grid *= Ry2eV
         except Exception:
@@ -402,12 +405,12 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
-        grid.grid = np.copy(np.swapaxes(grid.grid, 0, 2), order='C')
+        grid.grid = np.copy(np.swapaxes(grid.grid, 0, 2), order="C")
 
         return grid
 
     def write_basis(self, atom):
-        """ Write the current atoms orbitals as the basis
+        """Write the current atoms orbitals as the basis
 
         Parameters
         ----------
@@ -415,10 +418,10 @@ class ncSileSiesta(SileCDFSiesta):
            atom specifications to write.
         """
         sile_raise_write(self)
-        bs = self._crt_grp(self, 'BASIS')
+        bs = self._crt_grp(self, "BASIS")
 
         # Create variable of basis-indices
-        b = self._crt_var(bs, 'basis', 'i4', ('na_u',))
+        b = self._crt_var(bs, "basis", "i4", ("na_u",))
         b.info = "Basis of each atom by ID"
 
         for isp, (a, ia) in enumerate(atom.iter(True)):
@@ -426,8 +429,10 @@ class ncSileSiesta(SileCDFSiesta):
             if a.tag in bs.groups:
                 # Assert the file sizes
                 if bs.groups[a.tag].Number_of_orbitals != a.no:
-                    raise ValueError(f'File {self.file} has erroneous data '
-                                     'in regards of the already stored dimensions.')
+                    raise ValueError(
+                        f"File {self.file} has erroneous data "
+                        "in regards of the already stored dimensions."
+                    )
             else:
                 ba = bs.createGroup(a.tag)
                 ba.ID = np.int32(isp + 1)
@@ -441,94 +446,107 @@ class ncSileSiesta(SileCDFSiesta):
                 ba.Number_of_orbitals = np.int32(a.no)
 
     def _write_settings(self):
-        """ Internal method for writing settings.
+        """Internal method for writing settings.
 
         Sadly the settings are not correct since we have no recollection of
         what created the matrices.
         So the values are just *some* values
         """
         # Create the settings
-        st = self._crt_grp(self, 'SETTINGS')
-        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
+        st = self._crt_grp(self, "SETTINGS")
+        v = self._crt_var(st, "ElectronicTemperature", "f8", ("one",))
         v.info = "Electronic temperature used for smearing DOS"
         v.unit = "Ry"
         v[:] = 0.025 / Ry2eV
-        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
+        v = self._crt_var(st, "BZ", "i4", ("xyz", "xyz"))
         v.info = "Grid used for the Brillouin zone integration"
         v[:, :] = np.identity(3) * 2
-        v = self._crt_var(st, 'BZ_displ', 'f8', ('xyz',))
+        v = self._crt_var(st, "BZ_displ", "f8", ("xyz",))
         v.info = "Monkhorst-Pack k-grid displacements"
         v.unit = "b**-1"
-        v[:] = 0.
+        v[:] = 0.0
 
     def write_geometry(self, geometry):
-        """ Creates the NetCDF file and writes the geometry information """
+        """Creates the NetCDF file and writes the geometry information"""
         sile_raise_write(self)
 
         # Create initial dimensions
-        self._crt_dim(self, 'one', 1)
-        self._crt_dim(self, 'n_s', np.prod(geometry.nsc, dtype=np.int32))
-        self._crt_dim(self, 'xyz', 3)
-        self._crt_dim(self, 'no_s', np.prod(geometry.nsc, dtype=np.int32) * geometry.no)
-        self._crt_dim(self, 'no_u', geometry.no)
-        self._crt_dim(self, 'na_u', geometry.na)
+        self._crt_dim(self, "one", 1)
+        self._crt_dim(self, "n_s", np.prod(geometry.nsc, dtype=np.int32))
+        self._crt_dim(self, "xyz", 3)
+        self._crt_dim(self, "no_s", np.prod(geometry.nsc, dtype=np.int32) * geometry.no)
+        self._crt_dim(self, "no_u", geometry.no)
+        self._crt_dim(self, "na_u", geometry.na)
 
         # Create initial geometry
-        v = self._crt_var(self, 'nsc', 'i4', ('xyz',))
-        v.info = 'Number of supercells in each unit-cell direction'
-        v = self._crt_var(self, 'lasto', 'i4', ('na_u',))
-        v.info = 'Last orbital of equivalent atom'
-        v = self._crt_var(self, 'xa', 'f8', ('na_u', 'xyz'))
-        v.info = 'Atomic coordinates'
-        v.unit = 'Bohr'
-        v = self._crt_var(self, 'cell', 'f8', ('xyz', 'xyz'))
-        v.info = 'Unit cell'
-        v.unit = 'Bohr'
+        v = self._crt_var(self, "nsc", "i4", ("xyz",))
+        v.info = "Number of supercells in each unit-cell direction"
+        v = self._crt_var(self, "lasto", "i4", ("na_u",))
+        v.info = "Last orbital of equivalent atom"
+        v = self._crt_var(self, "xa", "f8", ("na_u", "xyz"))
+        v.info = "Atomic coordinates"
+        v.unit = "Bohr"
+        v = self._crt_var(self, "cell", "f8", ("xyz", "xyz"))
+        v.info = "Unit cell"
+        v.unit = "Bohr"
 
         # Create designation of the creation
-        self.method = 'sisl'
+        self.method = "sisl"
 
         # Save stuff
-        self.variables['nsc'][:] = geometry.nsc
-        self.variables['xa'][:] = geometry.xyz / Bohr2Ang
-        self.variables['cell'][:] = geometry.cell / Bohr2Ang
+        self.variables["nsc"][:] = geometry.nsc
+        self.variables["xa"][:] = geometry.xyz / Bohr2Ang
+        self.variables["cell"][:] = geometry.cell / Bohr2Ang
 
         # Create basis group
         self.write_basis(geometry.atoms)
 
         # Store the lasto variable as the remaining thing to do
-        self.variables['lasto'][:] = geometry.lasto + 1
+        self.variables["lasto"][:] = geometry.lasto + 1
 
     def _write_sparsity(self, csr, nsc):
         if csr.nnz != len(csr.col):
-            raise ValueError(f"{self.file}._write_sparsity *must* be a finalized sparsity matrix")
+            raise ValueError(
+                f"{self.file}._write_sparsity *must* be a finalized sparsity matrix"
+            )
         # Create sparse group
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self._crt_grp(self, "SPARSE")
 
-        if 'n_col' in sp.variables:
-            if len(sp.dimensions['nnzs']) != csr.nnz or \
-               np.any(sp.variables['n_col'][:] != csr.ncol[:]) or \
-               np.any(sp.variables['list_col'][:] != csr.col[:]+1) or \
-               np.any(sp.variables['isc_off'][:] != _siesta.siesta_sc_off(*nsc).T):
-                raise ValueError(f"{self.file} sparsity pattern stored *MUST* be equivalent for all matrices")
+        if "n_col" in sp.variables:
+            if (
+                len(sp.dimensions["nnzs"]) != csr.nnz
+                or np.any(sp.variables["n_col"][:] != csr.ncol[:])
+                or np.any(sp.variables["list_col"][:] != csr.col[:] + 1)
+                or np.any(sp.variables["isc_off"][:] != _siesta.siesta_sc_off(*nsc).T)
+            ):
+                raise ValueError(
+                    f"{self.file} sparsity pattern stored *MUST* be equivalent for all matrices"
+                )
         else:
-            self._crt_dim(sp, 'nnzs', csr.col.shape[0])
-            v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
+            self._crt_dim(sp, "nnzs", csr.col.shape[0])
+            v = self._crt_var(sp, "n_col", "i4", ("no_u",))
             v.info = "Number of non-zero elements per row"
             v[:] = csr.ncol[:]
 
-            v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                              chunksizes=(len(csr.col),), **self._cmp_args)
+            v = self._crt_var(
+                sp,
+                "list_col",
+                "i4",
+                ("nnzs",),
+                chunksizes=(len(csr.col),),
+                **self._cmp_args,
+            )
             v.info = "Supercell column indices in the sparse format"
             v[:] = csr.col[:] + 1  # correct for fortran indices
-            v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
+            v = self._crt_var(sp, "isc_off", "i4", ("n_s", "xyz"))
             v.info = "Index of supercell coordinates"
             v[:, :] = _siesta.siesta_sc_off(*nsc).T
         return sp
 
     def _write_overlap(self, spgroup, csr, orthogonal, S_idx):
-        v = self._crt_var(spgroup, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
+        v = self._crt_var(
+            spgroup, "S", "f8", ("nnzs",), chunksizes=(len(csr.col),), **self._cmp_args
+        )
         v.info = "Overlap matrix"
         if orthogonal:
             # We need to create the orthogonal pattern
@@ -555,21 +573,25 @@ class ncSileSiesta(SileCDFSiesta):
                 row = row[diag_idx]
                 idx = (np.diff(row) != 1).nonzero()[0]
                 row = row[idx] + 1
-                raise ValueError(f'{self}._write_overlap '
-                                 'is trying to write an Overlap in Siesta format with '
-                                 f'missing diagonal terms on rows {row}. Please explicitly add *all* diagonal overlap terms.')
+                raise ValueError(
+                    f"{self}._write_overlap "
+                    "is trying to write an Overlap in Siesta format with "
+                    f"missing diagonal terms on rows {row}. Please explicitly add *all* diagonal overlap terms."
+                )
 
-            D[idx[diag_idx]] = 1.
+            D[idx[diag_idx]] = 1.0
             v[:] = tmp._D[:, 0]
             del tmp
         else:
             v[:] = csr._D[:, S_idx]
 
     def write_overlap(self, S, **kwargs):
-        """ Write the overlap matrix to the NetCDF file """
+        """Write the overlap matrix to the NetCDF file"""
         csr = S.transpose(sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(f'{self}.write_overlap cannot write a zero element sparse matrix!')
+            raise SileError(
+                f"{self}.write_overlap cannot write a zero element sparse matrix!"
+            )
 
         # Convert to siesta CSR
         _csr_to_siesta(S.geometry, csr)
@@ -584,7 +606,7 @@ class ncSileSiesta(SileCDFSiesta):
         self._write_overlap(spgroup, csr, S.orthogonal, S.S_idx)
 
     def write_hamiltonian(self, H, **kwargs):
-        """ Writes Hamiltonian model to file
+        """Writes Hamiltonian model to file
 
         Parameters
         ----------
@@ -595,7 +617,9 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = H.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(f'{self}.write_hamiltonian cannot write a zero element sparse matrix!')
+            raise SileError(
+                f"{self}.write_hamiltonian cannot write a zero element sparse matrix!"
+            )
 
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr)
@@ -605,18 +629,20 @@ class ncSileSiesta(SileCDFSiesta):
         # Ensure that the geometry is written
         self.write_geometry(H.geometry)
 
-        self._crt_dim(self, 'spin', len(H.spin))
+        self._crt_dim(self, "spin", len(H.spin))
 
-        if H.dkind != 'f':
-            raise NotImplementedError('Currently we only allow writing a floating point Hamiltonian to the Siesta format')
+        if H.dkind != "f":
+            raise NotImplementedError(
+                "Currently we only allow writing a floating point Hamiltonian to the Siesta format"
+            )
 
-        v = self._crt_var(self, 'Ef', 'f8', ('one',))
-        v.info = 'Fermi level'
-        v.unit = 'Ry'
-        v[:] = kwargs.get('Ef', 0.) / Ry2eV
-        v = self._crt_var(self, 'Qtot', 'f8', ('one',))
-        v.info = 'Total charge'
-        v[0] = kwargs.get('Q', kwargs.get('Qtot', H.geometry.q0))
+        v = self._crt_var(self, "Ef", "f8", ("one",))
+        v.info = "Fermi level"
+        v.unit = "Ry"
+        v[:] = kwargs.get("Ef", 0.0) / Ry2eV
+        v = self._crt_var(self, "Qtot", "f8", ("one",))
+        v.info = "Total charge"
+        v[0] = kwargs.get("Q", kwargs.get("Qtot", H.geometry.q0))
 
         # Append the sparsity pattern
         spgroup = self._write_sparsity(csr, H.geometry.nsc)
@@ -624,8 +650,14 @@ class ncSileSiesta(SileCDFSiesta):
         # Save sparse matrices
         self._write_overlap(spgroup, csr, H.orthogonal, H.S_idx)
 
-        v = self._crt_var(spgroup, 'H', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(csr.col)), **self._cmp_args)
+        v = self._crt_var(
+            spgroup,
+            "H",
+            "f8",
+            ("spin", "nnzs"),
+            chunksizes=(1, len(csr.col)),
+            **self._cmp_args,
+        )
         v.info = "Hamiltonian"
         v.unit = "Ry"
         for i in range(len(H.spin)):
@@ -634,7 +666,7 @@ class ncSileSiesta(SileCDFSiesta):
         self._write_settings()
 
     def write_density_matrix(self, DM, **kwargs):
-        """ Writes density matrix model to file
+        """Writes density matrix model to file
 
         Parameters
         ----------
@@ -643,7 +675,9 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = DM.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(f'{self}.write_density_matrix cannot write a zero element sparse matrix!')
+            raise SileError(
+                f"{self}.write_density_matrix cannot write a zero element sparse matrix!"
+            )
 
         # Convert to siesta CSR (we don't need to sort this matrix)
         _csr_to_siesta(DM.geometry, csr)
@@ -653,18 +687,20 @@ class ncSileSiesta(SileCDFSiesta):
         # Ensure that the geometry is written
         self.write_geometry(DM.geometry)
 
-        self._crt_dim(self, 'spin', len(DM.spin))
+        self._crt_dim(self, "spin", len(DM.spin))
 
-        if DM.dkind != 'f':
-            raise NotImplementedError('Currently we only allow writing a floating point density matrix to the Siesta format')
+        if DM.dkind != "f":
+            raise NotImplementedError(
+                "Currently we only allow writing a floating point density matrix to the Siesta format"
+            )
 
-        v = self._crt_var(self, 'Qtot', 'f8', ('one',))
-        v.info = 'Total charge'
+        v = self._crt_var(self, "Qtot", "f8", ("one",))
+        v.info = "Total charge"
         v[:] = np.sum(DM.geometry.atoms.q0)
-        if 'Qtot' in kwargs:
-            v[:] = kwargs['Qtot']
-        if 'Q' in kwargs:
-            v[:] = kwargs['Q']
+        if "Qtot" in kwargs:
+            v[:] = kwargs["Qtot"]
+        if "Q" in kwargs:
+            v[:] = kwargs["Q"]
 
         # Append the sparsity pattern
         spgroup = self._write_sparsity(csr, DM.geometry.nsc)
@@ -672,8 +708,14 @@ class ncSileSiesta(SileCDFSiesta):
         # Save sparse matrices
         self._write_overlap(spgroup, csr, DM.orthogonal, DM.S_idx)
 
-        v = self._crt_var(spgroup, 'DM', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(csr.col)), **self._cmp_args)
+        v = self._crt_var(
+            spgroup,
+            "DM",
+            "f8",
+            ("spin", "nnzs"),
+            chunksizes=(1, len(csr.col)),
+            **self._cmp_args,
+        )
         v.info = "Density matrix"
         for i in range(len(DM.spin)):
             v[i, :] = csr._D[:, i]
@@ -681,7 +723,7 @@ class ncSileSiesta(SileCDFSiesta):
         self._write_settings()
 
     def write_energy_density_matrix(self, EDM, **kwargs):
-        """ Writes energy density matrix model to file
+        """Writes energy density matrix model to file
 
         Parameters
         ----------
@@ -690,7 +732,9 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = EDM.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(f'{self}.write_energy_density_matrix cannot write a zero element sparse matrix!')
+            raise SileError(
+                f"{self}.write_energy_density_matrix cannot write a zero element sparse matrix!"
+            )
 
         # no need to sort this matrix
         _csr_to_siesta(EDM.geometry, csr)
@@ -700,22 +744,24 @@ class ncSileSiesta(SileCDFSiesta):
         # Ensure that the geometry is written
         self.write_geometry(EDM.geometry)
 
-        self._crt_dim(self, 'spin', len(EDM.spin))
+        self._crt_dim(self, "spin", len(EDM.spin))
 
-        if EDM.dkind != 'f':
-            raise NotImplementedError('Currently we only allow writing a floating point density matrix to the Siesta format')
+        if EDM.dkind != "f":
+            raise NotImplementedError(
+                "Currently we only allow writing a floating point density matrix to the Siesta format"
+            )
 
-        v = self._crt_var(self, 'Ef', 'f8', ('one',))
-        v.info = 'Fermi level'
-        v.unit = 'Ry'
-        v[:] = kwargs.get('Ef', 0.) / Ry2eV
-        v = self._crt_var(self, 'Qtot', 'f8', ('one',))
-        v.info = 'Total charge'
+        v = self._crt_var(self, "Ef", "f8", ("one",))
+        v.info = "Fermi level"
+        v.unit = "Ry"
+        v[:] = kwargs.get("Ef", 0.0) / Ry2eV
+        v = self._crt_var(self, "Qtot", "f8", ("one",))
+        v.info = "Total charge"
         v[:] = np.sum(EDM.geometry.atoms.q0)
-        if 'Qtot' in kwargs:
-            v[:] = kwargs['Qtot']
-        if 'Q' in kwargs:
-            v[:] = kwargs['Q']
+        if "Qtot" in kwargs:
+            v[:] = kwargs["Qtot"]
+        if "Q" in kwargs:
+            v[:] = kwargs["Q"]
 
         # Append the sparsity pattern
         spgroup = self._write_sparsity(csr, EDM.geometry.nsc)
@@ -723,8 +769,14 @@ class ncSileSiesta(SileCDFSiesta):
         # Save sparse matrices
         self._write_overlap(spgroup, csr, EDM.orthogonal, EDM.S_idx)
 
-        v = self._crt_var(spgroup, 'EDM', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(csr.col)), **self._cmp_args)
+        v = self._crt_var(
+            spgroup,
+            "EDM",
+            "f8",
+            ("spin", "nnzs"),
+            chunksizes=(1, len(csr.col)),
+            **self._cmp_args,
+        )
         v.info = "Energy density matrix"
         v.unit = "Ry"
         for i in range(len(EDM.spin)):
@@ -733,7 +785,7 @@ class ncSileSiesta(SileCDFSiesta):
         self._write_settings()
 
     def write_dynamical_matrix(self, D, **kwargs):
-        """ Writes dynamical matrix model to file
+        """Writes dynamical matrix model to file
 
         Parameters
         ----------
@@ -742,7 +794,9 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = D.transpose(sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(f'{self}.write_dynamical_matrix cannot write a zero element sparse matrix!')
+            raise SileError(
+                f"{self}.write_dynamical_matrix cannot write a zero element sparse matrix!"
+            )
 
         # Convert to siesta CSR
         _csr_to_siesta(D.geometry, csr)
@@ -751,19 +805,21 @@ class ncSileSiesta(SileCDFSiesta):
         # Ensure that the geometry is written
         self.write_geometry(D.geometry)
 
-        self._crt_dim(self, 'spin', 1)
+        self._crt_dim(self, "spin", 1)
 
-        if D.dkind != 'f':
-            raise NotImplementedError('Currently we only allow writing a floating point dynamical matrix to the Siesta format')
+        if D.dkind != "f":
+            raise NotImplementedError(
+                "Currently we only allow writing a floating point dynamical matrix to the Siesta format"
+            )
 
-        v = self._crt_var(self, 'Ef', 'f8', ('one',))
-        v.info = 'Fermi level'
-        v.unit = 'Ry'
-        v[:] = 0.
-        v = self._crt_var(self, 'Qtot', 'f8', ('one',))
-        v.info = 'Total charge'
-        v.unit = 'e'
-        v[:] = 0.
+        v = self._crt_var(self, "Ef", "f8", ("one",))
+        v.info = "Fermi level"
+        v.unit = "Ry"
+        v[:] = 0.0
+        v = self._crt_var(self, "Qtot", "f8", ("one",))
+        v.info = "Total charge"
+        v.unit = "e"
+        v[:] = 0.0
 
         # Append the sparsity pattern
         spgroup = self._write_sparsity(csr, D.geometry.nsc)
@@ -771,19 +827,25 @@ class ncSileSiesta(SileCDFSiesta):
         # Save sparse matrices
         self._write_overlap(spgroup, csr, D.orthogonal, D.S_idx)
 
-        v = self._crt_var(spgroup, 'H', 'f8', ('spin', 'nnzs'),
-                          chunksizes=(1, len(csr.col)), **self._cmp_args)
+        v = self._crt_var(
+            spgroup,
+            "H",
+            "f8",
+            ("spin", "nnzs"),
+            chunksizes=(1, len(csr.col)),
+            **self._cmp_args,
+        )
         v.info = "Dynamical matrix"
         v.unit = "Ry**2"
-        v[0, :] = csr._D[:, 0] / Ry2eV ** 2
+        v[0, :] = csr._D[:, 0] / Ry2eV**2
 
         self._write_settings()
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-add_sile('nc', ncSileSiesta)
+add_sile("nc", ncSileSiesta)

@@ -19,6 +19,7 @@ def ortho_matrix(n, m=None):
         m = n
     max_nm = max(n, m)
     from scipy.linalg import qr
+
     H = np.random.randn(max_nm, max_nm) + 1j * np.random.randn(max_nm, max_nm)
     Q, _ = qr(H)
     M = Q.dot(np.conjugate(Q.T))
@@ -37,9 +38,9 @@ def test_coefficient_creation_simple():
     c = Coefficient(ar(6))
     str(c)
     assert len(c) == 6
-    assert c.shape == (6, )
+    assert c.shape == (6,)
     assert c.dtype == np.float64
-    assert c.dkind == 'f'
+    assert c.dkind == "f"
     assert len(c.sub(1)) == 1
     assert np.allclose(c.sub(1).c, 1)
     assert len(c.sub([1, 4])) == 2
@@ -48,16 +49,16 @@ def test_coefficient_creation_simple():
 
 
 def test_coefficient_creation_info():
-    c = Coefficient(ar(6), geom.graphene(), k='HELLO')
+    c = Coefficient(ar(6), geom.graphene(), k="HELLO")
     assert np.allclose(c.parent.xyz, geom.graphene().xyz)
-    assert c.info['k'] == 'HELLO'
+    assert c.info["k"] == "HELLO"
 
 
 def test_coefficient_copy():
-    c = Coefficient(ar(6), geom.graphene(), k='HELLO', test='test')
+    c = Coefficient(ar(6), geom.graphene(), k="HELLO", test="test")
     cc = c.copy()
-    assert cc.info['k'] == 'HELLO'
-    assert cc.info['test'] == 'test'
+    assert cc.info["k"] == "HELLO"
+    assert cc.info["test"] == "test"
 
 
 def test_coefficient_sub():
@@ -69,8 +70,9 @@ def test_coefficient_sub():
     for i, sub in enumerate(state):
         assert len(sub) == 1
 
-    assert np.allclose(state.sub(np.array([False, True, False, True])).c,
-                       state.sub([1, 3]).c)
+    assert np.allclose(
+        state.sub(np.array([False, True, False, True])).c, state.sub([1, 3]).c
+    )
 
     sub = state.sub(np.array([False, True, False, True]))
     state.sub([1, 3], inplace=True)
@@ -107,9 +109,9 @@ def test_state_repr():
 
 def test_state_dkind():
     state = State(ar(6))
-    assert state.dkind == 'f'
+    assert state.dkind == "f"
     state = State(ar(6).astype(np.complex128))
-    assert state.dkind == 'c'
+    assert state.dkind == "c"
 
 
 def test_state_norm():
@@ -134,10 +136,11 @@ def test_state_sub():
         assert sub.norm()[0] == norm[i]
 
     for i, sub in enumerate(state.iter(True)):
-        assert (sub ** 2).sum() == norm2[i]
+        assert (sub**2).sum() == norm2[i]
 
-    assert np.allclose(state.sub(np.array([False, True, False, True])).state,
-                       state.sub([1, 3]).state)
+    assert np.allclose(
+        state.sub(np.array([False, True, False, True])).state, state.sub([1, 3]).state
+    )
 
     sub = state.sub(np.array([False, True, False, True]))
     state.sub([1, 3], inplace=True)
@@ -209,8 +212,8 @@ def test_state_phase_all():
     state = np.random.rand(10, 10) + 1j * np.random.rand(10, 10)
     state1 = State(state)
     state2 = State(-state)
-    ph1 = state1.phase('all')
-    ph2 = state2.phase('all')
+    ph1 = state1.phase("all")
+    ph2 = state2.phase("all")
     assert np.allclose(ph1, ph2 + np.pi)
 
 
@@ -268,7 +271,7 @@ def test_state_align_norm2():
 
 
 def test_state_rotate():
-    state = State([[1+1.j, 1.], [0.1-0.1j, 0.1]])
+    state = State([[1 + 1.0j, 1.0], [0.1 - 0.1j, 0.1]])
 
     # Angles are 45 and -45
     s = state.copy()
@@ -277,7 +280,7 @@ def test_state_rotate():
     assert -np.pi / 4 == pytest.approx(np.angle(s.state[1, 0]))
     assert 0 == pytest.approx(np.angle(s.state[1, 1]))
 
-    s.rotate() # individual false
+    s.rotate()  # individual false
     assert 0 == pytest.approx(np.angle(s.state[0, 0]))
     assert -np.pi / 4 == pytest.approx(np.angle(s.state[0, 1]))
     assert -np.pi / 2 == pytest.approx(np.angle(s.state[1, 0]))

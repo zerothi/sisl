@@ -11,7 +11,7 @@ __all__ = ["sisl_cmd"]
 
 
 def argparse_patch(parser):
-    """ Patch the argparse module such that one may process the Namespace in subparsers
+    """Patch the argparse module such that one may process the Namespace in subparsers
 
     This patch have been created by:
       paul.j3 (http://bugs.python.org/file44363/issue27859test.py)
@@ -22,8 +22,8 @@ def argparse_patch(parser):
     parser : ArgumentParser
        parser to be patched
     """
-    class MySubParsersAction(argparse._SubParsersAction):
 
+    class MySubParsersAction(argparse._SubParsersAction):
         def __call__(self, parser, namespace, values, option_string=None):
             parser_name = values[0]
             arg_strings = values[1:]
@@ -36,9 +36,11 @@ def argparse_patch(parser):
             try:
                 parser = self._name_parser_map[parser_name]
             except KeyError:
-                args = {'parser_name': parser_name,
-                        'choices': ', '.join(self._name_parser_map)}
-                msg = ('unknown parser %(parser_name)r (choices: %(choices)s)') % args
+                args = {
+                    "parser_name": parser_name,
+                    "choices": ", ".join(self._name_parser_map),
+                }
+                msg = ("unknown parser %(parser_name)r (choices: %(choices)s)") % args
                 raise argparse.ArgumentError(self, msg)
 
             # parse all the remaining options into the namespace
@@ -50,14 +52,15 @@ def argparse_patch(parser):
             namespace, arg_strings = parser.parse_known_args(arg_strings, namespace)
 
             ## ORIGINAL
-            #subnamespace, arg_strings = parser.parse_known_args(arg_strings, None)
-            #for key, value in vars(subnamespace).items():
+            # subnamespace, arg_strings = parser.parse_known_args(arg_strings, None)
+            # for key, value in vars(subnamespace).items():
             #    setattr(namespace, key, value)
 
             if arg_strings:
                 vars(namespace).setdefault(argparse._UNRECOGNIZED_ARGS_ATTR, [])
                 getattr(namespace, argparse._UNRECOGNIZED_ARGS_ATTR).extend(arg_strings)
-    parser.register('action', 'parsers', MySubParsersAction)
+
+    parser.register("action", "parsers", MySubParsersAction)
 
 
 def sisl_cmd(argv=None, sile=None):
@@ -79,7 +82,7 @@ def sisl_cmd(argv=None, sile=None):
     elif len(sys.argv) == 1:
         # no arguments
         # fake a help
-        argv = ['--help']
+        argv = ["--help"]
     else:
         argv = sys.argv[1:]
 
@@ -92,9 +95,12 @@ changing ways. It handles files dependent on type AND content.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    p = argparse.ArgumentParser(exe,
-                                formatter_class=argparse.RawDescriptionHelpFormatter,
-                                description=description, conflict_handler='resolve')
+    p = argparse.ArgumentParser(
+        exe,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=description,
+        conflict_handler="resolve",
+    )
 
     # Add default sisl version stuff
     cmd.add_sisl_version_cite_arg(p)
@@ -108,8 +114,8 @@ changing ways. It handles files dependent on type AND content.
     # Now the arguments should have been populated
     # and we will sort out if the input options
     # is only a help option.
-    if not hasattr(ns, '_input_file'):
-        bypassed_args = ['--help', '-h', '--version', '--cite']
+    if not hasattr(ns, "_input_file"):
+        bypassed_args = ["--help", "-h", "--version", "--cite"]
         # Then there are no input files...
         # It is difficult to create an adaptable script
         # with no adaptee... ;)
@@ -118,7 +124,7 @@ changing ways. It handles files dependent on type AND content.
             found = found or arg in argv
         if not found:
             # Re-create the argument parser with the help description
-            argv = ['--help']
+            argv = ["--help"]
 
     # We are good to go!!!
     p.parse_args(argv, namespace=ns)

@@ -24,38 +24,47 @@ from sisl import (
     WideBandSE,
 )
 
-pytestmark = [pytest.mark.physics, pytest.mark.self_energy,
-              pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
+pytestmark = [
+    pytest.mark.physics,
+    pytest.mark.self_energy,
+    pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning),
+]
 
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
             bond = 1.42
-            sq3h = 3.**.5 * 0.5
-            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
-                                             [1.5, -sq3h, 0.],
-                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
-            
+            sq3h = 3.0**0.5 * 0.5
+            self.lattice = Lattice(
+                np.array(
+                    [[1.5, sq3h, 0.0], [1.5, -sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+                )
+                * bond,
+                nsc=[3, 3, 1],
+            )
+
             C = Atom(Z=6, R=[bond * 1.01])
-            self.g = Geometry(np.array([[0., 0., 0.],
-                                        [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, lattice=self.lattice)
+            self.g = Geometry(
+                np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], np.float64) * bond,
+                atoms=C,
+                lattice=self.lattice,
+            )
             self.H = Hamiltonian(self.g)
-            func = self.H.create_construct([0.1, bond+0.1], [0., -2.7])
+            func = self.H.create_construct([0.1, bond + 0.1], [0.0, -2.7])
             self.H.construct(func)
             self.HS = Hamiltonian(self.g, orthogonal=False)
-            func = self.HS.create_construct([0.1, bond+0.1], [(0., 1.), (-2.7, 0.)])
+            func = self.HS.create_construct(
+                [0.1, bond + 0.1], [(0.0, 1.0), (-2.7, 0.0)]
+            )
             self.HS.construct(func)
+
     return t()
 
 
 def test_objects(setup):
-    for D, si, sid in [('+A', 0, 1),
-                       ('-A', 0, -1),
-                       ('+B', 1, 1),
-                       ('-B', 1, -1)]:
+    for D, si, sid in [("+A", 0, 1), ("-A", 0, -1), ("+B", 1, 1), ("-B", 1, -1)]:
         SE = SemiInfinite(setup.H.copy(), D)
         assert SE.semi_inf == si
         assert SE.semi_inf_dir == sid
@@ -63,7 +72,7 @@ def test_objects(setup):
 
 
 def test_sancho_orthogonal(setup):
-    SE = RecursiveSI(setup.H.copy(), '+A')
+    SE = RecursiveSI(setup.H.copy(), "+A")
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
 
 
@@ -74,22 +83,22 @@ def test_sancho_bloch_zero_off_diag(setup):
     # disconnect transverse directions
     H.set_nsc(b=1)
     no = len(H)
-    SE = RecursiveSI(H, '+A')
+    SE = RecursiveSI(H, "+A")
 
     for nb in [2, 4, 5]:
         bloch = Bloch(1, nb, 1)
         for E in [-0.1, 0.2, 0.4, -0.5]:
             se = bloch(SE.self_energy, [0.2, 0.2, 0.2], E=E)
             for b in range(1, nb):
-                off = b*no
-                assert np.allclose(se[:no, :no], se[off:off+no, off:off+no])
-                se[off:off+no, off:off+no] = 0.
-            se[:no, :no] = 0.
-            assert np.allclose(se, 0.)
+                off = b * no
+                assert np.allclose(se[:no, :no], se[off : off + no, off : off + no])
+                se[off : off + no, off : off + no] = 0.0
+            se[:no, :no] = 0.0
+            assert np.allclose(se, 0.0)
 
 
 def test_sancho_orthogonal_dtype(setup):
-    SE = RecursiveSI(setup.H, '+A')
+    SE = RecursiveSI(setup.H, "+A")
     s64 = SE.self_energy(0.1, dtype=np.complex64)
     s128 = SE.self_energy(0.1)
     assert s64.dtype == np.complex64
@@ -100,28 +109,27 @@ def test_sancho_orthogonal_dtype(setup):
 def test_sancho_warning():
     lattice = Lattice([1, 1, 10], nsc=[5, 5, 1])
     C = Atom(Z=6, R=[2 * 1.01])
-    g = Geometry([[0., 0., 0.]],
-                 atoms=C, lattice=lattice)
+    g = Geometry([[0.0, 0.0, 0.0]], atoms=C, lattice=lattice)
     H = Hamiltonian(g)
-    func = H.create_construct([0.1, 1.01, 2.01], [0., -2., -1.])
+    func = H.create_construct([0.1, 1.01, 2.01], [0.0, -2.0, -1.0])
     H.construct(func)
 
     with pytest.warns(sisl.SislWarning, match=r"first neighbouring cell.*\[1.\]"):
-        RecursiveSI(H, '+A')
+        RecursiveSI(H, "+A")
 
 
 def test_sancho_non_orthogonal(setup):
-    SE = RecursiveSI(setup.HS, '-A')
+    SE = RecursiveSI(setup.HS, "-A")
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
 
 
 def test_sancho_broadening_matrix(setup):
-    SE = RecursiveSI(setup.HS, '-A')
+    SE = RecursiveSI(setup.HS, "-A")
     assert np.allclose(SE.broadening_matrix(0.1), SE.se2broadening(SE.self_energy(0.1)))
 
 
 def test_sancho_non_orthogonal_dtype(setup):
-    SE = RecursiveSI(setup.HS, '-A')
+    SE = RecursiveSI(setup.HS, "-A")
     s64 = SE.self_energy(0.1, dtype=np.complex64)
     s128 = SE.self_energy(0.1)
     assert s64.dtype == np.complex64
@@ -130,8 +138,8 @@ def test_sancho_non_orthogonal_dtype(setup):
 
 
 def test_sancho_lr(setup):
-    SL = RecursiveSI(setup.HS, '-A')
-    SR = RecursiveSI(setup.HS, '+A')
+    SL = RecursiveSI(setup.HS, "-A")
+    SR = RecursiveSI(setup.HS, "+A")
 
     E = 0.1
     k = [0, 0.13, 0]
@@ -152,7 +160,7 @@ def test_sancho_lr(setup):
 
     LB_SEL, LB_SER = SL.self_energy_lr(E, k, bulk=True)
     L_SE = SL.self_energy(E, k, bulk=True)
-    R_SE = SR.self_energy(E, k,  bulk=True)
+    R_SE = SR.self_energy(E, k, bulk=True)
     assert not np.allclose(L_SE, R_SE)
     RB_SEL, RB_SER = SR.self_energy_lr(E, k, bulk=True)
 
@@ -163,8 +171,8 @@ def test_sancho_lr(setup):
 
 
 def test_sancho_green(setup):
-    SL = RecursiveSI(setup.HS, '-A')
-    SR = RecursiveSI(setup.HS, '+A')
+    SL = RecursiveSI(setup.HS, "-A")
+    SR = RecursiveSI(setup.HS, "+A")
 
     E = 0.1
     k = [0, 0.13, 0]
@@ -182,12 +190,13 @@ def test_sancho_green(setup):
 def test_wideband_1(setup):
     SE = WideBandSE(10, 1e-2)
     assert SE.self_energy().shape == (10, 10)
-    assert np.allclose(np.diag(SE.self_energy()), -1j*1e-2)
-    assert np.allclose(np.diag(SE.self_energy(eta=1)), -1j*1.)
-    assert np.allclose(np.diag(SE.broadening_matrix(eta=1)), 2.)
+    assert np.allclose(np.diag(SE.self_energy()), -1j * 1e-2)
+    assert np.allclose(np.diag(SE.self_energy(eta=1)), -1j * 1.0)
+    assert np.allclose(np.diag(SE.broadening_matrix(eta=1)), 2.0)
     # ensure our custom function works!
-    assert np.allclose(SE.broadening_matrix(eta=1),
-                       SE.se2broadening(SE.self_energy(eta=1)))
+    assert np.allclose(
+        SE.broadening_matrix(eta=1), SE.se2broadening(SE.self_energy(eta=1))
+    )
 
 
 @pytest.mark.parametrize("k_axes", [0, 1])
@@ -212,13 +221,15 @@ def test_real_space_HS(setup, k_axes, semi_axis, trs, bz, unfold):
 def test_real_space_H(setup, k_axes, semi_axis, trs, bz, unfold):
     if k_axes == semi_axis:
         return
-    RSE = RealSpaceSE(setup.H, semi_axis, k_axes, (unfold, unfold, 1), trs=trs, dk=100, bz=bz)
+    RSE = RealSpaceSE(
+        setup.H, semi_axis, k_axes, (unfold, unfold, 1), trs=trs, dk=100, bz=bz
+    )
     RSE.green(0.1)
     RSE.self_energy(0.1)
 
 
 def test_real_space_H_3d():
-    lattice = Lattice(1., nsc=[3] * 3)
+    lattice = Lattice(1.0, nsc=[3] * 3)
     H = Atom(Z=1, R=[1.001])
     geom = Geometry([0] * 3, atoms=H, lattice=lattice)
     H = Hamiltonian(geom)
@@ -235,7 +246,9 @@ def test_real_space_H_3d():
     # Since there is only 2 repetitions along one direction we will have the full matrix
     # coupled!
     assert np.allclose(RSE.self_energy(0.1), RSE.self_energy(0.1, coupling=True))
-    assert np.allclose(RSE.self_energy(0.1, bulk=True), RSE.self_energy(0.1, bulk=True, coupling=True))
+    assert np.allclose(
+        RSE.self_energy(0.1, bulk=True), RSE.self_energy(0.1, bulk=True, coupling=True)
+    )
 
 
 def test_real_space_H_dtype(setup):
@@ -244,7 +257,7 @@ def test_real_space_H_dtype(setup):
     g128 = RSE.green(0.1, dtype=np.complex128)
     assert g64.dtype == np.complex64
     assert g128.dtype == np.complex128
-    assert np.allclose(g64, g128, atol=1.e-4)
+    assert np.allclose(g64, g128, atol=1.0e-4)
 
     s64 = RSE.self_energy(0.1, dtype=np.complex64)
     s128 = RSE.self_energy(0.1, dtype=np.complex128)
@@ -376,7 +389,7 @@ def test_real_space_SE_spin_orbit():
 @pytest.mark.parametrize("bulk", [True, False])
 @pytest.mark.parametrize("coupling", [True, False])
 def test_real_space_SI_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
-    semi = RecursiveSI(setup.HS, '-B')
+    semi = RecursiveSI(setup.HS, "-B")
     surf = setup.HS.tile(4, 1)
     surf.set_nsc(b=1)
     RSI = RealSpaceSI(semi, surf, k_axes, (unfold, 1, unfold))
@@ -385,7 +398,7 @@ def test_real_space_SI_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
     RSI.self_energy(0.1, bulk=bulk, coupling=coupling)
 
 
-@pytest.mark.parametrize("semi_dir", ['-B', '+B'])
+@pytest.mark.parametrize("semi_dir", ["-B", "+B"])
 @pytest.mark.parametrize("k_axes", [0])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
@@ -393,7 +406,9 @@ def test_real_space_SI_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
 @pytest.mark.parametrize("bulk", [True, False])
 @pytest.mark.parametrize("semi_bulk", [True, False])
 @pytest.mark.parametrize("coupling", [True, False])
-def test_real_space_SI_H(setup, semi_dir, k_axes, trs, bz, unfold, bulk, semi_bulk, coupling):
+def test_real_space_SI_H(
+    setup, semi_dir, k_axes, trs, bz, unfold, bulk, semi_bulk, coupling
+):
     semi = RecursiveSI(setup.H, semi_dir)
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
@@ -404,7 +419,7 @@ def test_real_space_SI_H(setup, semi_dir, k_axes, trs, bz, unfold, bulk, semi_bu
 
 
 def test_real_space_SI_H_test(setup):
-    semi = RecursiveSI(setup.H, '-B')
+    semi = RecursiveSI(setup.H, "-B")
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
     RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
@@ -416,7 +431,7 @@ def test_real_space_SI_H_test(setup):
 
 
 def test_real_space_SI_H_k_trs(setup):
-    semi = RecursiveSI(setup.H, '-B')
+    semi = RecursiveSI(setup.H, "-B")
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
     RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
@@ -427,7 +442,7 @@ def test_real_space_SI_H_k_trs(setup):
 
 
 def test_real_space_SI_fail_semi_in_k(setup):
-    semi = RecursiveSI(setup.H, '-B')
+    semi = RecursiveSI(setup.H, "-B")
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
     with pytest.raises(ValueError):
@@ -435,14 +450,14 @@ def test_real_space_SI_fail_semi_in_k(setup):
 
 
 def test_real_space_SI_fail_surf_nsc(setup):
-    semi = RecursiveSI(setup.H, '-B')
+    semi = RecursiveSI(setup.H, "-B")
     surf = setup.H.tile(4, 1)
     with pytest.raises(ValueError):
         RSI = RealSpaceSI(semi, surf, 0, (2, 1, 1))
 
 
 def test_real_space_SI_fail_k_no_nsc(setup):
-    semi = RecursiveSI(setup.H, '-B')
+    semi = RecursiveSI(setup.H, "-B")
     surf = setup.H.tile(4, 1)
     surf.set_nsc([1] * 3)
     with pytest.raises(ValueError):
@@ -450,7 +465,7 @@ def test_real_space_SI_fail_k_no_nsc(setup):
 
 
 def test_real_space_SI_fail_unfold_in_semi(setup):
-    semi = RecursiveSI(setup.H, '-B')
+    semi = RecursiveSI(setup.H, "-B")
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
     with pytest.raises(ValueError):
@@ -464,10 +479,9 @@ def test_real_space_SI_spin_orbit():
     on = [4, 0, 0, 0, 0, 0, 0, 0]
     off = [-1, 0, 0, 0, 0, 0, 0, 0]
     H.construct([(0.1, 1.1), (on, off)])
-    semi = RecursiveSI(H, '-B')
+    semi = RecursiveSI(H, "-B")
     surf = H.tile(4, 1)
     surf.set_nsc(b=1)
     RS = RealSpaceSI(semi, surf, 0, (2, 1, 1), dk=1.5)
     RS.self_energy(0.1)
     RS.self_energy(0.1, coupling=True)
-

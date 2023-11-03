@@ -13,7 +13,7 @@ to be post-processed in the NEGF code `TBtrans`_.
    rhamSileScaleUp - Hamiltonian file
 
 """
-from .sile import * # isort: split
+from .sile import *  # isort: split
 from .orbocc import *
 from .ref import *
 from .rham import *

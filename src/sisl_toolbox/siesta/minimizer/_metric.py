@@ -7,10 +7,9 @@ __all__ = ["Metric", "CompositeMetric"]
 
 
 class Metric:
-
     @abstractmethod
     def metric(self, variables, *args, **kwargs):
-        """ Return a single number quantifying the metric of the system """
+        """Return a single number quantifying the metric of the system"""
 
     def __abs__(self):
         return AbsMetric(self)
@@ -50,7 +49,7 @@ class Metric:
 
 
 class CompositeMetric(Metric):
-    """ Placeholder for two metrics """
+    """Placeholder for two metrics"""
 
     def __init__(self, A, B):
         self.A = A

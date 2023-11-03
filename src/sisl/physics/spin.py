@@ -5,12 +5,12 @@ import numpy as np
 
 from sisl._internal import set_module
 
-__all__ = ['Spin']
+__all__ = ["Spin"]
 
 
 @set_module("sisl.physics")
 class Spin:
-    r""" Spin class to determine configurations and spin components.
+    r"""Spin class to determine configurations and spin components.
 
     The basic class `Spin` implements a generic method to determine a spin configuration.
 
@@ -57,7 +57,6 @@ class Spin:
     __slots__ = ("_size", "_kind", "_dtype")
 
     def __init__(self, kind="", dtype=None):
-
         if isinstance(kind, Spin):
             if dtype is None:
                 dtype = kind._dtype
@@ -75,37 +74,50 @@ class Spin:
         if isinstance(kind, str):
             kind = kind.lower()
 
-        kind = {"unpolarized": Spin.UNPOLARIZED, "": Spin.UNPOLARIZED,
-                Spin.UNPOLARIZED: Spin.UNPOLARIZED,
-                "polarized": Spin.POLARIZED, "p": Spin.POLARIZED,
-                "pol": Spin.POLARIZED,
-                Spin.POLARIZED: Spin.POLARIZED,
-                "noncolinear": Spin.NONCOLINEAR,
-                "noncollinear": Spin.NONCOLINEAR,
-                "non-colinear": Spin.NONCOLINEAR,
-                "non-collinear": Spin.NONCOLINEAR, "nc": Spin.NONCOLINEAR,
-                Spin.NONCOLINEAR: Spin.NONCOLINEAR,
-                "spinorbit": Spin.SPINORBIT,
-                "spin-orbit": Spin.SPINORBIT, "so": Spin.SPINORBIT,
-                "soc": Spin.SPINORBIT, Spin.SPINORBIT: Spin.SPINORBIT}.get(kind)
+        kind = {
+            "unpolarized": Spin.UNPOLARIZED,
+            "": Spin.UNPOLARIZED,
+            Spin.UNPOLARIZED: Spin.UNPOLARIZED,
+            "polarized": Spin.POLARIZED,
+            "p": Spin.POLARIZED,
+            "pol": Spin.POLARIZED,
+            Spin.POLARIZED: Spin.POLARIZED,
+            "noncolinear": Spin.NONCOLINEAR,
+            "noncollinear": Spin.NONCOLINEAR,
+            "non-colinear": Spin.NONCOLINEAR,
+            "non-collinear": Spin.NONCOLINEAR,
+            "nc": Spin.NONCOLINEAR,
+            Spin.NONCOLINEAR: Spin.NONCOLINEAR,
+            "spinorbit": Spin.SPINORBIT,
+            "spin-orbit": Spin.SPINORBIT,
+            "so": Spin.SPINORBIT,
+            "soc": Spin.SPINORBIT,
+            Spin.SPINORBIT: Spin.SPINORBIT,
+        }.get(kind)
         if kind is None:
-            raise ValueError(f"{self.__class__.__name__} initialization went wrong because of wrong "
-                             "kind specification. Could not determine the kind of spin!")
+            raise ValueError(
+                f"{self.__class__.__name__} initialization went wrong because of wrong "
+                "kind specification. Could not determine the kind of spin!"
+            )
 
         # Now assert the checks
         self._kind = kind
 
         if np.dtype(dtype).kind == "c":
-            size = {self.UNPOLARIZED: 1,
-                     self.POLARIZED: 2,
-                     self.NONCOLINEAR: 4,
-                     self.SPINORBIT: 4}.get(kind)
+            size = {
+                self.UNPOLARIZED: 1,
+                self.POLARIZED: 2,
+                self.NONCOLINEAR: 4,
+                self.SPINORBIT: 4,
+            }.get(kind)
 
         else:
-            size = {self.UNPOLARIZED: 1,
-                     self.POLARIZED: 2,
-                     self.NONCOLINEAR: 4,
-                     self.SPINORBIT: 8}.get(kind)
+            size = {
+                self.UNPOLARIZED: 1,
+                self.POLARIZED: 2,
+                self.NONCOLINEAR: 4,
+                self.SPINORBIT: 8,
+            }.get(kind)
 
         self._size = size
 
@@ -119,55 +131,55 @@ class Spin:
         return f"{self.__class__.__name__}{{spin-orbit, kind={self.dkind}}}"
 
     def copy(self):
-        """ Create a copy of the spin-object """
+        """Create a copy of the spin-object"""
         return Spin(self.kind, self.dtype)
 
     @property
     def dtype(self):
-        """ Data-type of the spin configuration """
+        """Data-type of the spin configuration"""
         return self._dtype
 
     @property
     def dkind(self):
-        """ Data-type kind """
+        """Data-type kind"""
         return np.dtype(self._dtype).kind
 
     @property
     def size(self):
-        """ Number of elements to describe the spin-components """
+        """Number of elements to describe the spin-components"""
         return self._size
 
     @property
     def spinor(self):
-        """ Number of spinor components (1 or 2) """
+        """Number of spinor components (1 or 2)"""
         return min(2, self._size)
 
     @property
     def kind(self):
-        """ A unique ID for the kind of spin configuration """
+        """A unique ID for the kind of spin configuration"""
         return self._kind
 
     @property
     def is_unpolarized(self):
-        """ True if the configuration is not polarized """
+        """True if the configuration is not polarized"""
         # Regardless of data-type
         return self.kind == Spin.UNPOLARIZED
 
     @property
     def is_polarized(self):
-        """ True if the configuration is polarized """
+        """True if the configuration is polarized"""
         return self.kind == Spin.POLARIZED
 
     is_colinear = is_polarized
 
     @property
     def is_noncolinear(self):
-        """ True if the configuration non-collinear """
+        """True if the configuration non-collinear"""
         return self.kind == Spin.NONCOLINEAR
 
     @property
     def is_diagonal(self):
-        """ Whether the spin-box is only using the diagonal components
+        """Whether the spin-box is only using the diagonal components
 
         This will return true for non-polarized and polarized spin configurations.
         Otherwise false.
@@ -176,7 +188,7 @@ class Spin:
 
     @property
     def is_spinorbit(self):
-        """ True if the configuration is spin-orbit """
+        """True if the configuration is spin-orbit"""
         return self.kind == Spin.SPINORBIT
 
     def __len__(self):
@@ -202,11 +214,7 @@ class Spin:
         return self.kind >= other.kind
 
     def __getstate__(self):
-        return {
-            "size": self.size,
-            "kind": self.kind,
-            "dtype": self.dtype
-        }
+        return {"size": self.size, "kind": self.kind, "dtype": self.dtype}
 
     def __setstate__(self, state):
         self._size = state["size"]

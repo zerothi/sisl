@@ -12,28 +12,36 @@ from sisl import Atom, Geometry, Lattice, Sphere
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
             bond = 1.42
-            sq3h = 3.**.5 * 0.5
-            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
-                                             [1.5, -sq3h, 0.],
-                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            sq3h = 3.0**0.5 * 0.5
+            self.lattice = Lattice(
+                np.array(
+                    [[1.5, sq3h, 0.0], [1.5, -sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+                )
+                * bond,
+                nsc=[3, 3, 1],
+            )
             C = Atom(Z=6, R=bond * 1.01)
-            self.g = Geometry(np.array([[0., 0., 0.],
-                                        [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, lattice=self.lattice)
+            self.g = Geometry(
+                np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], np.float64) * bond,
+                atoms=C,
+                lattice=self.lattice,
+            )
 
             C = Atom(Z=6, R=[bond * 1.01] * 2)
-            self.g2 = Geometry(np.array([[0., 0., 0.],
-                                         [1., 0., 0.]], np.float64) * bond,
-                               atoms=C, lattice=self.lattice)
+            self.g2 = Geometry(
+                np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], np.float64) * bond,
+                atoms=C,
+                lattice=self.lattice,
+            )
+
     return t()
 
 
 @pytest.mark.geometry
 class TestGeometryReturn:
-
     def test_fl_o(self, setup):
         # first o is always one element longer than the number of atoms
         assert np.all(setup.g.firsto == [0, 1, 2])
@@ -61,7 +69,7 @@ class TestGeometryReturn:
 
     def test_rij2(self, setup):
         d = setup.g.rij([0, 1], [0, 1])
-        assert np.allclose(d, [0., 0.])
+        assert np.allclose(d, [0.0, 0.0])
 
     def test_osc2uc(self, setup):
         # single value
@@ -83,7 +91,7 @@ class TestGeometryReturn:
         assert d.shape == (2, 3)
 
         d = setup.g[1, 2]
-        assert d == 0.
+        assert d == 0.0
         d = setup.g[1, 1:3]
         assert d.shape == (2,)
         d = setup.g[1, :]

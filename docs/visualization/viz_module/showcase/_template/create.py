@@ -14,7 +14,7 @@ def create_showcase_nb(cls, force=False):
     Parameters
     -----------
     cls: str
-        the name of the class that you want to 
+        the name of the class that you want to
     """
     if cls not in [c.__name__ for c in get_plot_classes()]:
         message = f"We didn't find a plot class with the name '{cls}'"
@@ -30,8 +30,8 @@ def create_showcase_nb(cls, force=False):
     with open(Path(__file__).parent.parent / f"{cls}.ipynb", "w") as f:
         f.write(lines.replace("<$plotclass$>", cls))
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-c", "--cls", type=str, required=True)

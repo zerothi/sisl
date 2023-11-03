@@ -27,6 +27,7 @@ from sisl.physics.densitymatrix import DensityMatrix
 from sisl.physics.distribution import fermi_dirac
 from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
+
 # Import sile objects
 from sisl.utils import (
     collect_action,
@@ -41,17 +42,19 @@ from sisl.utils import (
 from ..sile import add_sile, get_sile, sile_raise_write
 from ._cdf import _devncSileTBtrans
 
-__all__ = ['tbtncSileTBtrans', 'tbtavncSileTBtrans']
+__all__ = ["tbtncSileTBtrans", "tbtavncSileTBtrans"]
 
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
-Ry2eV = unit_convert('Ry', 'eV')
-Ry2K = unit_convert('Ry', 'K')
-eV2Ry = unit_convert('eV', 'Ry')
+Bohr2Ang = unit_convert("Bohr", "Ang")
+Ry2eV = unit_convert("Ry", "eV")
+Ry2K = unit_convert("Ry", "K")
+eV2Ry = unit_convert("eV", "Ry")
 
 
-def window_warning(routine, E, elec_from, mu_from, kt_from, elec_to, mu_to, kt_to, kT_factor=3):
-    """ Issue a warning if the energy grid does not  the chemical potentials """
+def window_warning(
+    routine, E, elec_from, mu_from, kt_from, elec_to, mu_to, kt_to, kT_factor=3
+):
+    """Issue a warning if the energy grid does not  the chemical potentials"""
 
     Emin = E.min()
     Emax = E.max()
@@ -63,29 +66,43 @@ def window_warning(routine, E, elec_from, mu_from, kt_from, elec_to, mu_to, kt_t
     dE = E[1] - E[0]
 
     # Check that the lower bound is sufficient
-    print_warning = mu_from - kt_from * kT_factor < Emin - dE / 2 or \
-        mu_to - kt_to * kT_factor  < Emin - dE / 2
-    print_warning = mu_from + kt_from * kT_factor > Emax + dE / 2 or \
-        mu_to + kt_to * kT_factor  > Emax + dE / 2 or \
-        print_warning
+    print_warning = (
+        mu_from - kt_from * kT_factor < Emin - dE / 2
+        or mu_to - kt_to * kT_factor < Emin - dE / 2
+    )
+    print_warning = (
+        mu_from + kt_from * kT_factor > Emax + dE / 2
+        or mu_to + kt_to * kT_factor > Emax + dE / 2
+        or print_warning
+    )
     if print_warning:
         # We should pretty-print a table of data
         m = max(len(elec_from), len(elec_to), 15)
-        s = ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('Energy range', Emin - dE / 2, Emax + dE / 2)
-        s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format(elec_from, mu_from - kt_from * kT_factor, mu_from + kt_from * kT_factor)
-        s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format(elec_to, mu_to - kt_to * kT_factor, mu_to + kt_to * kT_factor)
+        s = ("{:" + str(m) + "s} {:9.3f} : {:9.3f} eV\n").format(
+            "Energy range", Emin - dE / 2, Emax + dE / 2
+        )
+        s += ("{:" + str(m) + "s} {:9.3f} : {:9.3f} eV\n").format(
+            elec_from, mu_from - kt_from * kT_factor, mu_from + kt_from * kT_factor
+        )
+        s += ("{:" + str(m) + "s} {:9.3f} : {:9.3f} eV\n").format(
+            elec_to, mu_to - kt_to * kT_factor, mu_to + kt_to * kT_factor
+        )
         min_e = min(mu_from - kt_from * kT_factor, mu_to - kt_to * kT_factor)
         max_e = max(mu_from + kt_from * kT_factor, mu_to + kt_to * kT_factor)
-        s += ("{:"+str(m)+"s} {:9.3f} : {:9.3f} eV\n").format('dFermi function', min_e, max_e)
+        s += ("{:" + str(m) + "s} {:9.3f} : {:9.3f} eV\n").format(
+            "dFermi function", min_e, max_e
+        )
 
-        warn(f"{routine} cannot "
-             "accurately calculate the current due to the calculated energy range. "
-             "Increase the calculated energy-range.\n{s}")
+        warn(
+            f"{routine} cannot "
+            "accurately calculate the current due to the calculated energy range. "
+            "Increase the calculated energy-range.\n{s}"
+        )
 
 
 @set_module("sisl.io.tbtrans")
 class tbtncSileTBtrans(_devncSileTBtrans):
-    r""" TBtrans output file object
+    r"""TBtrans output file object
 
     Implementation of the TBtrans output ``*.TBT.nc`` files which contains
     calculated quantities related to the NEGF code TBtrans.
@@ -111,13 +128,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     The API for this class are largely equivalent to the arguments of the `sdata` command-line
     tool, with the execption that the command-line tool uses Fortran indexing numbers (1-based).
     """
-    _trans_type = 'TBT'
+    _trans_type = "TBT"
     _E2eV = Ry2eV
 
     _k_avg = False
 
     def write_tbtav(self, *args, **kwargs):
-        """ Convert this to a TBT.AV.nc file, i.e. all k dependent quantites are averaged out.
+        """Convert this to a TBT.AV.nc file, i.e. all k dependent quantites are averaged out.
 
         This command will overwrite any previous file with the ending TBT.AV.nc and thus
         will not take notice of any older files.
@@ -127,14 +144,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         file : str
             output filename
         """
-        f = self._file.with_suffix('.AV.nc')
+        f = self._file.with_suffix(".AV.nc")
         if len(args) > 0:
             f = args[0]
-        f = kwargs.get('file', f)
-        tbtavncSileTBtrans(f, mode='w', access=0).write_tbtav(self)
+        f = kwargs.get("file", f)
+        tbtavncSileTBtrans(f, mode="w", access=0).write_tbtav(self)
 
     def _value_avg(self, name, tree=None, kavg=False):
-        """ Local method for obtaining the data from the SileCDF.
+        """Local method for obtaining the data from the SileCDF.
 
         This method checks how the file is access, i.e. whether
         data is stored in the object or it should be read consequtively.
@@ -148,12 +165,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         except KeyError as err:
             group = None
             if isinstance(tree, list):
-                group = '.'.join(tree)
+                group = ".".join(tree)
             elif not tree is None:
                 group = tree
             if not group is None:
-                raise KeyError(f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file.")
-            raise KeyError(f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file.")
+                raise KeyError(
+                    f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file."
+                )
+            raise KeyError(
+                f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file."
+            )
 
         if self._k_avg:
             return v[:]
@@ -176,13 +197,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             data.shape = orig_shape[1:]
 
         else:
-            raise ValueError(f"{self.__class__.__name__} requires kavg argument to be either bool or an integer corresponding to the k-point index.")
+            raise ValueError(
+                f"{self.__class__.__name__} requires kavg argument to be either bool or an integer corresponding to the k-point index."
+            )
 
         # Return data
         return data
 
     def _value_E(self, name, tree=None, kavg=False, E=None):
-        """ Local method for obtaining the data from the SileCDF using an E index. """
+        """Local method for obtaining the data from the SileCDF using an E index."""
         if E is None:
             return self._value_avg(name, tree, kavg)
 
@@ -194,12 +217,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         except KeyError:
             group = None
             if isinstance(tree, list):
-                group = '.'.join(tree)
+                group = ".".join(tree)
             elif not tree is None:
                 group = tree
             if not group is None:
-                raise KeyError(f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file.")
-            raise KeyError(f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file.")
+                raise KeyError(
+                    f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file."
+                )
+            raise KeyError(
+                f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file."
+            )
         if self._k_avg:
             return v[iE, ...]
 
@@ -223,13 +250,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             data.shape = orig_shape[2:]
 
         else:
-            raise ValueError(f"{self.__class__.__name__} requires kavg argument to be either bool or an integer corresponding to the k-point index.")
+            raise ValueError(
+                f"{self.__class__.__name__} requires kavg argument to be either bool or an integer corresponding to the k-point index."
+            )
 
         # Return data
         return data
 
     def transmission(self, elec_from=0, elec_to=1, kavg=True) -> ndarray:
-        r""" Transmission from `elec_from` to `elec_to`.
+        r"""Transmission from `elec_from` to `elec_to`.
 
         The transmission between two electrodes may be retrieved
         from the `Sile`.
@@ -261,12 +290,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
         if elec_from == elec_to:
-            raise ValueError(f"{self.__class__.__name__}.transmission elec_from[{elec_from}] and elec_to[{elec_to}] must not be the same.")
+            raise ValueError(
+                f"{self.__class__.__name__}.transmission elec_from[{elec_from}] and elec_to[{elec_to}] must not be the same."
+            )
 
         return self._value_avg(f"{elec_to}.T", elec_from, kavg=kavg)
 
     def reflection(self, elec=0, kavg=True, from_single=False) -> ndarray:
-        r""" Reflection into electrode `elec`
+        r"""Reflection into electrode `elec`
 
         The reflection into electrode `elec` is calculated as:
 
@@ -306,9 +337,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # Find full transmission out of electrode
         if from_single:
-            T = self._value_avg(f"{elec}.T", elec, kavg=kavg) - self._value_avg(f"{elec}.C", elec, kavg=kavg)
+            T = self._value_avg(f"{elec}.T", elec, kavg=kavg) - self._value_avg(
+                f"{elec}.C", elec, kavg=kavg
+            )
         else:
-            T = 0.
+            T = 0.0
             for to in self.elecs:
                 to = self._elec(to)
                 if elec == to:
@@ -318,7 +351,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return BT - T
 
     def transmission_eig(self, elec_from=0, elec_to=1, kavg=True) -> ndarray:
-        """ Transmission eigenvalues from `elec_from` to `elec_to`.
+        """Transmission eigenvalues from `elec_from` to `elec_to`.
 
         Parameters
         ----------
@@ -338,12 +371,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
         if elec_from == elec_to:
-            raise ValueError(f"{self.__class__.__name__}.transmission_eig elec_from[{elec_from}] and elec_to[{elec_to}] must not be the same.")
+            raise ValueError(
+                f"{self.__class__.__name__}.transmission_eig elec_from[{elec_from}] and elec_to[{elec_to}] must not be the same."
+            )
 
         return self._value_avg(f"{elec_to}.T.Eig", elec_from, kavg=kavg)
 
     def transmission_bulk(self, elec=0, kavg=True) -> ndarray:
-        """ Bulk transmission for the `elec` electrode
+        """Bulk transmission for the `elec` electrode
 
         The bulk transmission is equivalent to creating a 2 terminal device with
         electrode `elec` tiled 3 times.
@@ -364,8 +399,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self._value_avg("T", self._elec(elec), kavg=kavg)
 
-    def norm(self, atoms=None, orbitals=None, norm='none') -> int:
-        r""" Normalization factor depending on the input
+    def norm(self, atoms=None, orbitals=None, norm="none") -> int:
+        r"""Normalization factor depending on the input
 
         The normalization can be performed in one of the below methods.
         In the following :math:`N` refers to the normalization constant
@@ -397,12 +432,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         # Cast to lower
         norm = norm.lower()
-        if norm == 'none':
+        if norm == "none":
             NORM = 1
-        elif norm in ['all', 'atom', 'orbital']:
+        elif norm in ["all", "atom", "orbital"]:
             NORM = self.no_d
         else:
-            raise ValueError(f"{self.__class__.__name__}.norm error on norm keyword in when requesting normalization!")
+            raise ValueError(
+                f"{self.__class__.__name__}.norm error on norm keyword in when requesting normalization!"
+            )
 
         # If the user simply requests a specific norm
         if atoms is None and orbitals is None:
@@ -411,9 +448,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Now figure out what to do
         if atoms is None:
             # Get pivoting indices to average over
-            if norm == 'orbital':
+            if norm == "orbital":
                 NORM = len(self.o2p(orbitals))
-            elif norm == 'atom':
+            elif norm == "atom":
                 geom = self.geometry
                 a = np.unique(geom.o2a(orbitals))
                 # Now sum the orbitals per atom
@@ -421,7 +458,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             return NORM
 
         if not orbitals is None:
-            raise ValueError(f"{self.__class__.__name__}.norm both atom and orbital cannot be specified!")
+            raise ValueError(
+                f"{self.__class__.__name__}.norm both atom and orbital cannot be specified!"
+            )
 
         # atom is specified, this will result in the same normalization
         # regardless of norm == [orbital, atom] since it is all orbitals
@@ -432,7 +471,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return NORM
 
     def _DOS(self, DOS, atoms, orbitals, sum, norm) -> ndarray:
-        """ Averages/sums the DOS
+        """Averages/sums the DOS
 
         Parameters
         ----------
@@ -457,17 +496,21 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         # Force False equivalent as None.
         if isinstance(atoms, bool):
-            if not atoms: atoms = None
+            if not atoms:
+                atoms = None
         if isinstance(orbitals, bool):
-            if not orbitals: orbitals = None
+            if not orbitals:
+                orbitals = None
         if not atoms is None and not orbitals is None:
-            raise ValueError("Both atoms and orbitals keyword in DOS request "
-                             "cannot be specified, only one at a time.")
+            raise ValueError(
+                "Both atoms and orbitals keyword in DOS request "
+                "cannot be specified, only one at a time."
+            )
         # Cast to lower
         norm = norm.lower()
-        if norm == 'none':
-            NORM = 1.
-        elif norm in ['all', 'atom', 'orbital']:
+        if norm == "none":
+            NORM = 1.0
+        elif norm in ["all", "atom", "orbital"]:
             NORM = float(self.no_d)
         else:
             raise ValueError("Error on norm keyword in DOS request")
@@ -487,18 +530,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             # orbital *must* be specified
             if isinstance(orbitals, bool):
                 # Request all orbitals of the device
-                orbitals = geom.a2o('Device', all=True)
+                orbitals = geom.a2o("Device", all=True)
             elif isinstance(orbitals, str):
                 orbitals = geom.a2o(orbitals, all=True)
 
             # Get pivoting indices to average over
             p = self.o2p(orbitals)
-            if norm == 'orbital':
+            if norm == "orbital":
                 NORM = float(len(p))
-            elif norm == 'atom':
+            elif norm == "atom":
                 a = geom.o2a(orbitals, unique=True)
                 # Now sum the orbitals per atom
-                NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
+                NORM = float(_a.sumi(geom.firsto[a + 1] - geom.firsto[a]))
 
             if sum:
                 return DOS[..., p].sum(-1) / NORM
@@ -508,14 +551,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Check if user requests all atoms/orbitals
         if isinstance(atoms, bool):
             # Request all atoms of the device
-            atoms = geom.names['Device']
+            atoms = geom.names["Device"]
         elif isinstance(atoms, str):
             atoms = geom.names[atoms]
 
         # atom is specified
         # Return the pivoting orbitals for the atom
         p = self.a2p(atoms)
-        if norm in ['orbital', 'atom']:
+        if norm in ["orbital", "atom"]:
             NORM = float(len(p))
 
         if sum or isinstance(atoms, Integral):
@@ -541,8 +584,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return nDOS
 
-    def DOS(self, E=None, kavg=True, atoms=None, orbitals=None, sum=True, norm='none') -> ndarray:
-        r""" Green function density of states (DOS) (1/eV).
+    def DOS(
+        self, E=None, kavg=True, atoms=None, orbitals=None, sum=True, norm="none"
+    ) -> ndarray:
+        r"""Green function density of states (DOS) (1/eV).
 
         Extract the DOS on a selected subset of atoms/orbitals in the device region
 
@@ -578,10 +623,22 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ADOS : the spectral density of states from an electrode
         BDOS : the bulk density of states in an electrode
         """
-        return self._DOS(self._value_E('DOS', kavg=kavg, E=E), atoms, orbitals, sum, norm) * eV2Ry
+        return (
+            self._DOS(self._value_E("DOS", kavg=kavg, E=E), atoms, orbitals, sum, norm)
+            * eV2Ry
+        )
 
-    def ADOS(self, elec=0, E=None, kavg=True, atoms=None, orbitals=None, sum=True, norm='none') -> ndarray:
-        r""" Spectral density of states (DOS) (1/eV).
+    def ADOS(
+        self,
+        elec=0,
+        E=None,
+        kavg=True,
+        atoms=None,
+        orbitals=None,
+        sum=True,
+        norm="none",
+    ) -> ndarray:
+        r"""Spectral density of states (DOS) (1/eV).
 
         Extract the spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
 
@@ -619,10 +676,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         BDOS : the bulk density of states in an electrode
         """
         elec = self._elec(elec)
-        return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E), atoms, orbitals, sum, norm) * eV2Ry
+        return (
+            self._DOS(
+                self._value_E("ADOS", elec, kavg=kavg, E=E), atoms, orbitals, sum, norm
+            )
+            * eV2Ry
+        )
 
-    def BDOS(self, elec=0, E=None, kavg=True, sum=True, norm='none') -> ndarray:
-        r""" Bulk density of states (DOS) (1/eV).
+    def BDOS(self, elec=0, E=None, kavg=True, sum=True, norm="none") -> ndarray:
+        r"""Bulk density of states (DOS) (1/eV).
 
         Extract the bulk DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
 
@@ -654,18 +716,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Hence the non-normalized quantity needs to be multiplied by
         #  product(bloch)
         elec = self._elec(elec)
-        if norm in ['atom', 'orbital', 'all']:
+        if norm in ["atom", "orbital", "all"]:
             # This is normalized per non-expanded unit-cell, so no need to do Bloch
-            fact = eV2Ry / len(self._dimension('no_u', elec))
+            fact = eV2Ry / len(self._dimension("no_u", elec))
         else:
             fact = eV2Ry
         if sum:
-            return self._value_E('DOS', elec, kavg=kavg, E=E).sum(-1) * fact
+            return self._value_E("DOS", elec, kavg=kavg, E=E).sum(-1) * fact
         else:
-            return self._value_E('DOS', elec, kavg=kavg, E=E) * fact
+            return self._value_E("DOS", elec, kavg=kavg, E=E) * fact
 
     def _E_T_sorted(self, elec_from, elec_to, kavg=True):
-        """ Internal routine for returning energies and transmission in a sorted array """
+        """Internal routine for returning energies and transmission in a sorted array"""
         E = self.E
         idx_sort = np.argsort(E)
         # Get transmission
@@ -673,7 +735,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return E[idx_sort], T[idx_sort]
 
     def current(self, elec_from=0, elec_to=1, kavg=True) -> float:
-        r""" Current from `from` to `to` using the k-weights and energy spacings in the file.
+        r"""Current from `from` to `to` using the k-weights and energy spacings in the file.
 
         Calculates the current as:
 
@@ -702,12 +764,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kt_f = self.kT(elec_from)
         mu_t = self.chemical_potential(elec_to)
         kt_t = self.kT(elec_to)
-        return self.current_parameter(elec_from, mu_f, kt_f,
-                                      elec_to, mu_t, kt_t, kavg)
+        return self.current_parameter(elec_from, mu_f, kt_f, elec_to, mu_t, kt_t, kavg)
 
-    def current_parameter(self, elec_from, mu_from, kt_from,
-                          elec_to, mu_to, kt_to, kavg=True) -> float:
-        r""" Current from `from` to `to` using the k-weights and energy spacings in the file.
+    def current_parameter(
+        self, elec_from, mu_from, kt_from, elec_to, mu_to, kt_to, kavg=True
+    ) -> float:
+        r"""Current from `from` to `to` using the k-weights and energy spacings in the file.
 
         Calculates the current as:
 
@@ -745,21 +807,32 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         E, T = self._E_T_sorted(elec_from, elec_to, kavg)
 
         dE = E[1] - E[0]
-        window_warning(f"{self.__class__.__name__}.current_parameter", E,
-                       elec_from, mu_from, kt_from,
-                       elec_to, mu_to, kt_to)
+        window_warning(
+            f"{self.__class__.__name__}.current_parameter",
+            E,
+            elec_from,
+            mu_from,
+            kt_from,
+            elec_to,
+            mu_to,
+            kt_to,
+        )
 
-        I = (T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to))).sum()
-        return I * constant.q / constant.h('eV s')
+        I = (
+            T * dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to))
+        ).sum()
+        return I * constant.q / constant.h("eV s")
 
     def _check_Teig(self, func_name, TE, eps=0.001):
-        """ Internal method to check whether all transmission eigenvalues are present """
+        """Internal method to check whether all transmission eigenvalues are present"""
         if np.any(np.logical_and.reduce(TE > eps, axis=-1)):
-            info(f"{self.__class__.__name__}.{func_name} does possibly not have all relevant transmission eigenvalues in the "
-                 "calculation. For some energy values all transmission eigenvalues are above {eps}!")
+            info(
+                f"{self.__class__.__name__}.{func_name} does possibly not have all relevant transmission eigenvalues in the "
+                "calculation. For some energy values all transmission eigenvalues are above {eps}!"
+            )
 
     def shot_noise(self, elec_from=0, elec_to=1, classical=False, kavg=True) -> ndarray:
-        r""" Shot-noise term `from` to `to` using the k-weights
+        r"""Shot-noise term `from` to `to` using the k-weights
 
         Calculates the shot-noise term according to `classical` (also known as the Poisson value).
         If `classical` is True the shot-noise calculated is:
@@ -801,7 +874,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Pre-factor
         # 2 e ^ 3 V / h
         # Note that h in eV units will cancel the units in the applied bias
-        noise_const = 2 * constant.q ** 2 * (eV / constant.h('eV s'))
+        noise_const = 2 * constant.q**2 * (eV / constant.h("eV s"))
         if classical:
             # Calculate the Poisson shot-noise (equal to 2eI in the low T and zero kT limit)
             return noise_const * self.transmission(elec_from, elec_to, kavg=kavg)
@@ -811,29 +884,29 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             if not kavg:
                 # The user wants it k-resolved
                 T = self.transmission_eig(elec_from, elec_to, kavg=False)
-                self._check_Teig('shot_noise', T)
+                self._check_Teig("shot_noise", T)
                 return noise_const * (T * (1 - T)).sum(-1)
 
             # We need to manually weigh the k-points
             wkpt = self.wkpt
 
             T = self.transmission_eig(elec_from, elec_to, kavg=0)
-            self._check_Teig('shot_noise', T)
+            self._check_Teig("shot_noise", T)
             sn = (T * (1 - T)).sum(-1) * wkpt[0]
             for ik in range(1, self.nkpt):
                 T = self.transmission_eig(elec_from, elec_to, kavg=ik)
-                self._check_Teig('shot_noise', T)
+                self._check_Teig("shot_noise", T)
                 sn += (T * (1 - T)).sum(-1) * wkpt[ik]
 
         else:
             T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
-            self._check_Teig('shot_noise', T)
+            self._check_Teig("shot_noise", T)
             sn = (T * (1 - T)).sum(-1)
 
         return noise_const * sn
 
     def noise_power(self, elec_from=0, elec_to=1, kavg=True) -> ndarray:
-        r""" Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)
+        r"""Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)
 
         Calculates the noise power as
 
@@ -882,32 +955,42 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Pre-factor
         # 2 e ^ 2 / h
         # Note that h in eV units will cancel the units in the dE integration
-        noise_const = 2 * constant.q ** 2 / constant.h('eV s')
+        noise_const = 2 * constant.q**2 / constant.h("eV s")
 
         # Determine the k-average
         if isinstance(kavg, bool):
             if not kavg:
                 # The user wants it k-resolved
                 T = self.transmission_eig(elec_from, elec_to, kavg=False)
-                self._check_Teig('noise_power', T)
-                return noise_const * ((T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1))
+                self._check_Teig("noise_power", T)
+                return noise_const * (
+                    (T.sum(-1) * eq_fac).sum(-1)
+                    + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
+                )
 
             # We need to manually weigh the k-points
             wkpt = self.wkpt
 
             T = self.transmission_eig(elec_from, elec_to, kavg=0)
-            self._check_Teig('noise_power', T)
+            self._check_Teig("noise_power", T)
             # Separate the calculation into two terms (see Ya.M. Blanter, M. Buttiker, Physics Reports 336 2000)
-            np = ((T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)) * wkpt[0]
+            np = (
+                (T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
+            ) * wkpt[0]
             for ik in range(1, self.nkpt):
                 T = self.transmission_eig(elec_from, elec_to, kavg=ik)
-                self._check_Teig('noise_power', T)
-                np += ((T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)) * wkpt[ik]
+                self._check_Teig("noise_power", T)
+                np += (
+                    (T.sum(-1) * eq_fac).sum(-1)
+                    + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
+                ) * wkpt[ik]
 
         else:
             T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
-            self._check_Teig('noise_power', T)
-            np = (T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
+            self._check_Teig("noise_power", T)
+            np = (T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(
+                -1
+            )
 
         # Do final conversion
         return noise_const * np
@@ -956,45 +1039,46 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         shot_noise : shot-noise term (zero temperature limit)
         noise_power : temperature dependent noise power
         """
+
         def dividend(T):
-            T[T <= zero_T] = 0.
+            T[T <= zero_T] = 0.0
             return (T * (1 - T)).sum(-1)
 
         if isinstance(kavg, bool):
             if not kavg:
                 # The user wants it k-resolved
                 T = self.transmission_eig(elec_from, elec_to, kavg=False)
-                self._check_Teig('fano', T)
+                self._check_Teig("fano", T)
                 fano = dividend(T)
                 T = self.transmission(elec_from, elec_to)
                 fano /= T[None, :]
-                fano[:, T <= 0.] = 0.
+                fano[:, T <= 0.0] = 0.0
                 return fano
 
             # We need to manually weigh the k-points
             wkpt = self.wkpt
 
             T = self.transmission_eig(elec_from, elec_to, kavg=0)
-            self._check_Teig('fano', T)
+            self._check_Teig("fano", T)
             fano = dividend(T) * wkpt[0]
             for ik in range(1, self.nkpt):
                 T = self.transmission_eig(elec_from, elec_to, kavg=ik)
-                self._check_Teig('fano', T)
+                self._check_Teig("fano", T)
                 fano += dividend(T) * wkpt[ik]
 
         else:
             T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
-            self._check_Teig('fano', T)
+            self._check_Teig("fano", T)
             fano = dividend(T)
 
         # Divide by k-averaged transmission
         T = self.transmission(elec_from, elec_to)
         fano /= T
-        fano[T <= 0.] = 0.
+        fano[T <= 0.0] = 0.0
         return fano
 
     def _sparse_data(self, name, elec, E, kavg=True) -> ndarray:
-        """ Internal routine for retrieving sparse data (orbital current, COOP) """
+        """Internal routine for retrieving sparse data (orbital current, COOP)"""
         if elec is not None:
             elec = self._elec(elec)
 
@@ -1002,15 +1086,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self._value_E(name, elec, kavg, E)
 
     def _sparse_data_to_matrix(self, data, isc=None, orbitals=None) -> csr_matrix:
-        """ Internal routine for retrieving sparse data (orbital current, COOP) """
+        """Internal routine for retrieving sparse data (orbital current, COOP)"""
         # Get the geometry for obtaining the sparsity pattern.
         geom = self.geometry
 
         # These are the row-pointers...
-        ncol = self._value('n_col')
+        ncol = self._value("n_col")
 
         # Get column indices
-        col = self._value('list_col') - 1
+        col = self._value("list_col") - 1
 
         # get subset orbitals
         if not orbitals is None:
@@ -1026,9 +1110,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             # now figure out all places where we
             # have the corresponding values
-            all_col = np.logical_and(
-                np.in1d(row, all_col),
-                np.in1d(col, all_col))
+            all_col = np.logical_and(np.in1d(row, all_col), np.in1d(col, all_col))
 
             # reduce space
             col = col[all_col]
@@ -1070,8 +1152,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             def ret_range(val, req):
                 i = val // 2
                 if req is None:
-                    return range(-i, i+1)
+                    return range(-i, i + 1)
                 return [req]
+
             x = ret_range(nsc[0], isc[0])
             y = ret_range(nsc[1], isc[1])
             z = ret_range(nsc[2], isc[2])
@@ -1083,8 +1166,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 all_col[i] = geom.sc_index([ix, iy, iz])
 
             # Transfer all_col to the range
-            all_col = _a.array_arangei(all_col * geom.no,
-                                       n=_a.fulli(len(all_col), geom.no))
+            all_col = _a.array_arangei(
+                all_col * geom.no, n=_a.fulli(len(all_col), geom.no)
+            )
 
             # get both row and column indices
             row_nonzero = (ncol > 0).nonzero()[0]
@@ -1108,13 +1192,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return csr_matrix((data, col, rptr), shape=mat_size)
 
-    def _sparse_matrix(self, name, elec, E, kavg=True, isc=None, orbitals=None) -> csr_matrix:
-        """ Internal routine for retrieving sparse matrices (orbital current, COOP) """
+    def _sparse_matrix(
+        self, name, elec, E, kavg=True, isc=None, orbitals=None
+    ) -> csr_matrix:
+        """Internal routine for retrieving sparse matrices (orbital current, COOP)"""
         data = self._sparse_data(name, elec, E, kavg)
         return self._sparse_data_to_matrix(data, isc, orbitals)
 
     def sparse_orbital_to_atom(self, Dij, uc=False, sum_dup=True) -> csr_matrix:
-        """ Reduce a sparse matrix in orbital sparse to a sparse matrix in atomic indices
+        """Reduce a sparse matrix in orbital sparse to a sparse matrix in atomic indices
 
         This algorithm *may* keep the same non-zero entries, but will return
         a new csr_matrix with duplicate indices.
@@ -1158,7 +1244,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             map_col = o2a
 
         # Lets do array notation for speeding up the computations
-        if not (issparse(Dij) and Dij.format == 'csr'):
+        if not (issparse(Dij) and Dij.format == "csr"):
             Dij = Dij.tocsr()
 
         # Check for the simple case of 1-orbital systems
@@ -1202,7 +1288,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
     @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
     def sparse_atom_to_vector(self, Dab) -> ndarray:
-        """ Reduce an atomic sparse matrix to a vector contribution of each atom
+        """Reduce an atomic sparse matrix to a vector contribution of each atom
 
         Notes
         -----
@@ -1231,7 +1317,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             Dia = getrow(ia)
 
             # Set diagonal to zero
-            Dia[0, ia] = 0.
+            Dia[0, ia] = 0.0
             # Remove the diagonal (prohibits the calculation of the
             # norm of the zero vector, hence required)
             Dia.eliminate_zeros()
@@ -1239,13 +1325,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             # Now calculate the vector elements
             # Remark that the vector goes from ia -> ja
             rv = Rij(ia, Dia.indices)
-            rv = rv / np.sqrt((rv ** 2).sum(1))[:, None]
+            rv = rv / np.sqrt((rv**2).sum(1))[:, None]
             V[ia, :] = (Dia.data[:, None] * rv).sum(0)
 
         return V
 
     def sparse_orbital_to_vector(self, Dij, uc=False, sum_dup=True) -> ndarray:
-        """ Reduce an orbital sparse matrix to a vector contribution of each atom
+        """Reduce an orbital sparse matrix to a vector contribution of each atom
 
         Equivalent to calling `sparse_orbital_to_atom` and `sparse_atom_to_vector`.
 
@@ -1332,15 +1418,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return Da
 
-    @deprecate_argument("only", "what",
-                        "argument only has been deprecated in favor of what, please update your code.",
-                        "0.14.0")
-    def orbital_transmission(self, E, elec=0,
-                             kavg=True,
-                             isc=None,
-                             what: str="all",
-                             orbitals=None) -> csr_matrix:
-        r""" Transmission at energy `E` between orbitals originating from `elec`
+    @deprecate_argument(
+        "only",
+        "what",
+        "argument only has been deprecated in favor of what, please update your code.",
+        "0.14.0",
+    )
+    def orbital_transmission(
+        self, E, elec=0, kavg=True, isc=None, what: str = "all", orbitals=None
+    ) -> csr_matrix:
+        r"""Transmission at energy `E` between orbitals originating from `elec`
 
         Each matrix element of the sparse matrix corresponds to the orbital indices of the
         underlying geometry (including buffer and electrode atoms).
@@ -1418,15 +1505,17 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        J = self._sparse_matrix('J', elec, E, kavg, isc, orbitals)
+        J = self._sparse_matrix("J", elec, E, kavg, isc, orbitals)
 
         if what in ("+", "out"):
             J.data[J.data < 0] = 0
         elif what in ("-", "in"):
             J.data[J.data > 0] = 0
         elif what not in ("all", "both", "+-", "-+", "inout", "outin"):
-            raise ValueError(f"{self.__class__.__name__}.orbital_transmission 'what' keyword has "
-                             "wrong value [all/both/+-, +/out,-/in] allowed.")
+            raise ValueError(
+                f"{self.__class__.__name__}.orbital_transmission 'what' keyword has "
+                "wrong value [all/both/+-, +/out,-/in] allowed."
+            )
 
         # do not delete explicit 0's as the user can then know the sparse matrices
         # calculated.
@@ -1434,12 +1523,22 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return J
 
-    @deprecate_argument("only", "what",
-                        "argument only has been deprecated in favor of what, please update your code.",
-                        "0.14.0")
-    def orbital_current(self, elec=0, elec_other=1, kavg=True, isc=None,
-                        what: str="all", orbitals=None) -> csr_matrix:
-        r""" Orbital current originating from `elec` as a sparse matrix
+    @deprecate_argument(
+        "only",
+        "what",
+        "argument only has been deprecated in favor of what, please update your code.",
+        "0.14.0",
+    )
+    def orbital_current(
+        self,
+        elec=0,
+        elec_other=1,
+        kavg=True,
+        isc=None,
+        what: str = "all",
+        orbitals=None,
+    ) -> csr_matrix:
+        r"""Orbital current originating from `elec` as a sparse matrix
 
         This is the bias window integrated quantity of `orbital_transmission`. As such it
         represents how the current is flowing at an applied bias from a given electrode.
@@ -1524,19 +1623,29 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         }.get(what)
 
         if getdata is None:
-            raise ValueError(f"{self.__class__.__name__}.orbital_current 'what' keyword has "
-                             "wrong value [all/both/+-/inout, +/out,-/in] allowed.")
+            raise ValueError(
+                f"{self.__class__.__name__}.orbital_current 'what' keyword has "
+                "wrong value [all/both/+-/inout, +/out,-/in] allowed."
+            )
 
-        J = reduce(getdata, enumerate(integrator(self.E)), 0.)
+        J = reduce(getdata, enumerate(integrator(self.E)), 0.0)
 
-        return self._sparse_data_to_matrix(J, isc, orbitals) * constant.q / constant.h("eV s")
+        return (
+            self._sparse_data_to_matrix(J, isc, orbitals)
+            * constant.q
+            / constant.h("eV s")
+        )
 
-    @deprecate_argument("only", "what",
-                        "argument only has been deprecated in favor of what, please update your code.",
-                        "0.14.0")
-    def bond_transmission(self, E, elec=0, kavg=True, isc=None,
-                          what: str="all", orbitals=None, uc=False) -> csr_matrix:
-        r""" Bond transmission between atoms at a specific energy
+    @deprecate_argument(
+        "only",
+        "what",
+        "argument only has been deprecated in favor of what, please update your code.",
+        "0.14.0",
+    )
+    def bond_transmission(
+        self, E, elec=0, kavg=True, isc=None, what: str = "all", orbitals=None, uc=False
+    ) -> csr_matrix:
+        r"""Bond transmission between atoms at a specific energy
 
         Short hand function for calling `orbital_transmission` and `sparse_orbital_to_atom`.
 
@@ -1591,17 +1700,29 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        Jij = self.orbital_transmission(E, elec, kavg=kavg, isc=isc,
-                                        what=what, orbitals=orbitals)
+        Jij = self.orbital_transmission(
+            E, elec, kavg=kavg, isc=isc, what=what, orbitals=orbitals
+        )
 
         return self.sparse_orbital_to_atom(Jij, uc=uc)
 
-    @deprecate_argument("only", "what",
-                        "argument only has been deprecated in favor of what, please update your code.",
-                        "0.14.0")
-    def bond_current(self, elec=0, elec_other=1, kavg=True, isc=None,
-                     what: str="all", orbitals=None, uc=False) -> csr_matrix:
-        r""" Bond current between atoms (sum of orbital currents)
+    @deprecate_argument(
+        "only",
+        "what",
+        "argument only has been deprecated in favor of what, please update your code.",
+        "0.14.0",
+    )
+    def bond_current(
+        self,
+        elec=0,
+        elec_other=1,
+        kavg=True,
+        isc=None,
+        what: str = "all",
+        orbitals=None,
+        uc=False,
+    ) -> csr_matrix:
+        r"""Bond current between atoms (sum of orbital currents)
 
         Short hand function for calling `orbital_current` and `sparse_orbital_to_atom`.
 
@@ -1664,17 +1785,22 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        Jij = self.orbital_current(elec, elec_other, kavg=kavg, isc=isc,
-                                   what=what, orbitals=orbitals)
+        Jij = self.orbital_current(
+            elec, elec_other, kavg=kavg, isc=isc, what=what, orbitals=orbitals
+        )
 
         return self.sparse_orbital_to_atom(Jij, uc=uc)
 
-    @deprecate_argument("only", "what",
-                        "argument only has been deprecated in favor of what, please update your code.",
-                        "0.14.0")
-    def vector_transmission(self, E, elec=0, kavg=True, isc=None,
-                            what="all", orbitals=None) -> ndarray:
-        r""" Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms
+    @deprecate_argument(
+        "only",
+        "what",
+        "argument only has been deprecated in favor of what, please update your code.",
+        "0.14.0",
+    )
+    def vector_transmission(
+        self, E, elec=0, kavg=True, isc=None, what="all", orbitals=None
+    ) -> ndarray:
+        r"""Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms
 
         The vector transmission is defined as:
 
@@ -1725,8 +1851,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        Jab = self.bond_transmission(E, elec, kavg=kavg, isc=isc,
-                                     what=what, orbitals=orbitals)
+        Jab = self.bond_transmission(
+            E, elec, kavg=kavg, isc=isc, what=what, orbitals=orbitals
+        )
 
         if what in ("all", "both", "+-", "-+", "inout", "outin"):
             # When we divide by two one can *always* compare the bulk
@@ -1737,12 +1864,22 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.sparse_atom_to_vector(Jab)
 
-    @deprecate_argument("only", "what",
-                        "argument only has been deprecated in favor of what, please update your code.",
-                        "0.14.0")
-    def vector_current(self, elec=0, elec_other=1, kavg=True, isc=None,
-                       what: str="all", orbitals=None) -> ndarray:
-        r""" Vector for each atom being the sum of bond currents times the normalized bond vector between the atoms
+    @deprecate_argument(
+        "only",
+        "what",
+        "argument only has been deprecated in favor of what, please update your code.",
+        "0.14.0",
+    )
+    def vector_current(
+        self,
+        elec=0,
+        elec_other=1,
+        kavg=True,
+        isc=None,
+        what: str = "all",
+        orbitals=None,
+    ) -> ndarray:
+        r"""Vector for each atom being the sum of bond currents times the normalized bond vector between the atoms
 
         The vector current is defined as:
 
@@ -1799,8 +1936,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        Jab = self.bond_current(elec, elec_other, kavg=kavg, isc=isc,
-                                what=what, orbitals=orbitals)
+        Jab = self.bond_current(
+            elec, elec_other, kavg=kavg, isc=isc, what=what, orbitals=orbitals
+        )
 
         if what in ("all", "both", "+-", "-+", "inout", "outin"):
             # When we divide by two one can *always* compare the bulk
@@ -1811,7 +1949,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.sparse_atom_to_vector(Jab)
 
-    def atom_transmission(self, E, elec=0, activity=True, kavg=True, isc=None, orbitals=None) -> ndarray:
+    def atom_transmission(
+        self, E, elec=0, activity=True, kavg=True, isc=None, orbitals=None
+    ) -> ndarray:
         r""" Atomic transmission at energy `E` of atoms, a scalar quantity quantifying how much transmission flows through an atom
 
         The atomic transmission is a single number specifying a figure of the *magnitude*
@@ -1875,12 +2015,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        Jij = self.orbital_transmission(E, elec, kavg=kavg, isc=isc,
-                                        what="all", orbitals=orbitals)
+        Jij = self.orbital_transmission(
+            E, elec, kavg=kavg, isc=isc, what="all", orbitals=orbitals
+        )
 
         return self.sparse_orbital_to_scalar(Jij, activity=activity)
 
-    def atom_current(self, elec=0, elec_other=1, activity=True, kavg=True, isc=None, orbitals=None) -> ndarray:
+    def atom_current(
+        self, elec=0, elec_other=1, activity=True, kavg=True, isc=None, orbitals=None
+    ) -> ndarray:
         r""" Atomic current of atoms, a scalar quantity quantifying how much currents flows through an atom
 
         The atomic current is a single number specifying a figure of the *magnitude*
@@ -1950,13 +2093,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         vector_current : an atomic field current for each atom (Cartesian representation of bond-currents)
         atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)
         """
-        Jij = self.orbital_current(elec, elec_other, kavg=kavg, isc=isc,
-                                   what="all", orbitals=orbitals)
+        Jij = self.orbital_current(
+            elec, elec_other, kavg=kavg, isc=isc, what="all", orbitals=orbitals
+        )
 
         return self.sparse_orbital_to_scalar(Jij, activity=activity)
 
-    def density_matrix(self, E, kavg=True, isc=None, orbitals=None, geometry=None) -> csr_matrix:
-        r""" Density matrix from the Green function at energy `E` (1/eV)
+    def density_matrix(
+        self, E, kavg=True, isc=None, orbitals=None, geometry=None
+    ) -> csr_matrix:
+        r"""Density matrix from the Green function at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
 
@@ -2002,10 +2148,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         DensityMatrix
             object containing the Geometry and the density matrix elements
         """
-        return self.Adensity_matrix(None, E, kavg, isc, orbitals=orbitals, geometry=geometry)
+        return self.Adensity_matrix(
+            None, E, kavg, isc, orbitals=orbitals, geometry=geometry
+        )
 
-    def Adensity_matrix(self, elec, E, kavg=True, isc=None, orbitals=None, geometry=None) -> csr_matrix:
-        r""" Spectral function density matrix at energy `E` (1/eV)
+    def Adensity_matrix(
+        self, elec, E, kavg=True, isc=None, orbitals=None, geometry=None
+    ) -> csr_matrix:
+        r"""Spectral function density matrix at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
 
@@ -2053,14 +2203,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         DensityMatrix
             object containing the Geometry and the density matrix elements
         """
-        dm = self._sparse_matrix('DM', elec, E, kavg, isc, orbitals) * eV2Ry
+        dm = self._sparse_matrix("DM", elec, E, kavg, isc, orbitals) * eV2Ry
         # Now create the density matrix object
         geom = self.geometry
         if geometry is None:
             DM = DensityMatrix.fromsp(geom, dm)
         else:
             if geom.no != geometry.no:
-                raise ValueError(f"{self.__class__.__name__}.Adensity_matrix requires input geometry to contain the correct number of orbitals. Please correct input!")
+                raise ValueError(
+                    f"{self.__class__.__name__}.Adensity_matrix requires input geometry to contain the correct number of orbitals. Please correct input!"
+                )
             DM = DensityMatrix.fromsp(geometry, dm)
         return DM
 
@@ -2129,7 +2281,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self.orbital_ACOOP(E, None, kavg=kavg, isc=isc, orbitals=orbitals)
 
-    def orbital_ACOOP(self, E, elec=0, kavg=True, isc=None, orbitals=None) -> csr_matrix:
+    def orbital_ACOOP(
+        self, E, elec=0, kavg=True, isc=None, orbitals=None
+    ) -> csr_matrix:
         r""" Orbital COOP analysis of the spectral function
 
         This will return a sparse matrix, see `~scipy.sparse.csr_matrix` for details.
@@ -2193,10 +2347,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         orbital_ACOHP : orbital resolved COHP analysis of the spectral function
         atom_ACOHP : atomic COHP analysis of the spectral function
         """
-        return self._sparse_matrix('COOP', elec, E, kavg, isc, orbitals) * eV2Ry
+        return self._sparse_matrix("COOP", elec, E, kavg, isc, orbitals) * eV2Ry
 
     def atom_COOP(self, E, kavg=True, isc=None, orbitals=None, uc=False) -> csr_matrix:
-        r""" Atomic COOP curve of the Green function
+        r"""Atomic COOP curve of the Green function
 
         The atomic COOP are a sum over all orbital COOP:
 
@@ -2237,8 +2391,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self.atom_ACOOP(E, None, kavg=kavg, isc=isc, orbitals=orbitals, uc=uc)
 
-    def atom_ACOOP(self, E, elec=0, kavg=True, isc=None, orbitals=None, uc=False) -> csr_matrix:
-        r""" Atomic COOP curve of the spectral function
+    def atom_ACOOP(
+        self, E, elec=0, kavg=True, isc=None, orbitals=None, uc=False
+    ) -> csr_matrix:
+        r"""Atomic COOP curve of the spectral function
 
         The atomic COOP are a sum over all orbital COOP:
 
@@ -2285,7 +2441,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self.sparse_orbital_to_atom(COOP, uc)
 
     def orbital_COHP(self, E, kavg=True, isc=None, orbitals=None) -> csr_matrix:
-        r""" Orbital resolved COHP analysis of the Green function
+        r"""Orbital resolved COHP analysis of the Green function
 
         This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
         Each matrix element of the sparse matrix corresponds to the COHP of the
@@ -2331,8 +2487,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self.orbital_ACOHP(E, None, kavg=kavg, isc=isc, orbitals=orbitals)
 
-    def orbital_ACOHP(self, E, elec=0, kavg=True, isc=None, orbitals=None) -> csr_matrix:
-        r""" Orbital resolved COHP analysis of the spectral function
+    def orbital_ACOHP(
+        self, E, elec=0, kavg=True, isc=None, orbitals=None
+    ) -> csr_matrix:
+        r"""Orbital resolved COHP analysis of the spectral function
 
         This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
         Each matrix element of the sparse matrix corresponds to the COHP of the
@@ -2373,10 +2531,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_COHP : atomic COHP analysis of the Green function
         atom_ACOHP : atomic COHP analysis of the spectral function
         """
-        return self._sparse_matrix('COHP', elec, E, kavg, isc, orbitals)
+        return self._sparse_matrix("COHP", elec, E, kavg, isc, orbitals)
 
     def atom_COHP(self, E, kavg=True, isc=None, orbitals=None, uc=False) -> csr_matrix:
-        r""" Atomic COHP curve of the Green function
+        r"""Atomic COHP curve of the Green function
 
         The atomic COHP are a sum over all orbital COHP:
 
@@ -2417,8 +2575,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self.atom_ACOHP(E, None, kavg=kavg, isc=isc, orbitals=orbitals, uc=uc)
 
-    def atom_ACOHP(self, E, elec=0, kavg=True, isc=None, orbitals=None, uc=False) -> csr_matrix:
-        r""" Atomic COHP curve of the spectral function
+    def atom_ACOHP(
+        self, E, elec=0, kavg=True, isc=None, orbitals=None, uc=False
+    ) -> csr_matrix:
+        r"""Atomic COHP curve of the spectral function
 
         Parameters
         ----------
@@ -2458,7 +2618,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self.sparse_orbital_to_atom(COHP, uc)
 
     def read_data(self, *args, **kwargs):
-        """ Read specific type of data.
+        """Read specific type of data.
 
         This is a generic routine for reading different parts of the data-file.
 
@@ -2477,13 +2637,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         val = []
         for kw in kwargs:
-
             if kw in ("geom", "geometry"):
                 if kwargs[kw]:
                     val.append(self.geometry)
 
-            elif kw in ("atom_current", "atom_transmission",
-                        "vector_current", "vector_transmission"):
+            elif kw in (
+                "atom_current",
+                "atom_transmission",
+                "vector_current",
+                "vector_transmission",
+            ):
                 if kwargs[kw]:
                     # TODO we need some way of handling arguments.
                     val.append(getattr(self, kw)(*args))
@@ -2495,7 +2658,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return val
 
     def info(self, elec=None):
-        """ Information about the calculated quantities available for extracting in this file
+        """Information about the calculated quantities available for extracting in this file
 
         Parameters
         ----------
@@ -2507,13 +2670,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # Create a StringIO object to retain the information
         out = StringIO()
+
         # Create wrapper function
         def prnt(*args, **kwargs):
-            option = kwargs.pop('option', None)
+            option = kwargs.pop("option", None)
             if option is None:
                 print(*args, file=out)
             else:
-                print('{:60s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
+                print("{:60s}[{}]".format(" ".join(args), ", ".join(option)), file=out)
 
         def truefalse(bol, string, fdf=None):
             if bol:
@@ -2534,14 +2698,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             nA = len(np.unique(kpt[:, 0]))
             nB = len(np.unique(kpt[:, 1]))
             nC = len(np.unique(kpt[:, 2]))
-            prnt(("  - number of kpoints: {} <- "
-                   "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(self.nk, nA, nB, nC))
+            prnt(
+                (
+                    "  - number of kpoints: {} <- "
+                    "[ A = {} , B = {} , C = {} ] (time-reversal unknown)"
+                ).format(self.nk, nA, nB, nC)
+            )
         prnt("  - energy range:")
         E = self.E
         Em, EM = np.amin(E), np.amax(E)
         dE = np.diff(E)
-        dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
-        if (dEM - dEm) < 1e-3: # 0.001 meV
+        dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000  # convert to meV
+        if (dEM - dEm) < 1e-3:  # 0.001 meV
             prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} meV]")
         else:
             prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
@@ -2549,10 +2717,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         prnt("  - atoms with DOS (1-based):")
         prnt("     " + list2str(self.a_dev + 1))
         prnt("  - number of BTD blocks: {}".format(self.n_btd()))
-        truefalse('DOS' in self.variables, "DOS Green function", ['TBT.DOS.Gf'])
-        truefalse('DM' in self.variables, "Density matrix Green function", ['TBT.DM.Gf'])
-        truefalse('COOP' in self.variables, "COOP Green function", ['TBT.COOP.Gf'])
-        truefalse('COHP' in self.variables, "COHP Green function", ['TBT.COHP.Gf'])
+        truefalse("DOS" in self.variables, "DOS Green function", ["TBT.DOS.Gf"])
+        truefalse(
+            "DM" in self.variables, "Density matrix Green function", ["TBT.DM.Gf"]
+        )
+        truefalse("COOP" in self.variables, "COOP Green function", ["TBT.COOP.Gf"])
+        truefalse("COHP" in self.variables, "COHP Green function", ["TBT.COHP.Gf"])
         if elec is None:
             elecs = self.elecs
         else:
@@ -2571,34 +2741,60 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             try:
                 n_btd = self.n_btd(elec)
             except Exception:
-                n_btd = 'unknown'
+                n_btd = "unknown"
             prnt()
             prnt(f"Electrode: {elec}")
             prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
             gelec = self.groups[elec]
-            if 'TBT' in self._trans_type:
-                prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
-                prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))
+            if "TBT" in self._trans_type:
+                prnt(
+                    "  - chemical potential: {:.4f} eV".format(
+                        self.chemical_potential(elec)
+                    )
+                )
+                prnt(
+                    "  - electron temperature: {:.2f} K".format(
+                        self.electron_temperature(elec)
+                    )
+                )
             else:
-                prnt("  - phonon temperature: {:.4f} K".format(self.phonon_temperature(elec)))
+                prnt(
+                    "  - phonon temperature: {:.4f} K".format(
+                        self.phonon_temperature(elec)
+                    )
+                )
             prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
-            truefalse('DOS' in gelec.variables, "DOS bulk", ['TBT.DOS.Elecs'])
-            truefalse('ADOS' in gelec.variables, "DOS spectral", ['TBT.DOS.A'])
-            truefalse('J' in gelec.variables, "orbital-transmission", ['TBT.Current.Orb'])
-            truefalse('DM' in gelec.variables, "Density matrix spectral", ['TBT.DM.A'])
-            truefalse('COOP' in gelec.variables, "COOP spectral", ['TBT.COOP.A'])
-            truefalse('COHP' in gelec.variables, "COHP spectral", ['TBT.COHP.A'])
-            truefalse('T' in gelec.variables, "transmission bulk", ['TBT.T.Bulk'])
-            truefalse(f"{elec}.T" in gelec.variables, "transmission out", ['TBT.T.Out'])
-            truefalse(f"{elec}.C" in gelec.variables, "transmission out correction", ['TBT.T.Out'])
-            truefalse(f"{elec}.C.Eig" in gelec.variables, "transmission out correction (eigen)", ['TBT.T.Out', 'TBT.T.Eig'])
+            truefalse("DOS" in gelec.variables, "DOS bulk", ["TBT.DOS.Elecs"])
+            truefalse("ADOS" in gelec.variables, "DOS spectral", ["TBT.DOS.A"])
+            truefalse(
+                "J" in gelec.variables, "orbital-transmission", ["TBT.Current.Orb"]
+            )
+            truefalse("DM" in gelec.variables, "Density matrix spectral", ["TBT.DM.A"])
+            truefalse("COOP" in gelec.variables, "COOP spectral", ["TBT.COOP.A"])
+            truefalse("COHP" in gelec.variables, "COHP spectral", ["TBT.COHP.A"])
+            truefalse("T" in gelec.variables, "transmission bulk", ["TBT.T.Bulk"])
+            truefalse(f"{elec}.T" in gelec.variables, "transmission out", ["TBT.T.Out"])
+            truefalse(
+                f"{elec}.C" in gelec.variables,
+                "transmission out correction",
+                ["TBT.T.Out"],
+            )
+            truefalse(
+                f"{elec}.C.Eig" in gelec.variables,
+                "transmission out correction (eigen)",
+                ["TBT.T.Out", "TBT.T.Eig"],
+            )
             for elec2 in self.elecs:
                 # Skip it self, checked above in .T and .C
                 if elec2 == elec:
                     continue
                 truefalse(f"{elec2}.T" in gelec.variables, f"transmission -> {elec2}")
-                truefalse(f"{elec2}.T.Eig" in gelec.variables, f"transmission (eigen) -> {elec2}", ['TBT.T.Eig'])
+                truefalse(
+                    f"{elec2}.T.Eig" in gelec.variables,
+                    f"transmission (eigen) -> {elec2}",
+                    ["TBT.T.Eig"],
+                )
 
         s = out.getvalue()
         out.close()
@@ -2606,35 +2802,40 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
     @default_ArgumentParser(description="Extract data from a TBT.nc file")
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
 
         # We limit the import to occur here
         import argparse
 
-        namespace = default_namespace(_tbt=self,
-                                      _geometry=self.geometry,
-                                      _data=[], _data_description=[], _data_header=[],
-                                      _norm='none',
-                                      _Ovalue='', _Orng=None, _Erng=None,
-                                      _krng=True)
+        namespace = default_namespace(
+            _tbt=self,
+            _geometry=self.geometry,
+            _data=[],
+            _data_description=[],
+            _data_header=[],
+            _norm="none",
+            _Ovalue="",
+            _Orng=None,
+            _Erng=None,
+            _krng=True,
+        )
 
         def ensure_E(func):
-            """ This decorater ensures that E is the first element in the _data container """
+            """This decorater ensures that E is the first element in the _data container"""
 
             def assign_E(self, *args, **kwargs):
                 ns = args[1]
                 if len(ns._data) == 0:
                     # We immediately extract the energies
                     ns._data.append(ns._tbt.E[ns._Erng].flatten())
-                    ns._data_header.append('Energy[eV]')
+                    ns._data_header.append("Energy[eV]")
                 return func(self, *args, **kwargs)
+
             return assign_E
 
         # Correct the geometry species information
         class GeometryAction(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
-
                 old_g = ns._geometry.copy()
 
                 # Now read the file to read the geometry from
@@ -2648,13 +2849,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 g._atoms = Atoms(atoms)
 
                 ns._geometry = g
-        p.add_argument('--geometry', '-G',
-                       action=GeometryAction,
-                       help=('Update the geometry of the output file, this enables one to set the species correctly,'
-                             ' note this only affects output-files where species are important'))
+
+        p.add_argument(
+            "--geometry",
+            "-G",
+            action=GeometryAction,
+            help=(
+                "Update the geometry of the output file, this enables one to set the species correctly,"
+                " note this only affects output-files where species are important"
+            ),
+        )
 
         class ERange(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 E = ns._tbt.E
                 Emap = strmap(float, value, E.min(), E.max())
@@ -2665,70 +2871,87 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                         ns._Erng = None
                         return
                     elif begin is None:
-                        E.append(range(ns._tbt.Eindex(end)+1))
+                        E.append(range(ns._tbt.Eindex(end) + 1))
                     elif end is None:
                         E.append(range(ns._tbt.Eindex(begin), len(ns._tbt.E)))
                     else:
-                        E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end)+1))
+                        E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end) + 1))
                 # Issuing unique also sorts the entries
                 ns._Erng = np.unique(_a.arrayi(E).flatten())
-        p.add_argument('--energy', '-E', action=ERange,
-                       help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
 
-                       This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""")
+        p.add_argument(
+            "--energy",
+            "-E",
+            action=ERange,
+            help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
+
+                       This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""",
+        )
 
         # k-range
         class kRange(argparse.Action):
-
             @collect_action
             def __call__(self, parser, ns, value, option_string=None):
                 try:
                     ns._krng = int(value)
                 except Exception:
                     # Parse it as an array
-                    if ',' in value:
-                        k = map(float, value.split(','))
+                    if "," in value:
+                        k = map(float, value.split(","))
                     else:
                         k = map(float, value.split())
                     k = list(k)
                     if len(k) != 3:
-                        raise ValueError("Argument --kpoint *must* be an integer or 3 values to find the corresponding k-index")
+                        raise ValueError(
+                            "Argument --kpoint *must* be an integer or 3 values to find the corresponding k-index"
+                        )
                     ns._krng = ns._tbt.kindex(k)
                 # Add a description on which k-point this is
                 k = ns._tbt.k[ns._krng]
-                ns._data_description.append('Data is extracted at k-point: [{} {} {}]'.format(k[0], k[1], k[2]))
+                ns._data_description.append(
+                    "Data is extracted at k-point: [{} {} {}]".format(k[0], k[1], k[2])
+                )
 
         if not self._k_avg:
-            p.add_argument('--kpoint', '-k', action=kRange,
-                           help="""Denote a specific k-index or comma/white-space separated k-point that is extracted, default to k-averaged quantity.
+            p.add_argument(
+                "--kpoint",
+                "-k",
+                action=kRange,
+                help="""Denote a specific k-index or comma/white-space separated k-point that is extracted, default to k-averaged quantity.
                            For specific k-points the k weight will not be used.
 
-                           This flag takes effect on all k-resolved quantities and is reset whenever --plot or --out is called""")
+                           This flag takes effect on all k-resolved quantities and is reset whenever --plot or --out is called""",
+            )
 
         # The normalization method
         class NormAction(argparse.Action):
-
             @collect_action
             def __call__(self, parser, ns, value, option_string=None):
                 ns._norm = value
-        p.add_argument('--norm', '-N', action=NormAction, default='atom',
-                       choices=['none', 'atom', 'orbital', 'all'],
-                       help="""Specify the normalization method; "none") no normalization, "atom") total orbitals in selected atoms,
+
+        p.add_argument(
+            "--norm",
+            "-N",
+            action=NormAction,
+            default="atom",
+            choices=["none", "atom", "orbital", "all"],
+            help="""Specify the normalization method; "none") no normalization, "atom") total orbitals in selected atoms,
                        "orbital") selected orbitals or "all") total orbitals in the device region.
 
-                       This flag only takes effect on --dos and --ados and is reset whenever --plot or --out is called""")
+                       This flag only takes effect on --dos and --ados and is reset whenever --plot or --out is called""",
+        )
 
         # Try and add the atomic specification
         class AtomRange(argparse.Action):
-
             @collect_action
             def __call__(self, parser, ns, value, option_string=None):
-                value = ",".join(# ensure only single commas (no space between them)
-                    "".join(# ensure no empty whitespaces
-                        ",".join(# join different lines with a comma
-                            value.splitlines())
-                        .split())
-                    .split(","))
+                value = ",".join(  # ensure only single commas (no space between them)
+                    "".join(  # ensure no empty whitespaces
+                        ",".join(  # join different lines with a comma
+                            value.splitlines()
+                        ).split()
+                    ).split(",")
+                )
 
                 # Immediately convert to proper indices
                 geom = ns._geometry
@@ -2741,15 +2964,19 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 # * will "only" fail if files are named accordingly, else
                 # it will be passed as-is.
                 #       {    [    *
-                for sep in ('b', 'c'):
+                for sep in ("b", "c"):
                     try:
-                        ranges = lstranges(strmap(int, value, a_dev.min(), a_dev.max(), sep))
+                        ranges = lstranges(
+                            strmap(int, value, a_dev.min(), a_dev.max(), sep)
+                        )
                         break
                     except Exception:
                         pass
                 else:
                     # only if break was not encountered
-                    raise ValueError(f"Could not parse the atomic/orbital ranges: {value}")
+                    raise ValueError(
+                        f"Could not parse the atomic/orbital ranges: {value}"
+                    )
 
                 # we have only a subset of the orbitals
                 orbs = []
@@ -2780,11 +3007,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     orbs.append(ob)
 
                 if len(orbs) == 0:
-                    print('Device atoms:')
-                    print('  ', list2str(a_dev))
-                    print('Input atoms:')
-                    print('  ', value)
-                    raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
+                    print("Device atoms:")
+                    print("  ", list2str(a_dev))
+                    print("Input atoms:")
+                    print("  ", value)
+                    raise ValueError(
+                        "Atomic/Orbital requests are not fully included in the device region."
+                    )
 
                 # Add one to make the c-index equivalent to the f-index
                 orbs = np.concatenate(orbs).flatten()
@@ -2793,78 +3022,106 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 if len(orbs) != len(ns._tbt.o2p(orbs)):
                     # This should in principle never be called because of the
                     # checks above.
-                    print('Device atoms:')
-                    print('  ', list2str(a_dev))
-                    print('Input atoms:')
-                    print('  ', value)
-                    raise ValueError('Atomic/Orbital requests are not fully included in the device region.')
+                    print("Device atoms:")
+                    print("  ", list2str(a_dev))
+                    print("Input atoms:")
+                    print("  ", value)
+                    raise ValueError(
+                        "Atomic/Orbital requests are not fully included in the device region."
+                    )
 
                 ns._Ovalue = value
                 ns._Orng = orbs
 
-        p.add_argument('--atom', '-a', type=str, action=AtomRange,
-                       help="""Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters.
+        p.add_argument(
+            "--atom",
+            "-a",
+            type=str,
+            action=AtomRange,
+            help="""Limit orbital resolved quantities to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters.
 
-                       This flag takes effect on all atom/orbital resolved quantities (except BDOS, transmission_bulk) and is reset whenever --plot or --out is called""")
+                       This flag takes effect on all atom/orbital resolved quantities (except BDOS, transmission_bulk) and is reset whenever --plot or --out is called""",
+        )
 
         class DataT(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = ns._tbt._elec(values[0])
                 if e1 not in ns._tbt.elecs:
-                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e1}' cannot be found in the specified file."
+                    )
                 e2 = ns._tbt._elec(values[1])
                 if e2 not in ns._tbt.elecs:
-                    if e2.strip() == '.':
+                    if e2.strip() == ".":
                         for e2 in ns._tbt.elecs:
                             if e2 != e1:
-                                try: # catches if T isn't calculated
+                                try:  # catches if T isn't calculated
                                     self(parser, ns, [e1, e2], option_string)
                                 except Exception:
                                     pass
                         return
-                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e2}' cannot be found in the specified file."
+                    )
 
                 # Grab the information
                 data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append(f'T:{e1}-{e2}')
-                ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), e1, e2))
-        p.add_argument('-T', '--transmission', nargs=2, metavar=('ELEC1', 'ELEC2'),
-                       action=DataT,
-                       help='Store transmission between two electrodes.')
+                ns._data_header.append(f"T:{e1}-{e2}")
+                ns._data_description.append(
+                    "Column {} is transmission from {} to {}".format(
+                        len(ns._data), e1, e2
+                    )
+                )
+
+        p.add_argument(
+            "-T",
+            "--transmission",
+            nargs=2,
+            metavar=("ELEC1", "ELEC2"),
+            action=DataT,
+            help="Store transmission between two electrodes.",
+        )
 
         class DataBT(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
                 e = ns._tbt._elec(value[0])
                 if e not in ns._tbt.elecs:
-                    if e.strip() == '.':
+                    if e.strip() == ".":
                         for e in ns._tbt.elecs:
-                            try: # catches if B isn't calculated
+                            try:  # catches if B isn't calculated
                                 self(parser, ns, [e], option_string)
                             except Exception:
                                 pass
                         return
-                    raise ValueError(f"Electrode: '{e}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e}' cannot be found in the specified file."
+                    )
 
                 # Grab the information
                 data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append(f'BT:{e}')
-                ns._data_description.append('Column {} is bulk-transmission'.format(len(ns._data)))
-        p.add_argument('-BT', '--transmission-bulk', nargs=1, metavar='ELEC',
-                       action=DataBT,
-                       help='Store bulk transmission of an electrode.')
+                ns._data_header.append(f"BT:{e}")
+                ns._data_description.append(
+                    "Column {} is bulk-transmission".format(len(ns._data))
+                )
+
+        p.add_argument(
+            "-BT",
+            "--transmission-bulk",
+            nargs=1,
+            metavar="ELEC",
+            action=DataBT,
+            help="Store bulk transmission of an electrode.",
+        )
 
         class DataDOS(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
@@ -2872,70 +3129,107 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     # we are storing the spectral DOS
                     e = ns._tbt._elec(value)
                     if e not in ns._tbt.elecs:
-                        raise ValueError(f"Electrode: '{e}' cannot be found in the specified file.")
-                    data = ns._tbt.ADOS(e, kavg=ns._krng, orbitals=ns._Orng, norm=ns._norm)
-                    ns._data_header.append(f'ADOS[1/eV]:{e}')
+                        raise ValueError(
+                            f"Electrode: '{e}' cannot be found in the specified file."
+                        )
+                    data = ns._tbt.ADOS(
+                        e, kavg=ns._krng, orbitals=ns._Orng, norm=ns._norm
+                    )
+                    ns._data_header.append(f"ADOS[1/eV]:{e}")
                 else:
                     data = ns._tbt.DOS(kavg=ns._krng, orbitals=ns._Orng, norm=ns._norm)
-                    ns._data_header.append('DOS[1/eV]')
+                    ns._data_header.append("DOS[1/eV]")
                 NORM = int(ns._tbt.norm(orbitals=ns._Orng, norm=ns._norm))
 
                 # The flatten is because when ns._Erng is None, then a new
                 # dimension (of size 1) is created
                 ns._data.append(data[ns._Erng].flatten())
                 if ns._Orng is None:
-                    ns._data_description.append('Column {} is sum of all device atoms+orbitals with normalization 1/{}'.format(len(ns._data), NORM))
+                    ns._data_description.append(
+                        "Column {} is sum of all device atoms+orbitals with normalization 1/{}".format(
+                            len(ns._data), NORM
+                        )
+                    )
                 else:
-                    ns._data_description.append('Column {} is atoms[orbs] {} with normalization 1/{}'.format(len(ns._data), ns._Ovalue, NORM))
+                    ns._data_description.append(
+                        "Column {} is atoms[orbs] {} with normalization 1/{}".format(
+                            len(ns._data), ns._Ovalue, NORM
+                        )
+                    )
 
-        p.add_argument('--dos', '-D', nargs='?', metavar='ELEC',
-                       action=DataDOS, default=None,
-                       help="""Store DOS. If no electrode is specified, it is Green function, else it is the spectral function.""")
-        p.add_argument('--ados', '-AD', metavar='ELEC',
-                       action=DataDOS, default=None,
-                       help="""Store spectral DOS, same as --dos but requires an electrode-argument.""")
+        p.add_argument(
+            "--dos",
+            "-D",
+            nargs="?",
+            metavar="ELEC",
+            action=DataDOS,
+            default=None,
+            help="""Store DOS. If no electrode is specified, it is Green function, else it is the spectral function.""",
+        )
+        p.add_argument(
+            "--ados",
+            "-AD",
+            metavar="ELEC",
+            action=DataDOS,
+            default=None,
+            help="""Store spectral DOS, same as --dos but requires an electrode-argument.""",
+        )
 
         class DataDOSBulk(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
-
                 # we are storing the Bulk DOS
                 e = ns._tbt._elec(value[0])
                 if e not in ns._tbt.elecs:
-                    raise ValueError(f"Electrode: '{e}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e}' cannot be found in the specified file."
+                    )
                 # Grab the information
                 data = ns._tbt.BDOS(e, kavg=ns._krng, sum=False)
-                ns._data_header.append(f'BDOS[1/eV]:{e}')
+                ns._data_header.append(f"BDOS[1/eV]:{e}")
                 # Select the energies, even if _Erng is None, this will work!
                 no = data.shape[-1]
                 data = np.mean(data[ns._Erng, ...], axis=-1).flatten()
                 ns._data.append(data)
-                ns._data_description.append('Column {} is sum of all electrode[{}] atoms+orbitals with normalization 1/{}'.format(len(ns._data), e, no))
-        p.add_argument('--bulk-dos', '-BD', nargs=1, metavar='ELEC',
-                       action=DataDOSBulk, default=None,
-                       help="""Store bulk DOS of an electrode.""")
+                ns._data_description.append(
+                    "Column {} is sum of all electrode[{}] atoms+orbitals with normalization 1/{}".format(
+                        len(ns._data), e, no
+                    )
+                )
+
+        p.add_argument(
+            "--bulk-dos",
+            "-BD",
+            nargs=1,
+            metavar="ELEC",
+            action=DataDOSBulk,
+            default=None,
+            help="""Store bulk DOS of an electrode.""",
+        )
 
         class DataTEig(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = ns._tbt._elec(values[0])
                 if e1 not in ns._tbt.elecs:
-                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e1}' cannot be found in the specified file."
+                    )
                 e2 = ns._tbt._elec(values[1])
                 if e2 not in ns._tbt.elecs:
-                    if e2.strip() == '.':
+                    if e2.strip() == ".":
                         for e2 in ns._tbt.elecs:
                             if e1 != e2:
-                                try: # catches if T-eig isn't calculated
+                                try:  # catches if T-eig isn't calculated
                                     self(parser, ns, [e1, e2], option_string)
                                 except Exception:
                                     pass
                         return
-                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e2}' cannot be found in the specified file."
+                    )
 
                 # Grab the information
                 data = ns._tbt.transmission_eig(e1, e2, kavg=ns._krng)
@@ -2943,100 +3237,136 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 neig = data.shape[-1]
                 for eig in range(neig):
                     ns._data.append(data[ns._Erng, ..., eig].flatten())
-                    ns._data_header.append('Teig({}):{}-{}'.format(eig+1, e1, e2))
-                    ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), e1, e2))
-        p.add_argument('--transmission-eig', '-Teig', nargs=2, metavar=('ELEC1', 'ELEC2'),
-                       action=DataTEig,
-                       help='Store transmission eigenvalues between two electrodes.')
+                    ns._data_header.append("Teig({}):{}-{}".format(eig + 1, e1, e2))
+                    ns._data_description.append(
+                        "Column {} is transmission eigenvalues from electrode {} to {}".format(
+                            len(ns._data), e1, e2
+                        )
+                    )
+
+        p.add_argument(
+            "--transmission-eig",
+            "-Teig",
+            nargs=2,
+            metavar=("ELEC1", "ELEC2"),
+            action=DataTEig,
+            help="Store transmission eigenvalues between two electrodes.",
+        )
 
         class DataFano(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = ns._tbt._elec(values[0])
                 if e1 not in ns._tbt.elecs:
-                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e1}' cannot be found in the specified file."
+                    )
                 e2 = ns._tbt._elec(values[1])
                 if e2 not in ns._tbt.elecs:
-                    if e2.strip() == '.':
+                    if e2.strip() == ".":
                         for e2 in ns._tbt.elecs:
                             if e2 != e1:
-                                try: # catches if T isn't calculated
+                                try:  # catches if T isn't calculated
                                     self(parser, ns, [e1, e2], option_string)
                                 except Exception:
                                     pass
                         return
-                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e2}' cannot be found in the specified file."
+                    )
 
                 # Grab the information
                 data = ns._tbt.fano(e1, e2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append(f'Fano:{e1}-{e2}')
-                ns._data_description.append(f'Column {len(ns._data)} is fano-factor from {e1} to {e2}')
-        p.add_argument('--fano', nargs=2, metavar=('ELEC1', 'ELEC2'),
-                       action=DataFano,
-                       help='Store fano-factor between two electrodes.')
+                ns._data_header.append(f"Fano:{e1}-{e2}")
+                ns._data_description.append(
+                    f"Column {len(ns._data)} is fano-factor from {e1} to {e2}"
+                )
+
+        p.add_argument(
+            "--fano",
+            nargs=2,
+            metavar=("ELEC1", "ELEC2"),
+            action=DataFano,
+            help="Store fano-factor between two electrodes.",
+        )
 
         class DataShot(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, values, option_string=None):
-                classical = values[0].lower() in ('classical', 'c')
+                classical = values[0].lower() in ("classical", "c")
 
                 e1 = ns._tbt._elec(values[1])
                 if e1 not in ns._tbt.elecs:
-                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e1}' cannot be found in the specified file."
+                    )
                 e2 = ns._tbt._elec(values[2])
                 if e2 not in ns._tbt.elecs:
-                    if e2.strip() == '.':
+                    if e2.strip() == ".":
                         for e2 in ns._tbt.elecs:
                             if e2 != e1:
-                                try: # catches if T isn't calculated
+                                try:  # catches if T isn't calculated
                                     self(parser, ns, [values[0], e1, e2], option_string)
                                 except Exception:
                                     pass
                         return
-                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
+                    raise ValueError(
+                        f"Electrode: '{e2}' cannot be found in the specified file."
+                    )
 
                 # Grab the information
-                data = ns._tbt.shot_noise(e1, e2, classical=classical,
-                                          kavg=ns._krng)[ns._Erng]
+                data = ns._tbt.shot_noise(e1, e2, classical=classical, kavg=ns._krng)[
+                    ns._Erng
+                ]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append(f'Shot:{e1}-{e2}')
+                ns._data_header.append(f"Shot:{e1}-{e2}")
                 if classical:
-                    method = 'classical'
+                    method = "classical"
                 else:
-                    method = 'non-classical'
-                ns._data_description.append(f'Column {len(ns._data)} is {method} shot-noise from {e1} to {e2}')
-        p.add_argument('--shot-noise', nargs=3, metavar=('METHOD', 'ELEC1', 'ELEC2'),
-                       action=DataShot,
-                       help='Store shot-noise between two electrodes.')
+                    method = "non-classical"
+                ns._data_description.append(
+                    f"Column {len(ns._data)} is {method} shot-noise from {e1} to {e2}"
+                )
+
+        p.add_argument(
+            "--shot-noise",
+            nargs=3,
+            metavar=("METHOD", "ELEC1", "ELEC2"),
+            action=DataShot,
+            help="Store shot-noise between two electrodes.",
+        )
 
         class Info(argparse.Action):
-            """ Action to print information contained in the TBT.nc file, helpful before performing actions """
+            """Action to print information contained in the TBT.nc file, helpful before performing actions"""
 
             def __call__(self, parser, ns, value, option_string=None):
                 # First short-hand the file
                 print(ns._tbt.info(value))
 
-        p.add_argument('--info', '-i', action=Info, nargs='?', metavar='ELEC',
-                       help='Print out what information is contained in the TBT.nc file, optionally only for one of the electrodes.')
+        p.add_argument(
+            "--info",
+            "-i",
+            action=Info,
+            nargs="?",
+            metavar="ELEC",
+            help="Print out what information is contained in the TBT.nc file, optionally only for one of the electrodes.",
+        )
 
         class Out(argparse.Action):
             @run_actions
             def __call__(self, parser, ns, value, option_string=None):
-
                 out = value[0]
 
                 try:
                     # We figure out if the user wants to write
                     # to a geometry
-                    obj = get_sile(out, mode='w')
-                    if hasattr(obj, 'write_geometry'):
+                    obj = get_sile(out, mode="w")
+                    if hasattr(obj, "write_geometry"):
                         with obj as fh:
                             fh.write_geometry(ns._geometry)
                         return
@@ -3046,56 +3376,73 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
                 if len(ns._data) == 0:
                     # do nothing if data has not been collected
-                    print("No data has been collected in the arguments, nothing will be written, have you forgotten arguments?")
+                    print(
+                        "No data has been collected in the arguments, nothing will be written, have you forgotten arguments?"
+                    )
                     return
 
                 from sisl.io import tableSile
-                tableSile(out, mode='w').write(*ns._data,
-                                               comment=ns._data_description,
-                                               header=ns._data_header)
+
+                tableSile(out, mode="w").write(
+                    *ns._data, comment=ns._data_description, header=ns._data_header
+                )
                 # Clean all data
                 ns._data_description = []
                 ns._data_header = []
                 ns._data = []
                 # These are expert options
-                ns._norm = 'none'
-                ns._Ovalue = ''
+                ns._norm = "none"
+                ns._Ovalue = ""
                 ns._Orng = None
                 ns._Erng = None
                 ns._krng = True
-        p.add_argument('--out', '-o', nargs=1, action=Out,
-                       help='Store currently collected information (at its current invocation) to the out file.')
+
+        p.add_argument(
+            "--out",
+            "-o",
+            nargs=1,
+            action=Out,
+            help="Store currently collected information (at its current invocation) to the out file.",
+        )
 
         class AVOut(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 if value is None:
                     ns._tbt.write_tbtav()
                 else:
                     ns._tbt.write_tbtav(value)
-        p.add_argument('--tbt-av', action=AVOut, nargs='?', default=None,
-                       help='Create "{}" with the k-averaged quantities of this file.'.format(str(self.file).replace('TBT.nc', 'TBT.AV.nc')))
+
+        p.add_argument(
+            "--tbt-av",
+            action=AVOut,
+            nargs="?",
+            default=None,
+            help='Create "{}" with the k-averaged quantities of this file.'.format(
+                str(self.file).replace("TBT.nc", "TBT.AV.nc")
+            ),
+        )
 
         class Plot(argparse.Action):
-
             @run_actions
             def __call__(self, parser, ns, value, option_string=None):
-
                 if len(ns._data) == 0:
                     # do nothing if data has not been collected
-                    print("No data has been collected in the arguments, nothing will be plotted, have you forgotten arguments?")
+                    print(
+                        "No data has been collected in the arguments, nothing will be plotted, have you forgotten arguments?"
+                    )
                     return
 
                 from matplotlib import pyplot as plt
+
                 plt.figure()
 
                 def _get_header(header):
-                    val_info = header.split(':')
+                    val_info = header.split(":")
                     if len(val_info) == 1:
                         # We smiply have the data
-                        return val_info[0].split('[')[0]
+                        return val_info[0].split("[")[0]
                     # We have a value *and* the electrode
-                    return '{}:{}'.format(val_info[0].split('[')[0], val_info[1])
+                    return "{}:{}".format(val_info[0].split("[")[0], val_info[1])
 
                 is_DOS = True
                 is_T = True
@@ -3103,26 +3450,28 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 is_SHOT = True
                 is_FANO = True
                 for i in range(1, len(ns._data)):
-                    plt.plot(ns._data[0], ns._data[i], label=_get_header(ns._data_header[i]))
-                    is_DOS &= 'DOS' in ns._data_header[i]
-                    is_T &= 'T:' in ns._data_header[i]
-                    is_Teig &= 'Teig' in ns._data_header[i]
-                    is_SHOT &= 'Shot' in ns._data_header[i]
-                    is_FANO &= 'Fano' in ns._data_header[i]
+                    plt.plot(
+                        ns._data[0], ns._data[i], label=_get_header(ns._data_header[i])
+                    )
+                    is_DOS &= "DOS" in ns._data_header[i]
+                    is_T &= "T:" in ns._data_header[i]
+                    is_Teig &= "Teig" in ns._data_header[i]
+                    is_SHOT &= "Shot" in ns._data_header[i]
+                    is_FANO &= "Fano" in ns._data_header[i]
 
                 if is_DOS:
-                    plt.ylabel('DOS [1/eV]')
+                    plt.ylabel("DOS [1/eV]")
                 elif is_T:
-                    plt.ylabel('Transmission')
+                    plt.ylabel("Transmission")
                 elif is_Teig:
-                    plt.ylabel('Transmission eigen')
+                    plt.ylabel("Transmission eigen")
                 elif is_FANO:
-                    plt.ylabel('Fano factor')
+                    plt.ylabel("Fano factor")
                 elif is_SHOT:
-                    plt.ylabel('Shot-noise')
+                    plt.ylabel("Shot-noise")
                 else:
-                    plt.ylabel('mixed units')
-                plt.xlabel('E - E_F [eV]')
+                    plt.ylabel("mixed units")
+                plt.xlabel("E - E_F [eV]")
 
                 plt.legend(loc=8, ncol=3, bbox_to_anchor=(0.5, 1.0))
                 if value is None:
@@ -3135,13 +3484,20 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 ns._data_header = []
                 ns._data = []
                 # These are expert options
-                ns._norm = 'none'
-                ns._Ovalue = ''
+                ns._norm = "none"
+                ns._Ovalue = ""
                 ns._Orng = None
                 ns._Erng = None
                 ns._krng = True
-        p.add_argument('--plot', '-p', action=Plot, nargs='?', metavar='FILE',
-                       help='Plot the currently collected information (at its current invocation).')
+
+        p.add_argument(
+            "--plot",
+            "-p",
+            action=Plot,
+            nargs="?",
+            metavar="FILE",
+            help="Plot the currently collected information (at its current invocation).",
+        )
 
         return p, namespace
 
@@ -3151,29 +3507,30 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 # with the exception that the k-points have been averaged out.
 @set_module("sisl.io.tbtrans")
 class tbtavncSileTBtrans(tbtncSileTBtrans):
-    """ TBtrans average file object
+    """TBtrans average file object
 
     This `Sile` implements the writing of the TBtrans output ``*.TBT.AV.nc`` sile which contains
     the k-averaged quantities related to the NEGF code TBtrans.
 
     See `tbtncSileTBtrans` for details as this object is essentially a copy of it.
     """
-    _trans_type = 'TBT'
+
+    _trans_type = "TBT"
     _k_avg = True
     _E2eV = Ry2eV
 
     @property
     def nkpt(self):
-        """ Always return 1, this is to signal other routines """
+        """Always return 1, this is to signal other routines"""
         return 1
 
     @property
     def wkpt(self):
-        """ Always return [1.], this is to signal other routines """
+        """Always return [1.], this is to signal other routines"""
         return _a.onesd(1)
 
     def write_tbtav(self, *args, **kwargs):
-        """ Wrapper for writing the k-averaged TBT.AV.nc file.
+        """Wrapper for writing the k-averaged TBT.AV.nc file.
 
         This write *requires* the TBT.nc `Sile` object passed as the first argument,
         or as the keyword ``from=tbt`` argument.
@@ -3184,15 +3541,19 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
           the TBT.nc file object that has the k-sampled quantities.
         """
 
-        if 'from' in kwargs:
-            tbt = kwargs['from']
+        if "from" in kwargs:
+            tbt = kwargs["from"]
         elif len(args) > 0:
             tbt = args[0]
         else:
-            raise SislError("tbtncSileTBtrans has not been passed to write the averaged file")
+            raise SislError(
+                "tbtncSileTBtrans has not been passed to write the averaged file"
+            )
 
         if not isinstance(tbt, tbtncSileTBtrans):
-            raise ValueError('first argument of tbtavncSileTBtrans.write *must* be a tbtncSileTBtrans object')
+            raise ValueError(
+                "first argument of tbtavncSileTBtrans.write *must* be a tbtncSileTBtrans object"
+            )
 
         # Notify if the object is not in write mode.
         sile_raise_write(self)
@@ -3201,8 +3562,8 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
             t.setncatts({att: f.getncattr(att) for att in f.ncattrs()})
 
         # Retrieve k-weights
-        nkpt = len(tbt.dimensions['nkpt'])
-        wkpt = _a.asarrayd(tbt.variables['wkpt'][:])
+        nkpt = len(tbt.dimensions["nkpt"])
+        wkpt = _a.asarrayd(tbt.variables["wkpt"][:])
 
         # First copy and re-create all entries in the output file
         for dvg in tbt:
@@ -3228,10 +3589,9 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
             grp = self.createGroup(dvg.group().path)
 
             if tbt.isDimension(dvg):
-
                 # In case the dimension is the k-point one
                 # we remove that dimension
-                if 'nkpt' == dvg.name:
+                if "nkpt" == dvg.name:
                     continue
 
                 # Simply re-create the dimension
@@ -3245,15 +3605,15 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
             # It *must* be a variable now
 
             # Quickly skip the k-point variable and the weights
-            if dvg.name in ('kpt', 'wkpt'):
+            if dvg.name in ("kpt", "wkpt"):
                 continue
 
             # Down-scale the k-point dimension
-            if 'nkpt' in dvg.dimensions:
+            if "nkpt" in dvg.dimensions:
                 # Remove that dimension
                 dims = list(dvg.dimensions)
                 # Create slice
-                idx = dims.index('nkpt')
+                idx = dims.index("nkpt")
                 dims.pop(idx)
                 dims = tuple(dims)
                 has_kpt = True
@@ -3264,8 +3624,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
 
             # We can't use dvg.filters() since it doesn't always
             # work...
-            v = grp.createVariable(dvg.name, dvg.dtype,
-                                   dimensions=dims)
+            v = grp.createVariable(dvg.name, dvg.dtype, dimensions=dims)
 
             # Copy attributes
             copy_attr(dvg, v)
@@ -3293,22 +3652,22 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
                 v[:] = dvg[:]
 
         # Update the source attribute to signal the originating file
-        self.setncattr('source', 'k-average of: ' + str(tbt._file))
+        self.setncattr("source", "k-average of: " + str(tbt._file))
         self.sync()
 
     # Denote default writing routine
     _write_default = write_tbtav
 
 
-for _name in ['shot_noise', 'noise_power', 'fano']:
+for _name in ["shot_noise", "noise_power", "fano"]:
     setattr(tbtavncSileTBtrans, _name, None)
 
 
-add_sile('TBT.nc', tbtncSileTBtrans)
+add_sile("TBT.nc", tbtncSileTBtrans)
 # Add spin-dependent files
-add_sile('TBT_DN.nc', tbtncSileTBtrans)
-add_sile('TBT_UP.nc', tbtncSileTBtrans)
-add_sile('TBT.AV.nc', tbtavncSileTBtrans)
+add_sile("TBT_DN.nc", tbtncSileTBtrans)
+add_sile("TBT_UP.nc", tbtncSileTBtrans)
+add_sile("TBT.AV.nc", tbtavncSileTBtrans)
 # Add spin-dependent files
-add_sile('TBT_DN.AV.nc', tbtavncSileTBtrans)
-add_sile('TBT_UP.AV.nc', tbtavncSileTBtrans)
+add_sile("TBT_DN.AV.nc", tbtavncSileTBtrans)
+add_sile("TBT_UP.AV.nc", tbtavncSileTBtrans)

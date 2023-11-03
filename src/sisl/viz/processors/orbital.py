@@ -26,10 +26,12 @@ class OrbitalGroup(TypedDict):
     reduce_func: Optional[Callable]
     spin_reduce: Optional[Callable]
 
+
 class OrbitalQueriesManager:
     """
     This class implements an input field that allows you to select orbitals by atom, species, etc...
     """
+
     _item_input_type = OrbitalStyleQuery
 
     _keys_to_cols = {
@@ -44,59 +46,85 @@ class OrbitalQueriesManager:
 
     @singledispatchmethod
     @classmethod
-    def new(cls, geometry: Geometry, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {}):
+    def new(
+        cls,
+        geometry: Geometry,
+        spin: Union[str, Spin] = "",
+        key_gens: Dict[str, Callable] = {},
+    ):
         return cls(geometry=geometry, spin=spin or "", key_gens=key_gens)
-        
+
     @new.register
     @classmethod
-    def from_geometry(cls, geometry: Geometry, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {}):
+    def from_geometry(
+        cls,
+        geometry: Geometry,
+        spin: Union[str, Spin] = "",
+        key_gens: Dict[str, Callable] = {},
+    ):
         return cls(geometry=geometry, spin=spin or "", key_gens=key_gens)
-    
+
     @new.register
     @classmethod
-    def from_string(cls, 
-        string: str, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {}
+    def from_string(
+        cls,
+        string: str,
+        spin: Union[str, Spin] = "",
+        key_gens: Dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from a string, assuming it is a path."""
         return cls.new(Path(string), spin=spin, key_gens=key_gens)
-    
+
     @new.register
     @classmethod
-    def from_path(cls, 
-        path: Path, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {}
+    def from_path(
+        cls, path: Path, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {}
     ):
         """Initializes an OrbitalQueriesManager from a path, converting it to a sile."""
         return cls.new(sisl.get_sile(path), spin=spin, key_gens=key_gens)
 
     @new.register
     @classmethod
-    def from_sile(cls, 
-        sile: sisl.io.BaseSile, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {},
+    def from_sile(
+        cls,
+        sile: sisl.io.BaseSile,
+        spin: Union[str, Spin] = "",
+        key_gens: Dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from a sile."""
         return cls.new(sile.read_geometry(), spin=spin, key_gens=key_gens)
-    
+
     @new.register
     @classmethod
-    def from_xarray(cls, 
-        array: xarray.core.common.AttrAccessMixin, spin: Optional[Union[str, Spin]] = None, key_gens: Dict[str, Callable] = {},
+    def from_xarray(
+        cls,
+        array: xarray.core.common.AttrAccessMixin,
+        spin: Optional[Union[str, Spin]] = None,
+        key_gens: Dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from an xarray object."""
         if spin is None:
             spin = array.attrs.get("spin", "")
 
         return cls.new(array.attrs.get("geometry"), spin=spin, key_gens=key_gens)
-    
+
     @new.register
     @classmethod
-    def from_data(cls, 
-        data: Data, spin: Optional[Union[str, Spin]] = None, key_gens: Dict[str, Callable] = {}
+    def from_data(
+        cls,
+        data: Data,
+        spin: Optional[Union[str, Spin]] = None,
+        key_gens: Dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from a sisl Data object."""
         return cls.new(data._data, spin=spin, key_gens=key_gens)
 
-    def __init__(self, geometry: Optional[Geometry] = None, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {}):
-
+    def __init__(
+        self,
+        geometry: Optional[Geometry] = None,
+        spin: Union[str, Spin] = "",
+        key_gens: Dict[str, Callable] = {},
+    ):
         self.geometry = geometry
         self.spin = Spin(spin)
 
@@ -144,11 +172,18 @@ class OrbitalQueriesManager:
 
         if raise_not_active:
             if not query["active"]:
-                raise ValueError(f"Query {query} is not active and you are trying to use it")
+                raise ValueError(
+                    f"Query {query} is not active and you are trying to use it"
+                )
 
         query_str = []
         for key, val in query.items():
-            if key == "orbitals" and val is not None and len(val) > 0 and isinstance(val[0], int):
+            if (
+                key == "orbitals"
+                and val is not None
+                and len(val) > 0
+                and isinstance(val[0], int)
+            ):
                 df = df.iloc[val]
                 continue
 
@@ -156,8 +191,8 @@ class OrbitalQueriesManager:
             if key in df and val is not None:
                 if isinstance(val, (np.ndarray, tuple)):
                     val = np.ravel(val).tolist()
-                query_str.append(f'{key}=={repr(val)}')
-        
+                query_str.append(f"{key}=={repr(val)}")
+
         if len(query_str) == 0:
             return df
         else:
@@ -168,9 +203,8 @@ class OrbitalQueriesManager:
 
         orb_props = defaultdict(list)
         del_key = set()
-        #Loop over all orbitals of the basis
+        # Loop over all orbitals of the basis
         for at, iorb in geom.iter_orbitals():
-
             atom = geom.atoms[at]
             orb = atom[iorb]
 
@@ -212,7 +246,7 @@ class OrbitalQueriesManager:
         np.ndarray of shape (n_options, [n_keys])
             all the possible options.
 
-            If only one key was provided, it is a one dimensional array. 
+            If only one key was provided, it is a one dimensional array.
 
         Examples
         -----------
@@ -229,14 +263,21 @@ class OrbitalQueriesManager:
         if kwargs:
             if "atoms" in kwargs:
                 kwargs["atoms"] = self.geometry._sanitize_atoms(kwargs["atoms"])
+
             def _repr(v):
                 if isinstance(v, np.ndarray):
                     v = list(v.ravel())
                 if isinstance(v, dict):
                     raise Exception(str(v))
                 return repr(v)
-            query = ' & '.join([f'{self._keys_to_cols.get(k, k)}=={_repr(v)}' for k, v in kwargs.items(
-            ) if self._keys_to_cols.get(k, k) in df])
+
+            query = " & ".join(
+                [
+                    f"{self._keys_to_cols.get(k, k)}=={_repr(v)}"
+                    for k, v in kwargs.items()
+                    if self._keys_to_cols.get(k, k) in df
+                ]
+            )
             if query:
                 df = df.query(query)
 
@@ -261,8 +302,7 @@ class OrbitalQueriesManager:
 
         # Now get the unique options from the dataframe
         if keys:
-            options = df.drop_duplicates(subset=keys)[
-                keys].values.astype(object)
+            options = df.drop_duplicates(subset=keys)[keys].values.astype(object)
         else:
             # It might be the only key was "spin", then we are going to fake it
             # to get an options array that can be treated in the same way.
@@ -272,7 +312,8 @@ class OrbitalQueriesManager:
         # account the position (column index) where they are expected to be returned.
         if spin_in_keys and len(spin_options) > 0:
             options = np.concatenate(
-                [np.insert(options, spin_key_i, spin, axis=1) for spin in spin_options])
+                [np.insert(options, spin_key_i, spin, axis=1) for spin in spin_options]
+            )
 
         # Squeeze the options array, just in case there is only one key
         # There's a special case: if there is only one option for that key,
@@ -284,28 +325,31 @@ class OrbitalQueriesManager:
         return options
 
     def get_orbitals(self, query):
-
         if "atoms" in query:
             query["atoms"] = self.geometry._sanitize_atoms(query["atoms"])
 
-        filtered_df = self.filter_df(
-            self.orb_filtering_df, query, self._keys_to_cols
-        )
+        filtered_df = self.filter_df(self.orb_filtering_df, query, self._keys_to_cols)
 
         return filtered_df.index.values
-    
-    def get_atoms(self, query):
 
+    def get_atoms(self, query):
         if "atoms" in query:
             query["atoms"] = self.geometry._sanitize_atoms(query["atoms"])
 
-        filtered_df = self.filter_df(
-            self.orb_filtering_df, query, self._keys_to_cols
-        )
+        filtered_df = self.filter_df(self.orb_filtering_df, query, self._keys_to_cols)
 
-        return np.unique(filtered_df['atom'].values)
+        return np.unique(filtered_df["atom"].values)
 
-    def _split_query(self, query, on, only=None, exclude=None, query_gen=None, ignore_constraints=False, **kwargs):
+    def _split_query(
+        self,
+        query,
+        on,
+        only=None,
+        exclude=None,
+        query_gen=None,
+        ignore_constraints=False,
+        **kwargs,
+    ):
         """
         Splits a query into multiple queries based on one of its parameters.
 
@@ -328,7 +372,7 @@ class OrbitalQueriesManager:
 
             This may be useful, for example, to give each request a color, or a custom name.
         ignore_constraints: boolean or array-like, optional
-            determines whether constraints (imposed by the query that you want to split) 
+            determines whether constraints (imposed by the query that you want to split)
             on the parameters that we want to split along should be taken into consideration.
 
             If `False`: all constraints considered.
@@ -361,8 +405,12 @@ class OrbitalQueriesManager:
             if ignore_constraints is False:
                 ignore_constraints = ()
 
-            constraints = {key: val for key, val in constraints.items() if key not in ignore_constraints and val is not None}
-        
+            constraints = {
+                key: val
+                for key, val in constraints.items()
+                if key not in ignore_constraints and val is not None
+            }
+
         # Knowing what are our constraints (which may be none), get the available options
         values = self.get_options("+".join(on), **constraints)
 
@@ -398,18 +446,20 @@ class OrbitalQueriesManager:
         queries = []
         for i, value in enumerate(values):
             if value not in exclude and (only is None or value in only):
-
                 # Use the name template to generate the name for this query
                 name = base_name
                 for key, val in zip(on, value):
                     name = name.replace(f"${key}", str(val))
 
                 # Build the query
-                query = query_gen(**{
-                    **query,
-                    **{key: [val] for key, val in zip(on, value)},
-                    "name": name, **kwargs
-                })
+                query = query_gen(
+                    **{
+                        **query,
+                        **{key: [val] for key, val in zip(on, value)},
+                        "name": name,
+                        **kwargs,
+                    }
+                )
 
                 # Make sure it is a dict
                 if is_dataclass(query):
@@ -420,12 +470,13 @@ class OrbitalQueriesManager:
 
         return queries
 
-    def generate_queries(self, 
-        split: str, 
+    def generate_queries(
+        self,
+        split: str,
         only: Optional[Sequence] = None,
-        exclude: Optional[Sequence] = None, 
+        exclude: Optional[Sequence] = None,
         query_gen: Optional[Callable[[dict], dict]] = None,
-        **kwargs
+        **kwargs,
     ):
         """
         Automatically generates queries based on the current options.
@@ -454,7 +505,9 @@ class OrbitalQueriesManager:
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         """
-        return self._split_query({}, on=split, only=only, exclude=exclude, query_gen=query_gen, **kwargs)
+        return self._split_query(
+            {}, on=split, only=only, exclude=exclude, query_gen=query_gen, **kwargs
+        )
 
     def sanitize_query(self, query):
         # Get the complete request and make sure it is a dict.
@@ -462,25 +515,26 @@ class OrbitalQueriesManager:
         if is_dataclass(query):
             query = asdict(query)
 
-        # Determine the reduce function from the "reduce" passed and the scale factor. 
+        # Determine the reduce function from the "reduce" passed and the scale factor.
         def _reduce_func(arr, **kwargs):
-            reduce_ = query['reduce']
+            reduce_ = query["reduce"]
             if isinstance(reduce_, str):
                 reduce_ = getattr(np, reduce_)
 
-            if kwargs['axis'] == ():
+            if kwargs["axis"] == ():
                 return arr
             return reduce_(arr, **kwargs) * query.get("scale", 1)
-        
+
         # Finally, return the sanitized request, converting the request (contains "species", "n", "l", etc...)
-        # into a list of orbitals. 
+        # into a list of orbitals.
         return {
             **query,
             "orbitals": self.get_orbitals(query),
             "reduce_func": _reduce_func,
-            **{k: gen(query) for k, gen in self.key_gens.items()}
+            **{k: gen(query) for k, gen in self.key_gens.items()},
         }
-    
+
+
 def generate_orbital_queries(
     orb_manager: OrbitalQueriesManager,
     split: str,
@@ -488,17 +542,29 @@ def generate_orbital_queries(
     exclude: Optional[Sequence] = None,
     query_gen: Optional[Callable[[dict], dict]] = None,
 ):
-    return orb_manager.generate_queries(split, only=only, exclude=exclude, query_gen=query_gen)
+    return orb_manager.generate_queries(
+        split, only=only, exclude=exclude, query_gen=query_gen
+    )
 
-def reduce_orbital_data(orbital_data: Union[DataArray, Dataset], groups: Sequence[OrbitalGroup], geometry: Optional[Geometry] = None, 
-    reduce_func: Callable = np.mean, spin_reduce: Optional[Callable] = None, orb_dim: str = "orb", spin_dim: str = "spin", 
-    groups_dim: str = "group", sanitize_group: Union[Callable, OrbitalQueriesManager, None] = None, group_vars: Optional[Sequence[str]] = None,
-    drop_empty: bool = False, fill_empty: Any = 0.
+
+def reduce_orbital_data(
+    orbital_data: Union[DataArray, Dataset],
+    groups: Sequence[OrbitalGroup],
+    geometry: Optional[Geometry] = None,
+    reduce_func: Callable = np.mean,
+    spin_reduce: Optional[Callable] = None,
+    orb_dim: str = "orb",
+    spin_dim: str = "spin",
+    groups_dim: str = "group",
+    sanitize_group: Union[Callable, OrbitalQueriesManager, None] = None,
+    group_vars: Optional[Sequence[str]] = None,
+    drop_empty: bool = False,
+    fill_empty: Any = 0.0,
 ) -> Union[DataArray, Dataset]:
     """Groups contributions of orbitals into a new dimension.
 
     Given an xarray object containing orbital information and the specification of groups of orbitals, this function
-    computes the total contribution for each group of orbitals. It therefore removes the orbitals dimension and 
+    computes the total contribution for each group of orbitals. It therefore removes the orbitals dimension and
     creates a new one to account for the groups.
 
     It can also reduce spin in the same go if requested. In that case, groups can also specify particular spin components.
@@ -516,7 +582,7 @@ def reduce_orbital_data(orbital_data: Union[DataArray, Dataset], groups: Sequenc
         afterwards in the ``parent`` attribute, under ``parent.geometry``.
     reduce_func : Callable, optional
         The function that will compute the reduction along the orbitals dimension once the selection is done.
-        This could be for example ``numpy.mean`` or ``numpy.sum``. 
+        This could be for example ``numpy.mean`` or ``numpy.sum``.
         Notice that this will only be used in case the group specification doesn't specify a particular function
         in its "reduce_func" field, which will take preference.
     spin_reduce: Callable, optional
@@ -548,13 +614,15 @@ def reduce_orbital_data(orbital_data: Union[DataArray, Dataset], groups: Sequenc
     if geometry is None:
         geometry = orbital_data.attrs.get("geometry")
         if geometry is None:
-            parent = orbital_data.attrs.get('parent')
+            parent = orbital_data.attrs.get("parent")
             if parent is not None:
                 getattr(parent, "geometry")
 
     if sanitize_group is None:
         if geometry is not None:
-            sanitize_group = OrbitalQueriesManager(geometry=geometry, spin=orbital_data.attrs.get("spin", ""))
+            sanitize_group = OrbitalQueriesManager(
+                geometry=geometry, spin=orbital_data.attrs.get("spin", "")
+            )
         else:
             sanitize_group = lambda x: x
     if isinstance(sanitize_group, OrbitalQueriesManager):
@@ -567,99 +635,166 @@ def reduce_orbital_data(orbital_data: Union[DataArray, Dataset], groups: Sequenc
         group = sanitize_group(group)
 
         if geometry is None:
-            orbitals = group.get('orbitals')
+            orbitals = group.get("orbitals")
             try:
-                group['orbitals'] = np.array(orbitals, dtype=int)
+                group["orbitals"] = np.array(orbitals, dtype=int)
                 assert orbitals.ndim == 1
             except:
-                raise SislError("A geometry was neither provided nor found in the xarray object. Therefore we can't"
-                    f" convert the provided atom selection ({orbitals}) to an array of integers.")
+                raise SislError(
+                    "A geometry was neither provided nor found in the xarray object. Therefore we can't"
+                    f" convert the provided atom selection ({orbitals}) to an array of integers."
+                )
         else:
             group["orbitals"] = geometry._sanitize_orbs(group["orbitals"])
 
-        group['selector'] = group['orbitals']
+        group["selector"] = group["orbitals"]
 
         req_spin = group.get("spin")
-        if req_spin is None and data_spin.is_polarized and spin_dim in orbital_data.coords:
+        if (
+            req_spin is None
+            and data_spin.is_polarized
+            and spin_dim in orbital_data.coords
+        ):
             if spin_reduce is None:
-                group['spin'] = original_spin_coord
+                group["spin"] = original_spin_coord
             else:
-                group['spin'] = [0, 1]
+                group["spin"] = [0, 1]
 
-        if (spin_reduce is not None or group.get("spin") is not None) and spin_dim in orbital_data.dims:
-            group['selector'] = (group['selector'], group.get('spin'))
-            group['reduce_func'] = (group.get('reduce_func', reduce_func), spin_reduce)
+        if (
+            spin_reduce is not None or group.get("spin") is not None
+        ) and spin_dim in orbital_data.dims:
+            group["selector"] = (group["selector"], group.get("spin"))
+            group["reduce_func"] = (group.get("reduce_func", reduce_func), spin_reduce)
 
         return group
-    
+
     original_spin_coord = None
     if data_spin.is_polarized and spin_dim in orbital_data.coords:
-
         if not isinstance(orbital_data, (DataArray, Dataset)):
             orbital_data = orbital_data._data
-        
+
         original_spin_coord = orbital_data.coords[spin_dim].values
 
-        if "total" in orbital_data.coords['spin']:
-            spin_up = ((orbital_data.sel(spin="total") - orbital_data.sel(spin="z")) / 2).assign_coords(spin=0)
-            spin_down = ((orbital_data.sel(spin="total") + orbital_data.sel(spin="z")) / 2).assign_coords(spin=1)
+        if "total" in orbital_data.coords["spin"]:
+            spin_up = (
+                (orbital_data.sel(spin="total") - orbital_data.sel(spin="z")) / 2
+            ).assign_coords(spin=0)
+            spin_down = (
+                (orbital_data.sel(spin="total") + orbital_data.sel(spin="z")) / 2
+            ).assign_coords(spin=1)
 
             orbital_data = xarray.concat([orbital_data, spin_up, spin_down], "spin")
         else:
             total = orbital_data.sum(spin_dim).assign_coords(spin="total")
-            z = (orbital_data.sel(spin=0) - orbital_data.sel(spin=1)).assign_coords(spin="z")
+            z = (orbital_data.sel(spin=0) - orbital_data.sel(spin=1)).assign_coords(
+                spin="z"
+            )
 
             orbital_data = xarray.concat([total, z, orbital_data], "spin")
-    
+
     # If a reduction for spin was requested, then pass the two different functions to reduce
     # each coordinate.
     reduce_funcs = reduce_func
     reduce_dims = orb_dim
-    if (spin_reduce is not None or data_spin.is_polarized) and spin_dim in orbital_data.dims:
+    if (
+        spin_reduce is not None or data_spin.is_polarized
+    ) and spin_dim in orbital_data.dims:
         reduce_funcs = (reduce_func, spin_reduce)
         reduce_dims = (orb_dim, spin_dim)
 
     return group_reduce(
-        data=orbital_data, groups=groups, reduce_dim=reduce_dims, reduce_func=reduce_funcs,
-        groups_dim=groups_dim, sanitize_group=_sanitize_group, group_vars=group_vars,
-        drop_empty=drop_empty, fill_empty=fill_empty
+        data=orbital_data,
+        groups=groups,
+        reduce_dim=reduce_dims,
+        reduce_func=reduce_funcs,
+        groups_dim=groups_dim,
+        sanitize_group=_sanitize_group,
+        group_vars=group_vars,
+        drop_empty=drop_empty,
+        fill_empty=fill_empty,
     )
 
-def get_orbital_queries_manager(obj, spin: Optional[str] = None, key_gens: Dict[str, Callable] = {}) -> OrbitalQueriesManager:
+
+def get_orbital_queries_manager(
+    obj, spin: Optional[str] = None, key_gens: Dict[str, Callable] = {}
+) -> OrbitalQueriesManager:
     return OrbitalQueriesManager.new(obj, spin=spin, key_gens=key_gens)
 
-def split_orbitals(orbital_data, on="species", only=None, exclude=None, geometry: Optional[Geometry] = None, 
-    reduce_func: Callable = np.mean, spin_reduce: Optional[Callable] = None, orb_dim: str = "orb", spin_dim: str = "spin", 
-    groups_dim: str = "group", group_vars: Optional[Sequence[str]] = None,
-    drop_empty: bool = False, fill_empty: Any = 0., **kwargs):
 
+def split_orbitals(
+    orbital_data,
+    on="species",
+    only=None,
+    exclude=None,
+    geometry: Optional[Geometry] = None,
+    reduce_func: Callable = np.mean,
+    spin_reduce: Optional[Callable] = None,
+    orb_dim: str = "orb",
+    spin_dim: str = "spin",
+    groups_dim: str = "group",
+    group_vars: Optional[Sequence[str]] = None,
+    drop_empty: bool = False,
+    fill_empty: Any = 0.0,
+    **kwargs,
+):
     if geometry is not None:
         orbital_data = orbital_data.copy()
-        orbital_data.attrs['geometry'] = geometry
+        orbital_data.attrs["geometry"] = geometry
 
     orbital_data = orbital_data.copy()
 
-    orb_manager = get_orbital_queries_manager(orbital_data, key_gens=kwargs.pop("key_gens", {}))
-
-    groups = orb_manager.generate_queries(split=on, only=only, exclude=exclude, **kwargs)
-
-    return reduce_orbital_data(
-        orbital_data, groups=groups, sanitize_group=orb_manager, reduce_func=reduce_func, spin_reduce=spin_reduce,
-        orb_dim=orb_dim, spin_dim=spin_dim, groups_dim=groups_dim, group_vars=group_vars, drop_empty=drop_empty,
-        fill_empty=fill_empty
+    orb_manager = get_orbital_queries_manager(
+        orbital_data, key_gens=kwargs.pop("key_gens", {})
     )
 
-def atom_data_from_orbital_data(orbital_data, atoms: AtomsArgument = None, request_kwargs: Dict = {}, geometry: Optional[Geometry] = None, 
-    reduce_func: Callable = np.mean, spin_reduce: Optional[Callable] = None, orb_dim: str = "orb", spin_dim: str = "spin", 
-    groups_dim: str = "atom", group_vars: Optional[Sequence[str]] = None,
-    drop_empty: bool = False, fill_empty: Any = 0.,
+    groups = orb_manager.generate_queries(
+        split=on, only=only, exclude=exclude, **kwargs
+    )
+
+    return reduce_orbital_data(
+        orbital_data,
+        groups=groups,
+        sanitize_group=orb_manager,
+        reduce_func=reduce_func,
+        spin_reduce=spin_reduce,
+        orb_dim=orb_dim,
+        spin_dim=spin_dim,
+        groups_dim=groups_dim,
+        group_vars=group_vars,
+        drop_empty=drop_empty,
+        fill_empty=fill_empty,
+    )
+
+
+def atom_data_from_orbital_data(
+    orbital_data,
+    atoms: AtomsArgument = None,
+    request_kwargs: Dict = {},
+    geometry: Optional[Geometry] = None,
+    reduce_func: Callable = np.mean,
+    spin_reduce: Optional[Callable] = None,
+    orb_dim: str = "orb",
+    spin_dim: str = "spin",
+    groups_dim: str = "atom",
+    group_vars: Optional[Sequence[str]] = None,
+    drop_empty: bool = False,
+    fill_empty: Any = 0.0,
 ):
     request_kwargs["name"] = "$atoms"
 
     atom_data = split_orbitals(
-        orbital_data, on="atoms", only=atoms, reduce_func=reduce_func, spin_reduce=spin_reduce,
-        orb_dim=orb_dim, spin_dim=spin_dim, groups_dim=groups_dim, group_vars=group_vars, drop_empty=drop_empty,
-        fill_empty=fill_empty, **request_kwargs
+        orbital_data,
+        on="atoms",
+        only=atoms,
+        reduce_func=reduce_func,
+        spin_reduce=spin_reduce,
+        orb_dim=orb_dim,
+        spin_dim=spin_dim,
+        groups_dim=groups_dim,
+        group_vars=group_vars,
+        drop_empty=drop_empty,
+        fill_empty=fill_empty,
+        **request_kwargs,
     )
 
     atom_data = atom_data.assign_coords(atom=atom_data.atom.astype(int))

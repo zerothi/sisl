@@ -8,21 +8,22 @@ from sisl import Atom, Atoms
 from ..sile import *
 from .sile import SileScaleUp
 
-__all__ = ['orboccSileScaleUp']
+__all__ = ["orboccSileScaleUp"]
 
 
 class orboccSileScaleUp(SileScaleUp):
-    """ orbocc file object for ScaleUp """
+    """orbocc file object for ScaleUp"""
 
     @sile_fh_open()
     def read_atom(self):
-        """ Reads a the atoms and returns an `Atoms` object """
+        """Reads a the atoms and returns an `Atoms` object"""
         self.readline()
         _, ns = map(int, self.readline().split()[:2])
-        species = self.readline().split()[:ns] # species
-        orbs = self.readline().split()[:ns] # orbs per species
+        species = self.readline().split()[:ns]  # species
+        orbs = self.readline().split()[:ns]  # orbs per species
         # Create list of species with correct # of orbitals per specie
         species = [Atom(s, [-1] * int(o)) for s, o in zip(species, orbs)]
         return Atoms(species)
 
-add_sile('orbocc', orboccSileScaleUp, case=False, gzip=True)
+
+add_sile("orbocc", orboccSileScaleUp, case=False, gzip=True)

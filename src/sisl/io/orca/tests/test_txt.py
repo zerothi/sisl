@@ -11,17 +11,18 @@ import sisl
 from sisl.io.orca.txt import *
 
 pytestmark = [pytest.mark.io, pytest.mark.orca]
-_dir = osp.join('sisl', 'io', 'orca')
+_dir = osp.join("sisl", "io", "orca")
 
 
 def test_tags(sisl_files):
-    f = sisl_files(_dir, 'molecule_property.txt')
+    f = sisl_files(_dir, "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.info.na == 2
     assert out.info.no == None
 
+
 def test_read_electrons(sisl_files):
-    f = sisl_files(_dir, 'molecule_property.txt')
+    f = sisl_files(_dir, "molecule_property.txt")
     out = txtSileORCA(f)
     N = out.read_electrons[:]()
     assert N[0, 0] == 7.9999985377
@@ -30,16 +31,18 @@ def test_read_electrons(sisl_files):
     assert N[0] == 7.9999985377
     assert N[1] == 6.9999989872
 
+
 def test_read_energy(sisl_files):
-    f = sisl_files(_dir, 'molecule_property.txt')
+    f = sisl_files(_dir, "molecule_property.txt")
     out = txtSileORCA(f)
     E = out.read_energy[:]()
     assert len(E) == 2
     E = out.read_energy[-1]()
     assert pytest.approx(E.total) == -3532.4797529097723
 
+
 def test_read_energy_vdw(sisl_files):
-    f = sisl_files(_dir, 'molecule2_property.txt')
+    f = sisl_files(_dir, "molecule2_property.txt")
     out = txtSileORCA(f)
     E = out.read_energy[:]()
     assert len(E) == 2
@@ -50,8 +53,9 @@ def test_read_energy_vdw(sisl_files):
     assert pytest.approx(E.total) == -3081.2651523149702
     assert pytest.approx(E.vdw) == -0.011180550414138613
 
+
 def test_read_geometry(sisl_files):
-    f = sisl_files(_dir, 'molecule_property.txt')
+    f = sisl_files(_dir, "molecule_property.txt")
     out = txtSileORCA(f)
     G = out.read_geometry[:]()
     assert G[0].xyz[0, 0] == 0.421218019838
@@ -63,11 +67,12 @@ def test_read_geometry(sisl_files):
     assert G.xyz[1, 0] == 1.578781789721
     assert G.xyz[0, 1] == 0.0
     assert G.xyz[1, 1] == 0.0
-    assert G.atoms[0].tag == 'N'
-    assert G.atoms[1].tag == 'O'
+    assert G.atoms[0].tag == "N"
+    assert G.atoms[1].tag == "O"
+
 
 def test_multiple_calls(sisl_files):
-    f = sisl_files(_dir, 'molecule_property.txt')
+    f = sisl_files(_dir, "molecule_property.txt")
     out = txtSileORCA(f)
     N = out.read_electrons[:]()
     assert len(N) == 2

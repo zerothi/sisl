@@ -11,16 +11,16 @@ import pytest
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta')
+_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_pdos_kgrid_tsde_dm(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
+    fdf = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"), base=sisl_files(_dir))
 
-    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSDE'))
+    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSDE"))
 
     DM1 = si.read_density_matrix(geometry=fdf.read_geometry())
-    DM2 = fdf.read_density_matrix(order=['TSDE'])
+    DM2 = fdf.read_density_matrix(order=["TSDE"])
 
     Ef1 = si.read_fermi_level()
     Ef2 = fdf.read_fermi_level()
@@ -32,12 +32,12 @@ def test_si_pdos_kgrid_tsde_dm(sisl_files):
 
 
 def test_si_pdos_kgrid_tsde_edm(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
+    fdf = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"), base=sisl_files(_dir))
 
-    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSDE'))
+    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSDE"))
 
     EDM1 = si.read_energy_density_matrix(geometry=fdf.read_geometry())
-    EDM2 = fdf.read_energy_density_matrix(order=['TSDE'])
+    EDM2 = fdf.read_energy_density_matrix(order=["TSDE"])
 
     assert EDM1._csr.spsame(EDM2._csr)
     assert np.allclose(EDM1._csr._D[:, :-1], EDM2._csr._D[:, :-1])
@@ -45,14 +45,14 @@ def test_si_pdos_kgrid_tsde_edm(sisl_files):
 
 @pytest.mark.filterwarnings("ignore", message="*wrong sparse pattern")
 def test_si_pdos_kgrid_tsde_dm_edm_rw(sisl_files, sisl_tmp):
-    fdf = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
+    fdf = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"), base=sisl_files(_dir))
     geom = fdf.read_geometry()
-    f1 = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSDE'))
+    f1 = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSDE"))
 
     DM1 = f1.read_density_matrix(geometry=geom)
     EDM1 = f1.read_energy_density_matrix(geometry=geom)
 
-    f2 = sisl.get_sile(sisl_tmp('noEf.TSDE', _dir))
+    f2 = sisl.get_sile(sisl_tmp("noEf.TSDE", _dir))
     # by default everything gets sorted...
     f2.write_density_matrices(DM1, EDM1, sort=False)
     DM2 = f2.read_density_matrix(geometry=geom)
@@ -64,9 +64,9 @@ def test_si_pdos_kgrid_tsde_dm_edm_rw(sisl_files, sisl_tmp):
 
     # Now the matrices ARE finalized, we don't have to do anything again
     EDM2 = EDM1.copy()
-    EDM2.shift(-2., DM1)
-    f3 = sisl.get_sile(sisl_tmp('Ef.TSDE', _dir))
-    f3.write_density_matrices(DM1, EDM2, Ef=-2., sort=False)
+    EDM2.shift(-2.0, DM1)
+    f3 = sisl.get_sile(sisl_tmp("Ef.TSDE", _dir))
+    f3.write_density_matrices(DM1, EDM2, Ef=-2.0, sort=False)
     DM3 = f3.read_density_matrix(geometry=geom)
     EDM3 = f3.read_energy_density_matrix(geometry=geom)
     assert DM1._csr.spsame(DM3._csr)
@@ -74,7 +74,7 @@ def test_si_pdos_kgrid_tsde_dm_edm_rw(sisl_files, sisl_tmp):
     assert EDM1._csr.spsame(EDM3._csr)
     assert np.allclose(EDM1._csr._D[:, :-1], EDM3._csr._D[:, :-1])
 
-    f3.write_density_matrices(DM1, EDM2, Ef=-2., sort=True)
+    f3.write_density_matrices(DM1, EDM2, Ef=-2.0, sort=True)
     DM3 = f3.read_density_matrix(geometry=geom, sort=False)
     EDM3 = f3.read_energy_density_matrix(geometry=geom, sort=False)
     assert DM1._csr.spsame(DM3._csr)

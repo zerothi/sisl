@@ -20,7 +20,7 @@ __all__ = ["oplist"]
 
 
 def yield_oplist(oplist_, rhs):
-    """ Yield elements from `oplist_` and `rhs`
+    """Yield elements from `oplist_` and `rhs`
 
     This also ensures that ``len(oplist_)`` and ``len(rhs)`` are the same.
 
@@ -31,24 +31,30 @@ def yield_oplist(oplist_, rhs):
     """
     n_lhs = len(oplist_)
     n = 0
-    for l, r in zip_longest(oplist_, rhs, fillvalue=0.):
+    for l, r in zip_longest(oplist_, rhs, fillvalue=0.0):
         n += 1
         if n_lhs >= n:
             yield l, r
 
     if n_lhs != n:
-        raise ValueError(f"{oplist_.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
+        raise ValueError(
+            f"{oplist_.__class__.__name__} requires other data to contain same number of elements (or a scalar)."
+        )
 
 
 def _crt_op(op, unitary=False):
     if unitary:
+
         def func_op(self):
             return self.__class__(op(s) for s in self)
+
     else:
+
         def func_op(self, other):
             if isiterable(other):
                 return self.__class__(op(s, o) for s, o in yield_oplist(self, other))
             return self.__class__(op(s, other) for s in self)
+
     return func_op
 
 
@@ -57,30 +63,35 @@ def _crt_rop(op):
         if isiterable(other):
             return self.__class__(op(o, s) for s, o in yield_oplist(self, other))
         return self.__class__(op(other, s) for s in self)
+
     return func_op
 
 
 def _crt_iop(op, unitary=False):
     if unitary:
+
         def func_op(self):
-            for i in range(len(self)): # pylint: disable=C0200
+            for i in range(len(self)):  # pylint: disable=C0200
                 self[i] = op(self[i])
             return self
+
     else:
+
         def func_op(self, other):
             if isiterable(other):
                 for i, (s, o) in enumerate(yield_oplist(self, other)):
                     self[i] = op(s, o)
             else:
-                for i in range(len(self)): # pylint: disable=C0200
+                for i in range(len(self)):  # pylint: disable=C0200
                     self[i] = op(self[i], other)
             return self
+
     return func_op
 
 
 @set_module("sisl")
 class oplist(list):
-    """ list with element-wise operations
+    """list with element-wise operations
 
     List-inherited class implementing direct element operations instead of list-extensions/compressions.
     When having multiple lists and one wishes to create a sum of individual elements, thus
@@ -143,11 +154,12 @@ class oplist(list):
     iterable : data
        elements in `oplist`
     """
+
     __slots__ = ()
 
     @classmethod
     def decorate(cls, func):
-        """ Decorate a function to always return an `oplist`, regardless of return values from `func`
+        """Decorate a function to always return an `oplist`, regardless of return values from `func`
 
         Parameters
         ----------
@@ -171,6 +183,7 @@ class oplist(list):
         [1]
 
         """
+
         @wraps(func)
         def wrap_func(*args, **kwargs):
             val = func(*args, **kwargs)

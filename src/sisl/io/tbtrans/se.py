@@ -10,6 +10,7 @@ import numpy as np
 
 from sisl._indices import indices
 from sisl._internal import set_module
+
 # Import the geometry object
 from sisl.unit.siesta import unit_convert
 from sisl.utils import default_ArgumentParser, default_namespace
@@ -17,16 +18,16 @@ from sisl.utils import default_ArgumentParser, default_namespace
 from ..sile import add_sile
 from ._cdf import _devncSileTBtrans
 
-__all__ = ['tbtsencSileTBtrans', 'phtsencSilePHtrans']
+__all__ = ["tbtsencSileTBtrans", "phtsencSilePHtrans"]
 
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
-Ry2eV = unit_convert('Ry', 'eV')
+Bohr2Ang = unit_convert("Bohr", "Ang")
+Ry2eV = unit_convert("Ry", "eV")
 
 
 @set_module("sisl.io.tbtrans")
 class tbtsencSileTBtrans(_devncSileTBtrans):
-    r""" TBtrans self-energy file object with downfolded self-energies to the device region
+    r"""TBtrans self-energy file object with downfolded self-energies to the device region
 
     The :math:`\Sigma` object contains all self-energies on the specified k- and energy grid projected
     into the device region.
@@ -61,11 +62,11 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     >>> np.allclose(Hdev_pvt, Hdev[pvt_dev, pvt_dev.T])
     True
     """
-    _trans_type = 'TBT'
+    _trans_type = "TBT"
     _E2eV = Ry2eV
 
     def self_energy(self, elec, E, k=0, sort=False):
-        """ Return the self-energy from the electrode `elec`
+        """Return the self-energy from the electrode `elec`
 
         Parameters
         ----------
@@ -89,8 +90,8 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         # When storing fortran arrays in C-type files reading it in
         # C-codes will transpose the data.
         # So we have to transpose back to get the correct order
-        re = self._variable('ReSelfEnergy', tree=tree)[ik, iE].T
-        im = self._variable('ImSelfEnergy', tree=tree)[ik, iE].T
+        re = self._variable("ReSelfEnergy", tree=tree)[ik, iE].T
+        im = self._variable("ImSelfEnergy", tree=tree)[ik, iE].T
 
         SE = self._E2eV * re + (1j * self._E2eV) * im
         if sort:
@@ -103,7 +104,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         return SE
 
     def broadening_matrix(self, elec, E, k=0, sort=False):
-        r""" Return the broadening matrix from the electrode `elec`
+        r"""Return the broadening matrix from the electrode `elec`
 
         The broadening matrix is calculated as:
 
@@ -132,10 +133,10 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         # When storing fortran arrays in C-type files reading it in
         # C-codes will transpose the data.
         # So we have to transpose back to get the correct order
-        re = self._variable('ReSelfEnergy', tree=tree)[ik, iE].T
-        im = self._variable('ImSelfEnergy', tree=tree)[ik, iE].T
+        re = self._variable("ReSelfEnergy", tree=tree)[ik, iE].T
+        im = self._variable("ImSelfEnergy", tree=tree)[ik, iE].T
 
-        G = - self._E2eV * (im + im.T) + (1j * self._E2eV) * (re - re.T)
+        G = -self._E2eV * (im + im.T) + (1j * self._E2eV) * (re - re.T)
         if sort:
             pvt = self.pivot(elec)
             idx = np.argsort(pvt)
@@ -147,7 +148,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         return G
 
     def self_energy_average(self, elec, E, sort=False):
-        """ Return the k-averaged average self-energy from the electrode `elec`
+        """Return the k-averaged average self-energy from the electrode `elec`
 
         Parameters
         ----------
@@ -168,8 +169,8 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         # When storing fortran arrays in C-type files reading it in
         # C-codes will transpose the data.
         # So we have to transpose back to get the correct order
-        re = self._variable('ReSelfEnergyMean', tree=tree)[iE].T
-        im = self._variable('ImSelfEnergyMean', tree=tree)[iE].T
+        re = self._variable("ReSelfEnergyMean", tree=tree)[iE].T
+        im = self._variable("ImSelfEnergyMean", tree=tree)[iE].T
 
         SE = self._E2eV * re + (1j * self._E2eV) * im
         if sort:
@@ -183,7 +184,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         return SE
 
     def info(self, elec=None):
-        """ Information about the self-energy file available for extracting in this file
+        """Information about the self-energy file available for extracting in this file
 
         Parameters
         ----------
@@ -195,13 +196,14 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         # Create a StringIO object to retain the information
         out = StringIO()
+
         # Create wrapper function
         def prnt(*args, **kwargs):
-            option = kwargs.pop('option', None)
+            option = kwargs.pop("option", None)
             if option is None:
                 print(*args, file=out)
             else:
-                print('{:60s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
+                print("{:60s}[{}]".format(" ".join(args), ", ".join(option)), file=out)
 
         # Retrieve the device atoms
         prnt("Device information:")
@@ -213,14 +215,18 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         nA = len(np.unique(kpt[:, 0]))
         nB = len(np.unique(kpt[:, 1]))
         nC = len(np.unique(kpt[:, 2]))
-        prnt(("  - number of kpoints: {} <- "
-              "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(self.nk, nA, nB, nC))
+        prnt(
+            (
+                "  - number of kpoints: {} <- "
+                "[ A = {} , B = {} , C = {} ] (time-reversal unknown)"
+            ).format(self.nk, nA, nB, nC)
+        )
         prnt("  - energy range:")
         E = self.E
         Em, EM = np.amin(E), np.amax(E)
         dE = np.diff(E)
-        dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
-        if (dEM - dEm) < 1e-3: # 0.001 meV
+        dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000  # convert to meV
+        if (dEM - dEm) < 1e-3:  # 0.001 meV
             prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} meV]")
         else:
             prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
@@ -246,16 +252,28 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             try:
                 n_btd = self.n_btd(elec)
             except Exception:
-                n_btd = 'unknown'
+                n_btd = "unknown"
             prnt()
             prnt(f"Electrode: {elec}")
             prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
-            if 'TBT' in self._trans_type:
-                prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
-                prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))
+            if "TBT" in self._trans_type:
+                prnt(
+                    "  - chemical potential: {:.4f} eV".format(
+                        self.chemical_potential(elec)
+                    )
+                )
+                prnt(
+                    "  - electron temperature: {:.2f} K".format(
+                        self.electron_temperature(elec)
+                    )
+                )
             else:
-                prnt("  - phonon temperature: {:.4f} K".format(self.phonon_temperature(elec)))
+                prnt(
+                    "  - phonon temperature: {:.4f} K".format(
+                        self.phonon_temperature(elec)
+                    )
+                )
             prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta(elec) * 1e3))
             prnt("  - atoms in down-folding region (not in device):")
             prnt("     " + list2str(self.a_down(elec) + 1))
@@ -266,9 +284,11 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         out.close()
         return s
 
-    @default_ArgumentParser(description="Show information about data in a TBT.SE.nc file")
+    @default_ArgumentParser(
+        description="Show information about data in a TBT.SE.nc file"
+    )
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
 
         # We limit the import to occur here
         import argparse
@@ -276,29 +296,36 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         namespace = default_namespace(_tbtse=self, _geometry=self.geom)
 
         class Info(argparse.Action):
-            """ Action to print information contained in the TBT.SE.nc file, helpful before performing actions """
+            """Action to print information contained in the TBT.SE.nc file, helpful before performing actions"""
 
             def __call__(self, parser, ns, value, option_string=None):
                 # First short-hand the file
                 print(ns._tbtse.info(value))
 
-        p.add_argument('--info', '-i', action=Info, nargs='?', metavar='ELEC',
-                       help='Print out what information is contained in the TBT.SE.nc file, optionally only for one of the electrodes.')
+        p.add_argument(
+            "--info",
+            "-i",
+            action=Info,
+            nargs="?",
+            metavar="ELEC",
+            help="Print out what information is contained in the TBT.SE.nc file, optionally only for one of the electrodes.",
+        )
 
         return p, namespace
 
 
-add_sile('TBT.SE.nc', tbtsencSileTBtrans)
+add_sile("TBT.SE.nc", tbtsencSileTBtrans)
 # Add spin-dependent files
-add_sile('TBT_UP.SE.nc', tbtsencSileTBtrans)
-add_sile('TBT_DN.SE.nc', tbtsencSileTBtrans)
+add_sile("TBT_UP.SE.nc", tbtsencSileTBtrans)
+add_sile("TBT_DN.SE.nc", tbtsencSileTBtrans)
 
 
 @set_module("sisl.io.phtrans")
 class phtsencSilePHtrans(tbtsencSileTBtrans):
-    """ PHtrans file object """
-    _trans_type = 'PHT'
-    _E2eV = Ry2eV ** 2
+    """PHtrans file object"""
+
+    _trans_type = "PHT"
+    _E2eV = Ry2eV**2
 
 
-add_sile('PHT.SE.nc', phtsencSilePHtrans)
+add_sile("PHT.SE.nc", phtsencSilePHtrans)

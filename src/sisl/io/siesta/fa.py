@@ -8,16 +8,16 @@ from sisl._internal import set_module
 from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
-__all__ = ['faSileSiesta']
+__all__ = ["faSileSiesta"]
 
 
 @set_module("sisl.io.siesta")
 class faSileSiesta(SileSiesta):
-    """ Forces file """
+    """Forces file"""
 
     @sile_fh_open()
     def read_force(self):
-        """ Reads the forces from the file """
+        """Reads the forces from the file"""
         na = int(self.readline())
 
         f = np.empty([na, 3], np.float64)
@@ -28,8 +28,8 @@ class faSileSiesta(SileSiesta):
         return f
 
     @sile_fh_open()
-    def write_force(self, f, fmt='.9e'):
-        """ Write forces to file
+    def write_force(self, f, fmt=".9e"):
+        """Write forces to file
 
         Parameters
         ----------
@@ -38,8 +38,8 @@ class faSileSiesta(SileSiesta):
         """
         sile_raise_write(self)
         na = len(f)
-        self._write(f'{na}\n')
-        _fmt = ('{:d}' + (' {:' + fmt + '}') * 3) + '\n'
+        self._write(f"{na}\n")
+        _fmt = ("{:d}" + (" {:" + fmt + "}") * 3) + "\n"
 
         for ia in range(na):
             self._write(_fmt.format(ia + 1, *f[ia, :]))
@@ -49,7 +49,7 @@ class faSileSiesta(SileSiesta):
     write_data = write_force
 
 
-add_sile('FA', faSileSiesta, gzip=True)
-add_sile('FAC', faSileSiesta, gzip=True)
-add_sile('TSFA', faSileSiesta, gzip=True)
-add_sile('TSFAC', faSileSiesta, gzip=True)
+add_sile("FA", faSileSiesta, gzip=True)
+add_sile("FAC", faSileSiesta, gzip=True)
+add_sile("TSFA", faSileSiesta, gzip=True)
+add_sile("TSFAC", faSileSiesta, gzip=True)

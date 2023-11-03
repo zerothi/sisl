@@ -13,7 +13,7 @@ from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
 from sisl.messages import warn
 
-__all__ = ['degenerate_decouple', 'Coefficient', 'State', 'StateC']
+__all__ = ["degenerate_decouple", "Coefficient", "State", "StateC"]
 
 _pi = np.pi
 _pi2 = np.pi * 2
@@ -56,8 +56,9 @@ def degenerate_decouple(state, M):
 
 
 class _FakeMatrix:
-    """ Replacement object which superseedes a matrix """
-    __slots__ = ('n', 'm')
+    """Replacement object which superseedes a matrix"""
+
+    __slots__ = ("n", "m")
     ndim = 2
 
     def __init__(self, n, m=None):
@@ -92,8 +93,9 @@ class _FakeMatrix:
 
 @set_module("sisl.physics")
 class ParentContainer:
-    """ A container for parent and information """
-    __slots__ = ['parent', 'info']
+    """A container for parent and information"""
+
+    __slots__ = ["parent", "info"]
 
     def __init__(self, parent, **info):
         self.parent = parent
@@ -107,7 +109,7 @@ information regarding the creation of the object
 
     @singledispatchmethod
     def _sanitize_index(self, idx):
-        r""" Ensure indices are transferred to acceptable integers """
+        r"""Ensure indices are transferred to acceptable integers"""
         if idx is None:
             # in case __len__ is not defined, this will fail...
             return np.arange(len(self))
@@ -127,7 +129,7 @@ information regarding the creation of the object
 
 @set_module("sisl.physics")
 class Coefficient(ParentContainer):
-    """ An object holding coefficients for a parent with info
+    """An object holding coefficients for a parent with info
 
     Parameters
     ----------
@@ -139,7 +141,8 @@ class Coefficient(ParentContainer):
        an info dictionary that turns into an attribute on the object.
        This `info` may contain anything that may be relevant for the coefficient.
     """
-    __slots__ = ['c']
+
+    __slots__ = ["c"]
 
     def __init__(self, c, parent=None, **info):
         super().__init__(parent, **info)
@@ -149,41 +152,41 @@ coefficients retained in this object
         """
 
     def __str__(self):
-        """ The string representation of this object """
+        """The string representation of this object"""
         s = f"{self.__class__.__name__}{{coefficients: {len(self)}, kind: {self.dkind}"
         if self.parent is None:
-            s += '}}'
+            s += "}}"
         else:
-            s += ',\n {}\n}}'.format(str(self.parent).replace('\n', '\n '))
+            s += ",\n {}\n}}".format(str(self.parent).replace("\n", "\n "))
         return s
 
     def __len__(self):
-        """ Number of coefficients """
+        """Number of coefficients"""
         return self.shape[0]
 
     @property
     def dtype(self):
-        """ Data-type for the coefficients """
+        """Data-type for the coefficients"""
         return self.c.dtype
 
     @property
     def dkind(self):
-        """ The data-type of the coefficient (in str) """
+        """The data-type of the coefficient (in str)"""
         return np.dtype(self.c.dtype).kind
 
     @property
     def shape(self):
-        """ Returns the shape of the coefficients """
+        """Returns the shape of the coefficients"""
         return self.c.shape
 
     def copy(self):
-        """ Return a copy (only the coefficients are copied). ``parent`` and ``info`` are passed by reference """
+        """Return a copy (only the coefficients are copied). ``parent`` and ``info`` are passed by reference"""
         copy = self.__class__(self.c.copy(), self.parent)
         copy.info = self.info
         return copy
 
     def degenerate(self, eps=1e-8):
-        """ Find degenerate coefficients with a specified precision
+        """Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
@@ -213,7 +216,7 @@ coefficients retained in this object
         return deg
 
     def sub(self, idx, inplace=False):
-        """ Return a new coefficient with only the specified coefficients
+        """Return a new coefficient with only the specified coefficients
 
         Parameters
         ----------
@@ -236,7 +239,7 @@ coefficients retained in this object
             return sub
 
     def remove(self, idx, inplace=False):
-        """ Return a new coefficient without the specified coefficients
+        """Return a new coefficient without the specified coefficients
 
         Parameters
         ----------
@@ -254,7 +257,7 @@ coefficients retained in this object
         return self.sub(idx, inplace)
 
     def __getitem__(self, key):
-        """ Return a new coefficient object with only one associated coefficient
+        """Return a new coefficient object with only one associated coefficient
 
         Parameters
         ----------
@@ -269,7 +272,7 @@ coefficients retained in this object
         return self.sub(key)
 
     def iter(self, asarray=False):
-        """ An iterator looping over the coefficients in this system
+        """An iterator looping over the coefficients in this system
 
         Parameters
         ----------
@@ -296,7 +299,7 @@ coefficients retained in this object
 
 @set_module("sisl.physics")
 class State(ParentContainer):
-    """ An object handling a set of vectors describing a given *state*
+    """An object handling a set of vectors describing a given *state*
 
     Parameters
     ----------
@@ -312,10 +315,11 @@ class State(ParentContainer):
     -----
     This class should be subclassed!
     """
-    __slots__ = ['state']
+
+    __slots__ = ["state"]
 
     def __init__(self, state, parent=None, **info):
-        """ Define a state container with a given set of states """
+        """Define a state container with a given set of states"""
         super().__init__(parent, **info)
         self.state = np.atleast_2d(state)
         """ numpy.ndarray
@@ -323,41 +327,41 @@ state coefficients
         """
 
     def __str__(self):
-        """ The string representation of this object """
+        """The string representation of this object"""
         s = f"{self.__class__.__name__}{{states: {len(self)}, kind: {self.dkind}"
         if self.parent is None:
-            s += '}'
+            s += "}"
         else:
-            s += ',\n {}\n}}'.format(str(self.parent).replace('\n', '\n '))
+            s += ",\n {}\n}}".format(str(self.parent).replace("\n", "\n "))
         return s
 
     def __len__(self):
-        """ Number of states """
+        """Number of states"""
         return self.shape[0]
 
     @property
     def dtype(self):
-        """ Data-type for the state """
+        """Data-type for the state"""
         return self.state.dtype
 
     @property
     def dkind(self):
-        """ The data-type of the state (in str) """
+        """The data-type of the state (in str)"""
         return np.dtype(self.state.dtype).kind
 
     @property
     def shape(self):
-        """ Returns the shape of the state """
+        """Returns the shape of the state"""
         return self.state.shape
 
     def copy(self):
-        """ Return a copy (only the state is copied). ``parent`` and ``info`` are passed by reference """
+        """Return a copy (only the state is copied). ``parent`` and ``info`` are passed by reference"""
         copy = self.__class__(self.state.copy(), self.parent)
         copy.info = self.info
         return copy
 
     def sub(self, idx, inplace=False):
-        """ Return a new state with only the specified states
+        """Return a new state with only the specified states
 
         Parameters
         ----------
@@ -380,7 +384,7 @@ state coefficients
             return sub
 
     def remove(self, idx, inplace=False):
-        """ Return a new state without the specified vectors
+        """Return a new state without the specified vectors
 
         Parameters
         ----------
@@ -398,7 +402,7 @@ state coefficients
         return self.sub(idx, inplace)
 
     def translate(self, isc):
-        r""" Translate the vectors to a new unit-cell position
+        r"""Translate the vectors to a new unit-cell position
 
         The method is thoroughly explained in `tile` while this one only
         selects the corresponding state vector
@@ -413,7 +417,7 @@ state coefficients
         tile : equivalent method for generating more cells simultaneously
         """
         # the k-point gets reduced
-        k = _a.asarrayd(self.info.get("k", [0]*3))
+        k = _a.asarrayd(self.info.get("k", [0] * 3))
         assert len(isc) == 3
 
         s = self.copy()
@@ -423,7 +427,7 @@ state coefficients
         #   i * a_0 + j * a_1 + k * a_2
         if not np.allclose(k, 0):
             # there will only be a phase if k != 0
-            s.state *= exp(2j*_pi * k @ isc)
+            s.state *= exp(2j * _pi * k @ isc)
         return s
 
     def tile(self, reps, axis, normalize=False, offset=0):
@@ -459,7 +463,7 @@ state coefficients
         # the parent gets tiled
         parent = self.parent.tile(reps, axis)
         # the k-point gets reduced
-        k = _a.asarrayd(self.info.get("k", [0]*3))
+        k = _a.asarrayd(self.info.get("k", [0] * 3))
 
         # now tile the state vectors
         state = np.tile(self.state, (1, reps)).astype(np.complex128, copy=False)
@@ -472,14 +476,14 @@ state coefficients
         # with T being
         #   i * a_0 + j * a_1 + k * a_2
         # We can leave out the lattice vectors entirely
-        phase = exp(2j*_pi * k[axis] * (_a.aranged(reps) + offset))
+        phase = exp(2j * _pi * k[axis] * (_a.aranged(reps) + offset))
 
         state *= phase.reshape(1, -1, 1)
         state.shape = (len(self), -1)
 
         # update new k; when we double the system, we halve the periodicity
         # and hence we need to account for this
-        k[axis] = (k[axis] * reps % 1)
+        k[axis] = k[axis] * reps % 1
         while k[axis] > 0.5:
             k[axis] -= 1
         while k[axis] <= -0.5:
@@ -491,14 +495,14 @@ state coefficients
         s.state = state
         # update the k-point
         s.info = dict(**self.info)
-        s.info.update({'k': k})
+        s.info.update({"k": k})
 
         if normalize:
             return s.normalize()
         return s
 
     def __getitem__(self, key):
-        """ Return a new state with only one associated state
+        """Return a new state with only one associated state
 
         Parameters
         ----------
@@ -513,7 +517,7 @@ state coefficients
         return self.sub(key)
 
     def iter(self, asarray=False):
-        """ An iterator looping over the states in this system
+        """An iterator looping over the states in this system
 
         Parameters
         ----------
@@ -538,7 +542,7 @@ state coefficients
     __iter__ = iter
 
     def norm(self):
-        r""" Return a vector with the Euclidean norm of each state :math:`\sqrt{\langle\psi|\psi\rangle}`
+        r"""Return a vector with the Euclidean norm of each state :math:`\sqrt{\langle\psi|\psi\rangle}`
 
         Returns
         -------
@@ -548,7 +552,7 @@ state coefficients
         return self.norm2() ** 0.5
 
     def norm2(self, sum=True):
-        r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
+        r"""Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
         ----------
@@ -608,10 +612,10 @@ state coefficients
         state_abs2 = self.norm2(sum=False).real
         assert q >= 2, f"{self.__class__.__name__}.ipr requires q>=2"
         # abs2 is already having the exponent 2
-        return (state_abs2 ** q).sum(-1) / state_abs2.sum(-1) ** q
+        return (state_abs2**q).sum(-1) / state_abs2.sum(-1) ** q
 
     def normalize(self):
-        r""" Return a normalized state where each state has :math:`|\psi|^2=1`
+        r"""Return a normalized state where each state has :math:`|\psi|^2=1`
 
         This is roughly equivalent to:
 
@@ -634,7 +638,7 @@ state coefficients
         return s
 
     def outer(self, ket=None, matrix=None):
-        r""" Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
+        r"""Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
 
         Parameters
         ----------
@@ -660,7 +664,9 @@ state coefficients
             M = matrix
         ndim = M.ndim
         if ndim not in (0, 1, 2):
-            raise ValueError(f"{self.__class__.__name__}.outer only accepts matrices up to 2 dimensions.")
+            raise ValueError(
+                f"{self.__class__.__name__}.outer only accepts matrices up to 2 dimensions."
+            )
 
         bra = self.state
         # decide on the ket
@@ -677,29 +683,33 @@ state coefficients
         #  ket M bra
         if ndim == 0:
             # M,N @ N, L
-            if (ket.shape[1] != bra.shape[1]):
-                raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}")
+            if ket.shape[1] != bra.shape[1]:
+                raise ValueError(
+                    f"{self.__class__.__name__}.outer requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}"
+                )
         elif ndim == 1:
             # M,N @ N @ N, L
-            if (ket.shape[0] != M.shape[0] or
-                M.shape[0] != bra.shape[0]):
-                raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have matching shapes ket @ M @ bra ket={ket.shape[::-1]}, M={M.shape}, bra={self.shape}")
+            if ket.shape[0] != M.shape[0] or M.shape[0] != bra.shape[0]:
+                raise ValueError(
+                    f"{self.__class__.__name__}.outer requires the objects to have matching shapes ket @ M @ bra ket={ket.shape[::-1]}, M={M.shape}, bra={self.shape}"
+                )
         elif ndim == 2:
             # M,N @ N,K @ K,L
-            if (ket.shape[0] != M.shape[0] or
-                M.shape[1] != bra.shape[0]):
-                raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have matching shapes ket @ M @ bra ket={ket.shape[::-1]}, M={M.shape}, bra={self.shape}")
+            if ket.shape[0] != M.shape[0] or M.shape[1] != bra.shape[0]:
+                raise ValueError(
+                    f"{self.__class__.__name__}.outer requires the objects to have matching shapes ket @ M @ bra ket={ket.shape[::-1]}, M={M.shape}, bra={self.shape}"
+                )
 
         if ndim == 2:
             Aij = ket.T @ M.dot(np.conj(bra))
         elif ndim == 1:
-            Aij = einsum('ij,i,ik->jk', ket, M, np.conj(bra))
+            Aij = einsum("ij,i,ik->jk", ket, M, np.conj(bra))
         elif ndim == 0:
-            Aij = einsum('ij,ik->jk', ket * M, np.conj(bra))
+            Aij = einsum("ij,ik->jk", ket * M, np.conj(bra))
         return Aij
 
     def inner(self, ket=None, matrix=None, diag=True):
-        r""" Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
+        r"""Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
 
         Parameters
         ----------
@@ -732,7 +742,9 @@ state coefficients
             M = matrix
         ndim = M.ndim
         if ndim not in (0, 1, 2):
-            raise ValueError(f"{self.__class__.__name__}.inner only accepts matrices up to 2 dimensions.")
+            raise ValueError(
+                f"{self.__class__.__name__}.inner only accepts matrices up to 2 dimensions."
+            )
 
         bra = self.state
         # decide on the ket
@@ -749,38 +761,44 @@ state coefficients
         #  bra M ket
         if ndim == 0:
             # M,N @ N, L
-            if (bra.shape[1] != ket.shape[1]):
-                raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}")
+            if bra.shape[1] != ket.shape[1]:
+                raise ValueError(
+                    f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}"
+                )
         elif ndim == 1:
             # M,N @ N @ N, L
-            if (bra.shape[1] != M.shape[0] or
-                M.shape[0] != ket.shape[1]):
-                raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}")
+            if bra.shape[1] != M.shape[0] or M.shape[0] != ket.shape[1]:
+                raise ValueError(
+                    f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}"
+                )
         elif ndim == 2:
             # M,N @ N,K @ K,L
-            if (bra.shape[1] != M.shape[0] or
-                M.shape[1] != ket.shape[1]):
-                raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}")
+            if bra.shape[1] != M.shape[0] or M.shape[1] != ket.shape[1]:
+                raise ValueError(
+                    f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}"
+                )
 
         if diag:
             if bra.shape[0] != ket.shape[0]:
-                raise ValueError(f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors.")
+                raise ValueError(
+                    f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors."
+                )
             if ndim == 2:
-                Aij = einsum('ij,ji->i', np.conj(bra), M.dot(ket.T))
+                Aij = einsum("ij,ji->i", np.conj(bra), M.dot(ket.T))
             elif ndim == 1:
-                Aij = einsum('ij,j,ij->i', np.conj(bra), M, ket)
+                Aij = einsum("ij,j,ij->i", np.conj(bra), M, ket)
             elif ndim == 0:
-                Aij = einsum('ij,ij->i', np.conj(bra), ket) * M
+                Aij = einsum("ij,ij->i", np.conj(bra), ket) * M
         elif ndim == 2:
             Aij = np.conj(bra) @ M.dot(ket.T)
         elif ndim == 1:
-            Aij = einsum('ij,j,kj->ik', np.conj(bra), M, ket)
+            Aij = einsum("ij,j,kj->ik", np.conj(bra), M, ket)
         elif ndim == 0:
-            Aij = einsum('ij,kj->ik', np.conj(bra), ket) * M
+            Aij = einsum("ij,kj->ik", np.conj(bra), ket) * M
         return Aij
 
-    def phase(self, method='max', ret_index=False):
-        r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
+    def phase(self, method="max", ret_index=False):
+        r"""Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
 
         Parameters
         ----------
@@ -790,17 +808,19 @@ state coefficients
         ret_index : bool, optional
            return indices for the elements used when ``method=='max'``
         """
-        if method == 'max':
+        if method == "max":
             idx = np.argmax(np.absolute(self.state), 1)
             if ret_index:
                 return np.angle(self.state[:, idx]), idx
             return np.angle(self.state[:, idx])
-        elif method == 'all':
+        elif method == "all":
             return np.angle(self.state)
-        raise ValueError(f"{self.__class__.__name__}.phase only accepts method in [max, all]")
+        raise ValueError(
+            f"{self.__class__.__name__}.phase only accepts method in [max, all]"
+        )
 
     def align_phase(self, other, ret_index=False, inplace=False):
-        r""" Align `self` with the phases for `other`, a copy may be returned 
+        r"""Align `self` with the phases for `other`, a copy may be returned
 
         States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
 
@@ -839,7 +859,7 @@ state coefficients
         return out
 
     def align_norm(self, other, ret_index=False, inplace=False):
-        r""" Align `self` with the site-norms of `other`, a copy may optionally be returned
+        r"""Align `self` with the site-norms of `other`, a copy may optionally be returned
 
         To determine the new ordering of `self` first calculate the residual norm of the site-norms.
 
@@ -883,7 +903,7 @@ state coefficients
         oidx = _a.emptyi(len(self))
         for i in range(len(self)):
             R = snorm[i] - onorm
-            R = einsum('ij,ij->i', R, R)
+            R = einsum("ij,ij->i", R, R)
 
             # Figure out which band it should correspond to
             # find closest largest one
@@ -895,7 +915,9 @@ state coefficients
                 show_warn = True
 
         if show_warn:
-            warn(f"{self.__class__.__name__}.align_norm found multiple possible candidates with minimal residue, swapping not unique")
+            warn(
+                f"{self.__class__.__name__}.align_norm found multiple possible candidates with minimal residue, swapping not unique"
+            )
 
         if inplace:
             self.sub(oidx, inplace=True)
@@ -906,8 +928,8 @@ state coefficients
         else:
             return self.sub(oidx)
 
-    def rotate(self, phi=0., individual=False):
-        r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
+    def rotate(self, phi=0.0, individual=False):
+        r"""Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
 
         The states will be rotated according to:
 
@@ -939,7 +961,7 @@ state coefficients
             s *= phi * np.conj(s[idx] / np.absolute(s[idx]))
 
     def change_gauge(self, gauge, offset=(0, 0, 0)):
-        r""" In-place change of the gauge of the state coefficients
+        r"""In-place change of the gauge of the state coefficients
 
         The two gauges are related through:
 
@@ -958,15 +980,15 @@ state coefficients
         """
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
-        if self.info.get('gauge', gauge) == gauge:
+        if self.info.get("gauge", gauge) == gauge:
             # Quick return
             return
 
         # Update gauge value
-        self.info['gauge'] = gauge
+        self.info["gauge"] = gauge
 
         # Check that we can do a gauge transformation
-        k = _a.asarrayd(self.info.get('k', [0., 0., 0.]))
+        k = _a.asarrayd(self.info.get("k", [0.0, 0.0, 0.0]))
         if k.dot(k) <= 0.000000001:
             return
 
@@ -981,10 +1003,10 @@ state coefficients
         except Exception:
             pass
 
-        if gauge == 'r':
+        if gauge == "r":
             # R -> r gauge tranformation.
             self.state *= exp(-1j * phase).reshape(1, -1)
-        elif gauge == 'R':
+        elif gauge == "R":
             # r -> R gauge tranformation.
             self.state *= exp(1j * phase).reshape(1, -1)
 
@@ -1038,7 +1060,7 @@ state coefficients
 # I.e. we are forced to do *one* inheritance, which we choose to be State.
 @set_module("sisl.physics")
 class StateC(State):
-    """ An object handling a set of vectors describing a given *state* with associated coefficients `c`
+    """An object handling a set of vectors describing a given *state* with associated coefficients `c`
 
     Parameters
     ----------
@@ -1056,10 +1078,11 @@ class StateC(State):
     -----
     This class should be subclassed!
     """
-    __slots__ = ['c']
+
+    __slots__ = ["c"]
 
     def __init__(self, state, c, parent=None, **info):
-        """ Define a state container with a given set of states and coefficients for the states """
+        """Define a state container with a given set of states and coefficients for the states"""
         super().__init__(state, parent, **info)
         self.c = np.atleast_1d(c)
         """ numpy.ndarray
@@ -1067,17 +1090,19 @@ coefficients assigned to each state
         """
 
         if len(self.c) != len(self.state):
-            raise ValueError(f"{self.__class__.__name__} could not be created with coefficients and states "
-                             "having unequal length.")
+            raise ValueError(
+                f"{self.__class__.__name__} could not be created with coefficients and states "
+                "having unequal length."
+            )
 
     def copy(self):
-        """ Return a copy (only the coefficients and states are copied), ``parent`` and ``info`` are passed by reference """
+        """Return a copy (only the coefficients and states are copied), ``parent`` and ``info`` are passed by reference"""
         copy = self.__class__(self.state.copy(), self.c.copy(), self.parent)
         copy.info = self.info
         return copy
 
     def normalize(self):
-        r""" Return a normalized state where each state has :math:`|\psi|^2=1`
+        r"""Return a normalized state where each state has :math:`|\psi|^2=1`
 
         This is roughly equivalent to:
 
@@ -1092,12 +1117,14 @@ coefficients assigned to each state
             a new state with all states normalized, otherwise equal to this
         """
         n = self.norm()
-        s = self.__class__(self.state / n.reshape(-1, 1), self.c.copy(), parent=self.parent)
+        s = self.__class__(
+            self.state / n.reshape(-1, 1), self.c.copy(), parent=self.parent
+        )
         s.info = self.info
         return s
 
     def sort(self, ascending=True):
-        """ Sort and return a new `StateC` by sorting the coefficients (default to ascending)
+        """Sort and return a new `StateC` by sorting the coefficients (default to ascending)
 
         Parameters
         ----------
@@ -1110,8 +1137,10 @@ coefficients assigned to each state
             idx = np.argsort(-self.c)
         return self.sub(idx)
 
-    def derivative(self, order=1, degenerate=1e-5, degenerate_dir=(1, 1, 1), matrix=False):
-        r""" Calculate the derivative with respect to :math:`\mathbf k` for a set of states up to a given order
+    def derivative(
+        self, order=1, degenerate=1e-5, degenerate_dir=(1, 1, 1), matrix=False
+    ):
+        r"""Calculate the derivative with respect to :math:`\mathbf k` for a set of states up to a given order
 
         These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions),
         here only shown for the 1st order derivative:
@@ -1187,7 +1216,9 @@ coefficients assigned to each state
             degenerate = self.degenerate(degenerate)
 
         if order not in (1, 2):
-            raise NotImplementedError(f"{self.__class__.__name__}.derivative required order to be in this list: [1, 2], higher order derivatives are not implemented")
+            raise NotImplementedError(
+                f"{self.__class__.__name__}.derivative required order to be in this list: [1, 2], higher order derivatives are not implemented"
+            )
 
         def add_keys(opt, *keys):
             for key in keys:
@@ -1210,7 +1241,8 @@ coefficients assigned to each state
                 dSk = self.parent.dSk(**opt)
                 if order > 1:
                     ddSk = self.parent.ddSk(**opt)
-        except Exception: pass
+        except Exception:
+            pass
 
         # Now figure out if spin is a thing
         add_keys(opt, "spin")
@@ -1227,12 +1259,12 @@ coefficients assigned to each state
         if degenerate is not None:
             # normalize direction
             degenerate_dir = _a.asarrayd(degenerate_dir)
-            degenerate_dir /= (degenerate_dir ** 2).sum() ** 0.5
+            degenerate_dir /= (degenerate_dir**2).sum() ** 0.5
 
             # de-coupling is only done for the 1st derivative
 
             # create the degeneracy decoupling projector
-            deg_dPk = sum(d*dh for d, dh in zip(degenerate_dir, dPk))
+            deg_dPk = sum(d * dh for d, dh in zip(degenerate_dir, dPk))
 
             if is_orthogonal:
                 for deg in degenerate:
@@ -1246,7 +1278,7 @@ coefficients assigned to each state
                 for deg in degenerate:
                     e = np.average(energy[deg])
                     energy[deg] = e
-                    deg_dSk = sum((d*e)*ds for d, ds in zip(degenerate_dir, dSk))
+                    deg_dSk = sum((d * e) * ds for d, ds in zip(degenerate_dir, dSk))
                     state[deg] = degenerate_decouple(state[deg], deg_dPk - deg_dSk)
 
         # States have been decoupled and we can calculate things now
@@ -1258,7 +1290,6 @@ coefficients assigned to each state
         # We split everything up into orthogonal and non-orthogonal
         # This reduces if-checks
         if is_orthogonal:
-
             if matrix or order > 1:
                 # calculate the full matrix
                 v = np.empty([3, nstate, nstate], dtype=opt["dtype"])
@@ -1305,11 +1336,17 @@ coefficients assigned to each state
                         # zz
                         vv[2, s] = cstate @ ddPk[2].dot(state[s]) - de * absv[2] ** 2
                         # yz
-                        vv[3, s] = cstate @ ddPk[3].dot(state[s]) - de * absv[1] * absv[2]
+                        vv[3, s] = (
+                            cstate @ ddPk[3].dot(state[s]) - de * absv[1] * absv[2]
+                        )
                         # xz
-                        vv[4, s] = cstate @ ddPk[4].dot(state[s]) - de * absv[0] * absv[2]
+                        vv[4, s] = (
+                            cstate @ ddPk[4].dot(state[s]) - de * absv[0] * absv[2]
+                        )
                         # xy
-                        vv[5, s] = cstate @ ddPk[5].dot(state[s]) - de * absv[0] * absv[1]
+                        vv[5, s] = (
+                            cstate @ ddPk[5].dot(state[s]) - de * absv[0] * absv[1]
+                        )
 
                 else:
                     vv = np.empty([6, nstate], dtype=opt["dtype"])
@@ -1329,11 +1366,17 @@ coefficients assigned to each state
                         # zz
                         vv[2, s] = cstate[s] @ ddPk[2].dot(state[s]) - de @ absv[2] ** 2
                         # yz
-                        vv[3, s] = cstate[s] @ ddPk[3].dot(state[s]) - de @ (absv[1] * absv[2])
+                        vv[3, s] = cstate[s] @ ddPk[3].dot(state[s]) - de @ (
+                            absv[1] * absv[2]
+                        )
                         # xz
-                        vv[4, s] = cstate[s] @ ddPk[4].dot(state[s]) - de @ (absv[0] * absv[2])
+                        vv[4, s] = cstate[s] @ ddPk[4].dot(state[s]) - de @ (
+                            absv[0] * absv[2]
+                        )
                         # xy
-                        vv[5, s] = cstate[s] @ ddPk[5].dot(state[s]) - de @ (absv[0] * absv[1])
+                        vv[5, s] = cstate[s] @ ddPk[5].dot(state[s]) - de @ (
+                            absv[0] * absv[1]
+                        )
 
                 ret += (vv,)
         else:
@@ -1380,17 +1423,35 @@ coefficients assigned to each state
 
                         # calculate 2nd derivative
                         # xx
-                        vv[0, s] = cstate @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de * absv[0] ** 2
+                        vv[0, s] = (
+                            cstate @ (ddPk[0] - e * ddSk[0]).dot(state[s])
+                            - de * absv[0] ** 2
+                        )
                         # yy
-                        vv[1, s] = cstate @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de * absv[1] ** 2
+                        vv[1, s] = (
+                            cstate @ (ddPk[1] - e * ddSk[1]).dot(state[s])
+                            - de * absv[1] ** 2
+                        )
                         # zz
-                        vv[2, s] = cstate @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de * absv[2] ** 2
+                        vv[2, s] = (
+                            cstate @ (ddPk[2] - e * ddSk[2]).dot(state[s])
+                            - de * absv[2] ** 2
+                        )
                         # yz
-                        vv[3, s] = cstate @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de * absv[1] * absv[2]
+                        vv[3, s] = (
+                            cstate @ (ddPk[3] - e * ddSk[3]).dot(state[s])
+                            - de * absv[1] * absv[2]
+                        )
                         # xz
-                        vv[4, s] = cstate @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de * absv[0] * absv[2]
+                        vv[4, s] = (
+                            cstate @ (ddPk[4] - e * ddSk[4]).dot(state[s])
+                            - de * absv[0] * absv[2]
+                        )
                         # xy
-                        vv[5, s] = cstate @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de * absv[0] * absv[1]
+                        vv[5, s] = (
+                            cstate @ (ddPk[5] - e * ddSk[5]).dot(state[s])
+                            - de * absv[0] * absv[1]
+                        )
 
                 else:
                     vv = np.empty([6, nstate], dtype=opt["dtype"])
@@ -1404,17 +1465,32 @@ coefficients assigned to each state
 
                         # calculate 2nd derivative
                         # xx
-                        vv[0, s] = cstate[s] @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de @ absv[0] ** 2
+                        vv[0, s] = (
+                            cstate[s] @ (ddPk[0] - e * ddSk[0]).dot(state[s])
+                            - de @ absv[0] ** 2
+                        )
                         # yy
-                        vv[1, s] = cstate[s] @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de @ absv[1] ** 2
+                        vv[1, s] = (
+                            cstate[s] @ (ddPk[1] - e * ddSk[1]).dot(state[s])
+                            - de @ absv[1] ** 2
+                        )
                         # zz
-                        vv[2, s] = cstate[s] @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de @ absv[2] ** 2
+                        vv[2, s] = (
+                            cstate[s] @ (ddPk[2] - e * ddSk[2]).dot(state[s])
+                            - de @ absv[2] ** 2
+                        )
                         # yz
-                        vv[3, s] = cstate[s] @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de @ (absv[1] * absv[2])
+                        vv[3, s] = cstate[s] @ (ddPk[3] - e * ddSk[3]).dot(
+                            state[s]
+                        ) - de @ (absv[1] * absv[2])
                         # xz
-                        vv[4, s] = cstate[s] @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de @ (absv[0] * absv[2])
+                        vv[4, s] = cstate[s] @ (ddPk[4] - e * ddSk[4]).dot(
+                            state[s]
+                        ) - de @ (absv[0] * absv[2])
                         # xy
-                        vv[5, s] = cstate[s] @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de @ (absv[0] * absv[1])
+                        vv[5, s] = cstate[s] @ (ddPk[5] - e * ddSk[5]).dot(
+                            state[s]
+                        ) - de @ (absv[0] * absv[1])
 
                 ret += (vv,)
 
@@ -1423,7 +1499,7 @@ coefficients assigned to each state
         return ret
 
     def degenerate(self, eps):
-        """ Find degenerate coefficients with a specified precision
+        """Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
@@ -1453,7 +1529,7 @@ coefficients assigned to each state
         return deg
 
     def sub(self, idx, inplace=False):
-        """ Return a new state with only the specified states
+        """Return a new state with only the specified states
 
         Parameters
         ----------
@@ -1477,7 +1553,7 @@ coefficients assigned to each state
             return sub
 
     def remove(self, idx, inplace=False):
-        """ Return a new state without the specified indices
+        """Return a new state without the specified indices
 
         Parameters
         ----------

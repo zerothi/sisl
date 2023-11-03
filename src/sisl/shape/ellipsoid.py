@@ -19,7 +19,7 @@ __all__ = ["Ellipsoid", "Sphere"]
 
 @set_module("sisl.shape")
 class Ellipsoid(PureShape):
-    """ 3D Ellipsoid shape
+    """3D Ellipsoid shape
 
     Parameters
     ----------
@@ -37,25 +37,31 @@ class Ellipsoid(PureShape):
     >>> shape.within([0, 2, 0])
     True
     """
-    __slots__ = ('_v', '_iv')
+
+    __slots__ = ("_v", "_iv")
 
     def __init__(self, v, center=None):
         super().__init__(center)
         v = _a.asarrayd(v)
         if v.size == 1:
-            self._v = np.identity(3, np.float64) * v # a "Euclidean" sphere
+            self._v = np.identity(3, np.float64) * v  # a "Euclidean" sphere
         elif v.size == 3:
-            self._v = np.diag(v.ravel()) # a "Euclidean" ellipsoid
+            self._v = np.diag(v.ravel())  # a "Euclidean" ellipsoid
         elif v.size == 9:
             self._v = v.reshape(3, 3).astype(np.float64)
         else:
-            raise ValueError(self.__class__.__name__ + " requires initialization with 3 vectors defining the ellipsoid")
+            raise ValueError(
+                self.__class__.__name__
+                + " requires initialization with 3 vectors defining the ellipsoid"
+            )
 
         # If the vectors are not orthogonal, orthogonalize them and issue a warning
         vv = np.fabs(np.dot(self._v, self._v.T) - np.diag(fnorm2(self._v)))
         if vv.sum() > 1e-9:
-            warn(self.__class__.__name__ + ' principal vectors are not orthogonal. '
-                 'sisl orthogonalizes the vectors (retaining 1st vector)!')
+            warn(
+                self.__class__.__name__ + " principal vectors are not orthogonal. "
+                "sisl orthogonalizes the vectors (retaining 1st vector)!"
+            )
 
         self._v[1, :] = orthogonalize(self._v[0, :], self._v[1, :])
         self._v[2, :] = orthogonalize(self._v[0, :], self._v[2, :])
@@ -69,15 +75,16 @@ class Ellipsoid(PureShape):
 
     def __str__(self):
         cr = np.array([self.center, self.radius])
-        return self.__class__.__name__ + ('{{c({0:.2f} {1:.2f} {2:.2f}) '
-                                          'r({3:.2f} {4:.2f} {5:.2f})}}').format(*cr.ravel())
+        return self.__class__.__name__ + (
+            "{{c({0:.2f} {1:.2f} {2:.2f}) " "r({3:.2f} {4:.2f} {5:.2f})}}"
+        ).format(*cr.ravel())
 
     def volume(self):
-        """ Return the volume of the shape """
-        return 4. / 3. * pi * product3(self.radius)
+        """Return the volume of the shape"""
+        return 4.0 / 3.0 * pi * product3(self.radius)
 
     def scale(self, scale):
-        """ Return a new shape with a larger corresponding to `scale`
+        """Return a new shape with a larger corresponding to `scale`
 
         Parameters
         ----------
@@ -90,7 +97,7 @@ class Ellipsoid(PureShape):
         return self.__class__(self._v * scale, self.center)
 
     def expand(self, radius):
-        """ Expand ellipsoid by a constant value along each radial vector
+        """Expand ellipsoid by a constant value along each radial vector
 
         Parameters
         ----------
@@ -107,27 +114,35 @@ class Ellipsoid(PureShape):
             v1 = expand(self._v[1, :], radius[1])
             v2 = expand(self._v[2, :], radius[2])
         else:
-            raise ValueError(self.__class__.__name__ + '.expand requires the radius to be either (1,) or (3,)')
+            raise ValueError(
+                self.__class__.__name__
+                + ".expand requires the radius to be either (1,) or (3,)"
+            )
         return self.__class__([v0, v1, v2], self.center)
 
     def toEllipsoid(self):
-        """ Return an ellipsoid that encompass this shape (a copy) """
+        """Return an ellipsoid that encompass this shape (a copy)"""
         return self.copy()
 
-    @deprecation("toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"
+    )
     def toSphere(self):
-        """ Return a sphere with a radius equal to the largest radial vector """
+        """Return a sphere with a radius equal to the largest radial vector"""
         r = self.radius.max()
         return Sphere(r, self.center)
 
-    @deprecation("toCuboid is deprecated, please use shape.to['cuboid'](...) instead.", "0.15")
+    @deprecation(
+        "toCuboid is deprecated, please use shape.to['cuboid'](...) instead.", "0.15"
+    )
     def toCuboid(self):
-        """ Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors """
+        """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""
         from .prism4 import Cuboid
+
         return Cuboid(self._v * 2, self.center)
 
-    def within_index(self, other, tol=1.e-8):
-        r""" Return indices of the points that are within the shape
+    def within_index(self, other, tol=1.0e-8):
+        r"""Return indices of the points that are within the shape
 
         Parameters
         ----------
@@ -145,16 +160,16 @@ class Ellipsoid(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        return indices_in_sphere(tmp, 1. + tol)
+        return indices_in_sphere(tmp, 1.0 + tol)
 
     @property
     def radius(self):
-        """ Return the radius of the Ellipsoid """
+        """Return the radius of the Ellipsoid"""
         return fnorm(self._v)
 
     @property
     def radial_vector(self):
-        """ The radial vectors """
+        """The radial vectors"""
         return self._v
 
 
@@ -165,6 +180,7 @@ class EllipsoidToEllipsoid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         return self._get_object().copy()
 
+
 to_dispatch.register("Ellipsoid", EllipsoidToEllipsoid)
 
 
@@ -173,14 +189,17 @@ class EllipsoidToSphere(ShapeToDispatch):
         shape = self._get_object()
         return Sphere(shape.radius.max(), shape.center)
 
+
 to_dispatch.register("Sphere", EllipsoidToSphere)
 
 
 class EllipsoidToCuboid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .prism4 import Cuboid
+
         shape = self._get_object()
         return Cuboid(shape._v * 2, shape.center)
+
 
 to_dispatch.register("Cuboid", EllipsoidToCuboid)
 
@@ -189,35 +208,40 @@ del to_dispatch
 
 @set_module("sisl.shape")
 class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
-    """ 3D Sphere
+    """3D Sphere
 
     Parameters
     ----------
     r : float
        radius of the sphere
     """
+
     __slots__ = ()
 
     def __init__(self, radius, center=None):
         radius = _a.asarrayd(radius).ravel()
         if len(radius) > 1:
-            raise ValueError(self.__class__.__name__ + ' is defined via a single radius. '
-                             'An array with more than 1 element is not an allowed argument '
-                             'to __init__.')
+            raise ValueError(
+                self.__class__.__name__ + " is defined via a single radius. "
+                "An array with more than 1 element is not an allowed argument "
+                "to __init__."
+            )
         super().__init__(radius, center=center)
 
     def __str__(self):
-        return '{0}{{c({2:.2f} {3:.2f} {4:.2f}) r({1:.2f})}}'.format(self.__class__.__name__, self.radius, *self.center)
+        return "{0}{{c({2:.2f} {3:.2f} {4:.2f}) r({1:.2f})}}".format(
+            self.__class__.__name__, self.radius, *self.center
+        )
 
     def copy(self):
         return self.__class__(self.radius, self.center)
 
     def volume(self):
-        """ Return the volume of the sphere """
-        return 4. / 3. * pi * self.radius ** 3
+        """Return the volume of the sphere"""
+        return 4.0 / 3.0 * pi * self.radius**3
 
     def scale(self, scale):
-        """ Return a new sphere with a larger radius
+        """Return a new sphere with a larger radius
 
         Parameters
         ----------
@@ -227,7 +251,7 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
         return self.__class__(self.radius * scale, self.center)
 
     def expand(self, radius):
-        """ Expand sphere by a constant radius
+        """Expand sphere by a constant radius
 
         Parameters
         ----------
@@ -238,15 +262,20 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
 
     @property
     def radius(self):
-        """ Return the radius of the Sphere """
+        """Return the radius of the Sphere"""
         return self._v[0, 0]
 
-    @deprecation("toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"
+    )
     def toSphere(self):
-        """ Return a copy of it-self """
+        """Return a copy of it-self"""
         return self.copy()
 
-    @deprecation("toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.", "0.15")
+    @deprecation(
+        "toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.",
+        "0.15",
+    )
     def toEllipsoid(self):
-        """ Convert this sphere into an ellipsoid """
+        """Convert this sphere into an ellipsoid"""
         return Ellipsoid(self.radius, self.center)

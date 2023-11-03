@@ -8,24 +8,23 @@ from sisl._internal import set_module
 
 from ._common import geometry2uc, geometry_define_nsc
 
-__all__ = ['sc', 'bcc', 'fcc', 'hcp', 'rocksalt']
+__all__ = ["sc", "bcc", "fcc", "hcp", "rocksalt"]
 
 # A few needed variables
 _s30 = 1 / 2
-_s60 = 3 ** .5 / 2
-_s45 = 1 / 2 ** .5
+_s60 = 3**0.5 / 2
+_s45 = 1 / 2**0.5
 _c30 = _s60
 _c60 = _s30
 _c45 = _s45
-_t30 = 1 / 3 ** .5
-_t45 = 1.
-_t60 = 3 ** .5
+_t30 = 1 / 3**0.5
+_t45 = 1.0
+_t60 = 3**0.5
 
 
 @set_module("sisl.geom")
-def sc(alat: float,
-       atom):
-    """ Simple cubic lattice with 1 atom
+def sc(alat: float, atom):
+    """Simple cubic lattice with 1 atom
 
     Parameters
     ----------
@@ -34,19 +33,15 @@ def sc(alat: float,
     atom : Atom
         the atom in the SC lattice
     """
-    lattice = Lattice(np.array([[1, 0, 0],
-                                [0, 1, 0],
-                                [0, 0, 1]], np.float64) * alat)
+    lattice = Lattice(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], np.float64) * alat)
     g = Geometry([0, 0, 0], atom, lattice=lattice)
     geometry_define_nsc(g)
     return g
 
 
 @set_module("sisl.geom")
-def bcc(alat: float,
-        atoms,
-        orthogonal: bool=False):
-    """ Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
+def bcc(alat: float, atoms, orthogonal: bool = False):
+    """Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
 
     Parameters
     ----------
@@ -58,25 +53,23 @@ def bcc(alat: float,
         whether the lattice is orthogonal (2 atoms)
     """
     if orthogonal:
-        lattice = Lattice(np.array([[1, 0, 0],
-                                 [0, 1, 0],
-                                 [0, 0, 1]], np.float64) * alat)
+        lattice = Lattice(
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], np.float64) * alat
+        )
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, ah]], atoms, lattice=lattice)
     else:
-        lattice = Lattice(np.array([[-1, 1, 1],
-                                 [1, -1, 1],
-                                 [1, 1, -1]], np.float64) * alat / 2)
+        lattice = Lattice(
+            np.array([[-1, 1, 1], [1, -1, 1], [1, 1, -1]], np.float64) * alat / 2
+        )
         g = Geometry([0, 0, 0], atoms, lattice=lattice)
     geometry_define_nsc(g)
     return g
 
 
 @set_module("sisl.geom")
-def fcc(alat: float,
-        atoms,
-        orthogonal: bool=False):
-    """ Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)
+def fcc(alat: float, atoms, orthogonal: bool = False):
+    """Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------
@@ -88,27 +81,25 @@ def fcc(alat: float,
         whether the lattice is orthogonal (4 atoms)
     """
     if orthogonal:
-        lattice = Lattice(np.array([[1, 0, 0],
-                                 [0, 1, 0],
-                                 [0, 0, 1]], np.float64) * alat)
+        lattice = Lattice(
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], np.float64) * alat
+        )
         ah = alat / 2
-        g = Geometry([[0, 0, 0], [ah, ah, 0],
-                      [ah, 0, ah], [0, ah, ah]], atoms, lattice=lattice)
+        g = Geometry(
+            [[0, 0, 0], [ah, ah, 0], [ah, 0, ah], [0, ah, ah]], atoms, lattice=lattice
+        )
     else:
-        lattice = Lattice(np.array([[0, 1, 1],
-                                 [1, 0, 1],
-                                 [1, 1, 0]], np.float64) * alat / 2)
+        lattice = Lattice(
+            np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]], np.float64) * alat / 2
+        )
         g = Geometry([0, 0, 0], atoms, lattice=lattice)
     geometry_define_nsc(g)
     return g
 
 
 @set_module("sisl.geom")
-def hcp(a: float,
-        atoms,
-        coa: float=49/30,
-        orthogonal: bool=False):
-    """ Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
+def hcp(a: float, atoms, coa: float = 49 / 30, orthogonal: bool = False):
+    """Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------
@@ -123,15 +114,21 @@ def hcp(a: float,
     """
     # height of hcp structure
     c = a * coa
-    a3sq = a / 3 ** .5
+    a3sq = a / 3**0.5
     if orthogonal:
-        lattice = Lattice([[a + a * _c60 * 2, 0, 0],
-                        [0, a * _c30 * 2, 0],
-                        [0, 0, c / 2]])
-        gt = Geometry([[0, 0, 0],
-                       [a, 0, 0],
-                       [a * _s30, a * _c30, 0],
-                       [a * (1 + _s30), a * _c30, 0]], atoms, lattice=lattice)
+        lattice = Lattice(
+            [[a + a * _c60 * 2, 0, 0], [0, a * _c30 * 2, 0], [0, 0, c / 2]]
+        )
+        gt = Geometry(
+            [
+                [0, 0, 0],
+                [a, 0, 0],
+                [a * _s30, a * _c30, 0],
+                [a * (1 + _s30), a * _c30, 0],
+            ],
+            atoms,
+            lattice=lattice,
+        )
         # Create the rotated one on top
         gr = gt.copy()
         # mirror structure
@@ -143,17 +140,16 @@ def hcp(a: float,
         g = gt.append(gr, 2)
     else:
         lattice = Lattice([a, a, c, 90, 90, 60])
-        g = Geometry([[0, 0, 0], [a3sq * _c30, a3sq * _s30, c / 2]],
-                     atoms, lattice=lattice)
+        g = Geometry(
+            [[0, 0, 0], [a3sq * _c30, a3sq * _s30, c / 2]], atoms, lattice=lattice
+        )
     geometry_define_nsc(g)
     return g
 
 
 @set_module("sisl.geom")
-def rocksalt(alat: float,
-             atoms,
-             orthogonal: bool=False):
-    """ Two-element rocksalt lattice with 2 (non-orthogonal) or 8 atoms (orthogonal)
+def rocksalt(alat: float, atoms, orthogonal: bool = False):
+    """Two-element rocksalt lattice with 2 (non-orthogonal) or 8 atoms (orthogonal)
 
     This is equivalent to the NaCl crystal structure (halite).
 
@@ -163,7 +159,7 @@ def rocksalt(alat: float,
         lattice parameter
     atoms : Atom
         a list of two atoms that the crystal consists of
-    orthogonal: 
+    orthogonal:
         whether the lattice is orthogonal or not
     """
     if isinstance(atoms, str):

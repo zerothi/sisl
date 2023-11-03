@@ -5,11 +5,11 @@ from collections.abc import Iterable
 
 import numpy as np
 
-__all__ = ['Parameter', 'Variable', 'UpdateVariable']
+__all__ = ["Parameter", "Variable", "UpdateVariable"]
 
 
 class Parameter:
-    """ A parameter which is static and not changing.
+    """A parameter which is static and not changing.
 
     Parameters
     ----------
@@ -37,11 +37,11 @@ class Parameter:
         self.value = value
 
     def normalize(self, value, *args, **kwargs):
-        """ Return normalized value """
+        """Return normalized value"""
         return value
 
     def reverse_normalize(self, value, *args, **kwargs):
-        """ Return normalized value """
+        """Return normalized value"""
         return value
 
     def __str__(self):
@@ -54,7 +54,7 @@ class Parameter:
 
 
 class Variable(Parameter):
-    """ A minimization variable with associated name, inital value, and possible bounds.
+    """A minimization variable with associated name, inital value, and possible bounds.
 
     Parameters
     ----------
@@ -78,28 +78,28 @@ class Variable(Parameter):
         return f"{self.__class__.__name__}{{name: {self.name}, value: {self.value}, bounds: {self.bounds}}}"
 
     def _parse_norm(self, norm, with_offset):
-        """ Return offset, scale factor """
+        """Return offset, scale factor"""
         if isinstance(norm, str):
-            scale = 1.
+            scale = 1.0
         elif isinstance(norm, Iterable):
             norm, scale = norm
         else:
             scale = norm
-            norm = 'l2'
+            norm = "l2"
         if with_offset:
             off = self.bounds[0]
         else:
-            off = 0.
+            off = 0.0
         norm = norm.lower()
-        if norm in ('none', 'identity'):
+        if norm in ("none", "identity"):
             # a norm of none will never scale, nor offset
-            return 0., 1.
-        elif norm == 'l2':
+            return 0.0, 1.0
+        elif norm == "l2":
             return off, scale / (self.bounds[1] - self.bounds[0])
         raise ValueError("norm not found in [none/identity, l2]")
 
-    def normalize(self, value, norm='l2', with_offset=True):
-        """ Normalize a value in terms of the norms of this variable
+    def normalize(self, value, norm="l2", with_offset=True):
+        """Normalize a value in terms of the norms of this variable
 
         Parameters
         ----------
@@ -113,8 +113,8 @@ class Variable(Parameter):
         offset, fac = self._parse_norm(norm, with_offset)
         return (value - offset) * fac
 
-    def reverse_normalize(self, value, norm='l2', with_offset=True):
-        """ Revert what `normalize` does
+    def reverse_normalize(self, value, norm="l2", with_offset=True):
+        """Revert what `normalize` does
 
         Parameters
         ----------
@@ -135,7 +135,7 @@ class UpdateVariable(Variable):
         self._func = func
 
     def update(self, value):
-        """ Also run update wrapper call for the new value
+        """Also run update wrapper call for the new value
 
         The update routine should have this interface:
 

@@ -31,10 +31,10 @@ def test_S():
     sp = SparseOrbitalBZ(gr, orthogonal=False)
     sp[0, 0] = 0.5
     sp[1, 1] = 0.5
-    sp.S[0, 0] = 1.
-    sp.S[1, 1] = 1.
+    sp.S[0, 0] = 1.0
+    sp.S[1, 1] = 1.0
     assert sp[1, 1, 0] == pytest.approx(0.5)
-    assert sp.S[1, 1] == pytest.approx(1.)
+    assert sp.S[1, 1] == pytest.approx(1.0)
 
 
 def test_eigh_orthogonal():
@@ -53,8 +53,8 @@ def test_eigh_non_orthogonal():
     sp = SparseOrbitalBZ(gr, orthogonal=False)
     sp[0, 0] = 0.5
     sp[1, 1] = 0.5
-    sp.S[0, 0] = 1.
-    sp.S[1, 1] = 1.
+    sp.S[0, 0] = 1.0
+    sp.S[1, 1] = 1.0
     assert np.allclose(sp.eigh(), [0.5, 0.5])
 
 
@@ -71,18 +71,19 @@ def test_eigsh_orthogonal():
 
 def test_eigsh_non_orthogonal():
     sp = SparseOrbitalBZ(_get(), orthogonal=False)
-    sp.construct([(0.1, 1.44), ([0, 1.], [-2.7, 0])])
+    sp.construct([(0.1, 1.44), ([0, 1.0], [-2.7, 0])])
     sp.eigsh(n=1)
 
 
 def test_pickle_non_orthogonal():
     import pickle as p
+
     gr = _get()
     sp = SparseOrbitalBZ(gr, orthogonal=False)
     sp[0, 0] = 0.5
     sp[1, 1] = 0.5
-    sp.S[0, 0] = 1.
-    sp.S[1, 1] = 1.
+    sp.S[0, 0] = 1.0
+    sp.S[1, 1] = 1.0
     s = p.dumps(sp)
     SP = p.loads(s)
     assert sp.spsame(SP)
@@ -91,12 +92,13 @@ def test_pickle_non_orthogonal():
 
 def test_pickle_non_orthogonal_spin():
     import pickle as p
+
     gr = _get()
-    sp = SparseOrbitalBZSpin(gr, spin=Spin('p'), orthogonal=False)
+    sp = SparseOrbitalBZSpin(gr, spin=Spin("p"), orthogonal=False)
     sp[0, 0, :] = 0.5
     sp[1, 1, :] = 0.5
-    sp.S[0, 0] = 1.
-    sp.S[1, 1] = 1.
+    sp.S[0, 0] = 1.0
+    sp.S[1, 1] = 1.0
     s = p.dumps(sp)
     SP = p.loads(s)
     assert sp.spsame(SP)
@@ -107,7 +109,7 @@ def test_pickle_non_orthogonal_spin():
 @pytest.mark.parametrize("n1", [1, 3])
 @pytest.mark.parametrize("n2", [1, 4])
 def test_sparse_orbital_bz_hermitian(n0, n1, n2):
-    g = geom.fcc(1., Atom(1, R=1.5)) * 2
+    g = geom.fcc(1.0, Atom(1, R=1.5)) * 2
     s = SparseOrbitalBZ(g)
     s.construct([[0.1, 1.51], [1, 2]])
     s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
@@ -118,7 +120,7 @@ def test_sparse_orbital_bz_hermitian(n0, n1, n2):
         # orbitals connecting to io
         edges = s.edges(io)
         # Figure out the transposed supercell indices of the edges
-        isc = - s.geometry.o2isc(edges)
+        isc = -s.geometry.o2isc(edges)
         # Convert to supercell
         IO = s.geometry.lattice.sc_index(isc) * no + io
         # Figure out if 'io' is also in the back-edges
@@ -130,31 +132,29 @@ def test_sparse_orbital_bz_hermitian(n0, n1, n2):
     assert s.nnz == nnz
 
     # Since we are also dealing with f32 data-types we cannot go beyond 1e-7
-    approx_zero = pytest.approx(0., abs=1e-5)
+    approx_zero = pytest.approx(0.0, abs=1e-5)
     for k0 in [0, 0.1]:
         for k1 in [0, -0.15]:
             for k2 in [0, 0.33333]:
                 k = (k0, k1, k2)
 
-                if np.allclose(k, 0.):
+                if np.allclose(k, 0.0):
                     dtypes = [None, np.float32, np.float64]
                 else:
                     dtypes = [None, np.complex64, np.complex128]
 
                 # Also assert Pk == Pk.H for all data-types
                 for dtype in dtypes:
-                    Pk = s.Pk(k=k, format='csr', dtype=dtype)
+                    Pk = s.Pk(k=k, format="csr", dtype=dtype)
                     assert abs(Pk - Pk.getH()).toarray().max() == approx_zero
 
-                    Pk = s.Pk(k=k, format='array', dtype=dtype)
+                    Pk = s.Pk(k=k, format="array", dtype=dtype)
                     assert np.abs(Pk - np.conj(Pk.T)).max() == approx_zero
 
 
 def test_sparse_orbital_bz_non_colinear():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('NC'))
-    M.construct(([0.1, 1.44],
-                 [[0.1, 0.2, 0.3, 0.4],
-                  [0.2, 0.3, 0.4, 0.5]]))
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("NC"))
+    M.construct(([0.1, 1.44], [[0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]]))
     M.finalize()
 
     MT = M.transpose()
@@ -170,11 +170,9 @@ def test_sparse_orbital_bz_non_colinear():
 
 
 def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('NC'))
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("NC"))
 
-    M.construct(([0.1, 1.44],
-                 [[0.1, 0.2, 0.3, 0.4],
-                  [0.2, 0.3, 0.4, 0.5]]))
+    M.construct(([0.1, 1.44], [[0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]]))
     M.finalize()
 
     M = (M + M.transpose(True)) * 0.5
@@ -189,20 +187,32 @@ def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
 
 
 def test_sparse_orbital_bz_spin_orbit_warns_hermitian():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("SO"))
 
-    with pytest.warns(SislWarning, match='Hermitian'):
-        M.construct(([0.1, 1.44],
-                     [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                      [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    with pytest.warns(SislWarning, match="Hermitian"):
+        M.construct(
+            (
+                [0.1, 1.44],
+                [
+                    [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                ],
+            )
+        )
 
 
 def test_sparse_orbital_bz_spin_orbit():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("SO"))
 
-    M.construct(([0.1, 1.44],
-                 [[0.1, 0.2, 0.3, 0.4, 0.0, 0.0, 0.3, -0.4],
-                  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    M.construct(
+        (
+            [0.1, 1.44],
+            [
+                [0.1, 0.2, 0.3, 0.4, 0.0, 0.0, 0.3, -0.4],
+                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+            ],
+        )
+    )
     M.finalize()
 
     MT = M.transpose()
@@ -215,11 +225,17 @@ def test_sparse_orbital_bz_spin_orbit():
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='SO')
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="SO")
 
-    M.construct(([0.1, 1.44],
-                 [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    M.construct(
+        (
+            [0.1, 1.44],
+            [
+                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+            ],
+        )
+    )
     M.finalize()
 
     M = (M + M.transpose(True)) / 2
@@ -236,37 +252,43 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 @pytest.mark.xfail(reason="Construct does not impose hermitian property")
 def test_sparse_orbital_bz_spin_orbit_hermitian_not():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='SO')
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="SO")
 
-    M.construct(([0.1, 1.44],
-                 [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    M.construct(
+        (
+            [0.1, 1.44],
+            [
+                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+            ],
+        )
+    )
     M.finalize()
     new = (M + M.transpose(True)) / 2
     assert np.abs((M - new)._csr._D).sum() == 0
 
 
 def test_sparse_orbital_transform_ortho_unpolarized():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='unpolarized')
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="unpolarized")
     a = np.arange(M.spin.size) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='unpolarized')
+    Mt = M.transform(spin="unpolarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
 
-    Mt = M.transform(spin='polarized')
+    Mt = M.transform(spin="polarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[0] - Mt.tocsr(1)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear')
+    Mt = M.transform(spin="non-colinear")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[0] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
     assert np.abs(Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='so')
+    Mt = M.transform(spin="so")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[0] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
@@ -274,28 +296,28 @@ def test_sparse_orbital_transform_ortho_unpolarized():
 
 
 def test_sparse_orbital_transform_nonortho_unpolarized():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='unpolarized', orthogonal=False)
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="unpolarized", orthogonal=False)
     a = np.arange(M.spin.size + 1) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='unpolarized')
+    Mt = M.transform(spin="unpolarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='polarized')
+    Mt = M.transform(spin="polarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[0] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear')
+    Mt = M.transform(spin="non-colinear")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[0] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='so')
+    Mt = M.transform(spin="so")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[0] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
@@ -303,26 +325,26 @@ def test_sparse_orbital_transform_nonortho_unpolarized():
 
 
 def test_sparse_orbital_transform_ortho_polarized():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized')
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="polarized")
     a = np.arange(M.spin.size) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='unpolarized')
+    Mt = M.transform(spin="unpolarized")
     assert np.abs(0.5 * Mcsr[0] + 0.5 * Mcsr[1] - Mt.tocsr(0)).sum() == 0
 
-    Mt = M.transform(spin='polarized')
+    Mt = M.transform(spin="polarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear')
+    Mt = M.transform(spin="non-colinear")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
     assert np.abs(Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='so')
+    Mt = M.transform(spin="so")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
@@ -330,26 +352,26 @@ def test_sparse_orbital_transform_ortho_polarized():
 
 
 def test_sparse_orbital_transform_ortho_nc():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='non-colinear')
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="non-colinear")
     a = np.arange(M.spin.size) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='unpolarized')
+    Mt = M.transform(spin="unpolarized")
     assert np.abs(0.5 * Mcsr[0] + 0.5 * Mcsr[1] - Mt.tocsr(0)).sum() == 0
 
-    Mt = M.transform(spin='polarized')
+    Mt = M.transform(spin="polarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear')
+    Mt = M.transform(spin="non-colinear")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[2] - Mt.tocsr(2)).sum() == 0
     assert np.abs(Mcsr[3] - Mt.tocsr(3)).sum() == 0
 
-    Mt = M.transform(spin='so')
+    Mt = M.transform(spin="so")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[2] - Mt.tocsr(2)).sum() == 0
@@ -358,26 +380,26 @@ def test_sparse_orbital_transform_ortho_nc():
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_sparse_orbital_transform_ortho_so():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='so')
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="so")
     a = np.arange(M.spin.size) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='unpolarized')
+    Mt = M.transform(spin="unpolarized")
     assert np.abs(0.5 * Mcsr[0] + 0.5 * Mcsr[1] - Mt.tocsr(0)).sum() == 0
 
-    Mt = M.transform(spin='polarized')
+    Mt = M.transform(spin="polarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear')
+    Mt = M.transform(spin="non-colinear")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[2] - Mt.tocsr(2)).sum() == 0
     assert np.abs(Mcsr[3] - Mt.tocsr(3)).sum() == 0
 
-    Mt = M.transform(spin='so')
+    Mt = M.transform(spin="so")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[2] - Mt.tocsr(2)).sum() == 0
@@ -386,29 +408,29 @@ def test_sparse_orbital_transform_ortho_so():
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_sparse_orbital_transform_nonortho_so():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='so', orthogonal=False)
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="so", orthogonal=False)
     a = np.arange(M.spin.size + 1) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='unpolarized')
+    Mt = M.transform(spin="unpolarized")
     assert np.abs(0.5 * Mcsr[0] + 0.5 * Mcsr[1] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='polarized')
+    Mt = M.transform(spin="polarized")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear')
+    Mt = M.transform(spin="non-colinear")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[2] - Mt.tocsr(2)).sum() == 0
     assert np.abs(Mcsr[3] - Mt.tocsr(3)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='so')
+    Mt = M.transform(spin="so")
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[2] - Mt.tocsr(2)).sum() == 0
@@ -417,8 +439,8 @@ def test_sparse_orbital_transform_nonortho_so():
 
 
 def test_sparse_orbital_transform_basis():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False)
-    M.construct(([0.1, 1.44], [(3., 2., 1.), (0.3, 0.2, 0.)]))
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="polarized", orthogonal=False)
+    M.construct(([0.1, 1.44], [(3.0, 2.0, 1.0), (0.3, 0.2, 0.0)]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
@@ -429,46 +451,60 @@ def test_sparse_orbital_transform_basis():
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
 
-@pytest.mark.xfail(sys.platform.startswith("win"), reason="Data type cannot be float128")
+@pytest.mark.xfail(
+    sys.platform.startswith("win"), reason="Data type cannot be float128"
+)
 def test_sparse_orbital_transform_combinations():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False, dtype=np.int32)
+    M = SparseOrbitalBZSpin(
+        geom.graphene(), spin="polarized", orthogonal=False, dtype=np.int32
+    )
     M.construct(([0.1, 1.44], [(3, 2, 1), (2, 1, 0)]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='non-colinear', dtype=np.float64, orthogonal=True).transform(spin='polarized', orthogonal=False)
+    Mt = M.transform(spin="non-colinear", dtype=np.float64, orthogonal=True).transform(
+        spin="polarized", orthogonal=False
+    )
     assert M.dim == Mt.dim
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(dtype=np.float128, orthogonal=True).transform(spin='so', dtype=np.float64, orthogonal=False)
+    Mt = M.transform(dtype=np.float128, orthogonal=True).transform(
+        spin="so", dtype=np.float64, orthogonal=False
+    )
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='polarized', orthogonal=True).transform(spin='so', dtype=np.float64, orthogonal=False)
+    Mt = M.transform(spin="polarized", orthogonal=True).transform(
+        spin="so", dtype=np.float64, orthogonal=False
+    )
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mt.tocsr(2)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    Mt = M.transform(spin='unpolarized', dtype=np.float32, orthogonal=True).transform(dtype=np.complex128, orthogonal=False)
+    Mt = M.transform(spin="unpolarized", dtype=np.float32, orthogonal=True).transform(
+        dtype=np.complex128, orthogonal=False
+    )
     assert np.abs(0.5 * Mcsr[0] + 0.5 * Mcsr[1] - Mt.tocsr(0)).sum() == 0
 
 
 def test_sparse_orbital_transform_matrix():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False, dtype=np.int32)
+    M = SparseOrbitalBZSpin(
+        geom.graphene(), spin="polarized", orthogonal=False, dtype=np.int32
+    )
     M.construct(([0.1, 1.44], [(1, 2, 3), (4, 5, 6)]))
     M.finalize()
     Mcsr = [M.tocsr(i) for i in range(M.shape[2])]
 
-    Mt = M.transform(spin='unpolarized', matrix=np.ones((1, 3)), orthogonal=True)
+    Mt = M.transform(spin="unpolarized", matrix=np.ones((1, 3)), orthogonal=True)
     assert Mt.dim == 1
     assert np.abs(Mcsr[0] + Mcsr[1] + Mcsr[2] - Mt.tocsr(0)).sum() == 0
 
-    Mt = M.transform(spin='polarized', matrix=np.ones((2, 3)), orthogonal=True)
+    Mt = M.transform(spin="polarized", matrix=np.ones((2, 3)), orthogonal=True)
     assert Mt.dim == 2
     assert np.abs(Mcsr[0] + Mcsr[1] + Mcsr[2] - Mt.tocsr(1)).sum() == 0
 
@@ -476,30 +512,36 @@ def test_sparse_orbital_transform_matrix():
     assert Mt.dim == 3
     assert np.abs(Mcsr[0] + Mcsr[1] + Mcsr[2] - Mt.tocsr(2)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear', matrix=np.ones((4, 3)), orthogonal=True, dtype=np.float64)
+    Mt = M.transform(
+        spin="non-colinear", matrix=np.ones((4, 3)), orthogonal=True, dtype=np.float64
+    )
     assert Mt.dim == 4
     assert np.abs(Mcsr[0] + Mcsr[1] + Mcsr[2] - Mt.tocsr(3)).sum() == 0
 
-    Mt = M.transform(spin='non-colinear', matrix=np.ones((5, 3)), dtype=np.float64)
+    Mt = M.transform(spin="non-colinear", matrix=np.ones((5, 3)), dtype=np.float64)
     assert Mt.dim == 5
     assert np.abs(Mcsr[0] + Mcsr[1] + Mcsr[2] - Mt.tocsr(4)).sum() == 0
 
-    Mt = M.transform(spin='so', matrix=np.ones((8, 3)), orthogonal=True, dtype=np.float64)
+    Mt = M.transform(
+        spin="so", matrix=np.ones((8, 3)), orthogonal=True, dtype=np.float64
+    )
     assert Mt.dim == 8
     assert np.abs(Mcsr[0] + Mcsr[1] + Mcsr[2] - Mt.tocsr(7)).sum() == 0
 
-    Mt = M.transform(spin='so', matrix=np.ones((9, 3)), dtype=np.float64)
+    Mt = M.transform(spin="so", matrix=np.ones((9, 3)), dtype=np.float64)
     assert Mt.dim == 9
     assert np.abs(Mcsr[0] + Mcsr[1] + Mcsr[2] - Mt.tocsr(8)).sum() == 0
 
 
 def test_sparse_orbital_transform_fail():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False, dtype=np.int32)
+    M = SparseOrbitalBZSpin(
+        geom.graphene(), spin="polarized", orthogonal=False, dtype=np.int32
+    )
     M.construct(([0.1, 1.44], [(1, 2, 3), (4, 5, 6)]))
     M.finalize()
 
     with pytest.raises(ValueError):
-        M.transform(np.zeros([2, 2]), spin='unpolarized')
+        M.transform(np.zeros([2, 2]), spin="unpolarized")
 
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex64, np.complex128])

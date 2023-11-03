@@ -12,10 +12,10 @@ pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
 
 def test_kp_read_write(sisl_tmp):
-    f = sisl_tmp('tmp.KP')
+    f = sisl_tmp("tmp.KP")
     g = geom.graphene()
     bz = MonkhorstPack(g, [10, 10, 10])
-    kpSileSiesta(f, 'w').write_brillouinzone(bz)
+    kpSileSiesta(f, "w").write_brillouinzone(bz)
 
     kpoints, weights = kpSileSiesta(f).read_data(g)
     assert np.allclose(kpoints, bz.k)
@@ -31,10 +31,10 @@ def test_kp_read_write(sisl_tmp):
 
 
 def test_rkp_read_write(sisl_tmp):
-    f = sisl_tmp('tmp.RKP')
+    f = sisl_tmp("tmp.RKP")
     g = geom.graphene()
     bz = MonkhorstPack(g, [10, 10, 10])
-    rkpSileSiesta(f, 'w').write_brillouinzone(bz)
+    rkpSileSiesta(f, "w").write_brillouinzone(bz)
 
     kpoints, weights = rkpSileSiesta(f).read_data()
     assert np.allclose(kpoints, bz.k)

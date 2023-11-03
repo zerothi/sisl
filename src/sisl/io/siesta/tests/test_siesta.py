@@ -18,16 +18,16 @@ from sisl import (
 from sisl.io.siesta import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta')
+_dir = osp.join("sisl", "io", "siesta")
 
 netCDF4 = pytest.importorskip("netCDF4")
 
 
 def test_nc1(sisl_tmp, sisl_system):
-    f = sisl_tmp('gr.nc', _dir)
+    f = sisl_tmp("gr.nc", _dir)
     tb = Hamiltonian(sisl_system.gtb)
     tb.construct([sisl_system.R, sisl_system.t])
-    with ncSileSiesta(f, 'w') as s:
+    with ncSileSiesta(f, "w") as s:
         tb.write(s)
 
     with ncSileSiesta(f) as f:
@@ -42,10 +42,10 @@ def test_nc1(sisl_tmp, sisl_system):
 
 
 def test_nc2(sisl_tmp, sisl_system):
-    f = sisl_tmp('grS.nc', _dir)
+    f = sisl_tmp("grS.nc", _dir)
     tb = Hamiltonian(sisl_system.gtb, orthogonal=False)
     tb.construct([sisl_system.R, sisl_system.tS])
-    with ncSileSiesta(f, 'w') as s:
+    with ncSileSiesta(f, "w") as s:
         tb.write(s)
 
     with ncSileSiesta(f) as f:
@@ -62,15 +62,15 @@ def test_nc2(sisl_tmp, sisl_system):
 def test_nc_multiple_fail(sisl_tmp, sisl_system):
     # writing two different sparse matrices to the same
     # file will fail
-    f = sisl_tmp('gr.nc', _dir)
+    f = sisl_tmp("gr.nc", _dir)
     H = Hamiltonian(sisl_system.gtb)
     DM = DensityMatrix(sisl_system.gtb)
 
-    with ncSileSiesta(f, 'w') as sile:
+    with ncSileSiesta(f, "w") as sile:
         H.construct([sisl_system.R, sisl_system.t])
         H.write(sile)
 
-        DM[0, 0] = 1.
+        DM[0, 0] = 1.0
         with pytest.raises(ValueError):
             DM.write(sile)
 
@@ -80,11 +80,11 @@ def test_nc_multiple_fail(sisl_tmp, sisl_system):
     [True, False],
 )
 def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
-    f = sisl_tmp('gr.nc', _dir)
+    f = sisl_tmp("gr.nc", _dir)
     H = Hamiltonian(sisl_system.gtb)
     DM = DensityMatrix(sisl_system.gtb)
 
-    with ncSileSiesta(f, 'w') as sile:
+    with ncSileSiesta(f, "w") as sile:
         H.construct([sisl_system.R, sisl_system.t])
         H.write(sile, sort=sort)
 
@@ -92,9 +92,9 @@ def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
         np.random.seed(42)
         shuffle = np.random.shuffle
         for io in range(len(H)):
-            edges = H.edges(io) # get all edges
+            edges = H.edges(io)  # get all edges
             shuffle(edges)
-            DM[io, edges] = 2.
+            DM[io, edges] = 2.0
 
         if not sort:
             with pytest.raises(ValueError):
@@ -104,10 +104,10 @@ def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
 
 
 def test_nc_overlap(sisl_tmp, sisl_system):
-    f = sisl_tmp('gr.nc', _dir)
+    f = sisl_tmp("gr.nc", _dir)
     tb = Hamiltonian(sisl_system.gtb)
     tb.construct([sisl_system.R, sisl_system.t])
-    tb.write(ncSileSiesta(f, 'w'))
+    tb.write(ncSileSiesta(f, "w"))
 
     with ncSileSiesta(f) as sile:
         S = sile.read_overlap()
@@ -116,7 +116,7 @@ def test_nc_overlap(sisl_tmp, sisl_system):
     assert np.allclose(S._csr._D.sum(), tb.no)
 
     # Write test
-    f = sisl_tmp('s.nc', _dir)
+    f = sisl_tmp("s.nc", _dir)
     with ncSileSiesta(f, "w") as sile:
         S.write(sile)
     with ncSileSiesta(f) as sile:
@@ -126,12 +126,12 @@ def test_nc_overlap(sisl_tmp, sisl_system):
 
 
 def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
-    f = sisl_tmp('grdyn.nc', _dir)
+    f = sisl_tmp("grdyn.nc", _dir)
     dm = DynamicalMatrix(sisl_system.gtb)
     for _, ix in dm.iter_orbitals():
-        dm[ix, ix] = ix / 2.
+        dm[ix, ix] = ix / 2.0
 
-    with ncSileSiesta(f, 'w') as sile:
+    with ncSileSiesta(f, "w") as sile:
         dm.write(sile)
 
     with ncSileSiesta(f) as sile:
@@ -146,12 +146,12 @@ def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
 
 
 def test_nc_density_matrix(sisl_tmp, sisl_system):
-    f = sisl_tmp('grDM.nc', _dir)
+    f = sisl_tmp("grDM.nc", _dir)
     dm = DensityMatrix(sisl_system.gtb)
     for _, ix in dm.iter_orbitals():
-        dm[ix, ix] = ix / 2.
+        dm[ix, ix] = ix / 2.0
 
-    with ncSileSiesta(f, 'w') as sile:
+    with ncSileSiesta(f, "w") as sile:
         dm.write(sile)
 
     with ncSileSiesta(f) as sile:
@@ -166,13 +166,11 @@ def test_nc_density_matrix(sisl_tmp, sisl_system):
 
 
 def test_nc_H_non_colinear(sisl_tmp):
-    H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('NC'))
-    H1.construct(([0.1, 1.44],
-                  [[0.1, 0.2, 0.3, 0.4],
-                   [0.2, 0.3, 0.4, 0.5]]))
+    H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin("NC"))
+    H1.construct(([0.1, 1.44], [[0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]]))
 
-    f1 = sisl_tmp('H1.nc', _dir)
-    f2 = sisl_tmp('H2.nc', _dir)
+    f1 = sisl_tmp("H1.nc", _dir)
+    f2 = sisl_tmp("H2.nc", _dir)
     H1.write(f1)
     H1.finalize()
     with sisl.get_sile(f1) as sile:
@@ -187,13 +185,11 @@ def test_nc_H_non_colinear(sisl_tmp):
 
 
 def test_nc_DM_non_colinear(sisl_tmp):
-    DM1 = DensityMatrix(sisl.geom.graphene(), spin=sisl.Spin('NC'))
-    DM1.construct(([0.1, 1.44],
-                   [[0.1, 0.2, 0.3, 0.4],
-                    [0.2, 0.3, 0.4, 0.5]]))
+    DM1 = DensityMatrix(sisl.geom.graphene(), spin=sisl.Spin("NC"))
+    DM1.construct(([0.1, 1.44], [[0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]]))
 
-    f1 = sisl_tmp('DM1.nc', _dir)
-    f2 = sisl_tmp('DM2.nc', _dir)
+    f1 = sisl_tmp("DM1.nc", _dir)
+    f2 = sisl_tmp("DM2.nc", _dir)
     DM1.write(f1)
     DM1.finalize()
     with sisl.get_sile(f1) as sile:
@@ -212,13 +208,11 @@ def test_nc_DM_non_colinear(sisl_tmp):
 
 
 def test_nc_EDM_non_colinear(sisl_tmp):
-    EDM1 = EnergyDensityMatrix(sisl.geom.graphene(), spin=sisl.Spin('NC'))
-    EDM1.construct(([0.1, 1.44],
-                    [[0.1, 0.2, 0.3, 0.4],
-                     [0.2, 0.3, 0.4, 0.5]]))
+    EDM1 = EnergyDensityMatrix(sisl.geom.graphene(), spin=sisl.Spin("NC"))
+    EDM1.construct(([0.1, 1.44], [[0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]]))
 
-    f1 = sisl_tmp('EDM1.nc', _dir)
-    f2 = sisl_tmp('EDM2.nc', _dir)
+    f1 = sisl_tmp("EDM1.nc", _dir)
+    f2 = sisl_tmp("EDM2.nc", _dir)
     EDM1.write(f1, sort=False)
     EDM1.finalize()
     with sisl.get_sile(f1) as sile:
@@ -238,13 +232,19 @@ def test_nc_EDM_non_colinear(sisl_tmp):
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_H_spin_orbit(sisl_tmp):
-    H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('SO'))
-    H1.construct(([0.1, 1.44],
-                  [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin("SO"))
+    H1.construct(
+        (
+            [0.1, 1.44],
+            [
+                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+            ],
+        )
+    )
 
-    f1 = sisl_tmp('H1.nc', _dir)
-    f2 = sisl_tmp('H2.nc', _dir)
+    f1 = sisl_tmp("H1.nc", _dir)
+    f2 = sisl_tmp("H2.nc", _dir)
     H1.write(f1)
     H1.finalize()
     with sisl.get_sile(f1) as sile:
@@ -260,13 +260,19 @@ def test_nc_H_spin_orbit(sisl_tmp):
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
-    H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('SO'))
-    H1.construct(([0.1, 1.44],
-                  [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin("SO"))
+    H1.construct(
+        (
+            [0.1, 1.44],
+            [
+                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+            ],
+        )
+    )
 
-    f1 = sisl_tmp('H1.nc', _dir)
-    f2 = sisl_tmp('H2.TSHS', _dir)
+    f1 = sisl_tmp("H1.nc", _dir)
+    f2 = sisl_tmp("H2.TSHS", _dir)
     H1.write(f1)
     H1.finalize()
     with sisl.get_sile(f1) as sile:
@@ -282,13 +288,19 @@ def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_DM_spin_orbit(sisl_tmp):
-    DM1 = DensityMatrix(sisl.geom.graphene(), spin=sisl.Spin('SO'))
-    DM1.construct(([0.1, 1.44],
-                   [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    DM1 = DensityMatrix(sisl.geom.graphene(), spin=sisl.Spin("SO"))
+    DM1.construct(
+        (
+            [0.1, 1.44],
+            [
+                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+            ],
+        )
+    )
 
-    f1 = sisl_tmp('DM1.nc', _dir)
-    f2 = sisl_tmp('DM2.nc', _dir)
+    f1 = sisl_tmp("DM1.nc", _dir)
+    f2 = sisl_tmp("DM2.nc", _dir)
     DM1.write(f1)
     DM1.finalize()
     with sisl.get_sile(f1) as sile:
@@ -304,13 +316,19 @@ def test_nc_DM_spin_orbit(sisl_tmp):
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_DM_spin_orbit_nc2dm2nc(sisl_tmp):
-    DM1 = DensityMatrix(sisl.geom.graphene(), orthogonal=False, spin=sisl.Spin('SO'))
-    DM1.construct(([0.1, 1.44],
-                   [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.],
-                    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.]]))
+    DM1 = DensityMatrix(sisl.geom.graphene(), orthogonal=False, spin=sisl.Spin("SO"))
+    DM1.construct(
+        (
+            [0.1, 1.44],
+            [
+                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.0],
+                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0],
+            ],
+        )
+    )
 
-    f1 = sisl_tmp('DM1.nc', _dir)
-    f2 = sisl_tmp('DM2.DM', _dir)
+    f1 = sisl_tmp("DM1.nc", _dir)
+    f2 = sisl_tmp("DM2.DM", _dir)
     DM1.finalize()
     DM1.write(f1)
     with sisl.get_sile(f1) as sile:
@@ -325,11 +343,11 @@ def test_nc_DM_spin_orbit_nc2dm2nc(sisl_tmp):
 
 
 def test_nc_ghost(sisl_tmp):
-    f = sisl_tmp('ghost.nc', _dir)
+    f = sisl_tmp("ghost.nc", _dir)
     a1 = Atom(1)
     am1 = Atom(-1)
-    g = Geometry([[0., 0., i] for i in range(2)], [a1, am1], 2.)
-    g.write(ncSileSiesta(f, 'w'))
+    g = Geometry([[0.0, 0.0, i] for i in range(2)], [a1, am1], 2.0)
+    g.write(ncSileSiesta(f, "w"))
 
     with ncSileSiesta(f) as sile:
         g2 = sile.read_geometry()

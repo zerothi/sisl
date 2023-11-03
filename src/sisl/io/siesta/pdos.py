@@ -24,25 +24,25 @@ from sisl.utils import (
 from ..sile import add_sile, get_sile, sile_fh_open
 from .sile import SileSiesta
 
-__all__ = ['pdosSileSiesta']
+__all__ = ["pdosSileSiesta"]
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 
 
 @set_module("sisl.io.siesta")
 class pdosSileSiesta(SileSiesta):
-    """ Projected DOS file with orbital information
+    """Projected DOS file with orbital information
 
     Data file containing the PDOS as calculated by Siesta.
     """
 
     def read_geometry(self):
-        """ Read the geometry with coordinates and correct orbital counts """
+        """Read the geometry with coordinates and correct orbital counts"""
         return self.read_data()[0]
 
     @sile_fh_open(True)
     def read_fermi_level(self):
-        """ Returns the fermi-level """
+        """Returns the fermi-level"""
         # Get the element-tree
         root = xml_parse(self.fh).getroot()
 
@@ -54,7 +54,7 @@ class pdosSileSiesta(SileSiesta):
 
     @sile_fh_open(True)
     def read_data(self, as_dataarray=False):
-        r""" Returns data associated with the PDOS file
+        r"""Returns data associated with the PDOS file
 
         For spin-polarized calculations the returned values are up/down, orbitals, energy.
         For non-collinear calculations the returned values are sum/x/y/z, orbitals, energy.
@@ -83,7 +83,9 @@ class pdosSileSiesta(SileSiesta):
         Ef = root.find("fermi_energy")
         E = arrayd(root.find("energy_values").text.split())
         if Ef is None:
-            warn(f"{self!s}.read_data could not locate the Fermi-level in the XML tree, using E_F = 0. eV")
+            warn(
+                f"{self!s}.read_data could not locate the Fermi-level in the XML tree, using E_F = 0. eV"
+            )
         else:
             Ef = float(Ef.text)
             E -= Ef
@@ -93,10 +95,12 @@ class pdosSileSiesta(SileSiesta):
         xyz = []
         atoms = []
         atom_species = []
+
         def ensure_size(ia):
             while len(atom_species) <= ia:
                 atom_species.append(None)
                 xyz.append(None)
+
         def ensure_size_orb(ia, i):
             while len(atoms) <= ia:
                 atoms.append([])
@@ -104,6 +108,7 @@ class pdosSileSiesta(SileSiesta):
                 atoms[ia].append(None)
 
         if nspin == 4:
+
             def process(D):
                 tmp = np.empty(D.shape[0], D.dtype)
                 tmp[:] = D[:, 3]
@@ -112,18 +117,23 @@ class pdosSileSiesta(SileSiesta):
                 D[:, 1] = D[:, 2]
                 D[:, 2] = tmp[:]
                 return D
+
         elif nspin == 2:
+
             def process(D):
                 tmp = D[:, 0] + D[:, 1]
                 D[:, 1] = D[:, 0] - D[:, 1]
                 D[:, 0] = tmp
                 return D
+
         else:
+
             def process(D):
                 return D
 
         if as_dataarray:
             import xarray as xr
+
             if nspin == 1:
                 spin = ["sum"]
             elif nspin == 2:
@@ -135,21 +145,26 @@ class pdosSileSiesta(SileSiesta):
             dims = ["E", "spin", "n", "l", "m", "zeta", "polarization"]
 
             shape = (ne, nspin, 1, 1, 1, 1, 1)
+
             def to(o, DOS):
                 # Coordinates for this dataarray
-                coords = [E, spin,
-                          [o.n], [o.l], [o.m], [o.zeta], [o.P]]
+                coords = [E, spin, [o.n], [o.l], [o.m], [o.zeta], [o.P]]
 
-                return xr.DataArray(data=process(DOS).reshape(shape),
-                                    dims=dims, coords=coords, name="PDOS")
+                return xr.DataArray(
+                    data=process(DOS).reshape(shape),
+                    dims=dims,
+                    coords=coords,
+                    name="PDOS",
+                )
 
         else:
+
             def to(o, DOS):
                 return process(DOS)
+
         D = []
 
         for orb in root.findall("orbital"):
-
             # Short-hand function to retrieve integers for the attributes
             def oi(name):
                 return int(orb.get(name))
@@ -214,7 +229,8 @@ class pdosSileSiesta(SileSiesta):
         D = np.moveaxis(np.stack(D, axis=0), 2, 0)
         return geom, E, D
 
-    @default_ArgumentParser(description="""
+    @default_ArgumentParser(
+        description="""
 Extract/Plot data from a PDOS/PDOS.xml file
 
 The arguments are parsed as they are passed to the command line; hence order is important.
@@ -238,9 +254,10 @@ be plotted/saved and all prior options will be reset. Hence
    --spin x --atom all --out spin_x_all.dat --spin y --atom all --out spin_y_all.dat
 
 will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat, respectively.
-""")
+"""
+    )
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
 
         # We limit the import to occur here
         import argparse
@@ -257,7 +274,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                     comment = "Fermi-level unknown"
 
         def norm(geom, orbitals=None, norm="none"):
-            r""" Normalization factor depending on the input
+            r"""Normalization factor depending on the input
 
             The normalization can be performed in one of the below methods.
             In the following :math:`N` refers to the normalization constant
@@ -290,7 +307,9 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
             elif norm in ["all", "atom", "orbital"]:
                 NORM = geom.no
             else:
-                raise ValueError(f"norm error on norm keyword in when requesting normalization!")
+                raise ValueError(
+                    f"norm error on norm keyword in when requesting normalization!"
+                )
 
             # If the user requests all orbitals
             if orbitals is None:
@@ -307,7 +326,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
             return NORM
 
         def _sum_filter(PDOS):
-            """ Default sum is the total DOS, no projection on directions """
+            """Default sum is the total DOS, no projection on directions"""
             if PDOS.ndim == 2:
                 # non-polarized
                 return PDOS
@@ -315,20 +334,23 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                 # polarized
                 return PDOS[0]
             return PDOS[0]
-        namespace = default_namespace(_geometry=geometry,
-                                      _E=E,
-                                      _PDOS=PDOS,
-                                      # The energy range of all data
-                                      _Erng=None,
-                                      _norm="none",
-                                      _PDOS_filter_name="total",
-                                      _PDOS_filter=_sum_filter,
-                                      _data=[],
-                                      _data_description=[],
-                                      _data_header=[])
+
+        namespace = default_namespace(
+            _geometry=geometry,
+            _E=E,
+            _PDOS=PDOS,
+            # The energy range of all data
+            _Erng=None,
+            _norm="none",
+            _PDOS_filter_name="total",
+            _PDOS_filter=_sum_filter,
+            _data=[],
+            _data_description=[],
+            _data_header=[],
+        )
 
         def ensure_E(func):
-            """ This decorater ensures that E is the first element in the _data container """
+            """This decorater ensures that E is the first element in the _data container"""
 
             def assign_E(self, *args, **kwargs):
                 ns = args[1]
@@ -337,13 +359,14 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                     ns._data.append(ns._E[ns._Erng].flatten())
                     ns._data_header.append("Energy[eV]")
                 return func(self, *args, **kwargs)
+
             return assign_E
 
         class ERange(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 E = ns._E
                 Emap = strmap(float, value, E.min(), E.max())
+
                 def Eindex(e):
                     return np.abs(E - e).argmin()
 
@@ -354,32 +377,42 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                         ns._Erng = None
                         return
                     elif begin is None:
-                        E.append(range(Eindex(end)+1))
+                        E.append(range(Eindex(end) + 1))
                     elif end is None:
                         E.append(range(Eindex(begin), len(E)))
                     else:
-                        E.append(range(Eindex(begin), Eindex(end)+1))
+                        E.append(range(Eindex(begin), Eindex(end) + 1))
                 # Issuing unique also sorts the entries
                 ns._Erng = np.unique(arrayi(E).flatten())
-        p.add_argument("--energy", "-E", action=ERange,
-                       help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
+
+        p.add_argument(
+            "--energy",
+            "-E",
+            action=ERange,
+            help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
                        
-                       This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""")
+                       This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""",
+        )
 
         # The normalization method
         class NormAction(argparse.Action):
-
             @collect_action
             def __call__(self, parser, ns, value, option_string=None):
                 ns._norm = value
-        p.add_argument("--norm", "-N", action=NormAction, default="atom",
-                       choices=["none", "atom", "orbital", "all"],
-                       help="""Specify the normalization method; "none") no normalization, "atom") total orbitals in selected atoms,
+
+        p.add_argument(
+            "--norm",
+            "-N",
+            action=NormAction,
+            default="atom",
+            choices=["none", "atom", "orbital", "all"],
+            help="""Specify the normalization method; "none") no normalization, "atom") total orbitals in selected atoms,
                        "orbital") selected orbitals or "all") all orbitals.
 
                        Will only take effect on subsequent --atom ranges.
 
-                       This flag is reset whenever --plot or --out is called""")
+                       This flag is reset whenever --plot or --out is called""",
+        )
 
         if PDOS.ndim == 2:
             # no spin is possible
@@ -387,66 +420,91 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
         elif PDOS.shape[0] == 2:
             # Add a spin-action
             class Spin(argparse.Action):
-
                 @collect_action
                 def __call__(self, parser, ns, value, option_string=None):
                     value = value[0].lower()
                     if value in ("up", "u"):
                         name = "up"
+
                         def _filter(PDOS):
                             return (PDOS[0] + PDOS[1]) / 2
+
                     elif value in ("down", "dn", "dw", "d"):
                         name = "down"
+
                         def _filter(PDOS):
                             return (PDOS[0] - PDOS[1]) / 2
+
                     elif value in ("sum", "+", "total"):
                         name = "total"
+
                         def _filter(PDOS):
                             return PDOS[0]
+
                     elif value in ("z", "spin"):
                         name = "z"
+
                         def _filter(PDOS):
                             return PDOS[1]
+
                     else:
-                        raise ValueError(f"Wrong argument for --spin [up, down, sum, z], found {value}")
+                        raise ValueError(
+                            f"Wrong argument for --spin [up, down, sum, z], found {value}"
+                        )
                     ns._PDOS_filter_name = name
                     ns._PDOS_filter = _filter
-            p.add_argument("--spin", "-S", action=Spin, nargs=1,
-                           help="Which spin-component to store, up/u, down/d, z/spin or sum/+/total")
+
+            p.add_argument(
+                "--spin",
+                "-S",
+                action=Spin,
+                nargs=1,
+                help="Which spin-component to store, up/u, down/d, z/spin or sum/+/total",
+            )
 
         elif PDOS.shape[0] == 4:
             # Add a spin-action
             class Spin(argparse.Action):
-
                 @collect_action
                 def __call__(self, parser, ns, value, option_string=None):
                     value = value[0].lower()
                     if value in ("sum", "+", "total"):
                         name = "total"
+
                         def _filter(PDOS):
                             return PDOS[0]
+
                     else:
                         # the stuff must be a range of directions
                         # so simply put it in
                         idx = list(map(direction, value))
                         name = value
+
                         def _filter(PDOS):
                             return PDOS[idx].sum(0)
+
                     ns._PDOS_filter_name = name
                     ns._PDOS_filter = _filter
-            p.add_argument("--spin", "-S", action=Spin, nargs=1,
-                           help="Which spin-component to store, sum/+/total, x, y, z or a sum of either of the directions xy, zx etc.")
+
+            p.add_argument(
+                "--spin",
+                "-S",
+                action=Spin,
+                nargs=1,
+                help="Which spin-component to store, sum/+/total, x, y, z or a sum of either of the directions xy, zx etc.",
+            )
 
         def parse_atom_range(geom, value):
             if value.lower() in ("all", ":"):
                 return np.arange(geom.no), "all"
 
-            value = ",".join(# ensure only single commas (no space between them)
-                "".join(# ensure no empty whitespaces
-                    ",".join(# join different lines with a comma
-                        value.splitlines())
-                    .split())
-                .split(","))
+            value = ",".join(  # ensure only single commas (no space between them)
+                "".join(  # ensure no empty whitespaces
+                    ",".join(  # join different lines with a comma
+                        value.splitlines()
+                    ).split()
+                ).split(",")
+            )
 
             # Sadly many shell interpreters does not
             # allow simple [] because they are expansion tokens
@@ -491,14 +549,15 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                 print(f"  1-{len(geometry)}")
                 print("Input atoms:")
                 print("  ", value)
-                raise ValueError("Atomic/Orbital requests are not fully included in the device region.")
+                raise ValueError(
+                    "Atomic/Orbital requests are not fully included in the device region."
+                )
 
             # Add one to make the c-index equivalent to the f-index
             return np.concatenate(orbs).flatten(), value
 
         # Try and add the atomic specification
         class AtomRange(argparse.Action):
-
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
@@ -515,19 +574,29 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                     DOS = "PDOS"
 
                 if ns._PDOS_filter_name is not None:
-                    ns._data_header.append(f"{DOS}[spin={ns._PDOS_filter_name}:{value}][1/eV]")
-                    ns._data_description.append(f"Column {index} is the sum of spin={ns._PDOS_filter_name} on atoms[orbs] {value} with normalization 1/{scale}")
+                    ns._data_header.append(
+                        f"{DOS}[spin={ns._PDOS_filter_name}:{value}][1/eV]"
+                    )
+                    ns._data_description.append(
+                        f"Column {index} is the sum of spin={ns._PDOS_filter_name} on atoms[orbs] {value} with normalization 1/{scale}"
+                    )
                 else:
                     ns._data_header.append(f"{DOS}[{value}][1/eV]")
-                    ns._data_description.append(f"Column {index} is the total PDOS on atoms[orbs] {value} with normalization 1/{scale}")
+                    ns._data_description.append(
+                        f"Column {index} is the total PDOS on atoms[orbs] {value} with normalization 1/{scale}"
+                    )
 
-        p.add_argument("--atom", "-a", type=str, action=AtomRange,
-                       help="""Limit orbital resolved PDOS to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters.
+        p.add_argument(
+            "--atom",
+            "-a",
+            type=str,
+            action=AtomRange,
+            help="""Limit orbital resolved PDOS to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters.
 
-Multiple options will create a new column/line in output, the --norm and --E should be before any of these arguments""")
+Multiple options will create a new column/line in output, the --norm and --E should be before any of these arguments""",
+        )
 
         class Out(argparse.Action):
-
             @run_actions
             def __call__(self, parser, ns, value, option_string=None):
                 out = value[0]
@@ -549,14 +618,19 @@ Multiple options will create a new column/line in output, the --norm and --E sho
                     ns._data_header.append("Energy[eV]")
                     ns._data.append(ns._PDOS_filter(ns._PDOS).sum(0))
                     if ns._PDOS_filter_name is not None:
-                        ns._data_header.append(f"DOS[spin={ns._PDOS_filter_name}][1/eV]")
+                        ns._data_header.append(
+                            f"DOS[spin={ns._PDOS_filter_name}][1/eV]"
+                        )
                     else:
                         ns._data_header.append("DOS[1/eV]")
 
                 from sisl.io import tableSile
-                tableSile(out, mode="w").write(*ns._data,
-                                               comment=[comment] + ns._data_description,
-                                               header=ns._data_header)
+
+                tableSile(out, mode="w").write(
+                    *ns._data,
+                    comment=[comment] + ns._data_description,
+                    header=ns._data_header,
+                )
                 # Clean all data
                 ns._norm = "none"
                 ns._data = []
@@ -566,31 +640,38 @@ Multiple options will create a new column/line in output, the --norm and --E sho
                 ns._PDOS_filter_name = None
                 ns._PDOS_filter = _sum_filter
                 ns._Erng = None
-        p.add_argument("--out", "-o", nargs=1, action=Out,
-                       help="Store currently collected PDOS (at its current invocation) to the out file.")
+
+        p.add_argument(
+            "--out",
+            "-o",
+            nargs=1,
+            action=Out,
+            help="Store currently collected PDOS (at its current invocation) to the out file.",
+        )
 
         class Plot(argparse.Action):
-
             @run_actions
             def __call__(self, parser, ns, value, option_string=None):
-
                 if len(ns._data) == 0:
                     ns._data.append(ns._E)
                     ns._data_header.append("Energy[eV]")
                     ns._data.append(ns._PDOS_filter(ns._PDOS).sum(0))
                     if ns._PDOS_filter_name is not None:
-                        ns._data_header.append(f"DOS[spin={ns._PDOS_filter_name}][1/eV]")
+                        ns._data_header.append(
+                            f"DOS[spin={ns._PDOS_filter_name}][1/eV]"
+                        )
                     else:
                         ns._data_header.append("DOS[1/eV]")
 
                 from matplotlib import pyplot as plt
+
                 plt.figure()
 
                 def _get_header(header):
-                    header = (header
-                              .replace("PDOS", "")
-                              .replace("DOS", "")
-                              .replace("[1/eV]", "")
+                    header = (
+                        header.replace("PDOS", "")
+                        .replace("DOS", "")
+                        .replace("[1/eV]", "")
                     )
                     if len(header) == 0:
                         return "Total"
@@ -604,7 +685,12 @@ Multiple options will create a new column/line in output, the --norm and --E sho
                 if len(ns._data) > 2:
                     kwargs["alpha"] = 0.6
                 for i in range(1, len(ns._data)):
-                    plt.plot(ns._data[0], ns._data[i], label=_get_header(ns._data_header[i]), **kwargs)
+                    plt.plot(
+                        ns._data[0],
+                        ns._data[i],
+                        label=_get_header(ns._data_header[i]),
+                        **kwargs,
+                    )
 
                 plt.ylabel("DOS [1/eV]")
                 if "unknown" in comment:
@@ -627,8 +713,15 @@ Multiple options will create a new column/line in output, the --norm and --E sho
                 ns._PDOS_filter_name = None
                 ns._PDOS_filter = _sum_filter
                 ns._Erng = None
-        p.add_argument("--plot", "-p", action=Plot, nargs="?", metavar="FILE",
-                       help="Plot the currently collected information (at its current invocation).")
+
+        p.add_argument(
+            "--plot",
+            "-p",
+            action=Plot,
+            nargs="?",
+            metavar="FILE",
+            help="Plot the currently collected information (at its current invocation).",
+        )
 
         return p, namespace
 

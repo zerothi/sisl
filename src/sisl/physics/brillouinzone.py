@@ -159,7 +159,7 @@ __all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure", "linspace_bz"]
 
 
 class BrillouinZoneDispatcher(ClassDispatcher):
-    r""" Loop over all k-points by applying `parent` methods for all k.
+    r"""Loop over all k-points by applying `parent` methods for all k.
 
     This allows potential for running and collecting various computationally
     heavy methods from a single point on all k-points.
@@ -192,7 +192,7 @@ class BrillouinZoneDispatcher(ClassDispatcher):
 
 @set_module("sisl.physics")
 def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
-    r""" Convert points from a BZ object into a linear spacing of maximum value `stop`
+    r"""Convert points from a BZ object into a linear spacing of maximum value `stop`
 
     Parameters
     ----------
@@ -217,14 +217,14 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
     # calculate vectors between each neighbouring points
     dcart = np.diff(cart, axis=0, prepend=cart[0].reshape(1, -1))
     # calculate distances
-    dist = (dcart ** 2).sum(1) ** 0.5
+    dist = (dcart**2).sum(1) ** 0.5
 
     if jumps is not None:
         # calculate the total distance
         total_dist = dist.sum()
 
         # Zero out the jumps
-        dist[jumps] = 0.
+        dist[jumps] = 0.0
         total_dist = dist.sum()
         # correct jumps
         dist[jumps] = total_dist * np.asarray(jump_dk)
@@ -240,7 +240,7 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
 
 @set_module("sisl.physics")
 class BrillouinZone:
-    """ A class to construct Brillouin zone related quantities
+    """A class to construct Brillouin zone related quantities
 
     It takes any object (which has access to cell-vectors) as an argument
     and can then return the k-points in non-reduced units from reduced units.
@@ -279,16 +279,18 @@ class BrillouinZone:
             self._k = _a.arrayd(k).reshape(-1, 3)
             self._w = _a.emptyd(len(k))
             if weight is None:
-                weight = 1. / len(self._k)
+                weight = 1.0 / len(self._k)
             self._w[:] = weight
 
-    apply = BrillouinZoneDispatcher("apply",
-                                    # Do not allow class dispatching
-                                    type_dispatcher=None,
-                                    obj_getattr=lambda obj, key: getattr(obj.parent, key))
+    apply = BrillouinZoneDispatcher(
+        "apply",
+        # Do not allow class dispatching
+        type_dispatcher=None,
+        obj_getattr=lambda obj, key: getattr(obj.parent, key),
+    )
 
     def set_parent(self, parent):
-        """ Update the parent associated to this object
+        """Update the parent associated to this object
 
         Parameters
         ----------
@@ -304,7 +306,7 @@ class BrillouinZone:
             self.parent = Lattice(parent)
 
     def __str__(self):
-        """ String representation of the BrillouinZone """
+        """String representation of the BrillouinZone"""
         parent = self.parent
         if isinstance(parent, Lattice):
             parent = str(parent).replace("\n", "\n ")
@@ -313,25 +315,25 @@ class BrillouinZone:
         return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
 
     def __getstate__(self):
-        """ Return dictionary with the current state """
+        """Return dictionary with the current state"""
         return {
-            'parent_class': self.parent.__class__,
-            'parent': self.parent.__getstate__(),
-            'k': self._k.copy(),
-            'weight': self._w.copy()
+            "parent_class": self.parent.__class__,
+            "parent": self.parent.__getstate__(),
+            "k": self._k.copy(),
+            "weight": self._w.copy(),
         }
 
     def __setstate__(self, state):
-        """ Reset state of the object """
-        self._k = state['k']
-        self._w = state['weight']
-        parent = state['parent_class'].__new__(state['parent_class'])
-        parent.__setstate__(state['parent'])
+        """Reset state of the object"""
+        self._k = state["k"]
+        self._w = state["weight"]
+        parent = state["parent_class"].__new__(state["parent_class"])
+        parent.__setstate__(state["parent"])
         self.set_parent(parent)
 
     @staticmethod
-    def merge(bzs, weight_scale=1., parent=None):
-        """ Merge several BrillouinZone objects into one
+    def merge(bzs, weight_scale=1.0, parent=None):
+        """Merge several BrillouinZone objects into one
 
         The merging strategy only stores the new list of k-points and weights.
         Information retained in the merged objects will not be stored.
@@ -359,22 +361,26 @@ class BrillouinZone:
 
         # check for lengths (scales cannot be longer!)
         if len(bzs) < len(weight_scale):
-            raise ValueError("BrillouinZone.merge requires length of weight_scale to be smaller or equal to "
-                             "the objects.")
+            raise ValueError(
+                "BrillouinZone.merge requires length of weight_scale to be smaller or equal to "
+                "the objects."
+            )
 
         if parent is None:
             parent = bzs[0].parent
 
         k = []
         w = []
-        for bz, scale in itertools.zip_longest(bzs, weight_scale, fillvalue=weight_scale[-1]):
+        for bz, scale in itertools.zip_longest(
+            bzs, weight_scale, fillvalue=weight_scale[-1]
+        ):
             k.append(bz.k)
             w.append(bz.weight * scale)
 
         return BrillouinZone(parent, np.concatenate(k), np.concatenate(w))
 
     def volume(self, ret_dim=False, periodic=None):
-        """ Calculate the volume of the full Brillouin zone of the parent
+        """Calculate the volume of the full Brillouin zone of the parent
 
         This will return the volume depending on the dimensions of the system.
         Here the dimensions of the system is determined by how many dimensions
@@ -403,7 +409,7 @@ class BrillouinZone:
             periodic = (self.parent.nsc > 1).nonzero()[0]
 
         dim = len(periodic)
-        vol = 0.
+        vol = 0.0
         if dim == 3:
             vol = self.parent.volume
         elif dim == 2:
@@ -417,7 +423,7 @@ class BrillouinZone:
 
     @staticmethod
     def parametrize(parent, func, N, *args, **kwargs):
-        """ Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
+        """Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
         list.
@@ -476,7 +482,7 @@ class BrillouinZone:
 
     @staticmethod
     def param_circle(parent, N_or_dk, kR, normal, origin, loop=False):
-        r""" Create a parameterized k-point list where the k-points are generated on a circle around an origin
+        r"""Create a parameterized k-point list where the k-points are generated on a circle around an origin
 
         The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
         To generate a perfect circle in units of the reciprocal lattice vectors one can
@@ -523,10 +529,12 @@ class BrillouinZone:
             N = N_or_dk
         else:
             # Calculate the required number of points
-            N = int(kR ** 2 * pi / N_or_dk + 0.5)
+            N = int(kR**2 * pi / N_or_dk + 0.5)
             if N < 2:
                 N = 2
-                info('BrillouinZone.param_circle increased the number of circle points to 2.')
+                info(
+                    "BrillouinZone.param_circle increased the number of circle points to 2."
+                )
 
         # Conversion object
         bz = BrillouinZone(parent)
@@ -538,13 +546,13 @@ class BrillouinZone:
 
         # Generate a preset list of k-points on the unit-circle
         if loop:
-            radians = _a.aranged(N) / (N-1) * 2 * np.pi
+            radians = _a.aranged(N) / (N - 1) * 2 * np.pi
         else:
             radians = _a.aranged(N) / N * 2 * np.pi
         k = _a.emptyd([N, 3])
         k[:, 0] = np.cos(radians)
         k[:, 1] = np.sin(radians)
-        k[:, 2] = 0.
+        k[:, 2] = 0.0
 
         # Now generate the rotation
         _, theta, phi = cart2spher(k_n)
@@ -553,7 +561,7 @@ class BrillouinZone:
             pv /= fnorm(pv)
             q = Quaternion(phi, pv, rad=True) * Quaternion(theta, [0, 0, 1], rad=True)
         else:
-            q = Quaternion(0., [0, 0, k_n[2] / abs(k_n[2])], rad=True)
+            q = Quaternion(0.0, [0, 0, k_n[2] / abs(k_n[2])], rad=True)
 
         # Calculate k-points
         k = q.rotate(k)
@@ -561,13 +569,13 @@ class BrillouinZone:
         k = bz.toreduced(k + k_o)
 
         # The sum of weights is equal to the BZ area
-        W = np.pi * kR ** 2
+        W = np.pi * kR**2
         w = np.repeat([W / N], N)
 
         return BrillouinZone(parent, k, w)
 
     def copy(self, parent=None):
-        """ Create a copy of this object, optionally changing the parent
+        """Create a copy of this object, optionally changing the parent
 
         Parameters
         ----------
@@ -583,12 +591,12 @@ class BrillouinZone:
 
     @property
     def k(self):
-        """ A list of all k-points (if available) """
+        """A list of all k-points (if available)"""
         return self._k
 
     @property
     def weight(self):
-        """ Weight of the k-points in the `BrillouinZone` object """
+        """Weight of the k-points in the `BrillouinZone` object"""
         return self._w
 
     @property
@@ -600,7 +608,7 @@ class BrillouinZone:
         return self.parent.rcell
 
     def tocartesian(self, k):
-        """ Transfer a k-point in reduced coordinates to the Cartesian coordinates
+        """Transfer a k-point in reduced coordinates to the Cartesian coordinates
 
         Parameters
         ----------
@@ -615,7 +623,7 @@ class BrillouinZone:
         return dot(k, self.rcell)
 
     def toreduced(self, k):
-        """ Transfer a k-point in Cartesian coordinates to the reduced coordinates
+        """Transfer a k-point in Cartesian coordinates to the reduced coordinates
 
         Parameters
         ----------
@@ -631,7 +639,7 @@ class BrillouinZone:
 
     @staticmethod
     def in_primitive(k):
-        """ Move the k-point into the primitive point(s) ]-0.5 ; 0.5]
+        """Move the k-point into the primitive point(s) ]-0.5 ; 0.5]
 
         Parameters
         ----------
@@ -643,7 +651,7 @@ class BrillouinZone:
         numpy.ndarray
             all k-points moved into the primitive cell
         """
-        k = _a.arrayd(k) % 1.
+        k = _a.arrayd(k) % 1.0
 
         # Ensure that we are in the interval ]-0.5; 0.5]
         k[k > 0.5] -= 1
@@ -651,7 +659,7 @@ class BrillouinZone:
         return k
 
     def iter(self, ret_weight=False):
-        """ An iterator for the k-points and (possibly) the weights
+        """An iterator for the k-points and (possibly) the weights
 
         Parameters
         ----------
@@ -662,7 +670,7 @@ class BrillouinZone:
         ------
         kpt : k-point
         weight : weight of k-point, only if `ret_weight` is true.
-       """
+        """
         if ret_weight:
             for i in range(len(self)):
                 yield self.k[i], self.weight[i]
@@ -675,22 +683,23 @@ class BrillouinZone:
         return len(self._k)
 
     def write(self, sile, *args, **kwargs):
-        """ Writes k-points to a `~sisl.io.tableSile`.
+        """Writes k-points to a `~sisl.io.tableSile`.
 
         This allows one to pass a `tableSile` or a file-name.
         """
         from sisl.io import tableSile
+
         kw = np.concatenate((self.k, self.weight.reshape(-1, 1)), axis=1)
         if isinstance(sile, tableSile):
             sile.write_data(kw.T, *args, **kwargs)
         else:
-            with tableSile(sile, 'w') as fh:
+            with tableSile(sile, "w") as fh:
                 fh.write_data(kw.T, *args, **kwargs)
 
 
 @set_module("sisl.physics")
 class MonkhorstPack(BrillouinZone):
-    r""" Create a Monkhorst-Pack grid for the Brillouin zone
+    r"""Create a Monkhorst-Pack grid for the Brillouin zone
 
     Parameters
     ----------
@@ -722,7 +731,9 @@ class MonkhorstPack(BrillouinZone):
     >>> MonkhorstPack(lattice, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
     """
 
-    def __init__(self, parent, nkpt, displacement=None, size=None, centered=True, trs=True):
+    def __init__(
+        self, parent, nkpt, displacement=None, size=None, centered=True, trs=True
+    ):
         super().__init__(parent)
 
         if isinstance(nkpt, Integral):
@@ -732,7 +743,9 @@ class MonkhorstPack(BrillouinZone):
 
         # Now we have a matrix of k-points
         if np.any(nkpt - np.diag(np.diag(nkpt)) != 0):
-            raise NotImplementedError(f"{self.__class__.__name__} with off-diagonal components is not implemented yet")
+            raise NotImplementedError(
+                f"{self.__class__.__name__} with off-diagonal components is not implemented yet"
+            )
 
         if displacement is None:
             displacement = np.zeros(3, np.float64)
@@ -753,15 +766,17 @@ class MonkhorstPack(BrillouinZone):
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt).astype(np.int32)
         if np.any(Dn) == 0:
-            raise ValueError(f'{self.__class__.__name__} *must* be initialized with '
-                             'diagonal elements different from 0.')
+            raise ValueError(
+                f"{self.__class__.__name__} *must* be initialized with "
+                "diagonal elements different from 0."
+            )
 
         i_trs = -1
         if trs:
             # Figure out which direction to TRS
             nmax = 0
             for i in [0, 1, 2]:
-                if displacement[i] in [0., 0.5] and Dn[i] > nmax:
+                if displacement[i] in [0.0, 0.5] and Dn[i] > nmax:
                     nmax = Dn[i]
                     i_trs = i
             if nmax == 1:
@@ -772,7 +787,10 @@ class MonkhorstPack(BrillouinZone):
                 i_trs = np.argmax(Dn)
 
         # Calculate k-points and weights along all directions
-        kw = [self.grid(Dn[i], displacement[i], size[i], centered, i == i_trs) for i in (0, 1, 2)]
+        kw = [
+            self.grid(Dn[i], displacement[i], size[i], centered, i == i_trs)
+            for i in (0, 1, 2)
+        ]
 
         # Now figure out if we have a 0 point along the TRS direction
         if trs:
@@ -789,16 +807,20 @@ class MonkhorstPack(BrillouinZone):
                 # Note for a 100 x 100 k-point sampling this will produce
                 # a 100 ^ 4 matrix ~ 93 MB
                 # For larger k-point samplings this is probably not so good (300x300 -> 7.5 GB)
-                k_dup = k_dup.reshape(k1.size, k2.size, 1, 1, 2) + k_dup.reshape(1, 1, k1.size, k2.size, 2)
-                k_dup = ((k_dup[..., 0] ** 2 + k_dup[..., 1] ** 2) ** 0.5 < 1e-10).nonzero()
+                k_dup = k_dup.reshape(k1.size, k2.size, 1, 1, 2) + k_dup.reshape(
+                    1, 1, k1.size, k2.size, 2
+                )
+                k_dup = (
+                    (k_dup[..., 0] ** 2 + k_dup[..., 1] ** 2) ** 0.5 < 1e-10
+                ).nonzero()
                 # At this point we have found all duplicate points, to only take one
                 # half of the points we only take the lower half
                 # Also, the Gamma point is *always* zero, so we shouldn't do <=!
                 # Now check the case where one of the directions is (only) the Gamma-point
-                if kw[ik1][0].size == 1 and kw[ik1][0][0] == 0.:
+                if kw[ik1][0].size == 1 and kw[ik1][0][0] == 0.0:
                     # We keep all indices for the ik1 direction (since it is the Gamma-point!
                     rel = (k_dup[1] > k_dup[3]).nonzero()[0]
-                elif kw[ik2][0].size == 1 and kw[ik2][0][0] == 0.:
+                elif kw[ik2][0].size == 1 and kw[ik2][0][0] == 0.0:
                     # We keep all indices for the ik2 direction (since it is the Gamma-point!
                     rel = (k_dup[0] > k_dup[2]).nonzero()[0]
                 else:
@@ -842,50 +864,58 @@ class MonkhorstPack(BrillouinZone):
         # Store information regarding size and diagonal elements
         # This information is basically only necessary when
         # we want to replace special k-points
-        self._diag = Dn # vector
-        self._displ = displacement # vector
-        self._size = size # vector
+        self._diag = Dn  # vector
+        self._displ = displacement  # vector
+        self._size = size  # vector
         self._centered = centered
         self._trs = i_trs
 
     @property
     def displacement(self):
-        """ Displacement for this Monkhorst-Pack grid """
+        """Displacement for this Monkhorst-Pack grid"""
         return self._displ
 
     def __str__(self):
-        """ String representation of `MonkhorstPack` """
+        """String representation of `MonkhorstPack`"""
         if isinstance(self.parent, Lattice):
             p = self.parent
         else:
             p = self.parent.lattice
-        return ('{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[0]:.5f}], trs: {trs},'
-                '\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.5f} {disp[1]:.5f} {disp[2]:.5f}],'
-                '\n {lattice}\n}}').format(cls=self.__class__.__name__, nk=len(self),
-                                      size=self._size, trs={0: 'A', 1: 'B', 2: 'C'}.get(self._trs, 'no'),
-                                      diag=self._diag, disp=self._displ, lattice=str(p).replace('\n', '\n '))
+        return (
+            "{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[0]:.5f}], trs: {trs},"
+            "\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.5f} {disp[1]:.5f} {disp[2]:.5f}],"
+            "\n {lattice}\n}}"
+        ).format(
+            cls=self.__class__.__name__,
+            nk=len(self),
+            size=self._size,
+            trs={0: "A", 1: "B", 2: "C"}.get(self._trs, "no"),
+            diag=self._diag,
+            disp=self._displ,
+            lattice=str(p).replace("\n", "\n "),
+        )
 
     def __getstate__(self):
-        """ Return dictionary with the current state """
+        """Return dictionary with the current state"""
         state = super().__getstate__()
-        state['diag'] = self._diag
-        state['displ'] = self._displ
-        state['size'] = self._size
-        state['centered'] = self._centered
-        state['trs'] = self._trs
+        state["diag"] = self._diag
+        state["displ"] = self._displ
+        state["size"] = self._size
+        state["centered"] = self._centered
+        state["trs"] = self._trs
         return state
 
     def __setstate__(self, state):
-        """ Reset state of the object """
+        """Reset state of the object"""
         super().__setstate__(state)
-        self._diag = state['diag']
-        self._displ = state['displ']
-        self._size = state['size']
-        self._centered = state['centered']
-        self._trs = state['trs']
+        self._diag = state["diag"]
+        self._displ = state["displ"]
+        self._size = state["size"]
+        self._centered = state["centered"]
+        self._trs = state["trs"]
 
     def copy(self, parent=None):
-        """ Create a copy of this object, optionally changing the parent
+        """Create a copy of this object, optionally changing the parent
 
         Parameters
         ----------
@@ -894,15 +924,17 @@ class MonkhorstPack(BrillouinZone):
         """
         if parent is None:
             parent = self.parent
-        bz = self.__class__(parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0)
+        bz = self.__class__(
+            parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0
+        )
         # this is required due to replace calls
         bz._k = self._k.copy()
         bz._w = self._w.copy()
         return bz
 
     @classmethod
-    def grid(cls, n, displ=0., size=1., centered=True, trs=False):
-        r""" Create a grid of `n` points with an offset of `displ` and sampling `size` around `displ`
+    def grid(cls, n, displ=0.0, size=1.0, centered=True, trs=False):
+        r"""Create a grid of `n` points with an offset of `displ` and sampling `size` around `displ`
 
         The :math:`k`-points are :math:`\Gamma` centered.
 
@@ -927,16 +959,16 @@ class MonkhorstPack(BrillouinZone):
            weights for the k-points
         """
         # First ensure that displ is in the Brillouin
-        displ = displ % 1.
+        displ = displ % 1.0
         if displ > 0.5:
-            displ -= 1.
+            displ -= 1.0
         if displ < -0.5:
-            displ += 1.
+            displ += 1.0
 
         # Centered _only_ has effect IFF
         #  displ == 0. and size == 1
         # Otherwise we resort to other schemes
-        if displ != 0. or size != 1.:
+        if displ != 0.0 or size != 1.0:
             centered = False
 
         # size *per k-point*
@@ -957,7 +989,7 @@ class MonkhorstPack(BrillouinZone):
         w = _a.fulld(n, dsize)
 
         # Check for TRS points
-        if trs and np.any(k < 0.):
+        if trs and np.any(k < 0.0):
             # Make all positive to remove the double conting terms
             k_pos = np.fabs(k)
 
@@ -989,7 +1021,7 @@ class MonkhorstPack(BrillouinZone):
         return k, w
 
     def replace(self, k, mp, displacement=False, as_index=False, check_vol=True):
-        r""" Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
+        r"""Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
 
         This method tries to replace an area corresponding to `mp.size` around the k-point `k`
         such that the k-points are replaced.
@@ -1063,8 +1095,10 @@ class MonkhorstPack(BrillouinZone):
             # k-point volumes.
             k_int = mp._size / k_vol
             if not np.allclose(np.rint(k_int), k_int):
-                raise SislError(f"{self.__class__.__name__}.reduce could not replace k-point, BZ "
-                                "volume replaced is not equivalent to the inherent k-point volume.")
+                raise SislError(
+                    f"{self.__class__.__name__}.reduce could not replace k-point, BZ "
+                    "volume replaced is not equivalent to the inherent k-point volume."
+                )
 
         # the size of the k-points that will be added
         s_size2 = self._size / 2
@@ -1081,18 +1115,24 @@ class MonkhorstPack(BrillouinZone):
         else:
             # find k-points in batches of 200 MB
             k = self.in_primitive(k).reshape(-1, 3)
-            idx = batched_indices(self.k, k, atol=dk, batch_size=200,
-                                  diff_func=self.in_primitive)[0]
-            if self._trs >= 0: # TRS along a given axis, we can search the mirrored values
-                idx2 = batched_indices(self.k, -k, atol=dk, batch_size=200,
-                                       diff_func=self.in_primitive)[0]
+            idx = batched_indices(
+                self.k, k, atol=dk, batch_size=200, diff_func=self.in_primitive
+            )[0]
+            if (
+                self._trs >= 0
+            ):  # TRS along a given axis, we can search the mirrored values
+                idx2 = batched_indices(
+                    self.k, -k, atol=dk, batch_size=200, diff_func=self.in_primitive
+                )[0]
                 idx = np.concatenate((idx, idx2))
                 # we may find 2 indices for gamm-point in this case... not useful
                 idx = np.unique(idx)
 
         if len(idx) == 0:
-            raise SislError(f"{self.__class__.__name__}.reduce found no k-points to replace. "
-                            f"Searched with precision: {dk.ravel()}")
+            raise SislError(
+                f"{self.__class__.__name__}.reduce found no k-points to replace. "
+                f"Searched with precision: {dk.ravel()}"
+            )
 
         # Idea of fast replacements is attributed @ahkole in #454, but the resulting code needed some
         # changes since that code was not stable againts *wrong input*, i.e. k=[0, 0, 0]
@@ -1122,41 +1162,54 @@ class MonkhorstPack(BrillouinZone):
         replace_weight = mp.weight.sum() * displ_nk
         atol = min(total_weight, replace_weight) * 1e-4
         if abs(total_weight - replace_weight) < atol:
-            weight_factor = 1.
+            weight_factor = 1.0
         elif abs(total_weight - replace_weight * 2) < atol:
-            weight_factor = 2.
+            weight_factor = 2.0
             if self._trs < 0:
-                info(f"{self.__class__.__name__}.reduce assumes that the replaced k-point has double weights.")
+                info(
+                    f"{self.__class__.__name__}.reduce assumes that the replaced k-point has double weights."
+                )
         else:
-            #print("k-point to replace: ", k.ravel())
-            #print("delta-k: ", dk.ravel())
-            #print("Found k-indices that will be replaced:")
-            #print(idx)
-            #print("k-points replaced:")
-            #print(self.k[idx, :])
-            #print("weights replaced:")
-            #print(self.weight[idx])
-            #print(self.weight.min(), self.weight.max())
-            #print(mp.weight.min(), mp.weight.max())
-            #print("Summed weights vs. replaced summed weights: ")
-            #print(total_weight, replace_weight)
-            #print(mp)
-            raise SislError(f"{self.__class__.__name__}.reduce found inconsistent replacement weights "
-                            f"self={total_weight} vs. mp={replace_weight}. "
-                            f"Replacement indices: {idx}.")
+            # print("k-point to replace: ", k.ravel())
+            # print("delta-k: ", dk.ravel())
+            # print("Found k-indices that will be replaced:")
+            # print(idx)
+            # print("k-points replaced:")
+            # print(self.k[idx, :])
+            # print("weights replaced:")
+            # print(self.weight[idx])
+            # print(self.weight.min(), self.weight.max())
+            # print(mp.weight.min(), mp.weight.max())
+            # print("Summed weights vs. replaced summed weights: ")
+            # print(total_weight, replace_weight)
+            # print(mp)
+            raise SislError(
+                f"{self.__class__.__name__}.reduce found inconsistent replacement weights "
+                f"self={total_weight} vs. mp={replace_weight}. "
+                f"Replacement indices: {idx}."
+            )
 
         # delete and append new k-points and weights
         if displacement is None:
             self._k = np.concatenate((np.delete(self._k, idx, axis=0), mp._k), axis=0)
         else:
-            self._k = np.concatenate((np.delete(self._k, idx, axis=0),
-                                      self.in_primitive(mp.k + displacement.reshape(-1, 1, 3)).reshape(-1, 3)), axis=0)
-        self._w = np.concatenate((np.delete(self._w, idx), np.tile(mp._w * weight_factor, displ_nk)))
+            self._k = np.concatenate(
+                (
+                    np.delete(self._k, idx, axis=0),
+                    self.in_primitive(mp.k + displacement.reshape(-1, 1, 3)).reshape(
+                        -1, 3
+                    ),
+                ),
+                axis=0,
+            )
+        self._w = np.concatenate(
+            (np.delete(self._w, idx), np.tile(mp._w * weight_factor, displ_nk))
+        )
 
 
 @set_module("sisl.physics")
 class BandStructure(BrillouinZone):
-    """ Create a path in the Brillouin zone for plotting band-structures etc.
+    """Create a path in the Brillouin zone for plotting band-structures etc.
 
     Parameters
     ----------
@@ -1197,10 +1250,14 @@ class BandStructure(BrillouinZone):
     >>> bs = BandStructure(lattice, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200)
     """
 
-    @deprecate_argument("name", "names", "argument 'name' has been deprecated in favor of 'names', please update your code.",
-                        "0.15.0")
+    @deprecate_argument(
+        "name",
+        "names",
+        "argument 'name' has been deprecated in favor of 'names', please update your code.",
+        "0.15.0",
+    )
     def __init__(self, parent, *args, **kwargs):
-        #points, divisions, names=None):
+        # points, divisions, names=None):
         super().__init__(parent)
 
         points = kwargs.pop("points", None)
@@ -1215,7 +1272,9 @@ class BandStructure(BrillouinZone):
             if len(args) > 0:
                 divisions, *args = args
             else:
-                raise ValueError(f"{self.__class__.__name__} 'divisions' argument missing")
+                raise ValueError(
+                    f"{self.__class__.__name__} 'divisions' argument missing"
+                )
 
         names = kwargs.pop("names", None)
         if names is None:
@@ -1223,14 +1282,17 @@ class BandStructure(BrillouinZone):
                 names, *args = args
 
         if len(args) > 0:
-            raise ValueError(f"{self.__class__.__name__} unknown arguments after parsing 'points', 'divisions' and 'names': {args}")
+            raise ValueError(
+                f"{self.__class__.__name__} unknown arguments after parsing 'points', 'divisions' and 'names': {args}"
+            )
 
         # Store empty split size
         self._jump_dk = np.asarray(kwargs.pop("jump_dk", 0.05))
 
         if len(kwargs) > 0:
-            raise ValueError(f"{self.__class__.__name__} unknown keyword arguments after parsing [points, divisions, names, jump_dk]: {list(kwargs.keys())}")
-
+            raise ValueError(
+                f"{self.__class__.__name__} unknown keyword arguments after parsing [points, divisions, names, jump_dk]: {list(kwargs.keys())}"
+            )
 
         # Copy over points
         # Check if any of the points is None or has length 0
@@ -1254,7 +1316,9 @@ class BandStructure(BrillouinZone):
             jump_idx = jump_idx[1:]
 
         if self._jump_dk.size > 1 and jump_idx.size != self._jump_dk.size:
-            raise ValueError(f"{self.__class__.__name__} got inconsistent argument lengths (jump_dk does not match jumps in points)")
+            raise ValueError(
+                f"{self.__class__.__name__} got inconsistent argument lengths (jump_dk does not match jumps in points)"
+            )
 
         # The jump-idx is equal to using np.split(self.points, jump_idx)
         # which then returns continuous sections
@@ -1265,25 +1329,28 @@ class BandStructure(BrillouinZone):
         # If the array has fewer points we try and determine
         if self.points.shape[1] < 3:
             if self.points.shape[1] != np.sum(self.parent.nsc > 1):
-                raise ValueError('Could not determine the non-periodic direction')
+                raise ValueError("Could not determine the non-periodic direction")
 
             # fix the points where there are no periodicity
             for i in (0, 1, 2):
                 if self.parent.nsc[i] == 1:
-                    self.points = np.insert(self.points, i, 0., axis=1)
+                    self.points = np.insert(self.points, i, 0.0, axis=1)
 
         # Ensure the shape is correct
         self.points.shape = (-1, 3)
 
         # Now figure out what to do with the divisions
         if isinstance(divisions, Integral):
-
             if divisions < len(self.points):
-                raise ValueError(f"Can not evenly split {len(self.points)} points into {divisions} divisions, ensure division>=len(points)")
+                raise ValueError(
+                    f"Can not evenly split {len(self.points)} points into {divisions} divisions, ensure division>=len(points)"
+                )
 
             # Get length between different k-points with a total length
             # of division
-            dists = np.diff(linspace_bz(self.tocartesian(self.points), jumps=jump_idx, jump_dk=0.))
+            dists = np.diff(
+                linspace_bz(self.tocartesian(self.points), jumps=jump_idx, jump_dk=0.0)
+            )
 
             # Get floating point divisions
             divs_r = dists * divisions / dists.sum()
@@ -1292,7 +1359,7 @@ class BandStructure(BrillouinZone):
             # ensure at least 1 point along each division
             # 1 division means only the starting point
             divs[divs == 0] = 1
-            divs[jump_idx-1] = 1
+            divs[jump_idx - 1] = 1
             divs_sum = divs.sum()
             while divs_sum != divisions - 1:
                 # only check indices where divs > 1
@@ -1307,23 +1374,29 @@ class BandStructure(BrillouinZone):
             divisions = divs[:]
 
         elif len(divisions) + 1 != len(self.points):
-            raise ValueError(f"inconsistent number of elements in 'points' and 'divisions' argument. One less 'divisions' elements.")
+            raise ValueError(
+                f"inconsistent number of elements in 'points' and 'divisions' argument. One less 'divisions' elements."
+            )
 
         self.divisions = _a.arrayi(divisions).ravel()
 
         if names is None:
-            self.names = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(self.points)]
+            self.names = "ABCDEFGHIJKLMNOPQRSTUVXYZ"[: len(self.points)]
         else:
             self.names = names
         if len(self.names) != len(self.points):
-            raise ValueError(f"inconsistent number of elements in 'points' and 'names' argument")
+            raise ValueError(
+                f"inconsistent number of elements in 'points' and 'names' argument"
+            )
 
         # Calculate points
         dpoint = np.diff(self.points, axis=0)
         k = _a.emptyd([self.divisions.sum() + 1, 3])
         i = 0
         for ik, (divs, dk) in enumerate(zip(self.divisions, dpoint)):
-            k[i:i+divs, :] = self.points[ik] + dk * _a.aranged(divs).reshape(-1, 1) / divs
+            k[i : i + divs, :] = (
+                self.points[ik] + dk * _a.aranged(divs).reshape(-1, 1) / divs
+            )
             i += divs
         k[-1] = self.points[-1]
         # sanity check that should always be obeyed
@@ -1333,7 +1406,7 @@ class BandStructure(BrillouinZone):
         self._w = _a.fulld(len(self.k), 1 / len(self.k))
 
     def copy(self, parent=None):
-        """ Create a copy of this object, optionally changing the parent
+        """Create a copy of this object, optionally changing the parent
 
         Parameters
         ----------
@@ -1342,30 +1415,32 @@ class BandStructure(BrillouinZone):
         """
         if parent is None:
             parent = self.parent
-        bz = self.__class__(parent, self.points, self.divisions, self.names, jump_dk=self._jump_dk)
+        bz = self.__class__(
+            parent, self.points, self.divisions, self.names, jump_dk=self._jump_dk
+        )
         return bz
 
     def __getstate__(self):
-        """ Return dictionary with the current state """
+        """Return dictionary with the current state"""
         state = super().__getstate__()
-        state['points'] = self.points.copy()
-        state['divisions'] = self.divisions.copy()
-        state['jump_idx'] = self._jump_idx.copy()
-        state['names'] = list(self.names)
-        state['jump_dk'] = self._jump_dk
+        state["points"] = self.points.copy()
+        state["divisions"] = self.divisions.copy()
+        state["jump_idx"] = self._jump_idx.copy()
+        state["names"] = list(self.names)
+        state["jump_dk"] = self._jump_dk
         return state
 
     def __setstate__(self, state):
-        """ Reset state of the object """
+        """Reset state of the object"""
         super().__setstate__(state)
-        self.points = state['points']
-        self.divisions = state['divisions']
-        self.names = state['names']
-        self._jump_dk = state['jump_dk']
-        self._jump_idx = state['jump_idx']
+        self.points = state["points"]
+        self.divisions = state["divisions"]
+        self.names = state["names"]
+        self._jump_dk = state["jump_dk"]
+        self._jump_idx = state["jump_idx"]
 
     def insert_jump(self, *arrays, value=np.nan):
-        """ Return a copy of `arrays` filled with `value` at indices of discontinuity jumps
+        """Return a copy of `arrays` filled with `value` at indices of discontinuity jumps
 
         Arrays with `value` in jumps is easier to plot since those lines will be naturally discontinued.
         For band structures without discontinuity jumps in the Brillouin zone the `arrays` will
@@ -1403,7 +1478,8 @@ class BandStructure(BrillouinZone):
             return arrays
 
         nk = len(self)
-        full_jumps = np.cumsum(self.divisions)[self._jump_idx-1]
+        full_jumps = np.cumsum(self.divisions)[self._jump_idx - 1]
+
         def _insert(array):
             array = np.asarray(array)
             # ensure dtype is equivalent as input array
@@ -1421,7 +1497,7 @@ class BandStructure(BrillouinZone):
         return arrays
 
     def lineartick(self):
-        """ The tick-marks corresponding to the linear-k values
+        """The tick-marks corresponding to the linear-k values
 
         Returns
         -------
@@ -1435,7 +1511,7 @@ class BandStructure(BrillouinZone):
         return self.lineark(True)[1:3]
 
     def tolinear(self, k, ret_index=False, tol=1e-4):
-        """ Convert a k-point into the equivalent linear k-point via the distance
+        """Convert a k-point into the equivalent linear k-point via the distance
 
         Finds the index of the k-point in `self.k` that is closests to `k`.
         The returned value is then the equivalent index in `lineark`.
@@ -1454,7 +1530,7 @@ class BandStructure(BrillouinZone):
            The tolerance is in units 1/Ang.
         """
         # Faster than to do sqrt all the time
-        tol = tol ** 2
+        tol = tol**2
         # first convert to the cartesian coordinates (for proper distances)
         ks = self.tocartesian(np.atleast_2d(k))
         kk = self.tocartesian(self.k)
@@ -1464,7 +1540,9 @@ class BandStructure(BrillouinZone):
             dist = ((kk - k) ** 2).sum(-1)
             idx = np.argmin(dist)
             if dist[idx] > tol:
-                warn(f"{self.__class__.__name__}.tolinear could not find a k-point within given tolerance ({self.toreduced(k)})")
+                warn(
+                    f"{self.__class__.__name__}.tolinear could not find a k-point within given tolerance ({self.toreduced(k)})"
+                )
             return idx
 
         idxs = [find(k) for k in ks]
@@ -1473,7 +1551,7 @@ class BandStructure(BrillouinZone):
         return self.lineark()[idxs]
 
     def lineark(self, ticks=False):
-        """ A 1D array which corresponds to the delta-k values of the path
+        """A 1D array which corresponds to the delta-k values of the path
 
         This is mainly meant for plotting but may be useful for finding out
         distances in the reciprocal lattice.
@@ -1514,7 +1592,9 @@ class BandStructure(BrillouinZone):
         cum_divs = np.cumsum(self.divisions)
         # Calculate points
         # First we also need to calculate the jumps
-        dK = linspace_bz(self, jumps=cum_divs[self._jump_idx-1], jump_dk=self._jump_dk)
+        dK = linspace_bz(
+            self, jumps=cum_divs[self._jump_idx - 1], jump_dk=self._jump_dk
+        )
 
         # Get label tick, in case self.names is a single string 'ABCD'
         if ticks:

@@ -10,27 +10,28 @@ SISL_NODES_CONTEXT = dict(
     lazy_init=None,
     # The level of logs stored in the node.
     log_level="INFO",
-    # Whether to raise a custom error exception (e.g. NodeCalcError) By default 
+    # Whether to raise a custom error exception (e.g. NodeCalcError) By default
     # it is turned off because it can obscure the real problem by not showing it
     # in the last traceback frame.
     raise_custom_errors=False,
 )
 
 # Temporal contexts stack. It should not be used directly by users, the aim of this
-# stack is to populate it when context managers are used. This is a chainmap and 
+# stack is to populate it when context managers are used. This is a chainmap and
 # not a simple dict because we might have nested context managers.
 _TEMPORAL_CONTEXTS = ChainMap()
 
+
 class NodeContext(ChainMap):
     """Extension of Chainmap that always checks on the temporal context first.
-    
+
     Using this class is equivalent to forcing users to have the temporal context
     always in the first position of the chainmap. Since this is not a very nice
     thing to force on users, we use this class instead.
 
     Keys:
         lazy: bool
-            If `False`, nodes will automatically recompute if any of their inputs 
+            If `False`, nodes will automatically recompute if any of their inputs
             have changed, even if no other node needs their output yet.
         lazy_init: bool or None
             Whether the node should compute on initialization. If None, defaults to
@@ -47,6 +48,7 @@ class NodeContext(ChainMap):
         else:
             return super().__getitem__(key)
 
+
 @contextlib.contextmanager
 def temporal_context(context: Union[dict, ChainMap, None] = None, **context_keys: Any):
     """Sets a context temporarily (until the context manager is exited).
@@ -56,8 +58,8 @@ def temporal_context(context: Union[dict, ChainMap, None] = None, **context_keys
     context: dict or ChainMap, optional
         The context that should be updated temporarily. This could for example be
         sisl's main context or the context of a specific node class.
-        
-        If None, the keys and values are forced on all nodes.  
+
+        If None, the keys and values are forced on all nodes.
     **context_keys: Any
         The keys and values that should be used for the nodes context.
 
@@ -88,6 +90,7 @@ def temporal_context(context: Union[dict, ChainMap, None] = None, **context_keys
         def _restore():
             # Restore the original context.
             context.update(old_context)
+
     else:
         # Add this temporal context on top of the temporal contexts stack.
         _TEMPORAL_CONTEXTS.maps.insert(0, context_keys)

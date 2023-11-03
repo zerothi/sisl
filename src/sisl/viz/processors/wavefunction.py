@@ -21,7 +21,7 @@ def get_ith_eigenstate(eigenstate: EigenstateElectron, i: int):
     This is useful because an EigenstateElectron contains all the eigenstates.
     Sometimes a post-processing tool calculates only a subset of eigenstates,
     and this is what you have inside the EigenstateElectron.
-    therefore getting eigenstate[0] does not mean that 
+    therefore getting eigenstate[0] does not mean that
 
     Parameters
     ----------
@@ -29,7 +29,7 @@ def get_ith_eigenstate(eigenstate: EigenstateElectron, i: int):
         The object containing all eigenstates.
     i : int
         The index of the eigenstate to get.
-    
+
     Returns
     ----------
     EigenstateElectron
@@ -39,22 +39,34 @@ def get_ith_eigenstate(eigenstate: EigenstateElectron, i: int):
     if "index" in eigenstate.info:
         wf_i = np.nonzero(eigenstate.info["index"] == i)[0]
         if len(wf_i) == 0:
-            raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available indices: {eigenstate.info['index']}.")
+            raise ValueError(
+                f"Wavefunction with index {i} is not present in the eigenstate. Available indices: {eigenstate.info['index']}."
+            )
         wf_i = wf_i[0]
     else:
         max_index = len(eigenstate)
         if i > max_index:
-            raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available range: [0, {max_index}].")
+            raise ValueError(
+                f"Wavefunction with index {i} is not present in the eigenstate. Available range: [0, {max_index}]."
+            )
         wf_i = i
 
     return eigenstate[wf_i]
 
+
 class WavefunctionDataNode(GridDataNode):
     ...
 
+
 @WavefunctionDataNode.register
-def eigenstate_wf(eigenstate: EigenstateElectron, i: int, grid: Optional[Grid] = None, geometry: Optional[Geometry] = None,
-    k = [0,0,0], grid_prec: float = 0.2, spin: Optional[Spin] = None
+def eigenstate_wf(
+    eigenstate: EigenstateElectron,
+    i: int,
+    grid: Optional[Grid] = None,
+    geometry: Optional[Geometry] = None,
+    k=[0, 0, 0],
+    grid_prec: float = 0.2,
+    spin: Optional[Spin] = None,
 ):
     if geometry is None:
         if isinstance(eigenstate.parent, Geometry):
@@ -62,7 +74,9 @@ def eigenstate_wf(eigenstate: EigenstateElectron, i: int, grid: Optional[Grid] =
         else:
             geometry = getattr(eigenstate.parent, "geometry", None)
     if geometry is None:
-        raise ValueError('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
+        raise ValueError(
+            "No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!"
+        )
 
     if spin is None:
         spin = getattr(eigenstate.parent, "spin", Spin())
@@ -79,28 +93,39 @@ def eigenstate_wf(eigenstate: EigenstateElectron, i: int, grid: Optional[Grid] =
     wf_state = get_ith_eigenstate(eigenstate, i)
 
     # Ensure we are dealing with the R gauge
-    wf_state.change_gauge('R')
+    wf_state.change_gauge("R")
 
     # Finally, insert the wavefunction values into the grid.
-    wavefunction(
-        wf_state.state, grid, geometry=geometry,
-        k=k, spinor=0, spin=spin
-    )
+    wavefunction(wf_state.state, grid, geometry=geometry, k=k, spinor=0, spin=spin)
 
     return grid
 
 
 @WavefunctionDataNode.register
-def hamiltonian_wf(H: Hamiltonian, i: int, grid: Optional[Grid] = None, geometry: Optional[Geometry] = None,
-    k = [0,0,0], grid_prec: float = 0.2, spin: int = 0
+def hamiltonian_wf(
+    H: Hamiltonian,
+    i: int,
+    grid: Optional[Grid] = None,
+    geometry: Optional[Geometry] = None,
+    k=[0, 0, 0],
+    grid_prec: float = 0.2,
+    spin: int = 0,
 ):
     eigenstate = H.eigenstate(k=k, spin=spin)
 
     return eigenstate_wf(eigenstate, i, grid, geometry, k, grid_prec, spin)
 
+
 @WavefunctionDataNode.register
-def wfsx_wf(fdf, wfsx_file, i: int, grid: Optional[Grid] = None, geometry: Optional[Geometry] = None,
-    k = [0,0,0], grid_prec: float = 0.2, spin: int = 0
+def wfsx_wf(
+    fdf,
+    wfsx_file,
+    i: int,
+    grid: Optional[Grid] = None,
+    geometry: Optional[Geometry] = None,
+    k=[0, 0, 0],
+    grid_prec: float = 0.2,
+    spin: int = 0,
 ):
     fdf = FileDataSIESTA(path=fdf)
     geometry = fdf.read_geometry(output=True)

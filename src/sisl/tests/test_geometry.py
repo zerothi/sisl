@@ -20,31 +20,37 @@ from sisl import (
     Sphere,
 )
 
-_dir = osp.join('sisl')
+_dir = osp.join("sisl")
 
 pytestmark = [pytest.mark.geom, pytest.mark.geometry]
 
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
             bond = 1.42
-            sq3h = 3.**.5 * 0.5
-            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
-                                          [1.5, -sq3h, 0.],
-                                          [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
-            C = Atom(Z=6, R=[bond * 1.01]*2)
-            self.g = Geometry(np.array([[0., 0., 0.],
-                                        [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, lattice=self.lattice)
+            sq3h = 3.0**0.5 * 0.5
+            self.lattice = Lattice(
+                np.array(
+                    [[1.5, sq3h, 0.0], [1.5, -sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+                )
+                * bond,
+                nsc=[3, 3, 1],
+            )
+            C = Atom(Z=6, R=[bond * 1.01] * 2)
+            self.g = Geometry(
+                np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], np.float64) * bond,
+                atoms=C,
+                lattice=self.lattice,
+            )
 
             self.mol = Geometry([[i, 0, 0] for i in range(10)], lattice=[50])
+
     return t()
 
 
 class TestGeometry:
-
     def test_objects(self, setup):
         str(setup.g)
         assert len(setup.g) == 2
@@ -61,10 +67,10 @@ class TestGeometry:
     def test_properties(self, setup):
         assert 2 == len(setup.g)
         assert 2 == setup.g.na
-        assert 3*3 == setup.g.n_s
-        assert 2*3*3 == setup.g.na_s
-        assert 2*2 == setup.g.no
-        assert 2*2*3*3 == setup.g.no_s
+        assert 3 * 3 == setup.g.n_s
+        assert 2 * 3 * 3 == setup.g.na_s
+        assert 2 * 2 == setup.g.no
+        assert 2 * 2 * 3 * 3 == setup.g.no_s
 
     def test_iter1(self, setup):
         i = 0
@@ -138,19 +144,19 @@ class TestGeometry:
         cell[0, :] *= 2
         t1 = setup.g * (2, 0)
         assert np.allclose(cell, t1.lattice.cell)
-        t = setup.g * ((2, 0), 'tile')
+        t = setup.g * ((2, 0), "tile")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[1, :] *= 2
         t1 = t * (2, 1)
         assert np.allclose(cell, t1.lattice.cell)
-        t = t * ((2, 1), 'tile')
+        t = t * ((2, 1), "tile")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[2, :] *= 2
         t1 = t * (2, 2)
         assert np.allclose(cell, t1.lattice.cell)
-        t = t * ((2, 2), 'tile')
+        t = t * ((2, 2), "tile")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
@@ -158,18 +164,18 @@ class TestGeometry:
         t = setup.g * [2, 2, 2]
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
-        t = setup.g * ([2, 2, 2], 't')
+        t = setup.g * ([2, 2, 2], "t")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
     def test_tile4(self, setup):
         t1 = setup.g.tile(2, 0).tile(2, 2)
-        t = setup.g * ([2, 0], 't') * [2, 2]
+        t = setup.g * ([2, 0], "t") * [2, 2]
         assert np.allclose(t1.xyz, t.xyz)
 
     def test_tile5(self, setup):
         t = setup.g.tile(2, 0).tile(2, 2)
-        assert np.allclose(t[:len(setup.g), :], setup.g.xyz)
+        assert np.allclose(t[: len(setup.g), :], setup.g.xyz)
 
     def test_repeat0(self, setup):
         with pytest.raises(ValueError):
@@ -198,30 +204,30 @@ class TestGeometry:
         cell[0, :] *= 2
         t1 = setup.g.repeat(2, 0)
         assert np.allclose(cell, t1.lattice.cell)
-        t = setup.g * ((2, 0), 'repeat')
+        t = setup.g * ((2, 0), "repeat")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[1, :] *= 2
         t1 = t.repeat(2, 1)
         assert np.allclose(cell, t1.lattice.cell)
-        t = t * ((2, 1), 'r')
+        t = t * ((2, 1), "r")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[2, :] *= 2
         t1 = t.repeat(2, 2)
         assert np.allclose(cell, t1.lattice.cell)
-        t = t * ((2, 2), 'repeat')
+        t = t * ((2, 2), "repeat")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
         # Full
-        t = setup.g * ([2, 2, 2], 'r')
+        t = setup.g * ([2, 2, 2], "r")
         assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
     def test_repeat4(self, setup):
         t1 = setup.g.repeat(2, 0).repeat(2, 2)
-        t = setup.g * ([2, 0], 'repeat') * ([2, 2], 'r')
+        t = setup.g * ([2, 0], "repeat") * ([2, 2], "r")
         assert np.allclose(t1.xyz, t.xyz)
 
     def test_repeat5(self, setup):
@@ -238,7 +244,9 @@ class TestGeometry:
         assert len(setup.g.sub([0, 1])) == 2
         assert len(setup.g.sub([-1])) == 1
 
-        assert np.allclose(setup.g.sub([0]).xyz, setup.g.sub(np.array([True, False])).xyz)
+        assert np.allclose(
+            setup.g.sub([0]).xyz, setup.g.sub(np.array([True, False])).xyz
+        )
 
     def test_sub2(self, setup):
         assert len(setup.g.sub(range(1))) == 1
@@ -246,7 +254,7 @@ class TestGeometry:
 
     def test_fxyz(self, setup):
         fxyz = setup.g.fxyz
-        assert np.allclose(fxyz, [[0, 0, 0], [1./3, 1./3, 0]])
+        assert np.allclose(fxyz, [[0, 0, 0], [1.0 / 3, 1.0 / 3, 0]])
         assert np.allclose(np.dot(fxyz, setup.g.cell), setup.g.xyz)
 
     def test_axyz(self, setup):
@@ -299,21 +307,21 @@ class TestGeometry:
 
     def test_rij1(self, setup):
         assert np.allclose(setup.g.rij(0, 1), 1.42)
-        assert np.allclose(setup.g.rij(0, [0, 1]), [0., 1.42])
+        assert np.allclose(setup.g.rij(0, [0, 1]), [0.0, 1.42])
 
     def test_orij1(self, setup):
         assert np.allclose(setup.g.orij(0, 2), 1.42)
-        assert np.allclose(setup.g.orij(0, [0, 2]), [0., 1.42])
+        assert np.allclose(setup.g.orij(0, [0, 2]), [0.0, 1.42])
 
     def test_Rij1(self, setup):
         assert np.allclose(setup.g.Rij(0, 1), [1.42, 0, 0])
 
     def test_oRij1(self, setup):
-        assert np.allclose(setup.g.oRij(0, 1), [0., 0, 0])
+        assert np.allclose(setup.g.oRij(0, 1), [0.0, 0, 0])
         assert np.allclose(setup.g.oRij(0, 2), [1.42, 0, 0])
-        assert np.allclose(setup.g.oRij(0, [0, 1, 2]), [[0., 0, 0],
-                                                        [0., 0, 0],
-                                                        [1.42, 0, 0]])
+        assert np.allclose(
+            setup.g.oRij(0, [0, 1, 2]), [[0.0, 0, 0], [0.0, 0, 0], [1.42, 0, 0]]
+        )
         assert np.allclose(setup.g.oRij(0, 2), [1.42, 0, 0])
 
     def test_untile_warns(self, setup):
@@ -421,31 +429,31 @@ class TestGeometry:
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation2(self, setup):
-        rot = setup.g.rotate(180, "z", what='abc')
+        rot = setup.g.rotate(180, "z", what="abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what='abc')
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what="abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, [0, 0, 1], what='abc')
+        rot = rot.rotate(180, [0, 0, 1], what="abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation3(self, setup):
-        rot = setup.g.rotate(180, [0, 0, 1], what='xyz')
+        rot = setup.g.rotate(180, [0, 0, 1], what="xyz")
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what='xyz')
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what="xyz")
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, "z", what='xyz')
+        rot = rot.rotate(180, "z", what="xyz")
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
@@ -460,12 +468,12 @@ class TestGeometry:
         assert not np.allclose(ref.xyz[2], rot.xyz[2])
         assert np.allclose(ref.xyz[3], rot.xyz[3])
 
-        rot = ref.rotate(10, "z", atoms=[1, 2], what='y')
+        rot = ref.rotate(10, "z", atoms=[1, 2], what="y")
         assert ref.xyz[1, 0] == rot.xyz[1, 0]
         assert ref.xyz[1, 1] != rot.xyz[1, 1]
         assert ref.xyz[1, 2] == rot.xyz[1, 2]
 
-        rot = ref.rotate(10, "z", atoms=[1, 2], what='xy', origin=ref.xyz[2])
+        rot = ref.rotate(10, "z", atoms=[1, 2], what="xy", origin=ref.xyz[2])
         assert ref.xyz[1, 0] != rot.xyz[1, 0]
         assert ref.xyz[1, 1] != rot.xyz[1, 1]
         assert ref.xyz[1, 2] == rot.xyz[1, 2]
@@ -513,11 +521,11 @@ class TestGeometry:
 
     def test_iter_shape1(self, setup):
         i = 0
-        for ias, _ in setup.g.iter_block(method='sphere'):
+        for ias, _ in setup.g.iter_block(method="sphere"):
             i += len(ias)
         assert i == len(setup.g)
         i = 0
-        for ias, _ in setup.g.iter_block(method='cube'):
+        for ias, _ in setup.g.iter_block(method="cube"):
             i += len(ias)
         assert i == len(setup.g)
 
@@ -525,11 +533,11 @@ class TestGeometry:
     def test_iter_shape2(self, setup):
         g = setup.g.tile(30, 0).tile(30, 1)
         i = 0
-        for ias, _ in g.iter_block(method='sphere'):
+        for ias, _ in g.iter_block(method="sphere"):
             i += len(ias)
         assert i == len(g)
         i = 0
-        for ias, _ in g.iter_block(method='cube'):
+        for ias, _ in g.iter_block(method="cube"):
             i += len(ias)
         assert i == len(g)
         i = 0
@@ -541,11 +549,11 @@ class TestGeometry:
     def test_iter_shape3(self, setup):
         g = setup.g.tile(50, 0).tile(50, 1)
         i = 0
-        for ias, _ in g.iter_block(method='sphere'):
+        for ias, _ in g.iter_block(method="sphere"):
             i += len(ias)
         assert i == len(g)
         i = 0
-        for ias, _ in g.iter_block(method='cube'):
+        for ias, _ in g.iter_block(method="cube"):
             i += len(ias)
         assert i == len(g)
         i = 0
@@ -562,43 +570,43 @@ class TestGeometry:
         for axis in [0, 1, 2]:
             s = setup.g.append(setup.g, axis)
             assert len(s) == len(setup.g) * 2
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
             s = setup.g.prepend(setup.g, axis)
             assert len(s) == len(setup.g) * 2
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
             s = setup.g.append(setup.g.lattice, axis)
             assert len(s) == len(setup.g)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
             s = setup.g.prepend(setup.g.lattice, axis)
             assert len(s) == len(setup.g)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
+            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
 
     def test_append_raise_valueerror(self, setup):
         with pytest.raises(ValueError):
-            s = setup.g.append(setup.g, 0, offset='not')
+            s = setup.g.append(setup.g, 0, offset="not")
 
     def test_prepend_raise_valueerror(self, setup):
         with pytest.raises(ValueError):
-            s = setup.g.prepend(setup.g, 0, offset='not')
+            s = setup.g.prepend(setup.g, 0, offset="not")
 
     def test_append_prepend_offset(self, setup):
         for axis in [0, 1, 2]:
             t = setup.g.lattice.cell[axis, :].copy()
-            t *= 10. / (t ** 2).sum() ** 0.5
+            t *= 10.0 / (t**2).sum() ** 0.5
             s1 = setup.g.copy()
             s2 = setup.g.translate(t)
 
-            S = s1.append(s2, axis, offset='min')
+            S = s1.append(s2, axis, offset="min")
             s = setup.g.append(setup.g, axis)
 
             assert np.allclose(s.cell[axis, :], S.cell[axis, :])
             assert np.allclose(s.xyz, S.xyz)
 
-            P = s2.prepend(s1, axis, offset='min')
+            P = s2.prepend(s1, axis, offset="min")
             p = setup.g.prepend(setup.g, axis)
 
             assert np.allclose(p.cell[axis, :], P.cell[axis, :])
@@ -639,12 +647,12 @@ class TestGeometry:
         assert np.allclose(g[1], g.center(atoms=[1]))
         assert np.allclose(np.mean(g.xyz, axis=0), g.center())
         # in this case the pbc COM is equivalent to the simple one
-        assert np.allclose(g.center(what='mass'), g.center(what='mass:pbc'))
-        assert np.allclose(g.center(what='mm:xyz'), g.center(what='mm(xyz)'))
+        assert np.allclose(g.center(what="mass"), g.center(what="mass:pbc"))
+        assert np.allclose(g.center(what="mm:xyz"), g.center(what="mm(xyz)"))
 
     def test_center_raise(self, setup):
         with pytest.raises(ValueError):
-            al = setup.g.center(what='unknown')
+            al = setup.g.center(what="unknown")
 
     def test___add1__(self, setup):
         n = len(setup.g)
@@ -686,12 +694,12 @@ class TestGeometry:
         assert g * (2, 2, 2) == g.tile(2, 0).tile(2, 1).tile(2, 2)
         assert g * [1, 2, 2] == g.tile(1, 0).tile(2, 1).tile(2, 2)
         assert g * [1, 3, 2] == g.tile(1, 0).tile(3, 1).tile(2, 2)
-        assert g * ([1, 3, 2], 'r') == g.repeat(1, 0).repeat(3, 1).repeat(2, 2)
-        assert g * ([1, 3, 2], 'repeat') == g.repeat(1, 0).repeat(3, 1).repeat(2, 2)
-        assert g * ([1, 3, 2], 'tile') == g.tile(1, 0).tile(3, 1).tile(2, 2)
-        assert g * ([1, 3, 2], 't') == g.tile(1, 0).tile(3, 1).tile(2, 2)
-        assert g * ([3, 2], 't') == g.tile(3, 2)
-        assert g * ([3, 2], 'r') == g.repeat(3, 2)
+        assert g * ([1, 3, 2], "r") == g.repeat(1, 0).repeat(3, 1).repeat(2, 2)
+        assert g * ([1, 3, 2], "repeat") == g.repeat(1, 0).repeat(3, 1).repeat(2, 2)
+        assert g * ([1, 3, 2], "tile") == g.tile(1, 0).tile(3, 1).tile(2, 2)
+        assert g * ([1, 3, 2], "t") == g.tile(1, 0).tile(3, 1).tile(2, 2)
+        assert g * ([3, 2], "t") == g.tile(3, 2)
+        assert g * ([3, 2], "r") == g.repeat(3, 2)
 
     def test_add(self, setup):
         double = setup.g.add(setup.g)
@@ -743,20 +751,16 @@ class TestGeometry:
         c = setup.g.cell
 
         # check indices
-        assert np.all(setup.g.a2isc([1, 2]) == [[0,  0, 0],
-                                                [-1, -1, 0]])
+        assert np.all(setup.g.a2isc([1, 2]) == [[0, 0, 0], [-1, -1, 0]])
         assert np.all(setup.g.a2isc(2) == [-1, -1, 0])
         assert np.allclose(setup.g.a2sc(2), -c[0, :] - c[1, :])
-        assert np.all(setup.g.o2isc([1, 5]) == [[0,  0, 0],
-                                                [-1, -1, 0]])
+        assert np.all(setup.g.o2isc([1, 5]) == [[0, 0, 0], [-1, -1, 0]])
         assert np.all(setup.g.o2isc(5) == [-1, -1, 0])
         assert np.allclose(setup.g.o2sc(5), -c[0, :] - c[1, :])
 
         # Check off-sets
-        assert np.allclose(setup.g.a2sc([1, 2]), [[0.,  0., 0.],
-                                                      -c[0, :] - c[1, :]])
-        assert np.allclose(setup.g.o2sc([1, 5]), [[0.,  0., 0.],
-                                                      -c[0, :] - c[1, :]])
+        assert np.allclose(setup.g.a2sc([1, 2]), [[0.0, 0.0, 0.0], -c[0, :] - c[1, :]])
+        assert np.allclose(setup.g.o2sc([1, 5]), [[0.0, 0.0, 0.0], -c[0, :] - c[1, :]])
 
     def test_reverse(self, setup):
         rev = setup.g.reverse()
@@ -769,13 +773,13 @@ class TestGeometry:
     def test_scale1(self, setup):
         two = setup.g.scale(2)
         assert len(two) == len(setup.g)
-        assert np.allclose(two.xyz[:, :] / 2., setup.g.xyz)
+        assert np.allclose(two.xyz[:, :] / 2.0, setup.g.xyz)
 
     def test_scale_vector_abc(self, setup):
         two = setup.g.scale([2, 1, 1], what="abc")
         assert len(two) == len(setup.g)
         # Check that cell has been scaled accordingly
-        assert np.allclose(two.cell[0] / 2., setup.g.cell[0])
+        assert np.allclose(two.cell[0] / 2.0, setup.g.cell[0])
         assert np.allclose(two.cell[1:], setup.g.cell[1:])
         # Now check that fractional coordinates are still the same
         assert np.allclose(two.fxyz, setup.g.fxyz)
@@ -784,7 +788,7 @@ class TestGeometry:
         two = setup.g.scale([2, 1, 1], what="xyz")
         assert len(two) == len(setup.g)
         # Check that cell has been scaled accordingly
-        assert np.allclose(two.cell[:, 0] / 2., setup.g.cell[:, 0])
+        assert np.allclose(two.cell[:, 0] / 2.0, setup.g.cell[:, 0])
         assert np.allclose(two.cell[:, 1:], setup.g.cell[:, 1:])
         # Now check that fractional coordinates are still the same
         assert np.allclose(two.fxyz, setup.g.fxyz)
@@ -857,8 +861,7 @@ class TestGeometry:
     def test_close_within1(self, setup):
         three = range(3)
         for ia in setup.mol:
-            shapes = [Sphere(0.1, setup.mol[ia]),
-                      Sphere(1.1, setup.mol[ia])]
+            shapes = [Sphere(0.1, setup.mol[ia]), Sphere(1.1, setup.mol[ia])]
             i = setup.mol.close(ia, R=(0.1, 1.1), atoms=three)
             ii = setup.mol.within(shapes, atoms=three)
             assert np.all(i[0] == ii[0])
@@ -867,8 +870,7 @@ class TestGeometry:
     def test_close_within2(self, setup):
         g = setup.g.repeat(6, 0).repeat(6, 1)
         for ia in g:
-            shapes = [Sphere(0.1, g[ia]),
-                      Sphere(1.5, g[ia])]
+            shapes = [Sphere(0.1, g[ia]), Sphere(1.5, g[ia])]
             i = g.close(ia, R=(0.1, 1.5))
             ii = g.within(shapes)
             assert np.all(i[0] == ii[0])
@@ -876,10 +878,9 @@ class TestGeometry:
 
     def test_close_within3(self, setup):
         g = setup.g.repeat(6, 0).repeat(6, 1)
-        args = {'ret_xyz': True, 'ret_rij': True, 'ret_isc': True}
+        args = {"ret_xyz": True, "ret_rij": True, "ret_isc": True}
         for ia in g:
-            shapes = [Sphere(0.1, g[ia]),
-                      Sphere(1.5, g[ia])]
+            shapes = [Sphere(0.1, g[ia]), Sphere(1.5, g[ia])]
             i, xa, d, isc = g.close(ia, R=(0.1, 1.5), **args)
             ii, xai, di, isci = g.within(shapes, **args)
             for j in [0, 1]:
@@ -891,14 +892,14 @@ class TestGeometry:
     def test_within_inf1(self, setup):
         g = setup.g.translate([0.05] * 3)
         lattice_3x3 = g.lattice.tile(3, 0).tile(3, 1)
-        assert len(g.within_inf(lattice_3x3)[0]) == len(g) * 3 ** 2
+        assert len(g.within_inf(lattice_3x3)[0]) == len(g) * 3**2
 
     def test_within_inf_nonperiodic(self, setup):
         g = setup.g.copy()
 
         # Even if the geometry has nsc > 1, if we set periodic=False
         # we should get only the atoms in the unit cell.
-        g.set_nsc([3,3,1])
+        g.set_nsc([3, 3, 1])
 
         ia, xyz, isc = g.within_inf(g.lattice, periodic=[False, False, False])
 
@@ -925,34 +926,36 @@ class TestGeometry:
     def test_within_inf_duplicates(self, setup):
         g = setup.g.copy()
         lattice_3x3 = g.lattice.tile(3, 0).tile(3, 1)
-        assert len(g.within_inf(lattice_3x3)[0]) == len(g) * 3 ** 2 + 7 # 3 per vector and 1 in the upper right corner
+        assert (
+            len(g.within_inf(lattice_3x3)[0]) == len(g) * 3**2 + 7
+        )  # 3 per vector and 1 in the upper right corner
 
     def test_close_sizes(self, setup):
         point = 0
 
         # Return index
-        idx = setup.mol.close(point, R=.1)
+        idx = setup.mol.close(point, R=0.1)
         assert len(idx) == 1
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1))
+        idx = setup.mol.close(point, R=(0.1, 1.1))
         assert len(idx) == 2
         assert len(idx[0]) == 1
         assert not isinstance(idx[0], list)
         # Longer
-        idx = setup.mol.close(point, R=(.1, 1.1, 2.1))
+        idx = setup.mol.close(point, R=(0.1, 1.1, 2.1))
         assert len(idx) == 3
         assert len(idx[0]) == 1
 
         # Return index
-        idx = setup.mol.close(point, R=.1, ret_xyz=True)
+        idx = setup.mol.close(point, R=0.1, ret_xyz=True)
         assert len(idx) == 2
         assert len(idx[0]) == 1
         assert len(idx[1]) == 1
-        assert idx[1].shape[0] == 1 # equivalent to above
+        assert idx[1].shape[0] == 1  # equivalent to above
         assert idx[1].shape[1] == 3
 
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True)
+        idx = setup.mol.close(point, R=(0.1, 1.1), ret_xyz=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
         assert len(idx) == 2
         assert len(idx[0]) == 2
@@ -969,7 +972,9 @@ class TestGeometry:
         assert idx[1][1].shape[1] == 3
 
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True, ret_isc=True)
+        idx = setup.mol.close(
+            point, R=(0.1, 1.1), ret_xyz=True, ret_rij=True, ret_isc=True
+        )
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2], [isc-1, isc-2]]
         assert len(idx) == 4
         assert len(idx[0]) == 2
@@ -1000,7 +1005,7 @@ class TestGeometry:
         assert idx[3][1].shape[1] == 3
 
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1), ret_rij=True)
+        idx = setup.mol.close(point, R=(0.1, 1.1), ret_rij=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
         assert len(idx) == 2
         assert len(idx[0]) == 2
@@ -1017,31 +1022,31 @@ class TestGeometry:
         assert idx[1][1].shape[0] == 1
 
     def test_close_sizes_none(self, setup):
-        point = [100., 100., 100.]
+        point = [100.0, 100.0, 100.0]
 
         # Return index
-        idx = setup.mol.close(point, R=.1)
+        idx = setup.mol.close(point, R=0.1)
         assert len(idx) == 0
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1))
+        idx = setup.mol.close(point, R=(0.1, 1.1))
         assert len(idx) == 2
         assert len(idx[0]) == 0
         assert not isinstance(idx[0], list)
         # Longer
-        idx = setup.mol.close(point, R=(.1, 1.1, 2.1))
+        idx = setup.mol.close(point, R=(0.1, 1.1, 2.1))
         assert len(idx) == 3
         assert len(idx[0]) == 0
 
         # Return index
-        idx = setup.mol.close(point, R=.1, ret_xyz=True)
+        idx = setup.mol.close(point, R=0.1, ret_xyz=True)
         assert len(idx) == 2
         assert len(idx[0]) == 0
         assert len(idx[1]) == 0
-        assert idx[1].shape[0] == 0 # equivalent to above
+        assert idx[1].shape[0] == 0  # equivalent to above
         assert idx[1].shape[1] == 3
 
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True)
+        idx = setup.mol.close(point, R=(0.1, 1.1), ret_xyz=True)
         # [[idx-1, idx-2], [coord-1, coord-2]]
         assert len(idx) == 2
         assert len(idx[0]) == 2
@@ -1058,7 +1063,7 @@ class TestGeometry:
         assert idx[1][1].shape[1] == 3
 
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
+        idx = setup.mol.close(point, R=(0.1, 1.1), ret_xyz=True, ret_rij=True)
         # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
         assert len(idx) == 3
         assert len(idx[0]) == 2
@@ -1082,7 +1087,7 @@ class TestGeometry:
         assert idx[2][1].shape[0] == 0
 
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1), ret_rij=True)
+        idx = setup.mol.close(point, R=(0.1, 1.1), ret_rij=True)
         # [[idx-1, idx-2], [dist-1, dist-2]]
         assert len(idx) == 2
         assert len(idx[0]) == 2
@@ -1108,11 +1113,11 @@ class TestGeometry:
         rib.atoms[-1] = Atom[1]
         ia = len(rib) - 1
         # Get bond-length
-        idx, d = rib.close(ia, R=(.1, 1000), ret_rij=True)
+        idx, d = rib.close(ia, R=(0.1, 1000), ret_rij=True)
         i = np.argmin(d[1])
         d = d[1][i]
         rib.bond_correct(ia, idx[1][i])
-        idx, d2 = rib.close(ia, R=(.1, 1000), ret_rij=True)
+        idx, d2 = rib.close(ia, R=(0.1, 1000), ret_rij=True)
         i = np.argmin(d2[1])
         d2 = d2[1][i]
         assert d != d2
@@ -1138,7 +1143,7 @@ class TestGeometry:
 
         # Assert that it correctly calculates the bond-length in the
         # directions of actual distance
-        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atoms='H', lattice=s1)
+        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atoms="H", lattice=s1)
         g2 = Geometry(np.copy(g1.xyz))
         for i in range(2):
             assert np.allclose(g1.cell[i, :], g2.cell[i, :])
@@ -1153,7 +1158,7 @@ class TestGeometry:
     def test_distance2(self, setup):
         geom = Geometry(setup.g.xyz, Atom[6])
         with pytest.raises(ValueError):
-            d = geom.distance(R=1.42, method='unknown_numpy_function')
+            d = geom.distance(R=1.42, method="unknown_numpy_function")
 
     def test_distance3(self, setup):
         geom = setup.g.copy()
@@ -1169,7 +1174,7 @@ class TestGeometry:
         d = geom.distance(method=np.max)
         assert len(d) == 1
         assert np.allclose(d, [1.42])
-        d = geom.distance(method='max')
+        d = geom.distance(method="max")
         assert len(d) == 1
         assert np.allclose(d, [1.42])
 
@@ -1183,16 +1188,16 @@ class TestGeometry:
 
     def test_distance6(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
+        geom = Geometry([0] * 3, Atom(1, R=1.0), lattice=1)
         geom.set_nsc([77, 1, 1])
         d = geom.distance(0)
         assert len(d) == 1
-        assert np.allclose(d, [1.])
+        assert np.allclose(d, [1.0])
 
         # Do twice
         d = geom.distance(R=2)
         assert len(d) == 2
-        assert np.allclose(d, [1., 2.])
+        assert np.allclose(d, [1.0, 2.0])
 
         # Do all
         d = geom.distance(R=np.inf)
@@ -1202,41 +1207,41 @@ class TestGeometry:
 
         # Create a 2D grid
         geom.set_nsc([3, 3, 1])
-        d = geom.distance(R=2, tol=[.4, .3, .2, .1])
-        assert len(d) == 2 # 1, sqrt(2)
+        d = geom.distance(R=2, tol=[0.4, 0.3, 0.2, 0.1])
+        assert len(d) == 2  # 1, sqrt(2)
         # Add one due arange not adding the last item
-        assert np.allclose(d, [1, 2 ** .5])
+        assert np.allclose(d, [1, 2**0.5])
 
         # Create a 2D grid
         geom.set_nsc([5, 5, 1])
-        d = geom.distance(R=2, tol=[.4, .3, .2, .1])
-        assert len(d) == 3 # 1, sqrt(2), 2
+        d = geom.distance(R=2, tol=[0.4, 0.3, 0.2, 0.1])
+        assert len(d) == 3  # 1, sqrt(2), 2
         # Add one due arange not adding the last item
-        assert np.allclose(d, [1, 2 ** .5, 2])
+        assert np.allclose(d, [1, 2**0.5, 2])
 
     def test_distance7(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
+        geom = Geometry([0] * 3, Atom(1, R=1.0), lattice=1)
         geom.set_nsc([77, 1, 1])
         # Try with a short R and a long tolerance list
         # We know that the tolerance list prevails, because
-        d = geom.distance(R=1, tol=np.ones(10) * .5)
+        d = geom.distance(R=1, tol=np.ones(10) * 0.5)
         assert len(d) == 1
-        assert np.allclose(d, [1.])
+        assert np.allclose(d, [1.0])
 
     def test_distance8(self, setup):
-        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
+        geom = Geometry([0] * 3, Atom(1, R=1.0), lattice=1)
         geom.set_nsc([77, 1, 1])
-        d = geom.distance(0, method='min')
+        d = geom.distance(0, method="min")
         assert len(d) == 1
-        d = geom.distance(0, method='median')
+        d = geom.distance(0, method="median")
         assert len(d) == 1
-        d = geom.distance(0, method='mode')
+        d = geom.distance(0, method="mode")
         assert len(d) == 1
 
     def test_optimize_nsc1(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
+        geom = Geometry([0] * 3, Atom(1, R=1.0), lattice=1)
         geom.set_nsc([77, 77, 77])
         assert np.allclose(geom.optimize_nsc(), [3, 3, 3])
         geom.set_nsc([77, 77, 77])
@@ -1252,7 +1257,7 @@ class TestGeometry:
 
     def test_optimize_nsc2(self, setup):
         # 2 ** 0.5 ensures lattice vectors with length 1
-        geom = sisl_geom.fcc(2 ** 0.5, Atom(1, R=1.0001))
+        geom = sisl_geom.fcc(2**0.5, Atom(1, R=1.0001))
         geom.set_nsc([77, 77, 77])
         assert np.allclose(geom.optimize_nsc(), [3, 3, 3])
         geom.set_nsc([77, 77, 77])
@@ -1274,39 +1279,84 @@ class TestGeometry:
         p, ns = setup.g.ArgumentParser(**kwargs)
 
         # Try all options
-        opts = ['--origin',
-                '--center-of', 'mass',
-                '--center-of', 'xyz',
-                '--center-of', 'position',
-                '--center-of', 'cell',
-                '--unit-cell', 'translate',
-                '--unit-cell', 'mod',
-                '--rotate', '90', 'x',
-                '--rotate', '90', 'y',
-                '--rotate', '90', 'z',
-                '--add', '0,0,0', '6',
-                '--swap', '0', '1',
-                '--repeat', '2', 'x',
-                '--repeat', '2', 'y',
-                '--repeat', '2', 'z',
-                '--tile', '2', 'x',
-                '--tile', '2', 'y',
-                '--tile', '2', 'z',
-                '--untile', '2', 'z',
-                '--untile', '2', 'y',
-                '--untile', '2', 'x',
+        opts = [
+            "--origin",
+            "--center-of",
+            "mass",
+            "--center-of",
+            "xyz",
+            "--center-of",
+            "position",
+            "--center-of",
+            "cell",
+            "--unit-cell",
+            "translate",
+            "--unit-cell",
+            "mod",
+            "--rotate",
+            "90",
+            "x",
+            "--rotate",
+            "90",
+            "y",
+            "--rotate",
+            "90",
+            "z",
+            "--add",
+            "0,0,0",
+            "6",
+            "--swap",
+            "0",
+            "1",
+            "--repeat",
+            "2",
+            "x",
+            "--repeat",
+            "2",
+            "y",
+            "--repeat",
+            "2",
+            "z",
+            "--tile",
+            "2",
+            "x",
+            "--tile",
+            "2",
+            "y",
+            "--tile",
+            "2",
+            "z",
+            "--untile",
+            "2",
+            "z",
+            "--untile",
+            "2",
+            "y",
+            "--untile",
+            "2",
+            "x",
         ]
-        if kwargs.get('limit_arguments', True):
-            opts.extend(['--rotate', '-90', 'x',
-                         '--rotate', '-90', 'y',
-                         '--rotate', '-90', 'z'])
+        if kwargs.get("limit_arguments", True):
+            opts.extend(
+                ["--rotate", "-90", "x", "--rotate", "-90", "y", "--rotate", "-90", "z"]
+            )
         else:
-            opts.extend(['--rotate-x', ' -90',
-                         '--rotate-y', ' -90',
-                         '--rotate-z', ' -90',
-                         '--repeat-x', '2',
-                         '--repeat-y', '2',
-                         '--repeat-z', '2'])
+            opts.extend(
+                [
+                    "--rotate-x",
+                    " -90",
+                    "--rotate-y",
+                    " -90",
+                    "--rotate-z",
+                    " -90",
+                    "--repeat-x",
+                    "2",
+                    "--repeat-y",
+                    "2",
+                    "--repeat-z",
+                    "2",
+                ]
+            )
 
         args = p.parse_args(opts, namespace=ns)
 
@@ -1321,7 +1371,7 @@ class TestGeometry:
             g1.set_sc(s1)
         assert g1.lattice == s1
         assert len(deps) == 1
-    
+
     def test_set_supercell(self, setup):
         # check for deprecation
         s1 = Lattice([2, 2, 2])
@@ -1333,33 +1383,34 @@ class TestGeometry:
 
     def test_attach1(self, setup):
         g = setup.g.attach(0, setup.mol, 0, dist=1.42, axis=2)
-        g = setup.g.attach(0, setup.mol, 0, dist='calc', axis=2)
+        g = setup.g.attach(0, setup.mol, 0, dist="calc", axis=2)
         g = setup.g.attach(0, setup.mol, 0, dist=[0, 0, 1.42])
 
     def test_mirror_function(self, setup):
         g = setup.g
-        for plane in ['xy', 'xz', 'yz', 'ab', 'bc', 'ac']:
+        for plane in ["xy", "xz", "yz", "ab", "bc", "ac"]:
             g.mirror(plane)
 
-        assert g.mirror('xy') == g.mirror('z')
-        assert g.mirror('xy') == g.mirror([0, 0, 1])
+        assert g.mirror("xy") == g.mirror("z")
+        assert g.mirror("xy") == g.mirror([0, 0, 1])
 
-        assert g.mirror('xy', [0]) == g.mirror([0, 0, 1], [0])
+        assert g.mirror("xy", [0]) == g.mirror([0, 0, 1], [0])
 
     def test_mirror_point(self):
         g = Geometry([[0, 0, 0], [0, 0, 1]])
-        out = g.mirror('z')
+        out = g.mirror("z")
         assert np.allclose(out.xyz[:, 2], [0, -1])
         assert np.allclose(out.xyz[:, :2], 0)
-        out = g.mirror('z', point=(0, 0, 0.5))
+        out = g.mirror("z", point=(0, 0, 0.5))
         assert np.allclose(out.xyz[:, 2], [1, 0])
         assert np.allclose(out.xyz[:, :2], 0)
-        out = g.mirror('z', point=(0, 0, 1))
+        out = g.mirror("z", point=(0, 0, 1))
         assert np.allclose(out.xyz[:, 2], [2, 1])
         assert np.allclose(out.xyz[:, :2], 0)
 
     def test_pickle(self, setup):
         import pickle as p
+
         s = p.dumps(setup.g)
         n = p.loads(s)
         assert n == setup.g
@@ -1368,32 +1419,32 @@ class TestGeometry:
         g = sisl_geom.graphene()
 
         assert len(g.names) == 0
-        g['A'] = 1
+        g["A"] = 1
         assert len(g.names) == 1
-        g[[1, 2]] = 'B'
+        g[[1, 2]] = "B"
         assert len(g.names) == 2
-        g.names.delete_name('B')
+        g.names.delete_name("B")
         assert len(g.names) == 1
 
         # Add new group
-        g['B'] = [0, 2]
+        g["B"] = [0, 2]
 
         for name in g.names:
-            assert name in ['A', 'B']
+            assert name in ["A", "B"]
 
         str(g)
 
-        assert np.allclose(g['B'], g[[0, 2], :])
-        assert np.allclose(g.axyz('B'), g[[0, 2], :])
+        assert np.allclose(g["B"], g[[0, 2], :])
+        assert np.allclose(g.axyz("B"), g[[0, 2], :])
 
-        del g.names['B']
+        del g.names["B"]
         assert len(g.names) == 1
 
     def test_geometry_groups_raise(self):
         g = sisl_geom.graphene()
-        g['A'] = 1
+        g["A"] = 1
         with pytest.raises(SislError):
-            g['A'] = [1, 2]
+            g["A"] = [1, 2]
 
     def test_geometry_as_primary_raise_nondivisable(self):
         g = sisl_geom.graphene()
@@ -1408,20 +1459,25 @@ class TestGeometry:
     def test_geometry_iR_negative_R(self):
         g = sisl_geom.graphene()
         with pytest.raises(ValueError):
-            g.iR(R=-1.)
+            g.iR(R=-1.0)
 
-    @pytest.mark.parametrize("geometry", [sisl_geom.graphene(),
-                                          sisl_geom.diamond(),
-                                          sisl_geom.sc(1.4, Atom[1]),
-                                          sisl_geom.fcc(1.4, Atom[1]),
-                                          sisl_geom.bcc(1.4, Atom[1]),
-                                          sisl_geom.hcp(1.4, Atom[1])])
+    @pytest.mark.parametrize(
+        "geometry",
+        [
+            sisl_geom.graphene(),
+            sisl_geom.diamond(),
+            sisl_geom.sc(1.4, Atom[1]),
+            sisl_geom.fcc(1.4, Atom[1]),
+            sisl_geom.bcc(1.4, Atom[1]),
+            sisl_geom.hcp(1.4, Atom[1]),
+        ],
+    )
     def test_geometry_as_primary(self, geometry):
         prod = itertools.product
         x_reps = [1, 4, 3]
         y_reps = [1, 4, 5]
         z_reps = [1, 4, 6]
-        tile_rep = ['r', 't']
+        tile_rep = ["r", "t"]
 
         na_primary = len(geometry)
         for x, y, z in prod(x_reps, y_reps, z_reps):
@@ -1453,7 +1509,9 @@ class TestGeometry:
         from_ase = gr.new(to_ase)
         assert gr.equal(from_ase, R=False)
 
-    @pytest.mark.xfail(reason="pymatgen backconversion sets nsc=[3, 3, 3], we need to figure this out")
+    @pytest.mark.xfail(
+        reason="pymatgen backconversion sets nsc=[3, 3, 3], we need to figure this out"
+    )
     def test_geometry_pymatgen_to(self):
         pytest.importorskip("pymatgen", reason="pymatgen not available")
         gr = sisl_geom.graphene()
@@ -1501,7 +1559,9 @@ def test_geometry_sort_simple():
     for ix in idx:
         assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
 
-    s, idx = bi.sort(axis=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atoms=True)
+    s, idx = bi.sort(
+        axis=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atoms=True
+    )
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         # idx is according to bi
@@ -1526,7 +1586,9 @@ def test_geometry_sort_int():
     for ix in idx:
         assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
 
-    s, idx = bi.sort(ascending1=True, axis15=0, ascending0=False, lattice235=1, ret_atoms=True)
+    s, idx = bi.sort(
+        ascending1=True, axis15=0, ascending0=False, lattice235=1, ret_atoms=True
+    )
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         # idx is according to bi
@@ -1551,6 +1613,7 @@ def test_geometry_sort_func():
 
     def reverse(geometry, atoms, **kwargs):
         return atoms[::-1]
+
     atoms = [[2, 0], [3, 1]]
     out = bi.sort(func=reverse, atoms=atoms)
 
@@ -1578,31 +1641,38 @@ def test_geometry_sort_func_sort():
 
     # Sort according to another cell fractional coordinates
     fcc = sisl_geom.fcc(2.4, Atom(6))
+
     def fcc_fracs(axis):
         def _(geometry):
             return np.dot(geometry.xyz, fcc.icell.T)[:, axis]
+
         return _
+
     out = bi.sort(func_sort=(fcc_fracs(0), fcc_fracs(2)))
 
 
 def test_geometry_sort_group():
-    bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    bi = (
+        sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7]))
+        .tile(2, 0)
+        .repeat(2, 1)
+    )
 
-    out = bi.sort(group='Z')
+    out = bi.sort(group="Z")
 
     assert np.allclose(out.atoms.Z[:4], 5)
     assert np.allclose(out.atoms.Z[4:12], 6)
     assert np.allclose(out.atoms.Z[12:16], 7)
 
-    out = bi.sort(group=('symbol', 'C', None))
+    out = bi.sort(group=("symbol", "C", None))
 
     assert np.allclose(out.atoms.Z[:8], 6)
 
-    C = bi.sort(group=('symbol', 'C', None))
-    BN = bi.sort(group=('symbol', None, 'C'))
-    BN2 = bi.sort(group=('symbol', ['B', 'N'], 'C'))
+    C = bi.sort(group=("symbol", "C", None))
+    BN = bi.sort(group=("symbol", None, "C"))
+    BN2 = bi.sort(group=("symbol", ["B", "N"], "C"))
     # For these simple geometries symbol and tag are the same
-    BN3 = bi.sort(group=('tag', ['B', 'N'], 'C'))
+    BN3 = bi.sort(group=("tag", ["B", "N"], "C"))
 
     # none of these atoms should be the same
     assert not np.any(np.isclose(C.atoms.Z, BN.atoms.Z))
@@ -1610,8 +1680,8 @@ def test_geometry_sort_group():
     assert np.allclose(BN.atoms.Z, BN2.atoms.Z)
     assert np.allclose(BN.atoms.Z, BN3.atoms.Z)
 
-    mass = bi.sort(group='mass')
-    Z = bi.sort(group='Z')
+    mass = bi.sort(group="mass")
+    Z = bi.sort(group="Z")
     assert np.allclose(mass.atoms.Z, Z.atoms.Z)
 
 
@@ -1623,7 +1693,11 @@ def test_geometry_sort_fail_keyword():
 @pytest.mark.category
 @pytest.mark.geom_category
 def test_geometry_sanitize_atom_category():
-    bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    bi = (
+        sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7]))
+        .tile(2, 0)
+        .repeat(2, 1)
+    )
     C_idx = (bi.atoms.Z == 6).nonzero()[0]
     check_C = bi.axyz(C_idx)
     only_C = bi.axyz(Atom[6])
@@ -1631,26 +1705,28 @@ def test_geometry_sanitize_atom_category():
     only_C = bi.axyz(bi.atoms.Z == 6)
     assert np.allclose(only_C, check_C)
     # with dict redirect
-    only_C = bi.axyz({'Z': 6})
+    only_C = bi.axyz({"Z": 6})
     assert np.allclose(only_C, check_C)
     # Using a dict that has multiple keys. This basically checks
     # that it accepts generic categories such as the AndCategory
     bi2 = bi.copy()
     bi2.atoms["C"] = Atom("C", R=1.9)
-    only_C = bi2.axyz({'Z': 6, "neighbours": 3})
+    only_C = bi2.axyz({"Z": 6, "neighbours": 3})
     assert np.allclose(only_C, check_C)
 
     tup_01 = (0, 2)
     list_01 = [0, 2]
     ndarray_01 = np.array(list_01)
-    assert np.allclose(bi._sanitize_atoms(tup_01),
-                       bi._sanitize_atoms(list_01))
-    assert np.allclose(bi._sanitize_atoms(ndarray_01),
-                       bi._sanitize_atoms(list_01))
+    assert np.allclose(bi._sanitize_atoms(tup_01), bi._sanitize_atoms(list_01))
+    assert np.allclose(bi._sanitize_atoms(ndarray_01), bi._sanitize_atoms(list_01))
 
 
 def test_geometry_sanitize_atom_shape():
-    bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    bi = (
+        sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7]))
+        .tile(2, 0)
+        .repeat(2, 1)
+    )
     cube = Cube(10)
     assert len(bi.axyz(cube)) != 0
 
@@ -1660,10 +1736,7 @@ def test_geometry_sanitize_atom_0_length():
     assert len(gr.axyz([])) == 0
 
 
-@pytest.mark.parametrize("atoms", [[True, False],
-                                   (True, False),
-                                   [0], (0,)
-])
+@pytest.mark.parametrize("atoms", [[True, False], (True, False), [0], (0,)])
 def test_geometry_sanitize_atom_other_bool(atoms):
     gr = sisl_geom.graphene()
     assert len(gr.axyz(atoms)) == 1
@@ -1684,7 +1757,9 @@ def test_geometry_sanitize_orbs():
     C_idx = (bi.atoms.Z == 6).nonzero()[0]
     assert np.allclose(bi._sanitize_orbs({bot: [0]}), bi.firsto[C_idx])
     assert np.allclose(bi._sanitize_orbs({bot: 1}), bi.firsto[C_idx] + 1)
-    assert np.allclose(bi._sanitize_orbs({bot: [1, 2]}), np.add.outer(bi.firsto[C_idx], [1, 2]).ravel())
+    assert np.allclose(
+        bi._sanitize_orbs({bot: [1, 2]}), np.add.outer(bi.firsto[C_idx], [1, 2]).ravel()
+    )
 
 
 def test_geometry_sub_orbitals():
@@ -1703,7 +1778,7 @@ def test_geometry_sub_orbitals():
 
 def test_geometry_new_xyz(sisl_tmp):
     # test that Geometry.new works
-    out = sisl_tmp('out.xyz', _dir)
+    out = sisl_tmp("out.xyz", _dir)
     C = Atom[6]
     gr = sisl_geom.graphene(atoms=C)
     # writing doesn't save orbital information, so we force
@@ -1741,14 +1816,14 @@ def test_translate2uc_axes():
 def test_as_supercell_graphene():
     gr = sisl_geom.graphene()
     grsc = gr.as_supercell()
-    assert np.allclose(grsc.xyz[:len(gr)], gr.xyz)
+    assert np.allclose(grsc.xyz[: len(gr)], gr.xyz)
     assert np.allclose(grsc.axyz(np.arange(gr.na_s)), gr.axyz(np.arange(gr.na_s)))
 
 
 def test_as_supercell_fcc():
-    g = sisl_geom.fcc(2 ** 0.5, Atom(1, R=1.0001))
+    g = sisl_geom.fcc(2**0.5, Atom(1, R=1.0001))
     gsc = g.as_supercell()
-    assert np.allclose(gsc.xyz[:len(g)], g.xyz)
+    assert np.allclose(gsc.xyz[: len(g)], g.xyz)
     assert np.allclose(gsc.axyz(np.arange(g.na_s)), g.axyz(np.arange(g.na_s)))
 
 

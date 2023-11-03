@@ -21,14 +21,15 @@ def k(request):
     elif request.param == "X":
         return (0.5, 0, 0)
 
+
 @pytest.fixture(scope="module")
 def graphene():
-
     r = np.linspace(0, 3.5, 50)
     f = np.exp(-r)
 
-    orb = sisl.AtomicOrbital('2pzZ', (r, f))
+    orb = sisl.AtomicOrbital("2pzZ", (r, f))
     return sisl.geom.graphene(orthogonal=True, atoms=sisl.Atom(6, orb))
+
 
 @pytest.fixture(scope="module")
 def eigenstate(k, graphene):
@@ -38,8 +39,8 @@ def eigenstate(k, graphene):
 
     return H.eigenstate(k=k)
 
-def test_get_eigenstate(eigenstate, graphene):
 
+def test_get_eigenstate(eigenstate, graphene):
     sel_eigenstate = get_eigenstate(eigenstate, 2)
 
     assert sel_eigenstate.state.shape == (1, graphene.no)
@@ -54,8 +55,8 @@ def test_get_eigenstate(eigenstate, graphene):
     assert sel_eigenstate.state.shape == (1, graphene.no)
     assert np.allclose(sel_eigenstate.state, eigenstate.state[3])
 
-def test_eigenstate_geometry(eigenstate, graphene):
 
+def test_eigenstate_geometry(eigenstate, graphene):
     # It should give us the geometry associated with the eigenstate
     assert eigenstate_geometry(eigenstate) is graphene
 
@@ -63,12 +64,12 @@ def test_eigenstate_geometry(eigenstate, graphene):
     graphene_copy = graphene.copy()
     assert eigenstate_geometry(eigenstate, graphene_copy) is graphene_copy
 
-def test_tile_if_k(eigenstate, graphene):
 
+def test_tile_if_k(eigenstate, graphene):
     # If the eigenstate is calculated at gamma, we don't need to tile
     tiled_geometry = tile_if_k(graphene, (2, 2, 2), eigenstate)
 
-    if eigenstate.info["k"] == (0,0,0):
+    if eigenstate.info["k"] == (0, 0, 0):
         # If the eigenstate is calculated at gamma, we don't need to tile
         assert tiled_geometry is graphene
     elif eigenstate.info["k"] == (0.5, 0, 0):
@@ -77,17 +78,17 @@ def test_tile_if_k(eigenstate, graphene):
         assert tiled_geometry is not graphene
         assert np.allclose(tiled_geometry.cell, graphene.cell * (2, 1, 1))
 
-def test_get_grid_nsc(eigenstate):
 
+def test_get_grid_nsc(eigenstate):
     grid_nsc = get_grid_nsc((2, 2, 2), eigenstate)
 
-    if eigenstate.info["k"] == (0,0,0):
+    if eigenstate.info["k"] == (0, 0, 0):
         assert grid_nsc == (2, 2, 2)
     elif eigenstate.info["k"] == (0.5, 0, 0):
         assert grid_nsc == (1, 2, 2)
 
-def test_create_wf_grid(eigenstate, graphene):
 
+def test_create_wf_grid(eigenstate, graphene):
     new_graphene = graphene.copy()
     grid = create_wf_grid(eigenstate, grid_prec=0.2, geometry=new_graphene)
 
@@ -95,7 +96,7 @@ def test_create_wf_grid(eigenstate, graphene):
     assert grid.geometry is new_graphene
 
     # Check that the datatype is correct
-    if eigenstate.info["k"] == (0,0,0):
+    if eigenstate.info["k"] == (0, 0, 0):
         assert grid.grid.dtype == np.float64
     else:
         assert grid.grid.dtype == np.complex128
@@ -103,14 +104,14 @@ def test_create_wf_grid(eigenstate, graphene):
     # Check that the grid precision is right.
     assert np.allclose(np.linalg.norm(grid.dcell, axis=1), 0.2, atol=0.01)
 
-    provided_grid  = sisl.Grid(0.2, geometry=new_graphene, dtype=np.float64)
+    provided_grid = sisl.Grid(0.2, geometry=new_graphene, dtype=np.float64)
 
     grid = create_wf_grid(eigenstate, grid=provided_grid)
 
     assert grid is provided_grid
 
-def test_project_wavefunction(eigenstate, graphene):
 
+def test_project_wavefunction(eigenstate, graphene):
     k = eigenstate.info["k"]
 
     grid = project_wavefunction(eigenstate[2], geometry=graphene)
@@ -118,10 +119,10 @@ def test_project_wavefunction(eigenstate, graphene):
     assert isinstance(grid, sisl.Grid)
 
     # Check that the datatype is correct
-    if k == (0,0,0):
+    if k == (0, 0, 0):
         assert grid.grid.dtype == np.float64
     else:
-        assert grid.grid.dtype == np.complex128 
+        assert grid.grid.dtype == np.complex128
 
     # Check that the grid is not empty
     assert not np.allclose(grid.grid, 0)

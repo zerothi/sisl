@@ -9,7 +9,7 @@ from sisl._internal import set_module
 from .phonon import EigenmodePhonon, EigenvaluePhonon
 from .sparse import SparseOrbitalBZ
 
-__all__ = ['DynamicalMatrix']
+__all__ = ["DynamicalMatrix"]
 
 
 def _correct_hw(hw):
@@ -23,7 +23,7 @@ def _correct_hw(hw):
 
 @set_module("sisl.physics")
 class DynamicalMatrix(SparseOrbitalBZ):
-    """ Dynamical matrix of a geometry """
+    """Dynamical matrix of a geometry"""
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
@@ -37,12 +37,12 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
     @property
     def D(self):
-        r""" Access the dynamical matrix elements """
+        r"""Access the dynamical matrix elements"""
         self._def_dim = 0
         return self
 
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the dynamical matrix for a given k-point
+    def Dk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+        r"""Setup the dynamical matrix for a given k-point
 
         Creation and return of the dynamical matrix for a given k-point (default to Gamma).
 
@@ -93,8 +93,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         pass
 
-    def dDk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the dynamical matrix derivative for a given k-point
+    def dDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+        r"""Setup the dynamical matrix derivative for a given k-point
 
         Creation and return of the dynamical matrix derivative for a given k-point (default to Gamma).
 
@@ -144,8 +144,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         pass
 
-    def ddDk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the dynamical matrix double derivative for a given k-point
+    def ddDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+        r"""Setup the dynamical matrix double derivative for a given k-point
 
         Creation and return of the dynamical matrix double derivative for a given k-point (default to Gamma).
 
@@ -196,7 +196,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         pass
 
     def apply_newton(self):
-        """ Sometimes the dynamical matrix does not obey Newtons 3rd law.
+        """Sometimes the dynamical matrix does not obey Newtons 3rd law.
 
         We correct the dynamical matrix by imposing zero force.
 
@@ -208,7 +208,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         d_uc = lil_matrix((no, no), dtype=dyn_sc.dtype)
 
         for i, _ in self.lattice:
-            d_uc[:, :] += dyn_sc[:, i*no: (i+1)*no]
+            d_uc[:, :] += dyn_sc[:, i * no : (i + 1) * no]
 
         # A CSC matrix is faster to slice for columns
         d_uc = d_uc.tocsc()
@@ -219,7 +219,6 @@ class DynamicalMatrix(SparseOrbitalBZ):
         MM = np.empty([len(om)], np.float64)
 
         for ja in self.geometry:
-
             # Create conversion to force-constant in units of the on-site mass scaled
             # dynamical matrix.
             MM[:] = om[:] / om[ja]
@@ -249,8 +248,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         del d_uc
 
-    def eigenvalue(self, k=(0, 0, 0), gauge='R', **kwargs):
-        """ Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
+    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs):
+        """Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
 
         Parameters
         ----------
@@ -273,15 +272,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
         -------
         EigenvaluePhonon
         """
-        if kwargs.pop('sparse', False):
+        if kwargs.pop("sparse", False):
             hw = self.eigsh(k, gauge=gauge, eigvals_only=True, **kwargs)
         else:
             hw = self.eigh(k, gauge, eigvals_only=True, **kwargs)
-        info = {'k': k, 'gauge': gauge}
+        info = {"k": k, "gauge": gauge}
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
-    def eigenmode(self, k=(0, 0, 0), gauge='R', **kwargs):
-        r""" Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
+    def eigenmode(self, k=(0, 0, 0), gauge="R", **kwargs):
+        r"""Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
 
         Note that the phonon modes are _not_ mass-scaled.
 
@@ -306,17 +305,17 @@ class DynamicalMatrix(SparseOrbitalBZ):
         -------
         EigenmodePhonon
         """
-        if kwargs.pop('sparse', False):
+        if kwargs.pop("sparse", False):
             hw, v = self.eigsh(k, gauge=gauge, eigvals_only=False, **kwargs)
         else:
             hw, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
-        info = {'k': k, 'gauge': gauge}
+        info = {"k": k, "gauge": gauge}
         # Since eigh returns the eigenvectors [:, i] we have to transpose
         return EigenmodePhonon(v.T, _correct_hw(hw), self, **info)
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads dynamical matrix from `Sile` using `read_dynamical_matrix`.
+        """Reads dynamical matrix from `Sile` using `read_dynamical_matrix`.
 
         Parameters
         ----------
@@ -328,19 +327,21 @@ class DynamicalMatrix(SparseOrbitalBZ):
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import BaseSile, get_sile
+
         if isinstance(sile, BaseSile):
             return sile.read_dynamical_matrix(*args, **kwargs)
         else:
-            with get_sile(sile, mode='r') as fh:
+            with get_sile(sile, mode="r") as fh:
                 return fh.read_dynamical_matrix(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs) -> None:
-        """ Writes a dynamical matrix to the `Sile` as implemented in the :code:`Sile.write_dynamical_matrix` method """
+        """Writes a dynamical matrix to the `Sile` as implemented in the :code:`Sile.write_dynamical_matrix` method"""
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import BaseSile, get_sile
+
         if isinstance(sile, BaseSile):
             sile.write_dynamical_matrix(self, *args, **kwargs)
         else:
-            with get_sile(sile, mode='w') as fh:
+            with get_sile(sile, mode="w") as fh:
                 fh.write_dynamical_matrix(self, *args, **kwargs)

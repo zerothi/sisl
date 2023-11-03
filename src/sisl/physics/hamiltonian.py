@@ -15,7 +15,7 @@ __all__ = ["Hamiltonian"]
 
 @set_module("sisl.physics")
 class Hamiltonian(SparseOrbitalBZSpin):
-    """ Sparse Hamiltonian matrix object
+    """Sparse Hamiltonian matrix object
 
     Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:
 
@@ -84,7 +84,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
     """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
-        """ Initialize Hamiltonian """
+        """Initialize Hamiltonian"""
         super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
@@ -96,12 +96,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     @property
     def H(self):
-        r""" Access the Hamiltonian elements """
+        r"""Access the Hamiltonian elements"""
         self._def_dim = self.UP
         return self
 
-    def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the Hamiltonian for a given k-point
+    def Hk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+        r"""Setup the Hamiltonian for a given k-point
 
         Creation and return of the Hamiltonian for a given k-point (default to Gamma).
 
@@ -157,8 +157,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         pass
 
-    def dHk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the Hamiltonian derivative for a given k-point
+    def dHk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+        r"""Setup the Hamiltonian derivative for a given k-point
 
         Creation and return of the Hamiltonian derivative for a given k-point (default to Gamma).
 
@@ -212,8 +212,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         pass
 
-    def ddHk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
-        r""" Setup the Hamiltonian double derivative for a given k-point
+    def ddHk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+        r"""Setup the Hamiltonian double derivative for a given k-point
 
         Creation and return of the Hamiltonian double derivative for a given k-point (default to Gamma).
 
@@ -268,7 +268,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         pass
 
     def shift(self, E):
-        r""" Shift the electronic structure by a constant energy
+        r"""Shift the electronic structure by a constant energy
 
         This is equal to performing this operation:
 
@@ -288,7 +288,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if E.size == 1:
             E = np.tile(E, 2)
 
-        if np.abs(E).sum() == 0.:
+        if np.abs(E).sum() == 0.0:
             # When the energy is zero, there is no shift
             return
 
@@ -302,8 +302,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
             for i in range(self.spin.spinor):
                 self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E[i]
 
-    def eigenvalue(self, k=(0, 0, 0), gauge='R', **kwargs):
-        """ Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`
+    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs):
+        """Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`
 
         Parameters
         ----------
@@ -330,11 +330,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
         EigenvalueElectron
         """
         format = kwargs.pop("format", None)
-        if kwargs.pop('sparse', False):
+        if kwargs.pop("sparse", False):
             e = self.eigsh(k, gauge=gauge, eigvals_only=True, **kwargs)
         else:
             e = self.eigh(k, gauge, eigvals_only=True, **kwargs)
-        info = {'k': k, 'gauge': gauge}
+        info = {"k": k, "gauge": gauge}
         for name in ["spin"]:
             if name in kwargs:
                 info[name] = kwargs[name]
@@ -342,8 +342,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
             info["format"] = format
         return EigenvalueElectron(e, self, **info)
 
-    def eigenstate(self, k=(0, 0, 0), gauge='R', **kwargs):
-        """ Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates
+    def eigenstate(self, k=(0, 0, 0), gauge="R", **kwargs):
+        """Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates
 
         Parameters
         ----------
@@ -370,11 +370,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
         EigenstateElectron
         """
         format = kwargs.pop("format", None)
-        if kwargs.pop('sparse', False):
+        if kwargs.pop("sparse", False):
             e, v = self.eigsh(k, gauge=gauge, eigvals_only=False, **kwargs)
         else:
             e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
-        info = {'k': k, 'gauge': gauge}
+        info = {"k": k, "gauge": gauge}
         for name in ["spin"]:
             if name in kwargs:
                 info[name] = kwargs[name]
@@ -385,7 +385,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads Hamiltonian from `Sile` using `read_hamiltonian`.
+        """Reads Hamiltonian from `Sile` using `read_hamiltonian`.
 
         Parameters
         ----------
@@ -398,25 +398,27 @@ class Hamiltonian(SparseOrbitalBZSpin):
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import BaseSile, get_sile
+
         if isinstance(sile, BaseSile):
             return sile.read_hamiltonian(*args, **kwargs)
         else:
-            with get_sile(sile, mode='r') as fh:
+            with get_sile(sile, mode="r") as fh:
                 return fh.read_hamiltonian(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs) -> None:
-        """ Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
+        """Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method"""
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import BaseSile, get_sile
+
         if isinstance(sile, BaseSile):
             sile.write_hamiltonian(self, *args, **kwargs)
         else:
-            with get_sile(sile, mode='w') as fh:
+            with get_sile(sile, mode="w") as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
 
-    def fermi_level(self, bz=None, q=None, distribution='fermi_dirac', q_tol=1e-10):
-        """ Calculate the Fermi-level using a Brillouinzone sampling and a target charge
+    def fermi_level(self, bz=None, q=None, distribution="fermi_dirac", q_tol=1e-10):
+        """Calculate the Fermi-level using a Brillouinzone sampling and a target charge
 
         The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues
         and subsequently fitting the Fermi level to the final charge (`q`).
@@ -443,6 +445,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if bz is None:
             # Gamma-point only
             from .brillouinzone import BrillouinZone
+
             bz = BrillouinZone(self)
         else:
             # Overwrite the parent in bz
@@ -456,9 +459,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         # Ensure we have an "array" in case of spin-polarized calculations
         q = _a.asarrayd(q)
-        if np.any(q <= 0.):
-            raise ValueError(f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
-                             "for 0 electrons.")
+        if np.any(q <= 0.0):
+            raise ValueError(
+                f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
+                "for 0 electrons."
+            )
 
         if isinstance(distribution, str):
             distribution = get_distribution(distribution)
@@ -496,8 +501,10 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         if self.spin.is_polarized and q.size == 2:
             if np.any(q >= len(self)):
-                raise ValueError(f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
-                                 "for electrons ({q}) equal to or above number of orbitals ({len(self)}).")
+                raise ValueError(
+                    f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
+                    "for electrons ({q}) equal to or above number of orbitals ({len(self)})."
+                )
             # We need to do Fermi-level separately since the user requests
             # separate fillings
             Ef = _a.emptyd(2)
@@ -507,11 +514,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # Ensure a single charge
             q = q.sum()
             if q >= len(self):
-                raise ValueError(f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
-                                 "for electrons ({q}) equal to or above number of orbitals ({len(self)}).")
+                raise ValueError(
+                    f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
+                    "for electrons ({q}) equal to or above number of orbitals ({len(self)})."
+                )
             if self.spin.is_polarized:
-                Ef = _Ef(q, np.concatenate([eigh(spin=0),
-                                            eigh(spin=1)], axis=1))
+                Ef = _Ef(q, np.concatenate([eigh(spin=0), eigh(spin=1)], axis=1))
             else:
                 Ef = _Ef(q, eigh())
 

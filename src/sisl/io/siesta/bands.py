@@ -14,17 +14,17 @@ __all__ = ["bandsSileSiesta"]
 
 @set_module("sisl.io.siesta")
 class bandsSileSiesta(SileSiesta):
-    """ Bandstructure information """
+    """Bandstructure information"""
 
     @sile_fh_open(True)
     def read_fermi_level(self):
-        """ Returns the Fermi level in the bands file """
+        """Returns the Fermi level in the bands file"""
         # Luckily the data is in eV
         return float(self.readline())
 
     @sile_fh_open()
     def read_data(self, as_dataarray=False):
-        """ Returns data associated with the bands file
+        """Returns data associated with the bands file
 
         The energy levels are shifted with respect to the Fermi-level.
 
@@ -32,7 +32,7 @@ class bandsSileSiesta(SileSiesta):
         --------
         as_dataarray: boolean, optional
             if `True`, the information is returned as an `xarray.DataArray`
-            Ticks (if read) are stored as an attribute of the DataArray 
+            Ticks (if read) are stored as an attribute of the DataArray
             (under `array.ticks` and `array.ticklabels`)
         """
         band_lines = False
@@ -85,7 +85,7 @@ class bandsSileSiesta(SileSiesta):
             for _ in range(nl):
                 l = self.readline().split()
                 xlabels.append(float(l[0]))
-                labels.append((' '.join(l[1:])).replace("'", ''))
+                labels.append((" ".join(l[1:])).replace("'", ""))
             vals = (xlabels, labels), *vals
 
         if as_dataarray:
@@ -93,17 +93,23 @@ class bandsSileSiesta(SileSiesta):
 
             ticks = {"ticks": xlabels, "ticklabels": labels} if band_lines else {}
 
-            vals = DataArray(eb, name="Energy", attrs=ticks,
-                             coords=[("k", k),
-                                     ("spin", _a.arangei(0, eb.shape[1])),
-                                     ("band", _a.arangei(0, eb.shape[2]))])
+            vals = DataArray(
+                eb,
+                name="Energy",
+                attrs=ticks,
+                coords=[
+                    ("k", k),
+                    ("spin", _a.arangei(0, eb.shape[1])),
+                    ("band", _a.arangei(0, eb.shape[2])),
+                ],
+            )
 
         return vals
 
     @default_ArgumentParser(description="Manipulate bands file in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
-        #limit_args = kwargs.get("limit_arguments", True)
+        """Returns the arguments that is available for this Sile"""
+        # limit_args = kwargs.get("limit_arguments", True)
         short = kwargs.get("short", False)
 
         def opts(*args):
@@ -119,28 +125,32 @@ class bandsSileSiesta(SileSiesta):
         # This will enable custom actions to interact with the geometry in a
         # straight forward manner.
         namespace = default_namespace(
-            _bands= self.read_data(),
+            _bands=self.read_data(),
             _Emap=None,
         )
 
         # Energy grabs
         class ERange(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 ns._Emap = strmap(float, value)[0]
-        p.add_argument("--energy", "-E",
-                       action=ERange,
-                       help="Denote the sub-section of energies that are plotted: '-1:0,1:2' [eV]")
+
+        p.add_argument(
+            "--energy",
+            "-E",
+            action=ERange,
+            help="Denote the sub-section of energies that are plotted: '-1:0,1:2' [eV]",
+        )
 
         class BandsPlot(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
 
                 # Decide whether this is BandLines or BandPoints
                 if len(ns._bands) == 2:
                     # We do not plot "points"
-                    raise ValueError("The bands file only contains points in the BZ, not a bandstructure.")
+                    raise ValueError(
+                        "The bands file only contains points in the BZ, not a bandstructure."
+                    )
                 lbls, k, b = ns._bands
                 b = b.T
                 # Extract to tick-marks and names
@@ -163,7 +173,9 @@ class bandsSileSiesta(SileSiesta):
                     ax[1].set_xticklabels(lbls, rotation=45)
                     # We must plot spin-up/down separately
                     for i, ud in enumerate(["UP", "DOWN"]):
-                        myplot(ax[i], f"Bandstructure SPIN-{ud}", k, b[:, i, :], ns._Emap)
+                        myplot(
+                            ax[i], f"Bandstructure SPIN-{ud}", k, b[:, i, :], ns._Emap
+                        )
                 else:
                     plt.figure()
                     ax = plt.gca()
@@ -174,8 +186,14 @@ class bandsSileSiesta(SileSiesta):
                     plt.show()
                 else:
                     plt.savefig(value)
-        p.add_argument(*opts("--plot", "-p"), action=BandsPlot, nargs="?", metavar="FILE",
-                       help="Plot the bandstructure from the .bands file, possibly saving to a file.")
+
+        p.add_argument(
+            *opts("--plot", "-p"),
+            action=BandsPlot,
+            nargs="?",
+            metavar="FILE",
+            help="Plot the bandstructure from the .bands file, possibly saving to a file.",
+        )
 
         return p, namespace
 

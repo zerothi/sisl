@@ -10,11 +10,13 @@ from sisl import Geometry
 from sisl.io.siesta import aniSileSiesta
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta')
+_dir = osp.join("sisl", "io", "siesta")
+
 
 def test_ani(sisl_tmp):
-    f = sisl_tmp('sisl.ANI', _dir)
-    open(f, 'w').write("""1
+    f = sisl_tmp("sisl.ANI", _dir)
+    open(f, "w").write(
+        """1
 
 C   0.00000000  0.00000000  0.00000000
 2
@@ -32,7 +34,8 @@ C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
 C   3.00000  0.00000000  0.00000000
-""")
+"""
+    )
     a = aniSileSiesta(f)
     g = a.read_geometry[:]()
     assert len(g) == 4

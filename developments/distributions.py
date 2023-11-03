@@ -42,29 +42,41 @@ class Distribution:
 
 
 distributions = [
-    Distribution("fd",
-                 pdf=(1-1/(sy.exp(x)+1)).diff(x),
-                 sf=1/(sy.exp(x)+1)),
-    Distribution("mp",
-                 pdf=sy.exp(-(x)**2)/sy.sqrt(sy.pi)*sy.Sum(hermite(2*n, x), (n, 0, N)),
-                 cdf=1/sy.sqrt(sy.pi)*sy.Sum(
-                     (sy.exp(-(x)**2)*hermite(2*n, x))
-                      .integrate(x)
-                      .doit(simplify=True)
-                      .expand()
-                      .simplify(), (n, 0, N)),
-                 entropy=-1/sy.sqrt(sy.pi)*sy.Sum(
-                     (sy.exp(-(x)**2)*hermite(2*n, x) * x)
-                     .integrate((x, -sy.oo, y)).subs(y, x)
-                     .doit(simplify=True)
-                     .expand()
-                     .simplify(), (n, 0, N))),
-    Distribution("gaussian",
-                 pdf=sy.exp(-(x)**2/2)/sy.sqrt(2*sy.pi)),
-    Distribution("cauchy",
-                 pdf=1/(sy.pi*(1+(x)**2))),
-    Distribution("cold",
-                 pdf=1/sy.sqrt(sy.pi)*sy.exp(-(-x-1/sy.sqrt(2))**2)*(2+sy.sqrt(2)*x))
+    Distribution("fd", pdf=(1 - 1 / (sy.exp(x) + 1)).diff(x), sf=1 / (sy.exp(x) + 1)),
+    Distribution(
+        "mp",
+        pdf=sy.exp(-((x) ** 2)) / sy.sqrt(sy.pi) * sy.Sum(hermite(2 * n, x), (n, 0, N)),
+        cdf=1
+        / sy.sqrt(sy.pi)
+        * sy.Sum(
+            (sy.exp(-((x) ** 2)) * hermite(2 * n, x))
+            .integrate(x)
+            .doit(simplify=True)
+            .expand()
+            .simplify(),
+            (n, 0, N),
+        ),
+        entropy=-1
+        / sy.sqrt(sy.pi)
+        * sy.Sum(
+            (sy.exp(-((x) ** 2)) * hermite(2 * n, x) * x)
+            .integrate((x, -sy.oo, y))
+            .subs(y, x)
+            .doit(simplify=True)
+            .expand()
+            .simplify(),
+            (n, 0, N),
+        ),
+    ),
+    Distribution("gaussian", pdf=sy.exp(-((x) ** 2) / 2) / sy.sqrt(2 * sy.pi)),
+    Distribution("cauchy", pdf=1 / (sy.pi * (1 + (x) ** 2))),
+    Distribution(
+        "cold",
+        pdf=1
+        / sy.sqrt(sy.pi)
+        * sy.exp(-((-x - 1 / sy.sqrt(2)) ** 2))
+        * (2 + sy.sqrt(2) * x),
+    ),
 ]
 
 
@@ -99,38 +111,44 @@ for dist in distributions:
     dist.cdf = (dist.cdf - cneg).expand().simplify()
 
     print(f"        cdf = {dist.cdf}")
-    #print(f"        cdf*= {dist.cdf.subs(dist.pdf, pdf)}")
+    # print(f"        cdf*= {dist.cdf.subs(dist.pdf, pdf)}")
 
     # plot it...
     func = dist.pdf.subs(N, 0).subs(c, 1).expand().simplify()
-    func = sy.lambdify(x, func, 'numpy')
+    func = sy.lambdify(x, func, "numpy")
     axs[0].plot(E, func(E), label=dist.name)
 
     if dist.sf is None:
         dist.sf = (1 - dist.cdf).expand().simplify()
     print(f"   sf|theta = {dist.sf}")
-    #print(f" d sf|theta = {-dist.pdf.expand().doit(simplify=True).simplify()}")
-    #print(f"   sf|theta*= {dist.sf.subs(dist.pdf, pdf).subs(dist.cdf, cdf)}")
+    # print(f" d sf|theta = {-dist.pdf.expand().doit(simplify=True).simplify()}")
+    # print(f"   sf|theta*= {dist.sf.subs(dist.pdf, pdf).subs(dist.cdf, cdf)}")
 
     func = dist.sf.subs(N, 0).subs(c, 1).expand().simplify()
-    func = sy.lambdify(x, func, 'numpy')
+    func = sy.lambdify(x, func, "numpy")
     try:
         # cold function may fail
         axs[1].plot(E, [func(e) for e in E], label=dist.name)
-    except Exception: pass
+    except Exception:
+        pass
 
     if dist.entropy is None:
-        dist.entropy = -(dist.pdf*x).integrate((x, -sy.oo, x)).doit(simplify=True).simplify()
+        dist.entropy = (
+            -(dist.pdf * x).integrate((x, -sy.oo, x)).doit(simplify=True).simplify()
+        )
     print(f"    entropy = {dist.entropy}")
 
     func = dist.entropy.subs(N, 0).subs(c, 1).expand().simplify()
-    func = sy.lambdify(x, func, 'numpy')
+    func = sy.lambdify(x, func, "numpy")
     try:
         # cold function may fail
         axs[2].plot(E, [func(e) for e in E], label=dist.name)
-    except Exception: pass
+    except Exception:
+        pass
 
-    var = (dist.pdf*x*x).integrate((x, -sy.oo, sy.oo)).doit(simplify=True).simplify()
+    var = (
+        (dist.pdf * x * x).integrate((x, -sy.oo, sy.oo)).doit(simplify=True).simplify()
+    )
     print(f"    variance = {var}")
 
 
@@ -138,8 +156,8 @@ for dist in distributions:
 ifd = distributions.index("fd")
 fd = distributions[ifd]
 # Check that it finds the same entropy
-fd_enpy = -(fd.sf * sy.log(fd.sf) + (1-fd.sf)*sy.log(1-fd.sf))
-assert (fd_enpy - fd.entropy).simplify() == 0.
+fd_enpy = -(fd.sf * sy.log(fd.sf) + (1 - fd.sf) * sy.log(1 - fd.sf))
+assert (fd_enpy - fd.entropy).simplify() == 0.0
 
 
 axs[0].legend()

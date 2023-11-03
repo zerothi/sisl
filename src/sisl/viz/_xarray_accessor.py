@@ -20,17 +20,21 @@ def wrap_accessor_method(fn):
 
     return _method
 
-def plot_xy(*args, backend: str ="plotly", **kwargs):
 
+def plot_xy(*args, backend: str = "plotly", **kwargs):
     plot_actions = draw_xarray_xy(*args, **kwargs)
 
     return get_figure(plot_actions=plot_actions, backend=backend)
 
+
 sig = inspect.signature(draw_xarray_xy)
-plot_xy.__signature__ = sig.replace(parameters=[
-    *sig.parameters.values(),
-    inspect.Parameter("backend", inspect.Parameter.KEYWORD_ONLY, default="plotly")
-])
+plot_xy.__signature__ = sig.replace(
+    parameters=[
+        *sig.parameters.values(),
+        inspect.Parameter("backend", inspect.Parameter.KEYWORD_ONLY, default="plotly"),
+    ]
+)
+
 
 @xr.register_dataarray_accessor("sisl")
 class SislAccessorDataArray:
@@ -46,6 +50,7 @@ class SislAccessorDataArray:
     reduce_atoms = wrap_accessor_method(reduce_atom_data)
 
     plot_xy = wrap_accessor_method(plot_xy)
+
 
 @xr.register_dataset_accessor("sisl")
 class SislAccessorDataset:

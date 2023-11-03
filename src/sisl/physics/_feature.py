@@ -8,8 +8,8 @@ import numpy as np
 __all__ = ["yield_manifolds"]
 
 
-def yield_manifolds(values, atol: float=0.1, axis: int=-1) -> Iterator[List]:
-    r""" Yields indices for manifolds along the axis `axis`
+def yield_manifolds(values, atol: float = 0.1, axis: int = -1) -> Iterator[List]:
+    r"""Yields indices for manifolds along the axis `axis`
 
     A manifold is found under the criteria that all neighbouring
     values along `axis` are separated by at least `atol`.
@@ -43,7 +43,7 @@ def yield_manifolds(values, atol: float=0.1, axis: int=-1) -> Iterator[List]:
     # Now calculate the manifold for each of the different directions
     manifold = [0]
     for i in range(1, len(v_min)):
-        if np.all(v_max[i-1] < v_min[i] - atol):
+        if np.all(v_max[i - 1] < v_min[i] - atol):
             # we are starting a new manifold
             yield manifold
             manifold = [i]

@@ -23,7 +23,7 @@ __all__ = ["AtomFracSite", "AtomXYZ"]
 
 @set_module("sisl.geom")
 class AtomFracSite(AtomCategory):
-    r""" Classify atoms based on fractional sites for a given supercell
+    r"""Classify atoms based on fractional sites for a given supercell
 
     Match atomic coordinates based on the fractional positions.
 
@@ -54,10 +54,16 @@ class AtomFracSite(AtomCategory):
     ...    else:
     ...        assert c == B_site
     """
-    __slots__ = (f"_{a}" for a in ("cell", "icell", "length", "atol", "offset", "foffset"))
+    __slots__ = (
+        f"_{a}" for a in ("cell", "icell", "length", "atol", "offset", "foffset")
+    )
 
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
-    def __init__(self, lattice, atol=1.e-5, offset=(0., 0., 0.), foffset=(0., 0., 0.)):
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
+    def __init__(
+        self, lattice, atol=1.0e-5, offset=(0.0, 0.0, 0.0), foffset=(0.0, 0.0, 0.0)
+    ):
         if isinstance(lattice, LatticeChild):
             lattice = lattice.lattice
         elif not isinstance(lattice, Lattice):
@@ -76,27 +82,36 @@ class AtomFracSite(AtomCategory):
         # fractional offset before comparing to the integer part of the fractional coordinate
         self._foffset = _a.arrayd(foffset).reshape(1, 3)
 
-        super().__init__(f"fracsite(atol={self._atol}, offset={self._offset}, foffset={self._foffset})")
+        super().__init__(
+            f"fracsite(atol={self._atol}, offset={self._offset}, foffset={self._foffset})"
+        )
 
     def categorize(self, geometry, atoms=None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms is None:
             fxyz = np.dot(geometry.xyz + self._offset, self._icell.T) + self._foffset
         else:
-            fxyz = np.dot(geometry.xyz[atoms].reshape(-1, 3) + self._offset,
-                          self._icell.T) + self._foffset
+            fxyz = (
+                np.dot(geometry.xyz[atoms].reshape(-1, 3) + self._offset, self._icell.T)
+                + self._foffset
+            )
         # Find fractional indices that match to an integer of the passed cell
         # We multiply with the length of the cell to get an error in Ang
-        ret = np.where(np.fabs((fxyz - np.rint(fxyz))*self._length).max(1) <= self._atol,
-                       self, NullCategory()).tolist()
+        ret = np.where(
+            np.fabs((fxyz - np.rint(fxyz)) * self._length).max(1) <= self._atol,
+            self,
+            NullCategory(),
+        ).tolist()
         if isinstance(atoms, Integral):
             ret = ret[0]
         return ret
 
     def __eq__(self, other):
         if self.__class__ is other.__class__:
-            for s, o in map(lambda a: (getattr(self, f"_{a}"), getattr(other, f"_{a}")),
-                            ("cell", "icell", "atol", "offset", "foffset")):
+            for s, o in map(
+                lambda a: (getattr(self, f"_{a}"), getattr(other, f"_{a}")),
+                ("cell", "icell", "atol", "offset", "foffset"),
+            ):
                 if not np.allclose(s, o):
                     return False
             return True
@@ -105,17 +120,17 @@ class AtomFracSite(AtomCategory):
 
 @set_module("sisl.geom")
 class AtomXYZ(AtomCategory):
-    r""" Classify atoms based on coordinates
+    r"""Classify atoms based on coordinates
 
     Parameters
     ----------
     *args : Shape
        any shape that implements `Shape.within`
-    **kwargs: 
+    **kwargs:
        keys are operator specifications and values are
        used in those specifications.
        The keys are split into 3 sections
-       ``<options>_<direction>_<operator>``  
+       ``<options>_<direction>_<operator>``
        - ``options`` are made of combinations of ``['a', 'f']``
          i.e. ``"af"``, ``"f"`` or ``"a"`` are all valid.
          An ``a`` takes the absolute value, ``f`` means a fractional
@@ -147,27 +162,34 @@ class AtomXYZ(AtomCategory):
     __slots__ = ("_coord_check",)
 
     def __init__(self, *args, **kwargs):
-
         def create1(is_frac, is_abs, op, d):
             if is_abs:
+
                 @wraps(op)
                 def func(a, b):
                     return op(np.fabs(a))
+
             else:
+
                 @wraps(op)
                 def func(a, b):
                     return op(a)
+
             return is_frac, func, d, None
 
         def create2(is_frac, is_abs, op, d, val):
             if is_abs:
+
                 @wraps(op)
                 def func(a, b):
                     return op(np.fabs(a), b)
+
             else:
+
                 @wraps(op)
                 def func(a, b):
                     return op(a, b)
+
             return is_frac, func, d, val
 
         coord_ops = []
@@ -175,8 +197,10 @@ class AtomXYZ(AtomCategory):
         # For each *args we expect this to be a shape
         for arg in args:
             if not isinstance(arg, Shape):
-                raise ValueError(f"{self.__class__.__name__} requires non-keyword arguments "
-                                 f"to be of type Shape {type(arg)}.")
+                raise ValueError(
+                    f"{self.__class__.__name__} requires non-keyword arguments "
+                    f"to be of type Shape {type(arg)}."
+                )
 
             coord_ops.append(create1(False, False, arg.within, (0, 1, 2)))
 
@@ -198,8 +222,10 @@ class AtomXYZ(AtomCategory):
             elif value.size == 2:
                 sdir = key
             else:
-                raise ValueError(f"{self.__class__.__name__} could not determine the operations for {key}={value}.\n"
-                                 f"{key} must be on the form [fa]_<dir>_<operator>")
+                raise ValueError(
+                    f"{self.__class__.__name__} could not determine the operations for {key}={value}.\n"
+                    f"{key} must be on the form [fa]_<dir>_<operator>"
+                )
 
             # parse options
             is_abs = "a" in spec
@@ -211,11 +237,17 @@ class AtomXYZ(AtomCategory):
             if value.size == 2:
                 # do it twice
                 if not value[0] is None:
-                    coord_ops.append(create2(is_frac, is_abs, operator.ge, sdir, value[0]))
+                    coord_ops.append(
+                        create2(is_frac, is_abs, operator.ge, sdir, value[0])
+                    )
                 if not value[1] is None:
-                    coord_ops.append(create2(is_frac, is_abs, operator.le, sdir, value[1]))
+                    coord_ops.append(
+                        create2(is_frac, is_abs, operator.le, sdir, value[1])
+                    )
             else:
-                coord_ops.append(create2(is_frac, is_abs, getattr(operator, op), sdir, value))
+                coord_ops.append(
+                    create2(is_frac, is_abs, getattr(operator, op), sdir, value)
+                )
 
         self._coord_check = coord_ops
         super().__init__("coord")
@@ -227,14 +259,18 @@ class AtomXYZ(AtomCategory):
         else:
             xyz = geometry.xyz[atoms]
             fxyz = geometry.fxyz[atoms]
+
         def call(frac, func, d, val):
             if frac:
                 return func(fxyz[..., d], val)
             return func(xyz[..., d], val)
 
         and_reduce = np.logical_and.reduce
-        ret = np.where(and_reduce([call(*four) for four in self._coord_check]),
-                       self, NullCategory()).tolist()
+        ret = np.where(
+            and_reduce([call(*four) for four in self._coord_check]),
+            self,
+            NullCategory(),
+        ).tolist()
         if isinstance(atoms, Integral):
             ret = ret[0]
         return ret
@@ -286,8 +322,10 @@ def _new_factory(key):
         """
         Will go into the __new__ method of the coordinate classes
         """
+
         def _apply_key(k, v):
             return f"{key}_{k}", v
+
         if len(kwargs) > 0:
             new_kwargs = dict(map(_apply_key, *zip(*kwargs.items())))
         else:
@@ -303,21 +341,25 @@ def _new_factory(key):
             # error for multiple entries
             return AtomXYZ(**{key: interval}, **new_kwargs)
         elif len(interval) != 0:
-            raise ValueError(f"{cls.__name__} non-keyword argumest must be 1 tuple, or 2 values")
+            raise ValueError(
+                f"{cls.__name__} non-keyword argumest must be 1 tuple, or 2 values"
+            )
         return AtomXYZ(**new_kwargs)
 
     return _new
 
+
 # Iterate over all directions that deserve an individual class
 for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
-
     # The underscores are just kept for the key that is passed to AtomXYZ,
     # but the name of the category will have no underscore
     name = key.replace("_", "")
 
     # Create the class for this direction
     # note this is lower case since AtomZ should not interfere with Atomz
-    new_cls = AtomXYZMeta(f"Atom{name}", (AtomCategory, ), {"__new__": _new_factory(key)})
+    new_cls = AtomXYZMeta(
+        f"Atom{name}", (AtomCategory,), {"__new__": _new_factory(key)}
+    )
 
     new_cls = set_module("sisl.geom")(new_cls)
 

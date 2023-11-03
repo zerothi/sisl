@@ -6,7 +6,7 @@ from .file_source import FileData
 
 
 def get_sile(path=None, fdf=None, cls=None, **kwargs):
-    """ Wrapper around FileData.get_sile that infers files from the root fdf
+    """Wrapper around FileData.get_sile that infers files from the root fdf
 
     Parameters
     ----------
@@ -28,20 +28,25 @@ def get_sile(path=None, fdf=None, cls=None, **kwargs):
         if cls is None:
             raise ValueError(f"Either a path or a class must be provided to get_sile")
         if fdf is None:
-            raise ValueError(f"We can not look for files of a sile type without a root fdf file.")
-        
+            raise ValueError(
+                f"We can not look for files of a sile type without a root fdf file."
+            )
+
         for rule in sisl.get_sile_rules(cls=cls):
-            filename = fdf.get('SystemLabel', default='siesta') + f'.{rule.suffix}'
+            filename = fdf.get("SystemLabel", default="siesta") + f".{rule.suffix}"
             try:
                 path = fdf.dir_file(filename)
                 return get_sile(path=path, **kwargs)
             except:
                 pass
         else:
-            raise FileNotFoundError(f"Tried to find a {cls} from the root fdf ({fdf.file}), "
-            f"but didn't find any.")
+            raise FileNotFoundError(
+                f"Tried to find a {cls} from the root fdf ({fdf.file}), "
+                f"but didn't find any."
+            )
 
     return sisl.get_sile(path, **kwargs)
+
 
 def FileDataSIESTA(path=None, fdf=None, cls=None, **kwargs):
     if isinstance(path, sisl.io.BaseSile):

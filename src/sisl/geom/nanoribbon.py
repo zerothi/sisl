@@ -13,17 +13,18 @@ from ._common import geometry_define_nsc
 from ._composite import CompositeGeometrySection, composite_geometry
 
 __all__ = [
-    'nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr',
-    'heteroribbon', 'graphene_heteroribbon',
+    "nanoribbon",
+    "graphene_nanoribbon",
+    "agnr",
+    "zgnr",
+    "heteroribbon",
+    "graphene_heteroribbon",
 ]
 
 
 @set_module("sisl.geom")
-def nanoribbon(width: int,
-               bond: float,
-               atoms,
-               kind: str='armchair'):
-    r""" Construction of a nanoribbon unit cell of type armchair or zigzag.
+def nanoribbon(width: int, bond: float, atoms, kind: str = "armchair"):
+    r"""Construction of a nanoribbon unit cell of type armchair or zigzag.
 
     The geometry is oriented along the :math:`x` axis.
 
@@ -75,7 +76,9 @@ def nanoribbon(width: int,
         # Invert y-coordinates
         ribbon.xyz[:, 1] *= -1
         # Set lattice vectors strictly orthogonal
-        ribbon.cell[:, :] = np.diag([ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]])
+        ribbon.cell[:, :] = np.diag(
+            [ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]]
+        )
         # Sort along x, then y
         ribbon = ribbon.sort(axis=(0, 1))
 
@@ -83,7 +86,7 @@ def nanoribbon(width: int,
         raise ValueError(f"nanoribbon: kind must be armchair or zigzag ({kind})")
 
     # Separate ribbons along y-axis
-    ribbon.cell[1, 1] += 20.
+    ribbon.cell[1, 1] += 20.0
 
     # Move inside unit cell
     xyz = ribbon.xyz.min(axis=0) * [1, 1, 0]
@@ -94,11 +97,10 @@ def nanoribbon(width: int,
 
 
 @set_module("sisl.geom")
-def graphene_nanoribbon(width: int,
-                        bond: float=1.42,
-                        atoms=None,
-                        kind: str='armchair'):
-    r""" Construction of a graphene nanoribbon
+def graphene_nanoribbon(
+    width: int, bond: float = 1.42, atoms=None, kind: str = "armchair"
+):
+    r"""Construction of a graphene nanoribbon
 
     Parameters
     ----------
@@ -125,10 +127,8 @@ def graphene_nanoribbon(width: int,
 
 
 @set_module("sisl.geom")
-def agnr(width: int,
-         bond: float=1.42,
-         atoms=None):
-    r""" Construction of an armchair graphene nanoribbon
+def agnr(width: int, bond: float = 1.42, atoms=None):
+    r"""Construction of an armchair graphene nanoribbon
 
     Parameters
     ----------
@@ -147,14 +147,12 @@ def agnr(width: int,
     graphene_nanoribbon : graphene nanoribbon
     zgnr : zigzag graphene nanoribbon
     """
-    return graphene_nanoribbon(width, bond, atoms, kind='armchair')
+    return graphene_nanoribbon(width, bond, atoms, kind="armchair")
 
 
 @set_module("sisl.geom")
-def zgnr(width: int,
-         bond: float=1.42,
-         atoms=None):
-    r""" Construction of a zigzag graphene nanoribbon
+def zgnr(width: int, bond: float = 1.42, atoms=None):
+    r"""Construction of a zigzag graphene nanoribbon
 
     Parameters
     ----------
@@ -173,7 +171,7 @@ def zgnr(width: int,
     graphene_nanoribbon : graphene nanoribbon
     agnr : armchair graphene nanoribbon
     """
-    return graphene_nanoribbon(width, bond, atoms, kind='zigzag')
+    return graphene_nanoribbon(width, bond, atoms, kind="zigzag")
 
 
 @set_module("sisl.geom")
@@ -211,7 +209,7 @@ class _heteroribbon_section(CompositeGeometrySection):
 
         If ``False``, sections are just shifted (`shift`) number of atoms.
 
-        If ``True``, shifts are quantized in the sense that shifts that produce 
+        If ``True``, shifts are quantized in the sense that shifts that produce
         lone atoms (< 2 neighbours) are ignored. Then:
             - ``shift = 0`` means aligned.
             - ``shift = -1`` means first possible downwards shift (if available).
@@ -219,13 +217,14 @@ class _heteroribbon_section(CompositeGeometrySection):
         If this is set to `True`, `on_lone_atom` is overwritten to `"raise"`.
     on_lone_atom: {'ignore', 'warn', 'raise'}
         What to do when a junction between sections produces lone atoms (< 2 neighbours)
-        
+
         Messages contain hopefully useful explanations to understand what
         to do to fix it.
     invert_first: bool, optional
-        Whether, if this is the first section, it should be inverted with respect 
+        Whether, if this is the first section, it should be inverted with respect
         to the one provided by `sisl.geom.nanoribbon`.
     """
+
     W: int
     L: int = 1
     shift: int = 0
@@ -247,7 +246,7 @@ class _heteroribbon_section(CompositeGeometrySection):
 
         if self.shift_quantum:
             self.on_lone_atom = "raise"
-        
+
         self._open_borders = [False, False]
 
     def _shift_unit_cell(self, geometry):
@@ -256,7 +255,7 @@ class _heteroribbon_section(CompositeGeometrySection):
         It does so by shifting half unit cell. This must be done before any
         tiling of the geometry.
         """
-        move = np.array([0., 0., 0.])
+        move = np.array([0.0, 0.0, 0.0])
         move[self.long_ax] = -geometry.xyz[self.W, self.long_ax]
         geometry = geometry.move(move)
         geometry.xyz = (geometry.fxyz % 1).dot(geometry.cell)
@@ -271,11 +270,11 @@ class _heteroribbon_section(CompositeGeometrySection):
         align = self.align.lower()
         if prev is None:
             return align, 0
-        
+
         W = self.W
         W_diff = W - prev.W
         if align in ("a", "auto"):
-            if (W % 2 == 1 and W_diff % 2 == 0):
+            if W % 2 == 1 and W_diff % 2 == 0:
                 # Both ribbons are odd, so we align on the center
                 align = "c"
             elif prev.W % 2 == 0:
@@ -289,15 +288,30 @@ class _heteroribbon_section(CompositeGeometrySection):
 
         if align in ("c", "center"):
             if W_diff % 2 == 1:
-                self._junction_error(prev, "Different parity sections can not be aligned by their centers", "raise")
-            return align, prev.xyz[:, self.trans_ax].mean() - new_xyz[:, self.trans_ax].mean()
+                self._junction_error(
+                    prev,
+                    "Different parity sections can not be aligned by their centers",
+                    "raise",
+                )
+            return (
+                align,
+                prev.xyz[:, self.trans_ax].mean() - new_xyz[:, self.trans_ax].mean(),
+            )
         elif align in ("t", "top"):
-            return align, prev.xyz[:, self.trans_ax].max() - new_xyz[:, self.trans_ax].max()
+            return (
+                align,
+                prev.xyz[:, self.trans_ax].max() - new_xyz[:, self.trans_ax].max(),
+            )
         elif align in ("b", "bottom"):
-            return align, prev.xyz[:, self.trans_ax].min() - new_xyz[:, self.trans_ax].min()
+            return (
+                align,
+                prev.xyz[:, self.trans_ax].min() - new_xyz[:, self.trans_ax].min(),
+            )
         else:
-            raise ValueError(f"Invalid value for 'align': {align}. Must be one of"
-                " {'c', 'center', 't', 'top', 'b', 'bottom', 'a', 'auto'}")
+            raise ValueError(
+                f"Invalid value for 'align': {align}. Must be one of"
+                " {'c', 'center', 't', 'top', 'b', 'bottom', 'a', 'auto'}"
+            )
 
     def _offset_from_center(self, align, prev):
         align = align.lower()[0]
@@ -318,25 +332,30 @@ class _heteroribbon_section(CompositeGeometrySection):
 
     def build_section(self, prev):
         new_section = nanoribbon(
-            bond=self.bond, atoms=self.atoms,
-            width=self.W, kind=self.kind
+            bond=self.bond, atoms=self.atoms, width=self.W, kind=self.kind
         )
 
         align, offset = self._align_offset(prev, new_section)
 
         if prev is not None:
             if not isinstance(prev, _heteroribbon_section):
-                self._junction_error(prev, f"{self.__class__.__name__} can not be appended to {type(prev).__name__}", "raise")
+                self._junction_error(
+                    prev,
+                    f"{self.__class__.__name__} can not be appended to {type(prev).__name__}",
+                    "raise",
+                )
             if self.kind != prev.kind:
                 self._junction_error(prev, f"Ribbons must be of same type.", "raise")
             if self.bond != prev.bond:
-                self._junction_error(prev, f"Ribbons must have same bond length.", "raise")
+                self._junction_error(
+                    prev, f"Ribbons must have same bond length.", "raise"
+                )
 
             shift = self._parse_shift(self.shift, prev, align)
-            
+
             # Get the distance of an atom shift. (sin(60) = 3**.5 / 2)
-            atom_shift = self.bond * 3**.5 / 2
-        
+            atom_shift = self.bond * 3**0.5 / 2
+
             # if (last_W % 2 == 1 and W < last_W) and last_open:
             # _junction_error(i, "DANGLING BONDS: Previous odd section, which has an open end,"
             #     " is wider than the incoming one. A wider odd section must always"
@@ -363,7 +382,7 @@ class _heteroribbon_section(CompositeGeometrySection):
             if aligned_match == (shift % 2 == 1):
                 new_section = self._shift_unit_cell(new_section)
                 self._open_borders[0] = not self._open_borders[0]
-        
+
             # Apply the offset that we have calculated.
             move = np.zeros(3)
             move[self.trans_ax] = offset + shift * atom_shift
@@ -383,11 +402,17 @@ class _heteroribbon_section(CompositeGeometrySection):
         # Cut the last string of atoms.
         if cut_last:
             new_section.cell[0, 0] *= self.L / (self.L + 1)
-            new_section = new_section.remove({"xy"[self.long_ax]:
-                                                (new_section.cell[self.long_ax, self.long_ax] - 0.01, None)})
+            new_section = new_section.remove(
+                {
+                    "xy"[self.long_ax]: (
+                        new_section.cell[self.long_ax, self.long_ax] - 0.01,
+                        None,
+                    )
+                }
+            )
 
         self._open_borders[1] = self._open_borders[0] != cut_last
-        
+
         self.xyz = new_section.xyz
         return new_section
 
@@ -396,14 +421,16 @@ class _heteroribbon_section(CompositeGeometrySection):
         new_min = new_section[:, self.trans_ax].min()
         new_max = new_section[:, self.trans_ax].max()
         if new_min < 0:
-            cell_offset = - new_min + 14
+            cell_offset = -new_min + 14
             geom = geom.add_vacuum(cell_offset, self.trans_ax)
             move = np.zeros(3)
             move[self.trans_ax] = cell_offset
             geom = geom.move(move)
             new_section = new_section.move(move)
         if new_max > geom.cell[1, 1]:
-            geom = geom.add_vacuum(new_max - geom.cell[self.trans_ax, self.trans_ax] + 14, self.trans_ax)
+            geom = geom.add_vacuum(
+                new_max - geom.cell[self.trans_ax, self.trans_ax] + 14, self.trans_ax
+            )
 
         self.xyz = new_section.xyz
         # Finally, we can safely append the geometry.
@@ -419,12 +446,15 @@ class _heteroribbon_section(CompositeGeometrySection):
         # a smaller ribbon, since no matter what the shift is there will
         # always be dangling bonds.
         if (prev.W % 2 == 1 and W < prev.W) and prev._open_borders[1]:
-            self._junction_error(prev, "LONE ATOMS: Previous odd section, which has an open end,"
+            self._junction_error(
+                prev,
+                "LONE ATOMS: Previous odd section, which has an open end,"
                 " is wider than the incoming one. A wider odd section must always"
                 " have a closed end. You can solve this by making the previous section"
-                " one unit smaller or larger (L = L +- 1).", self.on_lone_atom
+                " one unit smaller or larger (L = L +- 1).",
+                self.on_lone_atom,
             )
-        
+
         # Get the difference in width between the previous and this ribbon section
         W_diff = W - prev.W
         # And also the mod(4) because there are certain differences if the width differs
@@ -448,16 +478,19 @@ class _heteroribbon_section(CompositeGeometrySection):
                 # the previous section.
                 shift_lims = {
                     "closed": prev.W // 2 + W // 2 - 2,
-                    "open": prev.W // 2 - W // 2 - 1
+                    "open": prev.W // 2 - W // 2 - 1,
                 }
 
-                shift_pars = {
-                    lim % 2: lim for k, lim in shift_lims.items()
-                }
+                shift_pars = {lim % 2: lim for k, lim in shift_lims.items()}
 
                 # Build an array with all the valid shifts.
-                valid_shifts = np.sort([*np.arange(0, shift_pars[0] + 1, 2), *np.arange(1, shift_pars[1] + 1, 2)])
-                valid_shifts = np.array([*(np.flip(-valid_shifts)[:-1]),  *valid_shifts])
+                valid_shifts = np.sort(
+                    [
+                        *np.arange(0, shift_pars[0] + 1, 2),
+                        *np.arange(1, shift_pars[1] + 1, 2),
+                    ]
+                )
+                valid_shifts = np.array([*(np.flip(-valid_shifts)[:-1]), *valid_shifts])
 
                 # Update the valid shift limits if the sections are aligned on any of the edges.
                 shift_offset = self._offset_from_center(align, prev)
@@ -467,7 +500,12 @@ class _heteroribbon_section(CompositeGeometrySection):
             else:
                 # At this point, we already know that the incoming section is wider and
                 # therefore it MUST have a closed start, otherwise there will be dangling bonds.
-                if diff_mod == 2 and prev._open_borders[1] or diff_mod == 0 and not prev._open_borders[1]:
+                if (
+                    diff_mod == 2
+                    and prev._open_borders[1]
+                    or diff_mod == 0
+                    and not prev._open_borders[1]
+                ):
                     # In these cases, centers must match or differ by an even number of atoms.
                     # And this is the limit for the shift from the center.
                     shift_lim = ((W_diff // 2) // 2) * 2
@@ -485,7 +523,10 @@ class _heteroribbon_section(CompositeGeometrySection):
                 shift_offset = self._offset_from_center(align, prev)
 
                 # Apply the offsets and calculate the maximum and minimum shifts.
-                min_shift, max_shift = -shift_lim - shift_offset, shift_lim - shift_offset
+                min_shift, max_shift = (
+                    -shift_lim - shift_offset,
+                    shift_lim - shift_offset,
+                )
 
                 valid_shifts = np.arange(min_shift, max_shift + 1, 2)
         else:
@@ -507,7 +548,7 @@ class _heteroribbon_section(CompositeGeometrySection):
                     max_shift = prev.W - 1
                 else:
                     special_shifts = [0]
-                    min_shift = - W + 1
+                    min_shift = -W + 1
                     max_shift = -1
 
             elif W % 2 == 1:
@@ -516,10 +557,10 @@ class _heteroribbon_section(CompositeGeometrySection):
                     if prev._open_borders[1]:
                         special_shifts = [prev.W - W]
                         min_shift = prev.W - W
-                        max_shift = prev.W - W + 1 + ((W - 2) // 2)*2
+                        max_shift = prev.W - W + 1 + ((W - 2) // 2) * 2
                     else:
                         special_shifts = [0]
-                        min_shift = -1 - ((W - 2) // 2)*2
+                        min_shift = -1 - ((W - 2) // 2) * 2
                         max_shift = -1
                 else:
                     if prev._open_borders[1]:
@@ -527,14 +568,14 @@ class _heteroribbon_section(CompositeGeometrySection):
                         max_shift = prev.W - 2
                     else:
                         max_shift = -1
-                        min_shift = - (W - 2)
+                        min_shift = -(W - 2)
             else:
                 # Last section was odd, incoming section is even.
                 if prev._open_borders[1]:
                     special_shifts = [0, prev.W - W]
                     min_shift = None
                 else:
-                    min_shift = [1, - (W - 2)]
+                    min_shift = [1, -(W - 2)]
                     max_shift = [prev.W - 2, prev.W - W - 1]
 
             # We have gone over all possible situations, now just build the
@@ -543,7 +584,7 @@ class _heteroribbon_section(CompositeGeometrySection):
             if isinstance(min_shift, int):
                 valid_shifts.extend(np.arange(min_shift, max_shift + 1, 2))
             elif isinstance(min_shift, list):
-                for (m, mx) in zip(min_shift, max_shift):
+                for m, mx in zip(min_shift, max_shift):
                     valid_shifts.extend(np.arange(m, mx + 1, 2))
 
             # Apply offset on shifts based on the actual alignment requested
@@ -552,7 +593,7 @@ class _heteroribbon_section(CompositeGeometrySection):
             if align[0] == "t":
                 shift_offset = W_diff
             elif align[0] == "c":
-                shift_offset = - self._offset_from_center("b", prev)
+                shift_offset = -self._offset_from_center("b", prev)
             valid_shifts = np.array(valid_shifts) + shift_offset
 
         # Finally, check if the provided shift value is valid or not.
@@ -567,32 +608,37 @@ class _heteroribbon_section(CompositeGeometrySection):
                 # What flip does is prioritize upwards shifts.
                 # That is, if both "-1" and "1" shifts are valid,
                 # "1" will be picked as the reference.
-                aligned_shift = n_valid_shifts - 1 - np.argmin(np.abs(np.flip(valid_shifts)))
+                aligned_shift = (
+                    n_valid_shifts - 1 - np.argmin(np.abs(np.flip(valid_shifts)))
+                )
 
             # Calculate which index we really need to retrieve
             corrected_shift = aligned_shift + shift
 
             if corrected_shift < 0 or corrected_shift >= n_valid_shifts:
-                self._junction_error(prev, f"LONE ATOMS: Shift must be between {-aligned_shift}"
+                self._junction_error(
+                    prev,
+                    f"LONE ATOMS: Shift must be between {-aligned_shift}"
                     f" and {n_valid_shifts - aligned_shift - 1}, but {shift} was provided.",
-                    self.on_lone_atom
+                    self.on_lone_atom,
                 )
-            
+
             # And finally get the shift value
             shift = valid_shifts[corrected_shift]
         else:
             if shift not in valid_shifts:
-                self._junction_error(prev, f"LONE ATOMS: Shift must be one of {valid_shifts}"
-                    f" but {shift} was provided.", self.on_lone_atom
+                self._junction_error(
+                    prev,
+                    f"LONE ATOMS: Shift must be one of {valid_shifts}"
+                    f" but {shift} was provided.",
+                    self.on_lone_atom,
                 )
 
         return shift
-    
+
 
 @set_module("sisl.geom")
-def heteroribbon(sections,
-                 section_cls=_heteroribbon_section,
-                 **kwargs):
+def heteroribbon(sections, section_cls=_heteroribbon_section, **kwargs):
     """Build a nanoribbon consisting of several nanoribbons of different widths.
 
     This function uses `composite_geometry`, but defaulting to the usage
@@ -631,15 +677,18 @@ def heteroribbon(sections,
     """
     return composite_geometry(sections, section_cls=section_cls, **kwargs)
 
+
 heteroribbon.section = _heteroribbon_section
 
 
 @set_module("sisl.geom")
-def graphene_heteroribbon(sections,
-                          section_cls=_heteroribbon_section,
-                          bond: float=1.42,
-                          atoms=None,
-                          **kwargs):
+def graphene_heteroribbon(
+    sections,
+    section_cls=_heteroribbon_section,
+    bond: float = 1.42,
+    atoms=None,
+    **kwargs,
+):
     """Build a graphene nanoribbon consisting of several nanoribbons of different widths
 
     Please see `heteroribbon` for arguments, the only difference is that the `bond` and `atoms`
@@ -651,6 +700,9 @@ def graphene_heteroribbon(sections,
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
-    return composite_geometry(sections, section_cls=section_cls, bond=bond, atoms=atoms, **kwargs)
+    return composite_geometry(
+        sections, section_cls=section_cls, bond=bond, atoms=atoms, **kwargs
+    )
+
 
 graphene_heteroribbon.section = _heteroribbon_section

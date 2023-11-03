@@ -10,19 +10,21 @@ from sisl.unit.siesta import unit_convert
 from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
-__all__ = ['kpSileSiesta', 'rkpSileSiesta']
+__all__ = ["kpSileSiesta", "rkpSileSiesta"]
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 
 
 @set_module("sisl.io.siesta")
 class kpSileSiesta(SileSiesta):
-    """ k-points file in 1/Bohr units """
+    """k-points file in 1/Bohr units"""
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
     def read_data(self, lattice=None):
-        """ Returns K-points from the file (note that these are in reciprocal units)
+        """Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
         ----------
@@ -51,8 +53,8 @@ class kpSileSiesta(SileSiesta):
         return np.dot(k, lattice.cell.T / (2 * np.pi)), w
 
     @sile_fh_open()
-    def write_data(self, k, weight, fmt='.9e'):
-        """ Writes K-points to file
+    def write_data(self, k, weight, fmt=".9e"):
+        """Writes K-points to file
 
         Parameters
         ----------
@@ -66,16 +68,18 @@ class kpSileSiesta(SileSiesta):
         sile_raise_write(self)
 
         nk = len(k)
-        self._write(f'{nk}\n')
-        _fmt = ('{:d}' + (' {:' + fmt + '}') * 4) + '\n'
+        self._write(f"{nk}\n")
+        _fmt = ("{:d}" + (" {:" + fmt + "}") * 4) + "\n"
 
         for i, (kk, w) in enumerate(zip(np.atleast_2d(k), weight)):
             self._write(_fmt.format(i + 1, kk[0], kk[1], kk[2], w))
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
     def read_brillouinzone(self, lattice):
-        """ Returns K-points from the file (note that these are in reciprocal units)
+        """Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
         ----------
@@ -95,8 +99,8 @@ class kpSileSiesta(SileSiesta):
         return bz
 
     @sile_fh_open()
-    def write_brillouinzone(self, bz, fmt='.9e'):
-        """ Writes BrillouinZone-points to file
+    def write_brillouinzone(self, bz, fmt=".9e"):
+        """Writes BrillouinZone-points to file
 
         Parameters
         ----------
@@ -112,7 +116,7 @@ class kpSileSiesta(SileSiesta):
 
 @set_module("sisl.io.siesta")
 class rkpSileSiesta(kpSileSiesta):
-    """ Special k-point file with units in reciprocal lattice vectors
+    """Special k-point file with units in reciprocal lattice vectors
 
     Its main usage is as input for the kgrid.File fdf-option, in which case this
     file provides the k-points in the correct format.
@@ -120,7 +124,7 @@ class rkpSileSiesta(kpSileSiesta):
 
     @sile_fh_open()
     def read_data(self):
-        """ Returns K-points from the file (note that these are in reciprocal units)
+        """Returns K-points from the file (note that these are in reciprocal units)
 
         Returns
         -------
@@ -139,9 +143,11 @@ class rkpSileSiesta(kpSileSiesta):
         return k, w
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
     def read_brillouinzone(self, lattice):
-        """ Returns K-points from the file
+        """Returns K-points from the file
 
         Parameters
         ----------
@@ -161,8 +167,8 @@ class rkpSileSiesta(kpSileSiesta):
         return bz
 
     @sile_fh_open()
-    def write_brillouinzone(self, bz, fmt='.9e'):
-        """ Writes BrillouinZone-points to file
+    def write_brillouinzone(self, bz, fmt=".9e"):
+        """Writes BrillouinZone-points to file
 
         Parameters
         ----------
@@ -174,5 +180,5 @@ class rkpSileSiesta(kpSileSiesta):
         self.write_data(bz.k, bz.weight, fmt)
 
 
-add_sile('KP', kpSileSiesta, gzip=True)
-add_sile('RKP', rkpSileSiesta, gzip=True)
+add_sile("KP", kpSileSiesta, gzip=True)
+add_sile("RKP", rkpSileSiesta, gzip=True)

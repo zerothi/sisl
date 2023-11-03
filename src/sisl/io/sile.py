@@ -20,31 +20,21 @@ from sisl.utils.misc import str_spec
 from ._help import *
 
 # Public used objects
-__all__ = [
-    'add_sile',
-    'get_sile_class',
-    'get_sile',
-    'get_siles',
-    'get_sile_rules'
-]
+__all__ = ["add_sile", "get_sile_class", "get_sile", "get_siles", "get_sile_rules"]
 
 __all__ += [
-    'BaseSile',
-    'BufferSile',
-    'Sile',
-    'SileCDF',
-    'SileBin',
-    'SileError',
-    'SileWarning',
-    'SileInfo',
+    "BaseSile",
+    "BufferSile",
+    "Sile",
+    "SileCDF",
+    "SileBin",
+    "SileError",
+    "SileWarning",
+    "SileInfo",
 ]
 
 # Decorators or sile-specific functions
-__all__ += [
-    'sile_fh_open',
-    'sile_raise_write',
-    'sile_raise_read'
-]
+__all__ += ["sile_fh_open", "sile_raise_write", "sile_raise_read"]
 
 # Global container of all Sile rules
 # This list of tuples is formed as
@@ -60,7 +50,7 @@ __siles = []
 
 
 class _sile_rule:
-    """ Internal data-structure to check whether a file is the same as this sile """
+    """Internal data-structure to check whether a file is the same as this sile"""
 
     COMPARISONS = {
         "contains": contains,
@@ -69,7 +59,7 @@ class _sile_rule:
         "startswith": str.startswith,
     }
 
-    __slots__ = ('cls', 'case', 'suffix', 'gzip', 'bases', 'base_names')
+    __slots__ = ("cls", "case", "suffix", "gzip", "bases", "base_names")
 
     def __init__(self, cls, suffix, case=True, gzip=False):
         self.cls = cls
@@ -83,18 +73,21 @@ class _sile_rule:
         self.base_names = [c.__name__.lower() for c in self.bases]
 
     def __str__(self):
-        s = '{cls}{{case={case}, suffix={suffix}, gzip={gzip},\n '.format(cls=self.cls.__name__, case=self.case,
-                                                                          suffix=self.suffix, gzip=self.gzip)
+        s = "{cls}{{case={case}, suffix={suffix}, gzip={gzip},\n ".format(
+            cls=self.cls.__name__, case=self.case, suffix=self.suffix, gzip=self.gzip
+        )
         for b in self.bases:
-            s += f' {b.__name__},\n '
-        return s[:-3] + '\n}'
+            s += f" {b.__name__},\n "
+        return s[:-3] + "\n}"
 
     def __repr__(self):
-        return (f"<{self.cls.__name__}, case={self.case}, "
-                f"suffix={self.suffix}, gzip={self.gzip}>")
+        return (
+            f"<{self.cls.__name__}, case={self.case}, "
+            f"suffix={self.suffix}, gzip={self.gzip}>"
+        )
 
     def build_bases(self):
-        """ Return a list of all classes that this file is inheriting from (except Sile, SileBin or SileCDF) """
+        """Return a list of all classes that this file is inheriting from (except Sile, SileBin or SileCDF)"""
         children = list(self.cls.__bases__) + [self.cls]
         nl = -1
         while len(children) != nl:
@@ -106,7 +99,7 @@ class _sile_rule:
                     children.pop(i)
                 except Exception:
                     pass
-            for child in list(children): # ensure we have a copy for infinite loops
+            for child in list(children):  # ensure we have a copy for infinite loops
                 for c in child.__bases__:
                     if c not in children:
                         children.append(c)
@@ -114,7 +107,7 @@ class _sile_rule:
         return children
 
     def in_bases(self, base, method="contains"):
-        """ Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) """
+        """Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive)"""
         if base is None:
             return True
         elif isinstance(base, object):
@@ -126,7 +119,7 @@ class _sile_rule:
         return False
 
     def get_base(self, base, method="contains"):
-        """ Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) """
+        """Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive)"""
         if base is None:
             return None
         comparison = self.COMPARISONS[method]
@@ -136,7 +129,7 @@ class _sile_rule:
         return None
 
     def in_class(self, base, method="contains"):
-        """ Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) """
+        """Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive)"""
         if base is None:
             return False
         comparison = self.COMPARISONS[method]
@@ -166,7 +159,7 @@ class _sile_rule:
 
 @set_module("sisl.io")
 def add_sile(suffix, cls, case=True, gzip=False):
-    """ Add files to the global lookup table
+    """Add files to the global lookup table
 
     Public for attaching lookup tables for allowing
     users to attach files externally.
@@ -191,7 +184,7 @@ def add_sile(suffix, cls, case=True, gzip=False):
         raise ValueError(f"Class {cls.__name__} must be a subclass of BaseSile!")
 
     # Only add pure suffixes...
-    if suffix.startswith('.'):
+    if suffix.startswith("."):
         suffix = suffix[1:]
 
     # If it isn't already in the list of
@@ -205,7 +198,7 @@ def add_sile(suffix, cls, case=True, gzip=False):
 
 @set_module("sisl.io")
 def get_sile_class(filename, *args, **kwargs):
-    """ Retrieve a class from the global lookup table via filename and the extension
+    """Retrieve a class from the global lookup table via filename and the extension
 
     Parameters
     ----------
@@ -227,7 +220,7 @@ def get_sile_class(filename, *args, **kwargs):
     global __sile_rules, __siles
 
     # This ensures that the first argument need not be cls
-    cls = kwargs.pop('cls', None)
+    cls = kwargs.pop("cls", None)
 
     # Split filename into proper file name and
     # the Specification of the type
@@ -244,14 +237,15 @@ def get_sile_class(filename, *args, **kwargs):
     if "=" in specification:
         method, cls_search = specification.split("=", 1)
         if "=" in cls_search:
-            raise ValueError(f"Comparison specification currently only supports one level of comparison(single =); got {specification}")
+            raise ValueError(
+                f"Comparison specification currently only supports one level of comparison(single =); got {specification}"
+            )
     else:
         method, cls_search = "contains", specification
 
     # searchable rules
     eligible_rules = []
     if cls is None and not cls_search is None:
-
         # cls has not been set, and fcls is found
         # Figure out if fcls is a valid sile, if not
         # do nothing (it may be part of the file name)
@@ -265,7 +259,9 @@ def get_sile_class(filename, *args, **kwargs):
             # we have at least one eligible rule
             filename = tmp_file
         else:
-            warn(f"Specification requirement of the file did not result in any found files: {specification}")
+            warn(
+                f"Specification requirement of the file did not result in any found files: {specification}"
+            )
 
     else:
         # search everything
@@ -282,10 +278,11 @@ def get_sile_class(filename, *args, **kwargs):
         # Create list of endings on this file
         f = basename(filename)
         end_list = []
-        end = ''
+        end = ""
 
         def try_methods(eligibles, prefixes=("read_",)):
-            """ return only those who can actually perform the read actions """
+            """return only those who can actually perform the read actions"""
+
             def has(keys):
                 nonlocal prefixes
                 has_keys = []
@@ -317,7 +314,7 @@ def get_sile_class(filename, *args, **kwargs):
         lext = splitext(f)
         while len(lext[1]) > 0:
             end = lext[1] + end
-            if end[0] == '.':
+            if end[0] == ".":
                 end_list.append(end[1:])
             else:
                 end_list.append(end)
@@ -346,18 +343,22 @@ def get_sile_class(filename, *args, **kwargs):
 
         # First we check for class AND file ending
         for end, rules in product(end_list, (eligible_rules, __sile_rules)):
-             eligibles = get_eligibles(end, rules)
-             # Determine whether we have found a compatible sile
-             if len(eligibles) == 1:
+            eligibles = get_eligibles(end, rules)
+            # Determine whether we have found a compatible sile
+            if len(eligibles) == 1:
                 return eligibles[0].cls
-             elif len(eligibles) > 1:
+            elif len(eligibles) > 1:
                 workable_eligibles = try_methods(eligibles)
                 if len(workable_eligibles) == 1:
                     return workable_eligibles[0].cls
-                raise ValueError(f"Cannot determine the exact Sile requested, multiple hits: {tuple(e.cls.__name__ for e in eligibles)}")
+                raise ValueError(
+                    f"Cannot determine the exact Sile requested, multiple hits: {tuple(e.cls.__name__ for e in eligibles)}"
+                )
 
-        raise NotImplementedError(f"Sile for file '{filename}' could not be found, "
-                                  "possibly the file has not been implemented.")
+        raise NotImplementedError(
+            f"Sile for file '{filename}' could not be found, "
+            "possibly the file has not been implemented."
+        )
 
     except Exception as e:
         raise e
@@ -365,7 +366,7 @@ def get_sile_class(filename, *args, **kwargs):
 
 @set_module("sisl.io")
 def get_sile(file, *args, **kwargs):
-    """ Retrieve an object from the global lookup table via filename and the extension
+    """Retrieve an object from the global lookup table via filename and the extension
 
     Internally this is roughly equivalent to ``get_sile_class(...)()``.
 
@@ -407,14 +408,14 @@ def get_sile(file, *args, **kwargs):
 
     >>> cls = get_sile_class("water.dat{startswith=xyz}")
     """
-    cls = kwargs.pop('cls', None)
+    cls = kwargs.pop("cls", None)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)
     return sile(Path(str_spec(str(file))[0]), *args, **kwargs)
 
 
 @set_module("sisl.io")
 def get_siles(attrs=None):
-    """ Retrieve all files with specific attributes or methods
+    """Retrieve all files with specific attributes or methods
 
     Parameters
     ----------
@@ -478,29 +479,29 @@ def get_sile_rules(attrs=None, cls=None):
 
 @set_module("sisl.io")
 class BaseSile:
-    """ Base class for all sisl files """
+    """Base class for all sisl files"""
 
     def __init__(self, *args, **kwargs):
-        """ Just to pass away the args and kwargs """
+        """Just to pass away the args and kwargs"""
 
     @property
     def file(self):
-        """ File of the current `Sile` """
+        """File of the current `Sile`"""
         return self._file
 
     @property
     def base_file(self):
-        """ File of the current `Sile` """
+        """File of the current `Sile`"""
         return basename(self._file)
 
     def dir_file(self, filename=None, filename_base=""):
-        """ File of the current `Sile` """
+        """File of the current `Sile`"""
         if filename is None:
             filename = Path(self._file).name
         return self._directory / filename_base / filename
 
     def read(self, *args, **kwargs):
-        """ Generic read method which should be overloaded in child-classes
+        """Generic read method which should be overloaded in child-classes
 
         Parameters
         ----------
@@ -523,7 +524,7 @@ class BaseSile:
     _write_default_only = False
 
     def write(self, *args, **kwargs):
-        """ Generic write method which should be overloaded in child-classes
+        """Generic write method which should be overloaded in child-classes
 
         Parameters
         ----------
@@ -544,7 +545,7 @@ class BaseSile:
                 func(kwargs[key], **kwargs)
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `Sile` after initialization
+        """Setup the `Sile` after initialization
 
         Inherited method for setting up the sile.
 
@@ -553,59 +554,69 @@ class BaseSile:
         pass
 
     def _base_setup(self, *args, **kwargs):
-        """ Setup the `Sile` after initialization
+        """Setup the `Sile` after initialization
 
         Inherited method for setting up the sile.
 
         This method **must** be overwritten *and*
         end with ``self._setup()``.
         """
-        base = kwargs.get('base', None)
+        base = kwargs.get("base", None)
         if base is None:
             # Extract from filename
             self._directory = Path(self._file).parent
         else:
             self._directory = base
         if not str(self._directory):
-            self._directory = '.'
+            self._directory = "."
         self._directory = Path(self._directory).resolve()
 
         self._setup(*args, **kwargs)
 
     def _base_file(self, f):
-        """ Make `f` refer to the file with the appropriate base directory """
+        """Make `f` refer to the file with the appropriate base directory"""
         return self._directory / f
 
     def __getattr__(self, name):
-        """ Override to check the handle """
-        if name == 'fh':
-            raise AttributeError(f"The filehandle for {self.file} has not been opened yet...")
+        """Override to check the handle"""
+        if name == "fh":
+            raise AttributeError(
+                f"The filehandle for {self.file} has not been opened yet..."
+            )
         if name == "read_supercell" and hasattr(self, "read_lattice"):
-            deprecate(f"{self.__class__.__name__}.read_supercell is deprecated in favor of read_lattice", "0.15")
+            deprecate(
+                f"{self.__class__.__name__}.read_supercell is deprecated in favor of read_lattice",
+                "0.15",
+            )
             return getattr(self, "read_lattice")
         if name == "write_supercell" and hasattr(self, "write_lattice"):
-            deprecate(f"{self.__class__.__name__}.write_supercell is deprecated in favor of write_lattice", "0.15")
+            deprecate(
+                f"{self.__class__.__name__}.write_supercell is deprecated in favor of write_lattice",
+                "0.15",
+            )
             return getattr(self, "write_lattice")
         return getattr(self.fh, name)
 
     @classmethod
     def _ArgumentParser_args_single(cls):
-        """ Default arguments for the Sile """
+        """Default arguments for the Sile"""
         return {}
 
     # Define the custom ArgumentParser
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that may be available for this Sile
+        """Returns the arguments that may be available for this Sile
 
         Parameters
         ----------
         p : ArgumentParser
            the argument parser to add the arguments to.
         """
-        raise NotImplementedError(f"The ArgumentParser of '{self.__class__.__name__}' has not been implemented yet.")
+        raise NotImplementedError(
+            f"The ArgumentParser of '{self.__class__.__name__}' has not been implemented yet."
+        )
 
     def ArgumentParser_out(self, p=None, *args, **kwargs):
-        """ Appends additional arguments based on the output of the file
+        """Appends additional arguments based on the output of the file
 
         Parameters
         ----------
@@ -615,19 +626,20 @@ class BaseSile:
         pass
 
     def __str__(self):
-        """ Return a representation of the `Sile` """
+        """Return a representation of the `Sile`"""
         # Check if the directory is relative to the current path
         # If so, only print the relative path, otherwise print the full path
         d = self._directory
         try:
             # bypass d.is_relative_to, added in 3.9
-            d = d.relative_to(Path('.').resolve())
-        except Exception: pass
+            d = d.relative_to(Path(".").resolve())
+        except Exception:
+            pass
         return f"{self.__class__.__name__}({self.base_file!s}, base={d!s})"
 
 
 def sile_fh_open(from_closed=False, reset=None):
-    """ Method decorator for objects to directly implement opening of the
+    """Method decorator for objects to directly implement opening of the
     file-handle upon entry (if it isn't already).
 
     Parameters
@@ -639,26 +651,37 @@ def sile_fh_open(from_closed=False, reset=None):
        ``reset(self)``
     """
     if reset is None:
-        def reset(self): pass
+
+        def reset(self):
+            pass
 
     if from_closed:
+
         def _wrapper(func):
             nonlocal reset
+
             @wraps(func)
             def pre_open(self, *args, **kwargs):
                 # only call reset if the file should be reset
                 _reset = reset
                 if hasattr(self, "fh"):
-                    def _reset(self): pass
+
+                    def _reset(self):
+                        pass
+
                 with self:
                     # REMARK this requires the __enter__ to seek(0)
                     # for the file, and currently it does
                     _reset(self)
                     return func(self, *args, **kwargs)
+
             return pre_open
+
     else:
+
         def _wrapper(func):
             nonlocal reset
+
             @wraps(func)
             def pre_open(self, *args, **kwargs):
                 if hasattr(self, "fh"):
@@ -666,13 +689,15 @@ def sile_fh_open(from_closed=False, reset=None):
                 with self:
                     reset(self)
                     return func(self, *args, **kwargs)
+
             return pre_open
+
     return _wrapper
 
 
 @set_module("sisl.io")
 class BufferSile:
-    """ Sile for handling `StringIO` and `TextIOBase` objects
+    """Sile for handling `StringIO` and `TextIOBase` objects
 
     These are basically meant for users passing down the above objects
     """
@@ -713,13 +738,13 @@ class BufferSile:
         return False
 
     def close(self):
-        """ Will not close the file since this is passed by the user """
+        """Will not close the file since this is passed by the user"""
         pass
 
 
 @set_module("sisl.io")
 class Info:
-    """ An info class that creates .info with inherent properties
+    """An info class that creates .info with inherent properties
 
     These properties can be added at will.
     """
@@ -732,7 +757,7 @@ class Info:
         self.info = _Info(self)
 
     class _Info:
-        """ The actual .info object that will attached to the instance.
+        """The actual .info object that will attached to the instance.
 
         As of now this is problematic to document.
         We should figure out a way to do that.
@@ -759,6 +784,7 @@ class Info:
                     for prop in properties:
                         prop.process(line)
                     return line
+
                 return readline
 
             self._instance.readline = patch(self)
@@ -772,19 +798,21 @@ class Info:
                 self.add_property(prop)
 
         def add_property(self, prop):
-            """ Add a new property to be reachable from the .info """
+            """Add a new property to be reachable from the .info"""
             self._attrs.append(prop.attr)
             self._properties.append(prop)
 
         def __str__(self):
-            """ Return a string of the contained attributes, with the values they currently contain """
+            """Return a string of the contained attributes, with the values they currently contain"""
             return "\n".join([p.documentation() for p in self._properties])
 
         def __getattr__(self, attr):
-            """ Overwrite the attribute retrieval to be able to fetch the actual values from the information """
+            """Overwrite the attribute retrieval to be able to fetch the actual values from the information"""
             inst = self._instance
             if attr not in self._attrs:
-                raise AttributeError(f"{inst.__class__.__name__}.info.{attr} does not exist, did you mistype?")
+                raise AttributeError(
+                    f"{inst.__class__.__name__}.info.{attr} does not exist, did you mistype?"
+                )
 
             idx = self._attrs.index(attr)
             prop = self._properties[idx]
@@ -801,7 +829,7 @@ class Info:
                 pass
             with inst:
                 line = inst.readline()
-                while not (prop.found or line == ''):
+                while not (prop.found or line == ""):
                     line = inst.readline()
             if loc is not None:
                 inst.fh.seek(loc)
@@ -814,7 +842,7 @@ class Info:
             return prop.value
 
     class InfoAttr:
-        """ Holder for parsing lines and extracting information from text files
+        """Holder for parsing lines and extracting information from text files
 
         This consists of:
 
@@ -842,17 +870,19 @@ class Info:
         found:
             whether the value has been found in the file.
         """
+
         __slots__ = ("attr", "regex", "parser", "updatable", "value", "found", "doc")
 
-        def __init__(self,
-                     attr: str,
-                     regex: Union[str, re.Pattern],
-                     parser,
-                     doc: str="",
-                     updatable: bool=False,
-                     default: Optional[Any]=None,
-                     found: bool=False,
-            ):
+        def __init__(
+            self,
+            attr: str,
+            regex: Union[str, re.Pattern],
+            parser,
+            doc: str = "",
+            updatable: bool = False,
+            default: Optional[Any] = None,
+            found: bool = False,
+        ):
             self.attr = attr
             if isinstance(regex, str):
                 regex = re.compile(regex)
@@ -870,23 +900,25 @@ class Info:
             match = self.regex.match(line)
             if match:
                 self.value = self.parser(self, match)
-                #print(f"found {self.attr}={self.value} with {line}")
+                # print(f"found {self.attr}={self.value} with {line}")
                 self.found = True
                 return True
 
             return False
 
         def copy(self):
-            return self.__class__(attr=self.attr,
-                                  regex=self.regex,
-                                  parser=self.parser,
-                                  doc=self.doc,
-                                  updatable=self.updatable,
-                                  default=self.value,
-                                  found=self.found)
+            return self.__class__(
+                attr=self.attr,
+                regex=self.regex,
+                parser=self.parser,
+                doc=self.doc,
+                updatable=self.updatable,
+                default=self.value,
+                found=self.found,
+            )
 
         def documentation(self):
-            """ Returns a documentation string for this object """
+            """Returns a documentation string for this object"""
             if self.doc:
                 doc = "\n" + indent(dedent(self.doc), " " * 4)
             else:
@@ -900,7 +932,7 @@ class Info:
 
 @set_module("sisl.io")
 class Sile(Info, BaseSile):
-    """ Base class for ASCII files
+    """Base class for ASCII files
 
     All ASCII files that needs to be added to the global lookup table can
     with benefit inherit this class.
@@ -913,7 +945,6 @@ class Sile(Info, BaseSile):
     """
 
     def __new__(cls, filename, *args, **kwargs):
-
         # check whether filename is an actual str, or StringIO or some buffer
         if not isinstance(filename, TextIOBase):
             # this is just a regular sile opening
@@ -927,16 +958,21 @@ class Sile(Info, BaseSile):
             return
 
         if buffer_cls is None:
-            buffer_cls = type(f"{cls.__name__}Buffer", (BufferSile, cls),
-                              # Ensure the module is the same
-                              {"__module__": cls.__module__})
+            buffer_cls = type(
+                f"{cls.__name__}Buffer",
+                (BufferSile, cls),
+                # Ensure the module is the same
+                {"__module__": cls.__module__},
+            )
         elif not issubclass(buffer_cls, BufferSile):
-            raise TypeError(f"The passed buffer_cls should inherit from sisl.io.BufferSile to "
-                            "ensure correct behaviour.")
+            raise TypeError(
+                f"The passed buffer_cls should inherit from sisl.io.BufferSile to "
+                "ensure correct behaviour."
+            )
 
         cls._buffer_cls = buffer_cls
 
-    def __init__(self, filename, mode='r', *args, **kwargs):
+    def __init__(self, filename, mode="r", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._file = Path(filename)
         self._mode = mode
@@ -963,9 +999,9 @@ class Sile(Info, BaseSile):
             self._fh_opens = 0
 
             if self.file.suffix == ".gz":
-                if self._mode == 'r':
+                if self._mode == "r":
                     # assume the file is a text file and open in text-mode
-                    self.fh = gzip.open(str(self.file), mode='rt')
+                    self.fh = gzip.open(str(self.file), mode="rt")
                 else:
                     # assume this is opening in binary or write mode
                     self.fh = gzip.open(str(self.file), mode=self._mode)
@@ -978,7 +1014,7 @@ class Sile(Info, BaseSile):
         self._fh_opens += 1
 
     def __enter__(self):
-        """ Opens the output file and returns it self """
+        """Opens the output file and returns it self"""
         self._open()
         return self
 
@@ -993,24 +1029,24 @@ class Sile(Info, BaseSile):
         if self._fh_opens <= 0:
             self._line = 0
             self.fh.close()
-            delattr(self, 'fh')
+            delattr(self, "fh")
             self._fh_opens = 0
 
     @staticmethod
     def is_keys(keys):
-        """ Returns true if ``not isinstance(keys, str)`` """
+        """Returns true if ``not isinstance(keys, str)``"""
         return not isinstance(keys, str)
 
     @staticmethod
     def key2case(key, case):
-        """ Converts str/list of keywords to proper case """
+        """Converts str/list of keywords to proper case"""
         if case:
             return key
         return key.lower()
 
     @staticmethod
     def keys2case(keys, case):
-        """ Converts str/list of keywords to proper case """
+        """Converts str/list of keywords to proper case"""
         if case:
             return keys
         return [k.lower() for k in keys]
@@ -1034,14 +1070,14 @@ class Sile(Info, BaseSile):
         return found
 
     def __iter__(self):
-        """ Reading the entire content, without regarding comments """
+        """Reading the entire content, without regarding comments"""
         l = self.readline(comment=True)
         while l:
             yield l
             l = self.readline(comment=True)
 
     def readline(self, comment=False):
-        r""" Reads the next line of the file """
+        r"""Reads the next line of the file"""
         l = self.fh.readline()
         self._line += 1
         if comment:
@@ -1051,8 +1087,10 @@ class Sile(Info, BaseSile):
             self._line += 1
         return l
 
-    def step_to(self, keywords, case=True, allow_reread=True, ret_index=False, reopen=False):
-        r""" Steps the file-handle until the keyword(s) is found in the input
+    def step_to(
+        self, keywords, case=True, allow_reread=True, ret_index=False, reopen=False
+    ):
+        r"""Steps the file-handle until the keyword(s) is found in the input
 
         Parameters
         ----------
@@ -1095,11 +1133,11 @@ class Sile(Info, BaseSile):
 
         while not found:
             l = self.readline()
-            if l == '':
+            if l == "":
                 break
             found = self.line_has_keys(l, keys, case)
 
-        if not found and (l == '' and line > 0) and allow_reread:
+        if not found and (l == "" and line > 0) and allow_reread:
             # We may be in the case where the user request
             # reading the same twice...
             # So we need to re-read the file...
@@ -1110,7 +1148,7 @@ class Sile(Info, BaseSile):
             # Try and read again
             while not found and self._line <= line:
                 l = self.readline()
-                if l == '':
+                if l == "":
                     break
                 found = self.line_has_keys(l, keys, case)
 
@@ -1130,7 +1168,7 @@ class Sile(Info, BaseSile):
         return found, l
 
     def _write(self, *args, **kwargs):
-        """ Wrapper to default the write statements """
+        """Wrapper to default the write statements"""
         self.fh.write(*args, **kwargs)
 
 
@@ -1138,6 +1176,7 @@ class Sile(Info, BaseSile):
 # of the __enter__ functioon (below), we make
 # a pass around it
 netCDF4 = None
+
 
 def _import_netCDF4():
     global netCDF4
@@ -1147,6 +1186,7 @@ def _import_netCDF4():
         except ImportError as e:
             # append
             import sys
+
             exe = Path(sys.executable).name
             msg = f"Could not import netCDF4. Please install it using '{exe} -m pip install netCDF4'"
             raise SileError(msg) from e
@@ -1154,7 +1194,7 @@ def _import_netCDF4():
 
 @set_module("sisl.io")
 class SileCDF(BaseSile):
-    """ Creates/Opens a SileCDF
+    """Creates/Opens a SileCDF
 
     Opens a SileCDF with `mode` and compression level `lvl`.
     If `mode` is in read-mode (r) the compression level
@@ -1167,7 +1207,7 @@ class SileCDF(BaseSile):
     1) means stores certain variables in the object.
     """
 
-    def __init__(self, filename, mode='r', lvl=0, access=1, *args, **kwargs):
+    def __init__(self, filename, mode="r", lvl=0, access=1, *args, **kwargs):
         _import_netCDF4()
 
         self._file = Path(filename)
@@ -1185,26 +1225,29 @@ class SileCDF(BaseSile):
             self._access = 0
 
             # The CDF file can easily open the file
-        if kwargs.pop('_open', True):
-            self.__dict__['fh'] = netCDF4.Dataset(str(self.file), self._mode,
-                                                  format='NETCDF4')
+        if kwargs.pop("_open", True):
+            self.__dict__["fh"] = netCDF4.Dataset(
+                str(self.file), self._mode, format="NETCDF4"
+            )
 
         # Must call setup-methods
         self._base_setup(*args, **kwargs)
 
     @property
     def _cmp_args(self):
-        """ Returns the compression arguments for the NetCDF file
+        """Returns the compression arguments for the NetCDF file
 
         >>> nc.createVariable(..., **self._cmp_args)
         """
-        return {'zlib': self._lvl > 0, 'complevel': self._lvl}
+        return {"zlib": self._lvl > 0, "complevel": self._lvl}
 
     def __enter__(self):
-        """ Opens the output file and returns it self """
+        """Opens the output file and returns it self"""
         # We do the import here
-        if 'fh' not in self.__dict__:
-            self.__dict__['fh'] = netCDF4.Dataset(str(self.file), self._mode, format='NETCDF4')
+        if "fh" not in self.__dict__:
+            self.__dict__["fh"] = netCDF4.Dataset(
+                str(self.file), self._mode, format="NETCDF4"
+            )
         return self
 
     def __exit__(self, type, value, traceback):
@@ -1215,12 +1258,12 @@ class SileCDF(BaseSile):
         self.fh.close()
 
     def _dimension(self, name, tree=None):
-        """ Local method for obtaing the dimension in a certain tree """
+        """Local method for obtaing the dimension in a certain tree"""
         return self._dimensions(self, name, tree)
 
     @staticmethod
     def _dimensions(n, name, tree=None):
-        """ Retrieve  method to get the NetCDF variable """
+        """Retrieve  method to get the NetCDF variable"""
         if tree is None:
             return n.dimensions[name]
 
@@ -1234,7 +1277,7 @@ class SileCDF(BaseSile):
         return g.dimensions[name]
 
     def _variable(self, name, tree=None):
-        """ Local method for obtaining the data from the SileCDF.
+        """Local method for obtaining the data from the SileCDF.
 
         This method returns the variable as-is.
         """
@@ -1244,7 +1287,7 @@ class SileCDF(BaseSile):
         return self._variables(self, name, tree=tree)
 
     def _value(self, name, tree=None):
-        """ Local method for obtaining the data from the SileCDF.
+        """Local method for obtaining the data from the SileCDF.
 
         This method returns the value of the variable.
         """
@@ -1252,7 +1295,7 @@ class SileCDF(BaseSile):
 
     @staticmethod
     def _variables(n, name, tree=None):
-        """ Retrieve  method to get the NetCDF variable """
+        """Retrieve  method to get the NetCDF variable"""
         if tree is None:
             return n.variables[name]
 
@@ -1267,8 +1310,8 @@ class SileCDF(BaseSile):
 
     @staticmethod
     def _crt_grp(n, name):
-        if '/' in name: # this is NetCDF, so / is fixed as seperator!
-            groups = name.split('/')
+        if "/" in name:  # this is NetCDF, so / is fixed as seperator!
+            groups = name.split("/")
             grp = n
             for group in groups:
                 if len(group) > 0:
@@ -1290,8 +1333,8 @@ class SileCDF(BaseSile):
         if name in n.variables:
             return n.variables[name]
 
-        if 'attrs' in kwargs:
-            attrs = kwargs.pop('attrs')
+        if "attrs" in kwargs:
+            attrs = kwargs.pop("attrs")
         else:
             attrs = None
         var = n.createVariable(name, *args, **kwargs)
@@ -1302,7 +1345,7 @@ class SileCDF(BaseSile):
 
     @classmethod
     def isDimension(cls, obj):
-        """ Return true if ``obj`` is an instance of the NetCDF4 ``Dimension`` type
+        """Return true if ``obj`` is an instance of the NetCDF4 ``Dimension`` type
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Dimension)``.
         """
@@ -1310,7 +1353,7 @@ class SileCDF(BaseSile):
 
     @classmethod
     def isVariable(cls, obj):
-        """ Return true if ``obj`` is an instance of the NetCDF4 ``Variable`` type
+        """Return true if ``obj`` is an instance of the NetCDF4 ``Variable`` type
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Variable)``.
         """
@@ -1318,7 +1361,7 @@ class SileCDF(BaseSile):
 
     @classmethod
     def isGroup(cls, obj):
-        """ Return true if ``obj`` is an instance of the NetCDF4 ``Group`` type
+        """Return true if ``obj`` is an instance of the NetCDF4 ``Group`` type
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Group)``.
         """
@@ -1326,15 +1369,16 @@ class SileCDF(BaseSile):
 
     @classmethod
     def isDataset(cls, obj):
-        """ Return true if ``obj`` is an instance of the NetCDF4 ``Dataset`` type
+        """Return true if ``obj`` is an instance of the NetCDF4 ``Dataset`` type
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Dataset)``.
         """
         return isinstance(obj, netCDF4.Dataset)
+
     isRoot = isDataset
 
     def iter(self, group=True, dimension=True, variable=True, levels=-1, root=None):
-        """ Iterator on all groups, variables and dimensions.
+        """Iterator on all groups, variables and dimensions.
 
         This iterator iterates through all groups, variables and dimensions in the ``Dataset``
 
@@ -1395,57 +1439,66 @@ class SileCDF(BaseSile):
             return
 
         for grp in head.groups.values():
-            yield from self.iter(group, dimension, variable,
-                                 levels=levels-1, root=grp.path)
+            yield from self.iter(
+                group, dimension, variable, levels=levels - 1, root=grp.path
+            )
 
     __iter__ = iter
 
 
 @set_module("sisl.io")
 class SileBin(BaseSile):
-    """ Creates/Opens a SileBin
+    """Creates/Opens a SileBin
 
     Opens a SileBin with `mode` (b).
     If `mode` is in read-mode (r).
     """
 
-    def __init__(self, filename, mode='r', *args, **kwargs):
+    def __init__(self, filename, mode="r", *args, **kwargs):
         self._file = Path(filename)
         # Open mode
-        self._mode = mode.replace('b', '') + 'b'
+        self._mode = mode.replace("b", "") + "b"
 
         # Must call setup-methods
         self._base_setup(*args, **kwargs)
 
     def __enter__(self):
-        """ Opens the output file and returns it self """
+        """Opens the output file and returns it self"""
         return self
 
     def __exit__(self, type, value, traceback):
         return False
 
 
-def sile_raise_write(self, ok=('w', 'a')):
+def sile_raise_write(self, ok=("w", "a")):
     is_ok = False
     for O in ok:
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
-        raise SileError(('Writing to file not possible; allowed '
-                         'modes={}, used mode={}'.format(ok, self._mode)), self)
+        raise SileError(
+            (
+                "Writing to file not possible; allowed "
+                "modes={}, used mode={}".format(ok, self._mode)
+            ),
+            self,
+        )
 
 
-def sile_raise_read(self, ok=('r', 'a')):
+def sile_raise_read(self, ok=("r", "a")):
     is_ok = False
     for O in ok:
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
-        raise SileError(f"Reading file not possible; allowed "
-                        f"modes={ok}, used mode={self._mode}", self)
+        raise SileError(
+            f"Reading file not possible; allowed "
+            f"modes={ok}, used mode={self._mode}",
+            self,
+        )
 
 
 @set_module("sisl.io")
 class SileError(IOError):
-    """ Define an error object related to the Sile objects """
+    """Define an error object related to the Sile objects"""
 
     def __init__(self, value, obj=None):
         self.value = value
@@ -1460,15 +1513,17 @@ class SileError(IOError):
 
 @set_module("sisl.io")
 class SileWarning(SislWarning):
-    """ Warnings that informs users of things to be carefull about when using their retrieved data
+    """Warnings that informs users of things to be carefull about when using their retrieved data
 
     These warnings should be issued whenever a read/write routine is unable to retrieve all information
     but are non-influential in the sense that sisl is still able to perform the action.
     """
+
     pass
 
 
 @set_module("sisl.io")
 class SileInfo(SislInfo):
-    """ Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning. """
+    """Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning."""
+
     pass

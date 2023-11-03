@@ -10,11 +10,13 @@ import numpy as np
 
 try:
     from pathos.pools import ProcessPool as Pool
+
     pathos_avail = True
 except Exception:
     pathos_avail = False
 try:
     import tqdm
+
     tqdm_avail = True
 except Exception:
     tqdm_avail = False
@@ -25,22 +27,34 @@ from sisl._environ import get_environ_variable
 from sisl.io.sile import get_sile_rules, get_siles
 from sisl.messages import info
 
-__all__ = ["running_in_notebook", "check_widgets",
-           "get_plot_classes", "get_plotable_siles", "get_plotable_variables",
-           "get_session_classes", "get_avail_presets",
-           "get_nested_key", "modify_nested_dict", "dictOfLists2listOfDicts",
-           "get_avail_presets", "random_color",
-           "load", "find_files", "find_plotable_siles",
-           "shift_trace", "normalize_trace", "swap_trace_axes"
+__all__ = [
+    "running_in_notebook",
+    "check_widgets",
+    "get_plot_classes",
+    "get_plotable_siles",
+    "get_plotable_variables",
+    "get_session_classes",
+    "get_avail_presets",
+    "get_nested_key",
+    "modify_nested_dict",
+    "dictOfLists2listOfDicts",
+    "get_avail_presets",
+    "random_color",
+    "load",
+    "find_files",
+    "find_plotable_siles",
+    "shift_trace",
+    "normalize_trace",
+    "swap_trace_axes",
 ]
 
-#-------------------------------------
+# -------------------------------------
 #            Ipython
-#-------------------------------------
+# -------------------------------------
 
 
 def running_in_notebook():
-    """ Finds out whether the code is being run on a notebook.
+    """Finds out whether the code is being run on a notebook.
 
     Returns
     --------
@@ -48,13 +62,13 @@ def running_in_notebook():
         whether the code is running in a notebook
     """
     try:
-        return get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
+        return get_ipython().__class__.__name__ == "ZMQInteractiveShell"
     except NameError:
         return False
 
 
 def check_widgets():
-    """ Checks if some jupyter notebook widgets are there.
+    """Checks if some jupyter notebook widgets are there.
 
     This will be helpful to know how the figures should be displayed.
 
@@ -67,42 +81,48 @@ def check_widgets():
     import subprocess
 
     widgets = {
-        'plotly_avail': False,
-        'plotly_error': False,
-        'events_avail': False,
-        'events_error': False
+        "plotly_avail": False,
+        "plotly_error": False,
+        "events_avail": False,
+        "events_error": False,
     }
 
-    out, err = subprocess.Popen(['jupyter', 'nbextension', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    out, err = subprocess.Popen(
+        ["jupyter", "nbextension", "list"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    ).communicate()
     out = str(out)
     err = str(err)
 
-    if 'plotlywidget' in out:
-        widgets['plotly_avail'] = True
-    if 'plotlywidget' in err:
-        widgets['plotly_error'] = True
+    if "plotlywidget" in out:
+        widgets["plotly_avail"] = True
+    if "plotlywidget" in err:
+        widgets["plotly_error"] = True
 
-    if 'ipyevents' in out:
+    if "ipyevents" in out:
         try:
             import ipyevents
-            widgets['events_avail'] = True
+
+            widgets["events_avail"] = True
         except Exception:
             pass
-    if 'ipyevents' in err:
-        widgets['events_error'] = True
+    if "ipyevents" in err:
+        widgets["events_error"] = True
 
-    widgets['plotly'] = widgets['plotly_avail'] and not widgets['plotly_error']
-    widgets['events'] = widgets['events_avail'] and not widgets['events_error']
+    widgets["plotly"] = widgets["plotly_avail"] and not widgets["plotly_error"]
+    widgets["events"] = widgets["events_avail"] and not widgets["events_error"]
 
     return widgets
 
-#-------------------------------------
+
+# -------------------------------------
 #            Informative
-#-------------------------------------
+# -------------------------------------
 
 
 def get_plot_classes():
-    """ This method returns all the plot subclasses, even the nested ones.
+    """This method returns all the plot subclasses, even the nested ones.
 
     Returns
     ---------
@@ -112,7 +132,6 @@ def get_plot_classes():
     from . import Plot
 
     def get_all_subclasses(cls):
-
         all_subclasses = []
 
         for Subclass in cls.__subclasses__():
@@ -122,11 +141,11 @@ def get_plot_classes():
 
         return all_subclasses
 
-    return sorted(get_all_subclasses(Plot), key = lambda clss: clss.plot_name())
+    return sorted(get_all_subclasses(Plot), key=lambda clss: clss.plot_name())
 
 
 def get_plotable_siles(rules=False):
-    """ Gets the subset of siles that are plotable.
+    """Gets the subset of siles that are plotable.
 
     Returns
     ---------
@@ -142,7 +161,7 @@ def get_plotable_siles(rules=False):
 
 
 def get_plotable_variables(variables):
-    """ Retrieves all plotable variables that are in the global scope.
+    """Retrieves all plotable variables that are in the global scope.
 
     Examples
     -----------
@@ -165,7 +184,6 @@ def get_plotable_variables(variables):
 
     plotables = {}
     for vname, obj in list(variables.items()):
-
         if vname.startswith("_"):
             continue
 
@@ -178,7 +196,7 @@ def get_plotable_variables(variables):
 
 
 def get_avail_presets():
-    """ Gets the names of the currently available presets.
+    """Gets the names of the currently available presets.
 
     Returns
     ---------
@@ -189,13 +207,14 @@ def get_avail_presets():
 
     return list(PRESETS.keys())
 
-#-------------------------------------
+
+# -------------------------------------
 #           Python helpers
-#-------------------------------------
+# -------------------------------------
 
 
 def get_nested_key(obj, nestedKey, separator="."):
-    """ Gets a nested key from a dictionary using a given separator.
+    """Gets a nested key from a dictionary using a given separator.
 
     Parameters
     --------
@@ -231,7 +250,7 @@ def get_nested_key(obj, nestedKey, separator="."):
 
 
 def modify_nested_dict(obj, nestedKey, val, separator="."):
-    """ Use it to modify a nested dictionary with ease. 
+    """Use it to modify a nested dictionary with ease.
 
     It modifies the dictionary itself, does not return anything.
 
@@ -243,7 +262,7 @@ def modify_nested_dict(obj, nestedKey, val, separator="."):
         The key to modify. See the separator argument for how it should look like.
 
         The function will work too if this is a simple key, without any nesting
-    val: 
+    val:
         The new value to give to the target key.
     separator: str, optional (".")
         It defines how hierarchy is indicated in the provided key.
@@ -271,7 +290,7 @@ def modify_nested_dict(obj, nestedKey, val, separator="."):
 
 
 def dictOfLists2listOfDicts(dictOfLists):
-    """ Converts a dictionary of lists to a list of dictionaries.
+    """Converts a dictionary of lists to a list of dictionaries.
 
     The example will make it quite clear.
 
@@ -294,11 +313,19 @@ def dictOfLists2listOfDicts(dictOfLists):
     return [dict(zip(dictOfLists, t)) for t in zip(*dictOfLists.values())]
 
 
-#-------------------------------------
+# -------------------------------------
 #            Filesystem
-#-------------------------------------
+# -------------------------------------
 
-def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = True, sort_func = None, case_insensitive=False):
+
+def find_files(
+    root_dir=Path("."),
+    search_string="*",
+    depth=[0, 0],
+    sort=True,
+    sort_func=None,
+    case_insensitive=False,
+):
     """
     Function that finds files (or directories) according to some conditions.
 
@@ -307,12 +334,12 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = T
     root_dir: str or Path, optional
         Path of the directory from which the search will start.
     search_string: str, optional
-        This is the string that will be passed to glob.glob() to find files or directories. 
+        This is the string that will be passed to glob.glob() to find files or directories.
         It works mostly like bash, so you can use wildcards, for example.
     depth: array-like of length 2 or int, optional
         If it is an array:
 
-            It will specify the limits of the search. 
+            It will specify the limits of the search.
             For example, depth = [1,3] will make the function search for the search_string from 1 to 3 directories deep from root_dir.
             (0 depth means to look for files in the root_dir)
 
@@ -340,7 +367,12 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = T
         root_dir = Path(root_dir)
 
     if case_insensitive:
-        search_string = "".join([f"[{char.upper()}{char.lower()}]" if char.isalpha() else char for char in search_string])
+        search_string = "".join(
+            [
+                f"[{char.upper()}{char.lower()}]" if char.isalpha() else char
+                for char in search_string
+            ]
+        )
 
     files = []
     for depth in range(depth[0], depth[1] + 1):
@@ -356,7 +388,7 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = T
 
 
 def find_plotable_siles(dir_path=None, depth=0):
-    """ Spans the filesystem to look for files that are registered as plotables.
+    """Spans the filesystem to look for files that are registered as plotables.
 
     Parameters
     -----------
@@ -368,7 +400,7 @@ def find_plotable_siles(dir_path=None, depth=0):
 
         If it is an array:
 
-            It will specify the limits of the search. 
+            It will specify the limits of the search.
             For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from root_dir.
             (0 depth means to look for files in the root_dir)
 
@@ -394,12 +426,13 @@ def find_plotable_siles(dir_path=None, depth=0):
     return files
 
 
-#-------------------------------------
+# -------------------------------------
 #            Colors
-#-------------------------------------
+# -------------------------------------
+
 
 def random_color():
-    """ Returns a random color in hex format
+    """Returns a random color in hex format
 
     Returns
     --------
@@ -407,11 +440,12 @@ def random_color():
         the color in HEX format
     """
     import random
-    return "#"+"%06x" % random.randint(0, 0xFFFFFF)
+
+    return "#" + "%06x" % random.randint(0, 0xFFFFFF)
 
 
 def values_to_colors(values, scale):
-    """ Maps an array of numbers to colors using a colorscale.
+    """Maps an array of numbers to colors using a colorscale.
 
     Parameters
     -----------
@@ -436,11 +470,17 @@ def values_to_colors(values, scale):
     v_min = np.min(values)
     values = (values - v_min) / (np.max(values) - v_min)
 
-    scale_colors = plotly.colors.convert_colors_to_same_type(scale, colortype="tuple")[0]
+    scale_colors = plotly.colors.convert_colors_to_same_type(scale, colortype="tuple")[
+        0
+    ]
 
     if not scale_colors and isinstance(scale, str):
-        scale_colors = plotly.colors.convert_colors_to_same_type(scale[0].upper() + scale[1:], colortype="tuple")[0]
+        scale_colors = plotly.colors.convert_colors_to_same_type(
+            scale[0].upper() + scale[1:], colortype="tuple"
+        )[0]
 
-    cmap = matplotlib.colors.LinearSegmentedColormap.from_list("my color map", scale_colors)
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        "my color map", scale_colors
+    )
 
     return plotly.colors.convert_colors_to_same_type([cmap(c) for c in values])[0]

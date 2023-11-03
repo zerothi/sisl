@@ -9,16 +9,16 @@ from sisl._internal import set_module
 from ..sile import add_sile, sile_fh_open
 from .sile import SileVASP
 
-__all__ = ['doscarSileVASP']
+__all__ = ["doscarSileVASP"]
 
 
 @set_module("sisl.io.vasp")
 class doscarSileVASP(SileVASP):
-    """ Density of states output """
+    """Density of states output"""
 
     @sile_fh_open(True)
     def read_fermi_level(self):
-        r""" Query the Fermi-level contained in the file
+        r"""Query the Fermi-level contained in the file
 
         Returns
         -------
@@ -34,7 +34,7 @@ class doscarSileVASP(SileVASP):
 
     @sile_fh_open()
     def read_data(self):
-        r""" Read DOS, as calculated and written by VASP
+        r"""Read DOS, as calculated and written by VASP
 
         Returns
         -------
@@ -50,8 +50,8 @@ class doscarSileVASP(SileVASP):
         self.readline()  # ' CAR '
         self.readline()  # name
         line = self.readline().split()
-        #Emax = float(line[0])
-        #Emin = float(line[1])
+        # Emax = float(line[0])
+        # Emin = float(line[1])
         NE = int(line[2])
         Ef = float(line[3])
 
@@ -61,12 +61,12 @@ class doscarSileVASP(SileVASP):
         ns = (len(line) - 1) // 2
         DOS = np.empty([ns, NE], np.float32)
         E[0] = line[0]
-        DOS[:, 0] = line[1:ns+1]
+        DOS[:, 0] = line[1 : ns + 1]
         for ie in range(1, NE):
             line = arrayf(self.readline().split())
             E[ie] = line[0]
-            DOS[:, ie] = line[1:ns+1]
+            DOS[:, ie] = line[1 : ns + 1]
         return E - Ef, DOS
 
 
-add_sile('DOSCAR', doscarSileVASP, gzip=True)
+add_sile("DOSCAR", doscarSileVASP, gzip=True)

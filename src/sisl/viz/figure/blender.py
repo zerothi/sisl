@@ -20,26 +20,36 @@ def add_line_frame(ani_objects, child_objects, frame):
     child_objects: CollectionObjects
         the objects of the Atoms collection in the child plot.
     frame: int
-        the frame number to which the keyframe values should be set. 
+        the frame number to which the keyframe values should be set.
     """
     # Loop through all objects in the collections
     for ani_obj, child_obj in zip(ani_objects, child_objects):
         # Each curve object has multiple splines
-        for ani_spline, child_spline in zip(ani_obj.data.splines, child_obj.data.splines):
+        for ani_spline, child_spline in zip(
+            ani_obj.data.splines, child_obj.data.splines
+        ):
             # And each spline has multiple points
-            for ani_point, child_point in zip(ani_spline.bezier_points, child_spline.bezier_points):
+            for ani_point, child_point in zip(
+                ani_spline.bezier_points, child_spline.bezier_points
+            ):
                 # Set the position of that point
                 ani_point.co = child_point.co
                 ani_point.keyframe_insert(data_path="co", frame=frame)
 
         # Loop through all the materials that the object might have associated
-        for ani_material, child_material in zip(ani_obj.data.materials, child_obj.data.materials):
+        for ani_material, child_material in zip(
+            ani_obj.data.materials, child_obj.data.materials
+        ):
             ani_mat_inputs = ani_material.node_tree.nodes["Principled BSDF"].inputs
             child_mat_inputs = child_material.node_tree.nodes["Principled BSDF"].inputs
 
             for input_key in ("Base Color", "Alpha"):
-                ani_mat_inputs[input_key].default_value = child_mat_inputs[input_key].default_value
-                ani_mat_inputs[input_key].keyframe_insert(data_path="default_value", frame=frame)
+                ani_mat_inputs[input_key].default_value = child_mat_inputs[
+                    input_key
+                ].default_value
+                ani_mat_inputs[input_key].keyframe_insert(
+                    data_path="default_value", frame=frame
+                )
 
 
 def add_atoms_frame(ani_objects, child_objects, frame):
@@ -55,7 +65,7 @@ def add_atoms_frame(ani_objects, child_objects, frame):
     child_objects: CollectionObjects
         the objects of the Atoms collection in the child plot.
     frame: int
-        the frame number to which the keyframe values should be set. 
+        the frame number to which the keyframe values should be set.
     """
     # Loop through all objects in the collections
     for ani_obj, child_obj in zip(ani_objects, child_objects):
@@ -68,12 +78,20 @@ def add_atoms_frame(ani_objects, child_objects, frame):
         ani_obj.keyframe_insert(data_path="scale", frame=frame)
 
         # Set the atom color and opacity
-        ani_mat_inputs = ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
-        child_mat_inputs = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
+        ani_mat_inputs = (
+            ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
+        )
+        child_mat_inputs = (
+            child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
+        )
 
         for input_key in ("Base Color", "Alpha"):
-            ani_mat_inputs[input_key].default_value = child_mat_inputs[input_key].default_value
-            ani_mat_inputs[input_key].keyframe_insert(data_path="default_value", frame=frame)
+            ani_mat_inputs[input_key].default_value = child_mat_inputs[
+                input_key
+            ].default_value
+            ani_mat_inputs[input_key].keyframe_insert(
+                data_path="default_value", frame=frame
+            )
 
 
 class BlenderFigure(Figure):
@@ -87,7 +105,7 @@ class BlenderFigure(Figure):
     """
 
     # Experimental feature to adjust 2D plottings
-    #_2D_scale =  (1, 1)
+    # _2D_scale =  (1, 1)
 
     _animatable_collections = {
         "Lines": {"add_frame": add_line_frame},
@@ -99,24 +117,24 @@ class BlenderFigure(Figure):
         self._collections = {}
 
     def _init_figure_animated(self, interpolated_frames: int = 5, **kwargs):
-        self._animation_settings = {
-            "interpolated_frames": interpolated_frames
-        }
+        self._animation_settings = {"interpolated_frames": interpolated_frames}
         return self._init_figure(**kwargs)
 
     def _iter_animation(self, plot_actions, interpolated_frames=5):
-
         interpolated_frames = self._animation_settings["interpolated_frames"]
-        
+
         for i, section_actions in enumerate(plot_actions):
             frame = i * interpolated_frames
 
             sanitized_section_actions = []
             for action in section_actions:
-                action_name = action['method']
+                action_name = action["method"]
                 if action_name.startswith("draw_"):
-                    action = {**action, "kwargs": {**action.get("kwargs", {}), "frame": frame}}
-                
+                    action = {
+                        **action,
+                        "kwargs": {**action.get("kwargs", {}), "frame": frame},
+                    }
+
                 sanitized_section_actions.append(action)
 
             yield sanitized_section_actions
@@ -125,10 +143,9 @@ class BlenderFigure(Figure):
         self._plot.get_figure(backend=self._backend_name, clear_fig=False)
 
     def clear(self):
-        """ Clears the blender scene so that data can be reset"""
+        """Clears the blender scene so that data can be reset"""
 
         for key, collection in self._collections.items():
-
             self.clear_collection(collection)
 
             bpy.data.collections.remove(collection)
@@ -156,22 +173,50 @@ class BlenderFigure(Figure):
         for obj in collection.objects:
             bpy.data.objects.remove(obj, do_unlink=True)
 
-    def draw_line(self, x, y, name="", line={}, marker={}, text=None, row=None, col=None, **kwargs):
+    def draw_line(
+        self, x, y, name="", line={}, marker={}, text=None, row=None, col=None, **kwargs
+    ):
         z = np.full_like(x, 0)
         # x = self._2D_scale[0] * x
         # y = self._2D_scale[1] * y
-        return self.draw_line_3D(x, y, z, name=name, line=line, marker=marker, text=text, row=row, col=col, **kwargs)
+        return self.draw_line_3D(
+            x,
+            y,
+            z,
+            name=name,
+            line=line,
+            marker=marker,
+            text=text,
+            row=row,
+            col=col,
+            **kwargs,
+        )
 
-    def draw_scatter(self, x, y, name=None, marker={}, text=None, row=None, col=None, **kwargs):
+    def draw_scatter(
+        self, x, y, name=None, marker={}, text=None, row=None, col=None, **kwargs
+    ):
         z = np.full_like(x, 0)
         # x = self._2D_scale[0] * x
         # y = self._2D_scale[1] * y
-        return self.draw_scatter_3D(x, y, z, name=name, marker=marker, text=text, row=row, col=col, **kwargs)
+        return self.draw_scatter_3D(
+            x, y, z, name=name, marker=marker, text=text, row=row, col=col, **kwargs
+        )
 
-    def draw_line_3D(self, x, y, z, line={}, name="", collection=None, frame=None, **kwargs):
+    def draw_line_3D(
+        self, x, y, z, line={}, name="", collection=None, frame=None, **kwargs
+    ):
         """Draws a line using a bezier curve."""
         if frame is not None:
-            return self._animate_line_3D(x, y, z, line=line, name=name, collection=collection, frame=frame, **kwargs)
+            return self._animate_line_3D(
+                x,
+                y,
+                z,
+                line=line,
+                name=name,
+                collection=collection,
+                frame=frame,
+                **kwargs,
+            )
 
         if collection is None:
             collection = self.get_collection(name)
@@ -193,8 +238,8 @@ class BlenderFigure(Figure):
         # Retrieve the curve from the object
         curve = curve_obj.data
         # And modify some attributes to make it look cylindric
-        curve.dimensions = '3D'
-        curve.fill_mode = 'FULL'
+        curve.dimensions = "3D"
+        curve.fill_mode = "FULL"
         width = line.get("width")
         curve.bevel_depth = width if width is not None else 0.1
         curve.bevel_resolution = 10
@@ -214,7 +259,7 @@ class BlenderFigure(Figure):
         # Now loop through all segments using the known breakpoints
         for start_i, end_i in zip(breakpoint_indices, breakpoint_indices[1:]):
             # Get the coordinates of the segment
-            segment_xyz = xyz[start_i+1: end_i]
+            segment_xyz = xyz[start_i + 1 : end_i]
 
             # If there is nothing to draw, go to next segment
             if len(segment_xyz) == 0:
@@ -225,7 +270,7 @@ class BlenderFigure(Figure):
             # Splines by default have only 1 point, add as many as we need
             segment.bezier_points.add(len(segment_xyz) - 1)
             # Assign the coordinates to each point
-            segment.bezier_points.foreach_set('co', np.ravel(segment_xyz))
+            segment.bezier_points.foreach_set("co", np.ravel(segment_xyz))
 
             # We want linear interpolation between points. If we wanted cubic interpolation,
             # we would set this parameter to 3, for example.
@@ -236,13 +281,24 @@ class BlenderFigure(Figure):
 
         return self
 
-    def _animate_line_3D(self, x, y, z, line={}, name="", collection=None, frame=0, **kwargs):
+    def _animate_line_3D(
+        self, x, y, z, line={}, name="", collection=None, frame=0, **kwargs
+    ):
         if collection is None:
             collection = self.get_collection(name)
 
         # If this is the first frame, draw the object as usual
         if frame == 0:
-            self.draw_line_3D(x, y, z, line=line, name=name, collection=collection, frame=None, **kwargs)
+            self.draw_line_3D(
+                x,
+                y,
+                z,
+                line=line,
+                name=name,
+                collection=collection,
+                frame=None,
+                **kwargs,
+            )
 
         # Create a collection that we are just going to use to create new objects from which
         # to copy the properties.
@@ -250,38 +306,84 @@ class BlenderFigure(Figure):
         temp_collection = self.get_collection(temp_collection_name)
         self.clear_collection(temp_collection)
 
-        self.draw_line_3D(x, y, z, line=line, name=name, collection=temp_collection, frame=None, **kwargs)
+        self.draw_line_3D(
+            x,
+            y,
+            z,
+            line=line,
+            name=name,
+            collection=temp_collection,
+            frame=None,
+            **kwargs,
+        )
 
         # Loop through all objects in the collections
         for ani_obj, child_obj in zip(collection.objects, temp_collection.objects):
             # Each curve object has multiple splines
-            for ani_spline, child_spline in zip(ani_obj.data.splines, child_obj.data.splines):
+            for ani_spline, child_spline in zip(
+                ani_obj.data.splines, child_obj.data.splines
+            ):
                 # And each spline has multiple points
-                for ani_point, child_point in zip(ani_spline.bezier_points, child_spline.bezier_points):
+                for ani_point, child_point in zip(
+                    ani_spline.bezier_points, child_spline.bezier_points
+                ):
                     # Set the position of that point
                     ani_point.co = child_point.co
                     ani_point.keyframe_insert(data_path="co", frame=frame)
 
             # Loop through all the materials that the object might have associated
-            for ani_material, child_material in zip(ani_obj.data.materials, child_obj.data.materials):
+            for ani_material, child_material in zip(
+                ani_obj.data.materials, child_obj.data.materials
+            ):
                 ani_mat_inputs = ani_material.node_tree.nodes["Principled BSDF"].inputs
-                child_mat_inputs = child_material.node_tree.nodes["Principled BSDF"].inputs
+                child_mat_inputs = child_material.node_tree.nodes[
+                    "Principled BSDF"
+                ].inputs
 
                 for input_key in ("Base Color", "Alpha"):
-                    ani_mat_inputs[input_key].default_value = child_mat_inputs[input_key].default_value
-                    ani_mat_inputs[input_key].keyframe_insert(data_path="default_value", frame=frame)
-        
+                    ani_mat_inputs[input_key].default_value = child_mat_inputs[
+                        input_key
+                    ].default_value
+                    ani_mat_inputs[input_key].keyframe_insert(
+                        data_path="default_value", frame=frame
+                    )
+
         # Remove the temporal collection
         self.remove_collection(temp_collection_name)
 
-    def draw_balls_3D(self, x, y, z, name=None, marker={}, row=None, col=None, collection=None, frame=None, **kwargs):
+    def draw_balls_3D(
+        self,
+        x,
+        y,
+        z,
+        name=None,
+        marker={},
+        row=None,
+        col=None,
+        collection=None,
+        frame=None,
+        **kwargs,
+    ):
         if frame is not None:
-            return self._animate_balls_3D(x, y, z, name=name, marker=marker, row=row, col=col, collection=collection, frame=frame, **kwargs)
-        
+            return self._animate_balls_3D(
+                x,
+                y,
+                z,
+                name=name,
+                marker=marker,
+                row=row,
+                col=col,
+                collection=collection,
+                frame=frame,
+                **kwargs,
+            )
+
         if collection is None:
             collection = self.get_collection(name)
 
-        bpy.ops.surface.primitive_nurbs_surface_sphere_add(radius=1, enter_editmode=False, align='WORLD')
+        bpy.ops.surface.primitive_nurbs_surface_sphere_add(
+            radius=1, enter_editmode=False, align="WORLD"
+        )
         template_ball = bpy.context.object
         bpy.context.collection.objects.unlink(template_ball)
 
@@ -292,11 +394,15 @@ class BlenderFigure(Figure):
         }
 
         for k, v in style.items():
-            if (not isinstance(v, (collections.abc.Sequence, np.ndarray))) or isinstance(v, str):
+            if (
+                not isinstance(v, (collections.abc.Sequence, np.ndarray))
+            ) or isinstance(v, str):
                 style[k] = itertools.repeat(v)
 
         ball = template_ball
-        for i, (x_i, y_i, z_i, color, opacity, size) in enumerate(zip(x, y, z, style["color"], style["opacity"], style["size"])):
+        for i, (x_i, y_i, z_i, color, opacity, size) in enumerate(
+            zip(x, y, z, style["color"], style["opacity"], style["size"])
+        ):
             if i > 0:
                 ball = template_ball.copy()
                 ball.data = template_ball.data.copy()
@@ -310,15 +416,38 @@ class BlenderFigure(Figure):
             ball.name = f"{name}_{i}"
             ball.data.name = f"{name}_{i}"
 
-            self._color_obj(ball, color, opacity=opacity)       
+            self._color_obj(ball, color, opacity=opacity)
 
-    def _animate_balls_3D(self, x, y, z, name=None, marker={}, row=None, col=None, collection=None, frame=0, **kwargs):
+    def _animate_balls_3D(
+        self,
+        x,
+        y,
+        z,
+        name=None,
+        marker={},
+        row=None,
+        col=None,
+        collection=None,
+        frame=0,
+        **kwargs,
+    ):
         if collection is None:
             collection = self.get_collection(name)
 
         # If this is the first frame, draw the object as usual
         if frame == 0:
-            self.draw_balls_3D(x, y, z, marker=marker, name=name, row=row, col=col, collection=collection, frame=None, **kwargs)
+            self.draw_balls_3D(
+                x,
+                y,
+                z,
+                marker=marker,
+                name=name,
+                row=row,
+                col=col,
+                collection=collection,
+                frame=None,
+                **kwargs,
+            )
 
         # Create a collection that we are just going to use to create new objects from which
         # to copy the properties.
@@ -326,7 +455,18 @@ class BlenderFigure(Figure):
         temp_collection = self.get_collection(temp_collection_name)
         self.clear_collection(temp_collection)
 
-        self.draw_balls_3D(x, y, z, marker=marker, name=name, row=row, col=col, collection=temp_collection, frame=None, **kwargs)
+        self.draw_balls_3D(
+            x,
+            y,
+            z,
+            marker=marker,
+            name=name,
+            row=row,
+            col=col,
+            collection=temp_collection,
+            frame=None,
+            **kwargs,
+        )
 
         # Loop through all objects in the collections
         for ani_obj, child_obj in zip(collection.objects, temp_collection.objects):
@@ -339,18 +479,36 @@ class BlenderFigure(Figure):
             ani_obj.keyframe_insert(data_path="scale", frame=frame)
 
             # Set the atom color and opacity
-            ani_mat_inputs = ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
-            child_mat_inputs = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
+            ani_mat_inputs = (
+                ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
+            )
+            child_mat_inputs = (
+                child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
+            )
 
             for input_key in ("Base Color", "Alpha"):
-                ani_mat_inputs[input_key].default_value = child_mat_inputs[input_key].default_value
-                ani_mat_inputs[input_key].keyframe_insert(data_path="default_value", frame=frame)
+                ani_mat_inputs[input_key].default_value = child_mat_inputs[
+                    input_key
+                ].default_value
+                ani_mat_inputs[input_key].keyframe_insert(
+                    data_path="default_value", frame=frame
+                )
 
         self.remove_collection(temp_collection_name)
 
     draw_scatter_3D = draw_balls_3D
 
-    def draw_mesh_3D(self, vertices, faces, color=None, opacity=None, name="Mesh", row=None, col=None, **kwargs):
+    def draw_mesh_3D(
+        self,
+        vertices,
+        faces,
+        color=None,
+        opacity=None,
+        name="Mesh",
+        row=None,
+        col=None,
+        **kwargs,
+    ):
         col = self.get_collection(name)
 
         mesh = bpy.data.meshes.new(name)
@@ -366,21 +524,21 @@ class BlenderFigure(Figure):
 
     @staticmethod
     def _to_rgb_color(color):
-
         if isinstance(color, str):
             try:
                 import matplotlib.colors
 
                 color = matplotlib.colors.to_rgb(color)
             except ModuleNotFoundError:
-                raise ValueError("Blender does not understand string colors."+
-                    "Please provide the color in rgb (tuple of length 3, values from 0 to 1) or install matplotlib so that we can convert it."
+                raise ValueError(
+                    "Blender does not understand string colors."
+                    + "Please provide the color in rgb (tuple of length 3, values from 0 to 1) or install matplotlib so that we can convert it."
                 )
 
         return color
 
     @classmethod
-    def _color_obj(cls, obj, color, opacity=1.):
+    def _color_obj(cls, obj, color, opacity=1.0):
         """Utiity method to quickly color a given object.
 
         Parameters
@@ -394,7 +552,7 @@ class BlenderFigure(Figure):
             work currently.
         """
         if opacity is None:
-            opacity = 1.
+            opacity = 1.0
 
         color = cls._to_rgb_color(color)
 

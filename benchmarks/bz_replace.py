@@ -39,12 +39,16 @@ else:
     nks = [50 for _ in range(nlvls)]
 
 if ndim == 1:
+
     def get_nk(nk):
         return [nk, 1, 1]
+
     ns = [2 for _ in range(nlvls)]
 else:
+
     def get_nk(nk):
         return [nk, nk, 1]
+
     if nlvls > 2:
         ns = [50 for _ in range(nlvls)]
     else:
@@ -55,11 +59,12 @@ else:
 def yield_kpoint(bz, n):
     yield from np.unique(np.random.randint(len(bz), size=n))[::-1]
 
+
 # Replacement function
 
 
 def add_levels(bz, nks, ns, fast=False, as_index=False, debug=False):
-    """ Add different levels according to the length of `ns` """
+    """Add different levels according to the length of `ns`"""
     global nlvls
 
     lvl = nlvls - len(nks)
@@ -72,6 +77,7 @@ def add_levels(bz, nks, ns, fast=False, as_index=False, debug=False):
         bz = bz.copy()
 
     from io import StringIO
+
     s = StringIO()
 
     def print_s(force=True):
@@ -84,12 +90,12 @@ def add_levels(bz, nks, ns, fast=False, as_index=False, debug=False):
 
         # reset s
         s = StringIO()
+
     if debug:
         print(f"lvl = {lvl}", file=s)
         print_s()
 
     if len(nks) > 0:
-
         # calculate the size of the current BZ
         dsize = bz._size / bz._diag
 
@@ -115,7 +121,9 @@ def add_levels(bz, nks, ns, fast=False, as_index=False, debug=False):
         # create the single monkhorst pack we will use for replacements
         if fast:
             new_bz = sisl.MonkhorstPack(bz.parent, nk, size=dsize, trs=False)
-            new, reps = add_levels(new_bz, nks[:-1], ns[:-1], fast, as_index, debug=debug)
+            new, reps = add_levels(
+                new_bz, nks[:-1], ns[:-1], fast, as_index, debug=debug
+            )
 
             if as_index:
                 bz.replace(iks, new, displacement=True, as_index=True)
@@ -137,8 +145,12 @@ def add_levels(bz, nks, ns, fast=False, as_index=False, debug=False):
 
                 # Recursively add a new level
                 # create the single monkhorst pack we will use for replacements
-                new_bz = sisl.MonkhorstPack(bz.parent, nk, size=dsize, trs=False, displacement=k)
-                new, reps = add_levels(new_bz, nks[:-1], ns[:-1], fast, as_index, debug=debug)
+                new_bz = sisl.MonkhorstPack(
+                    bz.parent, nk, size=dsize, trs=False, displacement=k
+                )
+                new, reps = add_levels(
+                    new_bz, nks[:-1], ns[:-1], fast, as_index, debug=debug
+                )
 
                 # calculate number of replaced k-points
                 if debug:
@@ -152,6 +164,7 @@ def add_levels(bz, nks, ns, fast=False, as_index=False, debug=False):
 
                 if False:
                     import matplotlib.pyplot as plt
+
                     plt.figure()
                     plt.scatter(bz.k[:, 0], bz.k[:, 1])
                     plt.title(f"{lvl} and {ik}")
@@ -166,7 +179,7 @@ def add_levels(bz, nks, ns, fast=False, as_index=False, debug=False):
                     rep_nk = len(new) - (len(bz) - bz_nk)
                     print("replaced k-points ", rep_nk, file=s)
                     print_s()
-                    #print(len(bz)*4 * 8 / 1024**3)
+                    # print(len(bz)*4 * 8 / 1024**3)
 
                 del new
 
@@ -200,6 +213,6 @@ for fast, as_index in [(True, False), (True, True), (False, False), (False, True
 
     stat = pstats.Stats(pr)
     # We sort against total-time
-    stat.sort_stats('tottime')
+    stat.sort_stats("tottime")
     # Only print the first 20% of the routines.
-    stat.print_stats('sisl', 0.2)
+    stat.print_stats("sisl", 0.2)

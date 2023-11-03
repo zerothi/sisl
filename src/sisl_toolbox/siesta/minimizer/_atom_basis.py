@@ -19,7 +19,7 @@ _eV2Ry = si.units.convert("eV", "Ry")
 
 
 class AtomBasis:
-    """Basis block format for Siesta """
+    """Basis block format for Siesta"""
 
     def __init__(self, atom, opts=None):
         # opts = {(n, l): # or n=1, l=0 1s
@@ -43,7 +43,9 @@ class AtomBasis:
         else:
             self.opts = opts
         if not isinstance(self.opts, dict):
-            raise ValueError(f"{self.__class__.__name__} must get `opts` as a dictionary argument")
+            raise ValueError(
+                f"{self.__class__.__name__} must get `opts` as a dictionary argument"
+            )
 
         # Assert that we have options corresonding to the orbitals present
         for key in self.opts.keys():
@@ -56,7 +58,9 @@ class AtomBasis:
                 if orb.n == n and orb.l == l:
                     found = True
             if not found:
-                raise ValueError("Options passed for n={n} l={l}, but no orbital with that signiture is present?")
+                raise ValueError(
+                    "Options passed for n={n} l={l}, but no orbital with that signiture is present?"
+                )
 
         # ensure each orbital has an option associated
         for (n, l), orbs in self.yield_nl_orbs():
@@ -64,13 +68,14 @@ class AtomBasis:
 
     @classmethod
     def from_dict(cls, dic):
-        """ Return an `AtomBasis` from a dictionary
+        """Return an `AtomBasis` from a dictionary
 
         Parameters
         ----------
         dic : dict
         """
         from sisl_toolbox.siesta.atom._atom import _shell_order
+
         element = dic["element"]
         tag = dic.get("tag")
         mass = dic.get("mass", None)
@@ -105,16 +110,16 @@ class AtomBasis:
                 if key in ("charge-confinement", "charge-conf"):
                     opt_nl["charge"] = [
                         parse_variable(entry.get("charge")).value,
-                        parse_variable(entry.get("yukawa"), unit='1/Ang').value,
-                        parse_variable(entry.get("width"), unit='Ang').value
+                        parse_variable(entry.get("yukawa"), unit="1/Ang").value,
+                        parse_variable(entry.get("width"), unit="Ang").value,
                     ]
                 elif key in ("soft-confinement", "soft-conf"):
                     opt_nl["soft"] = [
-                        parse_variable(entry.get("V0"), unit='eV').value,
-                        parse_variable(entry.get("ri"), unit='Ang').value
+                        parse_variable(entry.get("V0"), unit="eV").value,
+                        parse_variable(entry.get("ri"), unit="Ang").value,
                     ]
                 elif key in ("filter",):
-                    opt_nl["filter"] = parse_variable(entry, unit='eV').value
+                    opt_nl["filter"] = parse_variable(entry, unit="eV").value
                 elif key in ("split-norm", "split"):
                     opt_nl["split"] = parse_variable(entry).value
                 elif key in ("polarization", "pol"):
@@ -122,9 +127,9 @@ class AtomBasis:
                 elif key.startswith("zeta"):
                     # cutoff of zeta
                     zeta = int(key[4:])
-                    R = parse_variable(entry, unit='Ang').value
+                    R = parse_variable(entry, unit="Ang").value
                     if R < 0:
-                        R *= -get_radius(orbs_nl, zeta-1)
+                        R *= -get_radius(orbs_nl, zeta - 1)
                     orbs_nl.append(si.AtomicOrbital(n=n, l=l, m=0, zeta=zeta, R=R))
 
             if len(orbs_nl) > 0:
@@ -136,13 +141,14 @@ class AtomBasis:
 
     @classmethod
     def from_yaml(cls, file, nodes=()):
-        """ Parse the yaml file """
+        """Parse the yaml file"""
         from ._yaml_reader import read_yaml
+
         return cls.from_dict(read_yaml(file, nodes))
 
     @classmethod
     def from_block(cls, block):
-        """ Return an `Atom` for a specified basis block
+        """Return an `Atom` for a specified basis block
 
         Parameters
         ----------
@@ -160,7 +166,7 @@ class AtomBasis:
             nonlocal block
             out = ""
             while len(out) == 0:
-                out = block.pop(0).split('#')[0].strip()
+                out = block.pop(0).split("#")[0].strip()
             return out
 
         # define global opts
@@ -196,7 +202,7 @@ class AtomBasis:
             # This is because the first n=<integer> should never
             # contain a ".", whereas the contraction *should*.
             if len(block) > 0:
-                if '.' in block[0].split()[0]:
+                if "." in block[0].split()[0]:
                     contract_line = blockline()
 
             # remove n=
@@ -261,7 +267,9 @@ class AtomBasis:
                     # calculate the radius
                     pass
                 else:
-                    raise ValueError(f"Could not parse the PAO.Basis block for the zeta ranges {rc_line}.")
+                    raise ValueError(
+                        f"Could not parse the PAO.Basis block for the zeta ranges {rc_line}."
+                    )
                 orb = si.AtomicOrbital(n=n, l=l, m=0, zeta=izeta, R=rc)
                 nzeta -= 1
                 orbs.append(orb)
@@ -271,7 +279,7 @@ class AtomBasis:
             # useful to leave the rc's definitions out.
             rc = orbs[-1].R
             for izeta in range(nzeta):
-                orb = si.AtomicOrbital(n=n, l=l, m=0, zeta=orbs[-1].zeta+1, R=rc)
+                orb = si.AtomicOrbital(n=n, l=l, m=0, zeta=orbs[-1].zeta + 1, R=rc)
                 orbs.append(orb)
             opts[(n, l)] = nlopts
 
@@ -280,7 +288,7 @@ class AtomBasis:
         return cls(atom, opts)
 
     def yield_nl_orbs(self):
-        """ An iterator with each different ``n, l`` pair returned with a list of zeta-shells """
+        """An iterator with each different ``n, l`` pair returned with a list of zeta-shells"""
         orbs = {}
         for orb in self.atom:
             # build a dictionary
@@ -291,7 +299,7 @@ class AtomBasis:
         yield from orbs.items()
 
     def basis(self):
-        """ Get basis block lines (as list)"""
+        """Get basis block lines (as list)"""
 
         block = []
 
@@ -360,17 +368,16 @@ class AtomBasis:
             # to be sure)
             orbs_sorted = sorted(orbs, key=lambda orb: orb.zeta)
 
-            line = " ".join(map(lambda orb: f"{orb.R*_Ang2Bohr:.10f}",
-                                orbs_sorted))
+            line = " ".join(map(lambda orb: f"{orb.R*_Ang2Bohr:.10f}", orbs_sorted))
             block.append(line)
             # We don't need the 1's, they are contraction factors
             # and we simply keep them the default values
-            #line = " ".join(map(lambda orb: "1.0000", orbs))
-            #block.append(line)
+            # line = " ".join(map(lambda orb: "1.0000", orbs))
+            # block.append(line)
         return block
 
     def get_variables(self, dict_or_yaml, nodes=()):
-        """ Convert a dictionary or yaml file input to variables usable by the minimizer """
+        """Convert a dictionary or yaml file input to variables usable by the minimizer"""
         if not isinstance(dict_or_yaml, dict):
             dict_or_yaml = read_yaml(dict_or_yaml)
         if isinstance(nodes, str):
@@ -380,17 +387,17 @@ class AtomBasis:
         return self._get_variables_dict(dict_or_yaml)
 
     def _get_variables_dict(self, dic):
-        """ Parse a dictionary adding potential variables to the minimize model """
+        """Parse a dictionary adding potential variables to the minimize model"""
         tag = self.atom.tag
 
         # with respect to the basis
         def update_orb(old, new, orb):
-            """ Update an orbital's radius """
+            """Update an orbital's radius"""
             orb._R = new
 
         # Define other options
         def update(old, new, d, key, index=None):
-            """ An updater for a dictionary with optional keys """
+            """An updater for a dictionary with optional keys"""
             if index is None:
                 d[key] = new
             else:
@@ -398,6 +405,7 @@ class AtomBasis:
 
         # returned variables
         V = []
+
         def add_variable(var):
             nonlocal V
             if var.value is not None:
@@ -409,8 +417,13 @@ class AtomBasis:
 
         # get default options for pseudo
         basis = dic.get("basis", {})
-        add_variable(parse_variable(basis.get("ion-charge"), name=f"{tag}.ion-q",
-                                    update_func=partial(update, d=self.opts, key="ion_charge")))
+        add_variable(
+            parse_variable(
+                basis.get("ion-charge"),
+                name=f"{tag}.ion-q",
+                update_func=partial(update, d=self.opts, key="ion_charge"),
+            )
+        )
 
         # parse depending on shells in the atom
         spdf = "spdfgh"
@@ -425,30 +438,79 @@ class AtomBasis:
             for flag in ("charge-confinement", "charge-conf"):
                 # Now parse this one
                 d = basis.get(flag, {})
-                for var in [parse_variable(d.get("charge"), name=f"{tag}.{nl}.charge.q",
-                                           update_func=partial(update, d=self.opts[(n, l)], key="charge", index=0)),
-                            parse_variable(d.get("yukawa"), unit='1/Ang', name=f"{tag}.{nl}.charge.yukawa",
-                                           update_func=partial(update, d=self.opts[(n, l)], key="charge", index=1)),
-                            parse_variable(d.get("width"), unit='Ang', name=f"{tag}.{nl}.charge.width",
-                                           update_func=partial(update, d=self.opts[(n, l)], key="charge", index=2))]:
+                for var in [
+                    parse_variable(
+                        d.get("charge"),
+                        name=f"{tag}.{nl}.charge.q",
+                        update_func=partial(
+                            update, d=self.opts[(n, l)], key="charge", index=0
+                        ),
+                    ),
+                    parse_variable(
+                        d.get("yukawa"),
+                        unit="1/Ang",
+                        name=f"{tag}.{nl}.charge.yukawa",
+                        update_func=partial(
+                            update, d=self.opts[(n, l)], key="charge", index=1
+                        ),
+                    ),
+                    parse_variable(
+                        d.get("width"),
+                        unit="Ang",
+                        name=f"{tag}.{nl}.charge.width",
+                        update_func=partial(
+                            update, d=self.opts[(n, l)], key="charge", index=2
+                        ),
+                    ),
+                ]:
                     add_variable(var)
 
             for flag in ("soft-confinement", "soft-conf"):
                 # Now parse this one
                 d = basis.get(flag, {})
-                for var in [parse_variable(d.get("V0"), unit='eV', name=f"{tag}.{nl}.soft.V0",
-                                           update_func=partial(update, d=self.opts[(n, l)], key="soft", index=0)),
-                            parse_variable(d.get("ri"), unit='Ang', name=f"{tag}.{nl}.soft.ri",
-                                           update_func=partial(update, d=self.opts[(n, l)], key="soft", index=1))]:
+                for var in [
+                    parse_variable(
+                        d.get("V0"),
+                        unit="eV",
+                        name=f"{tag}.{nl}.soft.V0",
+                        update_func=partial(
+                            update, d=self.opts[(n, l)], key="soft", index=0
+                        ),
+                    ),
+                    parse_variable(
+                        d.get("ri"),
+                        unit="Ang",
+                        name=f"{tag}.{nl}.soft.ri",
+                        update_func=partial(
+                            update, d=self.opts[(n, l)], key="soft", index=1
+                        ),
+                    ),
+                ]:
                     add_variable(var)
 
-            add_variable(parse_variable(basis.get("filter"), unit='eV', name=f"{tag}.{nl}.filter",
-                                        update_func=partial(update, d=self.opts[(n, l)], key="filter")))
+            add_variable(
+                parse_variable(
+                    basis.get("filter"),
+                    unit="eV",
+                    name=f"{tag}.{nl}.filter",
+                    update_func=partial(update, d=self.opts[(n, l)], key="filter"),
+                )
+            )
 
             for flag in ("split-norm", "split"):
-                add_variable(parse_variable(basis.get(flag), name=f"{tag}.{nl}.split",
-                                            update_func=partial(update, d=self.opts[(n, l)], key="split")))
+                add_variable(
+                    parse_variable(
+                        basis.get(flag),
+                        name=f"{tag}.{nl}.split",
+                        update_func=partial(update, d=self.opts[(n, l)], key="split"),
+                    )
+                )
 
-            add_variable(parse_variable(basis.get(f"zeta{orb.zeta}"), name=f"{tag}.{nl}.z{orb.zeta}",
-                                        update_func=partial(update_orb, orb=orb)))
+            add_variable(
+                parse_variable(
+                    basis.get(f"zeta{orb.zeta}"),
+                    name=f"{tag}.{nl}.z{orb.zeta}",
+                    update_func=partial(update_orb, orb=orb),
+                )
+            )
         return V

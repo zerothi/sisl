@@ -10,16 +10,16 @@ from sisl.unit.siesta import unit_convert
 from ..sile import add_sile, sile_fh_open
 from .sile import SileSiesta
 
-__all__ = ['fcSileSiesta']
+__all__ = ["fcSileSiesta"]
 
 
 @set_module("sisl.io.siesta")
 class fcSileSiesta(SileSiesta):
-    """ Force constant file """
+    """Force constant file"""
 
     @sile_fh_open()
     def read_force(self, displacement=None, na=None):
-        """ Reads all displacement forces by multiplying with the displacement value
+        """Reads all displacement forces by multiplying with the displacement value
 
         Since the force constant file does not contain the non-displaced configuration
         this will only return forces on the displaced configurations minus the forces from
@@ -55,8 +55,10 @@ class fcSileSiesta(SileSiesta):
             try:
                 displacement = float(line[-1])
             except Exception:
-                warn(f"{self.__class__.__name__}.read_force assumes displacement=0.04 Bohr!")
-                displacement = 0.04 * unit_convert('Bohr', 'Ang')
+                warn(
+                    f"{self.__class__.__name__}.read_force assumes displacement=0.04 Bohr!"
+                )
+                displacement = 0.04 * unit_convert("Bohr", "Ang")
 
         # Since the displacements changes sign (starting with a negative sign)
         # we can convert using this scheme
@@ -66,7 +68,7 @@ class fcSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_force_constant(self, na=None):
-        """ Reads the force-constant stored in the FC file
+        """Reads the force-constant stored in the FC file
 
         Parameters
         ----------
@@ -91,7 +93,7 @@ class fcSileSiesta(SileSiesta):
         fc = list()
         while True:
             line = self.readline()
-            if line == '':
+            if line == "":
                 # empty line or nothing
                 break
             fc.append(list(map(float, line.split())))
@@ -109,5 +111,5 @@ class fcSileSiesta(SileSiesta):
         return fc
 
 
-add_sile('FC', fcSileSiesta, gzip=True)
-add_sile('FCC', fcSileSiesta, gzip=True)
+add_sile("FC", fcSileSiesta, gzip=True)
+add_sile("FCC", fcSileSiesta, gzip=True)

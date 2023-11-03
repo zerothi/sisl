@@ -5,7 +5,7 @@ from sisl._internal import set_module
 
 from ..sile import Sile, SileBin, SileCDF
 
-__all__ = ['SileOpenMX', 'SileCDFOpenMX', 'SileBinOpenMX']
+__all__ = ["SileOpenMX", "SileCDFOpenMX", "SileBinOpenMX"]
 
 
 @set_module("sisl.io.openmx")

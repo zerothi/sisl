@@ -8,7 +8,7 @@ __all__ = ["batched_indices"]
 
 
 def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
-    """ Locate `x` in `ref` by examining ``np.abs(diff_func(ref - y)) <= atol``
+    """Locate `x` in `ref` by examining ``np.abs(diff_func(ref - y)) <= atol``
 
     This method is necessary for very large groups of data since the ``ref-y``
     calls will use broad-casting to create very large memory chunks.
@@ -24,7 +24,7 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
     ref : array_like
        reference array where we wish to locate the indices of `y` in
     y : array_like of 1D or 2D
-       array to locate in `ref`. For 2D arrays and `axis` not None, 
+       array to locate in `ref`. For 2D arrays and `axis` not None,
     axis : int or None, optional
        which axis to do a logical reduction along, if `None` it means that they
        are 1D arrays and no axis will be reduced, i.e. same as ``ref.ravel() - y.reshape(-1, 1)``
@@ -56,8 +56,9 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
     n = max(1, n)
 
     if diff_func is None:
+
         def diff_func(d):
-            """ Do nothing """
+            """Do nothing"""
             return d
 
     def yield_cs(n, size):
@@ -74,10 +75,14 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
     # determine the batch size
     if axis is None:
         if atol.size != 1:
-            raise ValueError(f"batched_indices: for 1D comparisons atol can only be a single number.")
+            raise ValueError(
+                f"batched_indices: for 1D comparisons atol can only be a single number."
+            )
         if y.ndim != 1:
-            raise ValueError(f"batched_indices: axis is None and y.ndim != 1 ({y.ndim}). For ravel comparisons the "
-                             "dimensionality of y must be 1D.")
+            raise ValueError(
+                f"batched_indices: axis is None and y.ndim != 1 ({y.ndim}). For ravel comparisons the "
+                "dimensionality of y must be 1D."
+            )
 
         # a 1D array comparison
         # we might as well ravel y (here to ensure we do not
@@ -100,11 +105,15 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
     # y must have 2 dimensions (or 1 with the same size as ref.shape[axis])
     if y.ndim == 1:
         if y.size != ref.shape[axis]:
-            raise ValueError(f"batched_indices: when y is a single value it must have same length as ref.shape[axis]")
+            raise ValueError(
+                f"batched_indices: when y is a single value it must have same length as ref.shape[axis]"
+            )
         y = y.reshape(1, -1)
     elif y.ndim == 2:
         if y.shape[1] != ref.shape[axis]:
-            raise ValueError(f"batched_indices: the comparison axis of y (y[0, :]) should have the same length as ref.shape[axis]")
+            raise ValueError(
+                f"batched_indices: the comparison axis of y (y[0, :]) should have the same length as ref.shape[axis]"
+            )
     else:
         raise ValueError(f"batched_indices: y should be either 1D or 2D")
 
@@ -118,14 +127,17 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
 
     if atol.size > 1:
         if atol.size != ref.shape[axis]:
-            raise ValueError(f"batched_indices: atol size does not match the axis {axis} for ref argument.")
+            raise ValueError(
+                f"batched_indices: atol size does not match the axis {axis} for ref argument."
+            )
         atol = np.expand_dims(atol.ravel(), tuple(range(ref.ndim - 1)))
         atol = np.moveaxis(atol, -1, axis)
 
     # b-cast size is
     for idx in yield_cs(n, y.shape[-1]):
         idx = np.logical_and.reduce(
-            np.abs(diff_func(ref - y[..., idx])) <= atol, axis=axis).nonzero()[:-1]
+            np.abs(diff_func(ref - y[..., idx])) <= atol, axis=axis
+        ).nonzero()[:-1]
         indices.append(idx)
 
     # concatenate each indices array

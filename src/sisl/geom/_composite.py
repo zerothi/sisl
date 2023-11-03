@@ -8,7 +8,6 @@ __all__ = ["composite_geometry", "CompositeGeometrySection"]
 
 @dataclass
 class CompositeGeometrySection:
-
     @abstractmethod
     def build_section(self, geometry):
         ...
@@ -47,18 +46,19 @@ def composite_geometry(sections, section_cls, **kwargs):
     **kwargs:
         Keyword arguments used as defaults for the sections when the .
     """
+
     # Parse sections into Section objects
     def conv(s):
         # If it is some arbitrary type, convert it to a tuple
         if not isinstance(s, (section_cls, tuple, dict)):
-            s = (s, )
+            s = (s,)
         # If we arrived here with a tuple, convert it to a dict
         if isinstance(s, tuple):
             s = {field.name: val for field, val in zip(fields(section_cls), s)}
         # At this point it is either a dict or already a section object.
         if isinstance(s, dict):
             return section_cls(**{**kwargs, **s})
-        
+
         return copy.copy(s)
 
     # Then loop through all the sections.
@@ -68,14 +68,14 @@ def composite_geometry(sections, section_cls, **kwargs):
         section = conv(section)
 
         new_addition = section.build_section(prev)
-        
+
         if i == 0:
             geom = new_addition
         else:
             geom = section.add_section(geom, new_addition)
-        
+
         prev = section
-    
+
     return geom
 
 

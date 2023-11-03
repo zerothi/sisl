@@ -16,19 +16,38 @@ class Py3DmolFigure(Figure):
     def _init_figure(self, *args, **kwargs):
         self.figure = py3Dmol.view()
 
-    def draw_line(self, x, y, name="", line={}, marker={}, text=None, row=None, col=None, **kwargs):
+    def draw_line(
+        self, x, y, name="", line={}, marker={}, text=None, row=None, col=None, **kwargs
+    ):
         z = np.full_like(x, 0)
         # x = self._2D_scale[0] * x
         # y = self._2D_scale[1] * y
-        return self.draw_line_3D(x, y, z, name=name, line=line, marker=marker, text=text, row=row, col=col, **kwargs)
+        return self.draw_line_3D(
+            x,
+            y,
+            z,
+            name=name,
+            line=line,
+            marker=marker,
+            text=text,
+            row=row,
+            col=col,
+            **kwargs,
+        )
 
-    def draw_scatter(self, x, y, name=None, marker={}, text=None, row=None, col=None, **kwargs):
+    def draw_scatter(
+        self, x, y, name=None, marker={}, text=None, row=None, col=None, **kwargs
+    ):
         z = np.full_like(x, 0)
         # x = self._2D_scale[0] * x
         # y = self._2D_scale[1] * y
-        return self.draw_scatter_3D(x, y, z, name=name, marker=marker, text=text, row=row, col=col, **kwargs)
+        return self.draw_scatter_3D(
+            x, y, z, name=name, marker=marker, text=text, row=row, col=col, **kwargs
+        )
 
-    def draw_line_3D(self, x, y, z, line={}, name="", collection=None, frame=None, **kwargs):
+    def draw_line_3D(
+        self, x, y, z, line={}, name="", collection=None, frame=None, **kwargs
+    ):
         """Draws a line."""
 
         xyz = np.array([x, y, z], dtype=float).T
@@ -44,7 +63,7 @@ class Py3DmolFigure(Figure):
         # Now loop through all segments using the known breakpoints
         for start_i, end_i in zip(breakpoint_indices, breakpoint_indices[1:]):
             # Get the coordinates of the segment
-            segment_xyz = xyz[start_i+1: end_i]
+            segment_xyz = xyz[start_i + 1 : end_i]
 
             # If there is nothing to draw, go to next segment
             if len(segment_xyz) == 0:
@@ -52,41 +71,77 @@ class Py3DmolFigure(Figure):
 
             points = [{"x": x, "y": y, "z": z} for x, y, z in segment_xyz]
 
-            # If there's only two points, py3dmol doesn't display the curve, 
+            # If there's only two points, py3dmol doesn't display the curve,
             # probably because it can not smooth it.
             if len(points) == 2:
                 points.append(points[-1])
 
-            self.figure.addCurve(dict(
-                points=points,
-                radius=line.get("width", 0.1),
-                color=line.get("color"),
-                opacity=line.get('opacity', 1.) or 1.,
-                smooth=1
-            ))
+            self.figure.addCurve(
+                dict(
+                    points=points,
+                    radius=line.get("width", 0.1),
+                    color=line.get("color"),
+                    opacity=line.get("opacity", 1.0) or 1.0,
+                    smooth=1,
+                )
+            )
 
         return self
 
-    def draw_balls_3D(self, x, y, z, name=None, marker={}, row=None, col=None, collection=None, frame=None, **kwargs):
+    def draw_balls_3D(
+        self,
+        x,
+        y,
+        z,
+        name=None,
+        marker={},
+        row=None,
+        col=None,
+        collection=None,
+        frame=None,
+        **kwargs,
+    ):
         style = {
             "color": marker.get("color", "gray"),
-            "opacity": marker.get("opacity", 1.),
-            "size": marker.get("size", 1.),
+            "opacity": marker.get("opacity", 1.0),
+            "size": marker.get("size", 1.0),
         }
 
         for k, v in style.items():
-            if (not isinstance(v, (collections.abc.Sequence, np.ndarray))) or isinstance(v, str):
+            if (
+                not isinstance(v, (collections.abc.Sequence, np.ndarray))
+            ) or isinstance(v, str):
                 style[k] = itertools.repeat(v)
 
-        for i, (x_i, y_i, z_i, color, opacity, size) in enumerate(zip(x, y, z, style["color"], style["opacity"], style["size"])):
-            self.figure.addSphere(dict(
-                center={"x": float(x_i), "y": float(y_i), "z": float(z_i)}, radius=size, color=color, opacity=opacity,
-                quality=5., # This does not work, but sphere quality is really bad by default
-            ))    
+        for i, (x_i, y_i, z_i, color, opacity, size) in enumerate(
+            zip(x, y, z, style["color"], style["opacity"], style["size"])
+        ):
+            self.figure.addSphere(
+                dict(
+                    center={"x": float(x_i), "y": float(y_i), "z": float(z_i)},
+                    radius=size,
+                    color=color,
+                    opacity=opacity,
+                    quality=5.0,  # This does not work, but sphere quality is really bad by default
+                )
+            )
 
     draw_scatter_3D = draw_balls_3D
 
-    def draw_arrows_3D(self, x, y, z, dxyz, arrowhead_scale=0.3, arrowhead_angle=15, scale: float = 1, row=None, col=None, line={},**kwargs):
+    def draw_arrows_3D(
+        self,
+        x,
+        y,
+        z,
+        dxyz,
+        arrowhead_scale=0.3,
+        arrowhead_angle=15,
+        scale: float = 1,
+        row=None,
+        col=None,
+        line={},
+        **kwargs,
+    ):
         """Draws multiple arrows using the generic draw_line method.
 
         Parameters
@@ -112,29 +167,42 @@ class Py3DmolFigure(Figure):
         dxyz = np.array(dxyz) * scale
 
         for (x, y, z), (dx, dy, dz) in zip(xyz, dxyz):
+            self.figure.addArrow(
+                dict(
+                    start={"x": x, "y": y, "z": z},
+                    end={"x": x + dx, "y": y + dy, "z": z + dz},
+                    radius=line.get("width", 0.1),
+                    color=line.get("color"),
+                    opacity=line.get("opacity", 1.0),
+                    radiusRatio=2,
+                    mid=(1 - arrowhead_scale),
+                )
+            )
 
-            self.figure.addArrow(dict(
-                start={"x": x, "y": y, "z": z},
-                end={"x": x + dx, "y": y + dy, "z": z + dz},
-                radius=line.get("width", 0.1),
-                color=line.get("color"),
-                opacity=line.get("opacity", 1.),
-                radiusRatio=2,
-                mid=(1 - arrowhead_scale),
-            ))
-
-    def draw_mesh_3D(self, vertices, faces, color=None, opacity=None, name="Mesh", wireframe=False, row=None, col=None, **kwargs):
-
+    def draw_mesh_3D(
+        self,
+        vertices,
+        faces,
+        color=None,
+        opacity=None,
+        name="Mesh",
+        wireframe=False,
+        row=None,
+        col=None,
+        **kwargs,
+    ):
         def vec_to_dict(a, labels="xyz"):
-            return dict(zip(labels,a))
+            return dict(zip(labels, a))
 
-        self.figure.addCustom(dict(
-            vertexArr=[vec_to_dict(v) for v in vertices.astype(float)],
-            faceArr=[int(x) for f in faces for x in f],
-            color=color,
-            opacity=float(opacity or 1.),
-            wireframe=wireframe
-        ))
+        self.figure.addCustom(
+            dict(
+                vertexArr=[vec_to_dict(v) for v in vertices.astype(float)],
+                faceArr=[int(x) for f in faces for x in f],
+                color=color,
+                opacity=float(opacity or 1.0),
+                wireframe=wireframe,
+            )
+        )
 
     def set_axis(self, *args, **kwargs):
         """There are no axes titles and these kind of things in py3dmol.

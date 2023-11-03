@@ -9,7 +9,7 @@ import numpy as np
 
 
 def parse_line(line):
-    """ Parse a data line returning
+    """Parse a data line returning
 
     name, value, (error), (unit)
     """
@@ -18,7 +18,7 @@ def parse_line(line):
     if len(lines) in (3, 4):
         lines[1] = float(lines[1].replace(" ", "").replace("...", ""))
         if "exact" in lines[2]:
-            lines[2] = 0.
+            lines[2] = 0.0
         else:
             lines[2] = float(lines[2].replace(" ", ""))
         return lines
@@ -45,7 +45,8 @@ class Constant:
     unit: str = ""
 
     def __str__(self):
-        return f"#: {self.doc} [{self.unit}]\n{self.name} = PhysicalConstant({self.value}, \"{self.unit}\")"
+        return f'#: {self.doc} [{self.unit}]\n{self.name} = PhysicalConstant({self.value}, "{self.unit}")'
+
 
 CONSTANTS = {
     "speed of light in vacuum": Constant("Speed of light in vacuum", "c"),
@@ -58,7 +59,6 @@ CONSTANTS = {
 }
 
 
-
 def read_file(f):
     fh = open(f)
     start = False
@@ -67,38 +67,38 @@ def read_file(f):
     unit_table = {
         "mass": {
             "DEFAULT": "amu",
-            "kg": 1.,
-            "g": 1.e-3,
+            "kg": 1.0,
+            "g": 1.0e-3,
         },
         "length": {
             "DEFAULT": "Ang",
-            "m": 1.,
+            "m": 1.0,
             "cm": 0.01,
-            "nm": 1.e-9,
-            "Ang": 1.e-10,
-            "pm": 1.e-12,
-            "fm": 1.e-15,
+            "nm": 1.0e-9,
+            "Ang": 1.0e-10,
+            "pm": 1.0e-12,
+            "fm": 1.0e-15,
         },
         "time": {
             "DEFAULT": "fs",
-            "s": 1.,
-            "ns": 1.e-9,
-            "ps": 1.e-12,
-            "fs": 1.e-15,
-            "min": 60.,
-            "hour": 3600.,
-            "day": 86400.,
+            "s": 1.0,
+            "ns": 1.0e-9,
+            "ps": 1.0e-12,
+            "fs": 1.0e-15,
+            "min": 60.0,
+            "hour": 3600.0,
+            "day": 86400.0,
         },
         "energy": {
             "DEFAULT": "eV",
-            "J": 1.,
-            "erg": 1.e-7,
+            "J": 1.0,
+            "erg": 1.0e-7,
             "K": 1.380648780669e-23,
         },
         "force": {
             "DEFAULT": "eV/Ang",
-            "N": 1.,
-        }
+            "N": 1.0,
+        },
     }
 
     constants = []
@@ -107,7 +107,8 @@ def read_file(f):
         if "-----" in line:
             start = True
             continue
-        if not start: continue
+        if not start:
+            continue
 
         name, value, *error_unit = parse_line(line)
 
@@ -116,7 +117,7 @@ def read_file(f):
 
             unit_table[entry][key] = value
             if key in ("Ry", "eV", "Ha"):
-                unit_table[entry][f"m{key}"] = value/1000
+                unit_table[entry][f"m{key}"] = value / 1000
 
         if name in CONSTANTS:
             c = CONSTANTS[name]
@@ -128,15 +129,24 @@ def read_file(f):
 
             constants.append(c)
             if c.name == "h":
-                c = c.__class__(f"Reduced {c.doc}", "hbar", c.value / (2 * np.pi), c.unit)
+                c = c.__class__(
+                    f"Reduced {c.doc}", "hbar", c.value / (2 * np.pi), c.unit
+                )
                 constants.append(c)
 
     # Clarify force
-    unit_table["force"][f"eV/Ang"] = unit_table["energy"]["eV"] / unit_table["length"]["Ang"]
-    unit_table["force"][f"Ry/Bohr"] = unit_table["energy"]["Ry"] / unit_table["length"]["Bohr"]
-    unit_table["force"][f"Ha/Bohr"] = unit_table["energy"]["Ha"] / unit_table["length"]["Bohr"]
+    unit_table["force"][f"eV/Ang"] = (
+        unit_table["energy"]["eV"] / unit_table["length"]["Ang"]
+    )
+    unit_table["force"][f"Ry/Bohr"] = (
+        unit_table["energy"]["Ry"] / unit_table["length"]["Bohr"]
+    )
+    unit_table["force"][f"Ha/Bohr"] = (
+        unit_table["energy"]["Ha"] / unit_table["length"]["Bohr"]
+    )
 
     return unit_table, constants
+
 
 ut, cs = read_file(sys.argv[1])
 

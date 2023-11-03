@@ -18,4 +18,4 @@ class mdSileOpenMX(xyzSile, SileOpenMX):
     pass
 
 
-add_sile('md', mdSileOpenMX, gzip=True)
+add_sile("md", mdSileOpenMX, gzip=True)

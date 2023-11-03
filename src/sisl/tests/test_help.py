@@ -7,7 +7,12 @@ import sys
 import numpy as np
 import pytest
 
-from sisl._help import array_fill_repeat, array_replace, dtype_complex_to_real, get_dtype
+from sisl._help import (
+    array_fill_repeat,
+    array_replace,
+    dtype_complex_to_real,
+    get_dtype,
+)
 
 pytestmark = pytest.mark.help
 
@@ -23,13 +28,17 @@ def test_array_fill_repeat2():
         array_fill_repeat([1, 2, 3], 20)
 
 
-@pytest.mark.xfail(sys.platform.startswith("win"), reason="Datatype cannot be int64 on windows")
+@pytest.mark.xfail(
+    sys.platform.startswith("win"), reason="Datatype cannot be int64 on windows"
+)
 def test_get_dtype1():
     assert np.int32 == get_dtype(1)
     assert np.int64 == get_dtype(1, int=np.int64)
 
 
-@pytest.mark.xfail(sys.platform.startswith("win"), reason="Datatype cannot be int64 on windows")
+@pytest.mark.xfail(
+    sys.platform.startswith("win"), reason="Datatype cannot be int64 on windows"
+)
 def test_dtype_complex_to_real():
     for d in (np.int32, np.int64, np.float32, np.float64):
         assert dtype_complex_to_real(d) == d

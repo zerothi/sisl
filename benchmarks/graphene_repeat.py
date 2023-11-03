@@ -36,7 +36,7 @@ np.random.seed(1234567890)
 
 gr = sisl.geom.graphene(orthogonal=True)
 H = sisl.Hamiltonian(gr)
-H.construct([(0.1, 1.44), (0., -2.7)])
+H.construct([(0.1, 1.44), (0.0, -2.7)])
 pr.enable()
 H.repeat(N, 0).repeat(N, 1)
 H.finalize()
@@ -46,6 +46,6 @@ pr.dump_stats(f"{sys.argv[0]}.profile")
 
 stat = pstats.Stats(pr)
 # We sort against total-time
-stat.sort_stats('tottime')
+stat.sort_stats("tottime")
 # Only print the first 20% of the routines.
-stat.print_stats('sisl', 0.2)
+stat.print_stats("sisl", 0.2)

@@ -5,6 +5,7 @@ from functools import reduce
 from numbers import Integral
 
 import numpy as np
+
 # To speed up the _extend algorithm we limit lookups
 from numpy import all as np_all
 from numpy import allclose
@@ -52,11 +53,11 @@ from .utils.mathematics import intersect_and_diff_sets
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
 
-__all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
+__all__ = ["SparseCSR", "ispmatrix", "ispmatrixd"]
 
 
 def _ncol_to_indptr(ncol):
-    """ Convert the ncol array into a pointer array """
+    """Convert the ncol array into a pointer array"""
     ptr = _a.emptyi(ncol.size + 1)
     ptr[0] = 0
     _a.cumsumi(ncol, out=ptr[1:])
@@ -116,14 +117,13 @@ class SparseCSR(NDArrayOperatorsMixin):
        initial total number of non-zero elements
        This quantity has precedence over `nnzpr`
     """
+
     # We don't really need slots, but it is useful
     # to keep a good overview of which variables are present
-    __slots__ = ("_shape", "_ns", "_finalized",
-                 "_nnz", "ptr", "ncol", "col", "_D")
+    __slots__ = ("_shape", "_ns", "_finalized", "_nnz", "ptr", "ncol", "col", "_D")
 
-    def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
-                 **kwargs):
-        """ Initialize a new sparse CSR matrix """
+    def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None, **kwargs):
+        """Initialize a new sparse CSR matrix"""
 
         # step size in sparse elements
         # If there isn't enough room for adding
@@ -137,22 +137,23 @@ class SparseCSR(NDArrayOperatorsMixin):
             # input sparse matrix.
             arg1 = arg1.tocsr()
             # Default shape to the CSR matrix
-            kwargs['shape'] = kwargs.get('shape', arg1.shape)
-            self.__init__((arg1.data, arg1.indices, arg1.indptr),
-                          dim=dim, dtype=dtype, **kwargs)
+            kwargs["shape"] = kwargs.get("shape", arg1.shape)
+            self.__init__(
+                (arg1.data, arg1.indices, arg1.indptr), dim=dim, dtype=dtype, **kwargs
+            )
 
         elif isinstance(arg1, (tuple, list)):
-
             if isinstance(arg1[0], Integral):
-                self.__init_shape(arg1, dim=dim, dtype=dtype,
-                                  nnzpr=nnzpr, nnz=nnz,
-                                  **kwargs)
+                self.__init_shape(
+                    arg1, dim=dim, dtype=dtype, nnzpr=nnzpr, nnz=nnz, **kwargs
+                )
 
             elif len(arg1) != 3:
-                raise ValueError(self.__class__.__name__ + ' sparse array *must* be created '
-                                 'with data, indices, indptr')
+                raise ValueError(
+                    self.__class__.__name__ + " sparse array *must* be created "
+                    "with data, indices, indptr"
+                )
             else:
-
                 # Correct dimension according to passed array
                 if len(arg1[0].shape) == 2:
                     dim = max(dim, arg1[0].shape[1])
@@ -162,16 +163,15 @@ class SparseCSR(NDArrayOperatorsMixin):
                     dtype = arg1[0].dtype
 
                 # The first *must* be some sort of array
-                if 'shape' in kwargs:
-                    shape = kwargs['shape']
+                if "shape" in kwargs:
+                    shape = kwargs["shape"]
 
                 else:
-                    M = len(arg1[2])-1
+                    M = len(arg1[2]) - 1
                     N = ((np.amax(arg1[1]) // M) + 1) * M
                     shape = (M, N)
 
-                self.__init_shape(shape, dim=dim, dtype=dtype,
-                                  nnz=1, **kwargs)
+                self.__init_shape(shape, dim=dim, dtype=dtype, nnz=1, **kwargs)
 
                 # Copy data to the arrays
                 self.ptr = arg1[2].astype(int32, copy=False)
@@ -193,15 +193,16 @@ column indices of the sparse elements
                 else:
                     self._D[:, 0] = arg1[0]
 
-    def __init_shape(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
-                     **kwargs):
-
+    def __init_shape(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None, **kwargs):
         # The shape of the data...
         if len(arg1) == 2:
             # extend to extra dimension
             arg1 = arg1 + (dim,)
         elif len(arg1) != 3:
-            raise ValueError(self.__class__.__name__ + " unrecognized shape input, either a 2-tuple or 3-tuple is required")
+            raise ValueError(
+                self.__class__.__name__
+                + " unrecognized shape input, either a 2-tuple or 3-tuple is required"
+            )
 
         # Set default dtype
         if dtype is None:
@@ -210,7 +211,10 @@ column indices of the sparse elements
         # unpack size and check the sizes are "physical"
         M, N, K = arg1
         if M <= 0 or N <= 0 or K <= 0:
-            raise ValueError(self.__class__.__name__ + f" invalid size of sparse matrix, one of the dimensions is zero: M={M}, N={N}, K={K}")
+            raise ValueError(
+                self.__class__.__name__
+                + f" invalid size of sparse matrix, one of the dimensions is zero: M={M}, N={N}, K={K}"
+            )
 
         # Store shape
         self._shape = (M, N, K)
@@ -276,7 +280,7 @@ column indices of the sparse elements
             shape = shape2 + (dim,)
         elif len(spmats[0].shape) == 3:
             shape = shape2 + (spmats[0].shape[2],)
-        else: # csr_matrix
+        else:  # csr_matrix
             shape = shape2 + (1,)
 
         if dtype is None:
@@ -290,11 +294,13 @@ column indices of the sparse elements
             row_cols = []
             for mat in spmats:
                 if isinstance(mat, SparseCSR):
-                    row_cols.append(mat.col[mat.ptr[row]:mat.ptr[row] + mat.ncol[row]])
+                    row_cols.append(
+                        mat.col[mat.ptr[row] : mat.ptr[row] + mat.ncol[row]]
+                    )
                 else:
                     # we have to ensure it is a csr matrix
                     mat = mat.tocsr()
-                    row_cols.append(mat.indices[mat.indptr[row]:mat.indptr[row+1]])
+                    row_cols.append(mat.indices[mat.indptr[row] : mat.indptr[row + 1]])
             out_col.append(np.unique(concatenate(row_cols)))
         # Put into the output
         out.ncol = _a.arrayi([len(cols) for cols in out_col])
@@ -305,7 +311,7 @@ column indices of the sparse elements
         return out
 
     def diagonal(self):
-        r""" Return the diagonal elements from the matrix """
+        r"""Return the diagonal elements from the matrix"""
         # get the diagonal components
         diag = np.zeros([self.shape[0], self.shape[2]], dtype=self.dtype)
 
@@ -328,7 +334,7 @@ column indices of the sparse elements
         return diag
 
     def diags(self, diagonals, offsets=0, dim=None, dtype=None):
-        """ Create a `SparseCSR` with diagonal elements with the same shape as the routine
+        """Create a `SparseCSR` with diagonal elements with the same shape as the routine
 
         Parameters
         ----------
@@ -366,7 +372,7 @@ column indices of the sparse elements
         return D
 
     def empty(self, keep_nnz=False):
-        """ Delete all sparse information from the sparsity pattern
+        """Delete all sparse information from the sparsity pattern
 
         Essentially this deletes all entries.
 
@@ -378,7 +384,7 @@ column indices of the sparse elements
            This may be advantagegous when re-constructing a new sparse
            matrix from an old sparse matrix
         """
-        self._D[:, :] = 0.
+        self._D[:, :] = 0.0
 
         if not keep_nnz:
             self._finalized = False
@@ -391,45 +397,45 @@ column indices of the sparse elements
 
     @property
     def shape(self):
-        """ The shape of the sparse matrix """
+        """The shape of the sparse matrix"""
         return self._shape
 
     @property
     def dim(self):
-        """ The extra dimensionality of the sparse matrix (elements per matrix element) """
+        """The extra dimensionality of the sparse matrix (elements per matrix element)"""
         return self.shape[2]
 
     @property
     def data(self):
-        """ Data contained in the sparse matrix (numpy array of elements) """
+        """Data contained in the sparse matrix (numpy array of elements)"""
         return self._D
 
     @property
     def dtype(self):
-        """ The data-type in the sparse matrix """
+        """The data-type in the sparse matrix"""
         return self._D.dtype
 
     @property
     def dkind(self):
-        """ The data-type in the sparse matrix (in str) """
+        """The data-type in the sparse matrix (in str)"""
         return np.dtype(self._D.dtype).kind
 
     @property
     def nnz(self):
-        """ Number of non-zero elements in the sparse matrix """
+        """Number of non-zero elements in the sparse matrix"""
         return self._nnz
 
     def __len__(self):
-        """ Number of rows in the sparse matrix """
+        """Number of rows in the sparse matrix"""
         return self.shape[0]
 
     @property
     def finalized(self):
-        """ Whether the contained data is finalized and non-used elements have been removed """
+        """Whether the contained data is finalized and non-used elements have been removed"""
         return self._finalized
 
     def finalize(self, sort=True):
-        """ Finalizes the sparse matrix by removing all non-set elements
+        """Finalizes the sparse matrix by removing all non-set elements
 
         One may still interact with the sparse matrix as one would previously.
 
@@ -476,30 +482,38 @@ column indices of the sparse elements
             duplicates = np.logical_and(diff(col) == 0, diff(row) == 0).nonzero()[0]
 
             if len(duplicates) > 0:
-                raise SislError('You cannot have two elements between the same ' +
-                                f'i,j index (i={row[duplicates]}, j={col[duplicates]})')
+                raise SislError(
+                    "You cannot have two elements between the same "
+                    + f"i,j index (i={row[duplicates]}, j={col[duplicates]})"
+                )
 
         else:
             for r in range(self.shape[0]):
                 ptr1 = ptr[r]
-                ptr2 = ptr[r+1]
+                ptr2 = ptr[r + 1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
-                    raise SislError('You cannot have two elements between the same ' +
-                                    f'i,j index (i={r}), something has went terribly wrong.')
+                    raise SislError(
+                        "You cannot have two elements between the same "
+                        + f"i,j index (i={r}), something has went terribly wrong."
+                    )
 
         if len(col) != self.nnz:
-            raise SislError('Final size in the sparse matrix finalization went wrong.') # pragma: no cover
+            raise SislError(
+                "Final size in the sparse matrix finalization went wrong."
+            )  # pragma: no cover
 
         # Check that all column indices are within the expected shape
         if np_any(self.shape[1] <= self.col):
-            warn("Sparse matrix contains column indices outside the shape "
-                 "of the matrix. Data may not represent what is expected!")
+            warn(
+                "Sparse matrix contains column indices outside the shape "
+                "of the matrix. Data may not represent what is expected!"
+            )
 
         # Signal that we indeed have finalized the data
         self._finalized = sort
 
     def edges(self, row, exclude=None):
-        """ Retrieve edges (connections) of a given `row` or list of `row`'s
+        """Retrieve edges (connections) of a given `row` or list of `row`'s
 
         The returned edges are unique and sorted (see `numpy.unique`).
 
@@ -529,7 +543,7 @@ column indices of the sparse elements
         return edges
 
     def delete_columns(self, columns, keep_shape=False):
-        """ Delete all columns in `columns` (in-place action)
+        """Delete all columns in `columns` (in-place action)
 
         Parameters
         ----------
@@ -612,7 +626,7 @@ column indices of the sparse elements
             self._shape = tuple(shape)
 
     def _clean_columns(self):
-        """ Remove all intrinsic columns that are not defined in the sparse matrix """
+        """Remove all intrinsic columns that are not defined in the sparse matrix"""
         # Grab pointers
         ptr = self.ptr
         ncol = self.ncol
@@ -647,7 +661,7 @@ column indices of the sparse elements
         # it will still be
 
     def translate_columns(self, old, new, rows=None, clean=True):
-        """ Takes all `old` columns and translates them to `new`.
+        """Takes all `old` columns and translates them to `new`.
 
         Parameters
         ----------
@@ -664,15 +678,19 @@ column indices of the sparse elements
         new = _a.asarrayi(new)
 
         if len(old) != len(new):
-            raise ValueError(f"{self.__class__.__name__}.translate_columns requires input and output columns with "
-                             "equal length")
+            raise ValueError(
+                f"{self.__class__.__name__}.translate_columns requires input and output columns with "
+                "equal length"
+            )
 
         if allclose(old, new):
             # No need to translate anything...
             return
 
         if np_any(old >= self.shape[1]):
-            raise ValueError(f"{self.__class__.__name__}.translate_columns has non-existing old column values")
+            raise ValueError(
+                f"{self.__class__.__name__}.translate_columns has non-existing old column values"
+            )
 
         # Now do the translation
         pvt = _a.arangei(self.shape[1])
@@ -693,7 +711,7 @@ column indices of the sparse elements
                 self._clean_columns()
 
     def scale_columns(self, cols, scale, rows=None):
-        r""" Scale all values with certain column values with a number
+        r"""Scale all values with certain column values with a number
 
         This will multiply all values with certain column values with `scale`
 
@@ -715,7 +733,9 @@ column indices of the sparse elements
         cols = _a.asarrayi(cols)
 
         if np_any(cols >= self.shape[1]):
-            raise ValueError(f"{self.__class__.__name__}.scale_columns has non-existing old column values")
+            raise ValueError(
+                f"{self.__class__.__name__}.scale_columns has non-existing old column values"
+            )
 
         # Find indices
         if rows is None:
@@ -728,11 +748,11 @@ column indices of the sparse elements
         self._D[idx[scale_idx]] *= scale
 
     def todense(self):
-        """ Return a dense `numpy.ndarray` which has 3 dimensions (self.shape) """
+        """Return a dense `numpy.ndarray` which has 3 dimensions (self.shape)"""
         return sparse_dense(self)
 
     def spsame(self, other):
-        """ Check whether two sparse matrices have the same non-zero elements
+        """Check whether two sparse matrices have the same non-zero elements
 
         Parameters
         ----------
@@ -758,13 +778,20 @@ column indices of the sparse elements
             return False
 
         for r in range(self.shape[0]):
-            if len(intersect1d(scol[sptr[r]:sptr[r]+sncol[r]],
-                               ocol[optr[r]:optr[r]+oncol[r]])) != sncol[r]:
+            if (
+                len(
+                    intersect1d(
+                        scol[sptr[r] : sptr[r] + sncol[r]],
+                        ocol[optr[r] : optr[r] + oncol[r]],
+                    )
+                )
+                != sncol[r]
+            ):
                 return False
         return True
 
     def align(self, other):
-        """ Aligns this sparse matrix with the sparse elements of the other sparse matrix
+        """Aligns this sparse matrix with the sparse elements of the other sparse matrix
 
         Routine for ensuring that all non-zero elements in `other` are also in this
         object.
@@ -780,7 +807,7 @@ column indices of the sparse elements
         """
 
         if self.shape[:2] != other.shape[:2]:
-            raise ValueError('Aligning two sparse matrices requires same shapes')
+            raise ValueError("Aligning two sparse matrices requires same shapes")
 
         sptr = self.ptr
         sncol = self.ncol
@@ -795,17 +822,17 @@ column indices of the sparse elements
             on = oncol[r]
 
             if sn == 0:
-                self._extend(r, ocol[op:op+on], False)
+                self._extend(r, ocol[op : op + on], False)
                 continue
 
             sp = sptr[r]
-            adds = setdiff1d(ocol[op:op+on], scol[sp:sp+sn])
+            adds = setdiff1d(ocol[op : op + on], scol[sp : sp + sn])
             if len(adds) > 0:
                 # simply extend the elements
                 self._extend(r, adds, False)
 
     def iter_nnz(self, row=None):
-        """ Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements
+        """Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements
 
         An iterator returning the current row index and the corresponding column index.
 
@@ -827,20 +854,20 @@ column indices of the sparse elements
             for r in range(self.shape[0]):
                 n = self.ncol[r]
                 ptr = self.ptr[r]
-                for c in self.col[ptr:ptr+n]:
+                for c in self.col[ptr : ptr + n]:
                     yield r, c
         else:
             for r in _a.asarrayi(row).ravel():
                 n = self.ncol[r]
                 ptr = self.ptr[r]
-                for c in self.col[ptr:ptr+n]:
+                for c in self.col[ptr : ptr + n]:
                     yield r, c
 
     # Define default iterator
     __iter__ = iter_nnz
 
     def _slice2list(self, slc, axis):
-        """ Convert a slice to a list depending on the provided details """
+        """Convert a slice to a list depending on the provided details"""
         if not isinstance(slc, slice):
             return slc
 
@@ -851,7 +878,7 @@ column indices of the sparse elements
         return range(idx[0], idx[1], idx[2])
 
     def _extend(self, i, j, ret_indices=True):
-        """ Extends the sparsity pattern to retain elements `j` in row `i`
+        """Extends the sparsity pattern to retain elements `j` in row `i`
 
         Parameters
         ----------
@@ -878,7 +905,7 @@ column indices of the sparse elements
             raise IndexError(f"row index is out-of-bounds {i} : {self.shape[0]}")
         i1 = int(i) + 1
         # We skip this check and let sisl die if wrong input is given...
-        #if not isinstance(i, Integral):
+        # if not isinstance(i, Integral):
         #    raise ValueError("Retrieving/Setting elements in a sparse matrix"
         #                     " must only be performed at one row-element at a time.\n"
         #                     "However, multiple columns at a time are allowed.")
@@ -901,12 +928,12 @@ column indices of the sparse elements
         # we first find which values are _not_ in the sparse
         # matrix
         if ncol_i > 0:
-
             # Checks whether any non-zero elements are
             # already in the sparse pattern
             # If so we remove those from the j
-            new_j = j[in1d(j, col[ptr_i:ptr_i+ncol_i],
-                           invert=True, assume_unique=True)]
+            new_j = j[
+                in1d(j, col[ptr_i : ptr_i + ncol_i], invert=True, assume_unique=True)
+            ]
         else:
             new_j = j
 
@@ -922,7 +949,7 @@ column indices of the sparse elements
         new_nnz = new_n - int(ptr[i1]) + ncol_ptr_i
 
         if new_nnz > 0:
-            #print(f"new_nnz {i} : {new_nnz}")
+            # print(f"new_nnz {i} : {new_nnz}")
             # Ensure that it is not-set as finalized
             # There is no need to set it all the time.
             # Simply because the first call to finalize
@@ -945,8 +972,9 @@ column indices of the sparse elements
             # Insert zero data in the data array
             # We use `zeros` as then one may set each dimension
             # individually...
-            self._D = insert(self._D, ptr[i1],
-                             zeros([ns, self.shape[2]], self._D.dtype), axis=0)
+            self._D = insert(
+                self._D, ptr[i1], zeros([ns, self.shape[2]], self._D.dtype), axis=0
+            )
 
             # Lastly, shift all pointers above this row to account for the
             # new non-zero elements
@@ -958,7 +986,7 @@ column indices of the sparse elements
             # assign the column indices for the new entries
             # NOTE that this may not assign them in the order
             # of entry as new_j is sorted and thus new_j != j
-            col[ncol_ptr_i:ncol_ptr_i+new_n] = new_j
+            col[ncol_ptr_i : ncol_ptr_i + new_n] = new_j
 
             # Step the size of the stored non-zero elements
             self.ncol[i] += int32(new_n)
@@ -976,7 +1004,7 @@ column indices of the sparse elements
             return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
 
     def _extend_empty(self, i, n):
-        """ Extends the sparsity pattern with `n` elements in row `i`
+        """Extends the sparsity pattern with `n` elements in row `i`
 
         Parameters
         ----------
@@ -991,7 +1019,7 @@ column indices of the sparse elements
             for indices out of bounds
         """
         if i < 0 or i >= self.shape[0]:
-            raise IndexError('row index is out-of-bounds')
+            raise IndexError("row index is out-of-bounds")
 
         # fast reference
         i1 = int(i) + 1
@@ -1005,20 +1033,23 @@ column indices of the sparse elements
 
         # Insert new empty elements in the column index
         # after the column
-        self.col = insert(self.col, self.ptr[i] + self.ncol[i], full(n, -1, self.col.dtype))
+        self.col = insert(
+            self.col, self.ptr[i] + self.ncol[i], full(n, -1, self.col.dtype)
+        )
 
         # Insert zero data in the data array
         # We use `zeros` as then one may set each dimension
         # individually...
-        self._D = insert(self._D, self.ptr[i1],
-                         zeros([n, self.shape[2]], self._D.dtype), axis=0)
+        self._D = insert(
+            self._D, self.ptr[i1], zeros([n, self.shape[2]], self._D.dtype), axis=0
+        )
 
         # Lastly, shift all pointers above this row to account for the
         # new non-zero elements
         self.ptr[i1:] += int32(n)
 
     def _get(self, i, j):
-        """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
+        """Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
 
         Parameters
         ----------
@@ -1039,11 +1070,11 @@ column indices of the sparse elements
         ptr = self.ptr[i]
 
         if j.ndim == 0:
-            return indices(self.col[ptr:ptr+self.ncol[i]], j.ravel(), ptr)[0]
-        return indices(self.col[ptr:ptr+self.ncol[i]], j, ptr)
+            return indices(self.col[ptr : ptr + self.ncol[i]], j.ravel(), ptr)[0]
+        return indices(self.col[ptr : ptr + self.ncol[i]], j, ptr)
 
     def _get_only(self, i, j):
-        """ Retrieves the data pointer arrays of the elements, only return elements in the sparse array
+        """Retrieves the data pointer arrays of the elements, only return elements in the sparse array
 
         Parameters
         ----------
@@ -1063,10 +1094,10 @@ column indices of the sparse elements
         # Make it a little easier
         ptr = self.ptr[i]
 
-        return indices_only(self.col[ptr:ptr+self.ncol[i]], j) + ptr
+        return indices_only(self.col[ptr : ptr + self.ncol[i]], j) + ptr
 
     def __delitem__(self, key):
-        """ Remove items from the sparse patterns """
+        """Remove items from the sparse patterns"""
         # Get indices of sparse data (-1 if non-existing)
         key = list(key)
         key[0] = self._slice2list(key[0], 0)
@@ -1115,7 +1146,7 @@ column indices of the sparse elements
         self._nnz -= n_index
 
     def __getitem__(self, key):
-        """ Intrinsic sparse matrix retrieval of a non-zero element """
+        """Intrinsic sparse matrix retrieval of a non-zero element"""
 
         # Get indices of sparse data (-1 if non-existing)
         get_idx = self._get(key[0], key[1])
@@ -1132,14 +1163,12 @@ column indices of the sparse elements
 
         # Check which data to retrieve
         if len(key) > 2:
-
             # user requests a specific element
             # get dimension retrieved
             r = zeros(n, dtype=self._D.dtype)
             r[ret_idx] = self._D[get_idx, key[2]]
 
         else:
-
             # user request all stored data
 
             s = self.shape[2]
@@ -1157,7 +1186,7 @@ column indices of the sparse elements
         return r
 
     def __setitem__(self, key, data):
-        """ Intrinsic sparse matrix assignment of the item.
+        """Intrinsic sparse matrix assignment of the item.
 
         It will only allow to set the data in the sparse
         matrix if the dimensions match.
@@ -1182,7 +1211,6 @@ column indices of the sparse elements
         i = key[0]
         j = key[1]
         if isinstance(i, (list, ndarray)) and isinstance(j, (list, ndarray)):
-
             # Create a b-cast object to iterate
             # Note that this does not do the actual b-casting and thus
             # we can iterate and operate as though it was an actual array
@@ -1208,10 +1236,18 @@ column indices of the sparse elements
                     # *only* if
                     # do a sanity check
                     if self.dim > 1 and len(key) == 2:
-                        raise ValueError("could not broadcast input array from shape {} into shape {}".format(data.shape, ij.shape + (self.dim,)))
+                        raise ValueError(
+                            "could not broadcast input array from shape {} into shape {}".format(
+                                data.shape, ij.shape + (self.dim,)
+                            )
+                        )
                     if len(key) == 3:
                         if atleast_1d(key[2]).size > 1:
-                            raise ValueError("could not broadcast input array from shape {} into shape {}".format(data.shape, ij.shape + (atleast_1d(key[2]).size,)))
+                            raise ValueError(
+                                "could not broadcast input array from shape {} into shape {}".format(
+                                    data.shape, ij.shape + (atleast_1d(key[2]).size,)
+                                )
+                            )
                     # flatten data
                     data.shape = (-1,)
                 # ij.ndim == 1
@@ -1220,7 +1256,9 @@ column indices of the sparse elements
                 # if ij.size != data.shape[0] an error should occur down below
             elif data.ndim == 3:
                 if ij.ndim != 2:
-                    raise ValueError("could not broadcast input array from 3 dimensions into 2")
+                    raise ValueError(
+                        "could not broadcast input array from 3 dimensions into 2"
+                    )
                 data.shape = (-1, data.shape[2])
 
             # Now we need to figure out the final dimension and how to
@@ -1272,12 +1310,12 @@ column indices of the sparse elements
                 self._D[index, :] = data[:, :]
 
     def __contains__(self, key):
-        """ Check whether a sparse index is non-zero """
+        """Check whether a sparse index is non-zero"""
         # Get indices of sparse data (-1 if non-existing)
         return np_all(self._get(key[0], key[1]) >= 0)
 
     def nonzero(self, rows=None, only_cols=False):
-        """ Row and column indices where non-zero elements exists
+        """Row and column indices where non-zero elements exists
 
         Parameters
         ----------
@@ -1308,8 +1346,8 @@ column indices of the sparse elements
             return cols
         return rows, cols
 
-    def eliminate_zeros(self, atol=0.):
-        """ Remove all zero elememts from the sparse matrix
+    def eliminate_zeros(self, atol=0.0):
+        """Remove all zero elememts from the sparse matrix
 
         This is an *in-place* operation
 
@@ -1336,7 +1374,6 @@ column indices of the sparse elements
             return
 
         for r in range(self.shape[0]):
-
             # Create short-hand slice
             idx = arangei(ptr[r], ptr[r] + ncol[r])
 
@@ -1349,7 +1386,7 @@ column indices of the sparse elements
             del self[r, col[idx[C0]]]
 
     def copy(self, dims=None, dtype=None):
-        """ A deepcopy of the sparse matrix
+        """A deepcopy of the sparse matrix
 
         Parameters
         ----------
@@ -1379,8 +1416,8 @@ column indices of the sparse elements
         # The default sizes are not passed
         # Hence we *must* copy the arrays
         # directly
-        copyto(new.ptr, self.ptr, casting='same_kind')
-        copyto(new.ncol, self.ncol, casting='same_kind')
+        copyto(new.ptr, self.ptr, casting="same_kind")
+        copyto(new.ncol, self.ncol, casting="same_kind")
         new.col = self.col.copy()
         new._nnz = self.nnz
 
@@ -1394,7 +1431,7 @@ column indices of the sparse elements
         return new
 
     def tocsr(self, dim=0, **kwargs):
-        """ Convert dimension `dim` into a :class:`~scipy.sparse.csr_matrix` format
+        """Convert dimension `dim` into a :class:`~scipy.sparse.csr_matrix` format
 
         Parameters
         ----------
@@ -1406,20 +1443,29 @@ column indices of the sparse elements
         shape = self.shape[:2]
         if self.finalized:
             # Easy case...
-            return csr_matrix((self._D[:, dim].copy(),
-                               self.col.astype(int32, copy=True), self.ptr.astype(int32, copy=True)),
-                              shape=shape, **kwargs)
+            return csr_matrix(
+                (
+                    self._D[:, dim].copy(),
+                    self.col.astype(int32, copy=True),
+                    self.ptr.astype(int32, copy=True),
+                ),
+                shape=shape,
+                **kwargs,
+            )
 
         # Use array_arange
         idx = array_arange(self.ptr[:-1], n=self.ncol)
         # create new pointer
         ptr = _ncol_to_indptr(self.ncol)
 
-        return csr_matrix((self._D[idx, dim].copy(), self.col[idx], ptr.astype(int32, copy=False)),
-                          shape=shape, **kwargs)
+        return csr_matrix(
+            (self._D[idx, dim].copy(), self.col[idx], ptr.astype(int32, copy=False)),
+            shape=shape,
+            **kwargs,
+        )
 
     def transform(self, matrix, dtype=None):
-        r""" Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix
+        r"""Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix
 
         Notes
         -----
@@ -1440,9 +1486,11 @@ column indices of the sparse elements
             dtype = np.find_common_type([self.dtype, matrix.dtype], [])
 
         if matrix.shape[1] != self.shape[2]:
-            raise ValueError(f"{self.__class__.__name__}.transform incompatible "
-                             f"transformation matrix and spin dimensions: "
-                             f"matrix.shape={matrix.shape} and self.spin={self.shape[2]} ; out.spin={matrix.shape[0]}")
+            raise ValueError(
+                f"{self.__class__.__name__}.transform incompatible "
+                f"transformation matrix and spin dimensions: "
+                f"matrix.shape={matrix.shape} and self.spin={self.shape[2]} ; out.spin={matrix.shape[0]}"
+            )
 
         # set dimension of new sparse matrix
         new_dim = matrix.shape[0]
@@ -1451,8 +1499,8 @@ column indices of the sparse elements
 
         new = self.__class__(shape, dtype=dtype, nnz=1)
 
-        copyto(new.ptr, self.ptr, casting='no')
-        copyto(new.ncol, self.ncol, casting='no')
+        copyto(new.ptr, self.ptr, casting="no")
+        copyto(new.ncol, self.ncol, casting="no")
         new.col = self.col.copy()
         new._nnz = self.nnz
 
@@ -1464,7 +1512,7 @@ column indices of the sparse elements
 
     @classmethod
     def fromsp(cls, *sps, dtype=None):
-        """ Combine multiple single-dimension sparse matrices into one SparseCSR matrix
+        """Combine multiple single-dimension sparse matrices into one SparseCSR matrix
 
         The different sparse matrices need not have the same sparsity pattern.
 
@@ -1497,15 +1545,17 @@ column indices of the sparse elements
             m = m.tocsr()
             m.sort_indices()
             for r in range(out.shape[0]):
-                msl = slice(m.indptr[r], m.indptr[r+1])
+                msl = slice(m.indptr[r], m.indptr[r + 1])
                 osl = slice(out.ptr[r], out.ptr[r] + out.ncol[r])
-                oidx = indices(out.col[osl], m.indices[msl], osl.start, both_sorted=True)
+                oidx = indices(
+                    out.col[osl], m.indices[msl], osl.start, both_sorted=True
+                )
                 out._D[oidx, im] = m.data[msl]
 
         return out
 
     def remove(self, indices):
-        """ Return a new sparse CSR matrix with all the indices removed
+        """Return a new sparse CSR matrix with all the indices removed
 
         Parameters
         ----------
@@ -1524,7 +1574,7 @@ column indices of the sparse elements
         return self.sub(rindices)
 
     def sub(self, indices):
-        """ Create a new sparse CSR matrix with the data only for the given rows and columns
+        """Create a new sparse CSR matrix with the data only for the given rows and columns
 
         All rows and columns in `indices` are retained, everything else is removed.
 
@@ -1591,8 +1641,7 @@ column indices of the sparse elements
 
         # Count number of entries
         idx_take = col_data[1, :] >= 0
-        ncol1[:] = _a.fromiteri(map(count_nonzero,
-                                    split(idx_take, ptr1[1:-1]))).ravel()
+        ncol1[:] = _a.fromiteri(map(count_nonzero, split(idx_take, ptr1[1:-1]))).ravel()
 
         # Convert to indices
         idx_take = idx_take.nonzero()[0]
@@ -1612,7 +1661,7 @@ column indices of the sparse elements
         return csr
 
     def transpose(self, sort=True):
-        """ Create the transposed sparse matrix
+        """Create the transposed sparse matrix
 
         Parameters
         ----------
@@ -1642,12 +1691,12 @@ column indices of the sparse elements
         # First extract the actual data
         ncol = self.ncol.view()
         if self.finalized:
-            #ptr = self.ptr.view()
+            # ptr = self.ptr.view()
             col = self.col.copy()
             D = self._D.copy()
         else:
             idx = array_arange(self.ptr[:-1], n=ncol, dtype=int32)
-            #ptr = _ncol_to_indptr(ncol)
+            # ptr = _ncol_to_indptr(ncol)
             col = self.col[idx]
             D = self._D[idx, :].copy()
             del idx
@@ -1689,9 +1738,14 @@ column indices of the sparse elements
         return T
 
     def __str__(self):
-        """ Representation of the sparse matrix model """
+        """Representation of the sparse matrix model"""
         ints = self.shape[:] + (self.nnz,)
-        return self.__class__.__name__ + '{{dim={2}, kind={kind},\n  rows: {0}, columns: {1},\n  non-zero: {3}\n}}'.format(*ints, kind=self.dkind)
+        return (
+            self.__class__.__name__
+            + "{{dim={2}, kind={kind},\n  rows: {0}, columns: {1},\n  non-zero: {3}\n}}".format(
+                *ints, kind=self.dkind
+            )
+        )
 
     def __repr__(self):
         return f"<{self.__module__}.{self.__class__.__name__} shape={self.shape}, kind={self.dkind}, nnz={self.nnz}>"
@@ -1700,7 +1754,7 @@ column indices of the sparse elements
     __array_priority__ = 14
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
-        #print(f"{self.__class__.__name__}.__array_ufunc__ :", ufunc, method)
+        # print(f"{self.__class__.__name__}.__array_ufunc__ :", ufunc, method)
         out = kwargs.pop("out", None)
 
         if getattr(ufunc, "signature", None) is not None:
@@ -1716,13 +1770,13 @@ column indices of the sparse elements
         elif method == "reduce":
             result = _ufunc_reduce(ufunc, *inputs, **kwargs)
         elif method == "outer":
-            #print("running outer")
+            # print("running outer")
             # Currently I don't know what to do here
             # We don't have multidimensional sparse matrices,
             # but perhaps that could be needed later?
             return NotImplemented
         else:
-            #print("running method = ", method)
+            # print("running method = ", method)
             return NotImplemented
 
         if out is None:
@@ -1731,8 +1785,10 @@ column indices of the sparse elements
             out[...] = result[...]
         elif isinstance(out, SparseCSR):
             if out.shape != result.shape:
-                raise ValueError(f"non-broadcastable output operand with shape {out.shape} "
-                                 "doesn't match the broadcast shape {result.shape}")
+                raise ValueError(
+                    f"non-broadcastable output operand with shape {out.shape} "
+                    "doesn't match the broadcast shape {result.shape}"
+                )
             out._finalized = result._finalized
             out.ncol[:] = result.ncol[:]
             out.ptr[:] = result.ptr[:]
@@ -1744,30 +1800,30 @@ column indices of the sparse elements
         return out
 
     def __getstate__(self):
-        """ Return dictionary with the current state (finalizing the object may reduce memory footprint) """
+        """Return dictionary with the current state (finalizing the object may reduce memory footprint)"""
         d = {
-            'shape': self._shape[:],
-            'ncol': self.ncol.copy(),
-            'col': self.col.copy(),
-            'D': self._D.copy(),
-            'finalized': self._finalized
+            "shape": self._shape[:],
+            "ncol": self.ncol.copy(),
+            "col": self.col.copy(),
+            "D": self._D.copy(),
+            "finalized": self._finalized,
         }
         if not self.finalized:
-            d['ptr'] = self.ptr.copy()
+            d["ptr"] = self.ptr.copy()
         return d
 
     def __setstate__(self, state):
-        """ Reset state of the object """
-        self._shape = tuple(state['shape'][:])
-        self.ncol = state['ncol']
-        self.col = state['col']
-        self._D = state['D']
+        """Reset state of the object"""
+        self._shape = tuple(state["shape"][:])
+        self.ncol = state["ncol"]
+        self.col = state["col"]
+        self._D = state["D"]
         self._nnz = self.ncol.sum()
-        self._finalized = state['finalized']
+        self._finalized = state["finalized"]
         if self.finalized:
             self.ptr = _ncol_to_indptr(self.ncol)
         else:
-            self.ptr = state['ptr']
+            self.ptr = state["ptr"]
 
 
 def _get_reduced_shape(shape):
@@ -1824,7 +1880,7 @@ def _ufunc_ndarray_sp(ufunc, a, b, **kwargs):
 
 
 def _ufunc_sp_sp(ufunc, a, b, **kwargs):
-    """ Calculate ufunc on sparse matrices """
+    """Calculate ufunc on sparse matrices"""
     if isinstance(a, tuple):
         a = SparseCSR.fromsp(*a)
     if isinstance(b, tuple):
@@ -1832,8 +1888,10 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
 
     def accessors(mat):
         if isinstance(mat, SparseCSR):
+
             def rowslice(r):
                 return slice(mat.ptr[r], mat.ptr[r] + mat.ncol[r])
+
             accessors = mat.dim, mat.col, mat._D, rowslice
             issorted = mat.finalized
         else:
@@ -1841,14 +1899,20 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
             # and csr_matrix.tocsr is a no-op
             mat = mat.tocsr()
             mat.sort_indices()
+
             def rowslice(r):
                 return slice(mat.indptr[r], mat.indptr[r + 1])
+
             accessors = 1, mat.indices, mat.data.reshape(-1, 1), rowslice
             issorted = mat.has_sorted_indices
         if issorted:
-            indexfunc = lambda ocol, matcol, offset: indices(ocol, matcol, offset, both_sorted=True)
+            indexfunc = lambda ocol, matcol, offset: indices(
+                ocol, matcol, offset, both_sorted=True
+            )
         else:
-            indexfunc = lambda ocol, matcol, offset: np.searchsorted(ocol, matcol) + offset
+            indexfunc = (
+                lambda ocol, matcol, offset: np.searchsorted(ocol, matcol) + offset
+            )
         return accessors + (indexfunc,)
 
     adim, acol, adata, arow, afindidx = accessors(a)
@@ -1862,7 +1926,7 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
 
     for r in range(out.shape[0]):
         offset = out.ptr[r]
-        ocol = out.col[offset:offset + out.ncol[r]]
+        ocol = out.col[offset : offset + out.ncol[r]]
 
         asl = arow(r)
         aidx = afindidx(ocol, acol[asl], offset)
@@ -1880,8 +1944,9 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
 
         # overlapping indices
         if iover.size > 0:
-            out._D[iover, :] = ufunc(adata[asl[aover], :],
-                                     bdata[bsl[bover], :], **kwargs)
+            out._D[iover, :] = ufunc(
+                adata[asl[aover], :], bdata[bsl[bover], :], **kwargs
+            )
 
         if iaonly.size > 0:
             # only a
@@ -1894,7 +1959,6 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
 
 
 def _ufunc_call(ufunc, *in_args, **kwargs):
-
     # first process in_args to args
     # by numpy-fying and checking for sparsecsr
     args = []
@@ -1922,7 +1986,8 @@ def _ufunc_call(ufunc, *in_args, **kwargs):
             # but SparseCSR always have 3, so we pad with ones.
             return arg.shape + (1,)
         return arg.shape
-    #shape = _get_bcast_shape(*tuple(spshape(arg) for arg in args))
+
+    # shape = _get_bcast_shape(*tuple(spshape(arg) for arg in args))
 
     if len(args) == 1:
         a = args[0]
@@ -1939,27 +2004,31 @@ def _ufunc_call(ufunc, *in_args, **kwargs):
 
     def _(a, b):
         return _ufunc(ufunc, a, b, **kwargs)
+
     return reduce(_, args)
 
 
 def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
-
     if "dtype" not in kwargs:
         kwargs["dtype"] = np.result_type(array, *args)
 
     # currently the initial argument does not work properly if the
     # size isn't correct
-    if np.asarray(kwargs.get("initial", 0.)).ndim > 1:
-        raise ValueError(f"{array.__class__.__name__}.{ufunc.__name__}.reduce currently does not implement initial values in different dimensions")
+    if np.asarray(kwargs.get("initial", 0.0)).ndim > 1:
+        raise ValueError(
+            f"{array.__class__.__name__}.{ufunc.__name__}.reduce currently does not implement initial values in different dimensions"
+        )
 
     if isinstance(axis, (tuple, list, np.ndarray)):
         if len(axis) == 1:
             axis = axis[0]
         else:
+
             def wrap_axis(axis):
                 if axis < 0:
                     return axis + len(array.shape)
                 return axis
+
             axis = tuple(wrap_axis(ax) for ax in axis)
             if axis == (0, 1) or axis == (1, 0):
                 return ufunc.reduce(array._D, axis=0, *args, **kwargs)
@@ -1983,20 +2052,26 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
         out._D[:, 0] = ufunc.reduce(array._D, axis=1, *args, **kwargs)
         return out
     else:
-        raise ValueError(f"Unknown axis argument in ufunc.reduce call on {array.__class__.__name__}")
+        raise ValueError(
+            f"Unknown axis argument in ufunc.reduce call on {array.__class__.__name__}"
+        )
 
-    ret = empty([array.shape[0], array.shape[2]], dtype=kwargs.get("dtype", array.dtype))
+    ret = empty(
+        [array.shape[0], array.shape[2]], dtype=kwargs.get("dtype", array.dtype)
+    )
     # Now do ufunc calculations, note that initial gets passed directly
     ptr = array.ptr
     ncol = array.ncol
     for r in range(array.shape[0]):
-        ret[r, :] = ufunc.reduce(array._D[ptr[r]:ptr[r]+ncol[r], :], axis=0, *args, **kwargs)
+        ret[r, :] = ufunc.reduce(
+            array._D[ptr[r] : ptr[r] + ncol[r], :], axis=0, *args, **kwargs
+        )
     return ret
 
 
 @set_module("sisl")
 def ispmatrix(matrix, map_row=None, map_col=None):
-    """ Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
+    """Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
 
     If either `map_row` or `map_col` are not None the generator will only yield
     the unique values.
@@ -2039,61 +2114,73 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     rows[:] = False
 
     # Consider using the numpy nditer function for buffered iterations
-    #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
+    # it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
     #               flags=['buffered'], op_flags=['readonly'])
 
     if issparse(matrix) and matrix.format == "csr":
         for r in range(matrix.shape[0]):
             rr = map_row(r)
-            if rows[rr]: continue
+            if rows[rr]:
+                continue
             rows[rr] = True
             cols[:] = False
-            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
+            for ind in range(matrix.indptr[r], matrix.indptr[r + 1]):
                 c = map_col(matrix.indices[ind])
-                if cols[c]: continue
+                if cols[c]:
+                    continue
                 cols[c] = True
                 yield rr, c
 
     elif issparse(matrix) and matrix.format == "lil":
         for r in range(matrix.shape[0]):
             rr = map_row(r)
-            if rows[rr]: continue
+            if rows[rr]:
+                continue
             rows[rr] = True
             cols[:] = False
             if len(matrix.rows[r]) == 0:
                 continue
             for c in map_col(matrix.rows[r]):
-                if cols[c]: continue
+                if cols[c]:
+                    continue
                 cols[c] = True
                 yield rr, c
 
     elif issparse(matrix) and matrix.format == "coo":
-        raise ValueError("mapping and unique returns are not implemented for COO matrix")
+        raise ValueError(
+            "mapping and unique returns are not implemented for COO matrix"
+        )
 
     elif issparse(matrix) and matrix.format == "csc":
-        raise ValueError("mapping and unique returns are not implemented for CSC matrix")
+        raise ValueError(
+            "mapping and unique returns are not implemented for CSC matrix"
+        )
 
     elif isinstance(matrix, SparseCSR):
         for r in range(matrix.shape[0]):
             rr = map_row(r)
-            if rows[rr]: continue
+            if rows[rr]:
+                continue
             rows[rr] = True
             cols[:] = False
             n = matrix.ncol[r]
             if n == 0:
                 continue
             ptr = matrix.ptr[r]
-            for c in map_col(matrix.col[ptr:ptr+n]):
-                if cols[c]: continue
+            for c in map_col(matrix.col[ptr : ptr + n]):
+                if cols[c]:
+                    continue
                 cols[c] = True
                 yield rr, c
 
     else:
-        raise NotImplementedError("The iterator for this sparse matrix has not been implemented")
+        raise NotImplementedError(
+            "The iterator for this sparse matrix has not been implemented"
+        )
 
 
 def _ispmatrix_all(matrix):
-    """ Iterator for iterating rows and columns for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)
+    """Iterator for iterating rows and columns for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)
 
     Parameters
     ----------
@@ -2107,7 +2194,7 @@ def _ispmatrix_all(matrix):
     """
     if issparse(matrix) and matrix.format == "csr":
         for r in range(matrix.shape[0]):
-            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
+            for ind in range(matrix.indptr[r], matrix.indptr[r + 1]):
                 yield r, matrix.indices[ind]
 
     elif issparse(matrix) and matrix.format == "lil":
@@ -2120,23 +2207,25 @@ def _ispmatrix_all(matrix):
 
     elif issparse(matrix) and matrix.format == "csc":
         for c in range(matrix.shape[1]):
-            for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
+            for ind in range(matrix.indptr[c], matrix.indptr[c + 1]):
                 yield matrix.indices[ind], c
 
     elif isinstance(matrix, SparseCSR):
         for r in range(matrix.shape[0]):
             n = matrix.ncol[r]
             ptr = matrix.ptr[r]
-            for c in matrix.col[ptr:ptr+n]:
+            for c in matrix.col[ptr : ptr + n]:
                 yield r, c
 
     else:
-        raise NotImplementedError("The iterator for this sparse matrix has not been implemented")
+        raise NotImplementedError(
+            "The iterator for this sparse matrix has not been implemented"
+        )
 
 
 @set_module("sisl")
 def ispmatrixd(matrix, map_row=None, map_col=None):
-    """ Iterator for iterating rows, columns and data for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)
+    """Iterator for iterating rows, columns and data for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)
 
     Parameters
     ----------
@@ -2160,13 +2249,13 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
         map_col = lambda x: x
 
     # Consider using the numpy nditer function for buffered iterations
-    #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
+    # it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
     #               flags=['buffered'], op_flags=['readonly'])
 
     if issparse(matrix) and matrix.format == "csr":
         for r in range(matrix.shape[0]):
             rr = map_row(r)
-            for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
+            for ind in range(matrix.indptr[r], matrix.indptr[r + 1]):
                 yield rr, map_col(matrix.indices[ind]), matrix.data[ind]
 
     elif issparse(matrix) and matrix.format == "lil":
@@ -2181,7 +2270,7 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
     elif issparse(matrix) and matrix.format == "csc":
         for c in range(matrix.shape[1]):
             cc = map_col(c)
-            for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
+            for ind in range(matrix.indptr[c], matrix.indptr[c + 1]):
                 yield map_row(matrix.indices[ind]), cc, matrix.data[ind]
 
     elif isinstance(matrix, SparseCSR):
@@ -2191,9 +2280,11 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
             if n == 0:
                 continue
             ptr = matrix.ptr[r]
-            sl = slice(ptr, ptr+n, None)
+            sl = slice(ptr, ptr + n, None)
             for c, d in zip(map_col(matrix.col[sl]), matrix._D[sl, :]):
                 yield rr, c, d
 
     else:
-        raise NotImplementedError("The iterator for this sparse matrix has not been implemented")
+        raise NotImplementedError(
+            "The iterator for this sparse matrix has not been implemented"
+        )
