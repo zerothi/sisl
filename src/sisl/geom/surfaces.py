@@ -13,7 +13,7 @@ from sisl._internal import set_module
 
 from ._common import geometry2uc, geometry_define_nsc
 
-__all__ = ['fcc_slab', 'bcc_slab', 'rocksalt_slab']
+__all__ = ["fcc_slab", "bcc_slab", "rocksalt_slab"]
 
 
 def _layer2int(layer, periodicity):
@@ -57,7 +57,7 @@ def _calc_info(start, end, layers, periodicity):
             layers = layers[:nlayers]
         elif start is None:
             # end is not none
-            layers = layers[end+1:] + layers[:end+1]
+            layers = layers[end + 1 :] + layers[: end + 1]
             layers = layers[-nlayers:]
         elif end is None:
             # start is not none
@@ -71,7 +71,9 @@ def _calc_info(start, end, layers, periodicity):
             # + 2 to allow rotating
             (stacking * (nlayers // periodicity + 2)).index(layers)
         except ValueError:
-            raise NotImplementedError(f"Stacking faults are not implemented, requested {layers} with stacking {stacking}")
+            raise NotImplementedError(
+                f"Stacking faults are not implemented, requested {layers} with stacking {stacking}"
+            )
 
         if start is None and end is None:
             # easy case, we just calculate one of them
@@ -79,12 +81,16 @@ def _calc_info(start, end, layers, periodicity):
 
         elif start is not None:
             if _layer2int(layers[0], periodicity) != start:
-                raise ValueError(f"Passing both 'layers' and 'start' requires them to be conforming; found layers={layers} "
-                                 f"and start={'ABCDEF'[start]}")
+                raise ValueError(
+                    f"Passing both 'layers' and 'start' requires them to be conforming; found layers={layers} "
+                    f"and start={'ABCDEF'[start]}"
+                )
         elif end is not None:
             if _layer2int(layers[-1], periodicity) != end:
-                raise ValueError(f"Passing both 'layers' and 'end' requires them to be conforming; found layers={layers} "
-                                 f"and end={'ABCDEF'[end]}")
+                raise ValueError(
+                    f"Passing both 'layers' and 'end' requires them to be conforming; found layers={layers} "
+                    f"and end={'ABCDEF'[end]}"
+                )
 
     # a sanity check for the algorithm, should always hold!
     if start is not None:
@@ -124,13 +130,13 @@ def _convert_miller(miller):
 
 
 def _slab_with_vacuum(func, *args, **kwargs):
-    """Function to wrap `func` with vacuum in between """
+    """Function to wrap `func` with vacuum in between"""
     layers = kwargs.pop("layers")
     if layers is None or isinstance(layers, Integral):
         return None
 
     def is_vacuum(layer):
-        """ A vacuum is defined by one of these variables:
+        """A vacuum is defined by one of these variables:
 
         - None
         - ' '
@@ -139,20 +145,22 @@ def _slab_with_vacuum(func, *args, **kwargs):
         if layer is None:
             return True
         if isinstance(layer, str):
-            return layer == ' '
+            return layer == " "
         if isinstance(layer, Integral):
             return layer == 0
         return False
 
     # we are dealing either with a list of ints or str
     if isinstance(layers, str):
-        nvacuums = layers.count(' ')
+        nvacuums = layers.count(" ")
         if nvacuums == 0:
             return None
 
-        if layers.count('  ') > 0:
-            raise ValueError("Denoting several vacuum layers next to each other is not supported. "
-                             "Please pass 'vacuum' as an array instead.")
+        if layers.count("  ") > 0:
+            raise ValueError(
+                "Denoting several vacuum layers next to each other is not supported. "
+                "Please pass 'vacuum' as an array instead."
+            )
 
         # determine number of slabs
         nslabs = len(layers.strip().split())
@@ -163,9 +171,12 @@ def _slab_with_vacuum(func, *args, **kwargs):
             a_layer = not is_vacuum(a)
             b_layer = not is_vacuum(b)
             return a_layer and b_layer
+
         # convert list correctly
-        layers = [[p, None] if are_layers(p, n) else [p]
-                  for p, n in zip(layers[:-1], layers[1:])] + [[layers[-1]]]
+        layers = [
+            [p, None] if are_layers(p, n) else [p]
+            for p, n in zip(layers[:-1], layers[1:])
+        ] + [[layers[-1]]]
         layers = [l for ls in layers for l in ls]
         nvacuums = sum([1 if is_vacuum(l) else 0 for l in layers])
         nslabs = sum([0 if is_vacuum(l) else 1 for l in layers])
@@ -179,23 +190,26 @@ def _slab_with_vacuum(func, *args, **kwargs):
             return [var] * nslabs
 
         if len(var) > nslabs:
-            raise ValueError(f"Specification of {name} has too many elements compared to the "
-                             f"number of slabs {nslabs}, please reduce length from {len(var)}.")
+            raise ValueError(
+                f"Specification of {name} has too many elements compared to the "
+                f"number of slabs {nslabs}, please reduce length from {len(var)}."
+            )
 
         # it must be an array of some sorts
         out = [None] * nslabs
-        out[:len(var)] = var[:]
+        out[: len(var)] = var[:]
         return out
+
     start = ensure_length(kwargs.pop("start"), nslabs, "start")
     end = ensure_length(kwargs.pop("end"), nslabs, "end")
 
     vacuum = np.asarray(kwargs.pop("vacuum"))
-    vacuums = np.full(nvacuums, 0.)
+    vacuums = np.full(nvacuums, 0.0)
     if vacuum.ndim == 0:
         vacuums[:] = vacuum
     else:
-        vacuums[:len(vacuum)] = vacuum
-        vacuums[len(vacuum):] = vacuum[-1]
+        vacuums[: len(vacuum)] = vacuum
+        vacuums[len(vacuum) :] = vacuum[-1]
     vacuums = vacuums.tolist()
 
     # We are now sure that there is a vacuum!
@@ -206,7 +220,7 @@ def _slab_with_vacuum(func, *args, **kwargs):
         # layer is an iterator, convert to list
         layer = list(layer)
         if isinstance(layer[0], str):
-            layer = ''.join(layer)
+            layer = "".join(layer)
         elif len(layer) > 1:
             raise ValueError(f"Grouper returned long list {layer}")
         else:
@@ -218,9 +232,11 @@ def _slab_with_vacuum(func, *args, **kwargs):
     # group stuff
     layers = [
         iter_func(key, group)
-        for key, group in groupby(layers,
-                                  # group by vacuum positions and not vacuum positions
-                                  lambda l: 0 if is_vacuum(l) else 1)
+        for key, group in groupby(
+            layers,
+            # group by vacuum positions and not vacuum positions
+            lambda l: 0 if is_vacuum(l) else 1,
+        )
     ]
 
     # Now we need to loop and create the things
@@ -228,12 +244,15 @@ def _slab_with_vacuum(func, *args, **kwargs):
     ivacuum = 0
     islab = 0
     if layers[0] is None:
-        layers.pop(0) # vacuum specification
-        out = func(*args,
-                   layers=layers.pop(0),
-                   start=start.pop(0),
-                   end=end.pop(0),
-                   vacuum=None, **kwargs)
+        layers.pop(0)  # vacuum specification
+        out = func(
+            *args,
+            layers=layers.pop(0),
+            start=start.pop(0),
+            end=end.pop(0),
+            vacuum=None,
+            **kwargs,
+        )
         # add vacuum
         vacuum = Lattice([0, 0, vacuums.pop(0)])
         out = out.add(vacuum, offset=(0, 0, vacuum.cell[2, 2]))
@@ -241,11 +260,14 @@ def _slab_with_vacuum(func, *args, **kwargs):
         islab += 1
 
     else:
-        out = func(*args,
-                   layers=layers.pop(0),
-                   start=start.pop(0),
-                   end=end.pop(0),
-                   vacuum=None, **kwargs)
+        out = func(
+            *args,
+            layers=layers.pop(0),
+            start=start.pop(0),
+            end=end.pop(0),
+            vacuum=None,
+            **kwargs,
+        )
         islab += 1
 
     while len(layers) > 0:
@@ -257,11 +279,14 @@ def _slab_with_vacuum(func, *args, **kwargs):
             ivacuum += 1
             out = out.add(vacuum)
         else:
-            geom = func(*args,
-                        layers=layer,
-                        start=start.pop(0),
-                        end=end.pop(0),
-                        vacuum=None, **kwargs)
+            geom = func(
+                *args,
+                layers=layer,
+                start=start.pop(0),
+                end=end.pop(0),
+                vacuum=None,
+                **kwargs,
+            )
             out = out.append(geom, 2)
             islab += 1
 
@@ -275,16 +300,18 @@ def _slab_with_vacuum(func, *args, **kwargs):
 
 
 @set_module("sisl.geom")
-def fcc_slab(alat: float,
-             atoms,
-             miller: Union[int, str, Tuple[int, int, int]],
-             layers=None,
-             vacuum: Union[float, Sequence[float]]=20.,
-             *,
-             orthogonal: bool=False,
-             start=None,
-             end=None):
-    r""" Surface slab forming a face-centered cubic (FCC) crystal
+def fcc_slab(
+    alat: float,
+    atoms,
+    miller: Union[int, str, Tuple[int, int, int]],
+    layers=None,
+    vacuum: Union[float, Sequence[float]] = 20.0,
+    *,
+    orthogonal: bool = False,
+    start=None,
+    end=None,
+):
+    r"""Surface slab forming a face-centered cubic (FCC) crystal
 
     The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.
@@ -394,20 +421,26 @@ def fcc_slab(alat: float,
     bcc_slab : Slab in BCC structure
     rocksalt_slab : Slab in rocksalt/halite structure
     """
-    geom = _slab_with_vacuum(fcc_slab, alat, atoms, miller,
-                             vacuum=vacuum, orthogonal=orthogonal,
-                             layers=layers,
-                             start=start, end=end)
+    geom = _slab_with_vacuum(
+        fcc_slab,
+        alat,
+        atoms,
+        miller,
+        vacuum=vacuum,
+        orthogonal=orthogonal,
+        layers=layers,
+        start=start,
+        end=end,
+    )
     if geom is not None:
         return geom
 
     miller = _convert_miller(miller)
 
     if miller == (1, 0, 0):
-
         info = _calc_info(start, end, layers, 2)
 
-        lattice = Lattice(np.array([0.5 ** 0.5, 0.5 ** 0.5, 0.5]) * alat)
+        lattice = Lattice(np.array([0.5**0.5, 0.5**0.5, 0.5]) * alat)
         g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
         g = g.tile(info.nlayers, 2)
 
@@ -416,10 +449,9 @@ def fcc_slab(alat: float,
         g.xyz[B::2] += (lattice.cell[0] + lattice.cell[1]) / 2
 
     elif miller == (1, 1, 0):
-
         info = _calc_info(start, end, layers, 2)
 
-        lattice = Lattice(np.array([1., 0.5, 0.125]) ** 0.5 * alat)
+        lattice = Lattice(np.array([1.0, 0.5, 0.125]) ** 0.5 * alat)
         g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
         g = g.tile(info.nlayers, 2)
 
@@ -428,14 +460,15 @@ def fcc_slab(alat: float,
         g.xyz[B::2] += (lattice.cell[0] + lattice.cell[1]) / 2
 
     elif miller == (1, 1, 1):
-
         info = _calc_info(start, end, layers, 3)
 
         if orthogonal:
             lattice = Lattice(np.array([0.5, 4 * 0.375, 1 / 3]) ** 0.5 * alat)
-            g = Geometry(np.array([[0, 0, 0],
-                                   [0.125, 0.375, 0]]) ** 0.5 * alat,
-                         atoms=atoms, lattice=lattice)
+            g = Geometry(
+                np.array([[0, 0, 0], [0.125, 0.375, 0]]) ** 0.5 * alat,
+                atoms=atoms,
+                lattice=lattice,
+            )
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
@@ -443,14 +476,14 @@ def fcc_slab(alat: float,
             C = 2 * (info.offset + 2) % 6
             vec = (3 * lattice.cell[0] + lattice.cell[1]) / 6
             g.xyz[B::6] += vec
-            g.xyz[B+1::6] += vec
+            g.xyz[B + 1 :: 6] += vec
             g.xyz[C::6] += 2 * vec
-            g.xyz[C+1::6] += 2 * vec
+            g.xyz[C + 1 :: 6] += 2 * vec
 
         else:
-            lattice = Lattice(np.array([[0.5, 0, 0],
-                                     [0.125, 0.375, 0],
-                                     [0, 0, 1 / 3]]) ** 0.5 * alat)
+            lattice = Lattice(
+                np.array([[0.5, 0, 0], [0.125, 0.375, 0], [0, 0, 1 / 3]]) ** 0.5 * alat
+            )
             g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
@@ -469,16 +502,18 @@ def fcc_slab(alat: float,
 
 
 @set_module("sisl.geom")
-def bcc_slab(alat: float,
-             atoms,
-             miller: Union[int, str, Tuple[int, int, int]],
-             layers=None,
-             vacuum: Union[float, Sequence[float]]=20.,
-             *,
-             orthogonal: bool=False,
-             start=None,
-             end=None):
-    r""" Construction of a surface slab from a body-centered cubic (BCC) crystal
+def bcc_slab(
+    alat: float,
+    atoms,
+    miller: Union[int, str, Tuple[int, int, int]],
+    layers=None,
+    vacuum: Union[float, Sequence[float]] = 20.0,
+    *,
+    orthogonal: bool = False,
+    start=None,
+    end=None,
+):
+    r"""Construction of a surface slab from a body-centered cubic (BCC) crystal
 
     The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.
@@ -533,17 +568,23 @@ def bcc_slab(alat: float,
     fcc_slab : Slab in FCC structure
     rocksalt_slab : Slab in rocksalt/halite structure
     """
-    geom = _slab_with_vacuum(bcc_slab, alat, atoms, miller,
-                             vacuum=vacuum, orthogonal=orthogonal,
-                             layers=layers,
-                             start=start, end=end)
+    geom = _slab_with_vacuum(
+        bcc_slab,
+        alat,
+        atoms,
+        miller,
+        vacuum=vacuum,
+        orthogonal=orthogonal,
+        layers=layers,
+        start=start,
+        end=end,
+    )
     if geom is not None:
         return geom
 
     miller = _convert_miller(miller)
 
     if miller == (1, 0, 0):
-
         info = _calc_info(start, end, layers, 2)
 
         lattice = Lattice(np.array([1, 1, 0.5]) * alat)
@@ -555,26 +596,27 @@ def bcc_slab(alat: float,
         g.xyz[B::2] += (lattice.cell[0] + lattice.cell[1]) / 2
 
     elif miller == (1, 1, 0):
-
         info = _calc_info(start, end, layers, 2)
 
         if orthogonal:
             lattice = Lattice(np.array([1, 2, 0.5]) ** 0.5 * alat)
-            g = Geometry(np.array([[0, 0, 0],
-                                   [0.5, 0.5 ** 0.5, 0]]) * alat,
-                         atoms=atoms, lattice=lattice)
+            g = Geometry(
+                np.array([[0, 0, 0], [0.5, 0.5**0.5, 0]]) * alat,
+                atoms=atoms,
+                lattice=lattice,
+            )
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
             B = 2 * (info.offset + 1) % 4
             vec = lattice.cell[1] / 2
             g.xyz[B::4] += vec
-            g.xyz[B+1::4] += vec
+            g.xyz[B + 1 :: 4] += vec
 
         else:
-            lattice = Lattice(np.array([[1, 0, 0],
-                                     [0.5, 0.5 ** 0.5, 0],
-                                     [0, 0, 0.5 ** 0.5]]) * alat)
+            lattice = Lattice(
+                np.array([[1, 0, 0], [0.5, 0.5**0.5, 0], [0, 0, 0.5**0.5]]) * alat
+            )
             g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
@@ -583,14 +625,15 @@ def bcc_slab(alat: float,
             g.xyz[B::2] += lattice.cell[0] / 2
 
     elif miller == (1, 1, 1):
-
         info = _calc_info(start, end, layers, 3)
 
         if orthogonal:
             lattice = Lattice(np.array([2, 4 * 1.5, 1 / 12]) ** 0.5 * alat)
-            g = Geometry(np.array([[0, 0, 0],
-                                   [0.5, 1.5, 0]]) ** 0.5 * alat,
-                         atoms=atoms, lattice=lattice)
+            g = Geometry(
+                np.array([[0, 0, 0], [0.5, 1.5, 0]]) ** 0.5 * alat,
+                atoms=atoms,
+                lattice=lattice,
+            )
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
@@ -598,13 +641,13 @@ def bcc_slab(alat: float,
             C = 2 * (info.offset + 2) % 6
             vec = (lattice.cell[0] + lattice.cell[1]) / 3
             for i in range(2):
-                g.xyz[B+i::6] += vec
-                g.xyz[C+i::6] += 2 * vec
+                g.xyz[B + i :: 6] += vec
+                g.xyz[C + i :: 6] += 2 * vec
 
         else:
-            lattice = Lattice(np.array([[2, 0, 0],
-                                     [0.5, 1.5, 0],
-                                     [0, 0, 1 / 12]]) ** 0.5 * alat)
+            lattice = Lattice(
+                np.array([[2, 0, 0], [0.5, 1.5, 0], [0, 0, 1 / 12]]) ** 0.5 * alat
+            )
             g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
@@ -623,16 +666,18 @@ def bcc_slab(alat: float,
 
 
 @set_module("sisl.geom")
-def rocksalt_slab(alat: float,
-                  atoms,
-                  miller: Union[int, str, Tuple[int, int, int]],
-                  layers=None,
-                  vacuum: Union[float, Sequence[float]]=20.,
-                  *,
-                  orthogonal: bool=False,
-                  start=None,
-                  end=None):
-    r""" Surface slab forming a rock-salt crystal (halite)
+def rocksalt_slab(
+    alat: float,
+    atoms,
+    miller: Union[int, str, Tuple[int, int, int]],
+    layers=None,
+    vacuum: Union[float, Sequence[float]] = 20.0,
+    *,
+    orthogonal: bool = False,
+    start=None,
+    end=None,
+):
+    r"""Surface slab forming a rock-salt crystal (halite)
 
     This structure is formed by two interlocked fcc crystals for each of the two elements.
 
@@ -705,10 +750,17 @@ def rocksalt_slab(alat: float,
     fcc_slab : Slab in FCC structure (this slab is a combination of fcc slab structures)
     bcc_slab : Slab in BCC structure
     """
-    geom = _slab_with_vacuum(rocksalt_slab, alat, atoms, miller,
-                             vacuum=vacuum, orthogonal=orthogonal,
-                             layers=layers,
-                             start=start, end=end)
+    geom = _slab_with_vacuum(
+        rocksalt_slab,
+        alat,
+        atoms,
+        miller,
+        vacuum=vacuum,
+        orthogonal=orthogonal,
+        layers=layers,
+        start=start,
+        end=end,
+    )
     if geom is not None:
         return geom
 
@@ -719,8 +771,26 @@ def rocksalt_slab(alat: float,
 
     miller = _convert_miller(miller)
 
-    g1 = fcc_slab(alat, atoms[0], miller, layers=layers, vacuum=None, orthogonal=orthogonal, start=start, end=end)
-    g2 = fcc_slab(alat, atoms[1], miller, layers=layers, vacuum=None, orthogonal=orthogonal, start=start, end=end)
+    g1 = fcc_slab(
+        alat,
+        atoms[0],
+        miller,
+        layers=layers,
+        vacuum=None,
+        orthogonal=orthogonal,
+        start=start,
+        end=end,
+    )
+    g2 = fcc_slab(
+        alat,
+        atoms[1],
+        miller,
+        layers=layers,
+        vacuum=None,
+        orthogonal=orthogonal,
+        start=start,
+        end=end,
+    )
 
     if miller == (1, 0, 0):
         g2 = g2.move(np.array([0.5, 0.5, 0]) ** 0.5 * alat / 2)

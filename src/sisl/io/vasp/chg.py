@@ -18,14 +18,14 @@ __all__ = ["chgSileVASP"]
 
 @set_module("sisl.io.vasp")
 class chgSileVASP(carSileVASP):
-    """ Charge density plus geometry
+    """Charge density plus geometry
 
     This file-object handles the charge-density from VASP
     """
 
     @sile_fh_open(True)
     def read_grid(self, index=0, dtype=np.float64, **kwargs):
-        """ Reads the charge density from the file and returns with a grid (plus geometry)
+        """Reads the charge density from the file and returns with a grid (plus geometry)
 
         Parameters
         ----------
@@ -83,9 +83,9 @@ class chgSileVASP(carSileVASP):
         # Cut size before proceeding (otherwise it *may* fail)
         vals = np.array(vals).astype(dtype, copy=False)
         if is_index:
-            val = vals[n * index:n * (index+1)].reshape(nz, ny, nx)
+            val = vals[n * index : n * (index + 1)].reshape(nz, ny, nx)
         else:
-            vals = vals[:n * max_index].reshape(-1, nz, ny, nx)
+            vals = vals[: n * max_index].reshape(-1, nz, ny, nx)
             val = grid_reduce_indices(vals, index, axis=0)
         del vals
 

@@ -13,25 +13,25 @@ from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from ..sile import add_sile, sile_fh_open
 from .sile import SileCDFSiesta, SileSiesta
 
-__all__ = ['ionxmlSileSiesta', 'ionncSileSiesta']
+__all__ = ["ionxmlSileSiesta", "ionncSileSiesta"]
 
 
 @set_module("sisl.io.siesta")
 class ionxmlSileSiesta(SileSiesta):
-    """ Basis set information in xml format
+    """Basis set information in xml format
 
     Note that the ``ion`` files are equivalent to the ``ion.xml`` files.
     """
 
     @sile_fh_open(True)
     def read_basis(self):
-        """ Returns data associated with the ion.xml file """
+        """Returns data associated with the ion.xml file"""
         # Get the element-tree
         root = xml_parse(self.fh).getroot()
 
         # Get number of orbitals
         label = root.find("label").text.strip()
-        Z = int(root.find("z").text) # atomic number, negative for floating
+        Z = int(root.find("z").text)  # atomic number, negative for floating
         mass = float(root.find("mass").text)
 
         # Read in the PAO"s
@@ -43,10 +43,9 @@ class ionxmlSileSiesta(SileSiesta):
         # All orbital data
         Bohr2Ang = unit_convert("Bohr", "Ang")
         for orb in paos:
-
             n = int(orb.get("n"))
             l = int(orb.get("l"))
-            z = int(orb.get("z")) # zeta
+            z = int(orb.get("z"))  # zeta
 
             q0 = float(orb.get("population"))
 
@@ -72,7 +71,7 @@ class ionxmlSileSiesta(SileSiesta):
             # The fact that we have to have it normalized means that we need
             # to convert psi /sqrt(Bohr**3) -> /sqrt(Ang**3)
             # \int psi^\dagger psi == 1
-            psi = dat[1::2] * r ** l / Bohr2Ang ** (3./2.)
+            psi = dat[1::2] * r**l / Bohr2Ang ** (3.0 / 2.0)
 
             # Create the sphericalorbital and then the atomicorbital
             sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), q0)
@@ -86,13 +85,13 @@ class ionxmlSileSiesta(SileSiesta):
 
 @set_module("sisl.io.siesta")
 class ionncSileSiesta(SileCDFSiesta):
-    """ Basis set information in NetCDF files
+    """Basis set information in NetCDF files
 
     Note that the ``ion.nc`` files are equivalent to the ``ion.xml`` files.
     """
 
     def read_basis(self):
-        """ Returns data associated with the ion.xml file """
+        """Returns data associated with the ion.xml file"""
         no = len(self._dimension("norbs"))
 
         # Get number of orbitals
@@ -101,12 +100,12 @@ class ionncSileSiesta(SileCDFSiesta):
         mass = float(self.Mass)
 
         # Retrieve values
-        orb_l = self._variable("orbnl_l")[:] # angular quantum number
-        orb_n = self._variable("orbnl_n")[:] # principal quantum number
-        orb_z = self._variable("orbnl_z")[:] # zeta
-        orb_P = self._variable("orbnl_ispol")[:] > 0 # polarization shell, or not
-        orb_q0 = self._variable("orbnl_pop")[:] # q0 for the orbitals
-        orb_delta = self._variable("delta")[:] # delta for the functions
+        orb_l = self._variable("orbnl_l")[:]  # angular quantum number
+        orb_n = self._variable("orbnl_n")[:]  # principal quantum number
+        orb_z = self._variable("orbnl_z")[:]  # zeta
+        orb_P = self._variable("orbnl_ispol")[:] > 0  # polarization shell, or not
+        orb_q0 = self._variable("orbnl_pop")[:]  # q0 for the orbitals
+        orb_delta = self._variable("delta")[:]  # delta for the functions
         orb_psi = self._variable("orb")[:, :]
 
         # Now loop over all orbitals
@@ -115,7 +114,6 @@ class ionncSileSiesta(SileCDFSiesta):
         # All orbital data
         Bohr2Ang = unit_convert("Bohr", "Ang")
         for io in range(no):
-
             n = orb_n[io]
             l = orb_l[io]
             z = orb_z[io]
@@ -134,7 +132,7 @@ class ionncSileSiesta(SileCDFSiesta):
             # The fact that we have to have it normalized means that we need
             # to convert psi /sqrt(Bohr**3) -> /sqrt(Ang**3)
             # \int psi^\dagger psi == 1
-            psi = orb_psi[io, :] * r ** l / Bohr2Ang ** (3./2.)
+            psi = orb_psi[io, :] * r**l / Bohr2Ang ** (3.0 / 2.0)
 
             # Create the sphericalorbital and then the atomicorbital
             sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), orb_q0[io])
@@ -147,8 +145,8 @@ class ionncSileSiesta(SileCDFSiesta):
 
     @default_ArgumentParser(description="Extracting basis-set information.")
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
-        #limit_args = kwargs.get("limit_arguments", True)
+        """Returns the arguments that is available for this Sile"""
+        # limit_args = kwargs.get("limit_arguments", True)
         short = kwargs.get("short", False)
 
         def opts(*args):
@@ -177,7 +175,7 @@ class ionncSileSiesta(SileCDFSiesta):
         # this gets converted later
         delta = self._variable("delta")[:]
         r = aranged(ion_nc.orbital.shape[1]).reshape(1, -1) * delta.reshape(-1, 1)
-        ion_nc.orbital *= r ** ion_nc.l.reshape(-1, 1) / Bohr2Ang * (3./2.)
+        ion_nc.orbital *= r ** ion_nc.l.reshape(-1, 1) / Bohr2Ang * (3.0 / 2.0)
         ion_nc.r = r * Bohr2Ang
         ion_nc.kb = PropertyDict()
         ion_nc.kb.n = self._variable("pjnl_n")[:]
@@ -186,26 +184,26 @@ class ionncSileSiesta(SileCDFSiesta):
         ion_nc.kb.proj = self._variable("proj")[:]
         delta = self._variable("kbdelta")[:]
         r = aranged(ion_nc.kb.proj.shape[1]).reshape(1, -1) * delta.reshape(-1, 1)
-        ion_nc.kb.proj *= r ** ion_nc.kb.l.reshape(-1, 1) / Bohr2Ang * (3./2.)
+        ion_nc.kb.proj *= r ** ion_nc.kb.l.reshape(-1, 1) / Bohr2Ang * (3.0 / 2.0)
         ion_nc.kb.r = r * Bohr2Ang
 
         vna = self._variable("vna")
         r = aranged(vna[:].size) * vna.Vna_delta
         ion_nc.vna = PropertyDict()
-        ion_nc.vna.v = vna[:] * Ry2eV * r / Bohr2Ang ** 3
+        ion_nc.vna.v = vna[:] * Ry2eV * r / Bohr2Ang**3
         ion_nc.vna.r = r * Bohr2Ang
 
         # this is charge (not 1/sqrt(charge))
         chlocal = self._variable("chlocal")
         r = aranged(chlocal[:].size) * chlocal.Chlocal_delta
         ion_nc.chlocal = PropertyDict()
-        ion_nc.chlocal.v = chlocal[:] * r / Bohr2Ang ** 3
+        ion_nc.chlocal.v = chlocal[:] * r / Bohr2Ang**3
         ion_nc.chlocal.r = r * Bohr2Ang
 
         vlocal = self._variable("reduced_vlocal")
         r = aranged(vlocal[:].size) * vlocal.Reduced_vlocal_delta
         ion_nc.vlocal = PropertyDict()
-        ion_nc.vlocal.v = vlocal[:] * r / Bohr2Ang ** 3
+        ion_nc.vlocal.v = vlocal[:] * r / Bohr2Ang**3
         ion_nc.vlocal.r = r * Bohr2Ang
 
         if "core" in self.variables:
@@ -213,7 +211,7 @@ class ionncSileSiesta(SileCDFSiesta):
             core = self._variable("core")
             r = aranged(core[:].size) * core.Core_delta
             ion_nc.core = PropertyDict()
-            ion_nc.core.v = core[:] * r / Bohr2Ang ** 3
+            ion_nc.core.v = core[:] * r / Bohr2Ang**3
             ion_nc.core.r = r * Bohr2Ang
 
         d = {
@@ -226,31 +224,34 @@ class ionncSileSiesta(SileCDFSiesta):
 
         # l-quantum number
         class lRange(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
-                value = (value
-                         .replace("s", 0)
-                         .replace("p", 1)
-                         .replace("d", 2)
-                         .replace("f", 3)
-                         .replace("g", 4)
+                value = (
+                    value.replace("s", 0)
+                    .replace("p", 1)
+                    .replace("d", 2)
+                    .replace("f", 3)
+                    .replace("g", 4)
                 )
                 ns._l = strmap(int, value)[0]
-        p.add_argument("-l",
-                       action=lRange,
-                       help="Denote the sub-section of l-shells that are plotted: 's,f'")
+
+        p.add_argument(
+            "-l",
+            action=lRange,
+            help="Denote the sub-section of l-shells that are plotted: 's,f'",
+        )
 
         # n quantum number
         class nRange(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 ns._n = strmap(int, value)[0]
-        p.add_argument("-n",
-                       action=nRange,
-                       help="Denote the sub-section of n quantum numbers that are plotted: '2-4,6'")
+
+        p.add_argument(
+            "-n",
+            action=nRange,
+            help="Denote the sub-section of n quantum numbers that are plotted: '2-4,6'",
+        )
 
         class Plot(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
 
@@ -273,8 +274,9 @@ class ionncSileSiesta(SileCDFSiesta):
                 fig, axs = plt.subplots(2, 2)
 
                 # Now plot different orbitals
-                for n, l, zeta, pol, r, orb in zip(data.n, data.l, data.zeta,
-                                                   data.pol, data.r, data.orbital):
+                for n, l, zeta, pol, r, orb in zip(
+                    data.n, data.l, data.zeta, data.pol, data.r, data.orbital
+                ):
                     if pol == 1:
                         pol = "P"
                     else:
@@ -287,7 +289,8 @@ class ionncSileSiesta(SileCDFSiesta):
 
                 # plot projectors
                 for n, l, e, r, proj in zip(
-                        data.kb.n, data.kb.l, data.kb.e, data.kb.r, data.kb.proj):
+                    data.kb.n, data.kb.l, data.kb.e, data.kb.r, data.kb.proj
+                ):
                     axs[0][1].plot(r, proj, label=f"n{n}l{l} e={e:.5f}")
                 axs[0][1].set_title("KB projectors")
                 axs[0][1].set_xlabel("Distance [Ang]")
@@ -313,8 +316,14 @@ class ionncSileSiesta(SileCDFSiesta):
                     plt.show()
                 else:
                     plt.savefig(value)
-        p.add_argument(*opts("--plot", "-p"), action=Plot, nargs="?", metavar="FILE",
-                       help="Plot the content basis set file, possibly saving plot to a file.")
+
+        p.add_argument(
+            *opts("--plot", "-p"),
+            action=Plot,
+            nargs="?",
+            metavar="FILE",
+            help="Plot the content basis set file, possibly saving plot to a file.",
+        )
 
         return p, namespace
 

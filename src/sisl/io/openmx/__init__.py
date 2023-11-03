@@ -8,6 +8,6 @@ OpenMX
    omxSileOpenMX - input file
    mdSileOpenMX
 """
-from .sile import * # isort: split
+from .sile import *  # isort: split
 from .md import *
 from .omx import *

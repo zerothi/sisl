@@ -13,7 +13,13 @@ from sisl.utils import direction
 from ._metric import Metric
 from ._path import path_rel_or_abs
 
-__all__ = ["SiestaMetric", "EnergyMetric", "EigenvalueMetric", "ForceMetric", "StressMetric"]
+__all__ = [
+    "SiestaMetric",
+    "EnergyMetric",
+    "EigenvalueMetric",
+    "ForceMetric",
+    "StressMetric",
+]
 
 
 _log = logging.getLogger("sisl_toolbox.siesta.minimize")
@@ -39,44 +45,50 @@ def _siesta_out_accept(out):
 
 
 class SiestaMetric(Metric):
-    """ Generic Siesta metric
+    """Generic Siesta metric
 
     Since in some cases siesta may crash we need to have *failure* metrics
     that returns if siesta fails to run.
     """
 
-    def __init__(self, failure=0.):
+    def __init__(self, failure=0.0):
         if isinstance(failure, Number):
+
             def func(metric, fail):
                 if fail:
                     return failure
                 return metric
+
             self.failure = func
         elif callable(failure):
             self.failure = failure
         else:
-            raise ValueError(f"{self.__class__.__name__} could not initialize failure, not number or callable")
+            raise ValueError(
+                f"{self.__class__.__name__} could not initialize failure, not number or callable"
+            )
 
 
 class EigenvalueMetric(SiestaMetric):
-    """ Compare eigenvalues between two calculations and return the difference as the metric """
+    """Compare eigenvalues between two calculations and return the difference as the metric"""
 
-    def __init__(self, eig_file, eig_ref, dist=None, align_valence=False, failure=0.):
-        """ Store the reference eigenvalues along the distribution (if any) """
+    def __init__(self, eig_file, eig_ref, dist=None, align_valence=False, failure=0.0):
+        """Store the reference eigenvalues along the distribution (if any)"""
         super().__init__(failure)
         self.eig_file = path_rel_or_abs(eig_file)
         # we copy to ensure users don't change these
         self.eig_ref = eig_ref.copy()
         if dist is None:
-            self.dist = 1.
+            self.dist = 1.0
         elif callable(dist):
             self.dist = dist(eig_ref)
         else:
             try:
                 eig_ref * dist
             except Exception:
-                raise ValueError(f"{self.__class__.__name__} was passed `dist` which was not "
-                                 "broadcastable to `eig_ref`. Please ensure compatibility.")
+                raise ValueError(
+                    f"{self.__class__.__name__} was passed `dist` which was not "
+                    "broadcastable to `eig_ref`. Please ensure compatibility."
+                )
             self.dist = dist.copy()
 
         # whether we should align the valence band edges
@@ -84,27 +96,29 @@ class EigenvalueMetric(SiestaMetric):
         self.align_valence = align_valence
 
     def metric(self, variables):
-        """ Compare eigenvalues with a reference eigenvalue set, scaled by dist """
+        """Compare eigenvalues with a reference eigenvalue set, scaled by dist"""
         try:
             eig = io_siesta.eigSileSiesta(self.eig_file).read_data()
-            eig = eig[:, :, :self.eig_ref.shape[2]]
+            eig = eig[:, :, : self.eig_ref.shape[2]]
 
             if self.align_valence:
                 # align data at the valence band (
-                eig -= eig[eig < 0.].max()
+                eig -= eig[eig < 0.0].max()
 
             # Calculate the metric, also average around k-points
-            metric = (((eig - self.eig_ref) * self.dist) ** 2).sum() ** 0.5 / eig.shape[1]
+            metric = (((eig - self.eig_ref) * self.dist) ** 2).sum() ** 0.5 / eig.shape[
+                1
+            ]
             metric = self.failure(metric, False)
             _log.debug(f"metric.eigenvalue [{self.eig_file}] success {metric}")
         except Exception:
-            metric = self.failure(0., True)
+            metric = self.failure(0.0, True)
             _log.warning(f"metric.eigenvalue [{self.eig_file}] fail {metric}")
         return metric
 
 
 class EnergyMetric(SiestaMetric):
-    """ Metric is the energy (default total), read from the output file
+    """Metric is the energy (default total), read from the output file
 
     Alternatively the metric could be any operation of the energies that is returned.
 
@@ -121,35 +135,40 @@ class EnergyMetric(SiestaMetric):
        in case the output does not contain anything runner fails, then we should return a "fake" metric.
     """
 
-    def __init__(self, out, energy='total', failure=0.):
+    def __init__(self, out, energy="total", failure=0.0):
         super().__init__(failure)
         self.out = path_rel_or_abs(out)
         if isinstance(energy, str):
             energy_str = energy.split(".")
+
             def energy(energy_dict):
-                f""" {'.'.join(energy_str)} metric """
+                """energy metric"""
                 for sub in energy_str[:-1]:
                     energy_dict = energy_dict[sub]
                 return energy_dict[energy_str[-1]]
 
+            # TODO fix documentation to     f""" {'.'.join(energy_str)} metric """
+
         if not callable(energy):
-            raise ValueError(f"{self.__class__.__name__} requires energy to be callable or str")
+            raise ValueError(
+                f"{self.__class__.__name__} requires energy to be callable or str"
+            )
         self.energy = energy
 
     def metric(self, variables):
-        """ Read the energy from the out file in `path` """
+        """Read the energy from the out file in `path`"""
         out = io_siesta.outSileSiesta(self.out)
         if _siesta_out_accept(out):
             metric = self.failure(self.energy(out.read_energy()), False)
             _log.debug(f"metric.energy [{self.out}] success {metric}")
         else:
-            metric = self.failure(0., True)
+            metric = self.failure(0.0, True)
             _log.warning(f"metric.energy [{self.out}] fail {metric}")
         return metric
 
 
 class ForceMetric(SiestaMetric):
-    """ Metric is the force (default maximum), read from the FA file
+    """Metric is the force (default maximum), read from the FA file
 
     Alternatively the metric could be any operation on the forces.
 
@@ -166,38 +185,43 @@ class ForceMetric(SiestaMetric):
        in case the output does not contain anything runner fails, then we should return a "fake" metric.
     """
 
-    def __init__(self, file, force='abs.max', failure=0.):
+    def __init__(self, file, force="abs.max", failure=0.0):
         super().__init__(failure)
         self.file = path_rel_or_abs(file)
         if isinstance(force, str):
             force_op = force.split(".")
+
             def force(forces):
-                f""" {force_op} metric """
+                """force metric"""
                 out = forces
                 for op in force_op:
                     if op == "l2":
-                        out = (out ** 2).sum(-1) ** 0.5
+                        out = (out**2).sum(-1) ** 0.5
                     else:
                         out = getattr(np, op)(out)
                 return out
+
+            # TODO fix documentation f""" {force_op} metric """
         if not callable(force):
-            raise ValueError(f"{self.__class__.__name__} requires force to be callable or str")
+            raise ValueError(
+                f"{self.__class__.__name__} requires force to be callable or str"
+            )
         self.force = force
 
     def metric(self, variables):
-        """ Read the force from the `self.file` in `path` """
+        """Read the force from the `self.file` in `path`"""
         try:
             force = self.force(get_sile(self.file).read_force())
             metric = self.failure(force, False)
             _log.debug(f"metric.force [{self.file}] success {metric}")
         except Exception:
-            metric = self.failure(0., True)
+            metric = self.failure(0.0, True)
             _log.debug(f"metric.force [{self.file}] fail {metric}")
         return metric
 
 
 class StressMetric(SiestaMetric):
-    """ Metric is the stress tensor, read from the output file
+    """Metric is the stress tensor, read from the output file
 
     Parameters
     ----------
@@ -210,26 +234,31 @@ class StressMetric(SiestaMetric):
        in case the output does not contain anything runner fails, then we should return a "fake" metric.
     """
 
-    def __init__(self, out, stress='ABC', failure=2.):
+    def __init__(self, out, stress="ABC", failure=2.0):
         super().__init__(failure)
         self.out = path_rel_or_abs(out)
         if isinstance(stress, str):
             stress_directions = list(map(direction, stress))
+
             def stress(stress_matrix):
-                f""" {stress_directions} metric """
+                """stress metric"""
                 return stress_matrix[stress_directions, stress_directions].sum()
+
+            # TODO fix documentation f""" {stress_directions} metric """
         if not callable(stress):
-            raise ValueError(f"{self.__class__.__name__} requires stress to be callable")
+            raise ValueError(
+                f"{self.__class__.__name__} requires stress to be callable"
+            )
         self.stress = stress
 
     def metric(self, variables):
-        """ Convert the stress-tensor to a single metric that should be minimized """
+        """Convert the stress-tensor to a single metric that should be minimized"""
         out = io_siesta.outSileSiesta(self.out)
         if _siesta_out_accept(out):
             stress = self.stress(out.read_stress())
             metric = self.failure(stress, False)
             _log.debug(f"metric.stress [{self.out}] success {metric}")
         else:
-            metric = self.failure(0., True)
+            metric = self.failure(0.0, True)
             _log.warning(f"metric.stress [{self.out}] fail {metric}")
         return metric

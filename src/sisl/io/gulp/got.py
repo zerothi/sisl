@@ -20,7 +20,7 @@ __all__ = ["gotSileGULP"]
 
 @set_module("sisl.io.gulp")
 class gotSileGULP(SileGULP):
-    """ GULP output file object
+    """GULP output file object
 
     Parameters
     ----------
@@ -33,34 +33,36 @@ class gotSileGULP(SileGULP):
     """
 
     def _setup(self, *args, **kwargs):
-        """ Setup `gotSileGULP` after initialization """
+        """Setup `gotSileGULP` after initialization"""
         super()._setup(*args, **kwargs)
         self._keys = dict()
-        self.set_lattice_key('Cartesian lattice vectors')
-        self.set_geometry_key('Final fractional coordinates')
-        self.set_dynamical_matrix_key('Real Dynamical matrix')
+        self.set_lattice_key("Cartesian lattice vectors")
+        self.set_geometry_key("Final fractional coordinates")
+        self.set_dynamical_matrix_key("Real Dynamical matrix")
 
     def set_key(self, segment, key):
-        """ Sets the segment lookup key """
+        """Sets the segment lookup key"""
         if key is not None:
             self._keys[segment] = key
 
     def set_lattice_key(self, key):
-        """ Overwrites internal key lookup value for the cell vectors """
-        self.set_key('lattice', key)
+        """Overwrites internal key lookup value for the cell vectors"""
+        self.set_key("lattice", key)
 
-    set_supercell_key = deprecation("set_supercell_key is deprecated in favor of set_lattice_key", "0.15")(set_lattice_key)
+    set_supercell_key = deprecation(
+        "set_supercell_key is deprecated in favor of set_lattice_key", "0.15"
+    )(set_lattice_key)
 
     @sile_fh_open()
     def read_lattice_nsc(self, key=None):
-        """ Reads the dimensions of the supercell """
+        """Reads the dimensions of the supercell"""
 
-        f, l = self.step_to('Supercell dimensions')
+        f, l = self.step_to("Supercell dimensions")
         if not f:
             return np.array([1, 1, 1], np.int32)
 
         # Read off the supercell dimensions
-        xyz = l.split('=')[1:]
+        xyz = l.split("=")[1:]
 
         # Now read off the quantities...
         nsc = [int(i.split()[0]) for i in xyz]
@@ -69,16 +71,17 @@ class gotSileGULP(SileGULP):
 
     @sile_fh_open()
     def read_lattice(self, key=None, **kwargs):
-        """ Reads a `Lattice` and creates the GULP cell """
+        """Reads a `Lattice` and creates the GULP cell"""
         self.set_lattice_key(key)
 
-        f, _ = self.step_to(self._keys['lattice'])
+        f, _ = self.step_to(self._keys["lattice"])
         if not f:
             raise ValueError(
-                'SileGULP tries to lookup the Lattice vectors '
-                 'using key "' + self._keys['lattice'] + '". \n'
-                 'Use ".set_lattice_key(...)" to search for different name.\n'
-                 'This could not be found found in file: "' + self.file + '".')
+                "SileGULP tries to lookup the Lattice vectors "
+                'using key "' + self._keys["lattice"] + '". \n'
+                'Use ".set_lattice_key(...)" to search for different name.\n'
+                'This could not be found found in file: "' + self.file + '".'
+            )
 
         # skip 1 line
         self.readline()
@@ -90,23 +93,27 @@ class gotSileGULP(SileGULP):
         return Lattice(cell)
 
     def set_geometry_key(self, key):
-        """ Overwrites internal key lookup value for the geometry vectors """
-        self.set_key('geometry', key)
+        """Overwrites internal key lookup value for the geometry vectors"""
+        self.set_key("geometry", key)
 
     @sile_fh_open()
     def read_geometry(self, **kwargs):
-        """ Reads a geometry and creates the GULP dynamical geometry """
+        """Reads a geometry and creates the GULP dynamical geometry"""
         # create default supercell
         lattice = Lattice([1, 1, 1])
 
         for _ in [0, 1]:
             # Step to either the geometry or
-            f, _, ki = self.step_to([self._keys['lattice'], self._keys['geometry']], ret_index=True)
+            f, _, ki = self.step_to(
+                [self._keys["lattice"], self._keys["geometry"]], ret_index=True
+            )
             if not f and ki == 0:
-                raise ValueError('SileGULP tries to lookup the Lattice vectors '
-                                 'using key "' + self._keys['lattice'] + '". \n'
-                                 'Use ".set_lattice_key(...)" to search for different name.\n'
-                                 'This could not be found found in file: "' + self.file + '".')
+                raise ValueError(
+                    "SileGULP tries to lookup the Lattice vectors "
+                    'using key "' + self._keys["lattice"] + '". \n'
+                    'Use ".set_lattice_key(...)" to search for different name.\n'
+                    'This could not be found found in file: "' + self.file + '".'
+                )
             elif f and ki == 0:
                 # supercell
                 self.readline()
@@ -119,13 +126,14 @@ class gotSileGULP(SileGULP):
                 lattice = Lattice(cell)
 
             elif not f and ki == 1:
-                raise ValueError('SileGULP tries to lookup the Geometry coordinates '
-                                 'using key "' + self._keys['geometry'] + '". \n'
-                                 'Use ".set_geom_key(...)" to search for different name.\n'
-                                 'This could not be found found in file: "' + self.file + '".')
+                raise ValueError(
+                    "SileGULP tries to lookup the Geometry coordinates "
+                    'using key "' + self._keys["geometry"] + '". \n'
+                    'Use ".set_geom_key(...)" to search for different name.\n'
+                    'This could not be found found in file: "' + self.file + '".'
+                )
             elif f and ki == 1:
-
-                orbs = [Orbital(-1, tag=tag) for tag in 'xyz']
+                orbs = [Orbital(-1, tag=tag) for tag in "xyz"]
 
                 # We skip 5 lines
                 for _ in [0] * 5:
@@ -135,7 +143,7 @@ class gotSileGULP(SileGULP):
                 xyz = []
                 while True:
                     l = self.readline()
-                    if l[0] == '-':
+                    if l[0] == "-":
                         break
 
                     ls = l.split()
@@ -147,17 +155,21 @@ class gotSileGULP(SileGULP):
                 xyz.shape = (-1, 3)
 
                 if len(Z) == 0 or len(xyz) == 0:
-                    raise ValueError('Could not read in cell information and/or coordinates')
+                    raise ValueError(
+                        "Could not read in cell information and/or coordinates"
+                    )
 
             elif not f:
                 # could not find either cell or geometry
-                raise ValueError('SileGULP tries to lookup the Lattice or Geometry.\n'
-                                 'None succeeded, ensure file has correct format.\n'
-                                 'This could not be found found in file: "{}".'.format(self.file))
+                raise ValueError(
+                    "SileGULP tries to lookup the Lattice or Geometry.\n"
+                    "None succeeded, ensure file has correct format.\n"
+                    'This could not be found found in file: "{}".'.format(self.file)
+                )
 
         # as the cell may be read in after the geometry we have
         # to wait until here to convert from fractional
-        if 'fractional' in self._keys['geometry'].lower():
+        if "fractional" in self._keys["geometry"].lower():
             # Correct for fractional coordinates
             xyz = np.dot(xyz, lattice.cell)
 
@@ -165,13 +177,13 @@ class gotSileGULP(SileGULP):
         return Geometry(xyz, Z, lattice=lattice)
 
     def set_dynamical_matrix_key(self, key):
-        """ Overwrites internal key lookup value for the dynamical matrix vectors """
-        self.set_key('dyn', key)
+        """Overwrites internal key lookup value for the dynamical matrix vectors"""
+        self.set_key("dyn", key)
 
     set_dyn_key = set_dynamical_matrix_key
 
     def read_dynamical_matrix(self, **kwargs):
-        """ Returns a GULP dynamical matrix model for the output of GULP
+        """Returns a GULP dynamical matrix model for the output of GULP
 
         Parameters
         ----------
@@ -188,13 +200,17 @@ class gotSileGULP(SileGULP):
         """
         geom = self.read_geometry(**kwargs)
 
-        order = kwargs.pop('order', ['got', 'FC'])
+        order = kwargs.pop("order", ["got", "FC"])
         for f in order:
-            v = getattr(self, '_r_dynamical_matrix_{}'.format(f.lower()))(geom, **kwargs)
+            v = getattr(self, "_r_dynamical_matrix_{}".format(f.lower()))(
+                geom, **kwargs
+            )
             if v is not None:
                 # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
-                scale = constant.hbar / units('Ang', 'm') / units('eV amu', 'J kg') ** 0.5
-                v.data *= scale ** 2
+                scale = (
+                    constant.hbar / units("Ang", "m") / units("eV amu", "J kg") ** 0.5
+                )
+                v.data *= scale**2
                 v = DynamicalMatrix.fromsp(geom, v)
                 if kwargs.get("hermitian", True):
                     v = (v + v.transpose()) * 0.5
@@ -204,23 +220,25 @@ class gotSileGULP(SileGULP):
 
     @sile_fh_open()
     def _r_dynamical_matrix_got(self, geometry, **kwargs):
-        """ In case the dynamical matrix is read from the file """
+        """In case the dynamical matrix is read from the file"""
         # Easier for creation of the sparsity pattern
         from scipy.sparse import lil_matrix
 
         # Default cutoff eV / Ang ** 2
-        cutoff = kwargs.get('cutoff', 0.)
-        dtype = kwargs.get('dtype', np.float64)
+        cutoff = kwargs.get("cutoff", 0.0)
+        dtype = kwargs.get("dtype", np.float64)
 
         nxyz = geometry.no
         dyn = lil_matrix((nxyz, nxyz), dtype=dtype)
 
-        f, _ = self.step_to(self._keys['dyn'])
+        f, _ = self.step_to(self._keys["dyn"])
         if not f:
-            info(f"{self.__class__.__name__}.read_dynamical_matrix tries to lookup the Dynamical matrix "
-                 "using key '{self._keys['dyn']}'. "
-                 "Use .set_dynamical_matrix_key(...) to search for different name."
-                 "This could not be found found in file: {self.file}")
+            info(
+                f"{self.__class__.__name__}.read_dynamical_matrix tries to lookup the Dynamical matrix "
+                "using key '{self._keys['dyn']}'. "
+                "Use .set_dynamical_matrix_key(...) to search for different name."
+                "This could not be found found in file: {self.file}"
+            )
             return None
 
         # skip 1 line
@@ -243,7 +261,7 @@ class gotSileGULP(SileGULP):
             # GULP only prints columns corresponding
             # to a full row. Hence the remaining
             # data must be nxyz - j - 1
-            dat[j:j + k] = ls[:k]
+            dat[j : j + k] = ls[:k]
             j += k
 
             if j >= nxyz:
@@ -262,7 +280,7 @@ class gotSileGULP(SileGULP):
         # Construct mass ** (-.5), so we can check cutoff correctly (in unit eV/Ang**2)
         mass_sqrt = geometry.atoms.mass.repeat(3) ** 0.5
         dyn.data[:] *= mass_sqrt[dyn.row] * mass_sqrt[dyn.col]
-        dyn.data[np.fabs(dyn.data) < cutoff] = 0.
+        dyn.data[np.fabs(dyn.data) < cutoff] = 0.0
         dyn.data[:] *= 1 / (mass_sqrt[dyn.row] * mass_sqrt[dyn.col])
         dyn.eliminate_zeros()
 
@@ -273,17 +291,21 @@ class gotSileGULP(SileGULP):
     def _r_dynamical_matrix_fc(self, geometry, **kwargs):
         # The output of the force constant in the file does not contain the mass-scaling
         # nor the unit conversion
-        f = self.dir_file('FORCE_CONSTANTS_2ND')
+        f = self.dir_file("FORCE_CONSTANTS_2ND")
         if not f.is_file():
             return None
 
-        fc = fcSileGULP(f, 'r').read_force_constant(**kwargs)
+        fc = fcSileGULP(f, "r").read_force_constant(**kwargs)
 
         if fc.shape[0] // 3 != geometry.na:
-            warn(f"{self.__class__.__name__}.read_dynamical_matrix(FC) inconsistent force constant file, na_file={fc.shape[0]//3}, na_geom={geometry.na}")
+            warn(
+                f"{self.__class__.__name__}.read_dynamical_matrix(FC) inconsistent force constant file, na_file={fc.shape[0]//3}, na_geom={geometry.na}"
+            )
             return None
         elif fc.shape[0] != geometry.no:
-            warn(f"{self.__class__.__name__}.read_dynamical_matrix(FC) inconsistent geometry, no_file={fc.shape[0]}, no_geom={geometry.no}")
+            warn(
+                f"{self.__class__.__name__}.read_dynamical_matrix(FC) inconsistent geometry, no_file={fc.shape[0]}, no_geom={geometry.no}"
+            )
             return None
 
         # Construct orbital mass ** (-.5)

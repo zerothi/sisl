@@ -8,13 +8,12 @@ from sisl._internal import set_module
 
 from ._common import geometry_define_nsc
 
-__all__ = ['diamond']
+__all__ = ["diamond"]
 
 
 @set_module("sisl.geom")
-def diamond(alat: float=3.57,
-            atoms=None):
-    """ Diamond lattice with 2 atoms in the unitcell
+def diamond(alat: float = 3.57, atoms=None):
+    """Diamond lattice with 2 atoms in the unitcell
 
     Parameters
     ----------
@@ -23,14 +22,15 @@ def diamond(alat: float=3.57,
     atoms : Atom, optional
         atom in the lattice, may be one or two atoms. Default is Carbon
     """
-    dist = alat * 3. ** .5 / 4
+    dist = alat * 3.0**0.5 / 4
     if atoms is None:
         atoms = Atom(Z=6, R=dist * 1.01)
-    lattice = Lattice(np.array([[0, 1, 1],
-                                [1, 0, 1],
-                                [1, 1, 0]], np.float64) * alat / 2)
-    dia = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
-                   atoms, lattice=lattice)
+    lattice = Lattice(
+        np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]], np.float64) * alat / 2
+    )
+    dia = Geometry(
+        np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4, atoms, lattice=lattice
+    )
 
     geometry_define_nsc(dia)
     return dia

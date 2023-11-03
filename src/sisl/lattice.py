@@ -46,21 +46,24 @@ class BoundaryCondition(IntEnum):
 
     @classmethod
     def getitem(cls, key):
-        """Search for a specific integer entry by value, and not by name """
+        """Search for a specific integer entry by value, and not by name"""
         if isinstance(key, cls):
             return key
         if isinstance(key, bool):
             if key:
                 return cls.PERIODIC
-            raise ValueError(f"{cls.__name__}.getitem does not allow False, which BC should this refer to?")
+            raise ValueError(
+                f"{cls.__name__}.getitem does not allow False, which BC should this refer to?"
+            )
         if isinstance(key, str):
             key = key.upper()
             if len(key) == 1:
-                key = {"U": "UNKNOWN",
-                       "P": "PERIODIC",
-                       "D": "DIRICHLET",
-                       "N": "NEUMANN",
-                       "O": "OPEN",
+                key = {
+                    "U": "UNKNOWN",
+                    "P": "PERIODIC",
+                    "D": "DIRICHLET",
+                    "N": "NEUMANN",
+                    "O": "OPEN",
                 }[key]
             for bc in cls:
                 if bc.name.startswith(key):
@@ -71,22 +74,21 @@ class BoundaryCondition(IntEnum):
                     return bc
         raise KeyError(f"{cls.__name__}.getitem could not find key={key}")
 
+
 BoundaryConditionType = Union[BoundaryCondition, int, str, bool]
-SeqBoundaryConditionType = Union[BoundaryConditionType,
-                                 Sequence[BoundaryConditionType]]
+SeqBoundaryConditionType = Union[BoundaryConditionType, Sequence[BoundaryConditionType]]
 
 
 @set_module("sisl")
-class Lattice(_Dispatchs,
-              dispatchs=[
-                  ("new", ClassDispatcher("new",
-                                          instance_dispatcher=TypeDispatcher)),
-                  ("to", ClassDispatcher("to",
-                                         type_dispatcher=None))
-                ],
-              when_subclassing="copy",
-              ):
-    r""" A cell class to retain lattice vectors and a supercell structure
+class Lattice(
+    _Dispatchs,
+    dispatchs=[
+        ("new", ClassDispatcher("new", instance_dispatcher=TypeDispatcher)),
+        ("to", ClassDispatcher("to", type_dispatcher=None)),
+    ],
+    when_subclassing="copy",
+):
+    r"""A cell class to retain lattice vectors and a supercell structure
 
     The supercell structure is comprising the *primary* unit-cell and neighbouring
     unit-cells. The number of supercells is given by the attribute `nsc` which
@@ -110,14 +112,18 @@ class Lattice(_Dispatchs,
     """
 
     # We limit the scope of this Lattice object.
-    __slots__ = ('cell', '_origin', 'nsc', 'n_s', '_sc_off', '_isc_off', '_bc')
+    __slots__ = ("cell", "_origin", "nsc", "n_s", "_sc_off", "_isc_off", "_bc")
 
     #: Internal reference to `BoundaryCondition` for simpler short-hands
     BC = BoundaryCondition
 
-    def __init__(self, cell, nsc=None, origin=None,
-                 boundary_condition: SeqBoundaryConditionType =BoundaryCondition.PERIODIC):
-
+    def __init__(
+        self,
+        cell,
+        nsc=None,
+        origin=None,
+        boundary_condition: SeqBoundaryConditionType = BoundaryCondition.PERIODIC,
+    ):
         if nsc is None:
             nsc = [1, 1, 1]
 
@@ -139,16 +145,16 @@ class Lattice(_Dispatchs,
 
     @property
     def length(self) -> ndarray:
-        """ Length of each lattice vector """
+        """Length of each lattice vector"""
         return fnorm(self.cell)
 
     @property
     def volume(self):
-        """ Volume of cell """
+        """Volume of cell"""
         return abs(dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :])))
 
     def area(self, ax0, ax1):
-        """ Calculate the area spanned by the two axis `ax0` and `ax1` """
+        """Calculate the area spanned by the two axis `ax0` and `ax1`"""
         return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
 
     @property
@@ -170,17 +176,20 @@ class Lattice(_Dispatchs,
 
     @property
     def origin(self) -> ndarray:
-        """ Origin for the cell """
+        """Origin for the cell"""
         return self._origin
 
     @origin.setter
     def origin(self, origin):
-        """ Set origin for the cell """
+        """Set origin for the cell"""
         self._origin[:] = origin
 
-    @deprecation("toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.", "0.15.0")
+    @deprecation(
+        "toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.",
+        "0.15.0",
+    )
     def toCuboid(self, *args, **kwargs):
-        """ A cuboid with vectors as this unit-cell and center with respect to its origin
+        """A cuboid with vectors as this unit-cell and center with respect to its origin
 
         Parameters
         ----------
@@ -189,12 +198,14 @@ class Lattice(_Dispatchs,
         """
         return self.to[Cuboid](*args, **kwargs)
 
-    def set_boundary_condition(self,
-                               boundary: Optional[SeqBoundaryConditionType] =None,
-                               a: Optional[SeqBoundaryConditionType] =None,
-                               b: Optional[SeqBoundaryConditionType] =None,
-                               c: Optional[SeqBoundaryConditionType] =None):
-        """ Set the boundary conditions on the grid
+    def set_boundary_condition(
+        self,
+        boundary: Optional[SeqBoundaryConditionType] = None,
+        a: Optional[SeqBoundaryConditionType] = None,
+        b: Optional[SeqBoundaryConditionType] = None,
+        c: Optional[SeqBoundaryConditionType] = None,
+    ):
+        """Set the boundary conditions on the grid
 
         Parameters
         ----------
@@ -213,6 +224,7 @@ class Lattice(_Dispatchs,
             if specifying periodic one one boundary, so must the opposite side.
         """
         getitem = BoundaryCondition.getitem
+
         def conv(v):
             if v is None:
                 return v
@@ -247,18 +259,25 @@ class Lattice(_Dispatchs,
                 self._bc[d, :] = v
 
         # shorthand for bc
-        for nsc, bc, changed in zip(self.nsc, self._bc == BoundaryCondition.PERIODIC, self._bc != old):
+        for nsc, bc, changed in zip(
+            self.nsc, self._bc == BoundaryCondition.PERIODIC, self._bc != old
+        ):
             if bc.any() and not bc.all():
-                raise ValueError(f"{self.__class__.__name__}.set_boundary_condition has a one non-periodic and "
-                                 "one periodic direction. If one direction is periodic, both instances "
-                                 "must have that BC.")
+                raise ValueError(
+                    f"{self.__class__.__name__}.set_boundary_condition has a one non-periodic and "
+                    "one periodic direction. If one direction is periodic, both instances "
+                    "must have that BC."
+                )
             if changed.any() and (~bc).all() and nsc > 1:
-                info(f"{self.__class__.__name__}.set_boundary_condition is having image connections (nsc={nsc}>1) "
-                     "while having a non-periodic boundary condition.")
+                info(
+                    f"{self.__class__.__name__}.set_boundary_condition is having image connections (nsc={nsc}>1) "
+                    "while having a non-periodic boundary condition."
+                )
 
-
-    def parameters(self, rad: bool=False) -> Tuple[float, float, float, float, float, float]:
-        r""" Cell parameters of this cell in 3 lengths and 3 angles
+    def parameters(
+        self, rad: bool = False
+    ) -> Tuple[float, float, float, float, float, float]:
+        r"""Cell parameters of this cell in 3 lengths and 3 angles
 
         Notes
         -----
@@ -287,7 +306,7 @@ class Lattice(_Dispatchs,
             angle between a and b vectors
         """
         if rad:
-            f = 1.
+            f = 1.0
         else:
             f = 180 / np.pi
 
@@ -296,6 +315,7 @@ class Lattice(_Dispatchs,
         abc = fnorm(cell)
 
         from math import acos
+
         cell = cell / abc.reshape(-1, 1)
         alpha = acos(dot3(cell[1, :], cell[2, :])) * f
         beta = acos(dot3(cell[0, :], cell[2, :])) * f
@@ -304,7 +324,7 @@ class Lattice(_Dispatchs,
         return abc[0], abc[1], abc[2], alpha, beta, gamma
 
     def _fill(self, non_filled, dtype=None):
-        """ Return a zero filled array of length 3 """
+        """Return a zero filled array of length 3"""
 
         if len(non_filled) == 3:
             return non_filled
@@ -335,11 +355,11 @@ class Lattice(_Dispatchs,
         return f
 
     def _fill_sc(self, supercell_index):
-        """ Return a filled supercell index by filling in zeros where needed """
+        """Return a filled supercell index by filling in zeros where needed"""
         return self._fill(supercell_index, dtype=np.int32)
 
     def set_nsc(self, nsc=None, a=None, b=None, c=None):
-        """ Sets the number of supercells in the 3 different cell directions
+        """Sets the number of supercells in the 3 different cell directions
 
         Parameters
         ----------
@@ -368,8 +388,9 @@ class Lattice(_Dispatchs,
                 self.nsc[i] = 1
         if np.sum(self.nsc % 2) != 3:
             raise ValueError(
-                "Supercells has to be of un-even size. The primary cell counts " +
-                "one, all others count 2")
+                "Supercells has to be of un-even size. The primary cell counts "
+                + "one, all others count 2"
+            )
 
         # We might use this very often, hence we store it
         self.n_s = _a.prodi(self.nsc)
@@ -381,7 +402,8 @@ class Lattice(_Dispatchs,
 
         def ret_range(val):
             i = val // 2
-            return range(-i, i+1)
+            return range(-i, i + 1)
+
         x = ret_range(n[0])
         y = ret_range(n[1])
         z = ret_range(n[2])
@@ -402,33 +424,33 @@ class Lattice(_Dispatchs,
         self._update_isc_off()
 
     def _update_isc_off(self):
-        """ Internal routine for updating the supercell indices """
+        """Internal routine for updating the supercell indices"""
         for i in range(self.n_s):
             d = self.sc_off[i, :]
             self._isc_off[d[0], d[1], d[2]] = i
 
     @property
     def sc_off(self) -> ndarray:
-        """ Integer supercell offsets """
+        """Integer supercell offsets"""
         return self._sc_off
 
     @sc_off.setter
     def sc_off(self, sc_off):
-        """ Set the supercell offset """
-        self._sc_off[:, :] = _a.arrayi(sc_off, order='C')
+        """Set the supercell offset"""
+        self._sc_off[:, :] = _a.arrayi(sc_off, order="C")
         self._update_isc_off()
 
     @property
     def isc_off(self) -> ndarray:
-        """ Internal indexed supercell ``[ia, ib, ic] == i`` """
+        """Internal indexed supercell ``[ia, ib, ic] == i``"""
         return self._isc_off
 
     def __iter__(self):
-        """ Iterate the supercells and the indices of the supercells """
+        """Iterate the supercells and the indices of the supercells"""
         yield from enumerate(self.sc_off)
 
     def copy(self, cell=None, origin=None):
-        """ A deepcopy of the object
+        """A deepcopy of the object
 
         Parameters
         ----------
@@ -456,7 +478,7 @@ class Lattice(_Dispatchs,
         return copy
 
     def fit(self, xyz, axis=None, tol=0.05):
-        """ Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
+        """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
 
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
         corresponding to the current supercell vectors.
@@ -499,8 +521,10 @@ class Lattice(_Dispatchs,
         dist = np.sqrt((dot(cell.T, (x - ix).T) ** 2).sum(0))
         idx = (dist <= tol).nonzero()[0]
         if len(idx) == 0:
-            raise ValueError('Could not fit the cell parameters to the coordinates '
-                              'due to insufficient accuracy (try increase the tolerance)')
+            raise ValueError(
+                "Could not fit the cell parameters to the coordinates "
+                "due to insufficient accuracy (try increase the tolerance)"
+            )
 
         # Reduce problem to allowed values below the tolerance
         ix = ix[idx, :]
@@ -525,10 +549,10 @@ class Lattice(_Dispatchs,
 
         return self.copy(cell)
 
-    def swapaxes(self, axes_a: Union[int, str],
-                 axes_b: Union[int, str],
-                 what: str="abc") -> Lattice:
-        r""" Swaps axes `axes_a` and `axes_b`
+    def swapaxes(
+        self, axes_a: Union[int, str], axes_b: Union[int, str], what: str = "abc"
+    ) -> Lattice:
+        r"""Swaps axes `axes_a` and `axes_b`
 
         Swapaxes is a versatile method for changing the order
         of axes elements, either lattice vector order, or Cartesian
@@ -586,10 +610,14 @@ class Lattice(_Dispatchs,
                 axes_a = "xyz"[axes_a]
                 axes_b = "xyz"[axes_b]
             else:
-                raise ValueError(f"{self.__class__.__name__}.swapaxes could not understand 'what' "
-                                 "must contain abc and/or xyz.")
+                raise ValueError(
+                    f"{self.__class__.__name__}.swapaxes could not understand 'what' "
+                    "must contain abc and/or xyz."
+                )
         elif (not isinstance(axes_a, str)) or (not isinstance(axes_b, str)):
-            raise ValueError(f"{self.__class__.__name__}.swapaxes axes arguments must be either all int or all str, not a mix.")
+            raise ValueError(
+                f"{self.__class__.__name__}.swapaxes axes arguments must be either all int or all str, not a mix."
+            )
 
         cell = self.cell
         nsc = self.nsc
@@ -597,7 +625,9 @@ class Lattice(_Dispatchs,
         bc = self.boundary_condition
 
         if len(axes_a) != len(axes_b):
-            raise ValueError(f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to have the same lengeth {len(axes_a)}, {len(axes_b)}.")
+            raise ValueError(
+                f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to have the same lengeth {len(axes_a)}, {len(axes_b)}."
+            )
 
         for a, b in zip(axes_a, axes_b):
             idx = [0, 1, 2]
@@ -606,7 +636,9 @@ class Lattice(_Dispatchs,
             bidx = "abcxyz".index(b)
 
             if aidx // 3 != bidx // 3:
-                raise ValueError(f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates.")
+                raise ValueError(
+                    f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates."
+                )
 
             if aidx < 3:
                 idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
@@ -625,13 +657,12 @@ class Lattice(_Dispatchs,
                 origin = origin[idx]
                 bc = bc[idx]
 
-        return self.__class__(cell.copy(),
-                              nsc=nsc.copy(),
-                              origin=origin.copy(),
-                              boundary_condition=bc)
+        return self.__class__(
+            cell.copy(), nsc=nsc.copy(), origin=origin.copy(), boundary_condition=bc
+        )
 
     def plane(self, ax1, ax2, origin=True):
-        """ Query point and plane-normal for the plane spanning `ax1` and `ax2`
+        """Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
         ----------
@@ -694,7 +725,7 @@ class Lattice(_Dispatchs,
 
         # If d is positive then the normal vector is pointing towards
         # the center, so rotate 180
-        if dot3(n, up / 2) > 0.:
+        if dot3(n, up / 2) > 0.0:
             n *= -1
 
         if origin:
@@ -703,7 +734,7 @@ class Lattice(_Dispatchs,
         return -n, up
 
     def __mul__(self, m):
-        """ Implement easy repeat function
+        """Implement easy repeat function
 
         Parameters
         ----------
@@ -727,7 +758,7 @@ class Lattice(_Dispatchs,
 
     @property
     def icell(self):
-        """ Returns the reciprocal (inverse) cell for the `Lattice`.
+        """Returns the reciprocal (inverse) cell for the `Lattice`.
 
         Note: The returned vectors are still in ``[0, :]`` format
         and not as returned by an inverse LAPACK algorithm.
@@ -736,7 +767,7 @@ class Lattice(_Dispatchs,
 
     @property
     def rcell(self):
-        """ Returns the reciprocal cell for the `Lattice` with ``2*np.pi``
+        """Returns the reciprocal cell for the `Lattice` with ``2*np.pi``
 
         Note: The returned vectors are still in [0, :] format
         and not as returned by an inverse LAPACK algorithm.
@@ -744,7 +775,7 @@ class Lattice(_Dispatchs,
         return cell_reciprocal(self.cell)
 
     def cell2length(self, length, axes=(0, 1, 2)) -> ndarray:
-        """ Calculate cell vectors such that they each have length `length`
+        """Calculate cell vectors such that they each have length `length`
 
         Parameters
         ----------
@@ -770,17 +801,20 @@ class Lattice(_Dispatchs,
             if len(length) == 1:
                 length = np.tile(length, len(axes))
             else:
-                raise ValueError(f"{self.__class__.__name__}.cell2length length parameter should be a single "
-                                 "float, or an array of values according to axes argument.")
+                raise ValueError(
+                    f"{self.__class__.__name__}.cell2length length parameter should be a single "
+                    "float, or an array of values according to axes argument."
+                )
         return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
-    @deprecate_argument("only", "what",
-                        "argument only has been deprecated in favor of what, please update your code.",
-                        "0.14.0")
-    def rotate(self, angle, v,
-               rad: bool=False,
-               what: str="abc") -> Lattice:
-        """ Rotates the supercell, in-place by the angle around the vector
+    @deprecate_argument(
+        "only",
+        "what",
+        "argument only has been deprecated in favor of what, please update your code.",
+        "0.14.0",
+    )
+    def rotate(self, angle, v, rad: bool = False, what: str = "abc") -> Lattice:
+        """Rotates the supercell, in-place by the angle around the vector
 
         One can control which cell vectors are rotated by designating them
         individually with ``only='[abc]'``.
@@ -800,7 +834,11 @@ class Lattice(_Dispatchs,
         if isinstance(v, Integral):
             v = direction(v, abc=self.cell, xyz=np.diag([1, 1, 1]))
         elif isinstance(v, str):
-            v = reduce(lambda a, b: a + direction(b, abc=self.cell, xyz=np.diag([1, 1, 1])), v, 0)
+            v = reduce(
+                lambda a, b: a + direction(b, abc=self.cell, xyz=np.diag([1, 1, 1])),
+                v,
+                0,
+            )
         # flatten => copy
         vn = _a.asarrayd(v).flatten()
         vn /= fnorm(vn)
@@ -808,7 +846,7 @@ class Lattice(_Dispatchs,
         q /= q.norm()  # normalize the quaternion
         cell = np.copy(self.cell)
         idx = []
-        for i, d in enumerate('abc'):
+        for i, d in enumerate("abc"):
             if d in what:
                 idx.append(i)
         if idx:
@@ -816,13 +854,13 @@ class Lattice(_Dispatchs,
         return self.copy(cell)
 
     def offset(self, isc=None):
-        """ Returns the supercell offset of the supercell index """
+        """Returns the supercell offset of the supercell index"""
         if isc is None:
             return _a.arrayd([0, 0, 0])
         return dot(isc, self.cell)
 
     def add(self, other):
-        """ Add two supercell lattice vectors to each other
+        """Add two supercell lattice vectors to each other
 
         Parameters
         ----------
@@ -842,7 +880,7 @@ class Lattice(_Dispatchs,
     __radd__ = __add__
 
     def add_vacuum(self, vacuum, axis, orthogonal_to_plane=False):
-        """ Add vacuum along the `axis` lattice vector
+        """Add vacuum along the `axis` lattice vector
 
         Parameters
         ----------
@@ -859,7 +897,7 @@ class Lattice(_Dispatchs,
         d /= fnorm(d)
         if orthogonal_to_plane:
             # first calculate the normal vector of the other plane
-            n = cross3(cell[axis-1], cell[axis-2])
+            n = cross3(cell[axis - 1], cell[axis - 2])
             n /= fnorm(n)
             # now project onto cell
             projection = n @ d
@@ -874,7 +912,7 @@ class Lattice(_Dispatchs,
         return self.copy(cell)
 
     def sc_index(self, sc_off):
-        """ Returns the integer index in the sc_off list that corresponds to `sc_off`
+        """Returns the integer index in the sc_off list that corresponds to `sc_off`
 
         Returns the index for the supercell in the global offset.
 
@@ -884,9 +922,11 @@ class Lattice(_Dispatchs,
             super cell specification. For each axis having value ``None`` all supercells
             along that axis is returned.
         """
+
         def _assert(m, v):
             if np.any(np.abs(v) > m):
                 raise ValueError("Requesting a non-existing supercell index")
+
         hsc = self.nsc // 2
 
         if len(sc_off) == 0:
@@ -944,7 +984,7 @@ class Lattice(_Dispatchs,
         return verts @ self.cell
 
     def scale(self, scale, what="abc"):
-        """ Scale lattice vectors
+        """Scale lattice vectors
 
         Does not scale `origin`.
 
@@ -961,10 +1001,12 @@ class Lattice(_Dispatchs,
             return self.copy((self.cell.T * scale).T)
         if what == "xyz":
             return self.copy(self.cell * scale)
-        raise ValueError(f"{self.__class__.__name__}.scale argument what='{what}' is not in ['abc', 'xyz'].")
+        raise ValueError(
+            f"{self.__class__.__name__}.scale argument what='{what}' is not in ['abc', 'xyz']."
+        )
 
     def tile(self, reps, axis):
-        """ Extend the unit-cell `reps` times along the `axis` lattice vector
+        """Extend the unit-cell `reps` times along the `axis` lattice vector
 
         Notes
         -----
@@ -990,7 +1032,7 @@ class Lattice(_Dispatchs,
         return self.__class__(cell, nsc=nsc, origin=origin)
 
     def repeat(self, reps, axis):
-        """ Extend the unit-cell `reps` times along the `axis` lattice vector
+        """Extend the unit-cell `reps` times along the `axis` lattice vector
 
         Notes
         -----
@@ -1024,21 +1066,21 @@ class Lattice(_Dispatchs,
     unrepeat = untile
 
     def append(self, other, axis):
-        """ Appends other `Lattice` to this grid along axis """
+        """Appends other `Lattice` to this grid along axis"""
         cell = np.copy(self.cell)
         cell[axis, :] += other.cell[axis, :]
         # TODO fix nsc here
         return self.copy(cell)
 
     def prepend(self, other, axis):
-        """ Prepends other `Lattice` to this grid along axis
+        """Prepends other `Lattice` to this grid along axis
 
         For a `Lattice` object this is equivalent to `append`.
         """
         return other.append(self, axis)
 
     def translate(self, v):
-        """ Appends additional space to the object """
+        """Appends additional space to the object"""
         # check which cell vector resembles v the most,
         # use that
         cell = np.copy(self.cell)
@@ -1048,17 +1090,18 @@ class Lattice(_Dispatchs,
             p[i] = abs(np.sum(cell[i, :] * v)) / cl[i]
         cell[np.argmax(p), :] += v
         return self.copy(cell)
+
     move = translate
 
     def center(self, axis=None):
-        """ Returns center of the `Lattice`, possibly with respect to an axis """
+        """Returns center of the `Lattice`, possibly with respect to an axis"""
         if axis is None:
             return self.cell.sum(0) * 0.5
         return self.cell[axis, :] * 0.5
 
     @classmethod
     def tocell(cls, *args):
-        r""" Returns a 3x3 unit-cell dependent on the input
+        r"""Returns a 3x3 unit-cell dependent on the input
 
         1 argument
           a unit-cell along Cartesian coordinates with side-length
@@ -1111,7 +1154,8 @@ class Lattice(_Dispatchs,
             gamma = args[5]
 
             from math import cos, pi, sin, sqrt
-            pi180 = pi / 180.
+
+            pi180 = pi / 180.0
 
             cell[0, 0] = a
             g = gamma * pi180
@@ -1126,7 +1170,7 @@ class Lattice(_Dispatchs,
             a = alpha * pi180
             d = (cos(a) - cb * cg) / sg
             cell[2, 1] = c * d
-            cell[2, 2] = c * sqrt(sb ** 2 - d ** 2)
+            cell[2, 2] = c * sqrt(sb**2 - d**2)
             return cell
 
         # A complete cell
@@ -1134,7 +1178,8 @@ class Lattice(_Dispatchs,
             return args.copy().reshape(3, 3)
 
         raise ValueError(
-            "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
+            "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct."
+        )
 
     def is_orthogonal(self, tol=0.001):
         """
@@ -1171,7 +1216,7 @@ class Lattice(_Dispatchs,
         return ~np.any(np.abs(off_diagonal) > tol)
 
     def parallel(self, other, axis=(0, 1, 2)):
-        """ Returns true if the cell vectors are parallel to `other`
+        """Returns true if the cell vectors are parallel to `other`
 
         Parameters
         ----------
@@ -1190,7 +1235,7 @@ class Lattice(_Dispatchs,
         return True
 
     def angle(self, i, j, rad=False):
-        """ The angle between two of the cell vectors
+        """The angle between two of the cell vectors
 
         Parameters
         ----------
@@ -1209,7 +1254,7 @@ class Lattice(_Dispatchs,
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads the supercell from the `Sile` using ``Sile.read_lattice``
+        """Reads the supercell from the `Sile` using ``Sile.read_lattice``
 
         Parameters
         ----------
@@ -1220,14 +1265,15 @@ class Lattice(_Dispatchs,
         # This only works because, they *must*
         # have been imported previously
         from sisl.io import BaseSile, get_sile
+
         if isinstance(sile, BaseSile):
             return sile.read_lattice(*args, **kwargs)
         else:
-            with get_sile(sile, mode='r') as fh:
+            with get_sile(sile, mode="r") as fh:
                 return fh.read_lattice(*args, **kwargs)
 
     def equal(self, other, tol=1e-4):
-        """ Check whether two lattices are equivalent
+        """Check whether two lattices are equivalent
 
         Parameters
         ----------
@@ -1242,7 +1288,8 @@ class Lattice(_Dispatchs,
         return same
 
     def __str__(self):
-        """ Returns a string representation of the object """
+        """Returns a string representation of the object"""
+
         # Create format for lattice vectors
         def bcstr(bc):
             left = BoundaryCondition.getitem(bc[0]).name.capitalize()
@@ -1251,7 +1298,13 @@ class Lattice(_Dispatchs,
                 return left
             right = BoundaryCondition.getitem(bc[1]).name.capitalize()
             return f"[{left}, {right}]"
-        s = ',\n '.join(['ABC'[i] + '=[{:.4f}, {:.4f}, {:.4f}]'.format(*self.cell[i]) for i in (0, 1, 2)])
+
+        s = ",\n ".join(
+            [
+                "ABC"[i] + "=[{:.4f}, {:.4f}, {:.4f}]".format(*self.cell[i])
+                for i in (0, 1, 2)
+            ]
+        )
         origin = "{:.4f}, {:.4f}, {:.4f}".format(*self.origin)
         bc = ",\n     ".join(map(bcstr, self.boundary_condition))
         return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s},\n bc=[{bc}]\n}}"
@@ -1260,6 +1313,7 @@ class Lattice(_Dispatchs,
         a, b, c, alpha, beta, gamma = map(lambda r: round(r, 4), self.parameters())
         BC = BoundaryCondition
         bc = self.boundary_condition
+
         def bcstr(bc):
             left = BC.getitem(bc[0]).name[0]
             if bc[0] == bc[1]:
@@ -1267,29 +1321,35 @@ class Lattice(_Dispatchs,
                 return left
             right = BC.getitem(bc[1]).name[0]
             return f"[{left}, {right}]"
+
         bc = ", ".join(map(bcstr, self.boundary_condition))
         return f"<{self.__module__}.{self.__class__.__name__} a={a}, b={b}, c={c}, α={alpha}, β={beta}, γ={gamma}, bc=[{bc}], nsc={self.nsc}>"
 
     def __eq__(self, other):
-        """ Equality check """
+        """Equality check"""
         return self.equal(other)
 
     def __ne__(self, b):
-        """ In-equality check """
+        """In-equality check"""
         return not (self == b)
 
     # Create pickling routines
     def __getstate__(self):
-        """ Returns the state of this object """
-        return {'cell': self.cell, 'nsc': self.nsc, 'sc_off': self.sc_off, 'origin': self.origin}
+        """Returns the state of this object"""
+        return {
+            "cell": self.cell,
+            "nsc": self.nsc,
+            "sc_off": self.sc_off,
+            "origin": self.origin,
+        }
 
     def __setstate__(self, d):
-        """ Re-create the state of this object """
-        self.__init__(d['cell'], d['nsc'], d['origin'])
-        self.sc_off = d['sc_off']
+        """Re-create the state of this object"""
+        self.__init__(d["cell"], d["nsc"], d["origin"])
+        self.sc_off = d["sc_off"]
 
     def __plot__(self, axis=None, axes=False, *args, **kwargs):
-        """ Plot the supercell in a specified ``matplotlib.Axes`` object.
+        """Plot the supercell in a specified ``matplotlib.Axes`` object.
 
         Parameters
         ----------
@@ -1304,17 +1364,17 @@ class Lattice(_Dispatchs,
         d = dict()
 
         # Try and default the color and alpha
-        if 'color' not in kwargs and len(args) == 0:
-            kwargs['color'] = 'k'
-        if 'alpha' not in kwargs:
-            kwargs['alpha'] = 0.5
+        if "color" not in kwargs and len(args) == 0:
+            kwargs["color"] = "k"
+        if "alpha" not in kwargs:
+            kwargs["alpha"] = 0.5
 
         if axis is None:
             axis = [0, 1, 2]
 
         # Ensure we have a new 3D Axes3D
         if len(axis) == 3:
-            d['projection'] = '3d'
+            d["projection"] = "3d"
 
         axes = plt.get_axes(axes, **d)
 
@@ -1325,15 +1385,21 @@ class Lattice(_Dispatchs,
             v.append(np.vstack((o[axis], o[axis] + self.cell[a, axis])))
         v = np.array(v)
 
-        if axes.__class__.__name__.startswith('Axes3D'):
+        if axes.__class__.__name__.startswith("Axes3D"):
             # We should plot in 3D plots
             for vv in v:
                 axes.plot(vv[:, 0], vv[:, 1], vv[:, 2], *args, **kwargs)
 
             v0, v1 = v[0], v[1] - o
-            axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], v0[1, 2] + v1[:, 2], *args, **kwargs)
+            axes.plot(
+                v0[1, 0] + v1[:, 0],
+                v0[1, 1] + v1[:, 1],
+                v0[1, 2] + v1[:, 2],
+                *args,
+                **kwargs,
+            )
 
-            axes.set_zlabel('Ang')
+            axes.set_zlabel("Ang")
 
         else:
             for vv in v:
@@ -1343,17 +1409,19 @@ class Lattice(_Dispatchs,
             axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], *args, **kwargs)
             axes.plot(v1[1, 0] + v0[:, 0], v1[1, 1] + v0[:, 1], *args, **kwargs)
 
-        axes.set_xlabel('Ang')
-        axes.set_ylabel('Ang')
+        axes.set_xlabel("Ang")
+        axes.set_ylabel("Ang")
 
         return axes
+
 
 new_dispatch = Lattice.new
 to_dispatch = Lattice.to
 
+
 # Define base-class for this
 class LatticeNewDispatch(AbstractDispatch):
-    """ Base dispatcher from class passing arguments to Geometry class
+    """Base dispatcher from class passing arguments to Geometry class
 
     This forwards all `__call__` calls to `dispatch`
     """
@@ -1361,13 +1429,17 @@ class LatticeNewDispatch(AbstractDispatch):
     def __call__(self, *args, **kwargs):
         return self.dispatch(*args, **kwargs)
 
+
 class LatticeNewLatticeDispatch(LatticeNewDispatch):
     def dispatch(self, lattice, copy=False):
         # for sanitation purposes
         if copy:
             return lattice.copy()
         return lattice
+
+
 new_dispatch.register(Lattice, LatticeNewLatticeDispatch)
+
 
 class LatticeNewAseDispatch(LatticeNewDispatch):
     def dispatch(self, aseg):
@@ -1375,48 +1447,61 @@ class LatticeNewAseDispatch(LatticeNewDispatch):
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
         return cls(cell, nsc=nsc)
+
+
 new_dispatch.register("ase", LatticeNewAseDispatch)
 
 # currently we can't ensure the ase Atoms type
 # to get it by type(). That requires ase to be importable.
 try:
     from ase import Cell as ase_Cell
+
     new_dispatch.register(ase_Cell, LatticeNewAseDispatch)
     # ensure we don't pollute name-space
     del ase_Cell
 except Exception:
     pass
 
+
 class LatticeNewFileDispatch(LatticeNewDispatch):
     def dispatch(self, *args, **kwargs):
-        """ Defer the `Lattice.read` method by passing down arguments """
+        """Defer the `Lattice.read` method by passing down arguments"""
         # can work either on class or instance
         return self._obj.read(*args, **kwargs)
+
+
 new_dispatch.register(str, LatticeNewFileDispatch)
 new_dispatch.register(Path, LatticeNewFileDispatch)
 # see sisl/__init__.py for new_dispatch.register(BaseSile, ...)
 
 
 class LatticeToDispatch(AbstractDispatch):
-    """ Base dispatcher from class passing from Lattice class """
+    """Base dispatcher from class passing from Lattice class"""
+
 
 class LatticeToAseDispatch(LatticeToDispatch):
     def dispatch(self, **kwargs):
         from ase import Cell as ase_Cell
+
         lattice = self._get_object()
         return ase_Cell(lattice.cell.copy())
 
+
 to_dispatch.register("ase", LatticeToAseDispatch)
+
 
 class LatticeToSileDispatch(LatticeToDispatch):
     def dispatch(self, *args, **kwargs):
         lattice = self._get_object()
         return lattice.write(*args, **kwargs)
+
+
 to_dispatch.register("str", LatticeToSileDispatch)
 to_dispatch.register("Path", LatticeToSileDispatch)
 # to do geom.to[Path](path)
 to_dispatch.register(str, LatticeToSileDispatch)
 to_dispatch.register(Path, LatticeToSileDispatch)
+
 
 class LatticeToCuboidDispatch(LatticeToDispatch):
     def dispatch(self, center=None, origin=None, orthogonal=False):
@@ -1441,6 +1526,7 @@ class LatticeToCuboidDispatch(LatticeToDispatch):
             for i in range(3):
                 cmin[i] = min(cmin[i], new[i])
                 cmax[i] = max(cmax[i], new[i])
+
         cmin = cell.min(0)
         cmax = cell.max(0)
         find_min_max(cmin, cmax, cell[[0, 1], :].sum(0))
@@ -1448,6 +1534,7 @@ class LatticeToCuboidDispatch(LatticeToDispatch):
         find_min_max(cmin, cmax, cell[[1, 2], :].sum(0))
         find_min_max(cmin, cmax, cell.sum(0))
         return Cuboid(cmax - cmin, center_off)
+
 
 to_dispatch.register("Cuboid", LatticeToCuboidDispatch)
 to_dispatch.register(Cuboid, LatticeToCuboidDispatch)
@@ -1458,14 +1545,18 @@ del new_dispatch, to_dispatch
 
 
 class SuperCell(Lattice):
-    """ Deprecated class, please use `Lattice` instead """
+    """Deprecated class, please use `Lattice` instead"""
+
     def __init__(self, *args, **kwargs):
-        deprecate(f"{self.__class__.__name__} is deprecated; please use 'Lattice' class instead", "0.15")
+        deprecate(
+            f"{self.__class__.__name__} is deprecated; please use 'Lattice' class instead",
+            "0.15",
+        )
         super().__init__(*args, **kwargs)
 
 
 class LatticeChild:
-    """ Class to be inherited by using the ``self.lattice`` as a `Lattice` object
+    """Class to be inherited by using the ``self.lattice`` as a `Lattice` object
 
     Initialize by a `Lattice` object and get access to several different
     routines directly related to the `Lattice` class.
@@ -1474,11 +1565,14 @@ class LatticeChild:
     @property
     def sc(self):
         """[deprecated] Return the lattice object associated with the `Lattice`."""
-        deprecate(f"{self.__class__.__name__}.sc is deprecated; please use 'lattice' instead", "0.15")
+        deprecate(
+            f"{self.__class__.__name__}.sc is deprecated; please use 'lattice' instead",
+            "0.15",
+        )
         return self.lattice
 
     def set_nsc(self, *args, **kwargs):
-        """ Set the number of super-cells in the `Lattice` object
+        """Set the number of super-cells in the `Lattice` object
 
         See `set_nsc` for allowed parameters.
 
@@ -1493,7 +1587,7 @@ class LatticeChild:
         if lattice is None:
             # Default supercell is a simple
             # 1x1x1 unit-cell
-            self.lattice = Lattice([1., 1., 1.])
+            self.lattice = Lattice([1.0, 1.0, 1.0])
         elif isinstance(lattice, Lattice):
             self.lattice = lattice
         elif isinstance(lattice, LatticeChild):
@@ -1502,8 +1596,12 @@ class LatticeChild:
             # The supercell is given as a cell
             self.lattice = Lattice(lattice)
 
-    set_sc = deprecation("set_sc is deprecated; please use set_lattice instead", "0.14")(set_lattice)
-    set_supercell = deprecation("set_sc is deprecated; please use set_lattice instead", "0.15")(set_lattice)
+    set_sc = deprecation(
+        "set_sc is deprecated; please use set_lattice instead", "0.14"
+    )(set_lattice)
+    set_supercell = deprecation(
+        "set_sc is deprecated; please use set_lattice instead", "0.15"
+    )(set_lattice)
 
     @property
     def length(self):
@@ -1512,57 +1610,56 @@ class LatticeChild:
 
     @property
     def volume(self):
-        """ Returns the inherent `Lattice` objects `volume` """
+        """Returns the inherent `Lattice` objects `volume`"""
         return self.lattice.volume
 
     def area(self, ax0, ax1):
-        """ Calculate the area spanned by the two axis `ax0` and `ax1` """
+        """Calculate the area spanned by the two axis `ax0` and `ax1`"""
         return self.lattice.area(ax0, ax1)
 
     @property
     def cell(self):
-        """ Returns the inherent `Lattice` objects `cell` """
+        """Returns the inherent `Lattice` objects `cell`"""
         return self.lattice.cell
 
     @property
     def icell(self):
-        """ Returns the inherent `Lattice` objects `icell` """
+        """Returns the inherent `Lattice` objects `icell`"""
         return self.lattice.icell
 
     @property
     def rcell(self):
-        """ Returns the inherent `Lattice` objects `rcell` """
+        """Returns the inherent `Lattice` objects `rcell`"""
         return self.lattice.rcell
 
     @property
     def origin(self):
-        """ Returns the inherent `Lattice` objects `origin` """
+        """Returns the inherent `Lattice` objects `origin`"""
         return self.lattice.origin
 
     @property
     def n_s(self):
-        """ Returns the inherent `Lattice` objects `n_s` """
+        """Returns the inherent `Lattice` objects `n_s`"""
         return self.lattice.n_s
 
     @property
     def nsc(self):
-        """ Returns the inherent `Lattice` objects `nsc` """
+        """Returns the inherent `Lattice` objects `nsc`"""
         return self.lattice.nsc
 
     @property
     def sc_off(self):
-        """ Returns the inherent `Lattice` objects `sc_off` """
+        """Returns the inherent `Lattice` objects `sc_off`"""
         return self.lattice.sc_off
 
     @property
     def isc_off(self):
-        """ Returns the inherent `Lattice` objects `isc_off` """
+        """Returns the inherent `Lattice` objects `isc_off`"""
         return self.lattice.isc_off
 
     def sc_index(self, *args, **kwargs):
-        """ Call local `Lattice` object `sc_index` function """
+        """Call local `Lattice` object `sc_index` function"""
         return self.lattice.sc_index(*args, **kwargs)
-
 
     @property
     def boundary_condition(self) -> np.ndarray:
@@ -1572,10 +1669,11 @@ class LatticeChild:
     @boundary_condition.setter
     def boundary_condition(self, boundary_condition: Sequence[BoundaryConditionType]):
         f"""{Lattice.boundary_condition.__doc__}"""
-        raise SislError(f"Cannot use property to set boundary conditions of LatticeChild")
+        raise SislError(
+            f"Cannot use property to set boundary conditions of LatticeChild"
+        )
 
     @property
     def pbc(self) -> np.ndarray:
         f"""{Lattice.pbc.__doc__}"""
         return self.lattice.pbc
-

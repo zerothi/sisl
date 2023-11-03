@@ -9,12 +9,12 @@ import pytest
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta')
+_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_gf_write(sisl_tmp, sisl_system):
     tb = sisl.Hamiltonian(sisl_system.gtb)
-    f = sisl_tmp('file.TSGF', _dir)
+    f = sisl_tmp("file.TSGF", _dir)
     gf = sisl.io.get_sile(f)
     bz = sisl.MonkhorstPack(tb, [3, 3, 1])
     E = np.linspace(-2, 2, 20) + 1j * 1e-4
@@ -22,7 +22,7 @@ def test_gf_write(sisl_tmp, sisl_system):
 
     gf.write_header(bz, E)
     for i, (ispin, new_hs, k, e) in enumerate(gf):
-        Hk = tb.Hk(k, format='array')
+        Hk = tb.Hk(k, format="array")
         assert ispin == 0
         if new_hs and i % 2 == 0:
             gf.write_hamiltonian(Hk)
@@ -33,7 +33,7 @@ def test_gf_write(sisl_tmp, sisl_system):
 
 def test_gf_write_read(sisl_tmp, sisl_system):
     tb = sisl.Hamiltonian(sisl_system.gtb)
-    f = sisl_tmp('file.TSGF', _dir)
+    f = sisl_tmp("file.TSGF", _dir)
 
     bz = sisl.MonkhorstPack(tb, [3, 3, 1])
     E = np.linspace(-2, 2, 20) + 1j * 1e-4
@@ -44,7 +44,7 @@ def test_gf_write_read(sisl_tmp, sisl_system):
     gf.write_header(bz, E)
     for i, (ispin, write_hs, k, e) in enumerate(gf):
         assert ispin == 0
-        Hk = tb.Hk(k, format='array')
+        Hk = tb.Hk(k, format="array")
         if write_hs and i % 2 == 0:
             gf.write_hamiltonian(Hk)
         elif write_hs:
@@ -58,7 +58,7 @@ def test_gf_write_read(sisl_tmp, sisl_system):
 
     for i, (ispin, write_hs, k, e) in enumerate(gf):
         assert ispin == 0
-        Hk = tb.Hk(k, format='array')
+        Hk = tb.Hk(k, format="array")
         if write_hs and i % 2 == 0:
             Hk_file, _ = gf.read_hamiltonian()
         elif write_hs:
@@ -71,9 +71,9 @@ def test_gf_write_read(sisl_tmp, sisl_system):
 
 
 def test_gf_write_read_spin(sisl_tmp, sisl_system):
-    f = sisl_tmp('file.TSGF', _dir)
+    f = sisl_tmp("file.TSGF", _dir)
 
-    tb = sisl.Hamiltonian(sisl_system.gtb, spin=sisl.Spin('P'))
+    tb = sisl.Hamiltonian(sisl_system.gtb, spin=sisl.Spin("P"))
     tb.construct([(0.1, 1.5), ([0.1, -0.1], [2.7, 1.6])])
 
     bz = sisl.MonkhorstPack(tb, [3, 3, 1])
@@ -84,7 +84,7 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
 
     gf.write_header(bz, E)
     for i, (ispin, write_hs, k, e) in enumerate(gf):
-        Hk = tb.Hk(k, spin=ispin, format='array')
+        Hk = tb.Hk(k, spin=ispin, format="array")
         if write_hs and i % 2 == 0:
             gf.write_hamiltonian(Hk)
         elif write_hs:
@@ -100,7 +100,7 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
     assert np.allclose(k, bz.k)
 
     for i, (ispin, write_hs, k, e) in enumerate(gf):
-        Hk = tb.Hk(k, spin=ispin, format='array')
+        Hk = tb.Hk(k, spin=ispin, format="array")
         if write_hs and i % 2 == 0:
             Hk_file, _ = gf.read_hamiltonian()
         elif write_hs:
@@ -113,9 +113,9 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
 
 
 def test_gf_write_read_direct(sisl_tmp, sisl_system):
-    f = sisl_tmp('file.TSGF', _dir)
+    f = sisl_tmp("file.TSGF", _dir)
 
-    tb = sisl.Hamiltonian(sisl_system.gtb, spin=sisl.Spin('P'))
+    tb = sisl.Hamiltonian(sisl_system.gtb, spin=sisl.Spin("P"))
     tb.construct([(0.1, 1.5), ([0.1, -0.1], [2.7, 1.6])])
 
     bz = sisl.MonkhorstPack(tb, [3, 3, 1])
@@ -126,7 +126,7 @@ def test_gf_write_read_direct(sisl_tmp, sisl_system):
 
     gf.write_header(bz, E)
     for i, (ispin, write_hs, k, e) in enumerate(gf):
-        Hk = tb.Hk(k, spin=ispin, format='array')
+        Hk = tb.Hk(k, spin=ispin, format="array")
         if write_hs and i % 2 == 0:
             gf.write_hamiltonian(Hk)
         elif write_hs:
@@ -196,4 +196,4 @@ def test_gf_write_read_direct(sisl_tmp, sisl_system):
 
 def test_gf_sile_error():
     with pytest.raises(sisl.SileError):
-        sisl.get_sile('non_existing_file.TSGF').read_header()
+        sisl.get_sile("non_existing_file.TSGF").read_header()

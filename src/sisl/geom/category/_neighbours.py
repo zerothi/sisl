@@ -12,7 +12,7 @@ __all__ = ["AtomNeighbours"]
 
 @set_module("sisl.geom")
 class AtomNeighbours(AtomCategory):
-    r""" Classify atoms based on number of neighbours
+    r"""Classify atoms based on number of neighbours
 
     Parameters
     ----------
@@ -46,7 +46,7 @@ class AtomNeighbours(AtomCategory):
                 *args, kwargs["neighbour"] = args
 
         self._min = 0
-        self._max = 2 ** 31
+        self._max = 2**31
 
         if len(args) == 1:
             self._min = args[0]
@@ -63,7 +63,7 @@ class AtomNeighbours(AtomCategory):
 
         if self._min == self._max:
             name = f"={self._max}"
-        elif self._max == 2 ** 31:
+        elif self._max == 2**31:
             name = f" ∈ [{self._min};∞["
         else:
             name = f" ∈ [{self._min};{self._max}]"
@@ -91,7 +91,7 @@ class AtomNeighbours(AtomCategory):
 
     @_sanitize_loop
     def categorize(self, geometry, atoms=None):
-        """ Check if geometry and atoms matches the neighbour criteria """
+        """Check if geometry and atoms matches the neighbour criteria"""
         idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[1]
         if len(idx) < self._min:
             return NullCategory()
@@ -100,8 +100,7 @@ class AtomNeighbours(AtomCategory):
         if not self._in is None:
             # Get category of neighbours
             cat = self._in.categorize(geometry, geometry.asc2uc(idx))
-            idx = [i for i, c in zip(idx, cat)
-                   if not isinstance(c, NullCategory)]
+            idx = [i for i, c in zip(idx, cat) if not isinstance(c, NullCategory)]
         n = len(idx)
         if self._min <= n and n <= self._max:
             return self
@@ -110,7 +109,9 @@ class AtomNeighbours(AtomCategory):
     def __eq__(self, other):
         eq = self.__class__ is other.__class__
         if eq:
-            return (self._min == other._min and
-                    self._max == other._max and
-                    self._in == other._in)
+            return (
+                self._min == other._min
+                and self._max == other._max
+                and self._in == other._in
+            )
         return False

@@ -8,6 +8,7 @@ It does so by patching them accordingly
 """
 import sisl
 import sisl.io.siesta as siesta
+
 # import sisl.io.tbtrans as tbtrans
 from sisl.io.sile import BaseSile, get_siles
 
@@ -26,13 +27,22 @@ __all__ = []
 #               Register data sources
 # -----------------------------------------------------
 
-# This will automatically register as plotable everything that 
+# This will automatically register as plotable everything that
 # the data source can digest
 
 register_data_source(PDOSData, PdosPlot, "pdos_data", default=[siesta.pdosSileSiesta])
-register_data_source(BandsData, BandsPlot, "bands_data", default=[siesta.bandsSileSiesta])
-register_data_source(BandsData, FatbandsPlot, "bands_data", data_source_init_kwargs={"extra_vars": ("norm2", )})
-register_data_source(EigenstateData, WavefunctionPlot,  "eigenstate", default=[sisl.EigenstateElectron])
+register_data_source(
+    BandsData, BandsPlot, "bands_data", default=[siesta.bandsSileSiesta]
+)
+register_data_source(
+    BandsData,
+    FatbandsPlot,
+    "bands_data",
+    data_source_init_kwargs={"extra_vars": ("norm2",)},
+)
+register_data_source(
+    EigenstateData, WavefunctionPlot, "eigenstate", default=[sisl.EigenstateElectron]
+)
 
 # -----------------------------------------------------
 #               Register plotable siles
@@ -41,22 +51,22 @@ register_data_source(EigenstateData, WavefunctionPlot,  "eigenstate", default=[s
 register = register_plotable
 
 for GeomSile in get_siles(attrs=["read_geometry"]):
-    register_sile_method(GeomSile, "read_geometry", GeometryPlot, 'geometry')
+    register_sile_method(GeomSile, "read_geometry", GeometryPlot, "geometry")
 
 for GridSile in get_siles(attrs=["read_grid"]):
-    register_sile_method(GridSile, "read_grid", GridPlot, 'grid', default=True)
+    register_sile_method(GridSile, "read_grid", GridPlot, "grid", default=True)
 
 # # -----------------------------------------------------
 # #           Register plotable sisl objects
 # # -----------------------------------------------------
 
 # # Geometry
-register(sisl.Geometry, GeometryPlot, 'geometry', default=True)
+register(sisl.Geometry, GeometryPlot, "geometry", default=True)
 
 # # Grid
-register(sisl.Grid, GridPlot, 'grid', default=True)
+register(sisl.Grid, GridPlot, "grid", default=True)
 
 # Brilloiun zone
-register(sisl.BrillouinZone, SitesPlot, 'sites_obj')
+register(sisl.BrillouinZone, SitesPlot, "sites_obj")
 
 sisl.BandStructure.plot.set_default("bands")

@@ -7,8 +7,8 @@ __all__ = ["geometry_define_nsc", "geometry2uc"]
 
 
 def geometry_define_nsc(geometry, periodic=(True, True, True)):
-    """Define the number of supercells for a geometry based on the periodicity """
-    if np.all(geometry.maxR(True) > 0.):
+    """Define the number of supercells for a geometry based on the periodicity"""
+    if np.all(geometry.maxR(True) > 0.0):
         # strip away optimizing nsc for the non-periodic directions
         axes = [i for i, p in enumerate(periodic) if p]
 
@@ -29,7 +29,7 @@ def geometry_define_nsc(geometry, periodic=(True, True, True)):
 
 
 def geometry2uc(geometry, dx=1e-8):
-    """ Translate the geometry to the unit cell by first shifting `dx` """
+    """Translate the geometry to the unit cell by first shifting `dx`"""
     geometry = geometry.move(dx).translate2uc().move(-dx)
     geometry.xyz[geometry.xyz < 0] = 0
     return geometry

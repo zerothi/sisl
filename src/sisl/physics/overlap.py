@@ -12,7 +12,7 @@ __all__ = ["Overlap"]
 
 @set_module("sisl.physics")
 class Overlap(SparseOrbitalBZ):
-    r""" Sparse overlap matrix object
+    r"""Sparse overlap matrix object
 
     The Overlap object contains orbital overlaps. It should be used when the overlaps are not associated with
     another physical object such as a Hamiltonian, as is the case with eg. Siesta onlyS outputs.
@@ -35,7 +35,7 @@ class Overlap(SparseOrbitalBZ):
     """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
-        r""" Initialize Overlap """
+        r"""Initialize Overlap"""
         # Since this *is* the overlap matrix, we should never use the
         # orthogonal keyword
         kwargs["orthogonal"] = True
@@ -50,13 +50,13 @@ class Overlap(SparseOrbitalBZ):
 
     @property
     def S(self):
-        r""" Access the overlap elements """
+        r"""Access the overlap elements"""
         self._def_dim = 0
         return self
 
     @classmethod
     def fromsp(cls, geometry, P, **kwargs):
-        r""" Create an Overlap object from a preset `Geometry` and a sparse matrix
+        r"""Create an Overlap object from a preset `Geometry` and a sparse matrix
 
         The passed sparse matrix is in one of `scipy.sparse` formats.
 
@@ -84,7 +84,7 @@ class Overlap(SparseOrbitalBZ):
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads Overlap from `Sile` using `read_overlap`.
+        """Reads Overlap from `Sile` using `read_overlap`.
 
         Parameters
         ----------
@@ -95,17 +95,19 @@ class Overlap(SparseOrbitalBZ):
         * : args passed directly to ``read_overlap(,**)``
         """
         from sisl.io import BaseSile, get_sile
+
         if isinstance(sile, BaseSile):
             return sile.read_overlap(*args, **kwargs)
         else:
-            with get_sile(sile, mode='r') as fh:
+            with get_sile(sile, mode="r") as fh:
                 return fh.read_overlap(*args, **kwargs)
 
     def write(self, sile, *args, **kwargs) -> None:
-        """ Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method """
+        """Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method"""
         from sisl.io import BaseSile, get_sile
+
         if isinstance(sile, BaseSile):
             sile.write_overlap(self, *args, **kwargs)
         else:
-            with get_sile(sile, mode='w') as fh:
+            with get_sile(sile, mode="w") as fh:
                 fh.write_overlap(self, *args, **kwargs)

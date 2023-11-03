@@ -15,7 +15,7 @@ __all__ = ["LinearMixer", "AndersonMixer"]
 
 @set_module("sisl.mixing")
 class LinearMixer(BaseHistoryWeightMixer):
-    r""" Linear mixing
+    r"""Linear mixing
 
     The linear mixing is solely defined using a weight, and the resulting functional
     may then be calculated via:
@@ -31,8 +31,8 @@ class LinearMixer(BaseHistoryWeightMixer):
     """
     __slots__ = ()
 
-    def __call__(self, f: T, df: T, append: bool=True) -> T:
-        r""" Calculate a new variable :math:`f'` using input and output of the functional
+    def __call__(self, f: T, df: T, append: bool = True) -> T:
+        r"""Calculate a new variable :math:`f'` using input and output of the functional
 
         Parameters
         ----------
@@ -92,10 +92,10 @@ class AndersonMixer(BaseHistoryWeightMixer):
 
         return beta
 
-    def __call__(self, f: T, df: T,
-                 delta: Optional[Any]=None,
-                 append: bool=True) -> T:
-        r""" Calculate a new variable :math:`f'` using input and output of the functional
+    def __call__(
+        self, f: T, df: T, delta: Optional[Any] = None, append: bool = True
+    ) -> T:
+        r"""Calculate a new variable :math:`f'` using input and output of the functional
 
         Parameters
         ----------

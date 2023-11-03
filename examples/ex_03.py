@@ -11,8 +11,9 @@
 
 import sisl
 
-with open('zz.gin', 'w') as f:
-    f.write("""opti conv dist full nosymmetry phon dynamical_matrix nod3
+with open("zz.gin", "w") as f:
+    f.write(
+        """opti conv dist full nosymmetry phon dynamical_matrix nod3
 output she
 cutd 3.0
 
@@ -149,11 +150,13 @@ C core 15.62000 17.21659 0.00000 0 1 0 1 1 1
 C core 13.49000 18.44634 0.00000 0 1 0 1 1 1
 C core 14.91000 18.44634 0.00000 0 1 0 1 1 1
 
-brenner""")
+brenner"""
+    )
 
 # Create PHtrans input
-with open('ZZ.fdf', 'w') as f:
-    f.write("""SystemLabel ZZ
+with open("ZZ.fdf", "w") as f:
+    f.write(
+        """SystemLabel ZZ
 
 TBT.DOS.Gf T
 
@@ -178,22 +181,23 @@ TBT.HS DEVICE_zz.nc
   semi-inf-direction +a2
   electrode-position end -1
 %endblock
-""")
+"""
+    )
 
 import os
 
-if not os.path.exists('zz.gout'):
+if not os.path.exists("zz.gout"):
     raise ValueError("zz.gin has not been runned by GULP")
 
-print('Reading output')
-gout = sisl.get_sile('zz.gout')
+print("Reading output")
+gout = sisl.get_sile("zz.gout")
 # Correct what to read from the gulp output
 gout.set_lattice_key("Cartesian lattice vectors")
 # Selectively decide whether you want to read the dynamical
 # matrix from the GULP output file or from the
 # FORCE_CONSTANTS_2ND file.
-order = ['got'] # GULP output file
-#order = ['FC'] # FORCE_CONSTANTS_2ND file
+order = ["got"]  # GULP output file
+# order = ['FC'] # FORCE_CONSTANTS_2ND file
 
 dyn = gout.read_dynamical_matrix(order=order)
 
@@ -203,7 +207,7 @@ dyn = gout.read_dynamical_matrix(order=order)
 dyn.apply_newton()
 
 dev = dyn.untile(4, 0)
-dev.write('DEVICE_zz.nc')
+dev.write("DEVICE_zz.nc")
 
 el = dev.untile(4, 1)
-el.write('ELEC_zz.nc')
+el.write("ELEC_zz.nc")

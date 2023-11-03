@@ -11,13 +11,13 @@ import pytest
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.gulp]
-_dir = osp.join('sisl', 'io', 'gulp')
+_dir = osp.join("sisl", "io", "gulp")
 
 
 def test_zz_dynamical_matrix(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, 'zz.gout'))
-    D1 = si.read_dynamical_matrix(order=['got'], cutoff=1.e-4)
-    D2 = si.read_dynamical_matrix(order=['FC'], cutoff=1.e-4)
+    si = sisl.get_sile(sisl_files(_dir, "zz.gout"))
+    D1 = si.read_dynamical_matrix(order=["got"], cutoff=1.0e-4)
+    D2 = si.read_dynamical_matrix(order=["FC"], cutoff=1.0e-4)
 
     assert D1._csr.spsame(D2._csr)
     D1.finalize()
@@ -26,7 +26,7 @@ def test_zz_dynamical_matrix(sisl_files):
 
 
 def test_zz_sc_geom(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, 'zz.gout'))
+    si = sisl.get_sile(sisl_files(_dir, "zz.gout"))
     lattice = si.read_lattice()
     geom = si.read_geometry()
     assert lattice == geom.lattice
@@ -52,7 +52,7 @@ def test_graphene_8x8_untiling(sisl_files):
         assert np.allclose(d._csr._D, 0, atol=1e-6)
         # we can't assert that the sparsity patterns are the same
         # The differences are tiny, 1e-7 but they are there
-        #assert seg_y.spsame(seg)
+        # assert seg_y.spsame(seg)
 
     seg_x = segs_x.pop()
     for seg in segs_x:

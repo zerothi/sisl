@@ -5,17 +5,17 @@ import argparse
 
 from sisl.utils.ranges import strmap, strseq
 
-__all__ = ['argv_negative_fix', 'default_namespace']
-__all__ += ['collect_input', 'collect_arguments']
-__all__ += ['add_sisl_version_cite_arg']
-__all__ += ['default_ArgumentParser']
-__all__ += ['collect_action', 'run_collect_action']
-__all__ += ['run_actions']
-__all__ += ['add_action']
+__all__ = ["argv_negative_fix", "default_namespace"]
+__all__ += ["collect_input", "collect_arguments"]
+__all__ += ["add_sisl_version_cite_arg"]
+__all__ += ["default_ArgumentParser"]
+__all__ += ["collect_action", "run_collect_action"]
+__all__ += ["run_actions"]
+__all__ += ["add_action"]
 
 
 def argv_negative_fix(argv):
-    """ Fixes `argv` list by adding a space for input that may be float's
+    """Fixes `argv` list by adding a space for input that may be float's
 
     This function tries to prevent ``'-<>'`` being captured by `argparse`.
 
@@ -32,20 +32,22 @@ def argv_negative_fix(argv):
         except Exception:
             rgv.append(a)
         else:
-            rgv.append(' ' + a)
+            rgv.append(" " + a)
     return rgv
 
 
 def default_namespace(**kwargs):
-    """ Ensure the namespace can be used to collect and run the actions
+    """Ensure the namespace can be used to collect and run the actions
 
     Parameters
     ----------
     **kwargs : dict
        the dictionary keys added to the namespace object.
     """
+
     class CustomNamespace:
         pass
+
     namespace = CustomNamespace()
     namespace._actions_run = False
     namespace._actions = []
@@ -55,7 +57,7 @@ def default_namespace(**kwargs):
 
 
 def add_action(namespace, action, args, kwargs):
-    """ Add an action to the list of actions to be runned
+    """Add an action to the list of actions to be runned
 
     Parameters
     ----------
@@ -72,7 +74,7 @@ def add_action(namespace, action, args, kwargs):
 
 
 def collect_input(argv):
-    """ Function for returning the input file
+    """Function for returning the input file
 
     This simply creates a shortcut input file and returns
     it.
@@ -83,9 +85,9 @@ def collect_input(argv):
        arguments passed to an `argparse.ArgumentParser`
     """
     # Grap input-file
-    p = argparse.ArgumentParser('Parser for input file', add_help=False)
+    p = argparse.ArgumentParser("Parser for input file", add_help=False)
     # Now add the input and output file
-    p.add_argument('input_file', nargs='?', default=None)
+    p.add_argument("input_file", nargs="?", default=None)
     # Retrieve the input file
     # (return the remaining options)
     args, argv = p.parse_known_args(argv)
@@ -94,7 +96,7 @@ def collect_input(argv):
 
 
 def add_sisl_version_cite_arg(parser):
-    """ Add a sisl version and citation argument to the ArgumentParser for printing (to stdout) the used sisl version
+    """Add a sisl version and citation argument to the ArgumentParser for printing (to stdout) the used sisl version
 
     Parameters
     ----------
@@ -108,20 +110,28 @@ def add_sisl_version_cite_arg(parser):
     class PrintVersion(argparse.Action):
         def __call__(self, parser, ns, values, option_string=None):
             print(f"sisl: {__version__}")
-    group.add_argument('--version', nargs=0, action=PrintVersion,
-                       help=f'Show detailed sisl version information (v{__version__})')
+
+    group.add_argument(
+        "--version",
+        nargs=0,
+        action=PrintVersion,
+        help=f"Show detailed sisl version information (v{__version__})",
+    )
 
     class PrintCite(argparse.Action):
         def __call__(self, parser, ns, values, option_string=None):
             print(f"BibTeX:\n{__bibtex__}")
-    group.add_argument('--cite', nargs=0, action=PrintCite,
-                       help='Show the citation required when using sisl')
+
+    group.add_argument(
+        "--cite",
+        nargs=0,
+        action=PrintCite,
+        help="Show the citation required when using sisl",
+    )
 
 
-def collect_arguments(argv, input=False,
-                      argumentparser=None,
-                      namespace=None):
-    """ Function for returning the actual arguments depending on the input options.
+def collect_arguments(argv, input=False, argumentparser=None, namespace=None):
+    """Function for returning the actual arguments depending on the input options.
 
     This function will create a fake `argparse.ArgumentParser` which then
     will pass through the input figuring out which options
@@ -154,8 +164,8 @@ def collect_arguments(argv, input=False,
         input_file = None
 
     # Grap output-file
-    p = argparse.ArgumentParser('Parser for output file', add_help=False)
-    p.add_argument('--out', '-o', nargs=1, default=None)
+    p = argparse.ArgumentParser("Parser for output file", add_help=False)
+    p.add_argument("--out", "-o", nargs=1, default=None)
 
     # Parse the passed args to sort out the input file and
     # the output file
@@ -164,17 +174,20 @@ def collect_arguments(argv, input=False,
     if input_file is not None:
         try:
             obj = get_sile(input_file)
-            argumentparser, namespace = obj.ArgumentParser(argumentparser, namespace=namespace,
-                                                           **obj._ArgumentParser_args_single())
+            argumentparser, namespace = obj.ArgumentParser(
+                argumentparser, namespace=namespace, **obj._ArgumentParser_args_single()
+            )
             # Be sure to add the input file
-            setattr(namespace, '_input_file', input_file)
+            setattr(namespace, "_input_file", input_file)
         except Exception as e:
             print(e)
-            raise ValueError(f"File: '{input_file}' cannot be found. Please supply a readable file!")
+            raise ValueError(
+                f"File: '{input_file}' cannot be found. Please supply a readable file!"
+            )
 
     if args.out is not None:
         try:
-            obj = get_sile(args.out[0], mode='r')
+            obj = get_sile(args.out[0], mode="r")
             obj.ArgumentParser_out(argumentparser, namespace=namespace)
         except Exception:
             # Allowed pass due to pythonic reading
@@ -188,6 +201,7 @@ def default_ArgumentParser(*A_args, **A_kwargs):
     Decorator for routines which takes a parser as argument
     and ensures that it is _not_ ``None``.
     """
+
     def default_AP(func):
         # This requires that the first argument
         # for the function is the parser with default=None
@@ -199,7 +213,9 @@ def default_ArgumentParser(*A_args, **A_kwargs):
                 parser.description = A_kwargs["description"]
 
             return func(self, parser, *args, **kwargs)
+
         return new_func
+
     return default_AP
 
 
@@ -216,6 +232,7 @@ def collect_action(func):
         # Else we append the actions to be performed
         add_action(args[1], self, args, kwargs)
         return None
+
     return collect
 
 
@@ -231,6 +248,7 @@ def run_collect_action(func):
             return func(self, *args, **kwargs)
         add_action(args[1], self, args, kwargs)
         return func(self, *args, **kwargs)
+
     return collect
 
 
@@ -249,4 +267,5 @@ def run_actions(func):
         args[1]._actions_run = False
         args[1]._actions = []
         return func(self, *args, **kwargs)
+
     return run

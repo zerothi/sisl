@@ -18,7 +18,7 @@ __all__ = ["eigSileSiesta"]
 
 @set_module("sisl.io.siesta")
 class eigSileSiesta(SileSiesta):
-    """ Eigenvalues as calculated in the SCF loop, easy plots using `sdata`
+    """Eigenvalues as calculated in the SCF loop, easy plots using `sdata`
 
     The .EIG file from Siesta contains the eigenvalues for k-points used during the SCF.
     Using the command-line utility `sdata` one may plot the eigenvalue spectrum to visualize the
@@ -75,7 +75,7 @@ class eigSileSiesta(SileSiesta):
 
     @sile_fh_open(True)
     def read_fermi_level(self):
-        r""" Query the Fermi-level contained in the file
+        r"""Query the Fermi-level contained in the file
 
         Returns
         -------
@@ -85,7 +85,7 @@ class eigSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_data(self):
-        r""" Read eigenvalues, as calculated and written by Siesta
+        r"""Read eigenvalues, as calculated and written by Siesta
 
         Returns
         -------
@@ -106,6 +106,7 @@ class eigSileSiesta(SileSiesta):
         eigs = np.empty([ns, nk, nb], np.float64)
 
         readline = self.readline
+
         def iterE(size):
             ne = 0
             out = readline().split()[1:]
@@ -125,9 +126,9 @@ class eigSileSiesta(SileSiesta):
 
     @default_ArgumentParser(description="Manipulate Siesta EIG file.")
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
-        #limit_args = kwargs.get("limit_arguments", True)
-        #short = kwargs.get("short", False)
+        """Returns the arguments that is available for this Sile"""
+        # limit_args = kwargs.get("limit_arguments", True)
+        # short = kwargs.get("short", False)
 
         # We limit the import to occur here
         import argparse
@@ -147,41 +148,59 @@ class eigSileSiesta(SileSiesta):
                 # default T = 300 k
                 units("K", "eV") * 300,
                 # distribution type
-                "gaussian"
+                "gaussian",
             ],
         }
         try:
-            d["_weights"] = kpSileSiesta(str(self.file).replace("EIG", "KP")).read_data()[1]
+            d["_weights"] = kpSileSiesta(
+                str(self.file).replace("EIG", "KP")
+            ).read_data()[1]
         except Exception:
             d["_weights"] = None
         namespace = default_namespace(**d)
 
         # Energy grabs
         class ERange(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 ns._Emap = strmap(float, value)[0]
-        p.add_argument("--energy", "-E",
-                       action=ERange,
-                       help="Denote the sub-section of energies that are plotted: '-1:0,1:2' [eV]")
+
+        p.add_argument(
+            "--energy",
+            "-E",
+            action=ERange,
+            help="Denote the sub-section of energies that are plotted: '-1:0,1:2' [eV]",
+        )
 
         # k-point weights
         class KP(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
                 ns._weights = kpSileSiesta(value[0]).read_data()[1]
-        p.add_argument("--kp-file", "-kp", nargs=1, metavar="FILE", action=KP,
-                       help="The k-point file from which to read the band-weights (only applicable to --dos option)")
+
+        p.add_argument(
+            "--kp-file",
+            "-kp",
+            nargs=1,
+            metavar="FILE",
+            action=KP,
+            help="The k-point file from which to read the band-weights (only applicable to --dos option)",
+        )
 
         # Energy grabs
         class DOS(argparse.Action):
-            def __call__(dos_self, parser, ns, values, option_string=None): # pylint: disable=E0213
+            def __call__(
+                dos_self, parser, ns, values, option_string=None
+            ):  # pylint: disable=E0213
                 if getattr(ns, "_weights", None) is None:
                     if ns._eigs.shape[1] > 1:
-                        raise ValueError("Can not calculate DOS when k-point weights are unknown, please pass -kp before this command")
+                        raise ValueError(
+                            "Can not calculate DOS when k-point weights are unknown, please pass -kp before this command"
+                        )
 
                 if len(ns._weights) != ns._eigs.shape[1]:
-                    raise SileError(f"{self!s} --dos the number of k-points for the eigenvalues and k-point weights "
-                                    "are different, please use -kp before --dos.")
+                    raise SileError(
+                        f"{self!s} --dos the number of k-points for the eigenvalues and k-point weights "
+                        "are different, please use -kp before --dos."
+                    )
 
                 # Specify default settings
                 dE = ns._dos_args[0]
@@ -199,7 +218,9 @@ class eigSileSiesta(SileSiesta):
                         elif i == 2:
                             distribution = value
                         else:
-                            raise ValueError(f"Too many values passed? Unknown value {value}?")
+                            raise ValueError(
+                                f"Too many values passed? Unknown value {value}?"
+                            )
 
                 elif n_eq == len(values):
                     for key, val in map(lambda x: x.split("="), values):
@@ -211,10 +232,14 @@ class eigSileSiesta(SileSiesta):
                         elif key.lower().startswith("dist"):
                             distribution = val
                         else:
-                            raise ValueError(f"Unknown key: {key}, should be one of [dE, kT, dist]")
+                            raise ValueError(
+                                f"Unknown key: {key}, should be one of [dE, kT, dist]"
+                            )
 
                 else:
-                    raise ValueError("Mixing position arguments and keyword arguments is not allowed, either key=val or val, only")
+                    raise ValueError(
+                        "Mixing position arguments and keyword arguments is not allowed, either key=val or val, only"
+                    )
 
                 try:
                     dE = units(dE, "eV")
@@ -272,16 +297,22 @@ class eigSileSiesta(SileSiesta):
                 else:
                     ns._data_header.append(f"DOS T={str_T}")
                     ns._data.append(calc_dos(E, ns._eigs[0, :, :], ns._weights))
-        p.add_argument("--dos", action=DOS, nargs="*", metavar="dE, kT, DIST",
-                       help="Calculate (and internally store) the density of states from the .EIG file, "
-                       "dE = energy separation (5 meV), kT = smearing (300 K), DIST = distribution function (Gaussian). "
-                       "The arguments will be the new defaults for later --dos calls.")
+
+        p.add_argument(
+            "--dos",
+            action=DOS,
+            nargs="*",
+            metavar="dE, kT, DIST",
+            help="Calculate (and internally store) the density of states from the .EIG file, "
+            "dE = energy separation (5 meV), kT = smearing (300 K), DIST = distribution function (Gaussian). "
+            "The arguments will be the new defaults for later --dos calls.",
+        )
 
         class Plot(argparse.Action):
-
             def _plot_data(self, parser, ns, value, option_string=None):
-                """ Plot data as contained in ns._data """
+                """Plot data as contained in ns._data"""
                 from matplotlib import pyplot as plt
+
                 plt.figure()
 
                 E = None
@@ -312,12 +343,12 @@ class eigSileSiesta(SileSiesta):
                 import matplotlib.pyplot as plt
 
                 E = ns._eigs
-                #Emin = np.min(E)
-                #Emax = np.max(E)
-                #n = E.shape[1]
+                # Emin = np.min(E)
+                # Emax = np.max(E)
+                # n = E.shape[1]
                 # We need to setup a relatively good size of the scatter
                 # plots
-                s = 10 #20. / max(Emax - Emin, n)
+                s = 10  # 20. / max(Emax - Emin, n)
 
                 def myplot(ax, title, y, E, s):
                     ax.set_title(title)
@@ -353,26 +384,41 @@ class eigSileSiesta(SileSiesta):
                 else:
                     self._plot_data(parser, ns, value, option_string)
 
-        p.add_argument("--plot", "-p", action=Plot, nargs="?", metavar="FILE",
-                       help="Plot the currently collected information (at its current invocation), or the eigenspectrum")
+        p.add_argument(
+            "--plot",
+            "-p",
+            action=Plot,
+            nargs="?",
+            metavar="FILE",
+            help="Plot the currently collected information (at its current invocation), or the eigenspectrum",
+        )
 
         class Out(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-
                 out = value[0]
 
                 if len(ns._data) == 0:
                     # do nothing if data has not been collected
-                    raise ValueError("No data has been collected in the arguments, nothing will be written, have you forgotten arguments?")
+                    raise ValueError(
+                        "No data has been collected in the arguments, nothing will be written, have you forgotten arguments?"
+                    )
 
                 if sum((h == "Energy" for h in ns._data_header)) > 1:
-                    raise ValueError("There are multiple non-commensurate energy-grids, saving data requires a single energy-grid.")
+                    raise ValueError(
+                        "There are multiple non-commensurate energy-grids, saving data requires a single energy-grid."
+                    )
 
                 from sisl.io import tableSile
-                tableSile(out, mode="w").write(*ns._data,
-                                               header=ns._data_header)
-        p.add_argument("--out", "-o", nargs=1, action=Out,
-                       help="Store currently collected information (at its current invocation) to the out file.")
+
+                tableSile(out, mode="w").write(*ns._data, header=ns._data_header)
+
+        p.add_argument(
+            "--out",
+            "-o",
+            nargs=1,
+            action=Out,
+            help="Store currently collected information (at its current invocation) to the out file.",
+        )
 
         return p, namespace
 

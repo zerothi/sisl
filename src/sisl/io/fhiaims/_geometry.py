@@ -18,12 +18,14 @@ __all__ = ["inSileFHIaims"]
 
 @set_module("sisl.io.fhiaims")
 class inSileFHIaims(SileFHIaims):
-    """ FHI-aims geometry file object """
+    """FHI-aims geometry file object"""
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
     def write_lattice(self, lattice, fmt=".8f"):
-        """ Writes the supercell to the contained file
+        """Writes the supercell to the contained file
 
         Parameters
         ----------
@@ -39,8 +41,10 @@ class inSileFHIaims(SileFHIaims):
         self._write(_fmt.format(*lattice.cell[2]))
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt=".8f", as_frac=False, velocity=None, moment=None):
-        """ Writes the geometry to the contained file
+    def write_geometry(
+        self, geometry, fmt=".8f", as_frac=False, velocity=None, moment=None
+    ):
+        """Writes the geometry to the contained file
 
         Parameters
         ----------
@@ -80,7 +84,7 @@ class inSileFHIaims(SileFHIaims):
 
     @sile_fh_open()
     def read_lattice(self):
-        """ Reads supercell object from the file """
+        """Reads supercell object from the file"""
         self.fh.seek(0)
 
         # read until "lattice_vector" is found
@@ -93,7 +97,7 @@ class inSileFHIaims(SileFHIaims):
 
     @sile_fh_open()
     def read_geometry(self, velocity=False, moment=False):
-        """ Reads Geometry object from the file
+        """Reads Geometry object from the file
 
         Parameters
         ----------
@@ -124,7 +128,9 @@ class inSileFHIaims(SileFHIaims):
 
         def ensure_length(l, length, add):
             if length < 0:
-                raise SileError("Found a velocity/initial_moment entry before an atom entry?")
+                raise SileError(
+                    "Found a velocity/initial_moment entry before an atom entry?"
+                )
             while len(l) < length:
                 l.append(add)
 
@@ -150,7 +156,7 @@ class inSileFHIaims(SileFHIaims):
             # we found an atom
             sp.append(line[4])
 
-        ret = (Geometry(xyz, atoms=sp, lattice=lattice), )
+        ret = (Geometry(xyz, atoms=sp, lattice=lattice),)
         if not velocity and not moment:
             return ret[0]
 
@@ -161,15 +167,15 @@ class inSileFHIaims(SileFHIaims):
         return ret
 
     def read_velocity(self):
-        """ Reads velocity in the file """
+        """Reads velocity in the file"""
         return self.read_geometry(velocity=True)[1]
 
     def read_moment(self):
-        """ Reads initial moment in the file """
+        """Reads initial moment in the file"""
         return self.read_geometry(moment=True)[1]
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)

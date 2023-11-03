@@ -11,20 +11,22 @@ from sisl import TimeSelector
 
 
 @pytest.mark.selector
-@pytest.mark.xfail(sys.platform.startswith("darwin"),
-                   reason="Sleep on MacOS is not consistent causing erroneous fails.")
+@pytest.mark.xfail(
+    sys.platform.startswith("darwin"),
+    reason="Sleep on MacOS is not consistent causing erroneous fails.",
+)
 class TestSelector:
-
     def sleep(self, *args):
         if len(args) == 1:
+
             def _sleep():
-                time.sleep(1. / 100 * args[0])
+                time.sleep(1.0 / 100 * args[0])
+
             _sleep.__name__ = str(args[0])
             return _sleep
         return [self.sleep(arg) for arg in args]
 
     def test_selector1(self):
-
         sel = TimeSelector()
         sel.prepend(self.sleep(1))
         sel.prepend(self.sleep(2))

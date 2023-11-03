@@ -3,7 +3,6 @@ from .node import Node
 
 
 class Dispatcher(Node):
-    
     _dispatchs = {}
     _node = None
     _dispatch_input = "key"
@@ -13,9 +12,8 @@ class Dispatcher(Node):
         cls._node = None
         cls._default_dispatch = None
         return super().__init_subclass__()
-    
-    def _get(self, *args, **kwargs):
 
+    def _get(self, *args, **kwargs):
         key = kwargs.pop(self._dispatch_input, None)
 
         if key is None:
@@ -25,13 +23,15 @@ class Dispatcher(Node):
             kls = key
         else:
             if key not in self._dispatchs:
-                raise ValueError(f"Registered nodes have keys: {list(self._dispatchs)}, but {key} was requested")
-            
+                raise ValueError(
+                    f"Registered nodes have keys: {list(self._dispatchs)}, but {key} was requested"
+                )
+
             kls = self._dispatchs[key]
-        
+
         with lazy_context(nodes=True):
             self._node = kls(*args, **kwargs)
-        
+
         return self._node.get()
 
     def __getattr__(self, key):
@@ -39,7 +39,7 @@ class Dispatcher(Node):
             if self._node is None:
                 self.get()
             return getattr(self._node, key)
-    
+
     @classmethod
     def register(cls, key, node_cls, default=False):
         if default or len(cls._dispatchs) == 0:

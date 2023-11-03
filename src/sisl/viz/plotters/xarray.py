@@ -7,25 +7,30 @@ from xarray import DataArray
 import sisl.viz.plotters.plot_actions as plot_actions
 from sisl.messages import info
 
-#from sisl.viz.nodes.processors.grid import get_isos
+# from sisl.viz.nodes.processors.grid import get_isos
+
 
 def _process_xarray_data(data, x=None, y=None, z=False, style={}):
     axes = {"x": x, "y": y}
     if z is not False:
         axes["z"] = z
-    
+
     ndim = len(axes)
 
     # Normalize data to a Dataset
     if isinstance(data, DataArray):
         if np.all([ax is None for ax in axes.values()]):
-            raise ValueError("You have to provide either x or y (or z if it is not False) (one needs to be the fixed variable).")
+            raise ValueError(
+                "You have to provide either x or y (or z if it is not False) (one needs to be the fixed variable)."
+            )
         axes = {k: v or data.name for k, v in axes.items()}
         data = data.to_dataset(name=data.name)
     else:
         if np.any([ax is None for ax in axes.values()]):
-            raise ValueError("Since you provided a Dataset, you have to provide both x and y (and z if it is not False).")
-    
+            raise ValueError(
+                "Since you provided a Dataset, you have to provide both x and y (and z if it is not False)."
+            )
+
     data_axis = None
     fixed_axes = {}
     # Check, for each axis, if it is uni dimensional (in which case we add it to the fixed axes dictionary)
@@ -57,19 +62,21 @@ def _process_xarray_data(data, x=None, y=None, z=False, style={}):
     for key, value in style.items():
         if value in data:
             style_dims = style_dims.union(set(data[value].dims))
-        
+
     extra_style_dims = style_dims - set(data[data_var].dims)
     if extra_style_dims:
-        data = data.stack(extra_style_dim=extra_style_dims).transpose('extra_style_dim', ...)
+        data = data.stack(extra_style_dim=extra_style_dims).transpose(
+            "extra_style_dim", ...
+        )
 
     if data[data_var].shape[0] == 0:
         return None, None, None, None, None
-    
+
     if len(data[data_var].shape) == 1:
         data = data.expand_dims(dim={"fake_dim": [0]}, axis=0)
     # We have to flatten all the dimensions that will not be represented as an axis,
     # since we will just iterate over them.
-    dims_to_stack = data[data_var].dims[:-len(last_dims)]
+    dims_to_stack = data[data_var].dims[: -len(last_dims)]
     data = data.stack(iterate_dim=dims_to_stack).transpose("iterate_dim", ...)
 
     styles = {}
@@ -83,35 +90,59 @@ def _process_xarray_data(data, x=None, y=None, z=False, style={}):
 
     fixed_coords = {}
     for ax_key, fixed_axis in fixed_axes.items():
-        fixed_coord = data[fixed_axis] 
+        fixed_coord = data[fixed_axis]
         if "iterate_dim" in fixed_coord.dims:
             # This is if fixed_coord was a variable of the dataset, which possibly has
             # gotten the extra iterate_dim added.
             fixed_coord = fixed_coord.isel(iterate_dim=0)
         fixed_coords[ax_key] = fixed_coord
 
-    #info(f"{self} variables: \n\t- Fixed: {fixed_axes}\n\t- Data axis: {data_axis}\n\t")
+    # info(f"{self} variables: \n\t- Fixed: {fixed_axes}\n\t- Data axis: {data_axis}\n\t")
 
     return plot_data, fixed_coords, styles, data_axis, axes
 
-def draw_xarray_xy(data, x=None, y=None, z=False, color="color", width="width", dash="dash", opacity="opacity", name="", colorscale=None, 
-    what: typing.Literal["line", "scatter", "balls", "area_line", "arrows", "none"] = "line",
+
+def draw_xarray_xy(
+    data,
+    x=None,
+    y=None,
+    z=False,
+    color="color",
+    width="width",
+    dash="dash",
+    opacity="opacity",
+    name="",
+    colorscale=None,
+    what: typing.Literal[
+        "line", "scatter", "balls", "area_line", "arrows", "none"
+    ] = "line",
     dependent_axis: typing.Optional[typing.Literal["x", "y"]] = None,
-    set_axrange=False, set_axequal=False
+    set_axrange=False,
+    set_axequal=False,
 ):
     if what == "none":
         return []
 
     plot_data, fixed_coords, styles, data_axis, axes = _process_xarray_data(
-        data, x=x, y=y, z=z, style={"color": color, "width": width, "opacity": opacity, "dash": dash}
+        data,
+        x=x,
+        y=y,
+        z=z,
+        style={"color": color, "width": width, "opacity": opacity, "dash": dash},
     )
 
     if plot_data is None:
         return []
 
     to_plot = _draw_xarray_lines(
-        data=plot_data, style=styles, fixed_coords=fixed_coords, data_axis=data_axis, colorscale=colorscale, what=what, name=name,
-        dependent_axis=dependent_axis
+        data=plot_data,
+        style=styles,
+        fixed_coords=fixed_coords,
+        data_axis=data_axis,
+        colorscale=colorscale,
+        what=what,
+        name=name,
+        dependent_axis=dependent_axis,
     )
 
     if set_axequal:
@@ -132,14 +163,17 @@ def draw_xarray_xy(data, x=None, y=None, z=False, color="color", width="width", 
 
         if set_axrange:
             axis["range"] = (float(ax.min()), float(ax.max()))
-        
+
         axis.update(ax.attrs.get("axis", {}))
 
         to_plot.append(plot_actions.set_axis(axis=key, **axis))
 
     return to_plot
 
-def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, name="", dependent_axis=None):
+
+def _draw_xarray_lines(
+    data, style, fixed_coords, data_axis, colorscale, what, name="", dependent_axis=None
+):
     # Initialize actions list
     to_plot = []
 
@@ -150,7 +184,9 @@ def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, n
         lines_style[key] = style.get(key)
 
         if lines_style[key] is not None:
-            extra_style_dims = extra_style_dims or "extra_style_dim" in lines_style[key].dims
+            extra_style_dims = (
+                extra_style_dims or "extra_style_dim" in lines_style[key].dims
+            )
         # If some style is constant, just repeat it.
         if lines_style[key] is None or "iterate_dim" not in lines_style[key].dims:
             lines_style[key] = itertools.repeat(lines_style[key])
@@ -159,24 +195,29 @@ def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, n
     # use a special drawing function. If we have to draw lines with multiple widths
     # we also need to use a special function.
     line_kwargs = {}
-    if isinstance(lines_style['color'], itertools.repeat):
-        color_value = next(lines_style['color'])
+    if isinstance(lines_style["color"], itertools.repeat):
+        color_value = next(lines_style["color"])
     else:
-        color_value = lines_style['color']
+        color_value = lines_style["color"]
 
-    if isinstance(lines_style['width'], itertools.repeat):
-        width_value = next(lines_style['width'])
+    if isinstance(lines_style["width"], itertools.repeat):
+        width_value = next(lines_style["width"])
     else:
-        width_value = lines_style['width']
+        width_value = lines_style["width"]
 
     if isinstance(color_value, DataArray) and (data.dims[-1] in color_value.dims):
         color = color_value
         if color.dtype in (int, float):
             coloraxis_name = f"{color.name}_{name}" if name else color.name
             to_plot.append(
-                plot_actions.init_coloraxis(name=coloraxis_name, cmin=color.values.min(), cmax=color.values.max(), colorscale=colorscale)
+                plot_actions.init_coloraxis(
+                    name=coloraxis_name,
+                    cmin=color.values.min(),
+                    cmax=color.values.max(),
+                    colorscale=colorscale,
+                )
             )
-            line_kwargs = {'coloraxis': coloraxis_name}
+            line_kwargs = {"coloraxis": coloraxis_name}
         drawing_function_name = f"draw_multicolor_{what}"
     elif isinstance(width_value, DataArray) and (data.dims[-1] in width_value.dims):
         drawing_function_name = f"draw_multisize_{what}"
@@ -187,34 +228,39 @@ def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, n
     if len(fixed_coords) == 2:
         to_plot.append(plot_actions.init_3D())
         drawing_function_name += "_3D"
-        
+
     _drawing_function = getattr(plot_actions, drawing_function_name)
     if what in ("scatter", "balls"):
+
         def drawing_function(*args, **kwargs):
             marker = kwargs.pop("line")
-            marker['size'] = marker.pop("width")
+            marker["size"] = marker.pop("width")
 
-            to_plot.append(
-                _drawing_function(*args, marker=marker, **kwargs)
-            )
+            to_plot.append(_drawing_function(*args, marker=marker, **kwargs))
+
     elif what == "area_line":
+
         def drawing_function(*args, **kwargs):
             to_plot.append(
                 _drawing_function(*args, dependent_axis=dependent_axis, **kwargs)
             )
+
     else:
+
         def drawing_function(*args, **kwargs):
-            to_plot.append(
-                _drawing_function(*args, **kwargs)
-            )
+            to_plot.append(_drawing_function(*args, **kwargs))
 
     # Define the iterator over lines, containing both values and styles
-    iterator = zip(data,
-        lines_style['color'], lines_style['width'], lines_style['opacity'], lines_style['dash']
+    iterator = zip(
+        data,
+        lines_style["color"],
+        lines_style["width"],
+        lines_style["opacity"],
+        lines_style["dash"],
     )
 
     fixed_coords_values = {k: arr.values for k, arr in fixed_coords.items()}
-    
+
     single_line = len(data.iterate_dim) == 1
     if name in data.iterate_dim.coords:
         name_prefix = ""
@@ -223,7 +269,6 @@ def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, n
 
     # Now just iterate over each line and plot it.
     for values, *styles in iterator:
-
         names = values.iterate_dim.values[()]
         if name in values.iterate_dim.coords:
             line_name = f"{name_prefix}{values.iterate_dim.coords[name].values[()]}"
@@ -243,7 +288,12 @@ def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, n
             parsed_styles.append(style)
 
         line_color, line_width, line_opacity, line_dash = parsed_styles
-        line_style = {"color": line_color, "width": line_width, "opacity": line_opacity, "dash": line_dash}
+        line_style = {
+            "color": line_color,
+            "width": line_width,
+            "opacity": line_opacity,
+            "dash": line_dash,
+        }
         line = {**line_style, **line_kwargs}
 
         coords = {
@@ -258,18 +308,27 @@ def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, n
                 if v is None or v.ndim == 0:
                     line_style[k] = itertools.repeat(v)
 
-            for l_color, l_width, l_opacity, l_dash in zip(line_style['color'], line_style['width'], line_style['opacity'], line_style['dash']):
-                line_style = {"color": l_color, "width": l_width, "opacity": l_opacity, "dash": l_dash}
+            for l_color, l_width, l_opacity, l_dash in zip(
+                line_style["color"],
+                line_style["width"],
+                line_style["opacity"],
+                line_style["dash"],
+            ):
+                line_style = {
+                    "color": l_color,
+                    "width": l_width,
+                    "opacity": l_opacity,
+                    "dash": l_dash,
+                }
                 drawing_function(**coords, line=line_style, name=line_name)
 
     return to_plot
-        
 
 
 # class PlotterNodeGrid(PlotterXArray):
-    
+
 #     def draw(self, data, isos=[]):
-        
+
 #         ndim = data.ndim
 
 #         if ndim == 2:
@@ -291,9 +350,9 @@ def _draw_xarray_lines(data, style, fixed_coords, data_axis, colorscale, what, n
 #                 self.draw_line(**iso_line)
 #         elif ndim == 3:
 #             isosurfaces = get_isos(data, isos)
-            
+
 #             for isosurface in isosurfaces:
 #                 self.draw_mesh_3D(**isosurface)
-        
-        
+
+
 #         self.set_axes_equal()

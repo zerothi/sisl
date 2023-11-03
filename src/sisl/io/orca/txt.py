@@ -13,40 +13,54 @@ from .._multiple import SileBinder
 from ..sile import add_sile, sile_fh_open
 from .sile import SileORCA
 
-__all__ = ['txtSileORCA']
+__all__ = ["txtSileORCA"]
 
 _A = SileORCA.InfoAttr
 
 
 @set_module("sisl.io.orca")
 class txtSileORCA(SileORCA):
-    """ Output from the ORCA property.txt file """
+    """Output from the ORCA property.txt file"""
 
     _info_attributes_ = [
-        _A("na", r".*Number of atoms:",
-           lambda attr, match: int(match.string.split()[-1])),
-        _A("no", r".*Number of basis functions:",
-           lambda attr, match: int(match.string.split()[-1])),
-        _A("vdw_correction", r".*\$ VdW_Correction",
-           lambda attr, match: True, default=False),
+        _A(
+            "na",
+            r".*Number of atoms:",
+            lambda attr, match: int(match.string.split()[-1]),
+        ),
+        _A(
+            "no",
+            r".*Number of basis functions:",
+            lambda attr, match: int(match.string.split()[-1]),
+        ),
+        _A(
+            "vdw_correction",
+            r".*\$ VdW_Correction",
+            lambda attr, match: True,
+            default=False,
+        ),
     ]
 
     @property
-    @deprecation("txtSileORCA.na is deprecated in favor of txtSileORCA.info.na", "0.16.0")
+    @deprecation(
+        "txtSileORCA.na is deprecated in favor of txtSileORCA.info.na", "0.16.0"
+    )
     def na(self):
-        """ Number of atoms """
+        """Number of atoms"""
         return self.info.na
 
     @property
-    @deprecation("txtSileORCA.no is deprecated in favor of txtSileORCA.info.no", "0.16.0")
+    @deprecation(
+        "txtSileORCA.no is deprecated in favor of txtSileORCA.info.no", "0.16.0"
+    )
     def no(self):
-        """ Number of orbitals (basis functions) """
+        """Number of orbitals (basis functions)"""
         return self.info.no
 
     @SileBinder(postprocess=np.array)
     @sile_fh_open()
     def read_electrons(self):
-        """ Read number of electrons (alpha, beta)
+        """Read number of electrons (alpha, beta)
 
         Returns
         -------
@@ -63,7 +77,7 @@ class txtSileORCA(SileORCA):
     @SileBinder()
     @sile_fh_open()
     def read_energy(self):
-        """ Reads the energy blocks
+        """Reads the energy blocks
 
         Returns
         -------
@@ -73,11 +87,11 @@ class txtSileORCA(SileORCA):
         f = self.step_to("$ DFT_Energy", allow_reread=False)[0]
         if not f:
             return None
-        self.readline() # description
-        self.readline() # geom. index
-        self.readline() # prop. index
+        self.readline()  # description
+        self.readline()  # geom. index
+        self.readline()  # prop. index
 
-        Ha2eV = units('Ha', 'eV')
+        Ha2eV = units("Ha", "eV")
         E = PropertyDict()
 
         line = self.readline()
@@ -109,7 +123,7 @@ class txtSileORCA(SileORCA):
     @SileBinder()
     @sile_fh_open()
     def read_geometry(self):
-        """ Reads the geometry from ORCA property.txt file
+        """Reads the geometry from ORCA property.txt file
 
         Returns
         -------
@@ -122,8 +136,8 @@ class txtSileORCA(SileORCA):
 
         line = self.readline()
         na = int(line.split()[-1])
-        self.readline() # skip Geometry index
-        self.readline() # skip Coordinates line
+        self.readline()  # skip Geometry index
+        self.readline()  # skip Coordinates line
 
         atoms = []
         xyz = np.empty([na, 3], np.float64)
@@ -135,4 +149,4 @@ class txtSileORCA(SileORCA):
         return Geometry(xyz, atoms)
 
 
-add_sile('txt', txtSileORCA, gzip=True)
+add_sile("txt", txtSileORCA, gzip=True)

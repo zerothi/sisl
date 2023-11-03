@@ -12,10 +12,20 @@ pytestmark = [pytest.mark.physics, pytest.mark.spin]
 
 
 def test_spin1():
-    for val in ['unpolarized', '', Spin.UNPOLARIZED,
-                'polarized', 'p', Spin.POLARIZED,
-                'non-collinear', 'nc', Spin.NONCOLINEAR,
-                'spin-orbit', 'so', Spin.SPINORBIT]:
+    for val in [
+        "unpolarized",
+        "",
+        Spin.UNPOLARIZED,
+        "polarized",
+        "p",
+        Spin.POLARIZED,
+        "non-collinear",
+        "nc",
+        Spin.NONCOLINEAR,
+        "spin-orbit",
+        "so",
+        Spin.SPINORBIT,
+    ]:
         s = Spin(val)
         str(s)
         s1 = s.copy()
@@ -24,9 +34,9 @@ def test_spin1():
 
 def test_spin2():
     s1 = Spin()
-    s2 = Spin('p')
-    s3 = Spin('nc')
-    s4 = Spin('so')
+    s2 = Spin("p")
+    s3 = Spin("nc")
+    s4 = Spin("so")
 
     assert s1.kind == Spin.UNPOLARIZED
     assert s2.kind == Spin.POLARIZED
@@ -77,7 +87,7 @@ def test_spin2():
 
 def test_spin3():
     with pytest.raises(ValueError):
-        s = Spin('satoehus')
+        s = Spin("satoehus")
 
 
 def test_spin4():
@@ -168,31 +178,33 @@ def test_pauli():
     S = Spin()
 
     # Create a fictituous wave-function
-    sq2 = 2 ** .5
-    W = np.array([
-        [1/sq2, 1/sq2], # M_x = 1
-        [1/sq2, -1/sq2], # M_x = -1
-        [0.5 + 0.5j, 0.5 + 0.5j], # M_x = 1
-        [0.5 - 0.5j, -0.5 + 0.5j], # M_x = -1
-        [1/sq2, 1j/sq2], # M_y = 1
-        [1/sq2, -1j/sq2], # M_y = -1
-        [0.5 - 0.5j, 0.5 + 0.5j], # M_y = 1
-        [0.5 + 0.5j, 0.5 - 0.5j], # M_y = -1
-        [1, 0], # M_z = 1
-        [0, 1], # M_z = -1
-    ])
+    sq2 = 2**0.5
+    W = np.array(
+        [
+            [1 / sq2, 1 / sq2],  # M_x = 1
+            [1 / sq2, -1 / sq2],  # M_x = -1
+            [0.5 + 0.5j, 0.5 + 0.5j],  # M_x = 1
+            [0.5 - 0.5j, -0.5 + 0.5j],  # M_x = -1
+            [1 / sq2, 1j / sq2],  # M_y = 1
+            [1 / sq2, -1j / sq2],  # M_y = -1
+            [0.5 - 0.5j, 0.5 + 0.5j],  # M_y = 1
+            [0.5 + 0.5j, 0.5 - 0.5j],  # M_y = -1
+            [1, 0],  # M_z = 1
+            [0, 1],  # M_z = -1
+        ]
+    )
     x = np.array([1, -1, 1, -1, 0, 0, 0, 0, 0, 0])
-    assert np.allclose(x, (np.conj(W)*S.X.dot(W.T).T).sum(1).real)
+    assert np.allclose(x, (np.conj(W) * S.X.dot(W.T).T).sum(1).real)
     y = np.array([0, 0, 0, 0, 1, -1, 1, -1, 0, 0])
-    assert np.allclose(y, (np.conj(W)*np.dot(S.Y, W.T).T).sum(1).real)
+    assert np.allclose(y, (np.conj(W) * np.dot(S.Y, W.T).T).sum(1).real)
     z = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1, -1])
-    assert np.allclose(z, (np.conj(W)*np.dot(S.Z, W.T).T).sum(1).real)
+    assert np.allclose(z, (np.conj(W) * np.dot(S.Z, W.T).T).sum(1).real)
 
 
 def test_pickle():
     import pickle as p
 
-    S = Spin('nc')
+    S = Spin("nc")
     n = p.dumps(S)
     s = p.loads(n)
     assert S == s

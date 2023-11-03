@@ -19,11 +19,11 @@ from .orbital_groups_plot import OrbitalGroupsPlot
 
 def pdos_plot(
     pdos_data: PDOSData,
-    groups: Sequence[OrbitalStyleQuery]=[{"name": "DOS"}], 
+    groups: Sequence[OrbitalStyleQuery] = [{"name": "DOS"}],
     Erange: Tuple[float, float] = (-2, 2),
-    E_axis: Literal["x", "y"] = "x", 
+    E_axis: Literal["x", "y"] = "x",
     line_mode: Literal["line", "scatter", "area_line"] = "line",
-    line_scale: float = 1., 
+    line_scale: float = 1.0,
     backend: str = "plotly",
 ) -> Figure:
     """Plot the projected density of states.
@@ -53,8 +53,14 @@ def pdos_plot(
 
     orbital_manager = get_orbital_queries_manager(pdos_data)
     groups_data = reduce_orbital_data(
-        E_PDOS, groups=groups, orb_dim="orb", spin_dim="spin", sanitize_group=orbital_manager,
-        group_vars=('color', 'size', 'dash'), groups_dim="group", drop_empty=True,
+        E_PDOS,
+        groups=groups,
+        orb_dim="orb",
+        spin_dim="spin",
+        sanitize_group=orbital_manager,
+        group_vars=("color", "size", "dash"),
+        groups_dim="group",
+        drop_empty=True,
         spin_reduce=np.sum,
     )
 
@@ -67,13 +73,22 @@ def pdos_plot(
     # A PlotterNode gets the processed data and creates abstract actions (backend agnostic)
     # that should be performed on the figure. The output of this node
     # must be fed to a figure (backend specific).
-    final_groups_data = scale_variable(groups_data, var="size", scale=line_scale, default_value=1)
-    plot_actions = draw_xarray_xy(data=final_groups_data, x=x, y=y, width="size", what=line_mode, dependent_axis=dependent_axis)
+    final_groups_data = scale_variable(
+        groups_data, var="size", scale=line_scale, default_value=1
+    )
+    plot_actions = draw_xarray_xy(
+        data=final_groups_data,
+        x=x,
+        y=y,
+        width="size",
+        what=line_mode,
+        dependent_axis=dependent_axis,
+    )
 
     return get_figure(backend=backend, plot_actions=plot_actions)
 
-class PdosPlot(OrbitalGroupsPlot):
 
+class PdosPlot(OrbitalGroupsPlot):
     function = staticmethod(pdos_plot)
 
     def split_DOS(self, on="species", only=None, exclude=None, clean=True, **kwargs):
@@ -113,5 +128,6 @@ class PdosPlot(OrbitalGroupsPlot):
         >>> # be replaced by the value of n.
         >>> plot.split_DOS(on="n+l", species=["Au"], name="Au $ns")
         """
-        return self.split_groups(on=on, only=only, exclude=exclude, clean=clean, **kwargs)
-    
+        return self.split_groups(
+            on=on, only=only, exclude=exclude, clean=clean, **kwargs
+        )

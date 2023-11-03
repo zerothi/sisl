@@ -6,16 +6,20 @@ from sisl.io.siesta.binaries import _gfSileSiesta
 
 from ..sile import add_sile
 
-__all__ = ['tbtgfSileTBtrans']
+__all__ = ["tbtgfSileTBtrans"]
 
 
 dic = {}
 try:
-    dic['__doc__'] = _gfSileSiesta.__doc__.replace(_gfSileSiesta.__name__, 'tbtgfSileTBtrans')
+    dic["__doc__"] = _gfSileSiesta.__doc__.replace(
+        _gfSileSiesta.__name__, "tbtgfSileTBtrans"
+    )
 except Exception:
     pass
 
-tbtgfSileTBtrans = set_module("sisl.io.tbtrans")(type("tbtgfSileTBtrans", (_gfSileSiesta, ), dic))
+tbtgfSileTBtrans = set_module("sisl.io.tbtrans")(
+    type("tbtgfSileTBtrans", (_gfSileSiesta,), dic)
+)
 del dic
 
-add_sile('TBTGF', tbtgfSileTBtrans)
+add_sile("TBTGF", tbtgfSileTBtrans)

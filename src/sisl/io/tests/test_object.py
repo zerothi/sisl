@@ -9,7 +9,14 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from sisl import DensityMatrix, EnergyDensityMatrix, Geometry, Grid, Hamiltonian, Lattice
+from sisl import (
+    DensityMatrix,
+    EnergyDensityMatrix,
+    Geometry,
+    Grid,
+    Hamiltonian,
+    Lattice,
+)
 from sisl._environ import sisl_environ
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
@@ -69,7 +76,6 @@ def test_get_out_context():
 
 
 class TestObject:
-
     def test_siesta_sources(self):
         pytest.importorskip("sisl.io.siesta._siesta")
 
@@ -97,7 +103,9 @@ class TestObject:
             assert isinstance(sile, Sile)
             assert not os.path.exists(fp)
 
-    @pytest.mark.parametrize("sile", _fnames("test", ["cube", "CUBE", "cube.gz", "CUBE.gz"]))
+    @pytest.mark.parametrize(
+        "sile", _fnames("test", ["cube", "CUBE", "cube.gz", "CUBE.gz"])
+    )
     def test_cube(self, sile):
         s = gs(sile)
         for obj in [BaseSile, Sile, cubeSile]:
@@ -133,7 +141,9 @@ class TestObject:
         for obj in [BaseSile, Sile, SileScaleUp, rhamSileScaleUp]:
             assert isinstance(s, obj)
 
-    @pytest.mark.parametrize("sile", _fnames("test", ["fdf", "fdf.gz", "FDF.gz", "FDF"]))
+    @pytest.mark.parametrize(
+        "sile", _fnames("test", ["fdf", "fdf.gz", "FDF.gz", "FDF"])
+    )
     def test_siesta_fdf(self, sile):
         s = gs(sile)
         for obj in [BaseSile, Sile, SileSiesta, fdfSileSiesta]:
@@ -194,7 +204,13 @@ class TestObject:
     def test_phtrans_nc(self, sile):
         pytest.importorskip("netCDF4")
         s = gs(sile, _open=False)
-        for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans, phtncSilePHtrans]:
+        for obj in [
+            BaseSile,
+            SileCDF,
+            SileCDFTBtrans,
+            tbtncSileTBtrans,
+            phtncSilePHtrans,
+        ]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames("CONTCAR", ["", "gz"]))
@@ -209,19 +225,25 @@ class TestObject:
         for obj in [BaseSile, Sile, SileVASP, carSileVASP]:
             assert isinstance(s, obj)
 
-    @pytest.mark.parametrize("sile", _fnames("test", ["xyz", "XYZ", "xyz.gz", "XYZ.gz"]))
+    @pytest.mark.parametrize(
+        "sile", _fnames("test", ["xyz", "XYZ", "xyz.gz", "XYZ.gz"])
+    )
     def test_xyz(self, sile):
         s = gs(sile)
         for obj in [BaseSile, Sile, xyzSile]:
             assert isinstance(s, obj)
 
-    @pytest.mark.parametrize("sile", _fnames("test", ["molf", "MOLF", "molf.gz", "MOLF.gz"]))
+    @pytest.mark.parametrize(
+        "sile", _fnames("test", ["molf", "MOLF", "molf.gz", "MOLF.gz"])
+    )
     def test_molf(self, sile):
         s = gs(sile)
         for obj in [BaseSile, Sile, moldenSile]:
             assert isinstance(s, obj)
 
-    @pytest.mark.parametrize("sile", _fnames("test", ["xsf", "XSF", "xsf.gz", "XSF.gz"]))
+    @pytest.mark.parametrize(
+        "sile", _fnames("test", ["xsf", "XSF", "xsf.gz", "XSF.gz"])
+    )
     def test_xsf(self, sile):
         s = gs(sile)
         for obj in [BaseSile, Sile, xsfSile]:
@@ -256,20 +278,22 @@ class TestObject:
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
-            pytest.xfail("Windows reading/writing supercell fails for some unknown reason")
+            pytest.xfail(
+                "Windows reading/writing supercell fails for some unknown reason"
+            )
 
         # Write
         sile(f, mode="w").write_lattice(L)
         # Read 1
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 l = s.read_lattice()
-            assert l.equal(L, tol=1e-3) # pdb files have 8.3 for atomic coordinates
+            assert l.equal(L, tol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 l = Lattice.read(s)
             assert l.equal(L, tol=1e-3)
         except UnicodeDecodeError as e:
@@ -287,19 +311,23 @@ class TestObject:
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
-            pytest.xfail("Windows reading/writing supercell fails for some unknown reason")
+            pytest.xfail(
+                "Windows reading/writing supercell fails for some unknown reason"
+            )
 
         # Write
         sile(f, mode="w").write_lattice(L)
         # Read 1
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 l = s.read_lattice()
-            assert l.equal(L, tol=1e-3) # pdb files have 8.3 for atomic coordinates
+            assert l.equal(L, tol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
 
-    @pytest.mark.parametrize("sile", _my_intersect(["read_geometry"], ["write_geometry"]))
+    @pytest.mark.parametrize(
+        "sile", _my_intersect(["read_geometry"], ["write_geometry"])
+    )
     def test_read_write_geometry(self, sisl_tmp, sisl_system, sile):
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
@@ -311,22 +339,26 @@ class TestObject:
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
-            pytest.xfail("Windows reading/writing supercell fails for some unknown reason")
+            pytest.xfail(
+                "Windows reading/writing supercell fails for some unknown reason"
+            )
 
         # Write
         sile(f, mode="w").write_geometry(G)
         # Read 1
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 g = s.read_geometry()
                 if isinstance(g, list):
                     g = g[0]
-            assert g.equal(G, R=False, tol=1e-3) # pdb files have 8.3 for atomic coordinates
+            assert g.equal(
+                G, R=False, tol=1e-3
+            )  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 g = Geometry.read(s)
                 if isinstance(g, list):
                     g = g[0]
@@ -334,7 +366,9 @@ class TestObject:
         except UnicodeDecodeError as e:
             pass
 
-    @pytest.mark.parametrize("sile", _my_intersect(["read_hamiltonian"], ["write_hamiltonian"]))
+    @pytest.mark.parametrize(
+        "sile", _my_intersect(["read_hamiltonian"], ["write_hamiltonian"])
+    )
     def test_read_write_hamiltonian(self, sisl_tmp, sisl_system, sile):
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
@@ -347,24 +381,26 @@ class TestObject:
         H.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_hamiltonian.win", _dir)
         # Write
-        with sile(f, mode='w') as s:
+        with sile(f, mode="w") as s:
             s.write_hamiltonian(H)
         # Read 1
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 h = s.read_hamiltonian()
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 h = Hamiltonian.read(s)
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
 
-    @pytest.mark.parametrize("sile", _my_intersect(["read_density_matrix"], ["write_density_matrix"]))
+    @pytest.mark.parametrize(
+        "sile", _my_intersect(["read_density_matrix"], ["write_density_matrix"])
+    )
     def test_read_write_density_matrix(self, sisl_tmp, sisl_system, sile):
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
@@ -374,24 +410,27 @@ class TestObject:
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_density_matrix.win", _dir)
         # Write
-        with sile(f, mode='w') as s:
+        with sile(f, mode="w") as s:
             s.write_density_matrix(DM)
         # Read 1
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 dm = s.read_density_matrix(geometry=DM.geometry)
             assert DM.spsame(dm)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 dm = DensityMatrix.read(s, geometry=DM.geometry)
             assert DM.spsame(dm)
         except UnicodeDecodeError as e:
             pass
 
-    @pytest.mark.parametrize("sile", _my_intersect(["read_energy_density_matrix"], ["write_energy_density_matrix"]))
+    @pytest.mark.parametrize(
+        "sile",
+        _my_intersect(["read_energy_density_matrix"], ["write_energy_density_matrix"]),
+    )
     def test_read_write_energy_density_matrix(self, sisl_tmp, sisl_system, sile):
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
@@ -401,24 +440,26 @@ class TestObject:
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_energy_density_matrix.win", _dir)
         # Write
-        with sile(f, mode='w') as s:
+        with sile(f, mode="w") as s:
             s.write_energy_density_matrix(EDM)
         # Read 1
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 edm = s.read_energy_density_matrix(geometry=EDM.geometry)
             assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 edm = EnergyDensityMatrix.read(s, geometry=EDM.geometry)
             assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass
 
-    @pytest.mark.parametrize("sile", _my_intersect(["read_hamiltonian"], ["write_hamiltonian"]))
+    @pytest.mark.parametrize(
+        "sile", _my_intersect(["read_hamiltonian"], ["write_hamiltonian"])
+    )
     def test_read_write_hamiltonian_overlap(self, sisl_tmp, sisl_system, sile):
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
@@ -431,24 +472,26 @@ class TestObject:
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
         f = sisl_tmp("test_read_write_hamiltonian_overlap.win", _dir)
         # Write
-        with sile(f, mode='w') as s:
+        with sile(f, mode="w") as s:
             s.write_hamiltonian(H)
         # Read 1
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 h = s.read_hamiltonian()
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 h = Hamiltonian.read(s)
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
 
-    @pytest.mark.filterwarnings("ignore", message="*gridncSileSiesta.read_grid cannot determine")
+    @pytest.mark.filterwarnings(
+        "ignore", message="*gridncSileSiesta.read_grid cannot determine"
+    )
     @pytest.mark.parametrize("sile", _my_intersect(["read_grid"], ["write_grid"]))
     def test_read_write_grid(self, sisl_tmp, sisl_system, sile):
         if issubclass(sile, SileCDF):
@@ -475,7 +518,7 @@ class TestObject:
             pass
         # Read 2
         try:
-            with sile(f, mode='r') as s:
+            with sile(f, mode="r") as s:
                 g = Grid.read(s)
             assert np.allclose(g.grid, G.grid, atol=1e-5)
         except UnicodeDecodeError as e:
@@ -510,5 +553,6 @@ def test_buffer_cls():
     assert tmpSile._buffer_cls.__name__ == "customBuffer"
 
     with pytest.raises(TypeError):
+
         class tmpSile(xyzSile, buffer_cls=object):
             pass

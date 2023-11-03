@@ -56,7 +56,7 @@ def dagger(M):
 
 
 def _scat_state_svd(A, **kwargs):
-    """ Calculating the SVD of matrix A for the scattering state
+    """Calculating the SVD of matrix A for the scattering state
 
     Parameters
     ----------
@@ -86,11 +86,12 @@ def _scat_state_svd(A, **kwargs):
     driver = kwargs.get("driver", "gesvd").lower()
     if driver in ("arpack", "lobpcg", "sparse"):
         if driver == "sparse":
-            driver = "arpack" # scipy default
+            driver = "arpack"  # scipy default
 
         # filter out keys for scipy.sparse.svds
-        svds_kwargs = {key: kwargs[key] for key in ("k", "ncv", "tol", "v0")
-                       if key in kwargs}
+        svds_kwargs = {
+            key: kwargs[key] for key in ("k", "ncv", "tol", "v0") if key in kwargs
+        }
         # do not calculate vt
         svds_kwargs["return_singular_vectors"] = "u"
         svds_kwargs["solver"] = driver
@@ -115,11 +116,11 @@ def _scat_state_svd(A, **kwargs):
     #   DOS * <i| S(k) |i>
     # to account for the overlap matrix. For orthogonal basis sets
     # this DOS eigenvalue is correct.
-    return DOS ** 2 / (2*np.pi), A
+    return DOS**2 / (2 * np.pi), A
 
 
 class PivotSelfEnergy(si.physics.SelfEnergy):
-    """ Container for the self-energy object
+    """Container for the self-energy object
 
     This may either be a `tbtsencSileTBtrans`, a `tbtgfSileTBtrans` or a sisl.SelfEnergy objectfile
     """
@@ -136,21 +137,28 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         self._se = se
 
         if isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
+
             def se_func(*args, **kwargs):
                 return self._se.self_energy(self.name, *args, **kwargs)
+
             def broad_func(*args, **kwargs):
                 return self._se.broadening_matrix(self.name, *args, **kwargs)
+
         else:
+
             def se_func(*args, **kwargs):
                 return self._se.self_energy(*args, **kwargs)
+
             def broad_func(*args, **kwargs):
                 return self._se.broadening_matrix(*args, **kwargs)
 
         # Store the pivoting for faster indexing
         if pivot is None:
             if not isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
-                raise ValueError(f"{self.__class__.__name__} must be passed a sisl.io.tbtrans.tbtsencSileTBtrans. "
-                                 "Otherwise use the DownfoldSelfEnergy method with appropriate arguments.")
+                raise ValueError(
+                    f"{self.__class__.__name__} must be passed a sisl.io.tbtrans.tbtsencSileTBtrans. "
+                    "Otherwise use the DownfoldSelfEnergy method with appropriate arguments."
+                )
             pivot = se
 
         # Pivoting indices for the self-energy for the device region
@@ -176,8 +184,8 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
             # collect the pivoting indices for the downfolding
             pvt_btd.append(self.pvt_down[o:i, 0])
             o += i
-        #self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)
-        #self.pvt_btd_sort = arangei(o)
+        # self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)
+        # self.pvt_btd_sort = arangei(o)
 
         self._se_func = se_func
         self._broad_func = broad_func
@@ -196,13 +204,16 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
 
 
 class DownfoldSelfEnergy(PivotSelfEnergy):
-
-    def __init__(self, name, se, pivot, Hdevice, eta_device=0, bulk=True, bloch=(1, 1, 1)):
+    def __init__(
+        self, name, se, pivot, Hdevice, eta_device=0, bulk=True, bloch=(1, 1, 1)
+    ):
         super().__init__(name, se, pivot)
 
         if np.allclose(bloch, 1):
+
             def _bloch(func, k, *args, **kwargs):
                 return func(*args, k=k, **kwargs)
+
             self._bloch = _bloch
         else:
             self._bloch = si.Bloch(bloch)
@@ -248,7 +259,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         self._data.H = PropertyDict()
         self._data.H.electrode = se.spgeom0
         self._data.H.device = Hdevice.sub(down_atoms)
-        #geometry_down = self._data.H.device.geometry
+        # geometry_down = self._data.H.device.geometry
 
         # Now we retain the positions of the electrode orbitals in the
         # non pivoted structure for inserting the self-energy
@@ -268,7 +279,8 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         eta = None
         try:
             eta = self._se.eta
-        except Exception: pass
+        except Exception:
+            pass
         se = str(self._se).replace("\n", "\n ")
         return f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {eta}, eta_device: {self._eta_device},\n {se}\n}}"
 
@@ -304,12 +316,18 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
 
         Ed = data.Ed
         Eb = data.Eb
-        data.SeH = H.device.Sk(k, dtype=np.complex128) * Ed - H.device.Hk(k, dtype=np.complex128)
+        data.SeH = H.device.Sk(k, dtype=np.complex128) * Ed - H.device.Hk(
+            k, dtype=np.complex128
+        )
         if data.bulk:
+
             def hsk(k, **kwargs):
                 # constructor for the H and S part
                 return H.electrode.Sk(k, **kwargs) * Eb - H.electrode.Hk(k, **kwargs)
-            data.SeH[data.elec, data.elec.T] = self._bloch(hsk, k, format="array", dtype=np.complex128)
+
+            data.SeH[data.elec, data.elec.T] = self._bloch(
+                hsk, k, format="array", dtype=np.complex128
+            )
 
     def self_energy(self, E, k=(0, 0, 0), *args, **kwargs):
         self._prepare(E, k)
@@ -330,11 +348,14 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         Mr = 0
         sli = slice(cbtd[0], cbtd[1])
         for b in range(1, len(self.btd)):
-            sli1 = slice(cbtd[b], cbtd[b+1])
+            sli1 = slice(cbtd[b], cbtd[b + 1])
 
-            Mr = gM(M, sli1, sli) @ solve(gM(M, sli, sli) - Mr,
-                                          gM(M, sli, sli1),
-                                          overwrite_a=True, overwrite_b=True)
+            Mr = gM(M, sli1, sli) @ solve(
+                gM(M, sli, sli) - Mr,
+                gM(M, sli, sli1),
+                overwrite_a=True,
+                overwrite_b=True,
+            )
             sli = sli1
 
         return Mr
@@ -351,22 +372,28 @@ class BlockMatrixIndexer:
         return len(self._bm.blocks)
 
     def __iter__(self):
-        """ Loop contained indices in the BlockMatrix """
+        """Loop contained indices in the BlockMatrix"""
         yield from self._bm._M.keys()
 
     def __delitem__(self, key):
         if not isinstance(key, tuple):
-            raise ValueError(f"{self.__class__.__name__} index deletion must be done with a tuple.")
+            raise ValueError(
+                f"{self.__class__.__name__} index deletion must be done with a tuple."
+            )
         del self._bm._M[key]
 
     def __contains__(self, key):
         if not isinstance(key, tuple):
-            raise ValueError(f"{self.__class__.__name__} index checking must be done with a tuple.")
+            raise ValueError(
+                f"{self.__class__.__name__} index checking must be done with a tuple."
+            )
         return key in self._bm._M
 
     def __getitem__(self, key):
         if not isinstance(key, tuple):
-            raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
+            raise ValueError(
+                f"{self.__class__.__name__} index retrieval must be done with a tuple."
+            )
         M = self._bm._M.get(key)
         if M is None:
             i, j = key
@@ -376,15 +403,19 @@ class BlockMatrixIndexer:
 
     def __setitem__(self, key, M):
         if not isinstance(key, tuple):
-            raise ValueError(f"{self.__class__.__name__} index setting must be done with a tuple.")
+            raise ValueError(
+                f"{self.__class__.__name__} index setting must be done with a tuple."
+            )
 
         s = (self._bm.blocks[key[0]], self._bm.blocks[key[1]])
-        assert M.shape == s, f"Could not assign matrix of shape {M.shape} into matrix of shape {s}"
+        assert (
+            M.shape == s
+        ), f"Could not assign matrix of shape {M.shape} into matrix of shape {s}"
         self._bm._M[key] = M
 
 
 class BlockMatrix:
-    """ Container class that holds a block matrix """
+    """Container class that holds a block matrix"""
 
     def __init__(self, blocks):
         self._M = {}
@@ -398,23 +429,24 @@ class BlockMatrix:
         BI = self.block_indexer
         nb = len(BI)
         # stack stuff together
-        return np.concatenate([
-            np.concatenate([BI[i, j] for i in range(nb)], axis=0)
-            for j in range(nb)], axis=1)
+        return np.concatenate(
+            [np.concatenate([BI[i, j] for i in range(nb)], axis=0) for j in range(nb)],
+            axis=1,
+        )
 
     def tobtd(self):
-        """ Return only the block tridiagonal part of the matrix """
+        """Return only the block tridiagonal part of the matrix"""
         ret = self.__class__(self.blocks)
         sBI = self.block_indexer
         rBI = ret.block_indexer
         nb = len(sBI)
         for j in range(nb):
-            for i in range(max(0, j-1), min(j+2, nb)):
+            for i in range(max(0, j - 1), min(j + 2, nb)):
                 rBI[i, j] = sBI[i, j]
         return ret
 
     def tobd(self):
-        """ Return only the block diagonal part of the matrix """
+        """Return only the block diagonal part of the matrix"""
         ret = self.__class__(self.blocks)
         sBI = self.block_indexer
         rBI = ret.block_indexer
@@ -433,7 +465,7 @@ class BlockMatrix:
 
 
 class DeviceGreen:
-    r""" Block-tri-diagonal Green function calculator
+    r"""Block-tri-diagonal Green function calculator
 
     This class enables the extraction and calculation of some important
     quantities not currently accessible in TBtrans.
@@ -499,17 +531,18 @@ class DeviceGreen:
     #      That would probably require us to use a method to retrieve
     #      the elements which determines if it has been calculated or not.
 
-    def __init__(self, H, elecs, pivot, eta=0.):
-        """ Create Green function with Hamiltonian and BTD matrix elements """
+    def __init__(self, H, elecs, pivot, eta=0.0):
+        """Create Green function with Hamiltonian and BTD matrix elements"""
         self.H = H
 
         # Store electrodes (for easy retrieval of the SE)
         # There may be no electrodes
         self.elecs = elecs
-        #self.elecs_pvt = [pivot.pivot(el.name).reshape(-1, 1)
+        # self.elecs_pvt = [pivot.pivot(el.name).reshape(-1, 1)
         #                  for el in elecs]
-        self.elecs_pvt_dev = [pivot.pivot(el.name, in_device=True).reshape(-1, 1)
-                              for el in elecs]
+        self.elecs_pvt_dev = [
+            pivot.pivot(el.name, in_device=True).reshape(-1, 1) for el in elecs
+        ]
 
         self.pvt = pivot.pivot()
         self.btd = pivot.btd()
@@ -532,7 +565,7 @@ class DeviceGreen:
 
     @classmethod
     def from_fdf(cls, fdf, prefix="TBT", use_tbt_se=False, eta=None):
-        """ Return a new `DeviceGreen` using information gathered from the fdf
+        """Return a new `DeviceGreen` using information gathered from the fdf
 
         Parameters
         ----------
@@ -557,8 +590,10 @@ class DeviceGreen:
             if Path(f"{slabel}.{end}").is_file():
                 tbt = f"{slabel}.{end}"
         if tbt is None:
-            raise FileNotFoundError(f"{cls.__name__}.from_fdf could "
-                                    f"not find file {slabel}.[TBT|TBT_UP|TBT_DN].nc")
+            raise FileNotFoundError(
+                f"{cls.__name__}.from_fdf could "
+                f"not find file {slabel}.[TBT|TBT_UP|TBT_DN].nc"
+            )
         tbt = si.get_sile(tbt)
         is_tbtrans = prefix.upper() == "TBT"
 
@@ -566,23 +601,27 @@ class DeviceGreen:
         Hdev = si.get_sile(fdf.get("TBT.HS", f"{slabel}.TSHS")).read_hamiltonian()
 
         def get_line(line):
-            """ Parse lines in the %block constructs of fdf's """
+            """Parse lines in the %block constructs of fdf's"""
             key, val = line.split(" ", 1)
             return key.lower().strip(), val.split("#", 1)[0].strip()
 
         def read_electrode(elec_prefix):
-            """ Parse the electrode information and return a dictionary with content """
+            """Parse the electrode information and return a dictionary with content"""
             from sisl.unit.siesta import unit_convert
+
             ret = PropertyDict()
 
             if is_tbtrans:
+
                 def block_get(dic, key, default=None, unit=None):
                     ret = dic.get(f"tbt.{key}", dic.get(key, default))
                     if unit is None or not isinstance(ret, str):
                         return ret
                     ret, un = ret.split()
                     return float(ret) * unit_convert(un, unit)
+
             else:
+
                 def block_get(dic, key, default=None, unit=None):
                     ret = dic.get(key, default)
                     if unit is None or not isinstance(ret, str):
@@ -617,23 +656,31 @@ class DeviceGreen:
             if Helec:
                 Helec = si.get_sile(Helec).read_hamiltonian()
             else:
-                raise ValueError(f"{self.__class__.__name__}.from_fdf could not find "
-                                 f"electrode HS in block: {prefix} ??")
+                raise ValueError(
+                    f"{self.__class__.__name__}.from_fdf could not find "
+                    f"electrode HS in block: {prefix} ??"
+                )
 
             # Get semi-infinite direction
             semi_inf = None
             for suf in ["-direction", "-dir", ""]:
                 semi_inf = block_get(dic, f"semi-inf{suf}", semi_inf)
             if semi_inf is None:
-                raise ValueError(f"{self.__class__.__name__}.from_fdf could not find "
-                                 f"electrode semi-inf-direction in block: {prefix} ??")
+                raise ValueError(
+                    f"{self.__class__.__name__}.from_fdf could not find "
+                    f"electrode semi-inf-direction in block: {prefix} ??"
+                )
             # convert to sisl infinite
             semi_inf = semi_inf.lower()
-            semi_inf = semi_inf[0] + {"a1": "a", "a2": "b", "a3": "c"}.get(semi_inf[1:], semi_inf[1:])
+            semi_inf = semi_inf[0] + {"a1": "a", "a2": "b", "a3": "c"}.get(
+                semi_inf[1:], semi_inf[1:]
+            )
             # Check that semi_inf is a recursive one!
             if not semi_inf in ["-a", "+a", "-b", "+b", "-c", "+c"]:
-                raise NotImplementedError(f"{self.__class__.__name__} does not implement other "
-                                          "self energies than the recursive one.")
+                raise NotImplementedError(
+                    f"{self.__class__.__name__} does not implement other "
+                    "self energies than the recursive one."
+                )
 
             bulk = bool(block_get(dic, "bulk", bulk))
             # loop for 0
@@ -641,21 +688,28 @@ class DeviceGreen:
                 for suf in sufs:
                     bloch[i] = block_get(dic, f"bloch-{suf}", bloch[i])
 
-            bloch = [int(b) for b in block_get(dic, "bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}").split()]
+            bloch = [
+                int(b)
+                for b in block_get(
+                    dic, "bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}"
+                ).split()
+            ]
 
             ret.eta = block_get(dic, "eta", eta, unit="eV")
             # manual shift of the fermi-level
-            dEf = block_get(dic, "delta-Ef", 0., unit="eV")
+            dEf = block_get(dic, "delta-Ef", 0.0, unit="eV")
             # shift electronic structure here, we store it in the returned
             # dictionary, for information, but it shouldn't be used.
             Helec.shift(dEf)
             ret.dEf = dEf
             # add a fraction of the bias in the coupling elements of the
             # E-C region, only meaningful for
-            ret.V_fraction = block_get(dic, "V-fraction", 0.)
-            if ret.V_fraction > 0.:
-                warn(f"{cls.__name__}.from_fdf(electrode={elec}) found a non-zero V-fraction value. "
-                     "This is currently not implemented.")
+            ret.V_fraction = block_get(dic, "V-fraction", 0.0)
+            if ret.V_fraction > 0.0:
+                warn(
+                    f"{cls.__name__}.from_fdf(electrode={elec}) found a non-zero V-fraction value. "
+                    "This is currently not implemented."
+                )
             ret.Helec = Helec
             ret.bloch = bloch
             ret.semi_inf = semi_inf
@@ -681,15 +735,19 @@ class DeviceGreen:
             # read from the TBT file (to check if the user has changed the input file)
             elec_eta = tbt.eta(elec)
             if not np.allclose(elec_eta, data.eta):
-                warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
-                     f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
-                     f"  {tbt} = {eta} eV\n  {fdf} = {data.eta} eV")
+                warn(
+                    f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
+                    f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
+                    f"  {tbt} = {eta} eV\n  {fdf} = {data.eta} eV"
+                )
 
             bloch = tbt.bloch(elec)
             if not np.allclose(bloch, data.bloch):
-                warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
-                     f"Bloch expansions from the fdf vs. TBT output, will use fdf value.\n"
-                     f"  {tbt} = {bloch}\n  {fdf} = {data.bloch}")
+                warn(
+                    f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
+                    f"Bloch expansions from the fdf vs. TBT output, will use fdf value.\n"
+                    f"  {tbt} = {bloch}\n  {fdf} = {data.bloch}"
+                )
 
             eta_dev = min(data.eta, eta_dev)
 
@@ -710,9 +768,11 @@ class DeviceGreen:
             eta_dev = eta
 
         elif not np.allclose(eta_dev, eta_dev_tbt):
-            warn(f"{cls.__name__}.from_fdf found inconsistent "
-                 f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
-                 f"  {tbt} = {eta_dev_tbt} eV\n  {fdf} = {eta_dev} eV")
+            warn(
+                f"{cls.__name__}.from_fdf found inconsistent "
+                f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
+                f"  {tbt} = {eta_dev_tbt} eV\n  {fdf} = {eta_dev} eV"
+            )
 
         elecs = []
         for elec in tbt.elecs:
@@ -723,9 +783,11 @@ class DeviceGreen:
                 if Path(f"{slabel}.TBT.SE.nc").is_file():
                     tbtse = si.get_sile(f"{slabel}.TBT.SE.nc")
                 else:
-                    raise FileNotFoundError(f"{cls.__name__}.from_fdf "
-                                            f"could not find file {slabel}.TBT.SE.nc "
-                                            "but it was requested by 'use_tbt_se'!")
+                    raise FileNotFoundError(
+                        f"{cls.__name__}.from_fdf "
+                        f"could not find file {slabel}.TBT.SE.nc "
+                        "but it was requested by 'use_tbt_se'!"
+                    )
 
             # shift according to potential
             data.Helec.shift(mu)
@@ -741,23 +803,29 @@ class DeviceGreen:
             if elec in use_tbt_se:
                 elec_se = PivotSelfEnergy(elec, tbtse)
             else:
-                elec_se = DownfoldSelfEnergy(elec, se, tbt, Hdev,
-                                             eta_device=eta_dev,
-                                             bulk=data.bulk, bloch=data.bloch)
+                elec_se = DownfoldSelfEnergy(
+                    elec,
+                    se,
+                    tbt,
+                    Hdev,
+                    eta_device=eta_dev,
+                    bulk=data.bulk,
+                    bloch=data.bloch,
+                )
 
             elecs.append(elec_se)
 
         return cls(Hdev, elecs, tbt, eta_dev)
 
     def reset(self):
-        """ Clean any memory used by this object """
+        """Clean any memory used by this object"""
         self._data = PropertyDict()
 
     def __len__(self):
         return len(self.pvt)
 
     def _elec(self, elec):
-        """ Convert a string electrode to the proper linear index """
+        """Convert a string electrode to the proper linear index"""
         if isinstance(elec, str):
             for iel, el in enumerate(self.elecs):
                 if el.name == elec:
@@ -767,7 +835,7 @@ class DeviceGreen:
         return elec
 
     def _elec_name(self, elec):
-        """ Convert an electrode index or str to the name of the electrode """
+        """Convert an electrode index or str to the name of the electrode"""
         if isinstance(elec, str):
             return elec
         elif isinstance(elec, PivotSelfEnergy):
@@ -842,7 +910,9 @@ class DeviceGreen:
         k = data.k
 
         # Prepare the Green function calculation
-        inv_G = self.H.Sk(k, dtype=np.complex128) * Ec - self.H.Hk(k, dtype=np.complex128)
+        inv_G = self.H.Sk(k, dtype=np.complex128) * Ec - self.H.Hk(
+            k, dtype=np.complex128
+        )
 
         # Now reduce the sparse matrix to the device region (plus do the pivoting)
         inv_G = inv_G[self.pvt, :][:, self.pvt]
@@ -878,16 +948,16 @@ class DeviceGreen:
             # rotate slices
             sln = sl0
             sl0 = slp
-            slp = slice(cbtd[b+1], cbtd[b+2])
+            slp = slice(cbtd[b + 1], cbtd[b + 2])
             iG = inv_G[sl0, :].tocsc()
 
-            B[b-1] = iG[:, sln].toarray()
+            B[b - 1] = iG[:, sln].toarray()
             A[b] = iG[:, sl0].toarray()
-            C[b+1] = iG[:, slp].toarray()
+            C[b + 1] = iG[:, slp].toarray()
         # and final matrix A and B
         iG = inv_G[slp, :].tocsc()
         A[nbm1] = iG[:, slp].toarray()
-        B[nbm1-1] = iG[:, sl0].toarray()
+        B[nbm1 - 1] = iG[:, sl0].toarray()
 
         # clean-up, not used anymore
         del inv_G
@@ -906,9 +976,9 @@ class DeviceGreen:
         for n in range(2, nb):
             p = nb - n - 1
             # \tilde Y
-            tY[n] = solve(A[n-1] - B[n-2] @ tY[n-1], C[n], overwrite_a=True)
+            tY[n] = solve(A[n - 1] - B[n - 2] @ tY[n - 1], C[n], overwrite_a=True)
             # \tilde X
-            tX[p] = solve(A[p+1] - C[p+2] @ tX[p+1], B[p], overwrite_a=True)
+            tX[p] = solve(A[p + 1] - C[p + 2] @ tX[p + 1], B[p], overwrite_a=True)
 
         data.tX = tX
         data.tY = tY
@@ -920,12 +990,12 @@ class DeviceGreen:
         nb = len(BI)
         if ssp.issparse(M):
             for jb in range(nb):
-                for ib in range(max(0, jb-1), min(jb+2, nb)):
-                    BI[ib, jb] = M[c[ib]:c[ib+1], c[jb]:c[jb+1]].toarray()
+                for ib in range(max(0, jb - 1), min(jb + 2, nb)):
+                    BI[ib, jb] = M[c[ib] : c[ib + 1], c[jb] : c[jb + 1]].toarray()
         else:
             for jb in range(nb):
-                for ib in range(max(0, jb-1), min(jb+2, nb)):
-                    BI[ib, jb] = M[c[ib]:c[ib+1], c[jb]:c[jb+1]]
+                for ib in range(max(0, jb - 1), min(jb + 2, nb)):
+                    BI[ib, jb] = M[c[ib] : c[ib + 1], c[jb] : c[jb + 1]]
         return BM
 
     def Sk(self, *args, **kwargs):
@@ -961,11 +1031,11 @@ class DeviceGreen:
         if block1 == block2:
             blocks = [block1]
         else:
-            blocks = [b for b in range(block1, block2+1)]
+            blocks = [b for b in range(block1, block2 + 1)]
         return blocks
 
     def green(self, E, k=(0, 0, 0), format="array"):
-        r""" Calculate the Green function for a given `E` and `k` point
+        r"""Calculate the Green function for a given `E` and `k` point
 
         The Green function is calculated as:
 
@@ -994,7 +1064,9 @@ class DeviceGreen:
             format = "array"
         func = getattr(self, f"_green_{format}", None)
         if func is None:
-            raise ValueError(f"{self.__class__.__name__}.green format not valid input [array|sparse|bm|btd|bd]")
+            raise ValueError(
+                f"{self.__class__.__name__}.green format not valid input [array|sparse|bm|btd|bd]"
+            )
         return func()
 
     def _green_array(self):
@@ -1027,7 +1099,7 @@ class DeviceGreen:
             for a in range(b - 1, -1, -1):
                 # Calculate all parts above
                 sla = slice(next_sum - btd[a], next_sum)
-                G[sla, sl0] = - tY[a + 1] @ G[slp, sl0]
+                G[sla, sl0] = -tY[a + 1] @ G[slp, sl0]
                 slp = sla
                 next_sum -= btd[a]
 
@@ -1042,7 +1114,7 @@ class DeviceGreen:
             for a in range(b + 1, nb):
                 # Calculate all parts above
                 sla = slice(next_sum, next_sum + btd[a])
-                G[sla, sl0] = - tX[a - 1] @ G[slp, sl0]
+                G[sla, sl0] = -tX[a - 1] @ G[slp, sl0]
                 slp = sla
                 next_sum += btd[a]
 
@@ -1070,10 +1142,10 @@ class DeviceGreen:
             BI[b, b] = G11
             # do above
             if b > 0:
-                BI[b - 1, b] = - tY[b] @ G11
+                BI[b - 1, b] = -tY[b] @ G11
             # do below
             if b < nbm1:
-                BI[b + 1, b] = - tX[b] @ G11
+                BI[b + 1, b] = -tX[b] @ G11
 
         return G
 
@@ -1088,12 +1160,12 @@ class DeviceGreen:
         for b in range(nb):
             G0 = BI[b, b]
             for bb in range(b, 0, -1):
-                G0 = - tY[bb] @ G0
-                BI[bb-1, b] = G0
+                G0 = -tY[bb] @ G0
+                BI[bb - 1, b] = G0
             G0 = BI[b, b]
             for bb in range(b, nbm1):
-                G0 = - tX[bb] @ G0
-                BI[bb+1, b] = G0
+                G0 = -tX[bb] @ G0
+                BI[bb + 1, b] = G0
 
         return G
 
@@ -1187,9 +1259,13 @@ class DeviceGreen:
 
         # Find parts we need to calculate
         blocks = self._get_blocks(idx)
-        assert len(blocks) <= 2, f"{self.__class__.__name__} green(diagonal) requires maximally 2 blocks"
+        assert (
+            len(blocks) <= 2
+        ), f"{self.__class__.__name__} green(diagonal) requires maximally 2 blocks"
         if len(blocks) == 2:
-            assert blocks[0]+1 == blocks[1], f"{self.__class__.__name__} green(diagonal) requires spanning only 2 blocks"
+            assert (
+                blocks[0] + 1 == blocks[1]
+            ), f"{self.__class__.__name__} green(diagonal) requires spanning only 2 blocks"
 
         n = self.btd[blocks].sum()
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
@@ -1220,7 +1296,9 @@ class DeviceGreen:
             elif b == nbm1:
                 G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
             else:
-                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[
+                    :, b_idx
+                ]
 
             if len(blocks) == 1:
                 break
@@ -1229,11 +1307,11 @@ class DeviceGreen:
             if b == blocks[0]:
                 # Calculate below
                 slp = slice(btd[b], btd[b] + btd[blocks[1]])
-                G[slp, c_idx] = - tX[b] @ G[sl, c_idx]
+                G[slp, c_idx] = -tX[b] @ G[sl, c_idx]
             else:
                 # Calculate above
                 slp = slice(0, btd[blocks[0]])
-                G[slp, c_idx] = - tY[b] @ G[sl, c_idx]
+                G[slp, c_idx] = -tY[b] @ G[sl, c_idx]
 
         return blocks, G
 
@@ -1245,9 +1323,13 @@ class DeviceGreen:
 
         # Find parts we need to calculate
         blocks = self._get_blocks(idx)
-        assert len(blocks) <= 2, f"{self.__class__.__name__}.green(column) requires maximally 2 blocks"
+        assert (
+            len(blocks) <= 2
+        ), f"{self.__class__.__name__}.green(column) requires maximally 2 blocks"
         if len(blocks) == 2:
-            assert blocks[0]+1 == blocks[1], f"{self.__class__.__name__}.green(column) requires spanning only 2 blocks"
+            assert (
+                blocks[0] + 1 == blocks[1]
+            ), f"{self.__class__.__name__}.green(column) requires spanning only 2 blocks"
 
         n = len(self)
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
@@ -1276,7 +1358,9 @@ class DeviceGreen:
             elif b == nbm1:
                 G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
             else:
-                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[
+                    :, b_idx
+                ]
 
             if len(blocks) == 1:
                 break
@@ -1287,18 +1371,18 @@ class DeviceGreen:
             if b == blocks[0] and b < nb - 1:
                 # Calculate below
                 slp = slice(c[b + 1], c[b + 2])
-                G[slp, c_idx] = - tX[b] @ G[sl, c_idx]
+                G[slp, c_idx] = -tX[b] @ G[sl, c_idx]
             elif b > 0:
                 # Calculate above
                 slp = slice(c[b - 1], c[b])
-                G[slp, c_idx] = - tY[b] @ G[sl, c_idx]
+                G[slp, c_idx] = -tY[b] @ G[sl, c_idx]
 
         # Now we can calculate the Gf column above
         b = blocks[0]
         slp = slice(c[b], c[b + 1])
         for b in range(blocks[0] - 1, -1, -1):
             sl = slice(c[b], c[b + 1])
-            G[sl, :] = - tY[b + 1] @ G[slp, :]
+            G[sl, :] = -tY[b + 1] @ G[slp, :]
             slp = sl
 
         # All blocks below
@@ -1306,13 +1390,15 @@ class DeviceGreen:
         slp = slice(c[b], c[b + 1])
         for b in range(blocks[-1] + 1, nb):
             sl = slice(c[b], c[b + 1])
-            G[sl, :] = - tX[b - 1] @ G[slp, :]
+            G[sl, :] = -tX[b - 1] @ G[slp, :]
             slp = sl
 
         return G
 
-    def spectral(self, elec, E, k=(0, 0, 0), format="array", method="column", herm=True):
-        r""" Calculate the spectral function for a given `E` and `k` point from a given electrode
+    def spectral(
+        self, elec, E, k=(0, 0, 0), format="array", method="column", herm=True
+    ):
+        r"""Calculate the spectral function for a given `E` and `k` point from a given electrode
 
         The spectral function is calculated as:
 
@@ -1356,7 +1442,9 @@ class DeviceGreen:
             format = "btd"
         func = getattr(self, f"_spectral_{method}_{format}", None)
         if func is None:
-            raise ValueError(f"{self.__class__.__name__}.spectral combination of format+method not recognized {format}+{method}.")
+            raise ValueError(
+                f"{self.__class__.__name__}.spectral combination of format+method not recognized {format}+{method}."
+            )
         return func(elec, herm)
 
     def _spectral_column_array(self, elec, herm):
@@ -1379,10 +1467,10 @@ class DeviceGreen:
         if herm:
             # loop columns
             for jb in range(nb):
-                slj = slice(c[jb], c[jb+1])
+                slj = slice(c[jb], c[jb + 1])
                 Gj = Gam @ dagger(G[slj, :])
                 for ib in range(jb):
-                    sli = slice(c[ib], c[ib+1])
+                    sli = slice(c[ib], c[ib + 1])
                     BI[ib, jb] = G[sli, :] @ Gj
                     BI[jb, ib] = BI[ib, jb].T.conj()
                 BI[jb, jb] = G[slj, :] @ Gj
@@ -1390,10 +1478,10 @@ class DeviceGreen:
         else:
             # loop columns
             for jb in range(nb):
-                slj = slice(c[jb], c[jb+1])
+                slj = slice(c[jb], c[jb + 1])
                 Gj = Gam @ dagger(G[slj, :])
                 for ib in range(nb):
-                    sli = slice(c[ib], c[ib+1])
+                    sli = slice(c[ib], c[ib + 1])
                     BI[ib, jb] = G[sli, :] @ Gj
 
         return btd
@@ -1412,10 +1500,10 @@ class DeviceGreen:
         if herm:
             # loop columns
             for jb in range(nb):
-                slj = slice(c[jb], c[jb+1])
+                slj = slice(c[jb], c[jb + 1])
                 Gj = Gam @ dagger(G[slj, :])
                 for ib in range(max(0, jb - 1), jb):
-                    sli = slice(c[ib], c[ib+1])
+                    sli = slice(c[ib], c[ib + 1])
                     BI[ib, jb] = G[sli, :] @ Gj
                     BI[jb, ib] = BI[ib, jb].T.conj()
                 BI[jb, jb] = G[slj, :] @ Gj
@@ -1423,10 +1511,10 @@ class DeviceGreen:
         else:
             # loop columns
             for jb in range(nb):
-                slj = slice(c[jb], c[jb+1])
+                slj = slice(c[jb], c[jb + 1])
                 Gj = Gam @ dagger(G[slj, :])
-                for ib in range(max(0, jb-1), min(jb+2, nb)):
-                    sli = slice(c[ib], c[ib+1])
+                for ib in range(max(0, jb - 1), min(jb + 2, nb)):
+                    sli = slice(c[ib], c[ib + 1])
                     BI[ib, jb] = G[sli, :] @ Gj
 
         return btd
@@ -1444,7 +1532,7 @@ class DeviceGreen:
         S = np.empty([len(self), len(self)], dtype=A.dtype)
 
         c = self.btd_cum0
-        S[c[blocks[0]]:c[blocks[-1]+1], c[blocks[0]]:c[blocks[-1]+1]] = A
+        S[c[blocks[0]] : c[blocks[-1] + 1], c[blocks[0]] : c[blocks[-1] + 1]] = A
         del A
 
         # now loop backwards
@@ -1452,73 +1540,77 @@ class DeviceGreen:
         tY = self._data.tY
 
         def gs(ib, jb):
-            return slice(c[ib], c[ib+1]), slice(c[jb], c[jb+1])
+            return slice(c[ib], c[ib + 1]), slice(c[jb], c[jb + 1])
 
         if herm:
             # above left
             for jb in range(blocks[0], -1, -1):
                 for ib in range(jb, 0, -1):
-                    A = - tY[ib] @ S[gs(ib, jb)]
-                    S[gs(ib-1, jb)] = A
-                    S[gs(jb, ib-1)] = A.T.conj()
+                    A = -tY[ib] @ S[gs(ib, jb)]
+                    S[gs(ib - 1, jb)] = A
+                    S[gs(jb, ib - 1)] = A.T.conj()
                 # calculate next diagonal
                 if jb > 0:
-                    S[gs(jb-1, jb-1)] = - S[gs(jb-1, jb)] @ dagger(tY[jb])
+                    S[gs(jb - 1, jb - 1)] = -S[gs(jb - 1, jb)] @ dagger(tY[jb])
 
             if nblocks == 2:
                 # above
                 for ib in range(blocks[1], 1, -1):
-                    A = - tY[ib-1] @ S[gs(ib-1, blocks[1])]
-                    S[gs(ib-2, blocks[1])] = A
-                    S[gs(blocks[1], ib-2)] = A.T.conj()
+                    A = -tY[ib - 1] @ S[gs(ib - 1, blocks[1])]
+                    S[gs(ib - 2, blocks[1])] = A
+                    S[gs(blocks[1], ib - 2)] = A.T.conj()
                 # below
-                for ib in range(blocks[0], nbm1-1):
-                    A = - tX[ib+1] @ S[gs(ib+1, blocks[0])]
-                    S[gs(ib+2, blocks[0])] = A
-                    S[gs(blocks[0], ib+2)] = A.T.conj()
+                for ib in range(blocks[0], nbm1 - 1):
+                    A = -tX[ib + 1] @ S[gs(ib + 1, blocks[0])]
+                    S[gs(ib + 2, blocks[0])] = A
+                    S[gs(blocks[0], ib + 2)] = A.T.conj()
 
             # below right
             for jb in range(blocks[-1], nb):
                 for ib in range(jb, nbm1):
-                    A = - tX[ib] @ S[gs(ib, jb)]
-                    S[gs(ib+1, jb)] = A
-                    S[gs(jb, ib+1)] = A.T.conj()
+                    A = -tX[ib] @ S[gs(ib, jb)]
+                    S[gs(ib + 1, jb)] = A
+                    S[gs(jb, ib + 1)] = A.T.conj()
                 # calculate next diagonal
                 if jb < nbm1:
-                    S[gs(jb+1, jb+1)] = - S[gs(jb+1, jb)] @ dagger(tX[jb])
+                    S[gs(jb + 1, jb + 1)] = -S[gs(jb + 1, jb)] @ dagger(tX[jb])
 
         else:
             for jb in range(blocks[0], -1, -1):
                 # above
                 for ib in range(jb, 0, -1):
-                    S[gs(ib-1, jb)] = - tY[ib] @ S[gs(ib, jb)]
+                    S[gs(ib - 1, jb)] = -tY[ib] @ S[gs(ib, jb)]
                 # calculate next diagonal
                 if jb > 0:
-                    S[gs(jb-1, jb-1)] = - S[gs(jb-1, jb)] @ dagger(tY[jb])
+                    S[gs(jb - 1, jb - 1)] = -S[gs(jb - 1, jb)] @ dagger(tY[jb])
                 # left
                 for ib in range(jb, 0, -1):
-                    S[gs(jb, ib-1)] = - S[gs(jb, ib)] @ dagger(tY[ib])
+                    S[gs(jb, ib - 1)] = -S[gs(jb, ib)] @ dagger(tY[ib])
 
             if nblocks == 2:
                 # above and left
                 for ib in range(blocks[1], 1, -1):
-                    S[gs(ib-2, blocks[1])] = - tY[ib-1] @ S[gs(ib-1, blocks[1])]
-                    S[gs(blocks[1], ib-2)] = - S[gs(blocks[1], ib-1)] @ dagger(tY[ib-1])
+                    S[gs(ib - 2, blocks[1])] = -tY[ib - 1] @ S[gs(ib - 1, blocks[1])]
+                    S[gs(blocks[1], ib - 2)] = -S[gs(blocks[1], ib - 1)] @ dagger(
+                        tY[ib - 1]
+                    )
                 # below and right
-                for ib in range(blocks[0], nbm1-1):
-                    S[gs(ib+2, blocks[0])] = - tX[ib+1] @ S[gs(ib+1, blocks[0])]
-                    S[gs(blocks[0], ib+2)] = - S[gs(blocks[0], ib+1)] @ dagger(tX[ib+1])
+                for ib in range(blocks[0], nbm1 - 1):
+                    S[gs(ib + 2, blocks[0])] = -tX[ib + 1] @ S[gs(ib + 1, blocks[0])]
+                    S[gs(blocks[0], ib + 2)] = -S[gs(blocks[0], ib + 1)] @ dagger(
+                        tX[ib + 1]
+                    )
 
             # below right
             for jb in range(blocks[-1], nb):
                 for ib in range(jb, nbm1):
-                    S[gs(ib+1, jb)] = - tX[ib] @ S[gs(ib, jb)]
+                    S[gs(ib + 1, jb)] = -tX[ib] @ S[gs(ib, jb)]
                 # calculate next diagonal
                 if jb < nbm1:
-                    S[gs(jb+1, jb+1)] = - S[gs(jb+1, jb)] @ dagger(tX[jb])
+                    S[gs(jb + 1, jb + 1)] = -S[gs(jb + 1, jb)] @ dagger(tX[jb])
                 # right
                 for ib in range(jb, nbm1):
-                    S[gs(jb, ib+1)] = - S[gs(jb, ib)] @ dagger(tX[ib])
+                    S[gs(jb, ib + 1)] = -S[gs(jb, ib)] @ dagger(tX[ib])
 
         return S
 
@@ -1535,11 +1627,11 @@ class DeviceGreen:
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ dagger(A)
 
-        BI[blocks[0], blocks[0]] = A[:btd[blocks[0]], :btd[blocks[0]]]
+        BI[blocks[0], blocks[0]] = A[: btd[blocks[0]], : btd[blocks[0]]]
         if len(blocks) > 1:
-            BI[blocks[0], blocks[1]] = A[:btd[blocks[0]], btd[blocks[0]]:]
-            BI[blocks[1], blocks[0]] = A[btd[blocks[0]]:, :btd[blocks[0]]]
-            BI[blocks[1], blocks[1]] = A[btd[blocks[0]]:, btd[blocks[0]]:]
+            BI[blocks[0], blocks[1]] = A[: btd[blocks[0]], btd[blocks[0]] :]
+            BI[blocks[1], blocks[0]] = A[btd[blocks[0]] :, : btd[blocks[0]]]
+            BI[blocks[1], blocks[1]] = A[btd[blocks[0]] :, btd[blocks[0]] :]
 
         # now loop backwards
         tX = self._data.tX
@@ -1549,67 +1641,67 @@ class DeviceGreen:
             # above left
             for jb in range(blocks[0], -1, -1):
                 for ib in range(jb, 0, -1):
-                    A = - tY[ib] @ BI[ib, jb]
-                    BI[ib-1, jb] = A
-                    BI[jb, ib-1] = A.T.conj()
+                    A = -tY[ib] @ BI[ib, jb]
+                    BI[ib - 1, jb] = A
+                    BI[jb, ib - 1] = A.T.conj()
                 # calculate next diagonal
                 if jb > 0:
-                    BI[jb-1, jb-1] = - BI[jb-1, jb] @ dagger(tY[jb])
+                    BI[jb - 1, jb - 1] = -BI[jb - 1, jb] @ dagger(tY[jb])
 
             if nblocks == 2:
                 # above
                 for ib in range(blocks[1], 1, -1):
-                    A = - tY[ib-1] @ BI[ib-1, blocks[1]]
-                    BI[ib-2, blocks[1]] = A
-                    BI[blocks[1], ib-2] = A.T.conj()
+                    A = -tY[ib - 1] @ BI[ib - 1, blocks[1]]
+                    BI[ib - 2, blocks[1]] = A
+                    BI[blocks[1], ib - 2] = A.T.conj()
                 # below
-                for ib in range(blocks[0], nbm1-1):
-                    A = - tX[ib+1] @ BI[ib+1, blocks[0]]
-                    BI[ib+2, blocks[0]] = A
-                    BI[blocks[0], ib+2] = A.T.conj()
+                for ib in range(blocks[0], nbm1 - 1):
+                    A = -tX[ib + 1] @ BI[ib + 1, blocks[0]]
+                    BI[ib + 2, blocks[0]] = A
+                    BI[blocks[0], ib + 2] = A.T.conj()
 
             # below right
             for jb in range(blocks[-1], nb):
                 for ib in range(jb, nbm1):
-                    A = - tX[ib] @ BI[ib, jb]
-                    BI[ib+1, jb] = A
-                    BI[jb, ib+1] = A.T.conj()
+                    A = -tX[ib] @ BI[ib, jb]
+                    BI[ib + 1, jb] = A
+                    BI[jb, ib + 1] = A.T.conj()
                 # calculate next diagonal
                 if jb < nbm1:
-                    BI[jb+1, jb+1] = - BI[jb+1, jb] @ dagger(tX[jb])
+                    BI[jb + 1, jb + 1] = -BI[jb + 1, jb] @ dagger(tX[jb])
 
         else:
             for jb in range(blocks[0], -1, -1):
                 # above
                 for ib in range(jb, 0, -1):
-                    BI[ib-1, jb] = - tY[ib] @ BI[ib, jb]
+                    BI[ib - 1, jb] = -tY[ib] @ BI[ib, jb]
                 # calculate next diagonal
                 if jb > 0:
-                    BI[jb-1, jb-1] = - BI[jb-1, jb] @ dagger(tY[jb])
+                    BI[jb - 1, jb - 1] = -BI[jb - 1, jb] @ dagger(tY[jb])
                 # left
                 for ib in range(jb, 0, -1):
-                    BI[jb, ib-1] = - BI[jb, ib] @ dagger(tY[ib])
+                    BI[jb, ib - 1] = -BI[jb, ib] @ dagger(tY[ib])
 
             if nblocks == 2:
                 # above and left
                 for ib in range(blocks[1], 1, -1):
-                    BI[ib-2, blocks[1]] = - tY[ib-1] @ BI[ib-1, blocks[1]]
-                    BI[blocks[1], ib-2] = - BI[blocks[1], ib-1] @ dagger(tY[ib-1])
+                    BI[ib - 2, blocks[1]] = -tY[ib - 1] @ BI[ib - 1, blocks[1]]
+                    BI[blocks[1], ib - 2] = -BI[blocks[1], ib - 1] @ dagger(tY[ib - 1])
                 # below and right
-                for ib in range(blocks[0], nbm1-1):
-                    BI[ib+2, blocks[0]] = - tX[ib+1] @ BI[ib+1, blocks[0]]
-                    BI[blocks[0], ib+2] = - BI[blocks[0], ib+1] @ dagger(tX[ib+1])
+                for ib in range(blocks[0], nbm1 - 1):
+                    BI[ib + 2, blocks[0]] = -tX[ib + 1] @ BI[ib + 1, blocks[0]]
+                    BI[blocks[0], ib + 2] = -BI[blocks[0], ib + 1] @ dagger(tX[ib + 1])
 
             # below right
             for jb in range(blocks[-1], nb):
                 for ib in range(jb, nbm1):
-                    BI[ib+1, jb] = - tX[ib] @ BI[ib, jb]
+                    BI[ib + 1, jb] = -tX[ib] @ BI[ib, jb]
                 # calculate next diagonal
                 if jb < nbm1:
-                    BI[jb+1, jb+1] = - BI[jb+1, jb] @ dagger(tX[jb])
+                    BI[jb + 1, jb + 1] = -BI[jb + 1, jb] @ dagger(tX[jb])
                 # right
                 for ib in range(jb, nbm1):
-                    BI[jb, ib+1] = - BI[jb, ib] @ dagger(tX[ib])
+                    BI[jb, ib + 1] = -BI[jb, ib] @ dagger(tX[ib])
 
         return BM
 
@@ -1625,11 +1717,11 @@ class DeviceGreen:
         blocks, A = self._green_diag_block(self.elecs_pvt_dev[elec].ravel())
         A = A @ self._data.gamma[elec] @ dagger(A)
 
-        BI[blocks[0], blocks[0]] = A[:btd[blocks[0]], :btd[blocks[0]]]
+        BI[blocks[0], blocks[0]] = A[: btd[blocks[0]], : btd[blocks[0]]]
         if len(blocks) > 1:
-            BI[blocks[0], blocks[1]] = A[:btd[blocks[0]], btd[blocks[0]]:]
-            BI[blocks[1], blocks[0]] = A[btd[blocks[0]]:, :btd[blocks[0]]]
-            BI[blocks[1], blocks[1]] = A[btd[blocks[0]]:, btd[blocks[0]]:]
+            BI[blocks[0], blocks[1]] = A[: btd[blocks[0]], btd[blocks[0]] :]
+            BI[blocks[1], blocks[0]] = A[btd[blocks[0]] :, : btd[blocks[0]]]
+            BI[blocks[1], blocks[1]] = A[btd[blocks[0]] :, btd[blocks[0]] :]
 
         # now loop backwards
         tX = self._data.tX
@@ -1638,36 +1730,36 @@ class DeviceGreen:
         if herm:
             # above
             for b in range(blocks[0], 0, -1):
-                A = - tY[b] @ BI[b, b]
-                BI[b-1, b] = A
-                BI[b-1, b-1] = - A @ dagger(tY[b])
-                BI[b, b-1] = A.T.conj()
+                A = -tY[b] @ BI[b, b]
+                BI[b - 1, b] = A
+                BI[b - 1, b - 1] = -A @ dagger(tY[b])
+                BI[b, b - 1] = A.T.conj()
             # right
             for b in range(blocks[-1], nbm1):
-                A = - BI[b, b] @ dagger(tX[b])
-                BI[b, b+1] = A
-                BI[b+1, b+1] = - tX[b] @ A
-                BI[b+1, b] = A.T.conj()
+                A = -BI[b, b] @ dagger(tX[b])
+                BI[b, b + 1] = A
+                BI[b + 1, b + 1] = -tX[b] @ A
+                BI[b + 1, b] = A.T.conj()
 
         else:
             # above
             for b in range(blocks[0], 0, -1):
                 dtY = dagger(tY[b])
-                A = - tY[b] @ BI[b, b]
-                BI[b-1, b] = A
-                BI[b-1, b-1] = - A @ dtY
-                BI[b, b-1] = - BI[b, b] @ dtY
+                A = -tY[b] @ BI[b, b]
+                BI[b - 1, b] = A
+                BI[b - 1, b - 1] = -A @ dtY
+                BI[b, b - 1] = -BI[b, b] @ dtY
             # right
             for b in range(blocks[-1], nbm1):
-                A = - BI[b, b] @ dagger(tX[b])
-                BI[b, b+1] = A
-                BI[b+1, b+1] = - tX[b] @ A
-                BI[b+1, b] = - tX[b] @ BI[b, b]
+                A = -BI[b, b] @ dagger(tX[b])
+                BI[b, b + 1] = A
+                BI[b + 1, b + 1] = -tX[b] @ A
+                BI[b + 1, b] = -tX[b] @ BI[b, b]
 
         return BM
 
     def _scattering_state_reduce(self, elec, DOS, U, cutoff):
-        """ U on input is a fortran-index as returned from eigh or svd """
+        """U on input is a fortran-index as returned from eigh or svd"""
         # Select only the first N components where N is the
         # number of orbitals in the electrode (there can't be
         # any more propagating states anyhow).
@@ -1688,8 +1780,10 @@ class DeviceGreen:
 
         return DOS[idx], U[:, idx]
 
-    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method="svd:gamma", *args, **kwargs):
-        r""" Calculate the scattering states for a given `E` and `k` point from a given electrode
+    def scattering_state(
+        self, elec, E, k=(0, 0, 0), cutoff=0.0, method="svd:gamma", *args, **kwargs
+    ):
+        r"""Calculate the scattering states for a given `E` and `k` point from a given electrode
 
         The scattering states are the eigen states of the spectral function:
 
@@ -1743,10 +1837,12 @@ class DeviceGreen:
         method = method.lower().replace(":", "_")
         func = getattr(self, f"_scattering_state_{method}", None)
         if func is None:
-            raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]")
+            raise ValueError(
+                f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]"
+            )
         return func(elec, cutoff, *args, **kwargs)
 
-    def _scattering_state_full(self, elec, cutoff=0., **kwargs):
+    def _scattering_state_full(self, elec, cutoff=0.0, **kwargs):
         # We know that scattering_state has called prepare!
         A = self.spectral(elec, self._data.E, self._data.k, **kwargs)
 
@@ -1763,17 +1859,13 @@ class DeviceGreen:
 
         data = self._data
         info = dict(
-            method="full",
-            elec=self._elec_name(elec),
-            E=data.E,
-            k=data.k,
-            cutoff=cutoff
+            method="full", elec=self._elec_name(elec), E=data.E, k=data.k, cutoff=cutoff
         )
 
         # always have the first state with the largest values
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def _scattering_state_svd_gamma(self, elec, cutoff=0., **kwargs):
+    def _scattering_state_svd_gamma(self, elec, cutoff=0.0, **kwargs):
         A = self._green_column(self.elecs_pvt_dev[elec].ravel())
 
         # This calculation uses the cholesky decomposition of Gamma
@@ -1790,7 +1882,7 @@ class DeviceGreen:
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
-            cutoff=cutoff
+            cutoff=cutoff,
         )
 
         # always have the first state with the largest values
@@ -1844,26 +1936,26 @@ class DeviceGreen:
         # Create full U
         A = np.empty([len(self), u.shape[1]], dtype=u.dtype)
 
-        sl = slice(cbtd[blocks[0]], cbtd[blocks[0]+1])
-        A[sl, :] = u[:self.btd[blocks[0]], :]
+        sl = slice(cbtd[blocks[0]], cbtd[blocks[0] + 1])
+        A[sl, :] = u[: self.btd[blocks[0]], :]
         if len(blocks) > 1:
-            sl = slice(cbtd[blocks[1]], cbtd[blocks[1]+1])
-            A[sl, :] = u[self.btd[blocks[0]]:, :]
+            sl = slice(cbtd[blocks[1]], cbtd[blocks[1] + 1])
+            A[sl, :] = u[self.btd[blocks[0]] :, :]
         del u
 
         # Propagate A in the full BTD matrix
         t = self._data.tY
-        sl = slice(cbtd[blocks[0]], cbtd[blocks[0]+1])
+        sl = slice(cbtd[blocks[0]], cbtd[blocks[0] + 1])
         for b in range(blocks[0], 0, -1):
-            sln = slice(cbtd[b-1], cbtd[b])
-            A[sln] = - t[b] @ A[sl]
+            sln = slice(cbtd[b - 1], cbtd[b])
+            A[sln] = -t[b] @ A[sl]
             sl = sln
 
         t = self._data.tX
-        sl = slice(cbtd[blocks[-1]], cbtd[blocks[-1]+1])
+        sl = slice(cbtd[blocks[-1]], cbtd[blocks[-1] + 1])
         for b in range(blocks[-1], nb - 1):
-            slp = slice(cbtd[b+1], cbtd[b+2])
-            A[slp] = - t[b] @ A[sl]
+            slp = slice(cbtd[b + 1], cbtd[b + 2])
+            A[slp] = -t[b] @ A[sl]
             sl = slp
 
         # Perform svd
@@ -1880,11 +1972,11 @@ class DeviceGreen:
             E=data.E,
             k=data.k,
             cutoff_elec=cutoff0,
-            cutoff=cutoff1
+            cutoff=cutoff1,
         )
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def scattering_matrix(self, elec_from, elec_to, E, k=(0, 0, 0), cutoff=0.):
+    def scattering_matrix(self, elec_from, elec_to, E, k=(0, 0, 0), cutoff=0.0):
         r""" Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`
 
         The scattering matrix is calculated as
@@ -1964,8 +2056,7 @@ class DeviceGreen:
             return ret
 
         tgam_from = 1j * tG[elec_from]
-        S = tuple(calc_S(elec_from, tgam_from, elec, tG[elec], G)
-             for elec in elec_to)
+        S = tuple(calc_S(elec_from, tgam_from, elec, tG[elec], G) for elec in elec_to)
 
         if is_single:
             return S[0]
@@ -2055,13 +2146,10 @@ class DeviceGreen:
         tt, Ut = eigh_destroy(Ut)
         tt *= 2 * np.pi
 
-        info = {**state.info,
-            "elec_to": tuple(self._elec_name(e) for e in elec_to)
-        }
+        info = {**state.info, "elec_to": tuple(self._elec_name(e) for e in elec_to)}
 
         # Backtransform U to form the eigenchannels
-        teig = si.physics.StateCElectron(Ut[:, ::-1].T @ A,
-                                         tt[::-1], self, **info)
+        teig = si.physics.StateCElectron(Ut[:, ::-1].T @ A, tt[::-1], self, **info)
         if ret_coeff:
             return teig, si.physics.StateElectron(Ut[:, ::-1].T, self, **info)
         return teig

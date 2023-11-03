@@ -15,14 +15,18 @@ from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 from sisl.io import tableSile
 from sisl.utils import PropertyDict
 
-__all__ = ["BaseMinimize", "LocalMinimize", "DualAnnealingMinimize",
-           "MinimizeToDispatcher"]
+__all__ = [
+    "BaseMinimize",
+    "LocalMinimize",
+    "DualAnnealingMinimize",
+    "MinimizeToDispatcher",
+]
 
 _log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 
 def _convert_optimize_result(minimizer, result):
-    """ Convert optimize result to conform to the scaling procedure performed """
+    """Convert optimize result to conform to the scaling procedure performed"""
     # reverse optimized value
     # and also store the normalized values (to match the gradients etc)
     if minimizer.norm[0] in ("none", "identity"):
@@ -36,17 +40,17 @@ def _convert_optimize_result(minimizer, result):
         # The jacobian is dM / dx with dx possibly being scaled
         # So here we change multiply by  dx / dv
         result.jac_norm = result.jac.copy()
-        result.jac /= minimizer.reverse_normalize(np.ones(len(minimizer)),
-                                                  with_offset=False)
+        result.jac /= minimizer.reverse_normalize(
+            np.ones(len(minimizer)), with_offset=False
+        )
     return result
 
 
 class BaseMinimize:
-
     # Basic minimizer basically used for figuring out whether
     # to use a local or global minimization strategy
 
-    def __init__(self, variables=(), out="minimize.dat", norm='identity'):
+    def __init__(self, variables=(), out="minimize.dat", norm="identity"):
         # ensure we have an ordered dict, for one reason or the other
         self.variables = []
         if variables is not None:
@@ -55,7 +59,7 @@ class BaseMinimize:
         self.reset(out, norm)
 
     def reset(self, out=None, norm=None):
-        """ Reset data table to be able to restart """
+        """Reset data table to be able to restart"""
         # While this *could* be a named-tuple, we would not be able
         # to override the attribute, hence we use a property dict
         # same effect.
@@ -71,7 +75,7 @@ class BaseMinimize:
         if not norm is None:
             log += f" norm={str(norm)}"
             if isinstance(norm, str):
-                self.norm = (norm, 1.)
+                self.norm = (norm, 1.0)
             elif isinstance(norm, Real):
                 self.norm = ("l2", norm)
             else:
@@ -84,11 +88,15 @@ class BaseMinimize:
             # of each variable
             out = np.empty(len(self.variables))
             for i, v in enumerate(self.variables):
-                out[i] = v.normalize(v.attrs[variables], self.norm, with_offset=with_offset)
+                out[i] = v.normalize(
+                    v.attrs[variables], self.norm, with_offset=with_offset
+                )
         else:
             out = np.empty_like(variables)
             for i, v in enumerate(variables):
-                out[i] = self.variables[i].normalize(v, self.norm, with_offset=with_offset)
+                out[i] = self.variables[i].normalize(
+                    v, self.norm, with_offset=with_offset
+                )
         return out
 
     def normalize_bounds(self):
@@ -98,7 +106,9 @@ class BaseMinimize:
         # ensures numpy array
         out = np.empty_like(variables)
         for i, v in enumerate(variables):
-            out[i] = self.variables[i].reverse_normalize(v, self.norm, with_offset=with_offset)
+            out[i] = self.variables[i].reverse_normalize(
+                v, self.norm, with_offset=with_offset
+            )
         return out
 
     def __getitem__(self, key):
@@ -122,26 +132,30 @@ class BaseMinimize:
         return np.array([v.value for v in self.variables], np.float64)
 
     def update(self, variables):
-        """ Update internal variables for the values """
+        """Update internal variables for the values"""
         for var, v in zip(self.variables, variables):
             var.update(v)
 
     def dict_values(self):
-        """ Get all vaules in a dictionary table """
+        """Get all vaules in a dictionary table"""
         return {v.name: v.value for v in self.variables}
 
     # Define a dispatcher for converting Minimize data to some specific data
     #  BaseMinimize().to.skopt() will convert to an skopt.OptimizationResult structure
-    to = ClassDispatcher("to",
-                         obj_getattr=lambda obj, key:
-                         (_ for _ in ()).throw(
-                             AttributeError((f"{obj}.to does not implement '{key}' "
-                                             f"dispatcher, are you using it incorrectly?"))
-                         )
+    to = ClassDispatcher(
+        "to",
+        obj_getattr=lambda obj, key: (_ for _ in ()).throw(
+            AttributeError(
+                (
+                    f"{obj}.to does not implement '{key}' "
+                    f"dispatcher, are you using it incorrectly?"
+                )
+            )
+        ),
     )
 
     def __enter__(self):
-        """ Open the file and fill with stuff """
+        """Open the file and fill with stuff"""
         _log.debug(f"__enter__ {self.__class__.__name__}")
 
         # check if the file exists
@@ -156,7 +170,9 @@ class BaseMinimize:
         if self.out.is_file() and data.size > 0:
             nvars = data.shape[0] - 1
             if nvars != len(self):
-                raise ValueError(f"Found old file {self.out} which contains previous data for another number of parameters, please delete or move file")
+                raise ValueError(
+                    f"Found old file {self.out} which contains previous data for another number of parameters, please delete or move file"
+                )
 
             # now parse header
             *header, _ = header[1:].split()
@@ -172,7 +188,9 @@ class BaseMinimize:
                 print(header)
                 print(self.names)
                 print(idx)
-                raise ValueError(f"Found old file {self.out} which contains previous data with some variables being renamed, please correct header or move file")
+                raise ValueError(
+                    f"Found old file {self.out} which contains previous data with some variables being renamed, please correct header or move file"
+                )
 
             # add functional value, no pivot
             idx.append(len(self))
@@ -193,19 +211,19 @@ class BaseMinimize:
         comment = f"Created by sisl '{self.__class__.__name__}'."
         header = self.names + ["metric"]
         if len(self.data.x) == 0:
-            self._fh = tableSile(self.out, 'w').__enter__()
+            self._fh = tableSile(self.out, "w").__enter__()
             self._fh.write_data(comment=comment, header=header)
         else:
             comment += f" The first {len(self.data)} lines contains prior content."
             data = np.column_stack((self.data.x, self.data.y))
-            self._fh = tableSile(self.out, 'w').__enter__()
-            self._fh.write_data(data.T, comment=comment, header=header, fmt='20.17e')
+            self._fh = tableSile(self.out, "w").__enter__()
+            self._fh.write_data(data.T, comment=comment, header=header, fmt="20.17e")
             self._fh.flush()
 
         return self
 
     def __exit__(self, *args, **kwargs):
-        """ Exit routine """
+        """Exit routine"""
         self._fh.__exit__(*args, **kwargs)
         # clean-up
         del self._fh
@@ -215,7 +233,7 @@ class BaseMinimize:
 
     @abstractmethod
     def __call__(self, variables, *args):
-        """ Actual running code that takes `variables` conforming to the order of initial setup.
+        """Actual running code that takes `variables` conforming to the order of initial setup.
 
         It will return the functional of the minimize method
 
@@ -226,7 +244,7 @@ class BaseMinimize:
         """
 
     def _minimize_func(self, norm_variables, *args):
-        """ Minimization function passed to the minimization method
+        """Minimization function passed to the minimization method
 
         This is a wrapper which does 3 things:
 
@@ -256,7 +274,9 @@ class BaseMinimize:
         try:
             idx = self.data.hash.index(current_hash)
             # immediately return functional value that is hashed
-            _log.info(f"{self.__class__.__name__}._minimize_func, using prior hashed calculation {idx}")
+            _log.info(
+                f"{self.__class__.__name__}._minimize_func, using prior hashed calculation {idx}"
+            )
 
             return self.data.y[idx]
         except ValueError:
@@ -266,7 +286,9 @@ class BaseMinimize:
         # Else we have to call minimize
         metric = np.array(self(variables, *args))
         # add the data to the output file and hash it
-        self._fh.write_data(variables.reshape(-1, 1), metric.reshape(-1, 1), fmt='20.17e')
+        self._fh.write_data(
+            variables.reshape(-1, 1), metric.reshape(-1, 1), fmt="20.17e"
+        )
         self._fh.flush()
         self.data.x.append(variables)
         self.data.y.append(metric)
@@ -276,38 +298,37 @@ class BaseMinimize:
 
     @abstractmethod
     def run(self, *args, **kwargs):
-        """ Run the minimize model """
+        """Run the minimize model"""
 
 
 class LocalMinimize(BaseMinimize):
-
     def run(self, *args, **kwargs):
         # Run minimization (always with normalized values)
         norm_v0 = self.normalize(self.values)
         bounds = self.normalize_bounds()
         with self:
-            opt = minimize(self._minimize_func,
-                           x0=norm_v0, args=args, bounds=bounds,
-                           **kwargs)
+            opt = minimize(
+                self._minimize_func, x0=norm_v0, args=args, bounds=bounds, **kwargs
+            )
 
         return _convert_optimize_result(self, opt)
 
 
 class DualAnnealingMinimize(BaseMinimize):
-
     def run(self, *args, **kwargs):
         # Run minimization (always with normalized values)
         norm_v0 = self.normalize(self.values)
         bounds = self.normalize_bounds()
         with self:
-            opt = dual_annealing(self._minimize_func,
-                                 x0=norm_v0, args=args, bounds=bounds,
-                                 **kwargs)
+            opt = dual_annealing(
+                self._minimize_func, x0=norm_v0, args=args, bounds=bounds, **kwargs
+            )
         return _convert_optimize_result(self, opt)
 
 
 class MinimizeToDispatcher(AbstractDispatch):
-    """ Base dispatcher from class passing from Minimize class """
+    """Base dispatcher from class passing from Minimize class"""
+
     @staticmethod
     def _ensure_object(obj):
         if isinstance(obj, type):
@@ -317,15 +338,19 @@ class MinimizeToDispatcher(AbstractDispatch):
 class MinimizeToskoptDispatcher(MinimizeToDispatcher):
     def dispatch(self, *args, **kwargs):
         import skopt
+
         minim = self._obj
         self._ensure_object(minim)
         if len(args) > 0:
-            raise ValueError(f"{minim.__class__.__name__}.to.skopt only accepts keyword arguments")
+            raise ValueError(
+                f"{minim.__class__.__name__}.to.skopt only accepts keyword arguments"
+            )
 
         # First create the Space variable
         def skoptReal(v):
             low, high = v.bounds
             return skopt.space.Real(low, high, transform="identity", name=v.name)
+
         space = skopt.Space(list(map(skoptReal, self.variables)))
 
         # Extract sampled data-points
@@ -341,19 +366,22 @@ class MinimizeToskoptDispatcher(MinimizeToDispatcher):
 
             # We can't use categorial (SVC) since these are regression models
             # fast, but should not be as accurate?
-            #model = sklearn.svm.LinearSVR()
+            # model = sklearn.svm.LinearSVR()
             # much slower, but more versatile
             # I don't know which one is better ;)
             model = sklearn.svm.SVR(cache_size=500)
-            #model = sklearn.svm.NuSVR(kernel="poly", cache_size=500)
+            # model = sklearn.svm.NuSVR(kernel="poly", cache_size=500)
             # we need to fit to create auxiliary data
-            warnings.warn(f"Converting to skopt without a 'models' argument forces "
-                          f"{minim.__class__.__name__} to train a model for the sampled data. "
-                          f"This may be slow depending on the number of samples...")
+            warnings.warn(
+                f"Converting to skopt without a 'models' argument forces "
+                f"{minim.__class__.__name__} to train a model for the sampled data. "
+                f"This may be slow depending on the number of samples..."
+            )
             model.fit(Xi, yi)
             kwargs["models"] = [model]
 
         result = skopt.utils.create_result(Xi, yi, space=space, **kwargs)
         return result
+
 
 BaseMinimize.to.register("skopt", MinimizeToskoptDispatcher)

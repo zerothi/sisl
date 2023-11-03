@@ -10,12 +10,12 @@ from sisl._internal import set_module
 
 from .sile import Sile, add_sile, sile_fh_open, sile_raise_write
 
-__all__ = ['tableSile', 'TableSile']
+__all__ = ["tableSile", "TableSile"]
 
 
 @set_module("sisl.io")
 class tableSile(Sile):
-    """ ASCII tabular formatted data
+    """ASCII tabular formatted data
 
     A generic table data which will easily accommodate the most common write-outs of data
 
@@ -71,13 +71,13 @@ class tableSile(Sile):
     """
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `tableSile` after initialization """
+        """Setup the `tableSile` after initialization"""
         super()._setup(*args, **kwargs)
-        self._comment = ['#']
+        self._comment = ["#"]
 
     @sile_fh_open()
     def write_data(self, *args, **kwargs):
-        """ Write tabular data to the file with optional header.
+        """Write tabular data to the file with optional header.
 
         Parameters
         ----------
@@ -120,31 +120,36 @@ class tableSile(Sile):
         """
         sile_raise_write(self)
 
-        fmt = kwargs.get('fmt', '.5e')
-        newline = kwargs.get('newline', '\n')
-        delimiter = kwargs.get('delimiter', '\t')
+        fmt = kwargs.get("fmt", ".5e")
+        newline = kwargs.get("newline", "\n")
+        delimiter = kwargs.get("delimiter", "\t")
         _com = self._comment[0]
 
-        def comment_newline(line, prefix=''):
-            """ Converts a list of str arguments into nicely formatted commented
-            and newlined output """
+        def comment_newline(line, prefix=""):
+            """Converts a list of str arguments into nicely formatted commented
+            and newlined output"""
             nonlocal _com
             line = map(lambda s: s.strip(), line.strip().split(newline))
             # always append a newline
-            line = newline.join([s if s.startswith(_com) else f"{_com}{prefix}{s}" for s in line]) + newline
+            line = (
+                newline.join(
+                    [s if s.startswith(_com) else f"{_com}{prefix}{s}" for s in line]
+                )
+                + newline
+            )
             return line
 
-        comment = kwargs.get('comment', None)
+        comment = kwargs.get("comment", None)
         if comment is None:
-            comment = ''
+            comment = ""
         elif isinstance(comment, str):
-            comment = comment_newline(comment, ' ')
+            comment = comment_newline(comment, " ")
         else:
-            comment = comment_newline(newline.join(comment), ' ')
+            comment = comment_newline(newline.join(comment), " ")
 
-        header = kwargs.get('header', None)
+        header = kwargs.get("header", None)
         if header is None:
-            header = ''
+            header = ""
         elif isinstance(header, str):
             header = comment_newline(header)
         else:
@@ -153,9 +158,9 @@ class tableSile(Sile):
         # Finalize output
         header = comment + header
 
-        footer = kwargs.get('footer', None)
+        footer = kwargs.get("footer", None)
         if footer is None:
-            footer = ''
+            footer = ""
         elif isinstance(footer, str):
             pass
         else:
@@ -182,7 +187,7 @@ class tableSile(Sile):
         else:
             dat = np.vstack(args)
 
-        _fmt = '{:' + fmt + '}'
+        _fmt = "{:" + fmt + "}"
 
         # Reshape such that it becomes easy
         ndim = dat.ndim
@@ -192,13 +197,17 @@ class tableSile(Sile):
             dat.shape = (1, -1)
 
         if ndim > 2:
-            _fmt = kwargs.get('fmts', (_fmt + delimiter) * (dat.shape[1] - 1) + _fmt + newline)
+            _fmt = kwargs.get(
+                "fmts", (_fmt + delimiter) * (dat.shape[1] - 1) + _fmt + newline
+            )
             for i in range(dat.shape[0]):
                 for j in range(dat.shape[2]):
                     self._write(_fmt.format(*dat[i, :, j]))
                 self._write(newline * 2)
         else:
-            _fmt = kwargs.get('fmts', (_fmt + delimiter) * (dat.shape[0] - 1) + _fmt + newline)
+            _fmt = kwargs.get(
+                "fmts", (_fmt + delimiter) * (dat.shape[0] - 1) + _fmt + newline
+            )
             for i in range(dat.shape[1]):
                 self._write(_fmt.format(*dat[:, i]))
 
@@ -207,7 +216,7 @@ class tableSile(Sile):
 
     @sile_fh_open()
     def read_data(self, *args, **kwargs):
-        """ Read tabular data from the file.
+        """Read tabular data from the file.
 
         Parameters
         ----------
@@ -223,15 +232,15 @@ class tableSile(Sile):
             lines starting with this are discarded as comments
         """
         # Override the comment in the file
-        self._comment = [kwargs.get('comment', self._comment[0])]
+        self._comment = [kwargs.get("comment", self._comment[0])]
 
         # Skip to next line
         comment = []
-        header = ''
+        header = ""
 
         # Also read comments
         line = self.readline(True)
-        while line.startswith(self._comment[0] + ' '):
+        while line.startswith(self._comment[0] + " "):
             comment.append(line)
             line = self.readline(True)
 
@@ -244,18 +253,20 @@ class tableSile(Sile):
 
         # First we need to figure out the separator:
         len_sep = 0
-        sep = kwargs.get('delimiter', '')
+        sep = kwargs.get("delimiter", "")
         if len(sep) == 0:
-            for cur_sep in ['\t', ' ', ',']:
+            for cur_sep in ["\t", " ", ","]:
                 s = line.split(cur_sep)
                 if len(s) > len_sep:
                     len_sep = len(s)
                     sep = cur_sep
             if len(sep) == 0:
-                raise ValueError(self.__class__.__name__ + '.read_data could not determine '
-                                 'column separator...')
+                raise ValueError(
+                    self.__class__.__name__ + ".read_data could not determine "
+                    "column separator..."
+                )
 
-        empty = re.compile(r'\s*\n')
+        empty = re.compile(r"\s*\n")
         while len(line) > 0:
             # If we start a line by a comment, or a newline
             # then we have a new data set
@@ -288,8 +299,8 @@ class tableSile(Sile):
         if dat.ndim > 1:
             dat = np.swapaxes(dat, -2, -1)
 
-        ret_comment = kwargs.get('ret_comment', False)
-        ret_header = kwargs.get('ret_header', False)
+        ret_comment = kwargs.get("ret_comment", False)
+        ret_header = kwargs.get("ret_header", False)
         if ret_comment:
             if ret_header:
                 return dat, comment, header
@@ -304,5 +315,5 @@ class tableSile(Sile):
 
 TableSile = tableSile
 
-add_sile('table', tableSile, case=False, gzip=True)
-add_sile('dat', tableSile, case=False, gzip=True)
+add_sile("table", tableSile, case=False, gzip=True)
+add_sile("dat", tableSile, case=False, gzip=True)

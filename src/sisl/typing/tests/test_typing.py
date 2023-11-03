@@ -10,8 +10,7 @@ import sisl.typing as st
 
 pytestmark = pytest.mark.typing
 
-def test_argument():
 
+def test_argument():
     def func(a: st.AtomsArgument):
         str(a)
-

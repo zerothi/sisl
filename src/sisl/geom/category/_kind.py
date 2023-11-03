@@ -19,7 +19,7 @@ __all__ = ["AtomZ", "AtomIndex", "AtomSeq", "AtomTag", "AtomOdd", "AtomEven"]
 
 @set_module("sisl.geom")
 class AtomZ(AtomCategory):
-    r""" Classify atoms based on atomic number
+    r"""Classify atoms based on atomic number
 
     Parameters
     ----------
@@ -55,7 +55,7 @@ class AtomZ(AtomCategory):
 
 @set_module("sisl.geom")
 class AtomTag(AtomCategory):
-    r""" Classify atoms based on their tag.
+    r"""Classify atoms based on their tag.
 
     Parameters
     ----------
@@ -88,7 +88,7 @@ class AtomTag(AtomCategory):
 
 @set_module("sisl.geom")
 class AtomIndex(AtomCategory):
-    r""" Classify atoms based on indices
+    r"""Classify atoms based on indices
 
     Parameters
     ----------
@@ -134,20 +134,23 @@ class AtomIndex(AtomCategory):
         def wrap_func(func):
             @wraps(func)
             def make_partial(a, b):
-                """ Wrapper to make partial useful """
+                """Wrapper to make partial useful"""
                 if isinstance(b, Integral):
                     return op.truth(func(a, b))
                 is_true = True
                 for ib in b:
                     is_true = is_true and func(a, ib)
                 return is_true
+
             return make_partial
 
         operator = []
         if len(idx) > 0:
+
             @wraps(op.contains)
             def func_wrap(a, b):
                 return op.contains(b, a)
+
             operator.append((func_wrap, idx))
 
         for func, value in kwargs.items():
@@ -166,7 +169,9 @@ class AtomIndex(AtomCategory):
 
         # Create string
         self._op_val = operator
-        super().__init__(" & ".join(map(lambda f, b: f"{f.__name__}[{b}]", *zip(*self._op_val))))
+        super().__init__(
+            " & ".join(map(lambda f, b: f"{f.__name__}[{b}]", *zip(*self._op_val)))
+        )
 
     @_sanitize_loop
     def categorize(self, geometry, atoms=None):
@@ -179,13 +184,15 @@ class AtomIndex(AtomCategory):
         if self.__class__ is other.__class__:
             if len(self._op_val) == len(other._op_val):
                 # Check they are the same
-                return reduce(op.and_, (op_val in other._op_val for op_val in self._op_val), True)
+                return reduce(
+                    op.and_, (op_val in other._op_val for op_val in self._op_val), True
+                )
         return False
 
 
 @set_module("sisl.geom")
 class AtomSeq(AtomIndex):
-    r""" Classify atoms based on their indices using a sequence string.
+    r"""Classify atoms based on their indices using a sequence string.
 
     Parameters
     ----------
@@ -229,6 +236,7 @@ class AtomSeq(AtomIndex):
         end: int
             The largest valid index.
         """
+
         def _sanitize(item):
             if isinstance(item, int):
                 if item < 0:
@@ -263,7 +271,7 @@ class AtomSeq(AtomIndex):
 
 
 class AtomEven(AtomCategory):
-    r""" Classify atoms based on indices (even in this case)"""
+    r"""Classify atoms based on indices (even in this case)"""
     __slots__ = []
 
     def __init__(self):
@@ -282,7 +290,7 @@ class AtomEven(AtomCategory):
 
 @set_module("sisl.geom")
 class AtomOdd(AtomCategory):
-    r""" Classify atoms based on indices (odd in this case)"""
+    r"""Classify atoms based on indices (odd in this case)"""
     __slots__ = []
 
     def __init__(self):

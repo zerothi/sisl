@@ -15,16 +15,16 @@ from sisl.sparse import ispmatrix, ispmatrixd
 # Import sile objects
 from .sile import *
 
-__all__ = ['hamiltonianSile']
+__all__ = ["hamiltonianSile"]
 
 
 @set_module("sisl.io")
 class hamiltonianSile(Sile):
-    """ Hamiltonian file object """
+    """Hamiltonian file object"""
 
     @sile_fh_open()
     def read_geometry(self):
-        """ Reading a geometry in regular Hamiltonian format """
+        """Reading a geometry in regular Hamiltonian format"""
 
         cell = np.zeros([3, 3], np.float64)
         Z = []
@@ -38,21 +38,21 @@ class hamiltonianSile(Sile):
                 return int(i), no
             except Exception:
                 # both atomic number and no
-                j = i.replace('[', ' ').replace(']', ' ').split()
+                j = i.replace("[", " ").replace("]", " ").split()
                 return int(j[0]), int(j[1])
 
         # The format of the geometry file is
-        keys = ['atoms', 'cell', 'supercell', 'nsc']
+        keys = ["atoms", "cell", "supercell", "nsc"]
         for _ in range(len(keys)):
             _, l = self.step_to(keys, case=False)
             l = l.strip()
-            if 'supercell' in l.lower() or 'nsc' in l.lower():
+            if "supercell" in l.lower() or "nsc" in l.lower():
                 # We have everything in one line
                 l = l.split()[1:]
                 for i in range(3):
                     nsc[i] = int(l[i])
-            elif 'cell' in l.lower():
-                if 'begin' in l.lower():
+            elif "cell" in l.lower():
+                if "begin" in l.lower():
                     for i in range(3):
                         l = self.readline().split()
                         cell[i, 0] = float(l[0])
@@ -65,16 +65,16 @@ class hamiltonianSile(Sile):
                     for i in range(3):
                         cell[i, i] = float(l[i])
                     # TODO incorporate rotations
-            elif 'atoms' in l.lower():
+            elif "atoms" in l.lower():
                 l = self.readline()
-                while not l.startswith('end'):
+                while not l.startswith("end"):
                     ls = l.split()
                     try:
                         no = int(ls[4])
                     except Exception:
                         no = 1
                     z, no = Z2no(ls[0], no)
-                    Z.append({'Z': z, 'orbital': [-1. for _ in range(no)]})
+                    Z.append({"Z": z, "orbital": [-1.0 for _ in range(no)]})
                     xyz.append([float(f) for f in ls[1:4]])
                     l = self.readline()
                 xyz = _a.arrayd(xyz)
@@ -88,7 +88,7 @@ class hamiltonianSile(Sile):
 
     @sile_fh_open()
     def read_hamiltonian(self, hermitian=True, dtype=np.float64, **kwargs):
-        """ Reads a Hamiltonian (including the geometry)
+        """Reads a Hamiltonian (including the geometry)
 
         Reads the Hamiltonian model
         """
@@ -110,12 +110,12 @@ class hamiltonianSile(Sile):
             except Exception:
                 # ia[o]
                 # atom ia and the orbital o
-                j = i.replace('[', ' ').replace(']', ' ').split()
+                j = i.replace("[", " ").replace("]", " ").split()
                 return geom.a2o(int(j[0])) + int(j[1])
 
         # Start reading in the supercell
         while True:
-            found, l = self.step_to('matrix', allow_reread=False)
+            found, l = self.step_to("matrix", allow_reread=False)
             if not found:
                 break
 
@@ -129,7 +129,7 @@ class hamiltonianSile(Sile):
             off1 = geom.sc_index(isc) * geom.no
             off2 = geom.sc_index(-isc) * geom.no
             l = self.readline()
-            while not l.startswith('end'):
+            while not l.startswith("end"):
                 ls = l.split()
                 jo = i2o(geom, ls[0])
                 io = i2o(geom, ls[1])
@@ -137,7 +137,7 @@ class hamiltonianSile(Sile):
                 try:
                     s = float(ls[3])
                 except Exception:
-                    s = 0.
+                    s = 0.0
                 H[jo, io + off1] = h
                 S[jo, io + off1] = s
                 if hermitian:
@@ -148,7 +148,7 @@ class hamiltonianSile(Sile):
         return Hamiltonian.fromsp(geom, H, S)
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='.8f', **kwargs):
+    def write_geometry(self, geometry, fmt=".8f", **kwargs):
         """
         Writes the geometry to the output file
 
@@ -162,25 +162,24 @@ class hamiltonianSile(Sile):
         # for now, pretty stringent
         # Get cell_fmt
         cell_fmt = fmt
-        if 'cell_fmt' in kwargs:
-            cell_fmt = kwargs['cell_fmt']
+        if "cell_fmt" in kwargs:
+            cell_fmt = kwargs["cell_fmt"]
         xyz_fmt = fmt
 
-        self._write('begin cell\n')
+        self._write("begin cell\n")
         # Write the cell
-        fmt_str = '  {{0:{0}}} {{1:{0}}} {{2:{0}}}\n'.format(cell_fmt)
+        fmt_str = "  {{0:{0}}} {{1:{0}}} {{2:{0}}}\n".format(cell_fmt)
         for i in range(3):
             self._write(fmt_str.format(*geometry.cell[i, :]))
-        self._write('end cell\n')
+        self._write("end cell\n")
 
         # Write number of super cells in each direction
-        self._write('\nsupercell {:d} {:d} {:d}\n'.format(*geometry.nsc))
+        self._write("\nsupercell {:d} {:d} {:d}\n".format(*geometry.nsc))
 
         # Write all atomic positions along with the specie type
-        self._write('\nbegin atoms\n')
-        fmt1_str = '  {{0:d}} {{1:{0}}} {{2:{0}}} {{3:{0}}}\n'.format(xyz_fmt)
-        fmt2_str = '  {{0:d}}[{{1:d}}] {{2:{0}}} {{3:{0}}} {{4:{0}}}\n'.format(
-            xyz_fmt)
+        self._write("\nbegin atoms\n")
+        fmt1_str = "  {{0:d}} {{1:{0}}} {{2:{0}}} {{3:{0}}}\n".format(xyz_fmt)
+        fmt2_str = "  {{0:d}}[{{1:d}}] {{2:{0}}} {{3:{0}}} {{4:{0}}}\n".format(xyz_fmt)
 
         for ia in geometry:
             Z = geometry.atoms[ia].Z
@@ -190,12 +189,12 @@ class hamiltonianSile(Sile):
             else:
                 self._write(fmt2_str.format(Z, no, *geometry.xyz[ia, :]))
 
-        self._write('end atoms\n')
+        self._write("end atoms\n")
 
     @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
     @sile_fh_open()
     def write_hamiltonian(self, H, hermitian=True, **kwargs):
-        """ Writes the Hamiltonian model to the file
+        """Writes the Hamiltonian model to the file
 
         Writes a Hamiltonian model to the intrinsic Hamiltonian file format.
         The file can be constructed by the implict force of Hermiticity,
@@ -220,18 +219,19 @@ class hamiltonianSile(Sile):
 
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom
-        advanced = kwargs.get('advanced', np.any(
-            np.array([a.no for a in geom.atoms.atom], np.int32) > 1))
+        advanced = kwargs.get(
+            "advanced", np.any(np.array([a.no for a in geom.atoms.atom], np.int32) > 1)
+        )
 
-        fmt = kwargs.get('fmt', 'g')
+        fmt = kwargs.get("fmt", "g")
         if advanced:
-            fmt1_str = ' {{0:d}}[{{1:d}}] {{2:d}}[{{3:d}}] {{4:{0}}}\n'.format(
-                fmt)
-            fmt2_str = ' {{0:d}}[{{1:d}}] {{2:d}}[{{3:d}}] {{4:{0}}} {{5:{0}}}\n'.format(
-                fmt)
+            fmt1_str = " {{0:d}}[{{1:d}}] {{2:d}}[{{3:d}}] {{4:{0}}}\n".format(fmt)
+            fmt2_str = (
+                " {{0:d}}[{{1:d}}] {{2:d}}[{{3:d}}] {{4:{0}}} {{5:{0}}}\n".format(fmt)
+            )
         else:
-            fmt1_str = f' {{0:d}} {{1:d}} {{2:{fmt}}}\n'
-            fmt2_str = ' {{0:d}} {{1:d}} {{2:{0}}} {{3:{0}}}\n'.format(fmt)
+            fmt1_str = f" {{0:d}} {{1:d}} {{2:{fmt}}}\n"
+            fmt2_str = " {{0:d}} {{1:d}} {{2:{0}}} {{3:{0}}}\n".format(fmt)
 
         # We currently force the model to be finalized
         # before we can write it
@@ -243,19 +243,20 @@ class hamiltonianSile(Sile):
         # If the model is Hermitian we can
         # do with writing out half the entries
         if hermitian:
-            herm_acc = kwargs.get('herm_acc', 1e-6)
+            herm_acc = kwargs.get("herm_acc", 1e-6)
             # We check whether it is Hermitian (not S)
             for i, isc in enumerate(geom.lattice.sc_off):
                 oi = i * geom.no
                 oj = geom.sc_index(-isc) * geom.no
                 # get the difference between the ^\dagger elements
-                diff = h[:, oi:oi + geom.no] - \
-                    h[:, oj:oj + geom.no].transpose()
+                diff = h[:, oi : oi + geom.no] - h[:, oj : oj + geom.no].transpose()
                 diff.eliminate_zeros()
                 if np.any(np.abs(diff.data) > herm_acc):
                     amax = np.amax(np.abs(diff.data))
-                    warn(f"The model could not be asserted to be Hermitian "
-                         "within the accuracy required ({amax}).")
+                    warn(
+                        f"The model could not be asserted to be Hermitian "
+                        "within the accuracy required ({amax})."
+                    )
                     hermitian = False
                 del diff
 
@@ -271,23 +272,23 @@ class hamiltonianSile(Sile):
                     # Therefore we do it on a row basis, to limit memory
                     # requirements
                     for j in range(geom.no):
-                        h[j, o:o + geom.no] = 0.
+                        h[j, o : o + geom.no] = 0.0
                         h.eliminate_zeros()
                         if not H.orthogonal:
-                            S[j, o:o + geom.no] = 0.
+                            S[j, o : o + geom.no] = 0.0
                             S.eliminate_zeros()
             o = geom.sc_index(np.zeros([3], np.int32))
             # Get upper-triangular matrix of the unit-cell H and S
-            ut = triu(h[:, o:o + geom.no], k=0).tocsr()
+            ut = triu(h[:, o : o + geom.no], k=0).tocsr()
             for j in range(geom.no):
-                h[j, o:o + geom.no] = 0.
-                h[j, o:o + geom.no] = ut[j, :]
+                h[j, o : o + geom.no] = 0.0
+                h[j, o : o + geom.no] = ut[j, :]
                 h.eliminate_zeros()
             if not H.orthogonal:
-                ut = triu(S[:, o:o + geom.no], k=0).tocsr()
+                ut = triu(S[:, o : o + geom.no], k=0).tocsr()
                 for j in range(geom.no):
-                    S[j, o:o + geom.no] = 0.
-                    S[j, o:o + geom.no] = ut[j, :]
+                    S[j, o : o + geom.no] = 0.0
+                    S[j, o : o + geom.no] = ut[j, :]
                     S.eliminate_zeros()
 
                 # Ensure that S and H have the same sparsity pattern
@@ -301,13 +302,13 @@ class hamiltonianSile(Sile):
         for i, isc in enumerate(geom.lattice.sc_off):
             # Check that we have any contributions in this
             # sub-section
-            Hsub = h[:, i * geom.no:(i + 1) * geom.no]
+            Hsub = h[:, i * geom.no : (i + 1) * geom.no]
             if not H.orthogonal:
-                Ssub = S[:, i * geom.no:(i + 1) * geom.no]
+                Ssub = S[:, i * geom.no : (i + 1) * geom.no]
             if Hsub.getnnz() == 0:
                 continue
             # We have a contribution, write out the information
-            self._write('\nbegin matrix {:d} {:d} {:d}\n'.format(*isc))
+            self._write("\nbegin matrix {:d} {:d} {:d}\n".format(*isc))
             if advanced:
                 for jo, io, hh in ispmatrixd(Hsub):
                     o = np.array([jo, io], np.int32)
@@ -316,28 +317,26 @@ class hamiltonianSile(Sile):
                     if not H.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:
-                        s = 1.
+                        s = 1.0
                     else:
-                        s = 0.
-                    if s == 0.:
+                        s = 0.0
+                    if s == 0.0:
                         self._write(fmt1_str.format(a[0], o[0], a[1], o[1], hh))
                     else:
-                        self._write(
-                            fmt2_str.format(
-                                a[0], o[0], a[1], o[1], hh, s))
+                        self._write(fmt2_str.format(a[0], o[0], a[1], o[1], hh, s))
             else:
                 for jo, io, hh in ispmatrixd(Hsub):
                     if not H.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:
-                        s = 1.
+                        s = 1.0
                     else:
-                        s = 0.
-                    if s == 0.:
+                        s = 0.0
+                    if s == 0.0:
                         self._write(fmt1_str.format(jo, io, hh))
                     else:
                         self._write(fmt2_str.format(jo, io, hh, s))
-            self._write('end matrix {:d} {:d} {:d}\n'.format(*isc))
+            self._write("end matrix {:d} {:d} {:d}\n".format(*isc))
 
 
-add_sile('ham', hamiltonianSile, case=False, gzip=True)
+add_sile("ham", hamiltonianSile, case=False, gzip=True)

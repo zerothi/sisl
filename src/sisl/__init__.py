@@ -44,6 +44,7 @@ Advanced classes
 """
 import logging
 import datetime
+
 year = datetime.datetime.now().year
 
 # instantiate the logger, but we will not use it here...
@@ -53,6 +54,7 @@ __author__ = "Nick Papior"
 __license__ = "MPL-2.0"
 
 import sisl._version as _version
+
 __version__ = _version.version
 __version_tuple__ = _version.version_tuple
 __bibtex__ = f"""# BibTeX information if people wish to cite
@@ -96,6 +98,7 @@ import sisl.unit as unit
 
 # Import numerical constants (they required unit)
 import sisl.constant as constant
+
 # To make it easier to type ;)
 C = constant
 
@@ -136,9 +139,16 @@ from .physics import *
 # that sisl is made of.
 import sisl.io as io
 from .io.sile import (
-    add_sile, get_sile_class, get_sile,
-    get_siles, get_sile_rules, SileError,
-    BaseSile, Sile, SileCDF, SileBin
+    add_sile,
+    get_sile_class,
+    get_sile,
+    get_siles,
+    get_sile_rules,
+    SileError,
+    BaseSile,
+    Sile,
+    SileCDF,
+    SileBin,
 )
 
 # Allow geometry to register siles
@@ -165,4 +175,4 @@ if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD"):
     from . import viz
 
 # Make these things publicly available
-__all__ = [s for s in dir() if not s.startswith('_')]
+__all__ = [s for s in dir() if not s.startswith("_")]

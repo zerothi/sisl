@@ -33,10 +33,13 @@ from .shape import Sphere
 from .utils.mathematics import cart2spher
 
 __all__ = [
-    "Orbital", "SphericalOrbital", "AtomicOrbital",
+    "Orbital",
+    "SphericalOrbital",
+    "AtomicOrbital",
     "HydrogenicOrbital",
-    "GTOrbital", "STOrbital",
-    "radial_minimize_range"
+    "GTOrbital",
+    "STOrbital",
+    "radial_minimize_range",
 ]
 
 
@@ -44,10 +47,11 @@ __all__ = [
 def _rfact(l, m):
     pi4 = 4 * pi
     if m == 0:
-        return msqrt((2*l + 1)/pi4)
+        return msqrt((2 * l + 1) / pi4)
     elif m < 0:
-        return -msqrt(2*(2*l + 1)/pi4 * fact(l-m)/fact(l+m)) * (-1) ** m
-    return msqrt(2*(2*l + 1)/pi4 * fact(l-m)/fact(l+m))
+        return -msqrt(2 * (2 * l + 1) / pi4 * fact(l - m) / fact(l + m)) * (-1) ** m
+    return msqrt(2 * (2 * l + 1) / pi4 * fact(l - m) / fact(l + m))
+
 
 # This is a tuple of dicts
 #  [0]{0} is l==0, m==0
@@ -57,10 +61,7 @@ def _rfact(l, m):
 # Calculate it up to l == 7 which is the j shell
 # It will never be used, but in case somebody wishes to play with spherical harmonics
 # then why not ;)
-_rspher_harm_fact = tuple(
-    {m: _rfact(l, m) for m in range(-l, l+1)}
-    for l in range(8)
-)
+_rspher_harm_fact = tuple({m: _rfact(l, m) for m in range(-l, l + 1)} for l in range(8))
 # Clean-up
 del _rfact
 
@@ -97,13 +98,13 @@ def _rspherical_harm(m, l, theta, cos_phi):
     if m == 0:
         return _rspher_harm_fact[l][m] * lpmv(m, l, cos_phi)
     elif m < 0:
-        return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * sin(m*theta))
-    return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * cos(m*theta))
+        return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * sin(m * theta))
+    return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * cos(m * theta))
 
 
 @set_module("sisl")
 class Orbital:
-    r""" Base class for orbital information.
+    r"""Base class for orbital information.
 
     The orbital class is still in an experimental stage and will probably evolve over some time.
 
@@ -155,8 +156,8 @@ class Orbital:
     """
     __slots__ = ("_R", "_tag", "_q0")
 
-    def __init__(self, R, q0=0., tag=""):
-        """ Initialize orbital object """
+    def __init__(self, R, q0=0.0, tag=""):
+        """Initialize orbital object"""
         # Determine if the orbital has a radial function
         # In which case we can apply the radial discovery
         if R is None:
@@ -172,7 +173,9 @@ class Orbital:
                 R = radial_minimize_range(self._radial, **R)
 
         elif isinstance(R, dict):
-            warn(f"{self.__class__.__name__} cannot optimize R without a radial function.")
+            warn(
+                f"{self.__class__.__name__} cannot optimize R without a radial function."
+            )
             R = R.get("contains", -0.9999)
 
         self._R = float(R)
@@ -184,21 +187,21 @@ class Orbital:
 
     @property
     def R(self):
-        """ Maxmimum radius of orbital """
+        """Maxmimum radius of orbital"""
         return self._R
 
     @property
     def q0(self):
-        """ Initial charge """
+        """Initial charge"""
         return self._q0
 
     @property
     def tag(self):
-        """ Named tag of orbital """
+        """Named tag of orbital"""
         return self._tag
 
     def __str__(self):
-        """ A string representation of the object """
+        """A string representation of the object"""
         if len(self.tag) > 0:
             return f"{self.__class__.__name__}{{R: {self.R:.5f}, q0: {self.q0}, tag: {self.tag}}}"
         return f"{self.__class__.__name__}{{R: {self.R:.5f}, q0: {self.q0}}}"
@@ -209,15 +212,15 @@ class Orbital:
         return f"<{self.__module__}.{self.__class__.__name__} R={self.R:.3f}, q0={self.q0}>"
 
     def name(self, tex=False):
-        """ Return a named specification of the orbital (`tag`) """
+        """Return a named specification of the orbital (`tag`)"""
         return self.tag
 
     def psi(self, r, *args, **kwargs):
-        r""" Calculate :math:`\phi(\mathbf R)` for Cartesian coordinates """
+        r"""Calculate :math:`\phi(\mathbf R)` for Cartesian coordinates"""
         raise NotImplementedError
 
     def toSphere(self, center=None):
-        """ Return a sphere with radius equal to the orbital size
+        """Return a sphere with radius equal to the orbital size
 
         Returns
         -------
@@ -227,7 +230,7 @@ class Orbital:
         return Sphere(self.R, center)
 
     def equal(self, other, psi=False, radial=False):
-        """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
+        """Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
         When comparing two orbital radius they are considered *equal* with a precision of 1e-4 Ang.
 
@@ -264,21 +267,21 @@ class Orbital:
         return same and self.tag == other.tag
 
     def copy(self):
-        """ Create an exact copy of this object """
+        """Create an exact copy of this object"""
         return self.__class__(self.R, self.q0, self.tag)
 
     def scale(self, scale):
-        """ Scale the orbital by extending R by `scale` """
+        """Scale the orbital by extending R by `scale`"""
         R = self.R * scale
         if R < 0:
-            R = -1.
+            R = -1.0
         return self.__class__(R, self.q0, self.tag)
 
     def __eq__(self, other):
         return self.equal(other)
 
     def __plot__(self, harmonics=False, axes=False, *args, **kwargs):
-        """ Plot the orbital radial/spherical harmonics
+        """Plot the orbital radial/spherical harmonics
 
         Parameters
         ----------
@@ -299,7 +302,6 @@ class Orbital:
 
         # Add plots
         if harmonics:
-
             # Calculate the spherical harmonics
             theta, phi = np.meshgrid(np.arange(360), np.arange(180) - 90)
             s = self.spher(np.radians(theta), np.radians(phi))
@@ -310,8 +312,8 @@ class Orbital:
             axes.get_figure().colorbar(cax)
             axes.set_title(r"${}$".format(self.name(True)))
             # I don't know how exactly to handle this...
-            #axes.set_xlabel(r"Azimuthal angle $\theta$")
-            #axes.set_ylabel(r"Polar angle $\phi$")
+            # axes.set_xlabel(r"Azimuthal angle $\theta$")
+            # axes.set_ylabel(r"Polar angle $\phi$")
 
         else:
             # Plot the radial function and 5% above 0 value
@@ -324,8 +326,8 @@ class Orbital:
 
         return axes
 
-    def toGrid(self, precision=0.05, c=1., R=None, dtype=np.float64, atom=1):
-        """ Create a Grid with *only* this orbital wavefunction on it
+    def toGrid(self, precision=0.05, c=1.0, R=None, dtype=np.float64, atom=1):
+        """Create a Grid with *only* this orbital wavefunction on it
 
         Parameters
         ----------
@@ -344,8 +346,10 @@ class Orbital:
         if R is None:
             R = self.R
         if R < 0:
-            raise ValueError(f"{self.__class__.__name__}.toGrid was unable to create "
-                             "the orbital grid for plotting, the box size is negative.")
+            raise ValueError(
+                f"{self.__class__.__name__}.toGrid was unable to create "
+                "the orbital grid for plotting, the box size is negative."
+            )
 
         # Since all these things depend on other elements
         # we will simply import them here.
@@ -354,7 +358,8 @@ class Orbital:
         from .grid import Grid
         from .lattice import Lattice
         from .physics.electron import wavefunction
-        lattice = Lattice(R*2, origin=[-R] * 3)
+
+        lattice = Lattice(R * 2, origin=[-R] * 3)
         if isinstance(atom, Atom):
             atom = atom.copy(orbitals=self)
         else:
@@ -365,22 +370,25 @@ class Orbital:
         return G
 
     def __getstate__(self):
-        """ Return the state of this object """
+        """Return the state of this object"""
         return {"R": self.R, "q0": self.q0, "tag": self.tag}
 
     def __setstate__(self, d):
-        """ Re-create the state of this object """
+        """Re-create the state of this object"""
         self.__init__(d["R"], q0=d["q0"], tag=d["tag"])
 
 
-
 RadialFuncT = Callable[[npt.ArrayLike], npt.NDArray]
-def radial_minimize_range(radial_func: Callable[[RadialFuncT], npt.NDArray],
-                          contains: float,
-                          dr: Tuple[float, float]=(0.01, 0.0001),
-                          maxR: float=100,
-                          func: Optional[Callable[[RadialFuncT, npt.ArrayLike], npt.NDArray]]=None) -> float:
-    """ Minimize the maximum radius such that the integrated function `radial_func**2*r**3` contains `contains` of the integrand
+
+
+def radial_minimize_range(
+    radial_func: Callable[[RadialFuncT], npt.NDArray],
+    contains: float,
+    dr: Tuple[float, float] = (0.01, 0.0001),
+    maxR: float = 100,
+    func: Optional[Callable[[RadialFuncT, npt.ArrayLike], npt.NDArray]] = None,
+) -> float:
+    """Minimize the maximum radius such that the integrated function `radial_func**2*r**3` contains `contains` of the integrand
 
     Parameters
     ----------
@@ -444,7 +452,7 @@ def radial_minimize_range(radial_func: Callable[[RadialFuncT], npt.NDArray],
             idx = 0
         return idx + (intf[idx:] >= integrand).nonzero()[0]
 
-    r = np.arange(0., maxR + dr[0]/2, dr[0])
+    r = np.arange(0.0, maxR + dr[0] / 2, dr[0])
     f = func(radial_func, r)
     intf = cumulative_trapezoid(f, dx=dr[0], initial=0)
     integrand = intf[-1] * contains
@@ -458,12 +466,12 @@ def radial_minimize_range(radial_func: Callable[[RadialFuncT], npt.NDArray],
         # in the trapezoid integration each point is half contributed
         # to the previous point and half to the following point.
         # Here intf[idx-1] is the closed integral from 0:r[idx-1]
-        idxm_integrand = intf[idx-1]
+        idxm_integrand = intf[idx - 1]
 
         # Preset R
         R = r[idx]
 
-        r = np.arange(R - dr[0], min(R + dr[0]*2, maxR) + dr[1]/2, dr[1])
+        r = np.arange(R - dr[0], min(R + dr[0] * 2, maxR) + dr[1] / 2, dr[1])
         f = func(radial_func, r)
         intf = cumulative_trapezoid(f, dx=dr[1], initial=0) + idxm_integrand
 
@@ -478,12 +486,14 @@ def radial_minimize_range(radial_func: Callable[[RadialFuncT], npt.NDArray],
     except AttributeError:
         func_name = radial_func.__name__
 
-    warn(f"{func_name} failed to detect a proper radius for integration purposes, retaining R=-{contains}")
+    warn(
+        f"{func_name} failed to detect a proper radius for integration purposes, retaining R=-{contains}"
+    )
     return -contains
 
 
 def _set_radial(self, *args, **kwargs) -> None:
-    r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
+    r"""Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
     This can be called in several ways:
 
@@ -540,9 +550,11 @@ def _set_radial(self, *args, **kwargs) -> None:
     True
     """
     if len(args) == 0:
+
         def f0(r):
-            """ Wrapper for returning 0s """
+            """Wrapper for returning 0s"""
             return np.zeros_like(r)
+
         self._radial = f0
         # we cannot set R since it will always give the largest distance
 
@@ -550,7 +562,6 @@ def _set_radial(self, *args, **kwargs) -> None:
         self._radial = args[0]
 
     elif len(args) > 1:
-
         # A radial and function component has been passed
         r = _a.asarrayd(args[0])
         f = _a.asarrayd(args[1])
@@ -570,11 +581,13 @@ def _set_radial(self, *args, **kwargs) -> None:
         # this will defer the actual R designation (whether it should be set or not)
         self._radial = interp
     else:
-        raise ValueError(f"{self.__class__.__name__}.set_radial could not determine the arguments, please correct.")
+        raise ValueError(
+            f"{self.__class__.__name__}.set_radial could not determine the arguments, please correct."
+        )
 
 
 def _radial(self, r, *args, **kwargs) -> np.ndarray:
-    r""" Calculate the radial part of spherical orbital :math:`R(\mathbf r)`
+    r"""Calculate the radial part of spherical orbital :math:`R(\mathbf r)`
 
     The position `r` is a vector from the origin of this orbital.
 
@@ -609,7 +622,7 @@ def _radial(self, r, *args, **kwargs) -> np.ndarray:
 
 @set_module("sisl")
 class SphericalOrbital(Orbital):
-    r""" An *arbitrary* orbital class which only contains the harmonical part of the wavefunction  where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
+    r"""An *arbitrary* orbital class which only contains the harmonical part of the wavefunction  where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
 
     Note that in this case the used spherical harmonics is:
 
@@ -659,8 +672,8 @@ class SphericalOrbital(Orbital):
     # Additional slots (inherited classes retain the same slots)
     __slots__ = ("_l", "_radial")
 
-    def __init__(self, l, rf_or_func, q0=0., tag="", **kwargs):
-        """ Initialize spherical orbital object """
+    def __init__(self, l, rf_or_func, q0=0.0, tag="", **kwargs):
+        """Initialize spherical orbital object"""
         self._l = l
 
         # Set the internal function
@@ -688,7 +701,7 @@ class SphericalOrbital(Orbital):
     radial = _radial
 
     def spher(self, theta, phi, m=0, cos_phi=False):
-        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
+        r"""Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
 
         Parameters
         -----------
@@ -712,7 +725,7 @@ class SphericalOrbital(Orbital):
         return _rspherical_harm(m, self.l, theta, cos(phi))
 
     def psi(self, r, m=0):
-        r""" Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
+        r"""Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -741,7 +754,7 @@ class SphericalOrbital(Orbital):
         return p
 
     def psi_spher(self, r, theta, phi, m=0, cos_phi=False):
-        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -768,15 +781,15 @@ class SphericalOrbital(Orbital):
 
     @property
     def l(self):
-        r""" :math:`l` quantum number """
+        r""":math:`l` quantum number"""
         return self._l
 
     def copy(self):
-        """ Create an exact copy of this object """
+        """Create an exact copy of this object"""
         return self.__class__(self.l, self._radial, R=self.R, q0=self.q0, tag=self.tag)
 
     def equal(self, other, psi=False, radial=False):
-        """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
+        """Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
         Parameters
         ----------
@@ -795,7 +808,7 @@ class SphericalOrbital(Orbital):
         return same
 
     def __str__(self):
-        """ A string representation of the object """
+        """A string representation of the object"""
         if len(self.tag) > 0:
             return f"{self.__class__.__name__}{{l: {self.l}, R: {self.R}, q0: {self.q0}, tag: {self.tag}}}"
         return f"{self.__class__.__name__}{{l: {self.l}, R: {self.R}, q0: {self.q0}}}"
@@ -806,7 +819,7 @@ class SphericalOrbital(Orbital):
         return f"<{self.__module__}.{self.__class__.__name__} l={self.l}, R={self.R:.3f}, q0={self.q0}>"
 
     def toAtomicOrbital(self, m=None, n=None, zeta=1, P=False, q0=None):
-        r""" Create a list of `AtomicOrbital` objects
+        r"""Create a list of `AtomicOrbital` objects
 
         This defaults to create a list of `AtomicOrbital` objects for every `m` (for m in -l:l).
         One may optionally specify the sub-set of `m` to retrieve.
@@ -835,20 +848,27 @@ class SphericalOrbital(Orbital):
         if m is None:
             m = range(-self.l, self.l + 1)
         elif isinstance(m, Integral):
-            return AtomicOrbital(n=n, l=self.l, m=m, zeta=zeta, P=P, spherical=self, q0=q0, R=self.R)
-        return [AtomicOrbital(n=n, l=self.l, m=mm, zeta=zeta, P=P, spherical=self, q0=q0, R=self.R) for mm in m]
+            return AtomicOrbital(
+                n=n, l=self.l, m=m, zeta=zeta, P=P, spherical=self, q0=q0, R=self.R
+            )
+        return [
+            AtomicOrbital(
+                n=n, l=self.l, m=mm, zeta=zeta, P=P, spherical=self, q0=q0, R=self.R
+            )
+            for mm in m
+        ]
 
     def __getstate__(self):
-        """ Return the state of this object """
+        """Return the state of this object"""
         # A function is not necessarily pickable, so we store interpolated
         # data which *should* ensure the correct pickable state (to close agreement)
         r = np.linspace(0, self.R, 1000)
         f = self.radial(r)
-        return {'l': self.l, 'r': r, 'f': f, 'q0': self.q0, 'tag': self.tag}
+        return {"l": self.l, "r": r, "f": f, "q0": self.q0, "tag": self.tag}
 
     def __setstate__(self, d):
-        """ Re-create the state of this object """
-        self.__init__(d['l'], (d['r'], d['f']), q0=d['q0'], tag=d['tag'])
+        """Re-create the state of this object"""
+        self.__init__(d["l"], (d["r"], d["f"]), q0=d["q0"], tag=d["tag"])
 
 
 @set_module("sisl")
@@ -912,7 +932,7 @@ class AtomicOrbital(Orbital):
     __slots__ = ("_n", "_l", "_m", "_zeta", "_P", "_orb")
 
     def __init__(self, *args, **kwargs):
-        """ Initialize atomic orbital object """
+        """Initialize atomic orbital object"""
 
         # Ensure args is a list (to be able to pop)
         args = list(args)
@@ -932,13 +952,32 @@ class AtomicOrbital(Orbital):
 
                 _n = {"s": 1, "p": 2, "d": 3, "f": 4, "g": 5}
                 _l = {"s": 0, "p": 1, "d": 2, "f": 3, "g": 4}
-                _m = {"s": 0,
-                      "pz": 0, "px": 1, "py": -1,
-                      "dxy": -2, "dyz": -1, "dz2": 0, "dxz": 1, "dx2-y2": 2,
-                      "fy(3x2-y2)": -3, "fxyz": -2, "fz2y": -1, "fz3": 0,
-                      "fz2x": 1, "fz(x2-y2)": 2, "fx(x2-3y2)": 3,
-                      "gxy(x2-y2)": -4, "gzy(3x2-y2)": -3, "gz2xy": -2, "gz3y": -1, "gz4": 0,
-                      "gz3x": 1, "gz2(x2-y2)": 2, "gzx(x2-3y2)": 3, "gx4+y4": 4,
+                _m = {
+                    "s": 0,
+                    "pz": 0,
+                    "px": 1,
+                    "py": -1,
+                    "dxy": -2,
+                    "dyz": -1,
+                    "dz2": 0,
+                    "dxz": 1,
+                    "dx2-y2": 2,
+                    "fy(3x2-y2)": -3,
+                    "fxyz": -2,
+                    "fz2y": -1,
+                    "fz3": 0,
+                    "fz2x": 1,
+                    "fz(x2-y2)": 2,
+                    "fx(x2-3y2)": 3,
+                    "gxy(x2-y2)": -4,
+                    "gzy(3x2-y2)": -3,
+                    "gz2xy": -2,
+                    "gz3y": -1,
+                    "gz4": 0,
+                    "gz3x": 1,
+                    "gz2(x2-y2)": 2,
+                    "gzx(x2-3y2)": 3,
+                    "gx4+y4": 4,
                 }
 
                 # First remove a P for polarization
@@ -970,18 +1009,17 @@ class AtomicOrbital(Orbital):
                     # However, for now we assume this is enough (could easily
                     # be extended by a reg-exp)
                     try:
-                        zeta = int(s[iZ+1])
+                        zeta = int(s[iZ + 1])
                         # Remove Z + int
-                        s = s[:iZ] + s[iZ+2:]
+                        s = s[:iZ] + s[iZ + 2 :]
                     except Exception:
                         zeta = 1
-                        s = s[:iZ] + s[iZ+1:]
+                        s = s[:iZ] + s[iZ + 1 :]
 
                 # We should be left with m specification
                 m = _m.get(s, m)
 
             else:
-
                 # Arguments *have* to be
                 # n, l, [m (only for l>0)] [, zeta [, P]]
                 if n is None and len(args) > 0:
@@ -999,7 +1037,6 @@ class AtomicOrbital(Orbital):
                 if len(args) > 0:
                     if isinstance(args[0], bool):
                         P = args.pop(0)
-
 
         if l is None:
             raise ValueError(f"{self.__class__.__name__} l is not defined")
@@ -1022,11 +1059,13 @@ class AtomicOrbital(Orbital):
             raise ValueError(f"{self.__class__.__name__} n must be >= 1")
 
         if self.l >= len(_rspher_harm_fact):
-            raise ValueError(f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!")
+            raise ValueError(
+                f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!"
+            )
         if abs(self.m) > self.l:
             raise ValueError(f"{self.__class__.__name__} requires |m| <= l.")
 
-       # Now we should figure out how the spherical orbital
+        # Now we should figure out how the spherical orbital
         # has been passed.
         # There are two options:
         #  1. The radial function is passed as two arrays: r, f
@@ -1036,8 +1075,10 @@ class AtomicOrbital(Orbital):
         if len(args) > 0:
             s = args.pop(0)
             if "spherical" in kwargs:
-                raise ValueError(f"{self.__class__.__name__} multiple values for the spherical "
-                                 "orbital is present, 1) argument, 2) spherical=. Only supply one of them.")
+                raise ValueError(
+                    f"{self.__class__.__name__} multiple values for the spherical "
+                    "orbital is present, 1) argument, 2) spherical=. Only supply one of them."
+                )
 
         else:
             # in case the class has its own radial implementation, we might as well rely on that one
@@ -1045,7 +1086,7 @@ class AtomicOrbital(Orbital):
 
         # Get the radius requested
         R = kwargs.get("R")
-        q0 = kwargs.get("q0", 0.)
+        q0 = kwargs.get("q0", 0.0)
 
         if s is None:
             self._orb = Orbital(R, q0=q0)
@@ -1058,45 +1099,63 @@ class AtomicOrbital(Orbital):
         super().__init__(self._orb.R, q0=q0, tag=kwargs.get("tag", ""))
 
     def __hash__(self):
-        return hash((super(Orbital, self), self._l, self._n, self._m,
-                     self._zeta, self._P, self._orb))
+        return hash(
+            (
+                super(Orbital, self),
+                self._l,
+                self._n,
+                self._m,
+                self._zeta,
+                self._P,
+                self._orb,
+            )
+        )
 
     @property
     def n(self):
-        r""" :math:`n` shell """
+        r""":math:`n` shell"""
         return self._n
 
     @property
     def l(self):
-        r""" :math:`l` quantum number """
+        r""":math:`l` quantum number"""
         return self._l
 
     @property
     def m(self):
-        r""" :math:`m` quantum number """
+        r""":math:`m` quantum number"""
         return self._m
 
     @property
     def zeta(self):
-        r""" :math:`\zeta` shell """
+        r""":math:`\zeta` shell"""
         return self._zeta
 
     @property
     def P(self):
-        r""" Whether this is polarized shell or not """
+        r"""Whether this is polarized shell or not"""
         return self._P
 
     @property
     def orb(self):
-        r""" Orbital with radial part """
+        r"""Orbital with radial part"""
         return self._orb
 
     def copy(self):
-        """ Create an exact copy of this object """
-        return self.__class__(n=self.n, l=self.l, m=self.m, zeta=self.zeta, P=self.P, spherical=self.orb.copy(), q0=self.q0, tag=self.tag)
+        """Create an exact copy of this object"""
+        return self.__class__(
+            n=self.n,
+            l=self.l,
+            m=self.m,
+            zeta=self.zeta,
+            P=self.P,
+            spherical=self.orb.copy(),
+            q0=self.q0,
+            tag=self.tag,
+        )
 
     def equal(self, other, psi=False, radial=False):
-        """ Compare two orbitals by comparing their radius, and possibly the radial and psi functions
+        """Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
         Parameters
         ----------
@@ -1121,33 +1180,61 @@ class AtomicOrbital(Orbital):
         return same
 
     def name(self, tex=False):
-        """ Return named specification of the atomic orbital """
+        """Return named specification of the atomic orbital"""
         if tex:
             name = "{}{}".format(self.n, "spdfghij"[self.l])
             if self.l == 1:
-                name += ("_y", "_z", "_x")[self.m+1]
+                name += ("_y", "_z", "_x")[self.m + 1]
             elif self.l == 2:
-                name += ("_{xy}", "_{yz}", "_{z^2}", "_{xz}", "_{x^2-y^2}")[self.m+2]
+                name += ("_{xy}", "_{yz}", "_{z^2}", "_{xz}", "_{x^2-y^2}")[self.m + 2]
             elif self.l == 3:
-                name += ("_{y(3x^2-y^2)}", "_{xyz}", "_{z^2y}", "_{z^3}", "_{z^2x}", "_{z(x^2-y^2)}", "_{x(x^2-3y^2)}")[self.m+3]
+                name += (
+                    "_{y(3x^2-y^2)}",
+                    "_{xyz}",
+                    "_{z^2y}",
+                    "_{z^3}",
+                    "_{z^2x}",
+                    "_{z(x^2-y^2)}",
+                    "_{x(x^2-3y^2)}",
+                )[self.m + 3]
             elif self.l == 4:
-                name += ("_{_{xy(x^2-y^2)}}", "_{zy(3x^2-y^2)}", "_{z^2xy}", "_{z^3y}", "_{z^4}",
-                         "_{z^3x}", "_{z^2(x^2-y^2)}", "_{zx(x^2-3y^2)}", "_{x^4+y^4}")[self.m+4]
+                name += (
+                    "_{_{xy(x^2-y^2)}}",
+                    "_{zy(3x^2-y^2)}",
+                    "_{z^2xy}",
+                    "_{z^3y}",
+                    "_{z^4}",
+                    "_{z^3x}",
+                    "_{z^2(x^2-y^2)}",
+                    "_{zx(x^2-3y^2)}",
+                    "_{x^4+y^4}",
+                )[self.m + 4]
             elif self.l >= 5:
                 name = f"{name}_{{m={self.m}}}"
             if self.P:
-                return name + fr"\zeta^{self.zeta}\mathrm{{P}}"
-            return name + fr"\zeta^{self.zeta}"
+                return name + rf"\zeta^{self.zeta}\mathrm{{P}}"
+            return name + rf"\zeta^{self.zeta}"
         name = "{}{}".format(self.n, "spdfghij"[self.l])
         if self.l == 1:
-            name += ("y", "z", "x")[self.m+1]
+            name += ("y", "z", "x")[self.m + 1]
         elif self.l == 2:
-            name += ("xy", "yz", "z2", "xz", "x2-y2")[self.m+2]
+            name += ("xy", "yz", "z2", "xz", "x2-y2")[self.m + 2]
         elif self.l == 3:
-            name += ("y(3x2-y2)", "xyz", "z2y", "z3", "z2x", "z(x2-y2)", "x(x2-3y2)")[self.m+3]
+            name += ("y(3x2-y2)", "xyz", "z2y", "z3", "z2x", "z(x2-y2)", "x(x2-3y2)")[
+                self.m + 3
+            ]
         elif self.l == 4:
-            name += ("xy(x2-y2)", "zy(3x2-y2)", "z2xy", "z3y", "z4",
-                     "z3x", "z2(x2-y2)", "zx(x2-3y2)", "x4+y4")[self.m+4]
+            name += (
+                "xy(x2-y2)",
+                "zy(3x2-y2)",
+                "z2xy",
+                "z3y",
+                "z4",
+                "z3x",
+                "z2(x2-y2)",
+                "zx(x2-3y2)",
+                "x4+y4",
+            )[self.m + 4]
         elif self.l >= 5:
             name = f"{name}(m={self.m})"
         if self.P:
@@ -1155,25 +1242,29 @@ class AtomicOrbital(Orbital):
         return name + f"Z{self.zeta}"
 
     def __str__(self):
-        """ A string representation of the object """
+        """A string representation of the object"""
         if len(self.tag) > 0:
             return f"{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, tag: {self.tag}, {self.orb!s}}}"
-        return f"{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, {self.orb!s}}}"
+        return (
+            f"{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, {self.orb!s}}}"
+        )
 
     def __repr__(self):
         if self.tag:
             return f"<{self.__module__}.{self.__class__.__name__} {self.name()} q0={self.q0}, tag={self.tag}>"
-        return f"<{self.__module__}.{self.__class__.__name__} {self.name()} q0={self.q0}>"
+        return (
+            f"<{self.__module__}.{self.__class__.__name__} {self.name()} q0={self.q0}>"
+        )
 
     def set_radial(self, *args, **kwargs):
-        r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
+        r"""Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
         See `SphericalOrbital.set_radial` where these arguments are passed to.
         """
         return self.orb.set_radial(*args, **kwargs)
 
     def radial(self, r, *args, **kwargs):
-        r""" Calculate the radial part of the wavefunction :math:`f(\mathbf R)`
+        r"""Calculate the radial part of the wavefunction :math:`f(\mathbf R)`
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -1190,7 +1281,7 @@ class AtomicOrbital(Orbital):
         return self.orb.radial(r, *args, **kwargs)
 
     def psi(self, r):
-        r""" Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
+        r"""Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -1207,7 +1298,7 @@ class AtomicOrbital(Orbital):
         return self.orb.psi(r, self.m)
 
     def spher(self, theta, phi, cos_phi=False):
-        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
+        r"""Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
 
         Parameters
         -----------
@@ -1227,7 +1318,7 @@ class AtomicOrbital(Orbital):
         return self.orb.spher(theta, phi, self.m, cos_phi)
 
     def psi_spher(self, r, theta, phi, cos_phi=False):
-        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -1251,7 +1342,7 @@ class AtomicOrbital(Orbital):
         return self.orb.psi_spher(r, theta, phi, self.m, cos_phi)
 
     def __getstate__(self):
-        """ Return the state of this object """
+        """Return the state of this object"""
         # A function is not necessarily pickable, so we store interpolated
         # data which *should* ensure the correct pickable state (to close agreement)
         try:
@@ -1264,7 +1355,7 @@ class AtomicOrbital(Orbital):
         return {"name": self.name(), "r": r, "f": f, "q0": self.q0, "tag": self.tag}
 
     def __setstate__(self, d):
-        """ Re-create the state of this object """
+        """Re-create the state of this object"""
         if d["r"] is None:
             self.__init__(d["name"], q0=d["q0"], tag=d["tag"])
         else:
@@ -1319,41 +1410,51 @@ class HydrogenicOrbital(AtomicOrbital):
     """
 
     def __init__(self, n, l, m, Z, **kwargs):
-
         self._Z = Z
 
         Helper = namedtuple("Helper", ["Z", "prefactor"])
         z = 2 * Z / (n * a0("Ang"))
-        pref = (z ** 3 * factorial(n - l - 1) / (2 * n * factorial(n + l))) ** 0.5
+        pref = (z**3 * factorial(n - l - 1) / (2 * n * factorial(n + l))) ** 0.5
         self._radial_helper = Helper(z, pref)
 
         super().__init__(n, l, m, **kwargs)
 
     def copy(self):
-        """ Create an exact copy of this object """
-        return self.__class__(self.n, self.l, self.m, self._Z, R=self.R, q0=self.q0, tag=self.tag)
+        """Create an exact copy of this object"""
+        return self.__class__(
+            self.n, self.l, self.m, self._Z, R=self.R, q0=self.q0, tag=self.tag
+        )
 
     def _radial(self, r):
-        r""" Radial functional for the Hydrogenic orbital """
+        r"""Radial functional for the Hydrogenic orbital"""
         H = self._radial_helper
         n = self.n
         l = self.l
         zr = H.Z * r
         L = H.prefactor * eval_genlaguerre(n - l - 1, 2 * l + 1, zr)
-        return np.exp(-zr * 0.5) * zr ** l * L
+        return np.exp(-zr * 0.5) * zr**l * L
 
     def __getstate__(self):
-        """ Return the state of this object """
-        return {"n": self.n, "l": self.l, "m": self.m,
-                "Z": self._Z, "R": self.R, "q0": self.q0, "tag": self.tag}
+        """Return the state of this object"""
+        return {
+            "n": self.n,
+            "l": self.l,
+            "m": self.m,
+            "Z": self._Z,
+            "R": self.R,
+            "q0": self.q0,
+            "tag": self.tag,
+        }
 
     def __setstate__(self, d):
-        """ Re-create the state of this object """
-        self.__init__(d["n"], d["l"], d["m"], d["Z"], R=d["R"], q0=d["q0"], tag=d["tag"])
+        """Re-create the state of this object"""
+        self.__init__(
+            d["n"], d["l"], d["m"], d["Z"], R=d["R"], q0=d["q0"], tag=d["tag"]
+        )
 
 
 class _ExponentialOrbital(Orbital):
-    r""" Inheritable class for different exponential spherical orbitals
+    r"""Inheritable class for different exponential spherical orbitals
 
     All exponential spherical orbitals are defined using:
 
@@ -1373,7 +1474,6 @@ class _ExponentialOrbital(Orbital):
     __slots__ = ("_n", "_l", "_m", "_alpha", "_coeff")
 
     def __init__(self, *args, **kwargs):
-
         # Ensure args is a list (to be able to pop)
         args = list(args)
 
@@ -1430,10 +1530,14 @@ class _ExponentialOrbital(Orbital):
             coeff = (coeff,)
         self._coeff = tuple(coeff)
 
-        assert len(self.alpha) == len(self.coeff), "Contraction factors and exponents needs to have same length"
+        assert len(self.alpha) == len(
+            self.coeff
+        ), "Contraction factors and exponents needs to have same length"
 
         if self.l >= len(_rspher_harm_fact):
-            raise ValueError(f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!")
+            raise ValueError(
+                f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!"
+            )
         if abs(self.m) > self.l:
             raise ValueError(f"{self.__class__.__name__} requires |m| <= l.")
 
@@ -1442,16 +1546,27 @@ class _ExponentialOrbital(Orbital):
         super().__init__(*args, R=R, **kwargs)
 
     def copy(self):
-        """ Create an exact copy of this object """
-        return self.__class__(n=self.n, l=self.l, m=self.m, alpha=self.alpha, coeff=self.coeff, R=self.R, q0=self.q0, tag=self.tag)
+        """Create an exact copy of this object"""
+        return self.__class__(
+            n=self.n,
+            l=self.l,
+            m=self.m,
+            alpha=self.alpha,
+            coeff=self.coeff,
+            R=self.R,
+            q0=self.q0,
+            tag=self.tag,
+        )
 
     def __str__(self):
-        """ A string representation of the object """
+        """A string representation of the object"""
         if len(self.tag) > 0:
             s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}, tag: {self.tag}"
         else:
             s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}"
-        orbs = ",\n c, a:".join([f"{c:.4f} , {a:.5f}" for c, a in zip(self.alpha, self.coeff)])
+        orbs = ",\n c, a:".join(
+            [f"{c:.4f} , {a:.5f}" for c, a in zip(self.alpha, self.coeff)]
+        )
         return f"{s}{orbs}\n}}"
 
     def __repr__(self):
@@ -1460,35 +1575,37 @@ class _ExponentialOrbital(Orbital):
         return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}, >"
 
     def __hash__(self):
-        return hash((super(Orbital, self), self.n, self.l, self.m, self.coeff, self.alpha))
+        return hash(
+            (super(Orbital, self), self.n, self.l, self.m, self.coeff, self.alpha)
+        )
 
     @property
     def n(self):
-        r""" :math:`n` quantum number """
+        r""":math:`n` quantum number"""
         return self._n
 
     @property
     def l(self):
-        r""" :math:`l` quantum number """
+        r""":math:`l` quantum number"""
         return self._l
 
     @property
     def m(self):
-        r""" :math:`m` quantum number """
+        r""":math:`m` quantum number"""
         return self._m
 
     @property
     def alpha(self):
-        r""" :math:`\alpha` factors """
+        r""":math:`\alpha` factors"""
         return self._alpha
 
     @property
     def coeff(self):
-        r""" :math:`c` contraction factors """
+        r""":math:`c` contraction factors"""
         return self._coeff
 
     def psi(self, r):
-        r""" Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
+        r"""Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -1505,7 +1622,9 @@ class _ExponentialOrbital(Orbital):
         r = _a.asarray(r)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = cart2spher(r, theta=self.m != 0, cos_phi=True, maxR=self.R)
+        n, idx, r, theta, phi = cart2spher(
+            r, theta=self.m != 0, cos_phi=True, maxR=self.R
+        )
         p = _a.zerosd(n)
         if len(idx) > 0:
             p[idx] = self.psi_spher(r, theta, phi, cos_phi=True)
@@ -1515,7 +1634,7 @@ class _ExponentialOrbital(Orbital):
         return p
 
     def spher(self, theta, phi, cos_phi=False):
-        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
+        r"""Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
 
         Parameters
         -----------
@@ -1537,7 +1656,7 @@ class _ExponentialOrbital(Orbital):
         return _rspherical_harm(self.m, self.l, theta, cos(phi))
 
     def psi_spher(self, r, theta, phi, cos_phi=False):
-        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -1609,16 +1728,16 @@ class GTOrbital(_ExponentialOrbital):
     radial = _radial
 
     def _radial(self, r):
-        r""" Radial function """
+        r"""Radial function"""
         r2 = np.square(r)
         coeff = self.coeff
         alpha = self.alpha
-        v = coeff[0] * np.exp(-alpha[0]*r2)
+        v = coeff[0] * np.exp(-alpha[0] * r2)
         for c, a in zip(coeff[1:], alpha[1:]):
-            v += c * np.exp(-a*r2)
+            v += c * np.exp(-a * r2)
         if self.l == 0:
             return v
-        return r ** self.l * v
+        return r**self.l * v
 
 
 class STOrbital(_ExponentialOrbital):
@@ -1669,12 +1788,12 @@ class STOrbital(_ExponentialOrbital):
     radial = _radial
 
     def _radial(self, r):
-        r""" Radial function """
+        r"""Radial function"""
         coeff = self.coeff
         alpha = self.alpha
-        v = coeff[0] * np.exp(-alpha[0]*r)
+        v = coeff[0] * np.exp(-alpha[0] * r)
         for c, a in zip(coeff[1:], alpha[1:]):
-            v += c * np.exp(-a*r)
+            v += c * np.exp(-a * r)
         if self.n == 1:
             return v
         return r ** (self.n - 1) * v

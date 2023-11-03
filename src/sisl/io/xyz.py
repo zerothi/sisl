@@ -21,10 +21,10 @@ __all__ = ["xyzSile"]
 
 @set_module("sisl.io")
 class xyzSile(Sile):
-    """ XYZ file object """
+    """XYZ file object"""
 
     def _parse_lattice(self, header, xyz, lattice):
-        """Internal helper routine for extracting the lattice """
+        """Internal helper routine for extracting the lattice"""
         if lattice is not None:
             return lattice
 
@@ -59,13 +59,11 @@ class xyzSile(Sile):
         if "Origin" in header:
             origin = _a.fromiterd(header.pop("Origin").strip('"').split()).reshape(3)
 
-        return Lattice(cell, nsc=nsc,
-                       origin=origin,
-                       boundary_condition=bc)
+        return Lattice(cell, nsc=nsc, origin=origin, boundary_condition=bc)
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='.8f', comment=None):
-        """ Writes the geometry to the contained file
+    def write_geometry(self, geometry, fmt=".8f", comment=None):
+        """Writes the geometry to the contained file
 
         Parameters
         ----------
@@ -82,16 +80,18 @@ class xyzSile(Sile):
         lattice = geometry.lattice
 
         # Write the number of atoms in the geometry
-        self._write('   {}\n'.format(len(geometry)))
+        self._write("   {}\n".format(len(geometry)))
 
         # Write out the cell information in the comment field
         # This contains the cell vectors in a single vector (3 + 3 + 3)
         # quantities, plus the number of supercells (3 ints)
         fields = []
-        fields.append(('Lattice="' + f'{{:{fmt}}} ' * 9 + '"').format(*geometry.cell.ravel()))
+        fields.append(
+            ('Lattice="' + f"{{:{fmt}}} " * 9 + '"').format(*geometry.cell.ravel())
+        )
         nsc = geometry.nsc[:]
         fields.append('nsc="{} {} {}"'.format(*nsc))
-        pbc = ['T' if n else 'F' for n in lattice.pbc]
+        pbc = ["T" if n else "F" for n in lattice.pbc]
         fields.append('pbc="{} {} {}"'.format(*pbc))
         BC = BoundaryCondition.getitem
         bc = [f"{BC(n[0]).name} {BC(n[1]).name}" for n in lattice.boundary_condition]
@@ -99,31 +99,33 @@ class xyzSile(Sile):
         if comment is not None:
             fields.append(f'Comment="{comment}"')
 
-        self._write(' '.join(fields) + "\n")
+        self._write(" ".join(fields) + "\n")
 
-        fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
+        fmt_str = "{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n".format(fmt)
         for ia, a, _ in geometry.iter_species():
             s = a.symbol
-            s = {'fa': 'Ds'}.get(s, s)
+            s = {"fa": "Ds"}.get(s, s)
             self._write(fmt_str.format(s, *geometry.xyz[ia, :]))
 
     def _r_geometry_skip(self, *args, **kwargs):
-        """ Read the geometry for a generic xyz file (not sisl, nor ASE) """
+        """Read the geometry for a generic xyz file (not sisl, nor ASE)"""
         line = self.readline()
-        if line == '':
+        if line == "":
             return None
 
         na = int(line)
         line = self.readline
-        for _ in range(na+1):
+        for _ in range(na + 1):
             line()
         return na
 
     @SileBinder(skip_func=_r_geometry_skip)
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
     def read_geometry(self, atoms=None, lattice=None):
-        """ Returns Geometry object from the XYZ file
+        """Returns Geometry object from the XYZ file
 
         Parameters
         ----------
@@ -133,7 +135,7 @@ class xyzSile(Sile):
             the lattice to be associated with the geometry
         """
         line = self.readline()
-        if line == '':
+        if line == "":
             return None
 
         # Read number of atoms
@@ -141,9 +143,7 @@ class xyzSile(Sile):
 
         # Read header, and try and convert to dictionary
         header = self.readline()
-        header = {k: v.strip('"') for k, v in
-                  header_to_dict(header).items()
-        }
+        header = {k: v.strip('"') for k, v in header_to_dict(header).items()}
 
         # Read atoms and coordinates
         sp = [None] * na
@@ -161,10 +161,10 @@ class xyzSile(Sile):
         return Geometry(xyz, atoms=sp, lattice=lattice)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-add_sile('xyz', xyzSile, case=False, gzip=True)
+add_sile("xyz", xyzSile, case=False, gzip=True)

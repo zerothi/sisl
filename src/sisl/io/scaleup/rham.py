@@ -5,21 +5,22 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from ..sile import *
+
 # Import sile objects
 from .sile import SileScaleUp
 
-__all__ = ['rhamSileScaleUp']
+__all__ = ["rhamSileScaleUp"]
 
 
 class rhamSileScaleUp(SileScaleUp):
-    """ rham file object for ScaleUp
+    """rham file object for ScaleUp
 
     This file contains the real-space Hamiltonian for a ScaleUp simulation
     """
 
     @sile_fh_open()
     def read_hamiltonian(self, geometry=None):
-        """ Reads a Hamiltonian from the Sile """
+        """Reads a Hamiltonian from the Sile"""
         from sisl import Hamiltonian
 
         # Create a copy as we may change the
@@ -38,7 +39,7 @@ class rhamSileScaleUp(SileScaleUp):
             isc = list(map(int, l[1:4]))
             o1, o2 = map(int, l[4:6])
             rH, iH = map(float, l[6:8])
-            return s, isc, o1-1, o2-1, rH, iH
+            return s, isc, o1 - 1, o2 - 1, rH, iH
 
         ns = 0
         no = 0
@@ -57,7 +58,9 @@ class rhamSileScaleUp(SileScaleUp):
         if no + 1 != g.no:
             # First try and read the orbocc file
             try:
-                species = get_sile(str(self.file).replace(".rham", ".orbocc")).read_atom()
+                species = get_sile(
+                    str(self.file).replace(".rham", ".orbocc")
+                ).read_atom()
                 for i, atom in enumerate(species.atom):
                     g.atoms._atom[i] = atom
             except Exception:
@@ -66,8 +69,10 @@ class rhamSileScaleUp(SileScaleUp):
 
         # Check again, to be sure...
         if no + 1 != g.no:
-            raise ValueError('The Geometry has a different number of '
-                              'orbitals, please correct by adding the orbocc file.')
+            raise ValueError(
+                "The Geometry has a different number of "
+                "orbitals, please correct by adding the orbocc file."
+            )
 
         # Now, we know the size etc. of the Hamiltonian
         m_sc = m_sc * 2 + 1
@@ -83,12 +88,11 @@ class rhamSileScaleUp(SileScaleUp):
 
         old_s = 0
         for s, isc, o1, o2, rH, iH in lines:
-
             if s != old_s:
                 # We need to create a new Hamiltonian
                 H = lil_matrix((no, no_s), dtype=np.float64)
                 old_s = s
-                Hs[s-1] = H
+                Hs[s - 1] = H
 
             i = g.sc_index(isc)
             H[o1, o2 + i * no] = rH
@@ -99,4 +103,4 @@ class rhamSileScaleUp(SileScaleUp):
         return H
 
 
-add_sile('rham', rhamSileScaleUp, case=False, gzip=True)
+add_sile("rham", rhamSileScaleUp, case=False, gzip=True)

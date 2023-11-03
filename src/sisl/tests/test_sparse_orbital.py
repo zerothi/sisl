@@ -12,16 +12,18 @@ from sisl import Atom, Cuboid, Geometry, Lattice
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
-pytestmark = [pytest.mark.sparse,
-              pytest.mark.sparse_geometry,
-              pytest.mark.sparse_orbital]
+pytestmark = [
+    pytest.mark.sparse,
+    pytest.mark.sparse_geometry,
+    pytest.mark.sparse_orbital,
+]
 
 
 @pytest.mark.parametrize("n0", [1, 3])
 @pytest.mark.parametrize("n1", [1, 4])
 @pytest.mark.parametrize("n2", [1, 2])
 def test_sparse_orbital_symmetric(n0, n1, n2):
-    g = fcc(1., Atom(1, R=1.5)) * 2
+    g = fcc(1.0, Atom(1, R=1.5)) * 2
     s = SparseOrbital(g)
     s.construct([[0.1, 1.51], [1, 2]])
     s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
@@ -32,7 +34,7 @@ def test_sparse_orbital_symmetric(n0, n1, n2):
         # orbitals connecting to io
         edges = s.edges(io)
         # Figure out the transposed supercell indices of the edges
-        isc = - s.geometry.o2isc(edges)
+        isc = -s.geometry.o2isc(edges)
         # Convert to supercell
         IO = s.geometry.lattice.sc_index(isc) * no + io
         # Figure out if 'io' is also in the back-edges
@@ -49,7 +51,7 @@ def test_sparse_orbital_symmetric(n0, n1, n2):
 @pytest.mark.parametrize("n2", [1, 2])
 @pytest.mark.parametrize("axis", [0, 1])
 def test_sparse_orbital_append(n0, n1, n2, axis):
-    g = fcc(1., Atom(1, R=1.98)) * 2
+    g = fcc(1.0, Atom(1, R=1.98)) * 2
     dists = np.insert(g.distance(0, R=g.maxR()) + 0.001, 0, 0.001)
     connect = np.arange(dists.size, dtype=np.float64) / 5
     s = SparseOrbital(g)
@@ -88,7 +90,7 @@ def test_sparse_orbital_append(n0, n1, n2, axis):
 @pytest.mark.parametrize("n2", [1, 2])
 @pytest.mark.parametrize("axis", [1, 2])
 def test_sparse_orbital_append_scale(n0, n1, n2, axis):
-    g = fcc(1., Atom(1, R=1.98)) * 2
+    g = fcc(1.0, Atom(1, R=1.98)) * 2
     dists = np.insert(g.distance(0, R=g.maxR()) + 0.001, 0, 0.001)
     connect = np.arange(dists.size, dtype=np.float64) / 5
     s = SparseOrbital(g)
@@ -116,13 +118,13 @@ def test_sparse_orbital_append_scale(n0, n1, n2, axis):
         s = sf.sub(np.concatenate([idx1, s1.na + idx2]))
         s.finalize()
 
-        sout = s1.sub(idx1).append(s2.sub(idx2), axis, scale=(2., 0))
+        sout = s1.sub(idx1).append(s2.sub(idx2), axis, scale=(2.0, 0))
         sout = (sout + sout.transpose()) * 0.5
         assert sout.spsame(s)
         sout.finalize()
         assert np.allclose(s._csr._D, sout._csr._D)
 
-        sout = s1.sub(idx1).append(s2.sub(idx2), axis, scale=(0., 2.))
+        sout = s1.sub(idx1).append(s2.sub(idx2), axis, scale=(0.0, 2.0))
         sout.finalize()
         # Ensure that some elements are not the same!
         assert not np.allclose(s._csr._D, sout._csr._D)
@@ -137,10 +139,10 @@ def test_sparse_orbital_hermitian():
 
     for f in [True, False]:
         spo = SparseOrbital(g)
-        spo[0, 0] = 1.
+        spo[0, 0] = 1.0
 
         # Create only a single coupling to the neighouring element
-        spo[0, 1] = 2.
+        spo[0, 1] = 2.0
 
         if f:
             spo.finalize()
@@ -151,16 +153,16 @@ def test_sparse_orbital_hermitian():
         spoT = spo.transpose()
         assert spoT.finalized
         assert spoT.nnz == 2
-        assert spoT[0, 0] == 1.
-        assert spoT[0, 1] == 0.
-        assert spoT[0, 2] == 2.
+        assert spoT[0, 0] == 1.0
+        assert spoT[0, 1] == 0.0
+        assert spoT[0, 2] == 2.0
 
         spoH = (spo + spoT) * 0.5
 
         assert spoH.nnz == 3
-        assert spoH[0, 0] == 1.
-        assert spoH[0, 1] == 1.
-        assert spoH[0, 2] == 1.
+        assert spoH[0, 0] == 1.0
+        assert spoH[0, 1] == 1.0
+        assert spoH[0, 2] == 1.0
 
 
 def test_sparse_orbital_sub_orbital():
@@ -179,12 +181,7 @@ def test_sparse_orbital_sub_orbital():
     spo = spo + spo.transpose()
 
     # orbitals on first atom (a0)
-    rem_sub = [
-        (0, [1, 2]),
-        ([0, 2], 1),
-        (2, [0, 1]),
-        (a0[0], [1, 2])
-    ]
+    rem_sub = [(0, [1, 2]), ([0, 2], 1), (2, [0, 1]), (a0[0], [1, 2])]
     for rem, sub in rem_sub:
         spo_rem = spo.remove_orbital(0, rem)
         spo_sub = spo.sub_orbital(0, sub)
@@ -245,7 +242,7 @@ def test_sparse_orbital_sub_orbital_nested():
     Doing nested or multiple subs that exposes the same sub-atom
     should ultimately re-use the existing atom.
 
-    However, due to the renaming of the tags 
+    However, due to the renaming of the tags
     """
     a0 = Atom(1, R=(1.1, 1.4, 1.6))
     a1 = Atom(2, R=(1.3, 1.1))
@@ -291,29 +288,28 @@ def test_sparse_orbital_replace_simple():
 
     # now replace every position that can be replaced
     for position in range(0, spo44.geometry.na, 2):
-
         # replace both atoms
-        new = spo44.replace([position, position+1], spo)
-        assert np.fabs((new - spo44)._csr._D).sum() == 0.
+        new = spo44.replace([position, position + 1], spo)
+        assert np.fabs((new - spo44)._csr._D).sum() == 0.0
 
         # replace both atoms (reversed)
         # When swapping it is not the same
-        new = spo44.replace([position, position+1], spo, [1, 0])
-        assert np.fabs((new - spo44)._csr._D).sum() != 0.
+        new = spo44.replace([position, position + 1], spo, [1, 0])
+        assert np.fabs((new - spo44)._csr._D).sum() != 0.0
         pvt = np.arange(spo44.na)
         pvt[position] = position + 1
-        pvt[position+1] = position
+        pvt[position + 1] = position
         assert np.unique(pvt).size == pvt.size
         new_pvt = spo44.sub(pvt)
-        assert np.fabs((new - new_pvt)._csr._D).sum() == 0.
+        assert np.fabs((new - new_pvt)._csr._D).sum() == 0.0
 
         # replace first atom
         new = spo44.replace([position], spo, 0)
-        assert np.fabs((new - spo44)._csr._D).sum() == 0.
+        assert np.fabs((new - spo44)._csr._D).sum() == 0.0
 
         # replace second atom
-        new = spo44.replace([position+1], spo, 1)
-        assert np.fabs((new - spo44)._csr._D).sum() == 0.
+        new = spo44.replace([position + 1], spo, 1)
+        assert np.fabs((new - spo44)._csr._D).sum() == 0.0
 
 
 def test_sparse_orbital_replace_specie_warn():
@@ -338,7 +334,7 @@ def test_sparse_orbital_replace_specie_warn():
 
 
 def test_sparse_orbital_replace_hole():
-    """ Create a big graphene flake remove a hole (1 orbital system) """
+    """Create a big graphene flake remove a hole (1 orbital system)"""
     g = graphene(orthogonal=True)
     spo = SparseOrbital(g)
     # create the sparse-orbital
@@ -364,25 +360,29 @@ def test_sparse_orbital_replace_hole():
             assert len(atoms) == 4 * 6 * 6
             new = big.replace(atoms, hole)
             new_copy = create_sp(new.geometry)
-            assert np.fabs((new - new_copy)._csr._D).sum() == 0.
+            assert np.fabs((new - new_copy)._csr._D).sum() == 0.0
 
 
 def test_sparse_orbital_replace_hole_norbs():
-    """ Create a big graphene flake remove a hole (multiple orbitals) """
+    """Create a big graphene flake remove a hole (multiple orbitals)"""
     a1 = Atom(5, R=(1.44, 1.44))
     a2 = Atom(7, R=(1.44, 1.44, 1.44))
     g = graphene(atoms=[a1, a2], orthogonal=True)
     spo = SparseOrbital(g)
+
     def func(self, ia, atoms, atoms_xyz=None):
         geom = self.geometry
+
         def a2o(idx):
             return geom.a2o(idx, True)
+
         io = a2o(ia)
         idx = self.geometry.close(ia, R=[0.1, 1.44], atoms=atoms, atoms_xyz=atoms_xyz)
         idx = list(map(a2o, idx))
         self[io, idx[0]] = 0
         for i in io:
             self[i, idx[1]] = 2.7
+
     # create the sparse-orbital
     spo.construct(func)
 
@@ -406,7 +406,7 @@ def test_sparse_orbital_replace_hole_norbs():
             assert len(atoms) == 4 * 6 * 6
             new = big.replace(atoms, hole)
             new_copy = create_sp(new.geometry)
-            assert np.fabs((new - new_copy)._csr._D).sum() == 0.
+            assert np.fabs((new - new_copy)._csr._D).sum() == 0.0
 
 
 def test_translate_sparse_orbitals():
@@ -417,13 +417,13 @@ def test_translate_sparse_orbitals():
 
     # Build a dummy matrix with onsite terms and just one coupling term
     matrix = SparseOrbital(graph)
-    matrix[0,0] = 1
-    matrix[1,1] = 2
-    matrix[0,1] = 3
-    matrix[0,4] = 4
+    matrix[0, 0] = 1
+    matrix[1, 1] = 2
+    matrix[0, 1] = 3
+    matrix[0, 4] = 4
 
     # Translate the second atom
-    transl = matrix._translate_atoms_sc([[0,0,0], [1, 0, 0]])
+    transl = matrix._translate_atoms_sc([[0, 0, 0], [1, 0, 0]])
 
     # Check that the new auxiliary cell is correct.
     assert np.allclose(transl.nsc, [3, 1, 1])
@@ -434,10 +434,10 @@ def test_translate_sparse_orbitals():
     assert np.allclose(transl.geometry[1], matrix.geometry[1] + matrix.geometry.cell[0])
 
     # Assert that the matrix elements have been translated
-    assert transl[0,0] == 1
-    assert transl[1,1] == 2
-    assert transl[0,1] == 3
-    assert transl[0,6 + 4] == 4
+    assert transl[0, 0] == 1
+    assert transl[1, 1] == 2
+    assert transl[0, 1] == 3
+    assert transl[0, 6 + 4] == 4
 
     # Translate back to unit cell
     uc_matrix = transl.translate2uc()
@@ -448,13 +448,13 @@ def test_translate_sparse_orbitals():
 
     assert np.allclose(uc_matrix.geometry.xyz, matrix.geometry.xyz)
 
-    assert uc_matrix[0,0] == 1
-    assert uc_matrix[1,1] == 2
-    assert uc_matrix[0,1] == 3
-    assert uc_matrix[0,4] == 4
+    assert uc_matrix[0, 0] == 1
+    assert uc_matrix[1, 1] == 2
+    assert uc_matrix[0, 1] == 3
+    assert uc_matrix[0, 4] == 4
 
     # Instead, test atoms and axes arguments to avoid any translation.
-    for kwargs in [{'atoms': [0]}, {'axes': [1, 2]}]:
+    for kwargs in [{"atoms": [0]}, {"axes": [1, 2]}]:
         not_uc_matrix = transl.translate2uc(**kwargs)
 
         # Check the auxiliary cell, coordinates and the matrix elements
@@ -466,16 +466,20 @@ def test_translate_sparse_orbitals():
         assert np.allclose(not_uc_matrix._csr.todense(), transl._csr.todense())
 
     # Now, translate both atoms
-    transl_both = uc_matrix._translate_atoms_sc([[-1,0,0], [1, 0, 0]])
+    transl_both = uc_matrix._translate_atoms_sc([[-1, 0, 0], [1, 0, 0]])
 
     # Check the auxiliary cell, coordinates and the matrix elements
     assert np.allclose(transl_both.nsc, [5, 1, 1])
-    assert np.allclose(transl_both.shape, [6, 6*5, 1])
+    assert np.allclose(transl_both.shape, [6, 6 * 5, 1])
 
-    assert np.allclose(transl_both.geometry[0], uc_matrix.geometry[0] - uc_matrix.geometry.cell[0])
-    assert np.allclose(transl_both.geometry[1], uc_matrix.geometry[1] + uc_matrix.geometry.cell[0])
+    assert np.allclose(
+        transl_both.geometry[0], uc_matrix.geometry[0] - uc_matrix.geometry.cell[0]
+    )
+    assert np.allclose(
+        transl_both.geometry[1], uc_matrix.geometry[1] + uc_matrix.geometry.cell[0]
+    )
 
-    assert transl_both[0,0] == 1
-    assert transl_both[1,1] == 2
-    assert transl_both[0,1] == 3
-    assert transl_both[0,6+4] == 4
+    assert transl_both[0, 0] == 1
+    assert transl_both[1, 1] == 2
+    assert transl_both[0, 1] == 3
+    assert transl_both[0, 6 + 4] == 4

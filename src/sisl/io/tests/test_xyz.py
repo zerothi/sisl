@@ -9,12 +9,12 @@ import pytest
 from sisl.io.xyz import *
 
 pytestmark = [pytest.mark.io, pytest.mark.generic]
-_dir = osp.join('sisl', 'io')
+_dir = osp.join("sisl", "io")
 
 
 def test_xyz1(sisl_tmp, sisl_system):
-    f = sisl_tmp('gr.xyz', _dir)
-    sisl_system.g.write(xyzSile(f, 'w'))
+    f = sisl_tmp("gr.xyz", _dir)
+    sisl_system.g.write(xyzSile(f, "w"))
     g = xyzSile(f).read_geometry()
 
     # Assert they are the same
@@ -26,22 +26,24 @@ def test_xyz1(sisl_tmp, sisl_system):
 
 
 def test_xyz_sisl(sisl_tmp):
-    f = sisl_tmp('sisl.xyz', _dir)
+    f = sisl_tmp("sisl.xyz", _dir)
 
-    with open(f, 'w') as fh:
-        fh.write("""3
+    with open(f, "w") as fh:
+        fh.write(
+            """3
 sisl-version=1 nsc=1 1 3 cell=10 0 0 0 12 0 0 0 13
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-""")
+"""
+        )
     g = xyzSile(f).read_geometry()
 
     # Assert they are the same
     assert np.allclose(g.cell, [[10, 0, 0], [0, 12, 0], [0, 0, 13]])
     assert np.allclose(g.xyz[:, 0], [0, 1, 2])
-    assert np.allclose(g.xyz[:, 1], 0.)
-    assert np.allclose(g.xyz[:, 2], 0.)
+    assert np.allclose(g.xyz[:, 1], 0.0)
+    assert np.allclose(g.xyz[:, 2], 0.0)
     assert np.allclose(g.nsc, [1, 1, 3])
 
     g = xyzSile(f).read_geometry(lattice=[10, 11, 13])
@@ -49,46 +51,52 @@ C   2.00000  0.00000000  0.00000000
 
 
 def test_xyz_ase(sisl_tmp):
-    f = sisl_tmp('ase.xyz', _dir)
-    with open(f, 'w') as fh:
-        fh.write("""3
+    f = sisl_tmp("ase.xyz", _dir)
+    with open(f, "w") as fh:
+        fh.write(
+            """3
 Lattice="10 0 0 0 12 0 0 0 13" Properties=species:S:1:pos:R:3 pbc="F F T"
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-""")
+"""
+        )
     g = xyzSile(f).read_geometry()
 
     # Assert they are the same
     assert np.allclose(g.cell, [[10, 0, 0], [0, 12, 0], [0, 0, 13]])
     assert np.allclose(g.xyz[:, 0], [0, 1, 2])
-    assert np.allclose(g.xyz[:, 1], 0.)
-    assert np.allclose(g.xyz[:, 2], 0.)
+    assert np.allclose(g.xyz[:, 1], 0.0)
+    assert np.allclose(g.xyz[:, 2], 0.0)
     assert np.allclose(g.nsc, [1, 1, 1])
     assert np.allclose(g.pbc, [False, False, True])
 
 
 def test_xyz_arbitrary(sisl_tmp):
-    f = sisl_tmp('ase.xyz', _dir)
-    with open(f, 'w') as fh:
-        fh.write("""3
+    f = sisl_tmp("ase.xyz", _dir)
+    with open(f, "w") as fh:
+        fh.write(
+            """3
 
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-""")
+"""
+        )
     g = xyzSile(f).read_geometry()
 
     # Assert they are the same
     assert np.allclose(g.xyz[:, 0], [0, 1, 2])
-    assert np.allclose(g.xyz[:, 1], 0.)
-    assert np.allclose(g.xyz[:, 2], 0.)
+    assert np.allclose(g.xyz[:, 1], 0.0)
+    assert np.allclose(g.xyz[:, 2], 0.0)
     assert np.allclose(g.nsc, [1, 1, 1])
 
+
 def test_xyz_multiple(sisl_tmp):
-    f = sisl_tmp('sisl_multiple.xyz', _dir)
-    with open(f, 'w') as fh:
-        fh.write("""1
+    f = sisl_tmp("sisl_multiple.xyz", _dir)
+    with open(f, "w") as fh:
+        fh.write(
+            """1
 
 C   0.00000000  0.00000000  0.00000000
 2
@@ -100,7 +108,8 @@ C   1.000000  0.00000000  0.00000000
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-""")
+"""
+        )
     g = xyzSile(f).read_geometry()
     assert g.na == 1
     g = xyzSile(f).read_geometry[1]()

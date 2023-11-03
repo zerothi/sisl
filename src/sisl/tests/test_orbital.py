@@ -22,6 +22,7 @@ pytestmark = [pytest.mark.orbital]
 
 _max_l = len(_rspher_harm_fact) - 1
 
+
 def r_f(n):
     r = np.arange(n)
     return r, r
@@ -29,7 +30,7 @@ def r_f(n):
 
 def test_spherical():
     rad2 = np.pi / 45
-    r, theta, phi = np.ogrid[0.1:10:0.2, -np.pi:np.pi:rad2, 0:np.pi:rad2]
+    r, theta, phi = np.ogrid[0.1:10:0.2, -np.pi : np.pi : rad2, 0 : np.pi : rad2]
     xyz = spher2cart(r, theta, phi)
     s = xyz.shape[:-1]
     r1, theta1, phi1 = cart2spher(xyz)
@@ -42,44 +43,44 @@ def test_spherical():
 
 
 class Test_orbital:
-
     def test_init1(self):
-        assert Orbital(1.) == Orbital(1.)
-        assert Orbital(1., tag='none') != Orbital(1.)
-        assert Orbital(1., 1.) != Orbital(1.)
-        assert Orbital(1., 1.) != Orbital(1., 1., tag='none')
+        assert Orbital(1.0) == Orbital(1.0)
+        assert Orbital(1.0, tag="none") != Orbital(1.0)
+        assert Orbital(1.0, 1.0) != Orbital(1.0)
+        assert Orbital(1.0, 1.0) != Orbital(1.0, 1.0, tag="none")
 
     def test_basic1(self):
-        orb = Orbital(1.)
+        orb = Orbital(1.0)
         str(orb)
-        orb = Orbital(1., tag='none')
+        orb = Orbital(1.0, tag="none")
         str(orb)
-        orb = Orbital(1., 1., tag='none')
+        orb = Orbital(1.0, 1.0, tag="none")
         str(orb)
         assert orb == orb.copy()
-        assert orb != 1.
+        assert orb != 1.0
 
     def test_copy(self):
-        orb = Orbital(1.)
+        orb = Orbital(1.0)
         assert orb.R == orb.copy().R
-        orb = Orbital(-1.)
+        orb = Orbital(-1.0)
         assert orb.R == orb.copy().R
 
     def test_psi1(self):
         # Orbital does not have radial part
         with pytest.raises(NotImplementedError):
-            Orbital(1.).psi(np.arange(10))
+            Orbital(1.0).psi(np.arange(10))
 
     def test_scale1(self):
-        o = Orbital(1.)
-        assert o.scale(2).R == 2.
+        o = Orbital(1.0)
+        assert o.scale(2).R == 2.0
         o = Orbital(-1)
-        assert o.scale(2).R == -1.
+        assert o.scale(2).R == -1.0
 
     def test_pickle1(self):
         import pickle as p
-        o0 = Orbital(1.)
-        o1 = Orbital(1., tag='none')
+
+        o0 = Orbital(1.0)
+        o1 = Orbital(1.0, tag="none")
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)
         l0 = p.loads(p0)
@@ -91,16 +92,17 @@ class Test_orbital:
 
 
 class Test_sphericalorbital:
-
     def test_init1(self):
         n = 6
         rf = np.arange(n)
         rf = (rf, rf)
         assert SphericalOrbital(1, rf) == SphericalOrbital(1, rf)
-        f = interp.interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
+        f = interp.interp1d(
+            rf[0], rf[1], fill_value=(0.0, 0.0), bounds_error=False, kind="cubic"
+        )
         rf = [rf[0], rf[0]]
         assert SphericalOrbital(1, rf) == SphericalOrbital(1, f)
-        assert SphericalOrbital(1, rf, tag='none') != SphericalOrbital(1, rf)
+        assert SphericalOrbital(1, rf, tag="none") != SphericalOrbital(1, rf)
         SphericalOrbital(5, rf)
         for l in range(10):
             o = SphericalOrbital(l, rf)
@@ -111,14 +113,14 @@ class Test_sphericalorbital:
         rf = r_f(6)
         orb = SphericalOrbital(1, rf)
         str(orb)
-        orb = SphericalOrbital(1, rf, tag='none')
+        orb = SphericalOrbital(1, rf, tag="none")
         str(orb)
 
     def test_copy(self):
         rf = r_f(6)
-        orb = SphericalOrbital(1, rf, R=2.)
+        orb = SphericalOrbital(1, rf, R=2.0)
         assert orb.R == orb.copy().R
-        assert orb.R == pytest.approx(2.)
+        assert orb.R == pytest.approx(2.0)
         orb = SphericalOrbital(1, rf)
         assert orb.R == orb.copy().R
 
@@ -126,7 +128,7 @@ class Test_sphericalorbital:
         rf = r_f(6)
         o = SphericalOrbital(1, rf)
         with pytest.raises(ValueError):
-            o.set_radial(1.)
+            o.set_radial(1.0)
 
     def test_set_radial_none(self):
         rf = r_f(6)
@@ -145,10 +147,10 @@ class Test_sphericalorbital:
         r0 = orb0.radial(r)
         r1 = orb1.radial(r)
         rr = np.stack((r, np.zeros(len(r)), np.zeros(len(r))), axis=1)
-        r2 = orb1.radial((rr ** 2).sum(-1) ** 0.5)
+        r2 = orb1.radial((rr**2).sum(-1) ** 0.5)
         assert np.allclose(r0, r1)
         assert np.allclose(r0, r2)
-        r[r >= rf[0].max()] = 0.
+        r[r >= rf[0].max()] = 0.0
         assert np.allclose(r0, r)
         assert np.allclose(r1, r)
 
@@ -174,14 +176,20 @@ class Test_sphericalorbital:
     def test_radial_func1(self):
         r = np.linspace(0, 4, 300)
         f = np.exp(-r)
-        o = SphericalOrbital(1, (r, f), R=4.)
+        o = SphericalOrbital(1, (r, f), R=4.0)
         str(o)
+
         def i_univariate(r, f):
             return interp.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)
+
         def i_interp1d(r, f):
-            return interp.interp1d(r, f, kind='cubic', fill_value=(f[0], 0.), bounds_error=False)
+            return interp.interp1d(
+                r, f, kind="cubic", fill_value=(f[0], 0.0), bounds_error=False
+            )
+
         def i_spline(r, f):
             from functools import partial
+
             tck = interp.splrep(r, f, k=5, s=0)
             return partial(interp.splev, tck=tck, der=0, ext=1)
 
@@ -212,7 +220,7 @@ class Test_sphericalorbital:
         o0 = SphericalOrbital(0, rf)
         o1 = Orbital(o0.R)
         assert o0.equal(o1)
-        assert not o0.equal(Orbital(3.))
+        assert not o0.equal(Orbital(3.0))
 
     def test_toatomicorbital1(self):
         rf = r_f(6)
@@ -220,7 +228,7 @@ class Test_sphericalorbital:
         for l in range(_max_l + 1):
             orb = SphericalOrbital(l, rf)
             ao = orb.toAtomicOrbital()
-            assert len(ao) == 2*l + 1
+            assert len(ao) == 2 * l + 1
             m = -l
             for a in ao:
                 assert a.l == orb.l
@@ -252,17 +260,18 @@ class Test_sphericalorbital:
 
     def test_toatomicorbital_q0(self):
         rf = r_f(6)
-        orb = SphericalOrbital(0, rf, 2.)
+        orb = SphericalOrbital(0, rf, 2.0)
 
         # Check m and l
         for l in range(_max_l + 1):
-            orb = SphericalOrbital(l, rf, 2.)
+            orb = SphericalOrbital(l, rf, 2.0)
             ao = orb.toAtomicOrbital()
-            assert ao[0].q0 == pytest.approx(2. / (2*l+1))
+            assert ao[0].q0 == pytest.approx(2.0 / (2 * l + 1))
 
     def test_pickle1(self):
         rf = r_f(6)
         import pickle as p
+
         o0 = SphericalOrbital(1, rf)
         o1 = SphericalOrbital(2, rf)
         p0 = p.dumps(o0)
@@ -286,23 +295,24 @@ class Test_sphericalorbital:
 
 
 class Test_atomicorbital:
-
     def test_init1(self):
         rf = r_f(6)
         a = []
         a.append(AtomicOrbital(2, 1, 0, 1, True, rf))
         a.append(AtomicOrbital(l=1, m=0, zeta=1, P=True, spherical=rf))
-        f = interp.interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
+        f = interp.interp1d(
+            rf[0], rf[1], fill_value=(0.0, 0.0), bounds_error=False, kind="cubic"
+        )
         a.append(AtomicOrbital(l=1, m=0, zeta=1, P=True, spherical=f))
-        a.append(AtomicOrbital('pzP', f))
-        a.append(AtomicOrbital('pzP', rf))
-        a.append(AtomicOrbital('2pzP', rf))
+        a.append(AtomicOrbital("pzP", f))
+        a.append(AtomicOrbital("pzP", rf))
+        a.append(AtomicOrbital("2pzP", rf))
         for i in range(len(a) - 1):
-            for j in range(i+1, len(a)):
+            for j in range(i + 1, len(a)):
                 assert a[i] == a[j] and a[i].equal(a[j], psi=True, radial=True)
 
     def test_init2(self):
-        assert AtomicOrbital('pzP') == AtomicOrbital(n=2, l=1, m=0, P=True)
+        assert AtomicOrbital("pzP") == AtomicOrbital(n=2, l=1, m=0, P=True)
 
     def test_init3(self):
         rf = r_f(6)
@@ -311,7 +321,7 @@ class Test_atomicorbital:
             a.name()
             a.name(True)
             str(a)
-            a = AtomicOrbital(l=l, m=0, P=True, spherical=rf, tag='hello')
+            a = AtomicOrbital(l=l, m=0, P=True, spherical=rf, tag="hello")
             a.name()
             a.name(True)
             str(a)
@@ -319,10 +329,10 @@ class Test_atomicorbital:
     def test_init4(self):
         rf = r_f(6)
         o1 = AtomicOrbital(2, 1, 0, 1, True, rf)
-        o2 = AtomicOrbital('pzP', rf)
-        o3 = AtomicOrbital('pzZP', rf)
-        o4 = AtomicOrbital('pzZ1P', rf)
-        o5 = AtomicOrbital('2pzZ1P', rf)
+        o2 = AtomicOrbital("pzP", rf)
+        o3 = AtomicOrbital("pzZP", rf)
+        o4 = AtomicOrbital("pzZ1P", rf)
+        o5 = AtomicOrbital("2pzZ1P", rf)
         assert o1 == o2
         assert o1 == o3
         assert o1 == o4
@@ -334,10 +344,10 @@ class Test_atomicorbital:
 
     def test_copy(self):
         rf = r_f(6)
-        orb = AtomicOrbital('pzP', rf, R=2.)
+        orb = AtomicOrbital("pzP", rf, R=2.0)
         assert orb.R == orb.copy().R
-        assert orb.R == pytest.approx(2.)
-        orb = AtomicOrbital('pzP', rf)
+        assert orb.R == pytest.approx(2.0)
+        orb = AtomicOrbital("pzP", rf)
         assert orb.R == orb.copy().R
 
     def test_radial1(self):
@@ -346,7 +356,7 @@ class Test_atomicorbital:
         for l in range(_max_l + 1):
             so = SphericalOrbital(l, rf)
             sor = so.radial(r)
-            for m in range(-l, l+1):
+            for m in range(-l, l + 1):
                 o = AtomicOrbital(l=l, m=m, spherical=rf)
                 assert np.allclose(sor, o.radial(r))
                 o.set_radial(rf[0], rf[1])
@@ -357,14 +367,15 @@ class Test_atomicorbital:
         r = np.linspace(0, 6, 999).reshape(-1, 3)
         for l in range(_max_l + 1):
             so = SphericalOrbital(l, rf)
-            for m in range(-l, l+1):
+            for m in range(-l, l + 1):
                 o = AtomicOrbital(l=l, m=m, spherical=rf)
                 assert np.allclose(so.psi(r, m), o.psi(r))
 
     def test_pickle1(self):
         import pickle as p
+
         rf = r_f(6)
-        o0 = AtomicOrbital(2, 1, 0, 1, True, rf, tag='hello', q0=1.)
+        o0 = AtomicOrbital(2, 1, 0, 1, True, rf, tag="hello", q0=1.0)
         o1 = AtomicOrbital(l=1, m=0, zeta=1, P=False, spherical=rf)
         o2 = AtomicOrbital(l=1, m=0, zeta=1, P=False)
         p0 = p.dumps(o0)
@@ -382,19 +393,18 @@ class Test_atomicorbital:
 
 
 class Test_hydrogenicorbital:
-
     def test_init(self):
         orb = HydrogenicOrbital(2, 1, 0, 3.2)
 
     def test_basic1(self):
-        orb = HydrogenicOrbital(2, 1, 0, 3.2, R=4.)
+        orb = HydrogenicOrbital(2, 1, 0, 3.2, R=4.0)
         assert orb.R == orb.copy().R
-        assert orb.R == pytest.approx(4.)
+        assert orb.R == pytest.approx(4.0)
         orb = HydrogenicOrbital(2, 1, 0, 3.2)
         assert orb.R == orb.copy().R
 
     def test_copy(self):
-        orb = HydrogenicOrbital(2, 1, 0, 3.2, tag='test', q0=2.5)
+        orb = HydrogenicOrbital(2, 1, 0, 3.2, tag="test", q0=2.5)
         orb2 = orb.copy()
         assert orb.n == orb2.n
         assert orb.l == orb2.l
@@ -409,7 +419,7 @@ class Test_hydrogenicorbital:
                 orb = HydrogenicOrbital(n, l, 0, zeff)
                 x = np.linspace(0, orb.R, 1000, endpoint=True)
                 Rnl = orb.radial(x)
-                I = np.trapz(x ** 2 * Rnl ** 2, x=x)
+                I = np.trapz(x**2 * Rnl**2, x=x)
                 assert abs(I - 1) < 1e-4
 
     def test_togrid(self):
@@ -419,12 +429,13 @@ class Test_hydrogenicorbital:
                 for m in range(-l, l + 1):
                     orb = HydrogenicOrbital(n, l, m, zeff)
                     g = orb.toGrid(0.1)
-                    I = (g.grid ** 2).sum() * g.dvolume
+                    I = (g.grid**2).sum() * g.dvolume
                     assert abs(I - 1) < 1e-3
 
     def test_pickle(self):
         import pickle as p
-        o0 = HydrogenicOrbital(2, 1, 0, 3.2, tag='test', q0=2.5)
+
+        o0 = HydrogenicOrbital(2, 1, 0, 3.2, tag="test", q0=2.5)
         o1 = HydrogenicOrbital(2, 1, 0, 3.2)
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)
@@ -437,7 +448,6 @@ class Test_hydrogenicorbital:
 
 
 class Test_GTO:
-
     def test_init(self):
         alpha = [1, 2]
         coeff = [0.1, 0.44]
@@ -447,9 +457,9 @@ class Test_GTO:
     def test_copy(self):
         alpha = [1, 2]
         coeff = [0.1, 0.44]
-        orb = GTOrbital(2, 1, 0, alpha, coeff, R=4.)
+        orb = GTOrbital(2, 1, 0, alpha, coeff, R=4.0)
         assert orb.R == orb.copy().R
-        assert orb.R == pytest.approx(4.)
+        assert orb.R == pytest.approx(4.0)
         orb = GTOrbital(2, 1, 0, alpha, coeff)
         assert orb.R == orb.copy().R
 
@@ -471,7 +481,6 @@ class Test_GTO:
 
 
 class Test_STO:
-
     def test_init(self):
         alpha = [1, 2]
         coeff = [0.1, 0.44]
@@ -481,9 +490,9 @@ class Test_STO:
     def test_copy(self):
         alpha = [1, 2]
         coeff = [0.1, 0.44]
-        orb = STOrbital(2, 1, 0, alpha, coeff, R=4.)
+        orb = STOrbital(2, 1, 0, alpha, coeff, R=4.0)
         assert orb.R == orb.copy().R
-        assert orb.R == pytest.approx(4.)
+        assert orb.R == pytest.approx(4.0)
         orb = STOrbital(2, 1, 0, alpha, coeff)
         assert orb.R == orb.copy().R
 

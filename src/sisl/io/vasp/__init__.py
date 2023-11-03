@@ -13,7 +13,7 @@ VASP
    stdoutSileVASP
 
 """
-from .sile import * # isort: split
+from .sile import *  # isort: split
 from .car import *
 from .chg import *
 from .doscar import *

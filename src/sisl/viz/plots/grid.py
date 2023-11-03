@@ -33,40 +33,52 @@ from ..types import Axes
 from .geometry import geometry_plot
 
 
-def _get_structure_plottings(plot_geom, geometry, axes, nsc, geom_kwargs={},):
+def _get_structure_plottings(
+    plot_geom,
+    geometry,
+    axes,
+    nsc,
+    geom_kwargs={},
+):
     if plot_geom:
-        geom_kwargs = ChainMap(geom_kwargs, {"axes": axes, "geometry": geometry, "nsc": nsc, "show_cell": False})
+        geom_kwargs = ChainMap(
+            geom_kwargs,
+            {"axes": axes, "geometry": geometry, "nsc": nsc, "show_cell": False},
+        )
         plot_actions = geometry_plot(**geom_kwargs).plot_actions
     else:
         plot_actions = []
 
     return plot_actions
 
+
 def grid_plot(
-    grid: Optional[Grid] = None, 
-    axes: Axes = ["z"], 
-    represent: Literal["real", "imag", "mod", "phase", "deg_phase", "rad_phase"] = "real", 
+    grid: Optional[Grid] = None,
+    axes: Axes = ["z"],
+    represent: Literal[
+        "real", "imag", "mod", "phase", "deg_phase", "rad_phase"
+    ] = "real",
     transforms: Sequence[Union[str, Callable]] = (),
-    reduce_method: Literal["average", "sum"] = "average", 
+    reduce_method: Literal["average", "sum"] = "average",
     boundary_mode: str = "grid-wrap",
-    nsc: Tuple[int, int, int] = (1, 1, 1), 
-    interp: Tuple[int, int, int] = (1, 1, 1), 
-    isos: Sequence[dict] = [],  
+    nsc: Tuple[int, int, int] = (1, 1, 1),
+    interp: Tuple[int, int, int] = (1, 1, 1),
+    isos: Sequence[dict] = [],
     smooth: bool = False,
-    colorscale: Optional[str] = None, 
-    crange: Optional[Tuple[float, float]] = None, 
+    colorscale: Optional[str] = None,
+    crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
-    show_cell: Literal["box", "axes", False] = "box", 
+    show_cell: Literal["box", "axes", False] = "box",
     cell_style: dict = {},
     x_range: Optional[Sequence[float]] = None,
-    y_range: Optional[Sequence[float]] = None, 
+    y_range: Optional[Sequence[float]] = None,
     z_range: Optional[Sequence[float]] = None,
-    plot_geom: bool = False, 
-    geom_kwargs: dict = {}, 
-    backend: str = "plotly"
+    plot_geom: bool = False,
+    geom_kwargs: dict = {},
+    backend: str = "plotly",
 ) -> Figure:
     """Plots a grid, with plentiful of customization options.
-    
+
     Parameters
     ----------
     grid:
@@ -103,7 +115,7 @@ def grid_plot(
     cell_style:
         Style specification for the cell. See the showcase notebooks for examples.
     x_range:
-        The range of the x axis to take into account. 
+        The range of the x axis to take into account.
         Even if the X axis is not displayed! This is important because the reducing
         operation will only be applied on this range.
     y_range:
@@ -120,12 +132,11 @@ def grid_plot(
         Keyword arguments to pass to the geometry plot of the associated geometry.
     backend:
         The backend to use to generate the figure.
-    
+
     See also
     ----------
     scipy.ndimage.affine_transform : method used to orthogonalize the grid if needed.
     """
-    
 
     axes = sanitize_axes(axes)
 
@@ -136,64 +147,88 @@ def grid_plot(
     tiled_grid = tile_grid(grid_repr, nsc=nsc)
 
     ort_grid = orthogonalize_grid_if_needed(tiled_grid, axes=axes, mode=boundary_mode)
-        
+
     grid_axes = get_grid_axes(ort_grid, axes=axes)
 
     transformed_grid = apply_transforms(ort_grid, transforms)
 
-    subbed_grid = sub_grid(transformed_grid, x_range=x_range, y_range=y_range, z_range=z_range)
+    subbed_grid = sub_grid(
+        transformed_grid, x_range=x_range, y_range=y_range, z_range=z_range
+    )
 
-    reduced_grid = reduce_grid(subbed_grid, reduce_method=reduce_method, keep_axes=grid_axes)
+    reduced_grid = reduce_grid(
+        subbed_grid, reduce_method=reduce_method, keep_axes=grid_axes
+    )
 
     interp_grid = interpolate_grid(reduced_grid, interp=interp)
 
     # Finally, here comes the plotting!
     grid_ds = grid_to_dataarray(interp_grid, axes=axes, grid_axes=grid_axes, nsc=nsc)
-    grid_plottings = draw_grid(data=grid_ds, isos=isos, colorscale=colorscale, crange=crange, cmid=cmid, smooth=smooth)
+    grid_plottings = draw_grid(
+        data=grid_ds,
+        isos=isos,
+        colorscale=colorscale,
+        crange=crange,
+        cmid=cmid,
+        smooth=smooth,
+    )
 
     # Process the cell as well
     cell_plottings = cell_plot_actions(
-        cell=grid, show_cell=show_cell, cell_style=cell_style,
+        cell=grid,
+        show_cell=show_cell,
+        cell_style=cell_style,
         axes=axes,
     )
 
     # And maybe plot the strucuture
-    geom_plottings = _get_structure_plottings(plot_geom=plot_geom, geometry=geometry, geom_kwargs=geom_kwargs, axes=axes, nsc=nsc)
+    geom_plottings = _get_structure_plottings(
+        plot_geom=plot_geom,
+        geometry=geometry,
+        geom_kwargs=geom_kwargs,
+        axes=axes,
+        nsc=nsc,
+    )
 
-    all_plottings = combined(grid_plottings, cell_plottings, geom_plottings, composite_method=None)
+    all_plottings = combined(
+        grid_plottings, cell_plottings, geom_plottings, composite_method=None
+    )
 
     return get_figure(backend=backend, plot_actions=all_plottings)
 
+
 def wavefunction_plot(
-    eigenstate: EigenstateData, 
-    i: int = 0, 
-    geometry: Optional[Geometry] = None, 
-    grid_prec: float = 0.2,                  
-    # All grid inputs.          
-    grid: Optional[Grid] = None, 
-    axes: Axes = ["z"], 
-    represent: Literal["real", "imag", "mod", "phase", "deg_phase", "rad_phase"] = "real", 
+    eigenstate: EigenstateData,
+    i: int = 0,
+    geometry: Optional[Geometry] = None,
+    grid_prec: float = 0.2,
+    # All grid inputs.
+    grid: Optional[Grid] = None,
+    axes: Axes = ["z"],
+    represent: Literal[
+        "real", "imag", "mod", "phase", "deg_phase", "rad_phase"
+    ] = "real",
     transforms: Sequence[Union[str, Callable]] = (),
-    reduce_method: Literal["average", "sum"] = "average", 
+    reduce_method: Literal["average", "sum"] = "average",
     boundary_mode: str = "grid-wrap",
-    nsc: Tuple[int, int, int] = (1, 1, 1), 
-    interp: Tuple[int, int, int] = (1, 1, 1), 
-    isos: Sequence[dict] = [],  
+    nsc: Tuple[int, int, int] = (1, 1, 1),
+    interp: Tuple[int, int, int] = (1, 1, 1),
+    isos: Sequence[dict] = [],
     smooth: bool = False,
-    colorscale: Optional[str] = None, 
-    crange: Optional[Tuple[float, float]] = None, 
+    colorscale: Optional[str] = None,
+    crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
-    show_cell: Literal["box", "axes", False] = "box", 
+    show_cell: Literal["box", "axes", False] = "box",
     cell_style: dict = {},
     x_range: Optional[Sequence[float]] = None,
-    y_range: Optional[Sequence[float]] = None, 
+    y_range: Optional[Sequence[float]] = None,
     z_range: Optional[Sequence[float]] = None,
-    plot_geom: bool = False, 
-    geom_kwargs: dict = {}, 
-    backend: str = "plotly"
+    plot_geom: bool = False,
+    geom_kwargs: dict = {},
+    backend: str = "plotly",
 ) -> Figure:
     """Plots a wavefunction in real space.
-    
+
     Parameters
     ----------
     eigenstate:
@@ -201,7 +236,7 @@ def wavefunction_plot(
     i:
         The index of the eigenstate to plot.
     geometry:
-        Geometry to use to project the eigenstate to real space. 
+        Geometry to use to project the eigenstate to real space.
         If None, the geometry associated with the eigenstate is used.
     grid_prec:
         The precision of the grid where the wavefunction is projected.
@@ -239,7 +274,7 @@ def wavefunction_plot(
     cell_style:
         Style specification for the cell. See the showcase notebooks for examples.
     x_range:
-        The range of the x axis to take into account. 
+        The range of the x axis to take into account.
         Even if the X axis is not displayed! This is important because the reducing
         operation will only be applied on this range.
     y_range:
@@ -256,19 +291,21 @@ def wavefunction_plot(
         Keyword arguments to pass to the geometry plot of the associated geometry.
     backend:
         The backend to use to generate the figure.
-    
+
     See also
     ----------
     scipy.ndimage.affine_transform : method used to orthogonalize the grid if needed.
     """
-    
+
     # Create a grid with the wavefunction in it.
     i_eigenstate = get_eigenstate(eigenstate, i)
     geometry = eigenstate_geometry(eigenstate, geometry=geometry)
 
     tiled_geometry = tile_if_k(geometry=geometry, nsc=nsc, eigenstate=i_eigenstate)
     grid_nsc = get_grid_nsc(nsc=nsc, eigenstate=i_eigenstate)
-    grid = project_wavefunction(eigenstate=i_eigenstate, grid_prec=grid_prec, grid=grid, geometry=tiled_geometry)
+    grid = project_wavefunction(
+        eigenstate=i_eigenstate, grid_prec=grid_prec, grid=grid, geometry=tiled_geometry
+    )
 
     # Grid processing
     axes = sanitize_axes(axes)
@@ -278,41 +315,65 @@ def wavefunction_plot(
     tiled_grid = tile_grid(grid_repr, nsc=grid_nsc)
 
     ort_grid = orthogonalize_grid_if_needed(tiled_grid, axes=axes, mode=boundary_mode)
-        
+
     grid_axes = get_grid_axes(ort_grid, axes=axes)
 
     transformed_grid = apply_transforms(ort_grid, transforms)
 
-    subbed_grid = sub_grid(transformed_grid, x_range=x_range, y_range=y_range, z_range=z_range)
+    subbed_grid = sub_grid(
+        transformed_grid, x_range=x_range, y_range=y_range, z_range=z_range
+    )
 
-    reduced_grid = reduce_grid(subbed_grid, reduce_method=reduce_method, keep_axes=grid_axes)
+    reduced_grid = reduce_grid(
+        subbed_grid, reduce_method=reduce_method, keep_axes=grid_axes
+    )
 
     interp_grid = interpolate_grid(reduced_grid, interp=interp)
 
     # Finally, here comes the plotting!
-    grid_ds = grid_to_dataarray(interp_grid, axes=axes, grid_axes=grid_axes, nsc=grid_nsc)
-    grid_plottings = draw_grid(data=grid_ds, isos=isos, colorscale=colorscale, crange=crange, cmid=cmid, smooth=smooth)
+    grid_ds = grid_to_dataarray(
+        interp_grid, axes=axes, grid_axes=grid_axes, nsc=grid_nsc
+    )
+    grid_plottings = draw_grid(
+        data=grid_ds,
+        isos=isos,
+        colorscale=colorscale,
+        crange=crange,
+        cmid=cmid,
+        smooth=smooth,
+    )
 
     # Process the cell as well
     cell_plottings = cell_plot_actions(
-        cell=grid, show_cell=show_cell, cell_style=cell_style,
+        cell=grid,
+        show_cell=show_cell,
+        cell_style=cell_style,
         axes=axes,
     )
 
     # And maybe plot the strucuture
-    geom_plottings = _get_structure_plottings(plot_geom=plot_geom, geometry=tiled_geometry, geom_kwargs=geom_kwargs, axes=axes, nsc=grid_nsc)
+    geom_plottings = _get_structure_plottings(
+        plot_geom=plot_geom,
+        geometry=tiled_geometry,
+        geom_kwargs=geom_kwargs,
+        axes=axes,
+        nsc=grid_nsc,
+    )
 
-    all_plottings = combined(grid_plottings, cell_plottings, geom_plottings, composite_method=None)
+    all_plottings = combined(
+        grid_plottings, cell_plottings, geom_plottings, composite_method=None
+    )
 
     return get_figure(backend=backend, plot_actions=all_plottings)
 
-class GridPlot(Plot):
 
+class GridPlot(Plot):
     function = staticmethod(grid_plot)
 
-class WavefunctionPlot(GridPlot):
 
+class WavefunctionPlot(GridPlot):
     function = staticmethod(wavefunction_plot)
+
 
 # The following commented code is from the old viz module, where the GridPlot had a scan method.
 # It looks very nice, but probably should be reimplemented as a standalone function that plots a grid slice,

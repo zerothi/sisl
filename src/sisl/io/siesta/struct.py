@@ -10,19 +10,19 @@ from sisl.unit.siesta import unit_convert
 from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
-__all__ = ['structSileSiesta']
+__all__ = ["structSileSiesta"]
 
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 
 
 @set_module("sisl.io.siesta")
 class structSileSiesta(SileSiesta):
-    """ Geometry file """
+    """Geometry file"""
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='.9f'):
-        """ Writes the geometry to the contained file
+    def write_geometry(self, geometry, fmt=".9f"):
+        """Writes the geometry to the contained file
 
         Parameters
         ----------
@@ -35,15 +35,15 @@ class structSileSiesta(SileSiesta):
         sile_raise_write(self)
 
         # Create format string for the cell-parameters
-        fmt_str = '   ' + ('{:' + fmt + '} ') * 3 + '\n'
+        fmt_str = "   " + ("{:" + fmt + "} ") * 3 + "\n"
         for i in range(3):
             self._write(fmt_str.format(*geometry.cell[i]))
-        self._write(f'{geometry.na:12d}\n')
+        self._write(f"{geometry.na:12d}\n")
 
         # Create format string for the atomic coordinates
         fxyz = geometry.fxyz
-        fmt_str = '{:3d}{:6d} '
-        fmt_str += ('{:' + fmt + '} ') * 3 + '\n'
+        fmt_str = "{:3d}{:6d} "
+        fmt_str += ("{:" + fmt + "} ") * 3 + "\n"
         for ia, a, ips in geometry.iter_species():
             if isinstance(a, AtomGhost):
                 self._write(fmt_str.format(ips + 1, -a.Z, *fxyz[ia]))
@@ -52,7 +52,7 @@ class structSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_lattice(self):
-        """ Returns `Lattice` object from the STRUCT file """
+        """Returns `Lattice` object from the STRUCT file"""
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
@@ -62,7 +62,7 @@ class structSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_geometry(self, species_Z=False):
-        """ Returns a `Geometry` object from the STRUCT file
+        """Returns a `Geometry` object from the STRUCT file
 
         Parameters
         ----------
@@ -108,12 +108,12 @@ class structSileSiesta(SileSiesta):
         return Geometry(xyz, atms2.reduce(), lattice=lattice)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-add_sile('STRUCT_IN', structSileSiesta, gzip=True)
-add_sile('STRUCT_NEXT_ITER', structSileSiesta, gzip=True)
-add_sile('STRUCT_OUT', structSileSiesta, gzip=True)
+add_sile("STRUCT_IN", structSileSiesta, gzip=True)
+add_sile("STRUCT_NEXT_ITER", structSileSiesta, gzip=True)
+add_sile("STRUCT_OUT", structSileSiesta, gzip=True)

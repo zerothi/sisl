@@ -26,14 +26,15 @@ pytestmark = [pytest.mark.viz, pytest.mark.processors]
 def geometry():
     return sisl.geom.bcc(2.93, "Au", True)
 
+
 @pytest.fixture(scope="module")
 def coords_dataset(geometry):
-
     return xr.Dataset(
-        {"xyz": (("atom", "axis"), geometry.xyz)}, 
-        coords={"axis": [0,1,2]}, 
-        attrs={"geometry": geometry}
+        {"xyz": (("atom", "axis"), geometry.xyz)},
+        coords={"axis": [0, 1, 2]},
+        attrs={"geometry": geometry},
     )
+
 
 def test_tile_geometry():
     geom = sisl.geom.graphene()
@@ -41,6 +42,7 @@ def test_tile_geometry():
     tiled_geometry = tile_geometry(geom, (2, 3, 5))
 
     assert np.allclose(tiled_geometry.cell.T, geom.cell.T * (2, 3, 5))
+
 
 def test_find_all_bonds():
     geom = sisl.geom.graphene()
@@ -57,18 +59,18 @@ def test_find_all_bonds():
     assert bonds.bonds.shape == (23, 2)
 
     # Now get bonds only for the unit cell
-    geom.set_nsc([1,1,1])
+    geom.set_nsc([1, 1, 1])
     bonds = find_all_bonds(geom, 1.5)
 
     assert bonds.bonds.shape == (1, 2)
-    assert np.all(bonds.bonds == (0,1))
+    assert np.all(bonds.bonds == (0, 1))
 
     # Run function with just one atom
     bonds = find_all_bonds(geom.sub(0), 1.5)
 
-def test_get_atom_bonds():
 
-    bonds = np.array([[0,1], [0,2], [1,2]])
+def test_get_atom_bonds():
+    bonds = np.array([[0, 1], [0, 2], [1, 2]])
 
     mask = get_atoms_bonds(bonds, [0], ret_mask=True)
 
@@ -80,10 +82,10 @@ def test_get_atom_bonds():
 
     assert isinstance(atom_bonds, np.ndarray)
     assert atom_bonds.shape == (2, 2)
-    assert np.all(atom_bonds == [[0,1], [0,2]])
+    assert np.all(atom_bonds == [[0, 1], [0, 2]])
+
 
 def test_sanitize_atoms():
-
     geom = sisl.geom.graphene()
 
     sanitized = sanitize_atoms(geom, 3)
@@ -91,8 +93,8 @@ def test_sanitize_atoms():
     assert len(sanitized) == 1
     assert sanitized[0] == 3
 
-def test_data_sc(coords_dataset):
 
+def test_data_sc(coords_dataset):
     assert "isc" not in coords_dataset.dims
 
     # First, check that not tiling works as expected
@@ -107,10 +109,13 @@ def test_data_sc(coords_dataset):
     assert "isc" in tiled.dims
     assert len(tiled.isc) == 2
     assert np.allclose(tiled.sel(isc=0).xyz, coords_dataset.xyz)
-    assert np.allclose(tiled.sel(isc=1).xyz, coords_dataset.xyz + coords_dataset.attrs["geometry"].cell[0])
+    assert np.allclose(
+        tiled.sel(isc=1).xyz,
+        coords_dataset.xyz + coords_dataset.attrs["geometry"].cell[0],
+    )
+
 
 def test_stack_sc_data(coords_dataset):
-
     tiled = tile_data_sc(coords_dataset, nsc=(3, 3, 1))
 
     assert "isc" in tiled.dims
@@ -120,6 +125,7 @@ def test_stack_sc_data(coords_dataset):
     assert "isc" not in stacked.dims
     assert "sc_atom" in stacked.dims
     assert len(stacked.sc_atom) == 9 * len(coords_dataset.atom)
+
 
 @pytest.mark.parametrize("data_type", [list, dict])
 def test_parse_atoms_style_empty(data_type):
@@ -133,6 +139,7 @@ def test_parse_atoms_style_empty(data_type):
 
     for data_var in styles.data_vars:
         assert len(styles[data_var].shape) == 0
+
 
 @pytest.mark.parametrize("data_type", [list, dict])
 def test_parse_atoms_style_single_values(data_type):
@@ -157,8 +164,8 @@ def test_parse_atoms_style_single_values(data_type):
         elif data_var == "size":
             assert styles[data_var].values == 14
 
-def test_add_xyz_to_dataset(geometry):
 
+def test_add_xyz_to_dataset(geometry):
     parsed_atoms_style = parse_atoms_style(geometry, {"color": "green", "size": 14})
 
     atoms_dataset = add_xyz_to_dataset(parsed_atoms_style)
@@ -169,36 +176,37 @@ def test_add_xyz_to_dataset(geometry):
     assert atoms_dataset.xyz.shape == (geometry.na, 3)
     assert np.allclose(atoms_dataset.xyz, geometry.xyz)
 
+
 @pytest.mark.parametrize("data_type", [list, dict])
 def test_sanitize_arrows_empty(data_type):
     g = sisl.geom.graphene()
-    arrows = sanitize_arrows(g, data_type(), atoms=None, ndim=3, axes="xyz" )
+    arrows = sanitize_arrows(g, data_type(), atoms=None, ndim=3, axes="xyz")
 
     assert isinstance(arrows, list)
 
     assert len(arrows) == 0
 
-def test_sanitize_arrows():
 
-    data = np.array([[0,0,0],[1,1,1]])
+def test_sanitize_arrows():
+    data = np.array([[0, 0, 0], [1, 1, 1]])
 
     g = sisl.geom.graphene()
 
     unparsed = [{"data": data}]
-    arrows = sanitize_arrows(g, unparsed, atoms=None, ndim=3, axes="xyz" )
+    arrows = sanitize_arrows(g, unparsed, atoms=None, ndim=3, axes="xyz")
 
     assert isinstance(arrows, list)
-    assert np.allclose(arrows[0]['data'], data)
-    
-    arrows_from_dict = sanitize_arrows(g, unparsed[0], atoms=None, ndim=3, axes="xyz" )
+    assert np.allclose(arrows[0]["data"], data)
+
+    arrows_from_dict = sanitize_arrows(g, unparsed[0], atoms=None, ndim=3, axes="xyz")
     assert isinstance(arrows_from_dict, list)
 
     for k, v in arrows[0].items():
         if not isinstance(v, np.ndarray):
             assert arrows[0][k] == arrows_from_dict[0][k]
 
-def test_style_bonds(geometry):
 
+def test_style_bonds(geometry):
     bonds = find_all_bonds(geometry, 1.5)
 
     # Test no styles
@@ -231,7 +239,9 @@ def test_style_bonds(geometry):
     for k in ("color", "width", "opacity"):
         assert k in styled_bonds.data_vars, f"Missing {k}"
         assert styled_bonds[k].shape == (len(bonds.bonds),), f"Wrong shape for {k}"
-        assert np.all(styled_bonds[k].values == np.arange(len(bonds.bonds))), f"Wrong value for {k}"
+        assert np.all(
+            styled_bonds[k].values == np.arange(len(bonds.bonds))
+        ), f"Wrong value for {k}"
 
     # Test scale
     styles = {"color": some_property, "width": some_property, "opacity": some_property}
@@ -242,12 +252,16 @@ def test_style_bonds(geometry):
         assert k in styled_bonds.data_vars, f"Missing {k}"
         assert styled_bonds[k].shape == (len(bonds.bonds),), f"Wrong shape for {k}"
         if k == "width":
-            assert np.all(styled_bonds[k].values == 2 * np.arange(len(bonds.bonds))), f"Wrong value for {k}"
+            assert np.all(
+                styled_bonds[k].values == 2 * np.arange(len(bonds.bonds))
+            ), f"Wrong value for {k}"
         else:
-            assert np.all(styled_bonds[k].values == np.arange(len(bonds.bonds))), f"Wrong value for {k}"
+            assert np.all(
+                styled_bonds[k].values == np.arange(len(bonds.bonds))
+            ), f"Wrong value for {k}"
+
 
 def test_add_xyz_to_bonds_dataset(geometry):
-
     bonds = find_all_bonds(geometry, 1.5)
 
     xyz_bonds = add_xyz_to_bonds_dataset(bonds)
@@ -257,8 +271,8 @@ def test_add_xyz_to_bonds_dataset(geometry):
     assert xyz_bonds.xyz.shape == (len(bonds.bonds), 2, 3)
     assert np.allclose(xyz_bonds.xyz[:, 0], geometry.xyz[bonds.bonds[:, 0]])
 
-def test_sanitize_bonds_selection(geometry):
 
+def test_sanitize_bonds_selection(geometry):
     bonds = find_all_bonds(geometry, 1.5)
 
     # No selection
@@ -279,8 +293,8 @@ def test_sanitize_bonds_selection(geometry):
     assert isinstance(bonds_sel, np.ndarray)
     assert (bonds.sel(bond_index=bonds_sel) == 0).any("bond_atom").all("bond_index")
 
-def test_bonds_to_lines(geometry):
 
+def test_bonds_to_lines(geometry):
     bonds = find_all_bonds(geometry, 1.5)
     xyz_bonds = add_xyz_to_bonds_dataset(bonds)
 
@@ -299,4 +313,3 @@ def test_bonds_to_lines(geometry):
     assert isinstance(bond_lines, xr.Dataset)
     assert "point_index" in bond_lines.dims
     assert len(bond_lines.point_index) == len(xyz_bonds.bond_index) * 11
-

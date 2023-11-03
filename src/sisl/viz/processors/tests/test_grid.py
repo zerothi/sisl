@@ -29,39 +29,52 @@ pytestmark = [pytest.mark.viz, pytest.mark.processors]
 def skewed(request) -> bool:
     return request.param == "skewed"
 
-real_part = np.arange(10*10*10).reshape(10,10,10)
-imag_part = np.arange(10*10*10).reshape(10,10,10) + 1
+
+real_part = np.arange(10 * 10 * 10).reshape(10, 10, 10)
+imag_part = np.arange(10 * 10 * 10).reshape(10, 10, 10) + 1
+
 
 @pytest.fixture(scope="module")
 def origin():
     return [1, 2, 3]
 
+
 @pytest.fixture(scope="module")
 def grid(origin, skewed) -> Grid:
-
     if skewed:
         lattice = Lattice([[3, 0, 0], [1, -1, 0], [0, 0, 3]], origin=origin)
     else:
         lattice = Lattice([[3, 0, 0], [0, 2, 0], [0, 0, 6]], origin=origin)
-    
+
     geometry = Geometry([[0, 0, 0]], lattice=lattice)
     grid = Grid([10, 10, 10], geometry=geometry, dtype=np.complex128)
 
-    grid.grid[:] = ( real_part + imag_part * 1j).reshape(10, 10, 10)
+    grid.grid[:] = (real_part + imag_part * 1j).reshape(10, 10, 10)
 
     return grid
 
-def test_get_grid_representation(grid):
 
+def test_get_grid_representation(grid):
     assert np.allclose(get_grid_representation(grid, "real").grid, real_part)
     assert np.allclose(get_grid_representation(grid, "imag").grid, imag_part)
-    assert np.allclose(get_grid_representation(grid, "mod").grid, np.sqrt(real_part**2 + imag_part**2))
-    assert np.allclose(get_grid_representation(grid, "phase").grid, np.arctan2(imag_part, real_part))
-    assert np.allclose(get_grid_representation(grid, "rad_phase").grid, np.arctan2(imag_part, real_part))
-    assert np.allclose(get_grid_representation(grid, "deg_phase").grid, np.arctan2(imag_part, real_part) * 180 / np.pi)
+    assert np.allclose(
+        get_grid_representation(grid, "mod").grid,
+        np.sqrt(real_part**2 + imag_part**2),
+    )
+    assert np.allclose(
+        get_grid_representation(grid, "phase").grid, np.arctan2(imag_part, real_part)
+    )
+    assert np.allclose(
+        get_grid_representation(grid, "rad_phase").grid,
+        np.arctan2(imag_part, real_part),
+    )
+    assert np.allclose(
+        get_grid_representation(grid, "deg_phase").grid,
+        np.arctan2(imag_part, real_part) * 180 / np.pi,
+    )
+
 
 def test_tile_grid(grid):
-
     # By default it is not tiled
     tiled = tile_grid(grid)
     assert isinstance(tiled, Grid)
@@ -73,12 +86,12 @@ def test_tile_grid(grid):
     tiled = tile_grid(grid, (1, 2, 1))
     assert isinstance(tiled, Grid)
     assert tiled.shape == (grid.shape[0], grid.shape[1] * 2, grid.shape[2])
-    assert np.allclose(tiled.grid[:, :grid.shape[1]], grid.grid)
-    assert np.allclose(tiled.grid[:, grid.shape[1]:], grid.grid)
+    assert np.allclose(tiled.grid[:, : grid.shape[1]], grid.grid)
+    assert np.allclose(tiled.grid[:, grid.shape[1] :], grid.grid)
     assert np.allclose(tiled.origin, grid.origin)
 
-def test_transform_grid_cell(grid, skewed):
 
+def test_transform_grid_cell(grid, skewed):
     # Convert to a cartesian cell
     new_grid = transform_grid_cell(grid, cell=np.eye(3), output_shape=(10, 10, 10))
 
@@ -101,10 +114,10 @@ def test_transform_grid_cell(grid, skewed):
     for i in range(3):
         n = new_grid.lattice.cell[i] / directions[i]
         assert np.allclose(n, n[0])
-    
+
+
 @pytest.mark.parametrize("interp", [1, 2])
 def test_orthogonalize_grid(grid, interp, skewed):
-    
     ort_grid = orthogonalize_grid(grid, interp=(interp, interp, interp))
 
     assert ort_grid.shape == (10, 10, 10) if interp == 1 else (20, 20, 20)
@@ -121,16 +134,18 @@ def test_orthogonalize_grid(grid, interp, skewed):
     assert not np.allclose(ort_grid.grid, 0)
     assert np.allclose(ort_grid.origin, grid.origin) == (not skewed and interp == 1)
 
-def test_should_transform_grid_cell_plotting(grid, skewed):
 
+def test_should_transform_grid_cell_plotting(grid, skewed):
     assert should_transform_grid_cell_plotting(grid, axes=["x", "y"]) == skewed
     assert should_transform_grid_cell_plotting(grid, axes=["z"]) == False
 
+
 @pytest.mark.parametrize("interp", [1, 2])
 def test_orthogonalize_grid_if_needed(grid, skewed, interp):
-
     # Orthogonalize the skewed cell, since it is xy skewed.
-    ort_grid = orthogonalize_grid_if_needed(grid, axes=["x", "y"], interp=(interp, interp, interp))
+    ort_grid = orthogonalize_grid_if_needed(
+        grid, axes=["x", "y"], interp=(interp, interp, interp)
+    )
 
     assert ort_grid.shape == (10, 10, 10) if interp == 1 else (20, 20, 20)
     assert ort_grid.lattice.is_cartesian()
@@ -147,18 +162,20 @@ def test_orthogonalize_grid_if_needed(grid, skewed, interp):
     assert np.allclose(ort_grid.origin, grid.origin) == (not skewed)
 
     # Do not orthogonalize the skewed cell, since it is not z skewed.
-    ort_grid = orthogonalize_grid_if_needed(grid, axes=["z"], interp=(interp, interp, interp))
+    ort_grid = orthogonalize_grid_if_needed(
+        grid, axes=["z"], interp=(interp, interp, interp)
+    )
 
     assert ort_grid.shape == (10, 10, 10) if interp == 1 else (20, 20, 20)
-    
+
     if skewed:
         assert not ort_grid.lattice.is_cartesian()
 
     assert np.allclose(ort_grid.lattice.cell, grid.lattice.cell)
     assert np.allclose(ort_grid.grid, grid.grid)
 
-def test_apply_transforms(grid):
 
+def test_apply_transforms(grid):
     # Apply a function
     transf = apply_transforms(grid, transforms=[np.sqrt])
     assert np.allclose(transf.grid, np.sqrt(grid.grid))
@@ -174,13 +191,10 @@ def test_apply_transforms(grid):
     assert np.allclose(transf.grid, np.sqrt(np.angle(grid.grid)))
     assert np.allclose(transf.origin, grid.origin)
 
+
 @pytest.mark.parametrize("reduce_method", ["sum", "mean"])
 def test_reduce_grid(grid, reduce_method):
-
-    reduce_func = {
-        "sum": np.sum,
-        "mean": np.mean
-    }[reduce_method]
+    reduce_func = {"sum": np.sum, "mean": np.mean}[reduce_method]
 
     reduced = reduce_grid(grid, reduce_method, keep_axes=[0, 1])
 
@@ -188,12 +202,12 @@ def test_reduce_grid(grid, reduce_method):
     assert np.allclose(reduced.grid[:, :, 0], reduce_func(grid.grid, axis=2))
     assert np.allclose(reduced.origin, grid.origin)
 
+
 @pytest.mark.parametrize("direction", ["x", "y", "z"])
 def test_sub_grid(grid, skewed, direction):
-
     coord_ax = "xyz".index(direction)
     kwargs = {f"{direction}_range": (0.5, 1.5)}
-    
+
     expected_origin = grid.origin.copy()
 
     if skewed and direction != "z":
@@ -205,140 +219,148 @@ def test_sub_grid(grid, skewed, direction):
         # Check that the lattice has been reduced to contain the requested range,
         # taking into account that the bounds of the range might not be exactly
         # on the grid points.
-        assert 1 + sub.dcell[:, coord_ax].sum()*2 >= sub.lattice.cell[:, coord_ax].sum() >= 1 - sub.dcell[:, coord_ax].sum()*2
+        assert (
+            1 + sub.dcell[:, coord_ax].sum() * 2
+            >= sub.lattice.cell[:, coord_ax].sum()
+            >= 1 - sub.dcell[:, coord_ax].sum() * 2
+        )
 
         expected_origin[coord_ax] += 0.5
-    
+
         assert np.allclose(sub.origin, expected_origin)
 
-def test_interpolate_grid(grid):
 
+def test_interpolate_grid(grid):
     interp = interpolate_grid(grid, (20, 20, 20))
 
     # Check that the shape has been augmented
     assert np.all(interp.shape == np.array((20, 20, 20)) * grid.shape)
-    
+
     # The integral over the grid should be the same (or very similar)
     assert (grid.grid.sum() * 20**3 - interp.grid.sum()) < 1e-3
 
-def test_grid_geometry(grid):
 
+def test_grid_geometry(grid):
     assert grid_geometry(grid) is grid.geometry
 
     geom_copy = grid.geometry.copy()
 
     assert grid_geometry(grid, geom_copy) is geom_copy
 
-def test_get_grid_axes(grid, skewed):
 
-    assert get_grid_axes(grid, ['x', 'y', 'z']) == [0, 1, 2]
+def test_get_grid_axes(grid, skewed):
+    assert get_grid_axes(grid, ["x", "y", "z"]) == [0, 1, 2]
     # This function doesn't care about what the axes are in 3D
-    assert get_grid_axes(grid, ['y', '-x', 'z']) == [0, 1, 2]
+    assert get_grid_axes(grid, ["y", "-x", "z"]) == [0, 1, 2]
 
     if skewed:
         with pytest.raises(ValueError):
-            get_grid_axes(grid, ['x', 'y'])
+            get_grid_axes(grid, ["x", "y"])
     else:
-        assert get_grid_axes(grid, ['x', 'y']) == [0, 1]
-        assert get_grid_axes(grid, ['y', 'x']) == [1, 0]
+        assert get_grid_axes(grid, ["x", "y"]) == [0, 1]
+        assert get_grid_axes(grid, ["y", "x"]) == [1, 0]
+
 
 def test_get_ax_vals(grid, skewed, origin):
-
     r = get_ax_vals(grid, "x", nsc=(1, 1, 1))
 
     assert isinstance(r, np.ndarray)
-    assert r.shape == (grid.shape[0], )
+    assert r.shape == (grid.shape[0],)
 
     if not skewed:
         assert r[0] == origin[0]
-        assert abs(r[-1] - (origin[0] + grid.lattice.cell[0, 0] - grid.dcell[0, 0])) < 1e-3
+        assert (
+            abs(r[-1] - (origin[0] + grid.lattice.cell[0, 0] - grid.dcell[0, 0])) < 1e-3
+        )
 
     r = get_ax_vals(grid, "a", nsc=(2, 1, 1))
 
     assert isinstance(r, np.ndarray)
-    assert r.shape == (grid.shape[0], )
+    assert r.shape == (grid.shape[0],)
 
     assert r[0] == 0
     assert abs(r[-1] - 2) < 1e-3
 
-def test_get_offset(grid, origin):
 
+def test_get_offset(grid, origin):
     assert get_offset(grid, "x") == origin[0]
     assert get_offset(grid, "b") == 0
     assert get_offset(grid, 2) == 0
+
 
 def test_grid_to_dataarray(grid, skewed):
     # Test 1D
     av_grid = grid.average(0).average(1)
 
-    arr = grid_to_dataarray(av_grid, ['z'], [2], nsc=(1,1,1))
+    arr = grid_to_dataarray(av_grid, ["z"], [2], nsc=(1, 1, 1))
 
     assert isinstance(arr, xr.DataArray)
     assert len(arr.coords) == 1
     assert "x" in arr.coords
-    assert arr.x.shape == (grid.shape[2], )
+    assert arr.x.shape == (grid.shape[2],)
 
     assert np.allclose(arr.values, av_grid.grid[0, 0, :])
 
     if skewed:
         return
-    
+
     # Test 2D
     av_grid = grid.average(0)
 
-    arr = grid_to_dataarray(av_grid, ['y', 'z'], [1, 2], nsc=(1,1,1))
+    arr = grid_to_dataarray(av_grid, ["y", "z"], [1, 2], nsc=(1, 1, 1))
 
     assert isinstance(arr, xr.DataArray)
     assert len(arr.coords) == 2
     assert "x" in arr.coords
-    assert arr.x.shape == (grid.shape[1], )
+    assert arr.x.shape == (grid.shape[1],)
     assert "y" in arr.coords
-    assert arr.y.shape == (grid.shape[2], )
-    
+    assert arr.y.shape == (grid.shape[2],)
+
     assert np.allclose(arr.values, av_grid.grid[0, :, :])
 
     # Test 2D with unordered axes
     av_grid = grid.average(0)
 
-    arr = grid_to_dataarray(av_grid, ['z', 'y'], [2, 1], nsc=(1,1,1))
+    arr = grid_to_dataarray(av_grid, ["z", "y"], [2, 1], nsc=(1, 1, 1))
 
     assert isinstance(arr, xr.DataArray)
     assert len(arr.coords) == 2
     assert "x" in arr.coords
-    assert arr.x.shape == (grid.shape[2], )
+    assert arr.x.shape == (grid.shape[2],)
     assert "y" in arr.coords
-    assert arr.y.shape == (grid.shape[1], )
-    
+    assert arr.y.shape == (grid.shape[1],)
+
     assert np.allclose(arr.values, av_grid.grid[0, :, :].T)
 
     # Test 3D
     av_grid = grid
 
-    arr = grid_to_dataarray(av_grid, ['x', 'y', 'z'], [0, 1, 2], nsc=(1,1,1))
+    arr = grid_to_dataarray(av_grid, ["x", "y", "z"], [0, 1, 2], nsc=(1, 1, 1))
 
     assert isinstance(arr, xr.DataArray)
     assert len(arr.coords) == 3
     assert "x" in arr.coords
-    assert arr.x.shape == (grid.shape[0], )
+    assert arr.x.shape == (grid.shape[0],)
     assert "y" in arr.coords
-    assert arr.y.shape == (grid.shape[1], )
+    assert arr.y.shape == (grid.shape[1],)
     assert "z" in arr.coords
-    assert arr.z.shape == (grid.shape[2], )
-    
+    assert arr.z.shape == (grid.shape[2],)
+
     assert np.allclose(arr.values, av_grid.grid)
+
 
 def test_get_isos(grid, skewed):
     pytest.importorskip("skimage")
 
     if skewed:
         return
-    
+
     # Test isocontours (2D)
-    arr = grid_to_dataarray(grid.average(2), ['x', 'y'], [0, 1, 2], nsc=(1,1,1))
+    arr = grid_to_dataarray(grid.average(2), ["x", "y"], [0, 1, 2], nsc=(1, 1, 1))
 
     assert get_isos(arr, []) == []
 
-    contours = get_isos(arr, [{'frac': 0.5}])
+    contours = get_isos(arr, [{"frac": 0.5}])
 
     assert isinstance(contours, list)
     assert len(contours) == 1
@@ -350,7 +372,7 @@ def test_get_isos(grid, skewed):
     assert "z" not in contours[0]
 
     # Test isosurfaces (3D)
-    arr = grid_to_dataarray(grid, ['x', 'y', 'z'], [0, 1, 2], nsc=(1,1,1))
+    arr = grid_to_dataarray(grid, ["x", "y", "z"], [0, 1, 2], nsc=(1, 1, 1))
 
     surfs = get_isos(arr, [])
 
@@ -374,7 +396,7 @@ def test_get_isos(grid, skewed):
     assert surfs[0]["faces"].dtype == np.int32
     assert surfs[0]["faces"].shape[1] == 3
 
-    surfs = get_isos(arr, [{'val': 3, "color": "red", "opacity": 0.5, "name": "test"}])
+    surfs = get_isos(arr, [{"val": 3, "color": "red", "opacity": 0.5, "name": "test"}])
 
     assert isinstance(surfs, list)
     assert len(surfs) == 1
@@ -393,4 +415,3 @@ def test_get_isos(grid, skewed):
     assert isinstance(surfs[0]["faces"], np.ndarray)
     assert surfs[0]["faces"].dtype == np.int32
     assert surfs[0]["faces"].shape[1] == 3
-

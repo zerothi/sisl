@@ -63,10 +63,7 @@ def test_composite_mixer():
         f = mix(f, df)
 
 
-@pytest.mark.parametrize("op",
-                         [op.add, op.sub,
-                          op.mul, op.truediv,
-                          op.pow])
+@pytest.mark.parametrize("op", [op.add, op.sub, op.mul, op.truediv, op.pow])
 def test_composite_mixer_init(op):
     mix1 = AndersonMixer()
     mix2 = LinearMixer()

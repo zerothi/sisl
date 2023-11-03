@@ -12,16 +12,18 @@ def backend(request):
     pytest.importorskip(request.param)
     return request.param
 
+
 @pytest.fixture(scope="module", params=["x", "xy", "xyz"])
 def axes(request):
     return request.param
+
 
 @pytest.fixture(scope="module")
 def geometry():
     return sisl.geom.graphene()
 
-def test_geometry_plot(geometry, axes, backend):
 
+def test_geometry_plot(geometry, axes, backend):
     if axes == "xyz" and backend == "matplotlib":
         with pytest.raises(NotImplementedError):
             geometry_plot(geometry, axes=axes, backend=backend)

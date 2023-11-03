@@ -16,15 +16,23 @@ class AtomsGroup(Group, total=False):
     atoms: Any
     reduce_func: Optional[Callable]
 
-def reduce_atom_data(atom_data: Union[DataArray, Dataset], groups: Sequence[AtomsGroup], geometry: Optional[Geometry] = None, 
-    reduce_func: Callable = np.mean, atom_dim: str = "atom", groups_dim: str = "group", 
-    sanitize_group: Callable = lambda x: x, group_vars: Optional[Sequence[str]] = None,
-    drop_empty: bool = False, fill_empty: Any = 0.
+
+def reduce_atom_data(
+    atom_data: Union[DataArray, Dataset],
+    groups: Sequence[AtomsGroup],
+    geometry: Optional[Geometry] = None,
+    reduce_func: Callable = np.mean,
+    atom_dim: str = "atom",
+    groups_dim: str = "group",
+    sanitize_group: Callable = lambda x: x,
+    group_vars: Optional[Sequence[str]] = None,
+    drop_empty: bool = False,
+    fill_empty: Any = 0.0,
 ) -> Union[DataArray, Dataset]:
     """Groups contributions of atoms into a new dimension.
 
     Given an xarray object containing atom information and the specification of groups of atoms, this function
-    computes the total contribution for each group of atoms. It therefore removes the atoms dimension and 
+    computes the total contribution for each group of atoms. It therefore removes the atoms dimension and
     creates a new one to account for the groups.
 
     Parameters
@@ -39,7 +47,7 @@ def reduce_atom_data(atom_data: Union[DataArray, Dataset], groups: Sequence[Atom
         If not provided, it will be searched in the ``geometry`` attribute of the ``atom_data`` object.
     reduce_func : Callable, optional
         The function that will compute the reduction along the atoms dimension once the selection is done.
-        This could be for example ``numpy.mean`` or ``numpy.sum``. 
+        This could be for example ``numpy.mean`` or ``numpy.sum``.
         Notice that this will only be used in case the group specification doesn't specify a particular function
         in its "reduce_func" field, which will take preference.
     spin_reduce: Callable, optional
@@ -67,31 +75,41 @@ def reduce_atom_data(atom_data: Union[DataArray, Dataset], groups: Sequence[Atom
         geometry = atom_data.attrs.get("geometry")
 
     if geometry is None:
+
         def _sanitize_group(group):
             group = group.copy()
             group = sanitize_group(group)
-            atoms = group['atoms']
+            atoms = group["atoms"]
             try:
-                group['atoms'] = np.array(atoms, dtype=int)
+                group["atoms"] = np.array(atoms, dtype=int)
                 assert atoms.ndim == 1
             except:
-                raise SislError("A geometry was neither provided nor found in the xarray object. Therefore we can't"
-                    f" convert the provided atom selection ({atoms}) to an array of integers.")
+                raise SislError(
+                    "A geometry was neither provided nor found in the xarray object. Therefore we can't"
+                    f" convert the provided atom selection ({atoms}) to an array of integers."
+                )
 
-            group['selector'] = group['atoms']
+            group["selector"] = group["atoms"]
 
             return group
+
     else:
+
         def _sanitize_group(group):
             group = group.copy()
             group = sanitize_group(group)
             group["atoms"] = geometry._sanitize_atoms(group["atoms"])
-            group['selector'] = group['atoms']
+            group["selector"] = group["atoms"]
             return group
-        
 
     return group_reduce(
-        data=atom_data, groups=groups, reduce_dim=atom_dim, reduce_func=reduce_func,
-        groups_dim=groups_dim, sanitize_group=_sanitize_group, group_vars=group_vars,
-        drop_empty=drop_empty, fill_empty=fill_empty
+        data=atom_data,
+        groups=groups,
+        reduce_dim=atom_dim,
+        reduce_func=reduce_func,
+        groups_dim=groups_dim,
+        sanitize_group=_sanitize_group,
+        group_vars=group_vars,
+        drop_empty=drop_empty,
+        fill_empty=fill_empty,
     )

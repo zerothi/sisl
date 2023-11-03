@@ -36,14 +36,14 @@ def _datacopied(arr, original):
 # I.e. when fetching the same method over and over
 # we should be able to reduce the overhead by retrieving the intrinsic version.
 _linalg_info_dtype = {
-    np.float32: 'f4',
-    np.float64: 'f8',
-    np.complex64: 'c8',
-    np.complex128: 'c16',
-    'f4': 'f4',
-    'f8': 'f8',
-    'c8': 'c8',
-    'c16': 'c16',
+    np.float32: "f4",
+    np.float64: "f8",
+    np.complex64: "c8",
+    np.complex128: "c16",
+    "f4": "f4",
+    "f8": "f8",
+    "c8": "c8",
+    "c16": "c16",
 }
 _linalg_info_base = {}
 # Initialize the base-dtype dicts
@@ -52,8 +52,10 @@ for _, item in _linalg_info_dtype.items():
 
 
 @set_module("sisl.linalg")
-def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg_info_dtype):
-    """ Faster BLAS/LAPACK methods to be returned without too many lookups an array checks
+def linalg_info(
+    method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg_info_dtype
+):
+    """Faster BLAS/LAPACK methods to be returned without too many lookups an array checks
 
     Parameters
     ----------
@@ -85,7 +87,7 @@ def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg
     try:
         func = get_lapack_funcs(method, dtype=dtype)
     except ValueError as e:
-        if 'LAPACK function' in str(e):
+        if "LAPACK function" in str(e):
             func = get_blas_funcs(method, dtype=dtype)
         else:
             raise e
@@ -94,18 +96,17 @@ def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg
 
 
 def _compute_lwork(routine, *args, **kwargs):
-    """ See scipy.linalg.lapack._compute_lwork """
+    """See scipy.linalg.lapack._compute_lwork"""
     wi = routine(*args, **kwargs)
     if len(wi) < 2:
-        raise ValueError('')
+        raise ValueError("")
     info = wi[-1]
     if info != 0:
-        raise ValueError("Internal work array size computation failed: "
-                         "%d" % (info,))
+        raise ValueError("Internal work array size computation failed: " "%d" % (info,))
 
     lwork = [w.real for w in wi[:-1]]
 
-    dtype = getattr(routine, 'dtype', None)
+    dtype = getattr(routine, "dtype", None)
     if dtype == np.float32 or dtype == np.complex64:
         # Single-precision routine -- take next fp value to work
         # around possible truncation in LAPACK code
@@ -113,8 +114,10 @@ def _compute_lwork(routine, *args, **kwargs):
 
     lwork = np.array(lwork, np.int64)
     if np.any(np.logical_or(lwork < 0, lwork > np.iinfo(np.int32).max)):
-        raise ValueError("Too large work array required -- computation cannot "
-                         "be performed with standard 32-bit LAPACK.")
+        raise ValueError(
+            "Too large work array required -- computation cannot "
+            "be performed with standard 32-bit LAPACK."
+        )
     lwork = lwork.astype(np.int32)
     if lwork.size == 1:
         return lwork[0]
@@ -143,10 +146,11 @@ def inv(a, overwrite_a=False):
     overwrite_a = overwrite_a or _datacopied(a1, a)
 
     if a1.shape[0] != a1.shape[1]:
-        raise ValueError('Input a needs to be a square matrix.')
+        raise ValueError("Input a needs to be a square matrix.")
 
-    getrf, getri, getri_lwork = get_lapack_funcs(('getrf', 'getri',
-                                                  'getri_lwork'), (a1,))
+    getrf, getri, getri_lwork = get_lapack_funcs(
+        ("getrf", "getri", "getri_lwork"), (a1,)
+    )
     lu, piv, info = getrf(a1, overwrite_a=overwrite_a)
     if info == 0:
         lwork = _compute_lwork(getri_lwork, a1.shape[0])
@@ -155,8 +159,9 @@ def inv(a, overwrite_a=False):
     if info > 0:
         raise LinAlgError("Singular matrix")
     elif info < 0:
-        raise ValueError('illegal value in %d-th argument of internal '
-                         'getrf|getri' % -info)
+        raise ValueError(
+            "illegal value in %d-th argument of internal " "getrf|getri" % -info
+        )
     return x
 
 
@@ -189,13 +194,12 @@ def solve(a, b, overwrite_a=False, overwrite_b=False, assume_a="gen"):
     overwrite_b = overwrite_b or _datacopied(b1, b)
 
     if a1.shape[0] != a1.shape[1]:
-        raise ValueError('LHS needs to be a square matrix.')
+        raise ValueError("LHS needs to be a square matrix.")
 
     if n != b1.shape[0]:
         # Last chance to catch 1x1 scalar a and 1D b arrays
         if not (n == 1 and b1.size != 0):
-            raise ValueError('Input b has to have same number of rows as '
-                             'input a')
+            raise ValueError("Input b has to have same number of rows as " "input a")
 
     # regularize 1D b arrays to 2D
     if b1.ndim == 1:
@@ -209,23 +213,25 @@ def solve(a, b, overwrite_a=False, overwrite_b=False, assume_a="gen"):
 
     if assume_a == "sym":
         lower = False
-        sysv, sysv_lw = get_lapack_funcs(("sysv",
-                                          "sysv_lwork"), (a1, b1))
+        sysv, sysv_lw = get_lapack_funcs(("sysv", "sysv_lwork"), (a1, b1))
         lwork = _compute_lwork(sysv_lw, n, lower)
-        _, _, x, info = sysv(a1, b1, lwork=lwork,
-                             lower=lower,
-                             overwrite_a=overwrite_a,
-                             overwrite_b=overwrite_b)
+        _, _, x, info = sysv(
+            a1,
+            b1,
+            lwork=lwork,
+            lower=lower,
+            overwrite_a=overwrite_a,
+            overwrite_b=overwrite_b,
+        )
     elif assume_a == "gen":
-        gesv = get_lapack_funcs('gesv', (a1, b1))
+        gesv = get_lapack_funcs("gesv", (a1, b1))
         _, _, x, info = gesv(a1, b1, overwrite_a=overwrite_a, overwrite_b=overwrite_b)
     else:
         raise ValueError("Input assume_a is not one of gen/sym")
     if info > 0:
         raise LinAlgError("Singular matrix")
     elif info < 0:
-        raise ValueError('illegal value in %d-th argument of internal '
-                         'gesv' % -info)
+        raise ValueError("illegal value in %d-th argument of internal " "gesv" % -info)
     if b_is_1D:
         return x.ravel()
 
@@ -234,6 +240,7 @@ def solve(a, b, overwrite_a=False, overwrite_b=False, assume_a="gen"):
 
 def _append(name, suffix):
     return [name + s for s in suffix]
+
 
 # Solving a linear system
 solve_destroy = _partial(solve, overwrite_a=True, overwrite_b=True)
@@ -250,13 +257,21 @@ __all__ += _append("pinv", ["", "h"])
 
 # Solve eigenvalue problem
 eig = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False)
-eig_left = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, left=True)
-eig_right = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, right=True)
+eig_left = _partial(
+    sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, left=True
+)
+eig_right = _partial(
+    sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, right=True
+)
 __all__ += _append("eig", ["", "_left", "_right"])
 
 eig_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True)
-eig_left_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, left=True)
-eig_right_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, right=True)
+eig_left_destroy = _partial(
+    sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, left=True
+)
+eig_right_destroy = _partial(
+    sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, right=True
+)
 __all__ += _append("eig_", ["destroy", "left_destroy", "right_destroy"])
 
 eigvals = _partial(sl.eigvals, check_finite=False, overwrite_a=False)
@@ -268,8 +283,12 @@ eigh = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=Fals
 eigh_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True)
 __all__ += _append("eigh", ["", "_destroy"])
 
-eigvalsh = _partial(sl.eigvalsh, check_finite=False, overwrite_a=False, overwrite_b=False)
-eigvalsh_destroy = _partial(sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True)
+eigvalsh = _partial(
+    sl.eigvalsh, check_finite=False, overwrite_a=False, overwrite_b=False
+)
+eigvalsh_destroy = _partial(
+    sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True
+)
 __all__ += _append("eigvalsh", ["", "_destroy"])
 
 cholesky = _partial(sl.cholesky, check_finite=False)

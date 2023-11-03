@@ -27,7 +27,7 @@ __all__ += ["curl"]
 
 
 def fnorm(array, axis=-1):
-    r""" Fast calculation of the norm of a vector
+    r"""Fast calculation of the norm of a vector
 
     Parameters
     ----------
@@ -40,7 +40,7 @@ def fnorm(array, axis=-1):
 
 
 def fnorm2(array, axis=-1):
-    r""" Fast calculation of the squared norm of a vector
+    r"""Fast calculation of the squared norm of a vector
 
     Parameters
     ----------
@@ -53,7 +53,7 @@ def fnorm2(array, axis=-1):
 
 
 def expand(vector, length):
-    r""" Expand `vector` by `length` such that the norm of the vector is increased by `length`
+    r"""Expand `vector` by `length` such that the norm of the vector is increased by `length`
 
     The expansion of the vector can be written as:
 
@@ -75,7 +75,7 @@ def expand(vector, length):
 
 
 def orthogonalize(ref, vector):
-    r""" Ensure `vector` is orthogonal to `ref`, `vector` must *not* be parallel to `ref`.
+    r"""Ensure `vector` is orthogonal to `ref`, `vector` must *not* be parallel to `ref`.
 
     Enable an easy creation of a vector orthogonal to a reference vector. The length of the vector
     is not necessarily preserved (if they are not orthogonal).
@@ -107,13 +107,15 @@ def orthogonalize(ref, vector):
     nr = fnorm(ref)
     vector = asarray(vector).ravel()
     d = dot(ref, vector) / nr
-    if abs(1. - abs(d) / fnorm(vector)) < 1e-7:
-        raise ValueError(f"orthogonalize: requires non-parallel vectors to perform an orthogonalization: ref.vector = {d}")
+    if abs(1.0 - abs(d) / fnorm(vector)) < 1e-7:
+        raise ValueError(
+            f"orthogonalize: requires non-parallel vectors to perform an orthogonalization: ref.vector = {d}"
+        )
     return vector - ref * d / nr
 
 
 def spher2cart(r, theta, phi):
-    r""" Convert spherical coordinates to cartesian coordinates
+    r"""Convert spherical coordinates to cartesian coordinates
 
     Parameters
     ----------
@@ -140,7 +142,7 @@ def spher2cart(r, theta, phi):
 
 
 def cart2spher(r, theta=True, cos_phi=False, maxR=None):
-    r""" Transfer a vector to spherical coordinates with some possible differences
+    r"""Transfer a vector to spherical coordinates with some possible differences
 
     Parameters
     ----------
@@ -182,11 +184,11 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
             phi = r[:, 2] / rr
         else:
             phi = arccos(r[:, 2] / rr)
-        phi[rr == 0.] = 0.
+        phi[rr == 0.0] = 0.0
         return rr, theta, phi
 
     rr = square(r).sum(-1)
-    idx = indices_le(rr, maxR ** 2)
+    idx = indices_le(rr, maxR**2)
     r = take(r, idx, 0)
     rr = sqrt(take(rr, idx))
     if theta:
@@ -199,12 +201,12 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
         phi = arccos(r[:, 2] / rr)
     # Typically there will be few rr==0. values, so no need to
     # create indices
-    phi[rr == 0.] = 0.
+    phi[rr == 0.0] = 0.0
     return n, idx, rr, theta, phi
 
 
 def spherical_harm(m, l, theta, phi):
-    r""" Calculate the spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
+    r"""Calculate the spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
 
     .. math::
         Y^m_l(\theta,\varphi) = (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
@@ -224,7 +226,7 @@ def spherical_harm(m, l, theta, phi):
        angle from :math:`z` axis (polar)
     """
     # Probably same as:
-    #return (-1) ** m * ( (2*l+1)/(4*pi) * factorial(l-m) / factorial(l+m) ) ** 0.5 \
+    # return (-1) ** m * ( (2*l+1)/(4*pi) * factorial(l-m) / factorial(l+m) ) ** 0.5 \
     #    * lpmv(m, l, cos(theta)) * exp(1j * m * phi)
     return sph_harm(m, l, theta, phi) * (-1) ** m
 
@@ -308,7 +310,7 @@ def intersect_and_diff_sets(a, b):
     This saves a bit compared to doing np.delete() afterwards.
     """
     aux = concatenate((a, b))
-    aux_sort_indices = argsort(aux, kind='mergesort')
+    aux_sort_indices = argsort(aux, kind="mergesort")
     aux = aux[aux_sort_indices]
     # find elements that are the same in both arrays
     # after sorting we should have at most 2 same elements
@@ -322,7 +324,7 @@ def intersect_and_diff_sets(a, b):
     no_buddy = nobuddy_lr[:-1]  # no match left
     no_buddy &= nobuddy_lr[1:]  # no match right
 
-    aonly = (aux_sort_indices < a.size)
+    aonly = aux_sort_indices < a.size
     bonly = ~aonly
     aonly &= no_buddy
     bonly &= no_buddy

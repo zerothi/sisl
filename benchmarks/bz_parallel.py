@@ -52,8 +52,11 @@ else:
     par = bz.apply.renew(eta=True)
 
 E = np.linspace(-2, 2, 200)
+
+
 def wrap_DOS(es):
     return es.DOS(E)
-dos = par.ndarray.eigenstate(wrap=wrap_DOS)
-#dos = par.average.eigenstate(wrap=wrap_DOS)
 
+
+dos = par.ndarray.eigenstate(wrap=wrap_DOS)
+# dos = par.average.eigenstate(wrap=wrap_DOS)

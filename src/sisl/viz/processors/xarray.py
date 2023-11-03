@@ -24,21 +24,29 @@ class XarrayData:
     def __dir__(self):
         return dir(self._data)
 
+
 class Group(TypedDict, total=False):
     name: str
     selector: Any
     reduce_func: Optional[Callable]
     ...
 
-def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[Group], 
-    reduce_dim: Union[str, Tuple[str, ...]], reduce_func: Union[Callable, Tuple[Callable, ...]] = np.mean, groups_dim: str = "group", 
-    sanitize_group: Callable = lambda x: x, group_vars: Optional[Sequence[str]] = None,
-    drop_empty: bool = False, fill_empty: Any = 0.
+
+def group_reduce(
+    data: Union[DataArray, Dataset, XarrayData],
+    groups: Sequence[Group],
+    reduce_dim: Union[str, Tuple[str, ...]],
+    reduce_func: Union[Callable, Tuple[Callable, ...]] = np.mean,
+    groups_dim: str = "group",
+    sanitize_group: Callable = lambda x: x,
+    group_vars: Optional[Sequence[str]] = None,
+    drop_empty: bool = False,
+    fill_empty: Any = 0.0,
 ) -> Union[DataArray, Dataset]:
     """Groups contributions of orbitals into a new dimension.
 
     Given an xarray object containing orbital information and the specification of groups of orbitals, this function
-    computes the total contribution for each group of orbitals. It therefore removes the orbitals dimension and 
+    computes the total contribution for each group of orbitals. It therefore removes the orbitals dimension and
     creates a new one to account for the groups.
 
     It can also reduce spin in the same go if requested. In that case, groups can also specify particular spin components.
@@ -51,7 +59,7 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
         A sequence containing the specifications for each group of orbitals. See ``Group``.
     reduce_func : Callable or tuple of Callable, optional
         The function that will compute the reduction along the reduced dimension once the selection is done.
-        This could be for example ``numpy.mean`` or ``numpy.sum``. 
+        This could be for example ``numpy.mean`` or ``numpy.sum``.
         Notice that this will only be used in case the group specification doesn't specify a particular function
         in its "reduce_func" field, which will take preference.
         If ``reduce_dim`` is a tuple, this can also be a tuple to indicate different reducing methods for each
@@ -84,7 +92,7 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
             return data.drop_dims(reduce_dim)
         else:
             raise ValueError("Must specify at least one group.")
-    
+
     input_is_dataarray = isinstance(data, DataArray)
 
     if not isinstance(reduce_dim, tuple):
@@ -96,12 +104,14 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
     for i_group, group in enumerate(groups):
         group = sanitize_group(group)
         # Get the orbitals of the group
-        selector = group['selector']
+        selector = group["selector"]
         if not isinstance(selector, tuple):
             selector = (selector,)
 
         # Select the data we are interested in
-        group_vals = data.sel(**{dim: sel for dim, sel in zip(reduce_dim, selector) if sel is not None})
+        group_vals = data.sel(
+            **{dim: sel for dim, sel in zip(reduce_dim, selector) if sel is not None}
+        )
 
         empty = False
         for dim in reduce_dim:
@@ -119,7 +129,9 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
             if drop_empty:
                 continue
             else:
-                group_vals = data.isel({dim: 0 for dim in reduce_dim}, drop=True).copy(deep=True)
+                group_vals = data.isel({dim: 0 for dim in reduce_dim}, drop=True).copy(
+                    deep=True
+                )
                 if input_is_dataarray:
                     group_vals[...] = fill_empty
                 else:
@@ -132,13 +144,15 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
             if not isinstance(reduce_funcs, tuple):
                 reduce_funcs = tuple([reduce_funcs] * len(reduce_dim))
             for dim, func in zip(reduce_dim, reduce_funcs):
-                if func is None or (reduce_dim not in group_vals.dims and reduce_dim in group_vals.coords):
+                if func is None or (
+                    reduce_dim not in group_vals.dims
+                    and reduce_dim in group_vals.coords
+                ):
                     continue
                 group_vals = group_vals.reduce(func, dim=dim)
 
-        
         # Assign the name to this group and add it to the list of groups.
-        name = group.get('name') or i_group
+        name = group.get("name") or i_group
         names.append(name)
         if input_is_dataarray:
             group_vals.name = name
@@ -148,7 +162,7 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
         if group_vars is not None:
             for var in group_vars:
                 group_vars_dict[var].append(group.get(var))
-    
+
     # Concatenate all the groups into a single xarray object creating a new coordinate.
     new_obj = xr.concat(groups_vals, dim=groups_dim).assign_coords({groups_dim: names})
     if input_is_dataarray:
@@ -158,17 +172,26 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
 
     # If there were extra group variables, then create a Dataset with them
     if group_vars is not None:
-
         if isinstance(new_obj, DataArray):
             new_obj = new_obj.to_dataset()
-        
-        new_obj = new_obj.assign({
-            k: DataArray(v, dims=[groups_dim], name=k) for k,v in group_vars_dict.items()
-        })
+
+        new_obj = new_obj.assign(
+            {
+                k: DataArray(v, dims=[groups_dim], name=k)
+                for k, v in group_vars_dict.items()
+            }
+        )
 
     return new_obj
 
-def scale_variable(dataset: Dataset, var: str, scale: float = 1, default_value: Union[float, None] = None, allow_not_present: bool = False) -> Dataset:
+
+def scale_variable(
+    dataset: Dataset,
+    var: str,
+    scale: float = 1,
+    default_value: Union[float, None] = None,
+    allow_not_present: bool = False,
+) -> Dataset:
     new = dataset.copy()
 
     if var not in new:
@@ -184,13 +207,17 @@ def scale_variable(dataset: Dataset, var: str, scale: float = 1, default_value: 
             new[var][new[var] == None] = default_value * scale
     return new
 
+
 def select(dataset: Dataset, dim: str, selector: Any) -> Dataset:
     if selector is not None:
         dataset = dataset.sel(**{dim: selector})
     return dataset
 
+
 def filter_energy_range(
-    data: Union[DataArray, Dataset], Erange: Optional[Tuple[float, float]]=None, E0: float = 0
+    data: Union[DataArray, Dataset],
+    Erange: Optional[Tuple[float, float]] = None,
+    E0: float = 0,
 ) -> Union[DataArray, Dataset]:
     # Shift the energies
     E_data = data.assign_coords(E=data.E - E0)

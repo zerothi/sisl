@@ -35,12 +35,12 @@ TypeMetric = Callable[[Any, Any], Any]
 
 @set_module("sisl.mixing")
 class BaseMixer:
-    r""" Base class mixer """
+    r"""Base class mixer"""
     __slots__ = ()
 
     @abstractmethod
     def __call__(self, f: T, df: T, *args: Any, **kwargs: Any) -> T:
-        """ Mix quantities based on arguments """
+        """Mix quantities based on arguments"""
 
     def __add__(self, other: Union[float, int, TypeBaseMixer]) -> TypeCompositeMixer:
         return CompositeMixer(op.add, self, other)
@@ -60,10 +60,14 @@ class BaseMixer:
     def __rmul__(self, factor: Union[float, int, TypeBaseMixer]) -> TypeCompositeMixer:
         return CompositeMixer(op.mul, self, factor)
 
-    def __truediv__(self, divisor: Union[float, int, TypeBaseMixer]) -> TypeCompositeMixer:
+    def __truediv__(
+        self, divisor: Union[float, int, TypeBaseMixer]
+    ) -> TypeCompositeMixer:
         return CompositeMixer(op.truediv, self, divisor)
 
-    def __rtruediv__(self, divisor: Union[float, int, TypeBaseMixer]) -> TypeCompositeMixer:
+    def __rtruediv__(
+        self, divisor: Union[float, int, TypeBaseMixer]
+    ) -> TypeCompositeMixer:
         return CompositeMixer(op.truediv, divisor, self)
 
     def __neg__(self) -> TypeCompositeMixer:
@@ -78,7 +82,7 @@ class BaseMixer:
 
 @set_module("sisl.mixing")
 class CompositeMixer(BaseMixer):
-    """ Placeholder for two metrics """
+    """Placeholder for two metrics"""
 
     __slots__ = ("_op", "A", "B")
 
@@ -100,11 +104,11 @@ class CompositeMixer(BaseMixer):
 
     def __str__(self) -> str:
         if isinstance(self.A, BaseMixer):
-            A = "({})".format(repr(self.A).replace('\n', '\n '))
+            A = "({})".format(repr(self.A).replace("\n", "\n "))
         else:
             A = f"{self.A}"
         if isinstance(self.B, BaseMixer):
-            B = "({})".format(repr(self.B).replace('\n', '\n '))
+            B = "({})".format(repr(self.B).replace("\n", "\n "))
         else:
             B = f"{self.B}"
         return f"{self.__class__.__name__}{{{self._op.__name__}({A}, {B})}}"
@@ -112,7 +116,7 @@ class CompositeMixer(BaseMixer):
 
 @set_module("sisl.mixing")
 class BaseWeightMixer(BaseMixer):
-    r""" Base class mixer """
+    r"""Base class mixer"""
     __slots__ = ("_weight",)
 
     def __init__(self, weight: TypeWeight = 0.2):
@@ -120,11 +124,11 @@ class BaseWeightMixer(BaseMixer):
 
     @property
     def weight(self) -> TypeWeight:
-        """ This mixers mixing weight, the weight is the fractional contribution of the derivative """
+        """This mixers mixing weight, the weight is the fractional contribution of the derivative"""
         return self._weight
 
     def set_weight(self, weight: TypeWeight):
-        """ Set a new weight for this mixer
+        """Set a new weight for this mixer
 
         Parameters
         ----------
@@ -137,7 +141,7 @@ class BaseWeightMixer(BaseMixer):
 
 @set_module("sisl.mixing")
 class BaseHistoryWeightMixer(BaseWeightMixer):
-    r""" Base class mixer with history """
+    r"""Base class mixer with history"""
     __slots__ = ("_history",)
 
     def __init__(self, weight: TypeWeight = 0.2, history: TypeArgHistory = 0):
@@ -145,19 +149,18 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
         self.set_history(history)
 
     def __str__(self) -> str:
-        r""" String representation """
+        r"""String representation"""
         hist = str(self.history).replace("\n", "\n  ")
         return f"{self.__class__.__name__}{{weight: {self.weight:.4f},\n  {hist}\n}}"
 
     def __repr__(self) -> str:
-        r""" String representation """
+        r"""String representation"""
         hist = len(self.history)
         max_hist = self.history.max_elements
         return f"{self.__class__.__name__}{{weight: {self.weight:.4f}, history={hist}|{max_hist}}}"
 
-
     def __call__(self, f: T, df: T, *args: Any, append: bool = True) -> None:
-        """ Append data to the history (omitting None values)! """
+        """Append data to the history (omitting None values)!"""
         if not append:
             # do nothing
             return
@@ -170,11 +173,11 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
 
     @property
     def history(self) -> TypeHistory:
-        """ History object tracked by this mixer """
+        """History object tracked by this mixer"""
         return self._history
 
     def set_history(self, history: TypeArgHistory) -> None:
-        """ Replace the current history in the mixer with a new one
+        """Replace the current history in the mixer with a new one
 
         Parameters
         ----------
@@ -189,7 +192,7 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
 
 @set_module("sisl.mixing")
 class StepMixer(BaseMixer):
-    """ Step between different mixers in a user-defined fashion
+    """Step between different mixers in a user-defined fashion
 
     This is handy for creating variable mixing schemes that alternates (or differently)
     between multiple mixers.
@@ -235,7 +238,7 @@ class StepMixer(BaseMixer):
         self._mixer = next(self._yield_mixer)
 
     def next(self) -> TypeBaseMixer:
-        """ Return the current mixer, and step the internal mixer """
+        """Return the current mixer, and step the internal mixer"""
         mixer = self._mixer
         try:
             self._mixer = next(self._yield_mixer)
@@ -247,15 +250,15 @@ class StepMixer(BaseMixer):
 
     @property
     def mixer(self) -> TypeBaseMixer:
-        """ Return the current mixer """
+        """Return the current mixer"""
         return self._mixer
 
     def __call__(self, f: T, df: T, *args: Any, **kwargs: Any) -> T:
-        """ Apply the mixing routine """
+        """Apply the mixing routine"""
         return self.next()(f, df, *args, **kwargs)
 
     def __getattr__(self, attr: str) -> Any:
-        """ Divert all unknown attributes to the current mixer
+        """Divert all unknown attributes to the current mixer
 
         Note that available attributes may be different for different
         mixers.
@@ -263,22 +266,30 @@ class StepMixer(BaseMixer):
         return getattr(self.mixer, attr)
 
     @classmethod
-    def yield_repeat(cls: TypeStepMixer, mixer: TypeBaseMixer, n: int) -> TypeStepCallable:
-        """ Returns a function which repeats `mixer` `n` times """
+    def yield_repeat(
+        cls: TypeStepMixer, mixer: TypeBaseMixer, n: int
+    ) -> TypeStepCallable:
+        """Returns a function which repeats `mixer` `n` times"""
         if n == 1:
+
             def yield_repeat() -> Iterator[TypeBaseMixer]:
-                f""" Yield the mixer {mixer} 1 time """
+                f"""Yield the mixer {mixer} 1 time"""
                 yield mixer
+
         else:
+
             def yield_repeat() -> Iterator[TypeBaseMixer]:
-                f""" Yield the mixer {mixer} {n} times """
+                f"""Yield the mixer {mixer} {n} times"""
                 for _ in range(n):
                     yield mixer
+
         return yield_repeat
 
     @classmethod
-    def yield_chain(cls: TypeStepMixer, *yield_funcs: TypeStepCallable) -> TypeStepCallable:
-        """ Returns a function which yields from each of the function arguments in turn
+    def yield_chain(
+        cls: TypeStepMixer, *yield_funcs: TypeStepCallable
+    ) -> TypeStepCallable:
+        """Returns a function which yields from each of the function arguments in turn
 
         Basically equivalent to a function which does this:
 
@@ -292,16 +303,18 @@ class StepMixer(BaseMixer):
         """
         if len(yield_funcs) == 1:
             return yield_funcs[0]
+
         def yield_chain() -> Iterator[TypeBaseMixer]:
-            f""" Yield from the different yield generators """
+            f"""Yield from the different yield generators"""
             for yield_func in yield_funcs:
                 yield from yield_func()
+
         return yield_chain
 
 
 @set_module("sisl.mixing")
 class History:
-    r""" A history class for retaining a set of history elements
+    r"""A history class for retaining a set of history elements
 
     A history class may contain several different variables in a `collections.deque`
     list allowing easy managing of the length of the history.
@@ -322,17 +335,19 @@ class History:
         self._hist = deque(maxlen=history)
 
     def __str__(self) -> str:
-        """ str of the object """
-        return f"{self.__class__.__name__}{{history: {self.elements}/{self.max_elements}}}"
+        """str of the object"""
+        return (
+            f"{self.__class__.__name__}{{history: {self.elements}/{self.max_elements}}}"
+        )
 
     @property
     def max_elements(self) -> int:
-        r""" Maximum number of elements stored in the history for each variable """
+        r"""Maximum number of elements stored in the history for each variable"""
         return self._hist.maxlen
 
     @property
     def elements(self) -> int:
-        r""" Number of elements in the history """
+        r"""Number of elements in the history"""
         return len(self._hist)
 
     def __len__(self) -> int:
@@ -348,7 +363,7 @@ class History:
         self.clear(key)
 
     def append(self, *variables: Any) -> None:
-        r""" Add variables to the history
+        r"""Add variables to the history
 
         Internally, the list of variables will be added to the queue, it is up
         to the implementation to use the appended values.
@@ -360,8 +375,8 @@ class History:
         """
         self._hist.append(variables)
 
-    def clear(self, index: Optional[Union[int, ArrayLike]]=None) -> None:
-        r""" Clear variables to the history
+    def clear(self, index: Optional[Union[int, ArrayLike]] = None) -> None:
+        r"""Clear variables to the history
 
         Parameters
         ----------

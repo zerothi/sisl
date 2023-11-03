@@ -19,7 +19,7 @@ _log = logging.getLogger(__name__)
 
 
 class InstanceCache:
-    """ Wraps an instance to cache *all* results based on `functools.lru_cache`
+    """Wraps an instance to cache *all* results based on `functools.lru_cache`
 
     Parameters
     ----------
@@ -102,7 +102,7 @@ class CategoryMeta(ABCMeta):
 
 @set_module("sisl.category")
 class Category(metaclass=CategoryMeta):
-    r""" A category """
+    r"""A category"""
     __slots__ = ("_name", "_wrapper")
 
     def __init__(self, name=None):
@@ -113,17 +113,17 @@ class Category(metaclass=CategoryMeta):
 
     @property
     def name(self):
-        r""" Name of category """
+        r"""Name of category"""
         return self._name
 
     def set_name(self, name):
-        r""" Override the name of the categorization """
+        r"""Override the name of the categorization"""
         self._name = name
 
     @classmethod
     @abstractmethod
     def is_class(cls, name, case=True):
-        r""" Query whether `name` matches the class name by removing a prefix `kw`
+        r"""Query whether `name` matches the class name by removing a prefix `kw`
 
         This is important to ensure that users match the full class name
         by omitting the prefix returned from this method.
@@ -150,7 +150,7 @@ class Category(metaclass=CategoryMeta):
 
     @classmethod
     def kw(cls, **kwargs):
-        """ Create categories based on keywords
+        """Create categories based on keywords
 
         This will search through the inherited classes and
         return and & category object for all keywords.
@@ -184,21 +184,27 @@ class Category(metaclass=CategoryMeta):
             for cl in subcls:
                 if cl.is_class(key):
                     if found:
-                        raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
-                                         f"    Searching for {key} and found matches {found.__name__} and {cl.__name__}.")
+                        raise ValueError(
+                            f"{cls.__name__}.kw got a non-unique argument for category name:\n"
+                            f"    Searching for {key} and found matches {found.__name__} and {cl.__name__}."
+                        )
                     found = cl
 
             if found is None:
                 for cl in subcls:
                     if cl.is_class(key, case=False):
                         if found:
-                            raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
-                                             f"    Searching for {key} and found matches {found.__name__.lower()} and {cl.__name__.lower()}.")
+                            raise ValueError(
+                                f"{cls.__name__}.kw got a non-unique argument for category name:\n"
+                                f"    Searching for {key} and found matches {found.__name__.lower()} and {cl.__name__.lower()}."
+                            )
                         found = cl
 
             if found is None:
-                raise ValueError(f"{cls.__name__}.kw got an argument for category name:\n"
-                                 f"    Searching for {key} but found no matches.")
+                raise ValueError(
+                    f"{cls.__name__}.kw got an argument for category name:\n"
+                    f"    Searching for {key} but found no matches."
+                )
 
             if cat is None:
                 cat = get_cat(found, args)
@@ -209,20 +215,20 @@ class Category(metaclass=CategoryMeta):
 
     @abstractmethod
     def categorize(self, *args, **kwargs):
-        r""" Do categorization """
+        r"""Do categorization"""
         pass
 
     def __str__(self):
-        r""" String representation of the class (non-distinguishable between equivalent classifiers) """
+        r"""String representation of the class (non-distinguishable between equivalent classifiers)"""
         return self.name
 
     def __repr__(self):
-        r""" String representation of the class (non-distinguishable between equivalent classifiers) """
+        r"""String representation of the class (non-distinguishable between equivalent classifiers)"""
         return self.name
 
     @singledispatchmethod
     def __eq__(self, other):
-        """ Comparison of two categories, they are compared by class-type """
+        """Comparison of two categories, they are compared by class-type"""
         # This is not totally safe since composites *could* be generated
         # in different sequences and result in the same boolean expression.
         # This we do not check and thus are not fool proof...
@@ -233,9 +239,12 @@ class Category(metaclass=CategoryMeta):
         # (A ^ B ^ C) != (C ^ A ^ B)
         if isinstance(self, CompositeCategory):
             if isinstance(other, CompositeCategory):
-                return (self.__class__ is other.__class__ and
-                        (self.A == other.A and self.B == other.B or
-                         self.A == other.B and self.B == other.A))
+                return self.__class__ is other.__class__ and (
+                    self.A == other.A
+                    and self.B == other.B
+                    or self.A == other.B
+                    and self.B == other.A
+                )
             # if neither is a compositecategory, then they cannot
             # be the same category
             return False
@@ -277,6 +286,7 @@ class GenericCategory(Category):
     and `CompositeCategory` and distinguish them from categories that have
     a specific object in which they act.
     """
+
     @classmethod
     def is_class(cls, name):
         # never allow one to match a generic class
@@ -286,7 +296,7 @@ class GenericCategory(Category):
 
 @set_module("sisl.category")
 class NullCategory(GenericCategory):
-    r""" Special Null class which always represents a classification not being *anything* """
+    r"""Special Null class which always represents a classification not being *anything*"""
     __slots__ = tuple()
 
     def __init__(self):
@@ -312,7 +322,8 @@ class NullCategory(GenericCategory):
 
 @set_module("sisl.category")
 class NotCategory(GenericCategory):
-    """ A class returning the *opposite* of this class (NullCategory) if it is categorized as such """
+    """A class returning the *opposite* of this class (NullCategory) if it is categorized as such"""
+
     __slots__ = ("_cat",)
 
     def __init__(self, cat):
@@ -324,10 +335,11 @@ class NotCategory(GenericCategory):
         self._cat = cat
 
     def categorize(self, *args, **kwargs):
-        r""" Base method for queriyng whether an object is a certain category """
+        r"""Base method for queriyng whether an object is a certain category"""
         cat = self._cat.categorize(*args, **kwargs)
 
         _null = NullCategory()
+
         def check(cat):
             if isinstance(cat, NullCategory):
                 return self
@@ -371,7 +383,7 @@ def _composite_name(sep):
 
 @set_module("sisl.category")
 class CompositeCategory(GenericCategory):
-    """ A composite class consisting of two categories, an abstract class to always be inherited
+    """A composite class consisting of two categories, an abstract class to always be inherited
 
     This should take 2 categories as arguments
 
@@ -382,6 +394,7 @@ class CompositeCategory(GenericCategory):
     B : Category
        the right hand side of the set operation
     """
+
     __slots__ = ("A", "B")
 
     def __init__(self, A, B):
@@ -391,24 +404,20 @@ class CompositeCategory(GenericCategory):
         self.A = A
         self.B = B
 
-    def __init_subclass__(cls, /,
-                          composite_name: str,
-                          **kwargs):
+    def __init_subclass__(cls, /, composite_name: str, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.name = _composite_name(composite_name)
 
     def categorizeAB(self, *args, **kwargs):
-        r""" Base method for queriyng whether an object is a certain category """
+        r"""Base method for queriyng whether an object is a certain category"""
         catA = self.A.categorize(*args, **kwargs)
         catB = self.B.categorize(*args, **kwargs)
         return catA, catB
 
 
-
-
 @set_module("sisl.category")
 class OrCategory(CompositeCategory, composite_name="|"):
-    """ A  class consisting of two categories
+    """A  class consisting of two categories
 
     This should take 2 categories as arguments and a binary operator to define
     how the categories are related.
@@ -420,10 +429,11 @@ class OrCategory(CompositeCategory, composite_name="|"):
     B : Category
        the right hand side of the set operation
     """
+
     __slots__ = tuple()
 
     def categorize(self, *args, **kwargs):
-        r""" Base method for queriyng whether an object is a certain category """
+        r"""Base method for queriyng whether an object is a certain category"""
         catA, catB = self.categorizeAB(*args, **kwargs)
 
         def cmp(a, b):
@@ -438,7 +448,7 @@ class OrCategory(CompositeCategory, composite_name="|"):
 
 @set_module("sisl.category")
 class AndCategory(CompositeCategory, composite_name="&"):
-    """ A  class consisting of two categories
+    """A  class consisting of two categories
 
     This should take 2 categories as arguments and a binary operator to define
     how the categories are related.
@@ -450,10 +460,11 @@ class AndCategory(CompositeCategory, composite_name="&"):
     B : Category
        the right hand side of the set operation
     """
+
     __slots__ = tuple()
 
     def categorize(self, *args, **kwargs):
-        r""" Base method for queriyng whether an object is a certain category """
+        r"""Base method for queriyng whether an object is a certain category"""
         catA, catB = self.categorizeAB(*args, **kwargs)
 
         def cmp(a, b):
@@ -470,7 +481,7 @@ class AndCategory(CompositeCategory, composite_name="&"):
 
 @set_module("sisl.category")
 class XOrCategory(CompositeCategory, composite_name="⊕"):
-    """ A  class consisting of two categories
+    """A  class consisting of two categories
 
     This should take 2 categories as arguments and a binary operator to define
     how the categories are related.
@@ -482,10 +493,11 @@ class XOrCategory(CompositeCategory, composite_name="⊕"):
     B : Category
        the right hand side of the set operation
     """
+
     __slots__ = tuple()
 
     def categorize(self, *args, **kwargs):
-        r""" Base method for queriyng whether an object is a certain category """
+        r"""Base method for queriyng whether an object is a certain category"""
         catA, catB = self.categorizeAB(*args, **kwargs)
 
         def cmp(a, b):

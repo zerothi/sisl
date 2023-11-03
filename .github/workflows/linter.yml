@@ -1,0 +1,21 @@
+name: Lint
+
+on:
+  push:
+    paths:
+      - '**.py'
+      - '**.ipynb'
+  pull_request:
+    paths:
+      - '**.py'
+      - '**.ipynb'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@stable
+        with:
+          jupyter: true
+      - uses: isort/isort-action@master

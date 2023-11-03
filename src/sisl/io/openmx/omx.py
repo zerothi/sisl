@@ -12,15 +12,15 @@ from .._help import *
 from ..sile import *
 from .sile import SileOpenMX
 
-__all__ = ['omxSileOpenMX']
+__all__ = ["omxSileOpenMX"]
 
-_LOGICAL_TRUE  = ['on', 'yes', 'true', '.true.', 'ok']
-_LOGICAL_FALSE = ['off', 'no', 'false', '.false.', 'ng']
+_LOGICAL_TRUE = ["on", "yes", "true", ".true.", "ok"]
+_LOGICAL_FALSE = ["off", "no", "false", ".false.", "ng"]
 _LOGICAL = _LOGICAL_FALSE + _LOGICAL_TRUE
 
 
 class omxSileOpenMX(SileOpenMX):
-    r""" OpenMX-input file
+    r"""OpenMX-input file
 
     By supplying base you can reference files in other directories.
     By default the ``base`` is the directory given in the file name.
@@ -51,14 +51,14 @@ class omxSileOpenMX(SileOpenMX):
 
     @property
     def file(self):
-        """ Return the current file name (without the directory prefix) """
+        """Return the current file name (without the directory prefix)"""
         return self._file
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `omxSileOpenMX` after initialization """
+        """Setup the `omxSileOpenMX` after initialization"""
         super()._setup(*args, **kwargs)
         # These are the comments
-        self._comment = ['#']
+        self._comment = ["#"]
 
         # List of parent file-handles used while reading
         self._parent_fh = []
@@ -68,7 +68,9 @@ class omxSileOpenMX(SileOpenMX):
             self._parent_fh.append(self.fh)
             self.fh = self.dir_file(f).open(self._mode)
         else:
-            warn(f'{self!s} is trying to include file: {f} but the file seems not to exist? Will disregard file!')
+            warn(
+                f"{self!s} is trying to include file: {f} but the file seems not to exist? Will disregard file!"
+            )
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
@@ -78,7 +80,7 @@ class omxSileOpenMX(SileOpenMX):
         return False
 
     def _seek(self):
-        """ Closes all files, and starts over from beginning """
+        """Closes all files, and starts over from beginning"""
         try:
             while self._popfile():
                 pass
@@ -88,7 +90,7 @@ class omxSileOpenMX(SileOpenMX):
 
     @sile_fh_open()
     def _read_key(self, key):
-        """ Try and read the first occurence of a key
+        """Try and read the first occurence of a key
 
         This will take care of blocks, labels and piped in labels
 
@@ -98,8 +100,10 @@ class omxSileOpenMX(SileOpenMX):
            key to find in the file
         """
         self._seek()
+
         def tokey(key):
             return key.lower()
+
         keyl = tokey(key)
 
         def valid_line(line):
@@ -120,12 +124,12 @@ class omxSileOpenMX(SileOpenMX):
             # The last case is if the key is the first word on the line
             # In that case we have found what we are looking for
             if lsl[0] == keyl:
-                return (' '.join(ls[1:])).strip()
+                return (" ".join(ls[1:])).strip()
 
-            elif lsl[0].startswith('<'):
+            elif lsl[0].startswith("<"):
                 # Get key
                 lsl_key = lsl[0][1:]
-                lsl_end = lsl_key + '>'
+                lsl_end = lsl_key + ">"
                 if lsl_key == keyl:
                     # Read in the block content
                     lines = []
@@ -141,12 +145,12 @@ class omxSileOpenMX(SileOpenMX):
             return None
 
         # Perform actual reading of line
-        l = self.readline().split('#')[0]
+        l = self.readline().split("#")[0]
         if len(l) == 0:
             return None
         l = process_line(l)
         while l is None:
-            l = self.readline().split('#')[0]
+            l = self.readline().split("#")[0]
             if len(l) == 0:
                 if not self._popfile():
                     return None
@@ -156,7 +160,7 @@ class omxSileOpenMX(SileOpenMX):
 
     @classmethod
     def _type(cls, value):
-        """ Determine the type by the value
+        """Determine the type by the value
 
         Parameters
         ----------
@@ -168,7 +172,7 @@ class omxSileOpenMX(SileOpenMX):
 
         if isinstance(value, list):
             # A block, <[name]
-            return 'B'
+            return "B"
 
         # Grab the entire line (beside the key)
         values = value.split()
@@ -176,23 +180,23 @@ class omxSileOpenMX(SileOpenMX):
             val = values[0].lower()
             if val in _LOGICAL:
                 # logical
-                return 'l'
+                return "l"
 
             try:
                 float(val)
-                if '.' in val:
+                if "." in val:
                     # a real number (otherwise an integer)
-                    return 'r'
-                return 'i'
+                    return "r"
+                return "i"
             except Exception:
                 pass
             # fall-back to name with everything
 
-        return 'n'
+        return "n"
 
     @sile_fh_open()
     def type(self, label):
-        """ Return the type of the fdf-keyword
+        """Return the type of the fdf-keyword
 
         Parameters
         ----------
@@ -204,7 +208,7 @@ class omxSileOpenMX(SileOpenMX):
 
     @sile_fh_open()
     def get(self, key, default=None):
-        """ Retrieve keyword from the file
+        """Retrieve keyword from the file
 
         Parameters
         ----------
@@ -231,25 +235,25 @@ class omxSileOpenMX(SileOpenMX):
 
         # We will only do something if it is a real, int, or physical.
         # Else we simply return, as-is
-        if t == 'r':
+        if t == "r":
             if default is None:
                 return float(value)
             t = type(default)
             return t(value)
 
-        elif t == 'i':
+        elif t == "i":
             if default is None:
                 return int(value)
             t = type(default)
             return t(value)
 
-        elif t == 'l':
+        elif t == "l":
             return value.lower() in _LOGICAL_TRUE
 
         return value
 
     def read_basis(self, *args, **kwargs):
-        """ Reads basis
+        """Reads basis
 
         Parameters
         ----------
@@ -260,16 +264,16 @@ class omxSileOpenMX(SileOpenMX):
             the order of which to try and read the lattice
             If `order` is present `output` is disregarded.
         """
-        order = kwargs.pop('order', ['dat', 'omx'])
+        order = kwargs.pop("order", ["dat", "omx"])
         for f in order:
-            v = getattr(self, '_r_basis_{}'.format(f.lower()))(*args, **kwargs)
+            v = getattr(self, "_r_basis_{}".format(f.lower()))(*args, **kwargs)
             if v is not None:
                 return v
         return None
 
     def _r_basis_omx(self):
-        ns = self.get('Species.Number', 0)
-        data = self.get('Definition.of.Atomic.Species')
+        ns = self.get("Species.Number", 0)
+        data = self.get("Definition.of.Atomic.Species")
         if data is None:
             return None
 
@@ -283,11 +287,11 @@ class omxSileOpenMX(SileOpenMX):
                 f = np.ones(500)
                 f[r > R] = 0
                 return r, f
-            return np.linspace(0, 1., 10), np.zeros(10)
+            return np.linspace(0, 1.0, 10), np.zeros(10)
 
         def decompose_basis(l):
             # Only split once
-            Zr, spec = l.split('-', 1)
+            Zr, spec = l.split("-", 1)
             idx = 0
             for i, c in enumerate(Zr):
                 if c.isdigit():
@@ -307,21 +311,33 @@ class omxSileOpenMX(SileOpenMX):
             orbs = []
             m_order = {
                 0: [0],
-                1: [1, -1, 0], # px, py, pz
-                2: [0, 2, -2, 1, -1], # d3z^2-r^2, dx^2-y^2, dxy, dxz, dyz
-                3: [0, 1, -1, 2, -2, 3, -3], # f5z^2-3r^2, f5xz^2-xr^2, f5yz^2-yr^2, fzx^2-zy^2, fxyz, fx^3-3*xy^2, f3yx^2-y^3
+                1: [1, -1, 0],  # px, py, pz
+                2: [0, 2, -2, 1, -1],  # d3z^2-r^2, dx^2-y^2, dxy, dxz, dyz
+                3: [
+                    0,
+                    1,
+                    -1,
+                    2,
+                    -2,
+                    3,
+                    -3,
+                ],  # f5z^2-3r^2, f5xz^2-xr^2, f5yz^2-yr^2, fzx^2-zy^2, fxyz, fx^3-3*xy^2, f3yx^2-y^3
                 4: [0, 1, -1, 2, -2, 3, -3, 4, -4],
-                5: [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]
+                5: [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5],
             }
             for i, c in enumerate(spec):
                 try:
                     l = "spdfgh".index(c)
                     try:
-                        nZ = int(spec[i+1])
+                        nZ = int(spec[i + 1])
                     except Exception:
                         nZ = 1
                     for z in range(nZ):
-                        orbs.extend(SphericalOrbital(l, rf_func(R)).toAtomicOrbital(m=m_order[l], zeta=z+1))
+                        orbs.extend(
+                            SphericalOrbital(l, rf_func(R)).toAtomicOrbital(
+                                m=m_order[l], zeta=z + 1
+                            )
+                        )
                 except Exception:
                     pass
 
@@ -337,7 +353,7 @@ class omxSileOpenMX(SileOpenMX):
         return atom
 
     def read_lattice(self, output=False, *args, **kwargs):
-        """ Reads lattice
+        """Reads lattice
 
         One can limit the tried files to only one file by passing
         only a single file ending.
@@ -352,32 +368,32 @@ class omxSileOpenMX(SileOpenMX):
             If `order` is present `output` is disregarded.
         """
         if output:
-            order = kwargs.pop('order', ['dat', 'omx'])
+            order = kwargs.pop("order", ["dat", "omx"])
         else:
-            order = kwargs.pop('order', ['dat', 'omx'])
+            order = kwargs.pop("order", ["dat", "omx"])
         for f in order:
-            v = getattr(self, '_r_lattice_{}'.format(f.lower()))(*args, **kwargs)
+            v = getattr(self, "_r_lattice_{}".format(f.lower()))(*args, **kwargs)
             if v is not None:
                 return v
         return None
 
     def _r_lattice_omx(self, *args, **kwargs):
-        """ Returns `Lattice` object from the omx file """
-        conv = self.get('Atoms.UnitVectors.Unit', default='Ang')
-        if conv.upper() == 'AU':
-            conv = units('Bohr', 'Ang')
+        """Returns `Lattice` object from the omx file"""
+        conv = self.get("Atoms.UnitVectors.Unit", default="Ang")
+        if conv.upper() == "AU":
+            conv = units("Bohr", "Ang")
         else:
-            conv = 1.
+            conv = 1.0
 
         # Read in cell
         cell = np.empty([3, 3], np.float64)
 
-        lc = self.get('Atoms.UnitVectors')
+        lc = self.get("Atoms.UnitVectors")
         if not lc is None:
             for i in range(3):
                 cell[i, :] = [float(k) for k in lc[i].split()[:3]]
         else:
-            raise SileError('Could not find Atoms.UnitVectors in file')
+            raise SileError("Could not find Atoms.UnitVectors in file")
         cell *= conv
 
         return Lattice(cell)
@@ -385,7 +401,7 @@ class omxSileOpenMX(SileOpenMX):
     _r_lattice_dat = _r_lattice_omx
 
     def read_geometry(self, output=False, *args, **kwargs):
-        """ Returns Geometry object
+        """Returns Geometry object
 
         One can limit the tried files to only one file by passing
         only a single file ending.
@@ -400,24 +416,24 @@ class omxSileOpenMX(SileOpenMX):
             If `order` is present `output` is disregarded.
         """
         if output:
-            order = kwargs.pop('order', ['dat', 'omx'])
+            order = kwargs.pop("order", ["dat", "omx"])
         else:
-            order = kwargs.pop('order', ['dat', 'omx'])
+            order = kwargs.pop("order", ["dat", "omx"])
         for f in order:
-            v = getattr(self, '_r_geometry_{}'.format(f.lower()))(*args, **kwargs)
+            v = getattr(self, "_r_geometry_{}".format(f.lower()))(*args, **kwargs)
             if v is not None:
                 return v
         return None
 
     def _r_geometry_omx(self, *args, **kwargs):
-        """ Returns `Geometry` """
-        lattice = self.read_lattice(order=['omx'])
+        """Returns `Geometry`"""
+        lattice = self.read_lattice(order=["omx"])
 
-        na = self.get('Atoms.Number', default=0)
-        conv = self.get('Atoms.SpeciesAndCoordinates.Unit', default='Ang')
-        data = self.get('Atoms.SpeciesAndCoordinates')
+        na = self.get("Atoms.Number", default=0)
+        conv = self.get("Atoms.SpeciesAndCoordinates.Unit", default="Ang")
+        data = self.get("Atoms.SpeciesAndCoordinates")
         if data is None:
-            raise SislError('Cannot find key: Atoms.SpeciesAndCoordinates')
+            raise SislError("Cannot find key: Atoms.SpeciesAndCoordinates")
 
         if na == 0:
             # Default to the size of the labels
@@ -426,14 +442,15 @@ class omxSileOpenMX(SileOpenMX):
         # Reduce to the number of atoms.
         data = data[:na]
 
-        atoms = self.read_basis(order=['omx'])
+        atoms = self.read_basis(order=["omx"])
+
         def find_atom(tag):
             if atoms is None:
                 return Atom(tag)
             for atom in atoms:
                 if atom.tag == tag:
                     return atom
-            raise SislError(f'Error when reading the basis for atomic tag: {tag}.')
+            raise SislError(f"Error when reading the basis for atomic tag: {tag}.")
 
         xyz = []
         atom = []
@@ -443,9 +460,9 @@ class omxSileOpenMX(SileOpenMX):
             xyz.append(list(map(float, dat.split()[2:5])))
         xyz = _a.arrayd(xyz)
 
-        if conv == 'AU':
-            xyz *= units('Bohr', 'Ang')
-        elif conv == 'FRAC':
+        if conv == "AU":
+            xyz *= units("Bohr", "Ang")
+        elif conv == "FRAC":
             xyz = np.dot(xyz, lattice.cell)
 
         return Geometry(xyz, atoms=atom, lattice=lattice)
@@ -453,4 +470,4 @@ class omxSileOpenMX(SileOpenMX):
     _r_geometry_dat = _r_geometry_omx
 
 
-add_sile('omx', omxSileOpenMX, case=False, gzip=True)
+add_sile("omx", omxSileOpenMX, case=False, gzip=True)

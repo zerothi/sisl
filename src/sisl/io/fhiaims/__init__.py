@@ -8,5 +8,5 @@ FHI-aims
    inSileFHIaims - geometry for FHI-aims
 
 """
-from .sile import * # isort: split
+from .sile import *  # isort: split
 from ._geometry import *

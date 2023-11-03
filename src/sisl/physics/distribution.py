@@ -28,14 +28,14 @@ from sisl._internal import set_module
 _pi = np.pi
 _sqrt_2pi = (2 * _pi) ** 0.5
 
-__all__ = ['get_distribution', 'gaussian', 'lorentzian']
-__all__ += ['fermi_dirac', 'bose_einstein', 'cold']
-__all__ += ['step_function', 'heaviside']
+__all__ = ["get_distribution", "gaussian", "lorentzian"]
+__all__ += ["fermi_dirac", "bose_einstein", "cold"]
+__all__ += ["step_function", "heaviside"]
 
 
 @set_module("sisl.physics")
-def get_distribution(method, smearing=0.1, x0=0.):
-    r""" Create a distribution function, Gaussian, Lorentzian etc.
+def get_distribution(method, smearing=0.1, x0=0.0):
+    r"""Create a distribution function, Gaussian, Lorentzian etc.
 
     See the details regarding the distributions in their respective documentation.
 
@@ -53,27 +53,29 @@ def get_distribution(method, smearing=0.1, x0=0.):
     callable
         a function which accepts one argument
     """
-    m = method.lower().replace('-', '_')
-    if m in ('gauss', 'gaussian'):
+    m = method.lower().replace("-", "_")
+    if m in ("gauss", "gaussian"):
         return partial(gaussian, sigma=smearing, x0=x0)
-    elif m in ('lorentz', 'lorentzian'):
+    elif m in ("lorentz", "lorentzian"):
         return partial(lorentzian, gamma=smearing, x0=x0)
-    elif m in ('fd', 'fermi', 'fermi_dirac'):
+    elif m in ("fd", "fermi", "fermi_dirac"):
         return partial(fermi_dirac, kT=smearing, mu=x0)
-    elif m in ('be', 'bose_einstein'):
+    elif m in ("be", "bose_einstein"):
         return partial(bose_einstein, kT=smearing, mu=x0)
-    elif m in ('cold'):
+    elif m in ("cold"):
         return partial(cold, kT=smearing, mu=x0)
-    elif m in ('step', 'step_function'):
+    elif m in ("step", "step_function"):
         return partial(step_function, x0=x0)
-    elif m in ('heavi', 'heavy', 'heaviside'):
+    elif m in ("heavi", "heavy", "heaviside"):
         return partial(heaviside, x0=x0)
-    raise ValueError(f"get_distribution does not implement the {method} distribution function, have you mispelled?")
+    raise ValueError(
+        f"get_distribution does not implement the {method} distribution function, have you mispelled?"
+    )
 
 
 @set_module("sisl.physics")
-def gaussian(x, sigma=0.1, x0=0.):
-    r""" Gaussian distribution function
+def gaussian(x, sigma=0.1, x0=0.0):
+    r"""Gaussian distribution function
 
     .. math::
         G(x,\sigma,x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x - x_0)^2}{2\sigma^2}\Big]
@@ -92,13 +94,13 @@ def gaussian(x, sigma=0.1, x0=0.):
     numpy.ndarray
         the Gaussian distribution, same length as `x`
     """
-    dx = (x - x0) / (sigma * 2 ** 0.5)
-    return exp(- dx * dx) / (_sqrt_2pi * sigma)
+    dx = (x - x0) / (sigma * 2**0.5)
+    return exp(-dx * dx) / (_sqrt_2pi * sigma)
 
 
 @set_module("sisl.physics")
-def lorentzian(x, gamma=0.1, x0=0.):
-    r""" Lorentzian distribution function
+def lorentzian(x, gamma=0.1, x0=0.0):
+    r"""Lorentzian distribution function
 
     .. math::
         L(x,\gamma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
@@ -121,8 +123,8 @@ def lorentzian(x, gamma=0.1, x0=0.):
 
 
 @set_module("sisl.physics")
-def fermi_dirac(E, kT=0.1, mu=0.):
-    r""" Fermi-Dirac distribution function
+def fermi_dirac(E, kT=0.1, mu=0.0):
+    r"""Fermi-Dirac distribution function
 
     .. math::
         n_F(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] + 1}
@@ -141,12 +143,12 @@ def fermi_dirac(E, kT=0.1, mu=0.):
     numpy.ndarray
         the Fermi-Dirac distribution, same length as `E`
     """
-    return 1. / (expm1((E - mu) / kT) + 2.)
+    return 1.0 / (expm1((E - mu) / kT) + 2.0)
 
 
 @set_module("sisl.physics")
-def bose_einstein(E, kT=0.1, mu=0.):
-    r""" Bose-Einstein distribution function
+def bose_einstein(E, kT=0.1, mu=0.0):
+    r"""Bose-Einstein distribution function
 
     .. math::
         n_B(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] - 1}
@@ -165,11 +167,11 @@ def bose_einstein(E, kT=0.1, mu=0.):
     numpy.ndarray
         the Bose-Einstein distribution, same length as `E`
     """
-    return 1. / expm1((E - mu) / kT)
+    return 1.0 / expm1((E - mu) / kT)
 
 
 @set_module("sisl.physics")
-def cold(E, kT=0.1, mu=0.):
+def cold(E, kT=0.1, mu=0.0):
     r""" Cold smearing function
 
     For more details see :cite:`Marzari1999`.
@@ -193,12 +195,12 @@ def cold(E, kT=0.1, mu=0.):
     numpy.ndarray
         the Cold smearing distribution function, same length as `E`
     """
-    x = - (E - mu) / kT - 1 / 2 ** 0.5
-    return 0.5 + 0.5 * erf(x) + exp(- x * x) / _sqrt_2pi
+    x = -(E - mu) / kT - 1 / 2**0.5
+    return 0.5 + 0.5 * erf(x) + exp(-x * x) / _sqrt_2pi
 
 
 @set_module("sisl.physics")
-def heaviside(x, x0=0.):
+def heaviside(x, x0=0.0):
     r""" Heaviside step function
 
     .. math::
@@ -227,13 +229,13 @@ def heaviside(x, x0=0.):
         the Heaviside step function distribution, same length as `x`
     """
     H = np.zeros_like(x)
-    H[x > x0] = 1.
+    H[x > x0] = 1.0
     H[x == x0] = 0.5
     return H
 
 
 @set_module("sisl.physics")
-def step_function(x, x0=0.):
+def step_function(x, x0=0.0):
     r""" Step function, also known as :math:`1 - H(x)`
 
     This function equals one minus the Heaviside step function
@@ -264,6 +266,6 @@ def step_function(x, x0=0.):
         the step function distribution, same length as `x`
     """
     s = np.ones_like(x)
-    s[x > x0] = 0.
+    s[x > x0] = 0.0
     s[x == x0] = 0.5
     return s

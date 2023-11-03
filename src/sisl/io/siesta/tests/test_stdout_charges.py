@@ -12,7 +12,7 @@ import sisl
 from sisl.io.siesta.stdout import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta', 'outs')
+_dir = osp.join("sisl", "io", "siesta", "outs")
 
 # tests here tests charge reads for output
 #  voronoi + hirshfeld: test_vh_*
@@ -27,12 +27,13 @@ SileError = sisl.SileError
 def with_pandas():
     try:
         import pandas
+
         return True
     except ImportError:
         return False
 
 
-@pytest.mark.parametrize('name', ("voronoi", "Hirshfeld"))
+@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
 def test_vh_empty_file(name, sisl_files):
     f = sisl_files(_dir, "voronoi_hirshfeld_4.1_none.out")
     out = stdoutSileSiesta(f)
@@ -50,7 +51,7 @@ def test_vh_empty_file(name, sisl_files):
         out.read_charge(name, iscf=None, imd=-1)
 
 
-@pytest.mark.parametrize('name', ("voronoi", "Hirshfeld"))
+@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
 def test_vh_final(name, sisl_files):
     f = sisl_files(_dir, "voronoi_hirshfeld.out")
     out = stdoutSileSiesta(f)
@@ -76,8 +77,8 @@ def test_vh_final(name, sisl_files):
         assert np.allclose(df.values, q)
 
 
-@pytest.mark.parametrize('fname', ("md", "4.1_pol_md", "nc_md"))
-@pytest.mark.parametrize('name', ("voronoi", "Hirshfeld"))
+@pytest.mark.parametrize("fname", ("md", "4.1_pol_md", "nc_md"))
+@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
 def test_vh_md(name, fname, sisl_files):
     #  voronoi_hirshfeld_md.out
     f = sisl_files(_dir, f"voronoi_hirshfeld_{fname}.out")
@@ -107,8 +108,8 @@ def test_vh_md(name, fname, sisl_files):
         assert np.allclose(q[-1].ravel(), df.values.ravel())
 
 
-@pytest.mark.parametrize('fname', ("md_scf", "nc_md_scf", "pol_md_scf", "soc_md_scf"))
-@pytest.mark.parametrize('name', ("voronoi", "Hirshfeld"))
+@pytest.mark.parametrize("fname", ("md_scf", "nc_md_scf", "pol_md_scf", "soc_md_scf"))
+@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
 def test_vh_md_scf(name, fname, sisl_files):
     f = sisl_files(_dir, f"voronoi_hirshfeld_{fname}.out")
     out = stdoutSileSiesta(f)

@@ -12,11 +12,11 @@ from sisl.io.siesta.fdf import *
 from sisl.io.siesta.stdout import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta')
+_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_md_nose_out(sisl_files):
-    f = sisl_files(_dir, 'md_nose.out')
+    f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
 
     # nspin, nk, nb
@@ -44,14 +44,14 @@ def test_md_nose_out(sisl_files):
     assert not np.allclose(f0, f)
     assert np.allclose(f1, f)
 
-    #Check that we can read the different types of forces
+    # Check that we can read the different types of forces
     nAtoms = 10
     atomicF = out.read_force(all=True)
     totalF = out.read_force(all=True, total=True)
     maxF = out.read_force(all=True, max=True)
     assert atomicF.shape == (nOutputs, nAtoms, 3)
     assert totalF.shape == (nOutputs, 3)
-    assert maxF.shape == (nOutputs, )
+    assert maxF.shape == (nOutputs,)
     totalF, maxF = out.read_force(total=True, max=True)
     assert totalF.shape == (3,)
     assert maxF.shape == ()
@@ -60,9 +60,9 @@ def test_md_nose_out(sisl_files):
     s = out.read_stress()
     assert not np.allclose(s0, s)
 
-    sstatic = out.read_stress('static', all=True)
-    stotal = out.read_stress('total', all=True)
-    sdata = out.read_data('total', all=True, stress=True)
+    sstatic = out.read_stress("static", all=True)
+    stotal = out.read_stress("total", all=True)
+    sdata = out.read_data("total", all=True, stress=True)
 
     for S, T, D in zip(sstatic, stotal, sdata):
         assert not np.allclose(S, T)
@@ -85,7 +85,7 @@ def test_md_nose_out(sisl_files):
 
 
 def test_md_nose_out_data(sisl_files):
-    f = sisl_files(_dir, 'md_nose.out')
+    f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
 
     f0, g0 = out.read_data(force=True, geometry=True)
@@ -100,14 +100,14 @@ def test_md_nose_out_data(sisl_files):
 
 
 def test_md_nose_out_completed(sisl_files):
-    f = sisl_files(_dir, 'md_nose.out')
+    f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
     out.completed()
 
 
 def test_md_nose_out_dataframe(sisl_files):
     pytest.importorskip("pandas", reason="pandas not available")
-    f = sisl_files(_dir, 'md_nose.out')
+    f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
 
     data = out.read_scf()
@@ -123,7 +123,7 @@ def test_md_nose_out_dataframe(sisl_files):
 
 
 def test_md_nose_out_energy(sisl_files):
-    f = sisl_files(_dir, 'md_nose.out')
+    f = sisl_files(_dir, "md_nose.out")
     energy = stdoutSileSiesta(f).read_energy()
     assert isinstance(energy, sisl.utils.PropertyDict)
     assert hasattr(energy, "basis")
@@ -132,7 +132,7 @@ def test_md_nose_out_energy(sisl_files):
 
 
 def test_md_nose_pao_basis(sisl_files):
-    f = sisl_files(_dir, 'md_nose.out')
+    f = sisl_files(_dir, "md_nose.out")
 
     block = """
 Mg                    1                    # Species label, number of l-shells

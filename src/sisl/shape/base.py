@@ -12,17 +12,28 @@ from sisl._internal import set_module
 from sisl.messages import deprecation
 from sisl.utils.mathematics import fnorm
 
-__all__ = ["Shape", "PureShape", "NullShape", "ShapeToDispatch",
-           "CompositeShape", "OrShape", "XOrShape", "AndShape", "SubShape"]
+__all__ = [
+    "Shape",
+    "PureShape",
+    "NullShape",
+    "ShapeToDispatch",
+    "CompositeShape",
+    "OrShape",
+    "XOrShape",
+    "AndShape",
+    "SubShape",
+]
 
 
 @set_module("sisl.shape")
-class Shape(_Dispatchs,
-            dispatchs=[("to", ClassDispatcher("to",
-                                              type_dispatcher=None,
-                                              obj_getattr="error"))],
-            when_subclassing="copy"):
-    """ Baseclass for all shapes. Logical operations are implemented on this class.
+class Shape(
+    _Dispatchs,
+    dispatchs=[
+        ("to", ClassDispatcher("to", type_dispatcher=None, obj_getattr="error"))
+    ],
+    when_subclassing="copy",
+):
+    """Baseclass for all shapes. Logical operations are implemented on this class.
 
     **This class must be sub classed.**
 
@@ -65,7 +76,8 @@ class Shape(_Dispatchs,
     center : (3,)
        the center of the shape
     """
-    __slots__ = ('_center', )
+
+    __slots__ = ("_center",)
 
     def __init__(self, center=(0, 0, 0)):
         if center is None:
@@ -74,35 +86,45 @@ class Shape(_Dispatchs,
 
     @property
     def center(self):
-        """ The geometric center of the shape """
+        """The geometric center of the shape"""
         return self._center
 
     @center.setter
     def center(self, center):
-        """ Set the geometric center of the shape """
+        """Set the geometric center of the shape"""
         self._center[:] = center
 
     def scale(self, scale):
-        """ Return a new Shape with a scaled size """
-        raise NotImplementedError(f"{self.__class__.__name__}.scale has not been implemented")
+        """Return a new Shape with a scaled size"""
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.scale has not been implemented"
+        )
 
-    @deprecation("toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+    )
     def toSphere(self, *args, **kwargs):
-        """ Create a sphere which is surely encompassing the *full* shape """
-        raise NotImplementedError(f"{self.__class__.__name__}.toSphere has not been implemented")
+        """Create a sphere which is surely encompassing the *full* shape"""
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.toSphere has not been implemented"
+        )
 
-    @deprecation("toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.", "0.15")
+    @deprecation(
+        "toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.", "0.15"
+    )
     def toEllipsoid(self, *args, **kwargs):
-        """ Create an ellipsoid which is surely encompassing the *full* shape """
+        """Create an ellipsoid which is surely encompassing the *full* shape"""
         return self.to.Sphere().to.Ellipsoid(*args, **kwargs)
 
-    @deprecation("toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15")
+    @deprecation(
+        "toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15"
+    )
     def toCuboid(self, *args, **kwargs):
-        """ Create a cuboid which is surely encompassing the *full* shape """
+        """Create a cuboid which is surely encompassing the *full* shape"""
         return self.to.Ellipsoid().to.Cuboid(*args, **kwargs)
 
     def within(self, other, *args, **kwargs):
-        """ Return ``True`` if `other` is fully within `self`
+        """Return ``True`` if `other` is fully within `self`
 
         If `other` is an array, an array will be returned for each of these.
 
@@ -128,11 +150,13 @@ class Shape(_Dispatchs,
         return within
 
     def within_index(self, other, *args, **kwargs):
-        """ Return indices of the elements of `other` that are within the shape """
-        raise NotImplementedError(f"{self.__class__.__name__}.within_index has not been implemented")
+        """Return indices of the elements of `other` that are within the shape"""
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.within_index has not been implemented"
+        )
 
     def __contains__(self, other):
-        """ Checks whether all of `other` is within the shape """
+        """Checks whether all of `other` is within the shape"""
         return np.all(self.within(other))
 
     def __str__(self):
@@ -158,14 +182,18 @@ class Shape(_Dispatchs,
 
 to_dispatch = Shape.to
 
+
 # Add dispatcher systems
 class ShapeToDispatch(AbstractDispatch):
-    """ Base dispatcher from class passing from a Shape class """
+    """Base dispatcher from class passing from a Shape class"""
+
 
 class ToEllipsoidDispatch(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         shape = self._get_object()
         return shape.to.Sphere(*args, **kwargs).to.Ellipsoid()
+
+
 to_dispatch.register("Ellipsoid", ToEllipsoidDispatch)
 
 
@@ -173,12 +201,14 @@ class ToCuboidDispatch(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         shape = self._get_object()
         return shape.to.Ellipsoid(*args, **kwargs).to.Cuboid()
+
+
 to_dispatch.register("Cuboid", ToCuboidDispatch)
 
 
 @set_module("sisl.shape")
 class CompositeShape(Shape):
-    """ A composite shape consisting of two shapes, an abstract class
+    """A composite shape consisting of two shapes, an abstract class
 
     This should take 2 shapes as arguments.
 
@@ -189,27 +219,26 @@ class CompositeShape(Shape):
     B : Shape
        the right hand side of the set operation
     """
-    __slots__ = ('A', 'B')
+
+    __slots__ = ("A", "B")
 
     def __init__(self, A, B):
         self.A = A.copy()
         self.B = B.copy()
 
-    def __init_subclass__(cls, /,
-                          composite_name: str,
-                          **kwargs):
+    def __init_subclass__(cls, /, composite_name: str, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.__slots__ = ()
         cls.__str__ = _composite_name(composite_name)
 
     @property
     def center(self):
-        """ Average center of composite shapes """
+        """Average center of composite shapes"""
         return (self.A.center + self.B.center) * 0.5
 
     @staticmethod
     def volume():
-        """ Volume of a composite shape is current undefined, so a negative number is returned (may change) """
+        """Volume of a composite shape is current undefined, so a negative number is returned (may change)"""
         # The volume for these set operators cannot easily be defined, so
         # we should rather not do anything about it.
         # TODO we could *estimate* the volume by doing
@@ -219,11 +248,13 @@ class CompositeShape(Shape):
         #      and calculate fractional volume
         #      This is very inaccurate, but would probably be
         #      good enough.
-        return -1.
+        return -1.0
 
-    @deprecation("toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+    )
     def toSphere(self, *args, **kwargs):
-        """ Create a sphere which is surely encompassing the *full* shape """
+        """Create a sphere which is surely encompassing the *full* shape"""
         return self.to.Sphere(*args, **kwargs)
 
     def scale(self, scale):
@@ -235,8 +266,9 @@ class CompositeShape(Shape):
 
 class ToSphereDispatch(ShapeToDispatch):
     def dispatch(self, center=None):
-        """ Create a sphere which is surely encompassing the *full* shape """
+        """Create a sphere which is surely encompassing the *full* shape"""
         from .ellipsoid import Sphere
+
         shape = self._get_object()
 
         # Retrieve spheres
@@ -255,13 +287,17 @@ class ToSphereDispatch(ShapeToDispatch):
 
         return Sphere(max(A, B), center)
 
+
 CompositeShape.to.register("Sphere", ToSphereDispatch)
+
 
 class ToEllipsoidDispatcher(ShapeToDispatch):
     def dispatch(self, *args, center=None, **kwargs):
         from .ellipsoid import Ellipsoid
+
         shape = self._get_object()
         return shape.to.Sphere(center=center).to.Ellipsoid()
+
 
 CompositeShape.to.register("Ellipsoid", ToEllipsoidDispatch)
 
@@ -269,20 +305,21 @@ CompositeShape.to.register("Ellipsoid", ToEllipsoidDispatch)
 def _composite_name(sep):
     def _str(self):
         if isinstance(self.A, CompositeShape):
-            A = "({})".format(str(self.A).replace('\n', '\n '))
+            A = "({})".format(str(self.A).replace("\n", "\n "))
         else:
-            A = "{}".format(str(self.A).replace('\n', '\n '))
+            A = "{}".format(str(self.A).replace("\n", "\n "))
         if isinstance(self.B, CompositeShape):
-            B = "({})".format(str(self.B).replace('\n', '\n '))
+            B = "({})".format(str(self.B).replace("\n", "\n "))
         else:
-            B = "{}".format(str(self.B).replace('\n', '\n '))
+            B = "{}".format(str(self.B).replace("\n", "\n "))
         return f"{self.__class__.__name__}{{{A} {sep} {B}}}"
+
     return _str
 
 
 @set_module("sisl.shape")
 class OrShape(CompositeShape, composite_name="|"):
-    """ Boolean ``A | B`` shape """
+    """Boolean ``A | B`` shape"""
 
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
@@ -292,7 +329,7 @@ class OrShape(CompositeShape, composite_name="|"):
 
 @set_module("sisl.shape")
 class XOrShape(CompositeShape, composite_name="^"):
-    """ Boolean ``A ^ B`` shape """
+    """Boolean ``A ^ B`` shape"""
 
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
@@ -302,7 +339,7 @@ class XOrShape(CompositeShape, composite_name="^"):
 
 @set_module("sisl.shape")
 class SubShape(CompositeShape, composite_name="-"):
-    """ Boolean ``A - B`` shape """
+    """Boolean ``A - B`` shape"""
 
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
@@ -312,11 +349,13 @@ class SubShape(CompositeShape, composite_name="-"):
 
 @set_module("sisl.shape")
 class AndShape(CompositeShape, composite_name="&"):
-    """ Boolean ``A & B`` shape """
+    """Boolean ``A & B`` shape"""
 
-    @deprecation("toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+    )
     def toSphere(self, *args, **kwargs):
-        """ Create a sphere which is surely encompassing the *full* shape """
+        """Create a sphere which is surely encompassing the *full* shape"""
         return self.to.Sphere(*args, **kwargs)
 
     def within_index(self, *args, **kwargs):
@@ -324,10 +363,12 @@ class AndShape(CompositeShape, composite_name="&"):
         B = self.B.within_index(*args, **kwargs)
         return np.intersect1d(A, B, assume_unique=True)
 
+
 class AndToSphereDispatch(ShapeToDispatch):
     def dispatch(self, center=None):
-        """ Create a sphere which is surely encompassing the *full* shape """
+        """Create a sphere which is surely encompassing the *full* shape"""
         from .ellipsoid import Sphere
+
         shape = self._obj
 
         # Retrieve spheres
@@ -353,7 +394,7 @@ class AndToSphereDispatch(ShapeToDispatch):
         elif dist <= (Ar + Br):
             # We can reduce the sphere drastically because only the overlapping region is important
             # i_r defines the intersection radius, search for Sphere-Sphere Intersection
-            dx = (dist ** 2 - Br ** 2 + Ar ** 2) / (2 * dist)
+            dx = (dist**2 - Br**2 + Ar**2) / (2 * dist)
 
             if dx > dist:
                 # the intersection is placed after the radius of B
@@ -362,7 +403,9 @@ class AndToSphereDispatch(ShapeToDispatch):
             elif dx < 0:
                 return A
 
-            i_r = msqrt(4 * (dist * Ar) ** 2 - (dist ** 2 - Br ** 2 + Ar ** 2) ** 2) / (2 * dist)
+            i_r = msqrt(4 * (dist * Ar) ** 2 - (dist**2 - Br**2 + Ar**2) ** 2) / (
+                2 * dist
+            )
 
             # Now we simply need to find the dx point along the vector Bc - Ac
             # Then we can easily calculate the point from A
@@ -382,12 +425,13 @@ class AndToSphereDispatch(ShapeToDispatch):
 
         return Sphere(max(A, B), center)
 
+
 AndShape.to.register("Sphere", AndToSphereDispatch)
 
 
 @set_module("sisl.shape")
 class PureShape(Shape):
-    """ Extension of the `Shape` class for additional well defined shapes
+    """Extension of the `Shape` class for additional well defined shapes
 
     This shape should be used when subclassing shapes where the volume of the
     shape is *exactly* known.
@@ -395,19 +439,24 @@ class PureShape(Shape):
     `volume`
       return the volume of the shape.
     """
+
     __slots__ = ()
 
     def volume(self, *args, **kwargs):
-        raise NotImplementedError(f"{self.__class__.__name__}.volume has not been implemented")
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.volume has not been implemented"
+        )
 
     def expand(self, _):
-        """ Expand the shape by a constant value """
-        raise NotImplementedError(f"{self.__class__.__name__}.expand has not been implemented")
+        """Expand the shape by a constant value"""
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.expand has not been implemented"
+        )
 
 
 @set_module("sisl.shape")
 class NullShape(PureShape, dispatchs=[("to", "copy")]):
-    """ A unique shape which has no well-defined spatial volume or center
+    """A unique shape which has no well-defined spatial volume or center
 
     This special shape is used when composite shapes turns out to have
     a null space.
@@ -419,63 +468,83 @@ class NullShape(PureShape, dispatchs=[("to", "copy")]):
     Since it has no volume of point in space, none of the arguments
     has any meaning.
     """
+
     __slots__ = ()
 
     def __init__(self, *args, **kwargs):
-        """ Initialize a null-shape """
+        """Initialize a null-shape"""
         M = np.finfo(np.float64).max / 100
         self._center = np.array([M, M, M], np.float64)
 
     def within_index(self, other, *args, **kwargs):
-        """ Always returns a zero length array """
+        """Always returns a zero length array"""
         return np.empty(0, dtype=np.int32)
 
-    @deprecation("toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.", "0.15")
+    @deprecation(
+        "toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.", "0.15"
+    )
     def toEllipsoid(self, *args, **kwargs):
-        """ Return an ellipsoid with radius of size 1e-64 """
+        """Return an ellipsoid with radius of size 1e-64"""
         return self.to.Ellipsoid(*args, **kwargs)
 
-    @deprecation("toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+    )
     def toSphere(self, *args, **kwargs):
-        """ Return a sphere with radius of size 1e-64 """
+        """Return a sphere with radius of size 1e-64"""
         return self.to.Sphere(*args, **kwargs)
 
-    @deprecation("toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15")
+    @deprecation(
+        "toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15"
+    )
     def toCuboid(self, *args, **kwargs):
-        """ Return a cuboid with side-lengths 1e-64 """
+        """Return a cuboid with side-lengths 1e-64"""
         return self.to.Cuboid(*args, **kwargs)
 
     def volume(self, *args, **kwargs):
-        """ The volume of a null shape is exactly 0. """
-        return 0.
+        """The volume of a null shape is exactly 0."""
+        return 0.0
+
 
 to_dispatch = NullShape.to
+
 
 class NullToSphere(ShapeToDispatch):
     def dispatch(self, *args, center=None, **kwargs):
         from .ellipsoid import Sphere
+
         shape = self._get_object()
         if center is None:
             center = shape.center.copy()
-        return Sphere(1.e-64, center=center)
+        return Sphere(1.0e-64, center=center)
+
+
 to_dispatch.register("Sphere", NullToSphere)
+
 
 class NullToEllipsoid(ShapeToDispatch):
     def dispatch(self, *args, center=None, **kwargs):
         from .ellipsoid import Ellipsoid
+
         shape = self._get_object()
         if center is None:
             center = shape.center.copy()
-        return Ellipsoid(1.e-64, center=center)
+        return Ellipsoid(1.0e-64, center=center)
+
+
 to_dispatch.register("Ellipsoid", NullToEllipsoid)
+
 
 class NullToCuboid(ShapeToDispatch):
     def dispatch(self, *args, center=None, origin=None, **kwargs):
         from .prism4 import Cuboid
+
         shape = self._get_object()
         if center is None and origin is None:
             center = shape.center.copy()
-        return Cuboid(1.e-64, center=center, origin=origin)
+        return Cuboid(1.0e-64, center=center, origin=origin)
+
+
 to_dispatch.register("Cuboid", NullToCuboid)
 
 del to_dispatch

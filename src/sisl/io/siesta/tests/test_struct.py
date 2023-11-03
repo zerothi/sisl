@@ -10,12 +10,12 @@ from sisl import Atom, Geometry, get_sile
 from sisl.io.siesta.struct import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta')
+_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_struct1(sisl_tmp, sisl_system):
-    f = sisl_tmp('gr.STRUCT_IN', _dir)
-    sisl_system.g.write(structSileSiesta(f, 'w'))
+    f = sisl_tmp("gr.STRUCT_IN", _dir)
+    sisl_system.g.write(structSileSiesta(f, "w"))
     g = structSileSiesta(f).read_geometry()
 
     # Assert they are the same
@@ -25,10 +25,10 @@ def test_struct1(sisl_tmp, sisl_system):
 
 
 def test_struct_reorder(sisl_tmp, sisl_system):
-    f = sisl_tmp('gr.STRUCT_IN', _dir)
+    f = sisl_tmp("gr.STRUCT_IN", _dir)
     g = sisl_system.g.copy()
     g.atoms[0] = Atom(1)
-    g.write(structSileSiesta(f, 'w'))
+    g.write(structSileSiesta(f, "w"))
     g2 = structSileSiesta(f).read_geometry()
 
     # Assert they are the same
@@ -38,11 +38,11 @@ def test_struct_reorder(sisl_tmp, sisl_system):
 
 
 def test_struct_ghost(sisl_tmp):
-    f = sisl_tmp('ghost.STRUCT_IN', _dir)
+    f = sisl_tmp("ghost.STRUCT_IN", _dir)
     a1 = Atom(1)
     am1 = Atom(-1)
-    g = Geometry([[0., 0., i] for i in range(2)], [a1, am1], 2.)
-    g.write(structSileSiesta(f, 'w'))
+    g = Geometry([[0.0, 0.0, i] for i in range(2)], [a1, am1], 2.0)
+    g.write(structSileSiesta(f, "w"))
 
     g2 = structSileSiesta(f).read_geometry()
     assert np.allclose(g.cell, g2.cell)
@@ -54,16 +54,16 @@ def test_struct_ghost(sisl_tmp):
 
 
 def test_si_pdos_kgrid_struct_out(sisl_files):
-    fdf = get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'))
-    struct = get_sile(sisl_files(_dir, 'si_pdos_kgrid.STRUCT_OUT'))
+    fdf = get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"))
+    struct = get_sile(sisl_files(_dir, "si_pdos_kgrid.STRUCT_OUT"))
 
     struct_geom = struct.read_geometry()
-    fdf_geom = fdf.read_geometry(order='STRUCT')
+    fdf_geom = fdf.read_geometry(order="STRUCT")
 
     assert np.allclose(struct_geom.cell, fdf_geom.cell)
     assert np.allclose(struct_geom.xyz, fdf_geom.xyz)
 
     struct_sc = struct.read_lattice()
-    fdf_sc = fdf.read_lattice(order='STRUCT')
+    fdf_sc = fdf.read_lattice(order="STRUCT")
 
     assert np.allclose(struct_sc.cell, fdf_sc.cell)

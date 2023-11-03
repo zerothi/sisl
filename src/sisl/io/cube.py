@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl import Atom, Geometry, Grid, Lattice, SislError
 from sisl._internal import set_module
+
 # Import sile objects
 from sisl.io.sile import *
 from sisl.messages import deprecate_argument
@@ -17,7 +18,7 @@ __all__ = ["cubeSile"]
 
 @set_module("sisl.io")
 class cubeSile(Sile):
-    """ CUBE file object
+    """CUBE file object
 
     By default the cube file is written using Bohr units.
     one can define the units by passing a respective unit argument.
@@ -26,11 +27,20 @@ class cubeSile(Sile):
     """
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
-    def write_lattice(self, lattice, fmt="15.10e", size=None, origin=None,
-                        unit="Bohr",
-                        *args, **kwargs):
-        """ Writes `Lattice` object attached to this grid
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
+    def write_lattice(
+        self,
+        lattice,
+        fmt="15.10e",
+        size=None,
+        origin=None,
+        unit="Bohr",
+        *args,
+        **kwargs,
+    ):
+        """Writes `Lattice` object attached to this grid
 
         Parameters
         ----------
@@ -71,10 +81,17 @@ class cubeSile(Sile):
         self._write("1 0. 0. 0. 0.\n")
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt="15.10e", size=None, origin=None,
-                       unit="Bohr",
-                       *args, **kwargs):
-        """ Writes `Geometry` object attached to this grid
+    def write_geometry(
+        self,
+        geometry,
+        fmt="15.10e",
+        size=None,
+        origin=None,
+        unit="Bohr",
+        *args,
+        **kwargs,
+    ):
+        """Writes `Geometry` object attached to this grid
 
         Parameters
         ----------
@@ -118,11 +135,13 @@ class cubeSile(Sile):
         tmp = " {:" + fmt + "}"
         _fmt = "{:d} 0.0" + tmp + tmp + tmp + "\n"
         for ia in geometry:
-            self._write(_fmt.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :] * Ang2unit))
+            self._write(
+                _fmt.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :] * Ang2unit)
+            )
 
     @sile_fh_open()
     def write_grid(self, grid, fmt=".5e", imag=False, unit="Bohr", *args, **kwargs):
-        """ Write `Grid` to the contained file
+        """Write `Grid` to the contained file
 
         Parameters
         ----------
@@ -144,12 +163,16 @@ class cubeSile(Sile):
         sile_raise_write(self)
 
         if grid.geometry is None:
-            self.write_lattice(grid.lattice, size=grid.shape, unit=unit, *args, **kwargs)
+            self.write_lattice(
+                grid.lattice, size=grid.shape, unit=unit, *args, **kwargs
+            )
         else:
-            self.write_geometry(grid.geometry, size=grid.shape, unit=unit, *args, **kwargs)
+            self.write_geometry(
+                grid.geometry, size=grid.shape, unit=unit, *args, **kwargs
+            )
 
         buffersize = kwargs.get("buffersize", min(6144, grid.grid.size))
-        buffersize += buffersize % 6 # ensure multiple of 6
+        buffersize += buffersize % 6  # ensure multiple of 6
 
         # A CUBE file contains grid-points aligned like this:
         # for x
@@ -161,15 +184,25 @@ class cubeSile(Sile):
         __fmt = _fmt6 * (buffersize // 6)
 
         if imag:
-            for z in np.nditer(np.asarray(grid.grid.imag, order="C").reshape(-1), flags=["external_loop", "buffered"],
-                               op_flags=[["readonly"]], order="C", buffersize=buffersize):
+            for z in np.nditer(
+                np.asarray(grid.grid.imag, order="C").reshape(-1),
+                flags=["external_loop", "buffered"],
+                op_flags=[["readonly"]],
+                order="C",
+                buffersize=buffersize,
+            ):
                 if z.shape[0] != buffersize:
                     s = z.shape[0]
                     __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + "\n"
                 self._write(__fmt.format(*z.tolist()))
         else:
-            for z in np.nditer(np.asarray(grid.grid.real, order="C").reshape(-1), flags=["external_loop", "buffered"],
-                               op_flags=[["readonly"]], order="C", buffersize=buffersize):
+            for z in np.nditer(
+                np.asarray(grid.grid.real, order="C").reshape(-1),
+                flags=["external_loop", "buffered"],
+                op_flags=[["readonly"]],
+                order="C",
+                buffersize=buffersize,
+            ):
                 if z.shape[0] != buffersize:
                     s = z.shape[0]
                     __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + "\n"
@@ -179,7 +212,7 @@ class cubeSile(Sile):
         self._write("\n")
 
     def _r_header_dict(self):
-        """ Reads the header of the file """
+        """Reads the header of the file"""
         self.fh.seek(0)
         self.readline()
         header = header_to_dict(self.readline())
@@ -188,7 +221,7 @@ class cubeSile(Sile):
 
     @sile_fh_open()
     def read_lattice(self, na=False):
-        """ Returns `Lattice` object from the CUBE file
+        """Returns `Lattice` object from the CUBE file
 
         Parameters
         ----------
@@ -197,7 +230,7 @@ class cubeSile(Sile):
         """
         unit2Ang = self._r_header_dict()["unit"]
 
-        origin = self.readline().split() # origin
+        origin = self.readline().split()  # origin
         lna = int(origin[0])
         origin = np.fromiter(map(float, origin[1:]), np.float64)
 
@@ -217,7 +250,7 @@ class cubeSile(Sile):
 
     @sile_fh_open()
     def read_geometry(self):
-        """ Returns `Geometry` object from the CUBE file """
+        """Returns `Geometry` object from the CUBE file"""
         unit2Ang = self._r_header_dict()["unit"]
         na, lattice = self.read_lattice(na=True)
 
@@ -238,7 +271,7 @@ class cubeSile(Sile):
 
     @sile_fh_open()
     def read_grid(self, imag=None):
-        """ Returns `Grid` object from the CUBE file
+        """Returns `Grid` object from the CUBE file
 
         Parameters
         ----------
@@ -288,11 +321,15 @@ class cubeSile(Sile):
 
         # We are expecting an imaginary part
         if not grid.geometry.equal(imag.geometry):
-            raise SislError(f"{self!s} and its imaginary part does not have the same "
-                            "geometry. Hence a combined complex Grid cannot be formed.")
+            raise SislError(
+                f"{self!s} and its imaginary part does not have the same "
+                "geometry. Hence a combined complex Grid cannot be formed."
+            )
         if grid != imag:
-            raise SislError(f"{self!s} and its imaginary part does not have the same "
-                            "shape. Hence a combined complex Grid cannot be formed.")
+            raise SislError(
+                f"{self!s} and its imaginary part does not have the same "
+                "shape. Hence a combined complex Grid cannot be formed."
+            )
 
         # Now we have a complex grid
         grid.grid = grid.grid + 1j * imag.grid

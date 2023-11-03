@@ -16,9 +16,12 @@ try:
 except Exception:
     _nprocs = 1
 
-register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, _nprocs),
-                          description="Maximum number of processors used for parallel plotting",
-                          process=int)
+register_environ_variable(
+    "SISL_VIZ_NUM_PROCS",
+    min(1, _nprocs),
+    description="Maximum number of processors used for parallel plotting",
+    process=int,
+)
 
 from . import _xarray_accessor
 from ._plotables import register_plotable

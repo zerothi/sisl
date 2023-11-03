@@ -18,4 +18,4 @@ class aniSileSiesta(xyzSile, SileSiesta):
     pass
 
 
-add_sile('ANI', aniSileSiesta, gzip=True)
+add_sile("ANI", aniSileSiesta, gzip=True)

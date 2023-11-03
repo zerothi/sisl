@@ -13,7 +13,7 @@ __all__ = ["SileVASP", "SileBinVASP"]
 
 
 def _geometry_group(geometry, ret_index=False):
-    r""" Order atoms in geometry according to species such that all of one specie is consecutive
+    r"""Order atoms in geometry according to species such that all of one specie is consecutive
 
     When creating VASP input files (`poscarSileVASP` for instance) the equivalent
     ``POTCAR`` file needs to contain the pseudos for each specie as they are provided
@@ -44,7 +44,7 @@ def _geometry_group(geometry, ret_index=False):
 
     ia = 0
     for _, idx_s in geometry.atoms.iter(species=True):
-        idx[ia:ia + len(idx_s)] = idx_s
+        idx[ia : ia + len(idx_s)] = idx_s
         ia += len(idx_s)
 
     assert ia == na

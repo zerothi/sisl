@@ -13,12 +13,13 @@ class FakeData(Data):
     def sanity_check(self):
         assert self._data == True
 
+
 class OtherData(Data):
     pass
 
+
 @pytest.mark.parametrize("valid", [True, False])
 def test_accept_data(valid):
-    
     data = FakeData(valid)
 
     # If the input is an instance of an invalid class
@@ -35,9 +36,9 @@ def test_accept_data(valid):
     # Don't perform a sanity check on data
     assert accept_data(data, FakeData, check=False) is data
 
+
 @pytest.mark.parametrize("valid", [True, False])
 def test_extract_data(valid):
-
     data = FakeData(valid)
 
     # If the input is an instance of an invalid class
@@ -53,4 +54,3 @@ def test_extract_data(valid):
 
     # Don't perform a sanity check on data
     assert extract_data(data, FakeData, check=False) is data._data
-

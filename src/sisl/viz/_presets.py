@@ -6,13 +6,11 @@
 __all__ = ["add_presets", "get_preset"]
 
 PRESETS = {
-
     "dark": {
         "layout": {"template": "sisl_dark"},
         "bands_color": "#ccc",
-        "bands_width": 2
+        "bands_width": 2,
     },
-
 }
 
 

@@ -13,23 +13,23 @@ pytestmark = [pytest.mark.atom]
 
 @pytest.fixture
 def setup():
-    class t():
+    class t:
         def __init__(self):
-            self.C = Atom['C']
-            self.C3 = Atom('C', [-1] * 3)
-            self.Au = Atom('Au')
+            self.C = Atom["C"]
+            self.C3 = Atom("C", [-1] * 3)
+            self.Au = Atom("Au")
             self.PT = PeriodicTable()
 
     return t()
 
 
 def test1(setup):
-    assert setup.C == Atom['C']
+    assert setup.C == Atom["C"]
     assert setup.C == Atom[setup.C]
-    assert setup.C == Atom[Atom['C']]
-    assert setup.C == Atom(Atom['C'])
+    assert setup.C == Atom[Atom["C"]]
+    assert setup.C == Atom(Atom["C"])
     assert setup.C == Atom[Atom(6)]
-    assert setup.Au == Atom['Au']
+    assert setup.Au == Atom["Au"]
     assert setup.Au != setup.C
     assert setup.Au == setup.Au.copy()
 
@@ -51,20 +51,20 @@ def test_atom_unknown():
 
 
 def test2(setup):
-    C = Atom('C', R=20)
+    C = Atom("C", R=20)
     assert setup.C != C
-    Au = Atom('Au', R=20)
+    Au = Atom("Au", R=20)
     assert setup.C != Au
-    C = Atom['C']
+    C = Atom["C"]
     assert setup.Au != C
-    Au = Atom['Au']
+    Au = Atom["Au"]
     assert setup.C != Au
 
 
 def test3(setup):
-    assert setup.C.symbol == 'C'
-    assert setup.C.tag == 'C'
-    assert setup.Au.symbol == 'Au'
+    assert setup.C.symbol == "C"
+    assert setup.C.tag == "C"
+    assert setup.Au.symbol == "Au"
 
 
 def test4(setup):
@@ -99,7 +99,7 @@ def test6(setup):
 
 
 def test7(setup):
-    assert Atom(1, [-1] * 3).radius() > 0.
+    assert Atom(1, [-1] * 3).radius() > 0.0
     assert len(str(Atom(1, [-1] * 3)))
 
 
@@ -111,44 +111,46 @@ def test8(setup):
 
 
 def test9(setup):
-    a = setup.PT.Z_label(['H', 2])
+    a = setup.PT.Z_label(["H", 2])
     assert len(a) == 2
-    assert a[0] == 'H'
-    assert a[1] == 'He'
+    assert a[0] == "H"
+    assert a[1] == "He"
     a = setup.PT.Z_label(1)
-    assert a == 'H'
+    assert a == "H"
 
 
 def test10(setup):
-    assert setup.PT.atomic_mass(1) == setup.PT.atomic_mass('H')
-    assert np.allclose(setup.PT.atomic_mass([1, 2]), setup.PT.atomic_mass(['H', 'He']))
+    assert setup.PT.atomic_mass(1) == setup.PT.atomic_mass("H")
+    assert np.allclose(setup.PT.atomic_mass([1, 2]), setup.PT.atomic_mass(["H", "He"]))
 
 
 def test11(setup):
     PT = setup.PT
-    for m in ['calc', 'empirical', 'vdw']:
-        assert PT.radius(1, method=m) == PT.radius('H', method=m)
-        assert np.allclose(PT.radius([1, 2], method=m), PT.radius(['H', 'He'], method=m))
+    for m in ["calc", "empirical", "vdw"]:
+        assert PT.radius(1, method=m) == PT.radius("H", method=m)
+        assert np.allclose(
+            PT.radius([1, 2], method=m), PT.radius(["H", "He"], method=m)
+        )
 
 
 def test_fail_equal():
-    assert Atom(1.2) != 2.
+    assert Atom(1.2) != 2.0
 
 
 def test_radius1(setup):
     with pytest.raises(AttributeError):
-        setup.PT.radius(1, method='unknown')
+        setup.PT.radius(1, method="unknown")
 
 
 def test_tag1():
-    a = Atom(6, tag='my-tag')
-    assert a.tag == 'my-tag'
+    a = Atom(6, tag="my-tag")
+    assert a.tag == "my-tag"
 
 
 def test_negative1():
     a = Atom(-1)
-    assert a.symbol == 'H'
-    assert a.tag == 'ghost'
+    assert a.symbol == "H"
+    assert a.tag == "ghost"
     assert a.Z == 1
 
 
@@ -170,7 +172,7 @@ def test_iter2():
 
 def test_charge():
     r = [1, 1, 2, 2]
-    a = Atom(5, [Orbital(1., 1.), Orbital(1., 1.), Orbital(2.), Orbital(2.)])
+    a = Atom(5, [Orbital(1.0, 1.0), Orbital(1.0, 1.0), Orbital(2.0), Orbital(2.0)])
     assert len(a.q0) == 4
     assert a.q0.sum() == pytest.approx(2)
 
@@ -209,8 +211,8 @@ def test_atoms_set():
 
 
 def test_charge_diff():
-    o1 = Orbital(1., 1.)
-    o2 = Orbital(1., .5)
+    o1 = Orbital(1.0, 1.0)
+    o2 = Orbital(1.0, 0.5)
     a1 = Atom(5, [o1, o2, o1, o2])
     a2 = Atom(5, [o1, o2, o1, o2, o1, o1])
     assert len(a1.q0) == 4
@@ -220,7 +222,7 @@ def test_charge_diff():
 
 
 def test_multiple_orbitals():
-    o = [Orbital(1., 1.), Orbital(2., .5), Orbital(3., .75)]
+    o = [Orbital(1.0, 1.0), Orbital(2.0, 0.5), Orbital(3.0, 0.75)]
     a1 = Atom(5, o)
     assert len(a1) == 3
     for i in range(3):
@@ -241,13 +243,13 @@ def test_multiple_orbitals():
 
 
 def test_multiple_orbitals_fail_io():
-    o = [Orbital(1., 1.), Orbital(2., .5), Orbital(3., .75)]
+    o = [Orbital(1.0, 1.0), Orbital(2.0, 0.5), Orbital(3.0, 0.75)]
     with pytest.raises(ValueError):
         Atom(5, o).sub([3])
 
 
 def test_multiple_orbitals_fail_len():
-    o = [Orbital(1., 1.), Orbital(2., .5), Orbital(3., .75)]
+    o = [Orbital(1.0, 1.0), Orbital(2.0, 0.5), Orbital(3.0, 0.75)]
     with pytest.raises(ValueError):
         Atom(5, o).sub([0, 0, 0, 0, 0])
 
@@ -255,14 +257,19 @@ def test_multiple_orbitals_fail_len():
 def test_atom_getattr_orbs():
     class UOrbital(Orbital):
         def __init__(self, *args, **kwargs):
-            U = kwargs.pop("U", 0.)
+            U = kwargs.pop("U", 0.0)
             super().__init__(*args, **kwargs)
             self._U = U
+
         @property
         def U(self):
             return self._U
 
-    o = [UOrbital(1., 1., U=1.), UOrbital(2., .5, U=2.), UOrbital(3., .75, U=3.)]
+    o = [
+        UOrbital(1.0, 1.0, U=1.0),
+        UOrbital(2.0, 0.5, U=2.0),
+        UOrbital(3.0, 0.75, U=3.0),
+    ]
     a = Atom(5, o)
     assert np.allclose(a.U, [1, 2, 3])
     # also test the callable interface
@@ -301,7 +308,7 @@ def test_atom_orbitals():
     assert len(a) == 2
     assert a[0].tag == "x"
     assert a[1].tag == "y"
-    assert a.maxR() < 0.
+    assert a.maxR() < 0.0
     a = Atom(5, [1.2, 1.4])
     assert len(a) == 2
     assert a.maxR() == pytest.approx(1.4)
@@ -309,6 +316,7 @@ def test_atom_orbitals():
 
 def test_pickle(setup):
     import pickle as p
+
     sC = p.dumps(setup.C)
     sC3 = p.dumps(setup.C3)
     sAu = p.dumps(setup.Au)

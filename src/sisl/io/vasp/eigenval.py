@@ -6,19 +6,20 @@ import numpy as np
 from sisl._internal import set_module
 
 from ..sile import add_sile, sile_fh_open
+
 # Import sile objects
 from .sile import SileVASP
 
-__all__ = ['eigenvalSileVASP']
+__all__ = ["eigenvalSileVASP"]
 
 
 @set_module("sisl.io.vasp")
 class eigenvalSileVASP(SileVASP):
-    """ Kohn-Sham eigenvalues """
+    """Kohn-Sham eigenvalues"""
 
     @sile_fh_open()
     def read_data(self, k=False):
-        r""" Read eigenvalues, as calculated and written by VASP
+        r"""Read eigenvalues, as calculated and written by VASP
 
         Parameters
         ----------
@@ -49,17 +50,17 @@ class eigenvalSileVASP(SileVASP):
         w = np.empty([nk], np.float64)
         for ik in range(nk):
             self.readline()  # empty line
-            line = self.readline().split() # k-point, weight
+            line = self.readline().split()  # k-point, weight
             kk[ik, :] = list(map(float, line[:3]))
             w[ik] = float(line[3])
             for ib in range(nb):
                 # band, eig_UP, eig_DOWN, pop_UP, pop_DOWN
                 # We currently neglect the populations
-                E = map(float, self.readline().split()[1:ns+1])
+                E = map(float, self.readline().split()[1 : ns + 1])
                 eigs[:, ik, ib] = list(E)
         if k:
             return eigs, kk, w
         return eigs
 
 
-add_sile('EIGENVAL', eigenvalSileVASP, gzip=True)
+add_sile("EIGENVAL", eigenvalSileVASP, gzip=True)

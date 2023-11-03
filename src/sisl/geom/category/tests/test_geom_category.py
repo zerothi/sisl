@@ -133,8 +133,13 @@ def test_geom_category_seq():
 
 
 def test_geom_category_tag():
-    atoms = [Atom(Z=6, tag="C1"), Atom(Z=6, tag="C2"), Atom(Z=6, tag="C3"), Atom(Z=1, tag="H")]
-    geom = Geometry([[0, 0, 0]]*4, atoms=atoms)
+    atoms = [
+        Atom(Z=6, tag="C1"),
+        Atom(Z=6, tag="C2"),
+        Atom(Z=6, tag="C3"),
+        Atom(Z=1, tag="H"),
+    ]
+    geom = Geometry([[0, 0, 0]] * 4, atoms=atoms)
 
     cat = AtomTag("")
     assert len(geom.asc2uc(cat)) == 4
@@ -186,7 +191,7 @@ def test_geom_category_frac_A_B_site():
     gr = graphene() * (4, 5, 1)
 
     A_site = AtomFracSite(graphene())
-    B_site = AtomFracSite(graphene(), foffset=(-1/3, -1/3, 0))
+    B_site = AtomFracSite(graphene(), foffset=(-1 / 3, -1 / 3, 0))
 
     cat = (A_site | B_site).categorize(gr)
     for i, c in enumerate(cat):
@@ -251,7 +256,6 @@ def test_geom_category_xyz_meta():
 
     # Check that all classes work
     for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
-
         name = key.replace("_", "")
 
         # Check that the attribute is present
@@ -274,5 +278,7 @@ def test_geom_category_xyz_meta():
         assert np.all(sc2uc(cls >= 0.5) == sc2uc(cls(ge=0.5)))
         assert np.all(sc2uc(cls >= 0.5) == sc2uc(get_cls("ge", 0.5)))
 
-        assert np.all(sc2uc(cls((-1, 1))) == sc2uc(get_cls("ge", -1) & get_cls("le", 1)))
+        assert np.all(
+            sc2uc(cls((-1, 1))) == sc2uc(get_cls("ge", -1) & get_cls("le", 1))
+        )
         assert np.all(sc2uc(cls(-1, 1)) == sc2uc(get_cls("ge", -1) & get_cls("le", 1)))

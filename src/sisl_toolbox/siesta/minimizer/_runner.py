@@ -12,9 +12,17 @@ from sisl.io.siesta import fdfSileSiesta
 
 from ._path import path_abs, path_rel_or_abs
 
-__all__ = ["AbstractRunner", "AndRunner", "PathRunner",
-           "CleanRunner", "CopyRunner", "CommandRunner",
-           "AtomRunner", "SiestaRunner", "FunctionRunner"]
+__all__ = [
+    "AbstractRunner",
+    "AndRunner",
+    "PathRunner",
+    "CleanRunner",
+    "CopyRunner",
+    "CommandRunner",
+    "AtomRunner",
+    "SiestaRunner",
+    "FunctionRunner",
+]
 
 
 _log = logging.getLogger("sisl_toolbox.siesta.minimize")
@@ -26,7 +34,7 @@ def commonprefix(*paths):
 
 
 class AbstractRunner(ABC):
-    """ Define a runner """
+    """Define a runner"""
 
     def __iter__(self):
         yield self
@@ -36,11 +44,11 @@ class AbstractRunner(ABC):
 
     @abstractmethod
     def run(self, *args, **kwargs):
-        """ Run this runner """
+        """Run this runner"""
 
 
 class AndRunner(AbstractRunner):
-    """ Placeholder for two runners """
+    """Placeholder for two runners"""
 
     def __init__(self, A, B):
         self.A = A
@@ -52,7 +60,7 @@ class AndRunner(AbstractRunner):
         yield from self.B
 
     def run(self, A=None, B=None, **kwargs):
-        """ Run `self.A` first, then `self.B`
+        """Run `self.A` first, then `self.B`
 
         Both runners get ``kwargs`` as arguments, and `A`
         only gets passed to `self.A`.
@@ -68,7 +76,7 @@ class AndRunner(AbstractRunner):
         -------
         tuple of return from `self.A` and `self.B`
         """
-        #print("running A")
+        # print("running A")
         if A is None:
             A = self.A.run(**kwargs)
         else:
@@ -77,7 +85,7 @@ class AndRunner(AbstractRunner):
             A = self.A.run(**kw)
         if not isinstance(self.A, AndRunner):
             A = (A,)
-        #print("running B")
+        # print("running B")
         if B is None:
             B = self.B.run(**kwargs)
         else:
@@ -91,7 +99,7 @@ class AndRunner(AbstractRunner):
 
 
 class PathRunner(AbstractRunner):
-    """ Define a runner """
+    """Define a runner"""
 
     def __init__(self, path):
         self.path = path_abs(path)
@@ -145,9 +153,13 @@ class CopyRunner(PathRunner):
         self.files = files
         self.rename = rename
         if not self.path.is_dir():
-            raise ValueError(f"{self.__class__.__name__} path={self.path} must be a directory")
+            raise ValueError(
+                f"{self.__class__.__name__} path={self.path} must be a directory"
+            )
         if not self.to.is_dir():
-            raise ValueError(f"{self.__class__.__name__} path={self.to} must be a directory")
+            raise ValueError(
+                f"{self.__class__.__name__} path={self.to} must be a directory"
+            )
 
     def run(self):
         copy = []
@@ -179,13 +191,17 @@ class CopyRunner(PathRunner):
 
 
 class CommandRunner(PathRunner):
-    def __init__(self, path, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, hook=None):
+    def __init__(
+        self, path, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, hook=None
+    ):
         super().__init__(path)
         abs_cmd = path_abs(cmd, self.path)
         if abs_cmd.is_file():
             self.cmd = [abs_cmd]
             if not os.access(self.cmd, os.X_OK):
-                raise ValueError(f"{self.__class__.__name__} shell script {self.cmd.relative_to(self.path.cwd())} not executable")
+                raise ValueError(
+                    f"{self.__class__.__name__} shell script {self.cmd.relative_to(self.path.cwd())} not executable"
+                )
         else:
             self.cmd = cmd.split()
 
@@ -199,18 +215,20 @@ class CommandRunner(PathRunner):
             self.stderr = path_rel_or_abs(stderr, self.path)
 
         if hook is None:
+
             def hook(subprocess_output):
                 return subprocess_output
+
         assert callable(hook)
         self.hook = hook
 
     def _get_standard(self):
         out = self.stdout
         if isinstance(out, (Path, str)):
-            out = open(out, 'w')
+            out = open(out, "w")
         err = self.stderr
         if isinstance(err, (Path, str)):
-            err = open(err, 'w')
+            err = open(err, "w")
         return out, err
 
     def run(self):
@@ -220,12 +238,20 @@ class CommandRunner(PathRunner):
         # We need to clean the directory so that subsequent VPSFMT users don't
         # accidentially use a prior output
         stdout, stderr = self._get_standard()
-        return self.hook(subprocess.run(cmd, cwd=self.path, encoding='utf-8',
-                                        stdout=stdout, stderr=stderr, check=False))
+        return self.hook(
+            subprocess.run(
+                cmd,
+                cwd=self.path,
+                encoding="utf-8",
+                stdout=stdout,
+                stderr=stderr,
+                check=False,
+            )
+        )
 
 
 class AtomRunner(CommandRunner):
-    """ Run a command with atom-input file as first argument and output file as second argument
+    """Run a command with atom-input file as first argument and output file as second argument
 
     This is tailored for atom in the sense of arguments for this class, but not
     restricted in any way.
@@ -242,7 +268,15 @@ class AtomRunner(CommandRunner):
     ... # cd ..
     """
 
-    def __init__(self, path, cmd="atom", input="INP", stdout=subprocess.PIPE, stderr=subprocess.PIPE, hook=None):
+    def __init__(
+        self,
+        path,
+        cmd="atom",
+        input="INP",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        hook=None,
+    ):
         super().__init__(path, cmd, stdout, stderr, hook)
         self.input = path_rel_or_abs(input, self.path)
 
@@ -254,12 +288,20 @@ class AtomRunner(CommandRunner):
         # accidentially use a prior output
         self.clean("RHO", "OUT", "PS*", "AE*", "CHARGE", "COREQ", "FOURIER*", "VPS*")
         stdout, stderr = self._get_standard()
-        return self.hook(subprocess.run(cmd, cwd=self.path, encoding='utf-8',
-                                        stdout=stdout, stderr=stderr, check=False))
+        return self.hook(
+            subprocess.run(
+                cmd,
+                cwd=self.path,
+                encoding="utf-8",
+                stdout=stdout,
+                stderr=stderr,
+                check=False,
+            )
+        )
 
 
 class SiestaRunner(CommandRunner):
-    """ Run a script/cmd with fdf as first argument and output file as second argument
+    """Run a script/cmd with fdf as first argument and output file as second argument
 
     This is tailored for Siesta in the sense of arguments for this class, but not
     restricted in any way.
@@ -274,17 +316,27 @@ class SiestaRunner(CommandRunner):
     ... # cd ..
     """
 
-    def __init__(self, path, cmd="siesta", fdf="RUN.fdf", stdout="RUN.out", stderr=subprocess.PIPE, hook=None):
+    def __init__(
+        self,
+        path,
+        cmd="siesta",
+        fdf="RUN.fdf",
+        stdout="RUN.out",
+        stderr=subprocess.PIPE,
+        hook=None,
+    ):
         super().__init__(path, cmd, stdout, stderr, hook)
         self.fdf = path_rel_or_abs(fdf, self.path)
 
         fdf = self.absattr("fdf")
-        self.systemlabel = fdfSileSiesta(fdf, base=self.path).get("SystemLabel", "siesta")
+        self.systemlabel = fdfSileSiesta(fdf, base=self.path).get(
+            "SystemLabel", "siesta"
+        )
 
     def run(self):
         pipe = ""
         stdout, stderr = self._get_standard()
-        for pre, f in [('>', stdout), ('2>', stderr)]:
+        for pre, f in [(">", stdout), ("2>", stderr)]:
             try:
                 pipe += f"{pre} {f.name}"
             except Exception:
@@ -293,12 +345,20 @@ class SiestaRunner(CommandRunner):
         _log.debug(f"running Siesta using command[{self.path}]: {' '.join(cmd)} {pipe}")
         # Remove stuff to ensure that we don't read information from prior calculations
         self.clean("*.ion*", "fdf-*.log", f"{self.systemlabel}.*")
-        return self.hook(subprocess.run(cmd, cwd=self.path, encoding='utf-8',
-                                        stdout=stdout, stderr=stderr, check=False))
+        return self.hook(
+            subprocess.run(
+                cmd,
+                cwd=self.path,
+                encoding="utf-8",
+                stdout=stdout,
+                stderr=stderr,
+                check=False,
+            )
+        )
 
 
 class FunctionRunner(AbstractRunner):
-    """ Run a method `func` with specified arguments and kwargs """
+    """Run a method `func` with specified arguments and kwargs"""
 
     def __init__(self, func, *args, **kwargs):
         self.func = func

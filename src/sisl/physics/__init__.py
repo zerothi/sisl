@@ -87,6 +87,7 @@ Sparse matrices
 
 """
 from . import electron, phonon
+
 # Patch BrillouinZone objects and import apply classes
 from ._brillouinzone_apply import *
 from ._feature import *

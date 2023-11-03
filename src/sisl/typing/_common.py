@@ -15,7 +15,9 @@ from sisl.geom.category import AtomCategory
 # An atoms like argument that may be parsed by Geometry._sanitize_atoms
 AtomsArgument = Union[
     npt.NDArray[Union[np.int_, np.bool_]],
-    str, int, dict,
+    str,
+    int,
+    dict,
     Atom,
     AtomCategory,
     GenericCategory,
@@ -24,7 +26,9 @@ AtomsArgument = Union[
 
 OrbitalsArgument = Union[
     npt.NDArray[Union[np.int_, np.bool_]],
-    str, int, dict,
+    str,
+    int,
+    dict,
     AtomCategory,
     Shape,
 ]

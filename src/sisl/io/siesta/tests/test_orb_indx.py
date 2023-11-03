@@ -9,11 +9,11 @@ import pytest
 from sisl.io.siesta.orb_indx import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join('sisl', 'io', 'siesta')
+_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_pdos_kgrid_orb_indx(sisl_files):
-    f = sisl_files(_dir, 'si_pdos_kgrid.ORB_INDX')
+    f = sisl_files(_dir, "si_pdos_kgrid.ORB_INDX")
     nsc = orbindxSileSiesta(f).read_lattice_nsc()
     assert np.all(nsc > 1)
     atoms = orbindxSileSiesta(f).read_basis()
@@ -25,7 +25,7 @@ def test_si_pdos_kgrid_orb_indx(sisl_files):
 
 
 def test_sih_orb_indx(sisl_files):
-    f = sisl_files(_dir, 'sih.ORB_INDX')
+    f = sisl_files(_dir, "sih.ORB_INDX")
     nsc = orbindxSileSiesta(f).read_lattice_nsc()
     assert np.all(nsc == 1)
     atoms = orbindxSileSiesta(f).read_basis()

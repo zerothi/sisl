@@ -17,13 +17,19 @@ __all__ += ["PropertyDict", "NotNonePropertyDict"]
 
 
 # supported operators
-_operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
-              ast.Div: op.truediv, ast.Pow: op.pow, ast.BitXor: op.xor,
-              ast.USub: op.neg}
+_operators = {
+    ast.Add: op.add,
+    ast.Sub: op.sub,
+    ast.Mult: op.mul,
+    ast.Div: op.truediv,
+    ast.Pow: op.pow,
+    ast.BitXor: op.xor,
+    ast.USub: op.neg,
+}
 
 
 def math_eval(expr):
-    """ Evaluate a mathematical expression using a safe evaluation method
+    """Evaluate a mathematical expression using a safe evaluation method
 
     Parameters
     ----------
@@ -43,18 +49,18 @@ def math_eval(expr):
 
 
 def _eval(node):
-    if isinstance(node, ast.Num): # <number>
+    if isinstance(node, ast.Num):  # <number>
         return node.n
-    elif isinstance(node, ast.BinOp): # <left> <operator> <right>
+    elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
         return _operators[type(node.op)](_eval(node.left), _eval(node.right))
-    elif isinstance(node, ast.UnaryOp): # <operator> <operand> e.g., -1
+    elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
         return _operators[type(node.op)](_eval(node.operand))
     else:
         raise TypeError(node)
 
 
 def merge_instances(*args, **kwargs):
-    """ Merges an arbitrary number of instances together.
+    """Merges an arbitrary number of instances together.
 
     Parameters
     ----------
@@ -76,7 +82,7 @@ def merge_instances(*args, **kwargs):
 
 
 def iter_shape(shape):
-    """ Generator for iterating a shape by returning consecutive slices
+    """Generator for iterating a shape by returning consecutive slices
 
     Parameters
     ----------
@@ -100,7 +106,7 @@ def iter_shape(shape):
     [1, 0, 1]
     [1, 0, 2]
     """
-    shape1 = [i-1 for i in shape]
+    shape1 = [i - 1 for i in shape]
     ns = len(shape)
     ns1 = ns - 1
     # Create list for iterating
@@ -117,11 +123,11 @@ def iter_shape(shape):
             if slc[i] >= shape1[i]:
                 slc[i] = 0
                 if i > 0:
-                    slc[i-1] += 1
+                    slc[i - 1] += 1
 
 
 def str_spec(name):
-    """ Split into a tuple of name and specifier, delimited by ``{...}``.
+    """Split into a tuple of name and specifier, delimited by ``{...}``.
 
     Parameters
     ----------
@@ -149,7 +155,7 @@ def str_spec(name):
 
 # Transform a string to a Cartesian direction
 def direction(d, abc=None, xyz=None):
-    """ Index coordinate corresponding to the Cartesian coordinate system.
+    """Index coordinate corresponding to the Cartesian coordinate system.
 
     Parameters
     ----------
@@ -206,12 +212,14 @@ def direction(d, abc=None, xyz=None):
     else:
         if d in ("x", "y", "z", "a", "b", "c", "0", "1", "2"):
             return "xa0yb1zc2".index(d) // 3
-    raise ValueError("direction: Input direction is not an integer, nor a string in 'xyz/abc/012'")
+    raise ValueError(
+        "direction: Input direction is not an integer, nor a string in 'xyz/abc/012'"
+    )
 
 
 # Transform an input to an angle
 def angle(s, rad=True, in_rad=True):
-    """ Convert the input string to an angle, either radians or degrees.
+    """Convert the input string to an angle, either radians or degrees.
 
     Parameters
     ----------
@@ -271,7 +279,7 @@ def angle(s, rad=True, in_rad=True):
         if in_rad:
             Pi = pi
         else:
-            Pi = 180.
+            Pi = 180.0
 
         s = (f"{Pi}").join(spi)
 
@@ -280,9 +288,9 @@ def angle(s, rad=True, in_rad=True):
     # the expression
     ra = math_eval(s)
     if rad and not in_rad:
-        return ra / 180. * pi
+        return ra / 180.0 * pi
     if not rad and in_rad:
-        return ra / pi * 180.
+        return ra / pi * 180.0
 
     # Both radians and in_radians are equivalent
     # so return as-is
@@ -290,7 +298,7 @@ def angle(s, rad=True, in_rad=True):
 
 
 def allow_kwargs(*args):
-    """ Decoractor for forcing `func` to have the named arguments as listed in `args`
+    """Decoractor for forcing `func` to have the named arguments as listed in `args`
 
     This decorator merely removes any keyword argument from the called function
     which is in the list of `args` in case the function does not have the arguments
@@ -301,6 +309,7 @@ def allow_kwargs(*args):
     *args : str
        required arguments in `func`, if already present nothing will be done.
     """
+
     def deco(func):
         if func is None:
             return None
@@ -342,7 +351,7 @@ def allow_kwargs(*args):
 
 
 def import_attr(attr_path):
-    """ Returns an attribute from a full module path
+    """Returns an attribute from a full module path
 
     Examples
     --------
@@ -361,7 +370,7 @@ def import_attr(attr_path):
 
 
 def lazy_import(name, package=None):
-    """ Lazily import a module or submodule
+    """Lazily import a module or submodule
 
     Parameters
     ----------
@@ -404,7 +413,7 @@ def lazy_import(name, package=None):
 
 
 class PropertyDict(dict):
-    """ Simple dictionary which may access items as properties as well """
+    """Simple dictionary which may access items as properties as well"""
 
     def __getattr__(self, name):
         try:
@@ -420,7 +429,6 @@ class PropertyDict(dict):
 
 
 class NotNonePropertyDict(PropertyDict):
-
     def __setitem__(self, key, value):
         if value is None:
             return

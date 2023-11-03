@@ -5,24 +5,32 @@ from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 
 class ModelDispatcher(ClassDispatcher):
-    """ Container for dispatch models """
+    """Container for dispatch models"""
+
     pass
 
 
 class BaseModel:
-    """ Base class used for inheritance for creating separate models """
-    ref = ModelDispatcher("ref",
-                          type_dispatcher=None,
-                          obj_getattr=lambda obj, key:
-                          (_ for _ in ()).throw(
-                              AttributeError((f"{obj}.to does not implement '{key}' "
-                                              f"dispatcher, are you using it incorrectly?"))
-                          )
+    """Base class used for inheritance for creating separate models"""
+
+    ref = ModelDispatcher(
+        "ref",
+        type_dispatcher=None,
+        obj_getattr=lambda obj, key: (_ for _ in ()).throw(
+            AttributeError(
+                (
+                    f"{obj}.to does not implement '{key}' "
+                    f"dispatcher, are you using it incorrectly?"
+                )
+            )
+        ),
     )
+
 
 # Each model should inherit from this
 
 
 class ReferenceDispatch(AbstractDispatch):
-    """ Base dispatcher that implemnets different models """
+    """Base dispatcher that implemnets different models"""
+
     pass

@@ -65,15 +65,27 @@ _Ang2Bohr = si.units.convert("Ang", "Bohr")
 # 19  |  7p   |    6      |     118        |   [Og]
 _shell_order = [
     # Occupation shell order
-    '1s', # [He]
-    '2s', '2p', # [Ne]
-    '3s', '3p', # [Ar]
-    '3d', '4s', '4p', # [Kr]
-    '4d', '5s', '5p', # [Xe]
-    '4f', '5d', '6s', '6p', # [Rn]
-    '7s', '5f', '6d', '7p' # [Og]
+    "1s",  # [He]
+    "2s",
+    "2p",  # [Ne]
+    "3s",
+    "3p",  # [Ar]
+    "3d",
+    "4s",
+    "4p",  # [Kr]
+    "4d",
+    "5s",
+    "5p",  # [Xe]
+    "4f",
+    "5d",
+    "6s",
+    "6p",  # [Rn]
+    "7s",
+    "5f",
+    "6d",
+    "7p",  # [Og]
 ]
-_spdfgh = 'spdfgh'
+_spdfgh = "spdfgh"
 
 
 class AtomInput:
@@ -103,9 +115,9 @@ class AtomInput:
     .. [AtomLicense] https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html
     """
 
-    def __init__(self, atom,
-                 define=('NEW_CC', 'FREE_FORMAT_RC_INPUT', 'NO_PS_CUTOFFS'),
-                 **opts):
+    def __init__(
+        self, atom, define=("NEW_CC", "FREE_FORMAT_RC_INPUT", "NO_PS_CUTOFFS"), **opts
+    ):
         # opts = {
         #   "flavor": "tm2",
         #   "xc": "pb",
@@ -127,39 +139,49 @@ class AtomInput:
         l = 0
         for orb in self.atom:
             if orb.l != l:
-                raise ValueError(f"{self.__class__.__name__} atom argument does not have "
-                                 f"increasing l quantum number index {l} has l={orb.l}")
+                raise ValueError(
+                    f"{self.__class__.__name__} atom argument does not have "
+                    f"increasing l quantum number index {l} has l={orb.l}"
+                )
             l += 1
         if l != 4:
-            raise ValueError(f"{self.__class__.__name__} atom argument must have 4 orbitals. "
-                             f"One for each s-p-d-f shell")
+            raise ValueError(
+                f"{self.__class__.__name__} atom argument must have 4 orbitals. "
+                f"One for each s-p-d-f shell"
+            )
 
         self.opts = PropertyDict(**opts)
 
         # Check options passed and define defaults
 
         self.opts.setdefault("equation", "r")
-        if self.opts.equation not in ' rs':
+        if self.opts.equation not in " rs":
             # ' ' == non-polarized
             # s == polarized
             # r == relativistic
-            raise ValueError(f"{self.__class__.__name__} failed to initialize; opts{'equation': <v>} has wrong value, should be [ rs].")
-        if self.opts.equation == 's':
-            raise NotImplementedError(f"{self.__class__.__name__} does not implement spin-polarized option (use relativistic)")
+            raise ValueError(
+                f"{self.__class__.__name__} failed to initialize; opts{'equation': <v>} has wrong value, should be [ rs]."
+            )
+        if self.opts.equation == "s":
+            raise NotImplementedError(
+                f"{self.__class__.__name__} does not implement spin-polarized option (use relativistic)"
+            )
 
         self.opts.setdefault("flavor", "tm2")
-        if self.opts.flavor not in ('hsc', 'ker', 'tm2'):
+        if self.opts.flavor not in ("hsc", "ker", "tm2"):
             # hsc == Hamann-Schluter-Chiang
             # ker == Kerker
             # tm2 == Troullier-Martins
-            raise ValueError(f"{self.__class__.__name__} failed to initialize; opts{'flavor': <v>} has wrong value, should be [hsc|ker|tm2].")
+            raise ValueError(
+                f"{self.__class__.__name__} failed to initialize; opts{'flavor': <v>} has wrong value, should be [hsc|ker|tm2]."
+            )
 
-        self.opts.setdefault("logr", 2.)
+        self.opts.setdefault("logr", 2.0)
 
         # default to true if set
         self.opts.setdefault("cc", "rcore" in self.opts)
         # rcore only used if cc is True
-        self.opts.setdefault("rcore", 0.)
+        self.opts.setdefault("rcore", 0.0)
         self.opts.setdefault("xc", "pb")
 
         # Read in the core valence shells for this atom
@@ -171,14 +193,19 @@ class AtomInput:
         #  _shell_order.index("2p") == 2
         # which has 1s and 2s occupied.
         try:
-            core = reduce(min, (_shell_order.index(f"{orb.n}{_spdfgh[orb.l]}")
-                                for orb in atom), len(_shell_order))
+            core = reduce(
+                min,
+                (_shell_order.index(f"{orb.n}{_spdfgh[orb.l]}") for orb in atom),
+                len(_shell_order),
+            )
         except Exception:
             core = -1
 
         self.opts.setdefault("core", core)
         if self.opts.core == -1:
-            raise ValueError(f"Default value for {self.atom.symbol} not added, please add core= at instantiation")
+            raise ValueError(
+                f"Default value for {self.atom.symbol} not added, please add core= at instantiation"
+            )
 
         # Store the defined names
         if define is None:
@@ -190,16 +217,17 @@ class AtomInput:
 
     @classmethod
     def from_input(cls, inp):
-        """ Return atom object respecting the input
+        """Return atom object respecting the input
 
         Parameters
         ----------
         inp : list or str
            create `AtomInput` from the content of `inp`
         """
+
         def _get_content(f):
             if f.is_file():
-                return open(f, 'r').readlines()
+                return open(f, "r").readlines()
             return None
 
         if isinstance(inp, (tuple, list)):
@@ -214,7 +242,9 @@ class AtomInput:
             if content is None:
                 content = _get_content(inp / "INP")
             if content is None:
-                raise ValueError(f"Could not find any input file in {str(inp)} or {str(inp / 'INP')}")
+                raise ValueError(
+                    f"Could not find any input file in {str(inp)} or {str(inp / 'INP')}"
+                )
             inp = content
 
         else:
@@ -300,8 +330,9 @@ class AtomInput:
 
     @classmethod
     def from_yaml(cls, file, nodes=()):
-        """ Parse the yaml file """
+        """Parse the yaml file"""
         from sisl_toolbox.siesta.minimizer._yaml_reader import parse_variable, read_yaml
+
         dic = read_yaml(file, nodes)
 
         element = dic["element"]
@@ -316,7 +347,9 @@ class AtomInput:
         opts["xc"] = pseudo.get("xc")
         opts["equation"] = pseudo.get("equation")
         opts["flavor"] = pseudo.get("flavor")
-        define = pseudo.get("define", ('NEW_CC', 'FREE_FORMAT_RC_INPUT', 'NO_PS_CUTOFFS'))
+        define = pseudo.get(
+            "define", ("NEW_CC", "FREE_FORMAT_RC_INPUT", "NO_PS_CUTOFFS")
+        )
 
         # Now on to parsing the valence shells
         orbs = []
@@ -327,7 +360,7 @@ class AtomInput:
             # Now we know the occupation is a shell
             pseudo = dic[key].get("pseudo", {})
             cutoff = parse_variable(pseudo.get("cutoff"), 2.1, "Ang").value
-            charge = parse_variable(pseudo.get("charge"), 0.).value
+            charge = parse_variable(pseudo.get("charge"), 0.0).value
             orbs.append(si.AtomicOrbital(key, m=0, R=cutoff, q0=charge))
 
         atom = si.Atom(element, orbs, mass=mass, tag=tag)
@@ -348,7 +381,7 @@ class AtomInput:
             pg = "pg"
         logr = self.opts.logr * _Ang2Bohr
         f.write(f"   {pg:2s} {self.atom.symbol} pseudo potential\n")
-        if logr < 0.:
+        if logr < 0.0:
             f.write(f"        {self.opts.flavor:3s}\n")
         else:
             f.write(f"        {self.opts.flavor:3s}{logr:9.3f}\n")
@@ -367,15 +400,17 @@ class AtomInput:
 
         f.write(f"{core:5d}{valence:5d}\n")
 
-        Rs = [0.] * 4 # always 4: s, p, d, f
+        Rs = [0.0] * 4  # always 4: s, p, d, f
         for orb in sorted(atom.orbitals, key=lambda x: x.l):
             # Write the configuration of this orbital
             n, l = orb.n, orb.l
             f.write(f"{n:5d}{l:5d}{orb.q0:10.3f}{0.0:10.3f}\n")
             Rs[l] = orb.R * _Ang2Bohr
-        f.write(f"{Rs[0]:10.7f} {Rs[1]:10.7f} {Rs[2]:10.7f} {Rs[3]:10.7f} {0.0:10.7f} {rcore:10.7f}\n")
+        f.write(
+            f"{Rs[0]:10.7f} {Rs[1]:10.7f} {Rs[2]:10.7f} {Rs[3]:10.7f} {0.0:10.7f} {rcore:10.7f}\n"
+        )
 
-    def write_all_electron(self, f, charges=(0.,)):
+    def write_all_electron(self, f, charges=(0.0,)):
         q0 = self.atom.q0.sum()
         xc = self.opts.xc
         equation = self.opts.equation
@@ -431,9 +466,9 @@ class AtomInput:
         return Path(path) / Path(filename)
 
     def __call__(self, filename="INP", path=None):
-        """ Open a file and return self """
+        """Open a file and return self"""
         out = self._get_out(path, filename)
-        self._enter = open(out, 'w'), self.atom
+        self._enter = open(out, "w"), self.atom
         return self
 
     def __enter__(self):
@@ -457,29 +492,38 @@ class AtomInput:
             self.write_generation(f)
 
     def excite(self, *charge, **lq):
-        """ Excite contained atom to another charge
+        """Excite contained atom to another charge
 
         Notes
         -----
         This is charge, *not* electrons.
         """
         if len(charge) > 1:
-            raise ValueError(f"{self.__class__.__name__}.excite takes only "
-                             "a single argument or [spdf]=charge arguments")
+            raise ValueError(
+                f"{self.__class__.__name__}.excite takes only "
+                "a single argument or [spdf]=charge arguments"
+            )
         elif len(charge) == 1:
             charge = charge[0]
             if "charge" in lq:
-                raise ValueError(f"{self.__class__.__name__}.excite does not accept "
-                                 "both charge as argument and keyword argument")
+                raise ValueError(
+                    f"{self.__class__.__name__}.excite does not accept "
+                    "both charge as argument and keyword argument"
+                )
         else:
             charge = 0
         charge = lq.pop("charge", charge)
         # get indices of the orders
-        shell_idx = [_shell_order.index(f"{orb.n}{_spdfgh[orb.l]}")
-                     for orb in self.atom]
+        shell_idx = [
+            _shell_order.index(f"{orb.n}{_spdfgh[orb.l]}") for orb in self.atom
+        ]
+
         def _charge(idx):
             # while the g and h shells are never used, we just have them...
-            return {'s': 2, 'p': 6, 'd': 10, 'f': 14, 'g': 18, 'h': 22}[_shell_order[idx][1]]
+            return {"s": 2, "p": 6, "d": 10, "f": 14, "g": 18, "h": 22}[
+                _shell_order[idx][1]
+            ]
+
         orig_charge = [_charge(idx) for idx in shell_idx]
         atom = self.atom.copy()
         # find order of orbitals (from highest index to lowest)
@@ -492,7 +536,7 @@ class AtomInput:
             for orb in atom:
                 if orb.l == l:
                     orb._q0 -= q
-                    assert orb.q0 >= 0.
+                    assert orb.q0 >= 0.0
 
         # now finalize the charge
         while abs(charge) > 1e-9:
@@ -504,15 +548,19 @@ class AtomInput:
                 elif charge < 0 and orb.q0 < orig_charge[idx]:
                     dq = max(orb.q0 - orig_charge[idx], charge)
                 else:
-                    dq = 0.
+                    dq = 0.0
                 orb._q0 -= dq
                 charge -= dq
         return self.__class__(atom, self.define, **self.opts)
 
-    def plot(self, path=None,
-             plot=('wavefunction', 'charge', 'log', 'potential'),
-             l='spdf', show=True):
-        """ Plot everything related to this psf file
+    def plot(
+        self,
+        path=None,
+        plot=("wavefunction", "charge", "log", "potential"),
+        l="spdf",
+        show=True,
+    ):
+        """Plot everything related to this psf file
 
         Parameters
         ----------
@@ -531,13 +579,14 @@ class AtomInput:
         axs : axes used for plotting
         """
         import matplotlib.pyplot as plt
+
         if path is None:
             path = Path.cwd()
         else:
             path = Path(path)
 
         def get_xy(f, yfactors=None):
-            """ Return x, y data from file `f` with y being calculated as the factors between the columns """
+            """Return x, y data from file `f` with y being calculated as the factors between the columns"""
             nonlocal path
             f = path / f
             if not f.is_file():
@@ -549,17 +598,22 @@ class AtomInput:
 
             if yfactors is None:
                 yfactors = [0, 1]
-            yfactors = np.pad(yfactors, (0, ncol-len(yfactors)), constant_values=0.)
+            yfactors = np.pad(yfactors, (0, ncol - len(yfactors)), constant_values=0.0)
             x = data[:, 0]
             y = (data * yfactors.reshape(1, -1)).sum(1)
             return x, y
 
         l2i = {
-            's': 0, 0: 0,
-            'p': 1, 1: 1,
-            'd': 2, 2: 2,
-            'f': 3, 3: 3,
-            'g': 4, 4: 4, # never used
+            "s": 0,
+            0: 0,
+            "p": 1,
+            1: 1,
+            "d": 2,
+            2: 2,
+            "f": 3,
+            3: 3,
+            "g": 4,
+            4: 4,  # never used
         }
 
         # Get this atoms default calculated binding length
@@ -585,10 +639,10 @@ class AtomInput:
 
                 r, w = get_xy(f"PSWFNR{il}")
                 if not r is None:
-                    ax.plot(r, w, '--', label=f"PS {_spdfgh[il]}")
+                    ax.plot(r, w, "--", label=f"PS {_spdfgh[il]}")
 
             ax.set_xlim(0, atom_r * 5)
-            ax.autoscale(enable=True, axis='y', tight=True)
+            ax.autoscale(enable=True, axis="y", tight=True)
             ax.legend()
 
         def plot_charge(ax):
@@ -605,20 +659,20 @@ class AtomInput:
                 color = p[0].get_color()
                 if self.opts.get("cc", False):
                     ax.axvline(self.opts.rcore * _Ang2Bohr, color=color, alpha=0.5)
-                ax.plot(ae_r, ae_vc, '--', label=f"AE valence")
+                ax.plot(ae_r, ae_vc, "--", label=f"AE valence")
 
             ps_r, ps_cc = get_xy("PSCHARGE", [0, 0, 0, 1])
             _, ps_vc = get_xy("PSCHARGE", [0, 1, 1])
 
             if not ps_r is None:
-                ax.plot(ps_r, ps_cc, '--', label=f"PS core")
-                ax.plot(ps_r, ps_vc, ':', label=f"PS valence")
+                ax.plot(ps_r, ps_cc, "--", label=f"PS core")
+                ax.plot(ps_r, ps_vc, ":", label=f"PS valence")
 
             # Now determine the overlap between all-electron core-charge
             # and the pseudopotential valence charge
             if np.allclose(ae_r, ps_r):
                 # Determine dR
-                #dr = ae_r[1] - ae_r[0]
+                # dr = ae_r[1] - ae_r[0]
 
                 # Integrate number of core-electrons and valence electrons
                 core_c = np.trapz(ae_cc, ae_r)
@@ -633,16 +687,18 @@ class AtomInput:
                 # the core one for r < r_pc.
                 # Tests show that it might be located where the core charge density is from 1 to 2 times
                 # larger than the valence charge density
-                with np.errstate(divide='ignore', invalid='ignore'):
+                with np.errstate(divide="ignore", invalid="ignore"):
                     fraction = ae_cc / ps_vc
                     np.nan_to_num(fraction, copy=False)
 
-                ax2 = ax.twinx() # instantiate a second axes that shares the same x-axis
-                ax2.plot(ae_r, fraction, 'k', alpha=0.5, label='c/v')
+                ax2 = (
+                    ax.twinx()
+                )  # instantiate a second axes that shares the same x-axis
+                ax2.plot(ae_r, fraction, "k", alpha=0.5, label="c/v")
 
-                marks = np.array([0.5, 1., 1.5])
+                marks = np.array([0.5, 1.0, 1.5])
                 min_x = (ae_r > 0.2).nonzero()[0].min()
-                max_x = (fraction[min_x:] > 0.).nonzero()[0].max() + min_x
+                max_x = (fraction[min_x:] > 0.0).nonzero()[0].max() + min_x
 
                 r_marks = interp1d(fraction[min_x:max_x], ae_r[min_x:max_x])(marks)
                 ax2.scatter(r_marks, marks, alpha=0.5)
@@ -669,8 +725,9 @@ class AtomInput:
                 if not e is None:
                     p = ax.plot(e, log, label=f"AE {_spdfgh[il]}")
 
-                    idx_mark = (np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1))
-                                .argmin(axis=0))
+                    idx_mark = np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1)).argmin(
+                        axis=0
+                    )
                     ax.scatter(emark, log[idx_mark], color=p[0].get_color(), alpha=0.5)
 
                 # And now PS
@@ -680,10 +737,11 @@ class AtomInput:
                     emark.shape = (1, -1)
                 emark = emark[:, 0]
                 if not e is None:
-                    p = ax.plot(e, log, ':', label=f"PS {_spdfgh[il]}")
+                    p = ax.plot(e, log, ":", label=f"PS {_spdfgh[il]}")
 
-                    idx_mark = (np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1))
-                                .argmin(axis=0))
+                    idx_mark = np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1)).argmin(
+                        axis=0
+                    )
                     ax.scatter(emark, log[idx_mark], color=p[0].get_color(), alpha=0.5)
 
             ax.legend()
@@ -738,7 +796,7 @@ class AtomInput:
 
 
 def atom_plot_cli(subp=None):
-    """ Run plotting command for the output of atom """
+    """Run plotting command for the output of atom"""
 
     is_sub = not subp is None
 
@@ -749,23 +807,32 @@ def atom_plot_cli(subp=None):
         p = subp.add_parser("atom-plot", description=title, help=title)
     else:
         import argparse
+
         p = argparse.ArgumentParser(title)
 
-    p.add_argument("--plot", '-P', action='append', type=str,
-                   choices=('wavefunction', 'charge', 'log', 'potential'),
-                   help="""Determine what to plot""")
+    p.add_argument(
+        "--plot",
+        "-P",
+        action="append",
+        type=str,
+        choices=("wavefunction", "charge", "log", "potential"),
+        help="""Determine what to plot""",
+    )
 
-    p.add_argument("-l", default='spdf', type=str,
-                   help="""Which l shells to plot""")
+    p.add_argument("-l", default="spdf", type=str, help="""Which l shells to plot""")
 
-    p.add_argument("--save", "-S", default=None,
-                   help="""Save output plots to file.""")
+    p.add_argument("--save", "-S", default=None, help="""Save output plots to file.""")
 
-    p.add_argument("--show", default=False, action='store_true',
-                   help="""Force showing the plot (only if --save is specified)""")
+    p.add_argument(
+        "--show",
+        default=False,
+        action="store_true",
+        help="""Force showing the plot (only if --save is specified)""",
+    )
 
-    p.add_argument("input", type=str, default="INP",
-                   help="""Input file name (default INP)""")
+    p.add_argument(
+        "input", type=str, default="INP", help="""Input file name (default INP)"""
+    )
 
     if is_sub:
         p.set_defaults(runner=atom_plot)
@@ -788,7 +855,7 @@ def atom_plot(args):
 
     # if users have not specified what to plot, we plot everything
     if args.plot is None:
-        args.plot = ('wavefunction', 'charge', 'log', 'potential')
+        args.plot = ("wavefunction", "charge", "log", "potential")
     fig = atom.plot(path, plot=args.plot, l=args.l, show=False)[0]
 
     if args.save is None:

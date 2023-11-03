@@ -17,21 +17,21 @@ from .sile import SileBigDFT
 __all__ = ["asciiSileBigDFT"]
 
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 
 
 @set_module("sisl.io.bigdft")
 class asciiSileBigDFT(SileBigDFT):
-    """ ASCII file object for BigDFT """
+    """ASCII file object for BigDFT"""
 
     def _setup(self, *args, **kwargs):
-        """ Initialize for `asciiSileBigDFT` """
+        """Initialize for `asciiSileBigDFT`"""
         super()._setup(*args, **kwargs)
-        self._comment = ['#', '!']
+        self._comment = ["#", "!"]
 
     @sile_fh_open()
     def read_geometry(self):
-        """ Reads a supercell from the Sile """
+        """Reads a supercell from the Sile"""
 
         # 1st line is arbitrary
         self.readline(True)
@@ -51,29 +51,27 @@ class asciiSileBigDFT(SileBigDFT):
         # Now we need to read through and find keywords
         try:
             while True:
-
                 # Read line also with comment
                 l = self.readline(True)
 
                 # Empty line, means EOF
-                if l == '':
+                if l == "":
                     break
                 # too short, continue
                 if len(l) < 1:
                     continue
 
                 # Check for keyword
-                if l[1:].startswith('keyword:'):
-                    if 'reduced' in l:
+                if l[1:].startswith("keyword:"):
+                    if "reduced" in l:
                         is_frac = True
-                    if 'angdeg' in l:
+                    if "angdeg" in l:
                         is_angdeg = True
-                    if 'bohr' in l or 'atomic' in l:
+                    if "bohr" in l or "atomic" in l:
                         is_bohr = True
                     continue
 
                 elif l[0] in self._comment:
-
                     # this is a comment, cycle
                     continue
 
@@ -111,7 +109,7 @@ class asciiSileBigDFT(SileBigDFT):
             # The input is in skewed axis
             lattice = Lattice([dxx, dyx, dyy, dzx, dzy, dzz])
         else:
-            lattice = Lattice([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
+            lattice = Lattice([[dxx, 0.0, 0.0], [dyx, dyy, 0.0], [dzx, dzy, dzz]])
 
         # Now create the geometry
         xyz = np.array(xyz, np.float64)
@@ -130,27 +128,25 @@ class asciiSileBigDFT(SileBigDFT):
         return Geometry(xyz, spec, lattice=lattice)
 
     @sile_fh_open()
-    def write_geometry(self, geom, fmt='.8f'):
-        """ Writes the geometry to the contained file """
+    def write_geometry(self, geom, fmt=".8f"):
+        """Writes the geometry to the contained file"""
         # Check that we can write to the file
         sile_raise_write(self)
 
         # Write out the cell
-        self._write('# Created by sisl\n')
+        self._write("# Created by sisl\n")
         # We write the cell coordinates as the cell coordinates
-        fmt_str = f'{{:{fmt}}} ' * 3 + '\n'
-        self._write(
-            fmt_str.format(
-                geom.cell[0, 0], geom.cell[1, 0], geom.cell[1, 1]))
+        fmt_str = f"{{:{fmt}}} " * 3 + "\n"
+        self._write(fmt_str.format(geom.cell[0, 0], geom.cell[1, 0], geom.cell[1, 1]))
         self._write(fmt_str.format(*geom.cell[2, :]))
 
         # This also denotes
-        self._write('#keyword: angstroem\n')
+        self._write("#keyword: angstroem\n")
 
-        self._write('# Geometry containing: ' + str(len(geom)) + ' atoms\n')
+        self._write("# Geometry containing: " + str(len(geom)) + " atoms\n")
 
-        f1_str = '{{1:{0}}}  {{2:{0}}}  {{3:{0}}} {{0:2s}}\n'.format(fmt)
-        f2_str = '{{2:{0}}}  {{3:{0}}}  {{4:{0}}} {{0:2s}} {{1:s}}\n'.format(fmt)
+        f1_str = "{{1:{0}}}  {{2:{0}}}  {{3:{0}}} {{0:2s}}\n".format(fmt)
+        f2_str = "{{2:{0}}}  {{3:{0}}}  {{4:{0}}} {{0:2s}} {{1:s}}\n".format(fmt)
 
         for ia, a, _ in geom.iter_species():
             if a.symbol != a.tag:
@@ -158,10 +154,10 @@ class asciiSileBigDFT(SileBigDFT):
             else:
                 self._write(f1_str.format(a.symbol, *geom.xyz[ia, :]))
         # Add a single new line
-        self._write('\n')
+        self._write("\n")
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)

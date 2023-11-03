@@ -9,19 +9,19 @@ import pytest
 from sisl.io.vasp.stdout import stdoutSileVASP
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
-_dir = osp.join('sisl', 'io', 'vasp')
+_dir = osp.join("sisl", "io", "vasp")
 
 
 def test_diamond_outcar_energies(sisl_files):
-    f = sisl_files(_dir, 'diamond', 'OUTCAR')
+    f = sisl_files(_dir, "diamond", "OUTCAR")
     f = stdoutSileVASP(f)
 
     E0 = f.read_energy()
     E = f.read_energy[-1]()
     Eall = f.read_energy[:]()
 
-    assert E0.sigma0 == 0.8569373 # first block
-    assert E.sigma0 == -18.18677613 # last block
+    assert E0.sigma0 == 0.8569373  # first block
+    assert E.sigma0 == -18.18677613  # last block
 
     assert E0 == Eall[0]
     assert E == Eall[-1]
@@ -30,22 +30,22 @@ def test_diamond_outcar_energies(sisl_files):
 
 
 def test_diamond_outcar_cputime(sisl_files):
-    f = sisl_files(_dir, 'diamond', 'OUTCAR')
+    f = sisl_files(_dir, "diamond", "OUTCAR")
     f = stdoutSileVASP(f)
 
-    assert f.cpu_time() > 0.
+    assert f.cpu_time() > 0.0
     assert f.info.completed()
 
 
 def test_diamond_outcar_completed(sisl_files):
-    f = sisl_files(_dir, 'diamond', 'OUTCAR')
+    f = sisl_files(_dir, "diamond", "OUTCAR")
     f = stdoutSileVASP(f)
 
     assert f.info.completed()
 
 
 def test_diamond_outcar_trajectory(sisl_files):
-    f = sisl_files(_dir, 'diamond', 'OUTCAR')
+    f = sisl_files(_dir, "diamond", "OUTCAR")
     f = stdoutSileVASP(f)
 
     step = f.read_trajectory()
@@ -60,7 +60,7 @@ def test_diamond_outcar_trajectory(sisl_files):
 
 
 def test_graphene_relax_outcar_trajectory(sisl_files):
-    f = sisl_files(_dir, 'graphene_relax', 'OUTCAR')
+    f = sisl_files(_dir, "graphene_relax", "OUTCAR")
     f = stdoutSileVASP(f)
 
     step = f.read_trajectory[9]()
@@ -84,7 +84,7 @@ def test_graphene_relax_outcar_trajectory(sisl_files):
 
 
 def test_graphene_md_outcar_trajectory(sisl_files):
-    f = sisl_files(_dir, 'graphene_md', 'OUTCAR')
+    f = sisl_files(_dir, "graphene_md", "OUTCAR")
     f = stdoutSileVASP(f)
 
     step = f.read_trajectory[99]()

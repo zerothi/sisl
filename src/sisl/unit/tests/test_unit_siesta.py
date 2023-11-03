@@ -11,41 +11,41 @@ pytestmark = [pytest.mark.unit, pytest.mark.siesta]
 
 
 def test_group():
-    assert unit_group('kg') == 'mass'
-    assert unit_group('eV') == 'energy'
-    assert unit_group('N') == 'force'
+    assert unit_group("kg") == "mass"
+    assert unit_group("eV") == "energy"
+    assert unit_group("N") == "force"
 
 
 def test_unit_convert():
-    assert approx(unit_convert('kg', 'g')) == 1.e3
-    assert approx(unit_convert('eV', 'J')) == 1.602176634e-19
-    assert approx(unit_convert('J', 'eV')) == 1/1.602176634e-19
-    assert approx(unit_convert('J', 'eV', {'^': 2})) == (1/1.602176634e-19) ** 2
-    assert approx(unit_convert('J', 'eV', {'/': 2})) == (1/1.602176634e-19) / 2
-    assert approx(unit_convert('J', 'eV', {'*': 2})) == (1/1.602176634e-19) * 2
+    assert approx(unit_convert("kg", "g")) == 1.0e3
+    assert approx(unit_convert("eV", "J")) == 1.602176634e-19
+    assert approx(unit_convert("J", "eV")) == 1 / 1.602176634e-19
+    assert approx(unit_convert("J", "eV", {"^": 2})) == (1 / 1.602176634e-19) ** 2
+    assert approx(unit_convert("J", "eV", {"/": 2})) == (1 / 1.602176634e-19) / 2
+    assert approx(unit_convert("J", "eV", {"*": 2})) == (1 / 1.602176634e-19) * 2
 
 
 def test_default():
-    assert unit_default('mass') == 'amu'
-    assert unit_default('energy') == 'eV'
-    assert unit_default('force') == 'eV/Ang'
+    assert unit_default("mass") == "amu"
+    assert unit_default("energy") == "eV"
+    assert unit_default("force") == "eV/Ang"
 
 
 def test_group_f1():
     with pytest.raises(ValueError):
-        unit_group('not-existing')
+        unit_group("not-existing")
 
 
 def test_default_f1():
     with pytest.raises(ValueError):
-        unit_default('not-existing')
+        unit_default("not-existing")
 
 
 def test_unit_convert_f1():
     with pytest.raises(ValueError):
-        unit_convert('eV', 'megaerg')
+        unit_convert("eV", "megaerg")
 
 
 def test_unit_convert_f2():
     with pytest.raises(ValueError):
-        unit_convert('eV', 'kg')
+        unit_convert("eV", "kg")

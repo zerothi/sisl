@@ -56,12 +56,12 @@ import time
 from ._internal import set_module
 from .messages import warn
 
-__all__ = ['Selector', 'TimeSelector']
+__all__ = ["Selector", "TimeSelector"]
 
 
 @set_module("sisl")
 class Selector:
-    r""" Base class for implementing a selector of class routines
+    r"""Base class for implementing a selector of class routines
 
     This class should contain a list of routines and may then be used
     to always return the best performant routine. The *performance*
@@ -85,10 +85,9 @@ class Selector:
       runned routines.
     """
 
-    __slots__ = ['_routines', '_metric', '_best', '_ordered']
+    __slots__ = ["_routines", "_metric", "_best", "_ordered"]
 
     def __init__(self, routines=None, ordered=False):
-
         # Copy the routines to the list
         if routines is None:
             self._routines = []
@@ -120,21 +119,21 @@ class Selector:
         return self._ordered
 
     def __len__(self):
-        """ Number of routines that it can select from """
+        """Number of routines that it can select from"""
         return len(self.routines)
 
     def __str__(self):
-        """ A representation of the current selector state """
-        s = self.__class__.__name__ + '{{n={0}, \n'.format(len(self))
+        """A representation of the current selector state"""
+        s = self.__class__.__name__ + "{{n={0}, \n".format(len(self))
         for r, p in zip(self.routines, self.metric):
             if p is None:
-                s += f'  {{{r.__name__}: <not tried>}},\n'
+                s += f"  {{{r.__name__}: <not tried>}},\n"
             else:
-                s += f'  {{{r.__name__}: {p}}},\n'
-        return s + '}'
+                s += f"  {{{r.__name__}: {p}}},\n"
+        return s + "}"
 
     def prepend(self, routine):
-        """ Prepends a new routine to the selector
+        """Prepends a new routine to the selector
 
         Parameters
         ----------
@@ -147,7 +146,7 @@ class Selector:
         self._best = None
 
     def append(self, routine):
-        """ Prepends a new routine to the selector
+        """Prepends a new routine to the selector
 
         Parameters
         ----------
@@ -169,12 +168,12 @@ class Selector:
             self._best = None
 
     def reset(self):
-        """ Reset the metric table to redo the performance checks """
+        """Reset the metric table to redo the performance checks"""
         self._metric = [None] * len(self._metric)
         self._best = None
 
     def select_best(self, routine=None):
-        """ Update the `best` routine, if applicable
+        """Update the `best` routine, if applicable
 
         Update the selector to choose the best method.
         If not all routines have been carried through, then
@@ -195,10 +194,9 @@ class Selector:
            best method
         """
         if routine is None:
-
             # Try and select the routine based on the internal runned
             # metric specifiers
-            selected, metric = -1, 0.
+            selected, metric = -1, 0.0
             for i, v in enumerate(self.metric):
                 if v is None:
                     # Quick return if we are not done
@@ -227,14 +225,16 @@ class Selector:
                     self._best = r
                     break
             if self.best is None:
-                warn(self.__class__.__name__ + ' selection of '
-                     'optimal routine is not in the list of available '
-                     'routines. Will not select a routine.')
+                warn(
+                    self.__class__.__name__ + " selection of "
+                    "optimal routine is not in the list of available "
+                    "routines. Will not select a routine."
+                )
         else:
             self._best = routine
 
     def next(self):
-        """ Choose the next routine that requires metric analysis
+        """Choose the next routine that requires metric analysis
 
         Returns
         -------
@@ -252,13 +252,13 @@ class Selector:
         return -1, self._best
 
     def __call__(self, *args, **kwargs):
-        """ Call the function that optimizes the run-time the most
+        """Call the function that optimizes the run-time the most
 
         The first argument *must* be an object (`self`) while all remaining
         arguments are transferred to the routine calls
         """
         if not self.best is None:
-            return self.best(*args, **kwargs) # pylint: disable=E1102
+            return self.best(*args, **kwargs)  # pylint: disable=E1102
 
         # Figure out if we have the metric for all the routines
         idx, routine = self.next()
@@ -280,7 +280,7 @@ class Selector:
         return returns
 
     def start(self):
-        """ Start the metric profiler
+        """Start the metric profiler
 
         This routine should return an initial state value.
         The difference between `stop() - start()` should yield a
@@ -293,7 +293,7 @@ class Selector:
         raise NotImplementedError
 
     def stop(self, start):
-        """ Stop the metric profiler
+        """Stop the metric profiler
 
         This routine returns the actual metric for the method.
         Its input is what `start` returns and it may be of any
@@ -312,17 +312,17 @@ class Selector:
 
 @set_module("sisl")
 class TimeSelector(Selector):
-    """ Routine metric selector based on timings for the routines """
+    """Routine metric selector based on timings for the routines"""
 
     def start(self):
-        """ Start the timing routine """
+        """Start the timing routine"""
         return time.time()
 
     def stop(self, start):
-        """ Stop the timing routine
+        """Stop the timing routine
 
         Returns
         -------
         inv_time : metric for time
         """
-        return 1. / (time.time() - start)
+        return 1.0 / (time.time() - start)

@@ -43,14 +43,14 @@ from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
 from .state import Coefficient, State, StateC, degenerate_decouple
 
-__all__ = ['DOS', 'PDOS']
-__all__ += ['CoefficientPhonon', 'ModePhonon', 'ModeCPhonon']
-__all__ += ['EigenvaluePhonon', 'EigenvectorPhonon', 'EigenmodePhonon']
+__all__ = ["DOS", "PDOS"]
+__all__ += ["CoefficientPhonon", "ModePhonon", "ModeCPhonon"]
+__all__ += ["EigenvaluePhonon", "EigenvectorPhonon", "EigenmodePhonon"]
 
 
 @set_module("sisl.physics.phonon")
-def DOS(E, hw, distribution='gaussian'):
-    r""" Calculate the density of modes (DOS) for a set of energies, `E`, with a distribution function
+def DOS(E, hw, distribution="gaussian"):
+    r"""Calculate the density of modes (DOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{DOS}(E)` is calculated as:
 
@@ -85,8 +85,8 @@ def DOS(E, hw, distribution='gaussian'):
 
 
 @set_module("sisl.physics.phonon")
-def PDOS(E, mode, hw, distribution='gaussian'):
-    r""" Calculate the projected density of modes (PDOS) onto each each atom and direction for a set of energies, `E`, with a distribution function
+def PDOS(E, mode, hw, distribution="gaussian"):
+    r"""Calculate the projected density of modes (PDOS) onto each each atom and direction for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{PDOS}(E)` is calculated as:
 
@@ -127,41 +127,46 @@ def PDOS(E, mode, hw, distribution='gaussian'):
 
 # dDk is in [Ang * eV ** 2]
 # velocity units in Ang/ps
-_velocity_const = 1 / constant.hbar('eV ps')
+_velocity_const = 1 / constant.hbar("eV ps")
 
 
-_displacement_const = (2 * units('Ry', 'eV') * (constant.m_e / constant.m_p)) ** 0.5 * units('Bohr', 'Ang')
+_displacement_const = (
+    2 * units("Ry", "eV") * (constant.m_e / constant.m_p)
+) ** 0.5 * units("Bohr", "Ang")
 
 
 @set_module("sisl.physics.phonon")
 class CoefficientPhonon(Coefficient):
-    """ Coefficients describing some physical quantity related to phonons """
+    """Coefficients describing some physical quantity related to phonons"""
+
     __slots__ = []
 
 
 @set_module("sisl.physics.phonon")
 class ModePhonon(State):
-    """ A mode describing a physical quantity related to phonons """
+    """A mode describing a physical quantity related to phonons"""
+
     __slots__ = []
 
     @property
     def mode(self):
-        """ Eigenmodes (states) """
+        """Eigenmodes (states)"""
         return self.state
 
 
 @set_module("sisl.physics.phonon")
 class ModeCPhonon(StateC):
-    """ A mode describing a physical quantity related to phonons, with associated coefficients of the mode """
+    """A mode describing a physical quantity related to phonons, with associated coefficients of the mode"""
+
     __slots__ = []
 
     @property
     def mode(self):
-        """ Eigenmodes (states) """
+        """Eigenmodes (states)"""
         return self.state
 
     def velocity(self, *args, **kwargs):
-        r""" Calculate velocity of the modes
+        r"""Calculate velocity of the modes
 
         This routine calls `derivative` with appropriate arguments (1st order derivative)
         and returns the velocity for the modes.
@@ -190,19 +195,20 @@ class ModeCPhonon(StateC):
 
 @set_module("sisl.physics.phonon")
 class EigenvaluePhonon(CoefficientPhonon):
-    """ Eigenvalues of phonon modes, no eigenmodes retained
+    """Eigenvalues of phonon modes, no eigenmodes retained
 
     This holds routines that enable the calculation of density of states.
     """
+
     __slots__ = []
 
     @property
     def hw(self):
-        r""" Eigenmode values in units of :math:`\hbar \omega` [eV] """
+        r"""Eigenmode values in units of :math:`\hbar \omega` [eV]"""
         return self.c
 
-    def occupation(self, distribution='bose_einstein'):
-        """ Calculate the occupations for the states according to a distribution function
+    def occupation(self, distribution="bose_einstein"):
+        """Calculate the occupations for the states according to a distribution function
 
         Parameters
         ----------
@@ -218,8 +224,8 @@ class EigenvaluePhonon(CoefficientPhonon):
             distribution = get_distribution(distribution)
         return distribution(self.hw)
 
-    def DOS(self, E, distribution='gaussian'):
-        r""" Calculate DOS for provided energies, `E`.
+    def DOS(self, E, distribution="gaussian"):
+        r"""Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.phonon.DOS` with appropriate arguments
         and returns the DOS.
@@ -231,25 +237,27 @@ class EigenvaluePhonon(CoefficientPhonon):
 
 @set_module("sisl.physics.phonon")
 class EigenvectorPhonon(ModePhonon):
-    """ Eigenvectors of phonon modes, no eigenvalues retained """
+    """Eigenvectors of phonon modes, no eigenvalues retained"""
+
     __slots__ = []
 
 
 @set_module("sisl.physics.phonon")
 class EigenmodePhonon(ModeCPhonon):
-    """ Eigenmodes of phonons with eigenvectors and eigenvalues.
+    """Eigenmodes of phonons with eigenvectors and eigenvalues.
 
     This holds routines that enable the calculation of (projected) density of states.
     """
+
     __slots__ = []
 
     @property
     def hw(self):
-        r""" Eigenmode values in units of :math:`\hbar \omega` [eV] """
+        r"""Eigenmode values in units of :math:`\hbar \omega` [eV]"""
         return self.c
 
-    def occupation(self, distribution='bose_einstein'):
-        """ Calculate the occupations for the states according to a distribution function
+    def occupation(self, distribution="bose_einstein"):
+        """Calculate the occupations for the states according to a distribution function
 
         Parameters
         ----------
@@ -265,8 +273,8 @@ class EigenmodePhonon(ModeCPhonon):
             distribution = get_distribution(distribution)
         return distribution(self.hw)
 
-    def DOS(self, E, distribution='gaussian'):
-        r""" Calculate DOS for provided energies, `E`.
+    def DOS(self, E, distribution="gaussian"):
+        r"""Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.phonon.DOS` with appropriate arguments
         and returns the DOS.
@@ -275,8 +283,8 @@ class EigenmodePhonon(ModeCPhonon):
         """
         return DOS(E, self.hw, distribution)
 
-    def PDOS(self, E, distribution='gaussian'):
-        r""" Calculate PDOS for provided energies, `E`.
+    def PDOS(self, E, distribution="gaussian"):
+        r"""Calculate PDOS for provided energies, `E`.
 
         This routine calls `~sisl.physics.phonon.PDOS` with appropriate arguments
         and returns the PDOS.
@@ -286,7 +294,7 @@ class EigenmodePhonon(ModeCPhonon):
         return PDOS(E, self.mode, self.hw, distribution)
 
     def displacement(self):
-        r""" Calculate real-space displacements for a given mode (in units of the characteristic length)
+        r"""Calculate real-space displacements for a given mode (in units of the characteristic length)
 
         The displacements per mode may be written as:
 
@@ -317,7 +325,7 @@ class EigenmodePhonon(ModeCPhonon):
         idx = (self.c == 0).nonzero()[0]
         mode = self.mode
         U = mode.copy()
-        U[idx, :] = 0.
+        U[idx, :] = 0.0
 
         # Now create the remaining displacements
         idx = delete(_a.arangei(U.shape[0]), idx)
@@ -326,6 +334,8 @@ class EigenmodePhonon(ModeCPhonon):
         factor = _displacement_const / fabs(self.c[idx]).reshape(-1, 1) ** 0.5
 
         U.shape = (U.shape[0], -1, 3)
-        U[idx] = (mode[idx, :] * factor).reshape(len(idx), -1, 3) / self.parent.mass.reshape(1, -1, 1) ** 0.5
+        U[idx] = (mode[idx, :] * factor).reshape(
+            len(idx), -1, 3
+        ) / self.parent.mass.reshape(1, -1, 1) ** 0.5
         U = np.swapaxes(U, 0, 2)
         return U

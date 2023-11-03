@@ -21,12 +21,12 @@ from .sile import SileSiesta
 __all__ = ["stdoutSileSiesta", "outSileSiesta"]
 
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 _A = SileSiesta.InfoAttr
 
 
 def _ensure_atoms(atoms):
-    """ Ensures that the atoms list is a list with entries (converts `None` to a list). """
+    """Ensures that the atoms list is a list with entries (converts `None` to a list)."""
     if atoms is None:
         return [Atom(i) for i in range(150)]
     elif len(atoms) == 0:
@@ -36,25 +36,32 @@ def _ensure_atoms(atoms):
 
 @set_module("sisl.io.siesta")
 class stdoutSileSiesta(SileSiesta):
-    """ Output file from Siesta
+    """Output file from Siesta
 
     This enables reading the output quantities from the Siesta output.
     """
-    
+
     _info_attributes_ = [
-        _A("completed", r".*Job completed",
-           lambda attr, match: lambda : True, default=lambda : False),
+        _A(
+            "completed",
+            r".*Job completed",
+            lambda attr, match: lambda: True,
+            default=lambda: False,
+        ),
     ]
 
-    @deprecation("stdoutSileSiesta.completed is deprecated in favor of stdoutSileSiesta.info.completed", "0.16.0")
+    @deprecation(
+        "stdoutSileSiesta.completed is deprecated in favor of stdoutSileSiesta.info.completed",
+        "0.16.0",
+    )
     def completed(self):
-        """ True if the full file has been read and "Job completed" was found. """
+        """True if the full file has been read and "Job completed" was found."""
         return self.info.completed()
 
     @lru_cache(1)
     @sile_fh_open(True)
     def read_basis(self):
-        """ Reads the basis as found in the output file
+        """Reads the basis as found in the output file
 
         This parses 3 things:
 
@@ -69,17 +76,17 @@ class stdoutSileSiesta(SileSiesta):
 
         atoms = {}
         order = []
-        while 'Species number:' in line:
+        while "Species number:" in line:
             ls = line.split()
-            if ls[3] == 'Atomic':
-                atoms[ls[7]] = {'Z': int(ls[5]), 'tag': ls[7]}
+            if ls[3] == "Atomic":
+                atoms[ls[7]] = {"Z": int(ls[5]), "tag": ls[7]}
                 order.append(ls[7])
             else:
-                atoms[ls[4]] = {'Z': int(ls[7]), 'tag': ls[4]}
+                atoms[ls[4]] = {"Z": int(ls[7]), "tag": ls[4]}
                 order.append(ls[4])
             line = self.readline()
 
-                # Now go down to basis_specs
+            # Now go down to basis_specs
         found, line = self.step_to("<basis_specs>")
         while found:
             # =====
@@ -98,6 +105,7 @@ class stdoutSileSiesta(SileSiesta):
             line = self.readline()
 
         from .fdf import fdfSileSiesta
+
         atom_orbs = fdfSileSiesta._parse_pao_basis(block)
         for atom, orbs in atom_orbs.items():
             atoms[atom]["orbitals"] = orbs
@@ -105,14 +113,16 @@ class stdoutSileSiesta(SileSiesta):
         return [Atom(**atoms[tag]) for tag in order]
 
     def _r_lattice_outcell(self):
-        """ Wrapper for reading the unit-cell from the outcoor block """
+        """Wrapper for reading the unit-cell from the outcoor block"""
 
         # Read until outcell is found
         found, line = self.step_to("outcell: Unit cell vectors")
         if not found:
-            raise ValueError(f"{self.__class__.__name__}._r_lattice_outcell did not find outcell key")
+            raise ValueError(
+                f"{self.__class__.__name__}._r_lattice_outcell did not find outcell key"
+            )
 
-        Ang = 'Ang' in line
+        Ang = "Ang" in line
 
         # We read the unit-cell vectors (in Ang)
         cell = []
@@ -130,14 +140,14 @@ class stdoutSileSiesta(SileSiesta):
         return Lattice(cell)
 
     def _r_geometry_outcoor(self, line, atoms=None):
-        """ Wrapper for reading the geometry as in the outcoor output """
+        """Wrapper for reading the geometry as in the outcoor output"""
         atoms_order = _ensure_atoms(atoms)
-        is_final = 'Relaxed' in line or 'Final (unrelaxed)' in line
+        is_final = "Relaxed" in line or "Final (unrelaxed)" in line
 
         # Now we have outcoor
-        scaled = 'scaled' in line
-        fractional = 'fractional' in line
-        Ang = 'Ang' in line
+        scaled = "scaled" in line
+        fractional = "fractional" in line
+        Ang = "Ang" in line
 
         # Read in data
         xyz = []
@@ -167,7 +177,9 @@ class stdoutSileSiesta(SileSiesta):
             # The output file for siesta does not
             # contain the lattice constant.
             # So... :(
-            raise ValueError("Could not read the lattice-constant for the scaled geometry")
+            raise ValueError(
+                "Could not read the lattice-constant for the scaled geometry"
+            )
         elif fractional:
             xyz = xyz.dot(cell.cell)
         elif not Ang:
@@ -176,11 +188,11 @@ class stdoutSileSiesta(SileSiesta):
         return Geometry(xyz, atoms, lattice=cell)
 
     def _r_geometry_atomic(self, line, atoms=None):
-        """ Wrapper for reading the geometry as in the outcoor output """
+        """Wrapper for reading the geometry as in the outcoor output"""
         atoms_order = _ensure_atoms(atoms)
 
         # Now we have outcoor
-        Ang = 'Ang' in line
+        Ang = "Ang" in line
 
         # Read in data
         xyz = []
@@ -189,7 +201,7 @@ class stdoutSileSiesta(SileSiesta):
         while len(line.strip()) > 0:
             line = line.split()
             xyz.append([float(x) for x in line[1:4]])
-            atoms.append(atoms_order[int(line[4])-1])
+            atoms.append(atoms_order[int(line[4]) - 1])
             line = self.readline()
 
         # Retrieve the unit-cell (but do not skip file-descriptor position)
@@ -207,7 +219,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_geometry(self, last=True, all=False):
-        """ Reads the geometry from the Siesta output file
+        """Reads the geometry from the Siesta output file
 
         Parameters
         ----------
@@ -229,17 +241,17 @@ class stdoutSileSiesta(SileSiesta):
             last = False
 
         def func_none(*args, **kwargs):
-            """ Wrapper to return None """
+            """Wrapper to return None"""
             return None
 
         def next_geom():
             coord, func = 0, func_none
-            line = ' '
-            while coord == 0 and line != '':
+            line = " "
+            while coord == 0 and line != "":
                 line = self.readline()
-                if 'outcoor' in line and 'coordinates' in line:
+                if "outcoor" in line and "coordinates" in line:
                     coord, func = 1, self._r_geometry_outcoor
-                elif 'siesta: Atomic coordinates' in line:
+                elif "siesta: Atomic coordinates" in line:
                     coord, func = 2, self._r_geometry_atomic
             return coord, func(line, atoms)
 
@@ -271,7 +283,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @sile_fh_open(True)
     def read_force(self, last=True, all=False, total=False, max=False, key="siesta"):
-        """ Reads the forces from the Siesta output file
+        """Reads the forces from the Siesta output file
 
         Parameters
         ----------
@@ -291,7 +303,7 @@ class stdoutSileSiesta(SileSiesta):
             Note that this is not the same as doing `max(outSile.read_force(total=True))` since
             the forces returned in that case are averages on each axis.
         key: {"siesta", "ts"}
-            Specifies the indicator string for the forces that are to be read. 
+            Specifies the indicator string for the forces that are to be read.
             The function will look for a line containing ``f'{key}: Atomic forces'``
             to start reading forces.
 
@@ -316,7 +328,6 @@ class stdoutSileSiesta(SileSiesta):
 
         # Read until forces are found
         def next_force():
-
             found, line = self.step_to(f"{key}: Atomic forces", allow_reread=False)
             if not found:
                 return None
@@ -324,18 +335,18 @@ class stdoutSileSiesta(SileSiesta):
             # Now read data
             F = []
             line = self.readline()
-            if 'siesta:' in line:
+            if "siesta:" in line:
                 # This is the final summary, we don't need to read it as it does not contain new information
                 # and also it make break things since max forces are not written there
                 return None
 
             # First, we encounter the atomic forces
-            while '---' not in line:
+            while "---" not in line:
                 line = line.split()
                 if not (total or max):
                     F.append([float(x) for x in line[-3:]])
                 line = self.readline()
-                if line == '':
+                if line == "":
                     break
 
             line = self.readline()
@@ -344,7 +355,7 @@ class stdoutSileSiesta(SileSiesta):
                 F = [float(x) for x in line.split()[-3:]]
 
             line = self.readline()
-            #And after that we can read the max force
+            # And after that we can read the max force
             if max and len(line.split()) != 0:
                 line = self.readline()
                 maxF = float(line.split()[1])
@@ -360,7 +371,8 @@ class stdoutSileSiesta(SileSiesta):
 
         def return_forces(Fs):
             # Handle cases where we can't now if they are found
-            if Fs is None: return None
+            if Fs is None:
+                return None
             Fs = _a.arrayd(Fs)
             if max and total:
                 return (Fs[..., :-1], Fs[..., -1])
@@ -386,7 +398,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @sile_fh_open(True)
     def read_stress(self, key="static", last=True, all=False):
-        """ Reads the stresses from the Siesta output file
+        """Reads the stresses from the Siesta output file
 
         Parameters
         ----------
@@ -409,10 +421,9 @@ class stdoutSileSiesta(SileSiesta):
 
         # Read until stress are found
         def next_stress():
-
             found, line = self.step_to(f"siesta: Stress tensor", allow_reread=False)
             found = found and key in line
-            while not found and line != '':
+            while not found and line != "":
                 found, line = self.step_to(f"siesta: Stress tensor", allow_reread=False)
                 found = found and key in line
             if not found:
@@ -444,8 +455,8 @@ class stdoutSileSiesta(SileSiesta):
         return next_stress()
 
     @sile_fh_open(True)
-    def read_moment(self, orbitals=False, quantity='S', last=True, all=False):
-        """ Reads the moments from the Siesta output file
+    def read_moment(self, orbitals=False, quantity="S", last=True, all=False):
+        """Reads the moments from the Siesta output file
 
         These will only be present in case of spin-orbit coupling.
 
@@ -469,26 +480,25 @@ class stdoutSileSiesta(SileSiesta):
 
         # The moments are printed in SPECIES list
         itt = iter(self)
-        next(itt) # empty
-        next(itt) # empty
+        next(itt)  # empty
+        next(itt)  # empty
 
         na = 0
         # Loop the species
         tbl = []
         # Read the species label
         while True:
-            next(itt) # ""
-            next(itt) # Atom    Orb ...
+            next(itt)  # ""
+            next(itt)  # Atom    Orb ...
             # Loop atoms in this species list
             while True:
                 line = next(itt)
-                if line.startswith('Species') or \
-                   line.startswith('--'):
+                if line.startswith("Species") or line.startswith("--"):
                     break
-                line = ' '
+                line = " "
                 atom = []
                 ia = 0
-                while not line.startswith('--'):
+                while not line.startswith("--"):
                     line = next(itt).split()
                     if ia == 0:
                         ia = int(line[0])
@@ -496,19 +506,19 @@ class stdoutSileSiesta(SileSiesta):
                         raise ValueError("Error in moments formatting.")
                     # Track maximum number of atoms
                     na = max(ia, na)
-                    if quantity == 'S':
+                    if quantity == "S":
                         atom.append([float(x) for x in line[4:7]])
-                    elif quantity == 'L':
+                    elif quantity == "L":
                         atom.append([float(x) for x in line[7:10]])
-                line = next(itt).split() # Total ...
+                line = next(itt).split()  # Total ...
                 if not orbitals:
                     ia = int(line[0])
-                    if quantity == 'S':
+                    if quantity == "S":
                         atom.append([float(x) for x in line[4:7]])
-                    elif quantity == 'L':
+                    elif quantity == "L":
                         atom.append([float(x) for x in line[8:11]])
                 tbl.append((ia, atom))
-            if line.startswith('--'):
+            if line.startswith("--"):
                 break
 
         # Sort according to the atomic index
@@ -516,7 +526,7 @@ class stdoutSileSiesta(SileSiesta):
 
         # Insert in the correct atomic
         for ia, atom in tbl:
-            moments[ia-1] = atom
+            moments[ia - 1] = atom
 
         if not all:
             return _a.arrayd(moments)
@@ -524,7 +534,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @sile_fh_open(True)
     def read_energy(self):
-        """ Reads the final energy distribution
+        """Reads the final energy distribution
 
         Currently the energies translated are:
 
@@ -606,7 +616,7 @@ class stdoutSileSiesta(SileSiesta):
             "Fermi": "fermi",
             "Enegf": "negf",
             "(Free)E+ p_basis*V_orbitals": "basis.enthalpy",
-            "(Free)E + p_basis*V_orbitals": "basis.enthalpy", # we may correct the missing space
+            "(Free)E + p_basis*V_orbitals": "basis.enthalpy",  # we may correct the missing space
         }
 
         def assign(out, key, val):
@@ -614,7 +624,9 @@ class stdoutSileSiesta(SileSiesta):
             try:
                 val = float(val)
             except ValueError:
-                warn(f"Could not convert energy '{key}' ({val}) to a float, assigning nan.")
+                warn(
+                    f"Could not convert energy '{key}' ({val}) to a float, assigning nan."
+                )
                 val = np.nan
 
             if "." in key:
@@ -641,7 +653,7 @@ class stdoutSileSiesta(SileSiesta):
         return out
 
     def read_data(self, *args, **kwargs):
-        """ Read specific content in the Siesta out file
+        """Read specific content in the Siesta out file
 
         The currently implemented things are denoted in
         the parameters list.
@@ -689,8 +701,10 @@ class stdoutSileSiesta(SileSiesta):
         return val
 
     @sile_fh_open(True)
-    def read_scf(self, key="scf", iscf=-1, imd=None, as_dataframe=False, ret_header=False):
-        r""" Parse SCF information and return a table of SCF information depending on what is requested
+    def read_scf(
+        self, key="scf", iscf=-1, imd=None, as_dataframe=False, ret_header=False
+    ):
+        r"""Parse SCF information and return a table of SCF information depending on what is requested
 
         Parameters
         ----------
@@ -706,53 +720,60 @@ class stdoutSileSiesta(SileSiesta):
         as_dataframe: boolean, optional
             whether the information should be returned as a `pandas.DataFrame`. The advantage of this
             format is that everything is indexed and therefore you know what each value means.You can also
-            perform operations very easily on a dataframe. 
+            perform operations very easily on a dataframe.
         ret_header: bool, optional
             whether to also return the headers that define each value in the returned array,
             will have no effect if `as_dataframe` is true.
         """
 
-        #These are the properties that are written in SIESTA scf
+        # These are the properties that are written in SIESTA scf
         props = ["iscf", "Eharris", "E_KS", "FreeEng", "dDmax", "Ef", "dHmax"]
 
         if not iscf is None:
             if iscf == 0:
-                raise ValueError(f"{self.__class__.__name__}.read_scf requires iscf argument to *not* be 0!")
+                raise ValueError(
+                    f"{self.__class__.__name__}.read_scf requires iscf argument to *not* be 0!"
+                )
         if not imd is None:
             if imd == 0:
-                raise ValueError(f"{self.__class__.__name__}.read_scf requires imd argument to *not* be 0!")
+                raise ValueError(
+                    f"{self.__class__.__name__}.read_scf requires imd argument to *not* be 0!"
+                )
+
         def reset_d(d, line):
-            if line.startswith('SCF cycle converged') or line.startswith('SCF_NOT_CONV'):
-                if len(d['data']) > 0:
-                    d['_final_iscf'] = 1
-            elif line.startswith('SCF cycle continued'):
-                d['_final_iscf'] = 0
+            if line.startswith("SCF cycle converged") or line.startswith(
+                "SCF_NOT_CONV"
+            ):
+                if len(d["data"]) > 0:
+                    d["_final_iscf"] = 1
+            elif line.startswith("SCF cycle continued"):
+                d["_final_iscf"] = 0
 
         def common_parse(line, d):
             nonlocal props
-            if line.startswith('ts-Vha:'):
-                d['ts-Vha'] = [float(line.split()[1])]
-                if 'ts-Vha' not in props:
-                    d['order'].append("ts-Vha")
+            if line.startswith("ts-Vha:"):
+                d["ts-Vha"] = [float(line.split()[1])]
+                if "ts-Vha" not in props:
+                    d["order"].append("ts-Vha")
                     props.append("ts-Vha")
             elif line.startswith("spin moment: S"):
                 # 4.1 and earlier
-                d['S'] = list(map(float, line.split("=")[1].split()[1:]))
-                if 'Sx' not in props:
-                    d['order'].append("S")
-                    props.extend(['Sx', 'Sy', 'Sz'])
+                d["S"] = list(map(float, line.split("=")[1].split()[1:]))
+                if "Sx" not in props:
+                    d["order"].append("S")
+                    props.extend(["Sx", "Sy", "Sz"])
             elif line.startswith("spin moment: {S}"):
                 # 4.2 and later
-                d['S'] = list(map(float, line.split("= {")[1].split()[:3]))
-                if 'Sx' not in props:
-                    d['order'].append("S")
-                    props.extend(['Sx', 'Sy', 'Sz'])
-            elif line.startswith('bulk-bias: |v'):
+                d["S"] = list(map(float, line.split("= {")[1].split()[:3]))
+                if "Sx" not in props:
+                    d["order"].append("S")
+                    props.extend(["Sx", "Sy", "Sz"])
+            elif line.startswith("bulk-bias: |v"):
                 # TODO old version should be removed once released
-                d['bb-v'] = list(map(float, line.split()[-3:]))
-                if 'BB-vx' not in props:
-                    d['order'].append("bb-v")
-                    props.extend(['BB-vx', 'BB-vy', 'BB-vz'])
+                d["bb-v"] = list(map(float, line.split()[-3:]))
+                if "BB-vx" not in props:
+                    d["order"].append("bb-v")
+                    props.extend(["BB-vx", "BB-vy", "BB-vz"])
             elif line.startswith("bulk-bias: {v}"):
                 idx = line.index("{v}")
                 if line[idx + 3] == "_":
@@ -768,7 +789,7 @@ class stdoutSileSiesta(SileSiesta):
                     d["order"].append(lbl)
                     props.extend([f"{lbl}-vx", f"{lbl}-vy", f"{lbl}-vz"])
             elif line.startswith("bulk-bias: dq"):
-                d['BB-q'] = list(map(float, line.split()[-2:]))
+                d["BB-q"] = list(map(float, line.split()[-2:]))
                 if "BB-dq" not in props:
                     d["order"].append("BB-q")
                     props.extend(["BB-dq", "BB-q0"])
@@ -776,56 +797,84 @@ class stdoutSileSiesta(SileSiesta):
                 return False
             return True
 
-        if key.lower() == 'scf':
+        if key.lower() == "scf":
+
             def parse_next(line, d):
-                line = line.strip().replace('*', '0')
+                line = line.strip().replace("*", "0")
                 reset_d(d, line)
                 if common_parse(line, d):
                     pass
-                elif line.startswith('scf:'):
-                    d['_found_iscf'] = True
+                elif line.startswith("scf:"):
+                    d["_found_iscf"] = True
                     if len(line) == 97:
                         # this should be for Efup/dwn
                         # but I think this will fail for as_dataframe (TODO)
-                        data = [int(line[5:9]), float(line[9:25]), float(line[25:41]),
-                                float(line[41:57]), float(line[57:67]), float(line[67:77]),
-                                float(line[77:87]), float(line[87:97])]
+                        data = [
+                            int(line[5:9]),
+                            float(line[9:25]),
+                            float(line[25:41]),
+                            float(line[41:57]),
+                            float(line[57:67]),
+                            float(line[67:77]),
+                            float(line[77:87]),
+                            float(line[87:97]),
+                        ]
                     elif len(line) == 87:
-                        data = [int(line[5:9]), float(line[9:25]), float(line[25:41]),
-                                float(line[41:57]), float(line[57:67]), float(line[67:77]),
-                                float(line[77:87])]
+                        data = [
+                            int(line[5:9]),
+                            float(line[9:25]),
+                            float(line[25:41]),
+                            float(line[41:57]),
+                            float(line[57:67]),
+                            float(line[67:77]),
+                            float(line[77:87]),
+                        ]
                     else:
                         # Populate DATA by splitting
                         data = line.split()
-                        data =  [int(data[1])] + list(map(float, data[2:]))
+                        data = [int(data[1])] + list(map(float, data[2:]))
                     construct_data(d, data)
 
-        elif key.lower() == 'ts-scf':
+        elif key.lower() == "ts-scf":
+
             def parse_next(line, d):
-                line = line.strip().replace('*', '0')
+                line = line.strip().replace("*", "0")
                 reset_d(d, line)
                 if common_parse(line, d):
                     pass
-                elif line.startswith('ts-q:'):
+                elif line.startswith("ts-q:"):
                     data = line.split()[1:]
                     try:
-                        d['ts-q'] = list(map(float, data))
+                        d["ts-q"] = list(map(float, data))
                     except Exception:
                         # We are probably reading a device list
                         # ensure that props are appended
                         if data[-1] not in props:
                             d["order"].append("ts-q")
                             props.extend(data)
-                elif line.startswith('ts-scf:'):
-                    d['_found_iscf'] = True
+                elif line.startswith("ts-scf:"):
+                    d["_found_iscf"] = True
                     if len(line) == 100:
-                        data = [int(line[8:12]), float(line[12:28]), float(line[28:44]),
-                                float(line[44:60]), float(line[60:70]), float(line[70:80]),
-                                float(line[80:90]), float(line[90:100])]
+                        data = [
+                            int(line[8:12]),
+                            float(line[12:28]),
+                            float(line[28:44]),
+                            float(line[44:60]),
+                            float(line[60:70]),
+                            float(line[70:80]),
+                            float(line[80:90]),
+                            float(line[90:100]),
+                        ]
                     elif len(line) == 90:
-                        data = [int(line[8:12]), float(line[12:28]), float(line[28:44]),
-                                float(line[44:60]), float(line[60:70]), float(line[70:80]),
-                                float(line[80:90])]
+                        data = [
+                            int(line[8:12]),
+                            float(line[12:28]),
+                            float(line[28:44]),
+                            float(line[44:60]),
+                            float(line[60:70]),
+                            float(line[70:80]),
+                            float(line[80:90]),
+                        ]
                     else:
                         # Populate DATA by splitting
                         data = line.split()
@@ -834,11 +883,12 @@ class stdoutSileSiesta(SileSiesta):
 
         # A temporary dictionary to hold information while reading the output file
         d = {
-            '_found_iscf': False,
-            '_final_iscf': 0,
-            'data': [],
-            'order': [],
+            "_found_iscf": False,
+            "_final_iscf": 0,
+            "data": [],
+            "order": [],
         }
+
         def construct_data(d, data):
             for key in d["order"]:
                 data.extend(d[key])
@@ -848,9 +898,9 @@ class stdoutSileSiesta(SileSiesta):
         scf = []
         for line in self:
             parse_next(line, d)
-            if d['_found_iscf']:
-                d['_found_iscf'] = False
-                data = d['data']
+            if d["_found_iscf"]:
+                d["_found_iscf"] = False
+                data = d["data"]
                 if len(data) == 0:
                     continue
 
@@ -861,11 +911,11 @@ class stdoutSileSiesta(SileSiesta):
                     # case the requested iscf is too big
                     scf = data
 
-            if d['_final_iscf'] == 1:
-                d['_final_iscf'] = 2
-            elif d['_final_iscf'] == 2:
-                d['_final_iscf'] = 0
-                data = d['data']
+            if d["_final_iscf"] == 1:
+                d["_final_iscf"] = 2
+            elif d["_final_iscf"] == 2:
+                d["_final_iscf"] = 0
+                data = d["data"]
                 if len(data) == 0:
                     # this traps the case where we read ts-scf
                     # but find the final scf iteration.
@@ -880,7 +930,7 @@ class stdoutSileSiesta(SileSiesta):
                     continue
 
                 # First figure out which iscf we should store
-                if iscf is None: # or iscf > 0
+                if iscf is None:  # or iscf > 0
                     # scf is correct
                     pass
                 elif iscf < 0:
@@ -905,9 +955,8 @@ class stdoutSileSiesta(SileSiesta):
                 scf = np.atleast_2d(scf)
                 return pd.DataFrame(
                     scf[..., 1:],
-                    index=pd.Index(scf[..., 0].ravel().astype(np.int32),
-                                   name="iscf"),
-                    columns=props[1:]
+                    index=pd.Index(scf[..., 0].ravel().astype(np.int32), name="iscf"),
+                    columns=props[1:],
                 )
 
         # Now we know how many MD steps there are
@@ -921,12 +970,14 @@ class stdoutSileSiesta(SileSiesta):
             if as_dataframe:
                 if len(md) == 0:
                     # return an empty dataframe (with imd as index)
-                    return pd.DataFrame(index=pd.Index([], name="imd"),
-                                        columns=props)
+                    return pd.DataFrame(index=pd.Index([], name="imd"), columns=props)
                 # Regardless of what the user requests we will always have imd == index
                 # and iscf a column, a user may easily change this.
-                df = pd.concat(map(MDstep_dataframe, md),
-                               keys=_a.arangei(1, len(md) + 1), names=["imd"])
+                df = pd.concat(
+                    map(MDstep_dataframe, md),
+                    keys=_a.arangei(1, len(md) + 1),
+                    names=["imd"],
+                )
                 if iscf is not None:
                     df.reset_index("iscf", inplace=True)
                 return df
@@ -944,15 +995,16 @@ class stdoutSileSiesta(SileSiesta):
         if len(md) == 0:
             # no data collected
             if as_dataframe:
-                return pd.DataFrame(index=pd.Index([], name="iscf"),
-                                    columns=props[1:])
+                return pd.DataFrame(index=pd.Index([], name="iscf"), columns=props[1:])
             md = np.array(md[imd])
             if ret_header:
                 return md, props
             return md
 
         if imd > len(md):
-            raise ValueError(f"{self.__class__.__name__}.read_scf could not find requested MD step ({imd}).")
+            raise ValueError(
+                f"{self.__class__.__name__}.read_scf could not find requested MD step ({imd})."
+            )
 
         # If a certain imd was requested, get it
         # Remember that if imd is positive, we stopped reading at the moment we reached it
@@ -964,7 +1016,9 @@ class stdoutSileSiesta(SileSiesta):
         return scf
 
     @sile_fh_open(True)
-    def read_charge(self, name, iscf=Opt.ANY, imd=Opt.ANY, key_scf="scf", as_dataframe=False):
+    def read_charge(
+        self, name, iscf=Opt.ANY, imd=Opt.ANY, key_scf="scf", as_dataframe=False
+    ):
         r"""Read charges calculated in SCF loop or MD loop (or both)
 
         Siesta enables many different modes of writing out charges.
@@ -1032,19 +1086,23 @@ class stdoutSileSiesta(SileSiesta):
         namel = name.lower()
         if as_dataframe:
             import pandas as pd
+
             def _empty_charge():
                 # build a fake dataframe with no indices
-                return pd.DataFrame(index=pd.Index([], name="atom", dtype=np.int32),
-                                    dtype=np.float32)
+                return pd.DataFrame(
+                    index=pd.Index([], name="atom", dtype=np.int32), dtype=np.float32
+                )
+
         else:
             pd = None
+
             def _empty_charge():
                 # return for single value with nan values
                 return _a.arrayf([[None]])
 
         # define helper function for reading voronoi+hirshfeld charges
         def _voronoi_hirshfeld_charges():
-            """ Read output from Voronoi/Hirshfeld charges """
+            """Read output from Voronoi/Hirshfeld charges"""
             nonlocal pd
 
             # Expecting something like this (NC/SOC)
@@ -1057,11 +1115,13 @@ class stdoutSileSiesta(SileSiesta):
             #      1   -0.02936   4.02936   0.00000  C
 
             # first line is the header
-            header = (self.readline()
-                      .replace("dQatom", "dq") # dQatom in master
-                      .replace(" Qatom", " dq") # Qatom in 4.1
-                      .replace("Atom pop", "e") # not found in 4.1
-                      .split())[2:-1]
+            header = (
+                self.readline()
+                .replace("dQatom", "dq")  # dQatom in master
+                .replace(" Qatom", " dq")  # Qatom in 4.1
+                .replace("Atom pop", "e")  # not found in 4.1
+                .split()
+            )[2:-1]
 
             # Define the function that parses the charges
             def _parse_charge(line):
@@ -1069,12 +1129,12 @@ class stdoutSileSiesta(SileSiesta):
                 # assert that this is a proper line
                 # this should catch cases where the following line of charge output
                 # is still parseable
-                #atom_idx = int(atom_idx)
+                # atom_idx = int(atom_idx)
                 return list(map(float, vals))
 
             # We have found the header, prepare a list to read the charges
             atom_charges = []
-            line = ' '
+            line = " "
             while line != "":
                 try:
                     line = self.readline()
@@ -1094,28 +1154,38 @@ class stdoutSileSiesta(SileSiesta):
             assert ncols == len(header)
 
             # the precision is limited, so no need for double precision
-            return pd.DataFrame(atom_charges, columns=header, dtype=np.float32,
-                                index=pd.RangeIndex(stop=len(atom_charges), name="atom"))
+            return pd.DataFrame(
+                atom_charges,
+                columns=header,
+                dtype=np.float32,
+                index=pd.RangeIndex(stop=len(atom_charges), name="atom"),
+            )
 
         # define helper function for reading voronoi+hirshfeld charges
         def _mulliken_charges():
-            """ Read output from Mulliken charges """
+            """Read output from Mulliken charges"""
             raise NotImplementedError("Mulliken charges are not implemented currently")
 
         # Check that a known charge has been requested
         if namel == "voronoi":
             _r_charge = _voronoi_hirshfeld_charges
-            charge_keys = ["Voronoi Atomic Populations",
-                           "Voronoi Net Atomic Populations"]
+            charge_keys = [
+                "Voronoi Atomic Populations",
+                "Voronoi Net Atomic Populations",
+            ]
         elif namel == "hirshfeld":
             _r_charge = _voronoi_hirshfeld_charges
-            charge_keys = ["Hirshfeld Atomic Populations",
-                           "Hirshfeld Net Atomic Populations"]
+            charge_keys = [
+                "Hirshfeld Atomic Populations",
+                "Hirshfeld Net Atomic Populations",
+            ]
         elif namel == "mulliken":
             _r_charge = _mulliken_charges
             charge_keys = ["mulliken: Atomic and Orbital Populations"]
         else:
-            raise ValueError(f"{self.__class__.__name__}.read_charge name argument should be one of [voronoi, hirshfeld, mulliken], got {name}?")
+            raise ValueError(
+                f"{self.__class__.__name__}.read_charge name argument should be one of [voronoi, hirshfeld, mulliken], got {name}?"
+            )
 
         # Ensure the key_scf matches exactly (prepend a space)
         key_scf = f" {key_scf.strip()}:"
@@ -1125,10 +1195,11 @@ class stdoutSileSiesta(SileSiesta):
         # to see if we finished a MD read, we check for these keys
         search_keys = [
             # two keys can signal ending SCF
-            "SCF Convergence", "SCF_NOT_CONV",
+            "SCF Convergence",
+            "SCF_NOT_CONV",
             "siesta: Final energy",
             key_scf,
-            *charge_keys
+            *charge_keys,
         ]
         # adjust the below while loop to take into account any additional
         # segments of search_keys
@@ -1136,8 +1207,7 @@ class stdoutSileSiesta(SileSiesta):
         IDX_FINAL = [2]
         IDX_SCF = [3]
         # the rest are charge keys
-        IDX_CHARGE = list(range(len(search_keys) - len(charge_keys),
-                                len(search_keys)))
+        IDX_CHARGE = list(range(len(search_keys) - len(charge_keys), len(search_keys)))
 
         # state to figure out where we are
         state = PropertyDict()
@@ -1224,7 +1294,9 @@ class stdoutSileSiesta(SileSiesta):
                 current_state = state.CHARGE
 
             # step to next entry
-            ret = self.step_to(search_keys, case=True, ret_index=True, allow_reread=False)
+            ret = self.step_to(
+                search_keys, case=True, ret_index=True, allow_reread=False
+            )
 
         if not any((FOUND_SCF, FOUND_MD, FOUND_FINAL)):
             raise SileError(f"{self!s} does not contain any charges ({name})")
@@ -1247,21 +1319,30 @@ class stdoutSileSiesta(SileSiesta):
             # convert data to proper data structures
             # regardless of user requests. This is an overhead... But probably not that big of a problem.
             if FOUND_SCF:
-                md_scf_charge = pd.concat([pd.concat(iscf,
-                                                     keys=pd.RangeIndex(1, len(iscf)+1, name="iscf"))
-                                           for iscf in md_scf_charge],
-                                          keys=pd.RangeIndex(1, len(md_scf_charge)+1, name="imd"))
+                md_scf_charge = pd.concat(
+                    [
+                        pd.concat(
+                            iscf, keys=pd.RangeIndex(1, len(iscf) + 1, name="iscf")
+                        )
+                        for iscf in md_scf_charge
+                    ],
+                    keys=pd.RangeIndex(1, len(md_scf_charge) + 1, name="imd"),
+                )
             if FOUND_MD:
-                md_charge = pd.concat(md_charge, keys=pd.RangeIndex(1, len(md_charge)+1, name="imd"))
+                md_charge = pd.concat(
+                    md_charge, keys=pd.RangeIndex(1, len(md_charge) + 1, name="imd")
+                )
         else:
             if FOUND_SCF:
                 nan_array = _a.emptyf(md_scf_charge[0][0].shape)
                 nan_array.fill(np.nan)
+
                 def get_md_scf_charge(scf_charge, iscf):
                     try:
                         return scf_charge[iscf]
                     except Exception:
                         return nan_array
+
             if FOUND_MD:
                 md_charge = np.stack(md_charge)
 
@@ -1269,7 +1350,7 @@ class stdoutSileSiesta(SileSiesta):
         # So first figure out what is there, and handle this based
         # on arguments
         def _p(flag, found):
-            """ Helper routine to do the following:
+            """Helper routine to do the following:
 
             Returns
             -------
@@ -1289,7 +1370,7 @@ class stdoutSileSiesta(SileSiesta):
                     # flag is only NONE, then pass none
                     if not (Opt.NONE ^ flag):
                         flag = None
-                else: # not found
+                else:  # not found
                     # we convert flag to none
                     # if ANY or NONE in flag
                     if (Opt.NONE | Opt.ANY) & flag:
@@ -1303,8 +1384,7 @@ class stdoutSileSiesta(SileSiesta):
         if not (FOUND_SCF or FOUND_MD):
             # none of these are found
             # we request that user does not request any input
-            if (opt_iscf or (not iscf is None)) or \
-               (opt_imd or (not imd is None)):
+            if (opt_iscf or (not iscf is None)) or (opt_imd or (not imd is None)):
                 raise SileError(f"{self!s} does not contain MD/SCF charges")
 
         elif not FOUND_SCF:
@@ -1339,11 +1419,15 @@ class stdoutSileSiesta(SileSiesta):
                 # this should be handled, i.e. the scf should be taken out
                 if as_dataframe:
                     return md_scf_charge.groupby(level=[0, 2]).nth(iscf)
-                return np.stack(tuple(get_md_scf_charge(x, iscf) for x in md_scf_charge))
+                return np.stack(
+                    tuple(get_md_scf_charge(x, iscf) for x in md_scf_charge)
+                )
 
             elif FOUND_MD and iscf is None:
                 return md_charge
-            raise SileError(f"{str(self)} unknown argument for 'imd' and 'iscf', could not find SCF charges")
+            raise SileError(
+                f"{str(self)} unknown argument for 'imd' and 'iscf', could not find SCF charges"
+            )
 
         elif opt_iscf:
             # flag requested imd
@@ -1383,7 +1467,9 @@ class stdoutSileSiesta(SileSiesta):
         return md_scf_charge[imd][iscf]
 
 
-outSileSiesta = deprecation("outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15")(stdoutSileSiesta)
+outSileSiesta = deprecation(
+    "outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15"
+)(stdoutSileSiesta)
 
 add_sile("siesta.out", stdoutSileSiesta, case=False, gzip=True)
 add_sile("out", stdoutSileSiesta, case=False, gzip=True)

@@ -16,9 +16,8 @@ _spdfgh = "spdfgh"
 
 
 class AtomPseudo(AtomInput):
-
     def get_variables(self, dict_or_yaml, nodes=()):
-        """ Convert a dictionary or yaml file input to variables usable by the minimizer """
+        """Convert a dictionary or yaml file input to variables usable by the minimizer"""
         if not isinstance(dict_or_yaml, dict):
             dict_or_yaml = read_yaml(dict_or_yaml)
         if isinstance(nodes, str):
@@ -28,17 +27,17 @@ class AtomPseudo(AtomInput):
         return self._get_variables_dict(dict_or_yaml)
 
     def _get_variables_dict(self, dic):
-        """ Parse a dictionary adding potential variables to the minimize model """
+        """Parse a dictionary adding potential variables to the minimize model"""
         tag = self.atom.tag
 
         # with respect to the basis
         def update_orb(old, new, orb, key):
-            """ Update an orbital's radii """
+            """Update an orbital's radii"""
             setattr(orb, f"_{key}", new)
 
         # Define other options
         def update(old, new, d, key, idx=None):
-            """ An updater for a dictionary with optional keys """
+            """An updater for a dictionary with optional keys"""
             if idx is None:
                 d[key] = new
             else:
@@ -46,6 +45,7 @@ class AtomPseudo(AtomInput):
 
         # returned variables
         V = []
+
         def add_variable(var):
             nonlocal V
             if var.value is not None:
@@ -55,11 +55,24 @@ class AtomPseudo(AtomInput):
 
         # get default options for pseudo
         pseudo = dic.get("pseudo", {})
-        add_variable(parse_variable(pseudo.get("log-radii"), unit="Ang", name=f"{tag}.logr",
-                                    update_func=partial(update, d=self.opts, key="logr")))
+        add_variable(
+            parse_variable(
+                pseudo.get("log-radii"),
+                unit="Ang",
+                name=f"{tag}.logr",
+                update_func=partial(update, d=self.opts, key="logr"),
+            )
+        )
 
-        add_variable(parse_variable(pseudo.get("core-correction"), 0., unit="Ang", name=f"{tag}.core",
-                                    update_func=partial(update, d=self.opts, key="rcore")))
+        add_variable(
+            parse_variable(
+                pseudo.get("core-correction"),
+                0.0,
+                unit="Ang",
+                name=f"{tag}.core",
+                update_func=partial(update, d=self.opts, key="rcore"),
+            )
+        )
 
         # parse depending on shells in the atom
         for orb in self.atom:
@@ -70,10 +83,23 @@ class AtomPseudo(AtomInput):
                 continue
 
             # Now parse this one
-            add_variable(parse_variable(pseudo.get("cutoff"), orb.R, unit="Ang", name=f"{tag}.{nl}.r",
-                                        update_func=partial(update_orb, orb=orb, key="R")))
+            add_variable(
+                parse_variable(
+                    pseudo.get("cutoff"),
+                    orb.R,
+                    unit="Ang",
+                    name=f"{tag}.{nl}.r",
+                    update_func=partial(update_orb, orb=orb, key="R"),
+                )
+            )
 
-            add_variable(parse_variable(pseudo.get("charge"), orb.q0, name=f"{tag}.{nl}.q",
-                                        update_func=partial(update_orb, orb=orb, key="q0")))
+            add_variable(
+                parse_variable(
+                    pseudo.get("charge"),
+                    orb.q0,
+                    name=f"{tag}.{nl}.q",
+                    update_func=partial(update_orb, orb=orb, key="q0"),
+                )
+            )
 
         return V

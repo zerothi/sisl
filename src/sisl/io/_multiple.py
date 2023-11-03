@@ -10,7 +10,7 @@ Func = Callable[..., Optional[Any]]
 
 
 class SileSlicer:
-    """ Handling io-methods in sliced behaviour for multiple returns
+    """Handling io-methods in sliced behaviour for multiple returns
 
     This class handler can expose a slicing behavior of the function
     that it applies to.
@@ -19,13 +19,16 @@ class SileSlicer:
     let this perform the function at hand for slicing behaviour
     etc.
     """
-    def __init__(self,
-                 obj: Type[Any],
-                 func: Func,
-                 key: Type[Any],
-                 *,
-                 skip_func: Optional[Func]=None,
-                 postprocess: Optional[Callable[..., Any]]=None):
+
+    def __init__(
+        self,
+        obj: Type[Any],
+        func: Func,
+        key: Type[Any],
+        *,
+        skip_func: Optional[Func] = None,
+        postprocess: Optional[Callable[..., Any]] = None,
+    ):
         # this makes it work like a function bound to an instance (func._obj
         # works for instances)
         self._obj = obj
@@ -37,12 +40,14 @@ class SileSlicer:
         else:
             self.skip_func = skip_func
         if postprocess is None:
+
             def postprocess(ret):
                 return ret
+
         self.postprocess = postprocess
 
     def __call__(self, *args, **kwargs):
-        """ Defer call to the function """
+        """Defer call to the function"""
         # Now handle the arguments
         obj = self._obj
         func = self.__wrapped__
@@ -68,7 +73,7 @@ class SileSlicer:
             if key >= 0:
                 start = key
                 stop = key + 1
-        elif key.step is None or key.step > 0: # step size of 1
+        elif key.step is None or key.step > 0:  # step size of 1
             if key.start is not None:
                 start = key.start
             if key.stop is not None:
@@ -88,7 +93,7 @@ class SileSlicer:
         # collect returning values
         retvals = [None] * start
         append = retvals.append
-        with obj: # open sile
+        with obj:  # open sile
             # quick-skip using the skip-function
             for _ in range(start):
                 skip_func(obj, *args, **kwargs)
@@ -114,24 +119,27 @@ class SileSlicer:
         self.key = None
         if isinstance(key, Integral):
             return retvals[key]
-        
+
         # else postprocess
         return self.postprocess(retvals[key])
 
 
 class SileBound:
-    """ A bound method deferring stuff to the function
+    """A bound method deferring stuff to the function
 
     This class calls the function `func` when directly called
     but returns the `slicer` class when users slices this object.
     """
-    def __init__(self,
-                 obj: Type[Any],
-                 func: Callable[..., Any],
-                 *,
-                 slicer: Type[SileSlicer]=SileSlicer,
-                 default_slice: Optional[Any]=None,
-                 **kwargs):
+
+    def __init__(
+        self,
+        obj: Type[Any],
+        func: Callable[..., Any],
+        *,
+        slicer: Type[SileSlicer] = SileSlicer,
+        default_slice: Optional[Any] = None,
+        **kwargs,
+    ):
         self._obj = obj
         # first update to the wrapped function
         update_wrapper(self, func)
@@ -168,7 +176,8 @@ class SileBound:
 
         docs = [doc]
         docs.append(
-        dedent(f"""
+            dedent(
+                f"""
         Notes
         -----
         This method defaults to return {default_slice} item(s).
@@ -190,7 +199,8 @@ class SileBound:
 
         While one can store the sliced function ``tmp = obj.{name}[:]`` one
         will loose the slice after each call.
-        """)
+        """
+            )
         )
         doc = "\n".join(docs)
         try:
@@ -206,31 +216,27 @@ class SileBound:
         return self[self.default_slice](*args, **kwargs)
 
     def __getitem__(self, key):
-        """Extract sub items of multiple function calls as an indexed list """
-        return self.slicer(
-                obj=self._obj,
-                func=self.__wrapped__,
-                key=key,
-                **self.kwargs
-        )
+        """Extract sub items of multiple function calls as an indexed list"""
+        return self.slicer(obj=self._obj, func=self.__wrapped__, key=key, **self.kwargs)
 
     @property
     def next(self):
-        """Return the first element of the contained function """
+        """Return the first element of the contained function"""
         return self[0]
 
     @property
     def last(self):
-        """Return the last element of the contained function """
+        """Return the last element of the contained function"""
         return self[-1]
 
 
 class SileBinder:
-    """ Bind a class instance to the function name it decorates
+    """Bind a class instance to the function name it decorates
 
     Enables to bypass a class method with another object to defer
     handling in specific cases.
     """
+
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
@@ -248,20 +254,11 @@ class SileBinder:
             # and other things, this one won't bind
             # the SileBound object to the function
             # name it arrived from.
-            bound = SileBound(
-                    obj=objtype,
-                    func=func,
-                    **self.kwargs
-            )
+            bound = SileBound(obj=objtype, func=func, **self.kwargs)
         else:
-            bound = SileBound(
-                    obj=obj,
-                    func=func,
-                    **self.kwargs
-            )
+            bound = SileBound(obj=obj, func=func, **self.kwargs)
             # bind the class object to the host
             # No more instantiation
             setattr(obj, func.__name__, bound)
 
         return bound
-

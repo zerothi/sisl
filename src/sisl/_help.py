@@ -25,6 +25,7 @@ import collections.abc as collections_abc
 try:
     from defusedxml import __version__ as defusedxml_version
     from defusedxml.ElementTree import parse as xml_parse
+
     try:
         defusedxml_version = list(map(int, defusedxml_version.split(".")))
         if defusedxml_version[0] == 0 and defusedxml_version[1] <= 5:
@@ -49,8 +50,10 @@ def array_fill_repeat(array, size, cls=None):
     if size % len(array) != 0:
         # We do not have it correctly formatted (either an integer
         # repeatable part, full, or a single)
-        raise ValueError("Repetition of or array is not divisible with actual length. "
-                         "Hence we cannot create a repeated size.")
+        raise ValueError(
+            "Repetition of or array is not divisible with actual length. "
+            "Hence we cannot create a repeated size."
+        )
     if cls is None:
         if reps > 1:
             return np.tile(array, reps)
@@ -63,7 +66,7 @@ def array_fill_repeat(array, size, cls=None):
 
 @set_module("sisl")
 def voigt_matrix(M, to_voigt):
-    r""" Convert a matrix from Voigt representation to dense, or from matrix to Voigt
+    r"""Convert a matrix from Voigt representation to dense, or from matrix to Voigt
 
     Parameters
     ----------
@@ -76,30 +79,31 @@ def voigt_matrix(M, to_voigt):
     """
     if to_voigt:
         m = np.empty(M.shape[:-2] + (6,), dtype=M.dtype)
-        m[..., 0] = M[..., 0, 0] # xx
-        m[..., 1] = M[..., 1, 1] # yy
-        m[..., 2] = M[..., 2, 2] # zz
-        m[..., 3] = (M[..., 2, 1] + M[..., 1, 2]) * 0.5 # zy
-        m[..., 4] = (M[..., 2, 0] + M[..., 0, 2]) * 0.5 # zx
-        m[..., 5] = (M[..., 1, 0] + M[..., 0, 1]) * 0.5 # xy
+        m[..., 0] = M[..., 0, 0]  # xx
+        m[..., 1] = M[..., 1, 1]  # yy
+        m[..., 2] = M[..., 2, 2]  # zz
+        m[..., 3] = (M[..., 2, 1] + M[..., 1, 2]) * 0.5  # zy
+        m[..., 4] = (M[..., 2, 0] + M[..., 0, 2]) * 0.5  # zx
+        m[..., 5] = (M[..., 1, 0] + M[..., 0, 1]) * 0.5  # xy
     else:
         m = np.empty(M.shape[:-1] + (3, 3), dtype=M.dtype)
-        m[..., 0, 0] = M[..., 0] # xx
-        m[..., 1, 1] = M[..., 1] # yy
-        m[..., 2, 2] = M[..., 2] # zz
-        m[..., 0, 1] = M[..., 5] # xy
-        m[..., 1, 0] = M[..., 5] # xy
-        m[..., 0, 2] = M[..., 4] # xz
-        m[..., 2, 0] = M[..., 4] # xz
-        m[..., 1, 2] = M[..., 3] # zy
-        m[..., 2, 1] = M[..., 3] # zy
+        m[..., 0, 0] = M[..., 0]  # xx
+        m[..., 1, 1] = M[..., 1]  # yy
+        m[..., 2, 2] = M[..., 2]  # zz
+        m[..., 0, 1] = M[..., 5]  # xy
+        m[..., 1, 0] = M[..., 5]  # xy
+        m[..., 0, 2] = M[..., 4]  # xz
+        m[..., 2, 0] = M[..., 4]  # xz
+        m[..., 1, 2] = M[..., 3]  # zy
+        m[..., 2, 1] = M[..., 3]  # zy
     return m
+
 
 _Iterable = collections_abc.Iterable
 
 
 def isiterable(obj):
-    """ Returns whether the object is an iterable or not """
+    """Returns whether the object is an iterable or not"""
     return isinstance(obj, _Iterable)
 
 
@@ -107,12 +111,12 @@ _ndarray = np.ndarray
 
 
 def isndarray(arr):
-    """ Returns ``True`` if the input object is a `numpy.ndarray` object """
+    """Returns ``True`` if the input object is a `numpy.ndarray` object"""
     return isinstance(arr, _ndarray)
 
 
-def get_dtype(var, int=None, other=None): # pylint: disable=W0622
-    """ Returns the `numpy.dtype` equivalent of `var`.
+def get_dtype(var, int=None, other=None):  # pylint: disable=W0622
+    """Returns the `numpy.dtype` equivalent of `var`.
 
     Parameters
     ----------
@@ -173,7 +177,7 @@ def get_dtype(var, int=None, other=None): # pylint: disable=W0622
 
 
 def dtype_complex_to_real(dtype):
-    """ Return the equivalent precision real data-type if the `dtype` is complex """
+    """Return the equivalent precision real data-type if the `dtype` is complex"""
     if dtype == np.complex128:
         return np.float64
     elif dtype == np.complex64:
@@ -182,7 +186,7 @@ def dtype_complex_to_real(dtype):
 
 
 def dtype_real_to_complex(dtype):
-    """ Return the equivalent precision complex data-type if the `dtype` is real """
+    """Return the equivalent precision complex data-type if the `dtype` is real"""
     if dtype == np.float64:
         return np.complex128
     elif dtype == np.float32:
@@ -191,7 +195,7 @@ def dtype_real_to_complex(dtype):
 
 
 def array_replace(array, *replace, **kwargs):
-    """ Replace values in `array` using `replace`
+    """Replace values in `array` using `replace`
 
     Replaces values in `array` using tuple/val in `replace`.
 
@@ -231,7 +235,7 @@ def array_replace(array, *replace, **kwargs):
 
 
 def wrap_filterwarnings(*args, **kwargs):
-    """ Instead of creating nested `with` statements one can wrap entire functions with a filter
+    """Instead of creating nested `with` statements one can wrap entire functions with a filter
 
     The following two are equivalent:
 
@@ -250,11 +254,14 @@ def wrap_filterwarnings(*args, **kwargs):
     **kwargs :
        keyword arguments passed to `warnings.filterwarnings`
     """
+
     def decorator(func):
         @functools.wraps(func)
         def wrap_func(*func_args, **func_kwargs):
             with warnings.catch_warnings():
                 warnings.filterwarnings(*args, **kwargs)
                 return func(*func_args, **func_kwargs)
+
         return wrap_func
+
     return decorator

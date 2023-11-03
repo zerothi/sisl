@@ -28,6 +28,7 @@ we hit release version 1.0.0.
 - fixed cases where `Geometry.close` would not catch all neighbours, #633
 
 ### Changed
+- sisl now enforces the black style
 - `Lattice` now holds the boundary conditions (not `Grid`), see #626
 - Some siles exposed certain properties containing basic information
   about the content, say number of atoms/orbitals etc.

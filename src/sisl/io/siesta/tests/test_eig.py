@@ -15,8 +15,9 @@ _dir = osp.join("sisl", "io", "siesta")
 
 
 def _convert45(unit):
-    """ Convert from legacy units to CODATA2018 """
+    """Convert from legacy units to CODATA2018"""
     from sisl.unit.siesta import units, units_legacy
+
     return units(unit) / units_legacy(unit)
 
 
@@ -26,6 +27,7 @@ def test_si_pdos_kgrid_eig(sisl_files):
 
     # nspin, nk, nb
     assert np.all(eig.shape == (1, 32, 26))
+
 
 def test_si_pdos_kgrid_eig_ArgumentParser(sisl_files, sisl_tmp):
     pytest.importorskip("matplotlib", reason="matplotlib not available")

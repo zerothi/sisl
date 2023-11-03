@@ -13,6 +13,7 @@ from sisl.messages import deprecate_argument
 from sisl.utils import str_spec
 
 from ._multiple import SileBinder
+
 # Import sile objects
 from .sile import *
 
@@ -29,35 +30,41 @@ def _get_kw_index(key):
 
 def reset_values(*names_values, animsteps=False):
     if animsteps:
+
         def reset(self):
             nonlocal names_values
             self._write_animsteps()
             for name, value in names_values:
                 setattr(self, name, value)
+
     else:
+
         def reset(self):
             nonlocal names_values
             for name, value in names_values:
                 setattr(self, name, value)
+
     return reset
 
 
 def postprocess(*funcs):
-    """ Post-processes the returned value according to the funcs for multiple data """
+    """Post-processes the returned value according to the funcs for multiple data"""
+
     def post(ret):
         nonlocal funcs
         if isinstance(ret[0], tuple):
             return tuple(func(r) for r, func in zip(zip(*ret), funcs))
         return funcs[0](ret)
+
     return post
 
-        
+
 # Implementation notice!
 # The XSF files are compatible with Vesta, but ONLY
 # if there are no empty lines!
 @set_module("sisl.io")
 class xsfSile(Sile):
-    """ XSF file for XCrySDen
+    """XSF file for XCrySDen
 
     When creating an XSF file one must denote how many geometries to write out.
     It is also necessary to use the xsf in a context manager, otherwise it will
@@ -74,9 +81,9 @@ class xsfSile(Sile):
     """
 
     def _setup(self, *args, **kwargs):
-        """ Setup the `xsfSile` after initialization """
+        """Setup the `xsfSile` after initialization"""
         super()._setup(*args, **kwargs)
-        self._comment = ['#']
+        self._comment = ["#"]
         if "w" in self._mode:
             self._geometry_max = kwargs.get("steps", 1)
         else:
@@ -104,9 +111,11 @@ class xsfSile(Sile):
             self._write(f"ANIMSTEPS {self._geometry_max}\n")
 
     @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
-    def write_lattice(self, lattice, fmt='.8f'):
-        """ Writes the supercell to the contained file
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
+    def write_lattice(self, lattice, fmt=".8f"):
+        """Writes the supercell to the contained file
 
         Parameters
         ----------
@@ -120,7 +129,10 @@ class xsfSile(Sile):
 
         # Write out top-header stuff
         from time import gmtime, strftime
-        self._write_once('# File created by: sisl {}\n#\n'.format(strftime("%Y-%m-%d", gmtime())))
+
+        self._write_once(
+            "# File created by: sisl {}\n#\n".format(strftime("%Y-%m-%d", gmtime()))
+        )
 
         if all(lattice.nsc == 1):
             self._write_once("MOLECULE\n#\n")
@@ -129,28 +141,28 @@ class xsfSile(Sile):
         elif lattice.nsc[0] > 1:
             self._write_once("POLYMER\n#\n")
         else:
-            self._write_once('CRYSTAL\n#\n')
+            self._write_once("CRYSTAL\n#\n")
 
-        self._write_once('# Primitive lattice vectors:\n#\n')
-        self._write_key_index('PRIMVEC')
+        self._write_once("# Primitive lattice vectors:\n#\n")
+        self._write_key_index("PRIMVEC")
 
         # We write the cell coordinates as the cell coordinates
-        fmt_str = f'{{:{fmt}}} ' * 3 + '\n'
+        fmt_str = f"{{:{fmt}}} " * 3 + "\n"
         for i in (0, 1, 2):
             self._write(fmt_str.format(*lattice.cell[i, :]))
 
         # Convert the unit cell to a conventional cell (90-90-90))
         # It seems this simply allows to store both formats in
         # the same file. However the below stuff is not correct.
-        #self._write_once('#\n# Conventional lattice vectors:\n#\n')
-        #self._write_key_index('CONVVEC')
-        #convcell = lattice.to.Cuboid(orthogonal=True)._v
-        #for i in [0, 1, 2]:
+        # self._write_once('#\n# Conventional lattice vectors:\n#\n')
+        # self._write_key_index('CONVVEC')
+        # convcell = lattice.to.Cuboid(orthogonal=True)._v
+        # for i in [0, 1, 2]:
         #    self._write(fmt_str.format(*convcell[i, :]))
 
     @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
-    def write_geometry(self, geometry, fmt='.8f', data=None):
-        """ Writes the geometry to the contained file
+    def write_geometry(self, geometry, fmt=".8f", data=None):
+        """Writes the geometry to the contained file
 
         Parameters
         ----------
@@ -168,10 +180,10 @@ class xsfSile(Sile):
         if has_data:
             data.shape = (-1, 3)
 
-        self._write_once('#\n# Atomic coordinates (in primitive coordinates)\n#\n')
+        self._write_once("#\n# Atomic coordinates (in primitive coordinates)\n#\n")
         self._geometry_write += 1
         self._write_key_index("PRIMCOORD")
-        self._write(f'{len(geometry)} 1\n')
+        self._write(f"{len(geometry)} 1\n")
 
         non_valid_Z = (geometry.atoms.Z <= 0).nonzero()[0]
         if len(non_valid_Z) > 0:
@@ -179,13 +191,13 @@ class xsfSile(Sile):
 
         if has_data:
             fmt_str = (
-                '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}   {{4:{0}}}  {{5:{0}}}  {{6:{0}}}\n'
+                "{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}   {{4:{0}}}  {{5:{0}}}  {{6:{0}}}\n"
             ).format(fmt)
             for ia in geometry:
                 tmp = np.append(geometry.xyz[ia, :], data[ia, :])
                 self._write(fmt_str.format(geometry.atoms[ia].Z, *tmp))
         else:
-            fmt_str = '{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
+            fmt_str = "{{0:3d}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n".format(fmt)
             for ia in geometry:
                 self._write(fmt_str.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :]))
 
@@ -204,7 +216,7 @@ class xsfSile(Sile):
         data = None
 
         line = " "
-        while line != '':
+        while line != "":
             line = self.readline()
 
             if line.isspace():
@@ -264,7 +276,9 @@ class xsfSile(Sile):
                 break
 
             elif line.startswith("CONVCOORD"):
-                raise NotImplementedError(f"{self.__class__.__name__} does not implement reading CONVCOORD")
+                raise NotImplementedError(
+                    f"{self.__class__.__name__} does not implement reading CONVCOORD"
+                )
 
             elif line.startswith("CRYSTAL"):
                 self._read_type = "CRYSTAL"
@@ -293,10 +307,12 @@ class xsfSile(Sile):
             cell = lattice
 
         elif typ == "MOLECULE":
-            cell = Lattice(np.diag(xyz.max(0) - xyz.min(0) + 10.))
+            cell = Lattice(np.diag(xyz.max(0) - xyz.min(0) + 10.0))
 
         if cell is None:
-            raise ValueError(f"{self.__class__.__name__} could not find lattice parameters.")
+            raise ValueError(
+                f"{self.__class__.__name__} could not find lattice parameters."
+            )
 
         # overwrite the currently read cell
         self._read_cell = cell
@@ -317,9 +333,11 @@ class xsfSile(Sile):
         return geom
 
     @SileBinder(postprocess=postprocess(list, list))
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
     def read_geometry(self, lattice=None, atoms=None, ret_data=False):
-        """ Geometry contained in file, and optionally the associated data
+        """Geometry contained in file, and optionally the associated data
 
         If the file contains more geometries, one can read multiple geometries
         by using the arguments `start`, `stop` and `step`.
@@ -339,7 +357,7 @@ class xsfSile(Sile):
 
     @sile_fh_open()
     def write_grid(self, *args, **kwargs):
-        """ Store grid(s) data to an XSF file
+        """Store grid(s) data to an XSF file
 
         Examples
         --------
@@ -365,48 +383,49 @@ class xsfSile(Sile):
         # for now we do not allow an animation with grid data... should this
         # even work?
         if self._geometry_max > 1:
-            raise NotImplementedError(f"{self.__class__.__name__}.write_grid not allowed in an animation file.")
+            raise NotImplementedError(
+                f"{self.__class__.__name__}.write_grid not allowed in an animation file."
+            )
 
-        geom = kwargs.get('geometry', args[0].geometry)
+        geom = kwargs.get("geometry", args[0].geometry)
         if geom is None:
             geom = Geometry([0, 0, 0], AtomUnknown(999), lattice=args[0].lattice)
         self.write_geometry(geom)
 
         # Buffer size for writing
-        buffersize = min(kwargs.get('buffersize', 6144), args[0].grid.size)
+        buffersize = min(kwargs.get("buffersize", 6144), args[0].grid.size)
 
         # Format for precision
-        fmt = kwargs.get('fmt', '.5e')
+        fmt = kwargs.get("fmt", ".5e")
 
-        self._write('BEGIN_BLOCK_DATAGRID_3D\n')
-        name = kwargs.get('name', 'sisl_{}'.format(len(args)))
+        self._write("BEGIN_BLOCK_DATAGRID_3D\n")
+        name = kwargs.get("name", "sisl_{}".format(len(args)))
         # Transfer all spaces to underscores (no spaces allowed)
-        self._write(' ' + name.replace(' ', '_') + '\n')
-        _v3 = (('{:' + fmt + '} ') * 3).strip() + '\n'
+        self._write(" " + name.replace(" ", "_") + "\n")
+        _v3 = (("{:" + fmt + "} ") * 3).strip() + "\n"
 
         def write_cell(grid):
             # Now write the grid
-            self._write('  {} {} {}\n'.format(*grid.shape))
-            self._write('  ' + _v3.format(*grid.origin))
-            self._write('  ' + _v3.format(*grid.cell[0, :]))
-            self._write('  ' + _v3.format(*grid.cell[1, :]))
-            self._write('  ' + _v3.format(*grid.cell[2, :]))
+            self._write("  {} {} {}\n".format(*grid.shape))
+            self._write("  " + _v3.format(*grid.origin))
+            self._write("  " + _v3.format(*grid.cell[0, :]))
+            self._write("  " + _v3.format(*grid.cell[1, :]))
+            self._write("  " + _v3.format(*grid.cell[2, :]))
 
         for i, grid in enumerate(args):
-
             if isinstance(grid, Grid):
-                name = kwargs.get(f'grid{i}', str(i))
+                name = kwargs.get(f"grid{i}", str(i))
             else:
                 # it must be a tuple
                 name, grid = grid
-                name = kwargs.get(f'grid{i}', name)
+                name = kwargs.get(f"grid{i}", name)
 
             is_complex = np.iscomplexobj(grid.grid)
 
             if is_complex:
-                self._write(f' BEGIN_DATAGRID_3D_real_{name}\n')
+                self._write(f" BEGIN_DATAGRID_3D_real_{name}\n")
             else:
-                self._write(f' BEGIN_DATAGRID_3D_{name}\n')
+                self._write(f" BEGIN_DATAGRID_3D_{name}\n")
 
             write_cell(grid)
 
@@ -414,34 +433,44 @@ class xsfSile(Sile):
             #   for y
             #     for x
             #       write...
-            _fmt = '{:' + fmt + '}\n'
-            for x in np.nditer(np.asarray(grid.grid.real.T, order='C').reshape(-1), flags=['external_loop', 'buffered'],
-                               op_flags=[['readonly']], order='C', buffersize=buffersize):
+            _fmt = "{:" + fmt + "}\n"
+            for x in np.nditer(
+                np.asarray(grid.grid.real.T, order="C").reshape(-1),
+                flags=["external_loop", "buffered"],
+                op_flags=[["readonly"]],
+                order="C",
+                buffersize=buffersize,
+            ):
                 self._write((_fmt * x.shape[0]).format(*x.tolist()))
 
-            self._write(' END_DATAGRID_3D\n')
+            self._write(" END_DATAGRID_3D\n")
 
             # Skip if not complex
             if not is_complex:
                 continue
-            self._write(f' BEGIN_DATAGRID_3D_imag_{name}\n')
+            self._write(f" BEGIN_DATAGRID_3D_imag_{name}\n")
             write_cell(grid)
-            for x in np.nditer(np.asarray(grid.grid.imag.T, order='C').reshape(-1), flags=['external_loop', 'buffered'],
-                               op_flags=[['readonly']], order='C', buffersize=buffersize):
+            for x in np.nditer(
+                np.asarray(grid.grid.imag.T, order="C").reshape(-1),
+                flags=["external_loop", "buffered"],
+                op_flags=[["readonly"]],
+                order="C",
+                buffersize=buffersize,
+            ):
                 self._write((_fmt * x.shape[0]).format(*x.tolist()))
 
-            self._write(' END_DATAGRID_3D\n')
+            self._write(" END_DATAGRID_3D\n")
 
-        self._write('END_BLOCK_DATAGRID_3D\n')
+        self._write("END_BLOCK_DATAGRID_3D\n")
 
     def ArgumentParser(self, p=None, *args, **kwargs):
-        """ Returns the arguments that is available for this Sile """
+        """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
     def ArgumentParser_out(self, p, *args, **kwargs):
-        """ Adds arguments only if this file is an output file
+        """Adds arguments only if this file is an output file
 
         Parameters
         ----------
@@ -449,29 +478,42 @@ class xsfSile(Sile):
            the parser which gets amended the additional output options.
         """
         import argparse
+
         ns = kwargs.get("namespace", None)
         if ns is None:
-            class _():
+
+            class _:
                 pass
+
             ns = _()
 
         # We will add the vector data
         class VectorNoScale(argparse.Action):
             def __call__(self, parser, ns, no_value, option_string=None):
                 setattr(ns, "_vector_scale", False)
-        p.add_argument("--no-vector-scale", "-nsv", nargs=0,
-                       action=VectorNoScale,
-                       help="""Do not modify vector components (same as --vector-scale 1.)""")
+
+        p.add_argument(
+            "--no-vector-scale",
+            "-nsv",
+            nargs=0,
+            action=VectorNoScale,
+            help="""Do not modify vector components (same as --vector-scale 1.)""",
+        )
         # Default to scale the vectors
         setattr(ns, "_vector_scale", True)
 
         # We will add the vector data
         class VectorScale(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                setattr(ns, '_vector_scale', float(value))
-        p.add_argument('--vector-scale', '-sv', metavar='SCALE',
-                       action=VectorScale,
-                       help="""Scale vector components by this factor.""")
+                setattr(ns, "_vector_scale", float(value))
+
+        p.add_argument(
+            "--vector-scale",
+            "-sv",
+            metavar="SCALE",
+            action=VectorScale,
+            help="""Scale vector components by this factor.""",
+        )
 
         # We will add the vector data
         class Vectors(argparse.Action):
@@ -479,7 +521,7 @@ class xsfSile(Sile):
                 routine = values.pop(0)
 
                 # Default input file
-                input_file = getattr(ns, '_input_file', None)
+                input_file = getattr(ns, "_input_file", None)
 
                 # Figure out which of the segments are a file
                 for i, val in enumerate(values):
@@ -493,11 +535,12 @@ class xsfSile(Sile):
 
                 # Try and read the vector
                 from sisl.io import get_sile
-                input_sile = get_sile(input_file, mode='r')
+
+                input_sile = get_sile(input_file, mode="r")
 
                 vector = None
-                if hasattr(input_sile, f'read_{routine}'):
-                    vector = getattr(input_sile, f'read_{routine}')(*values)
+                if hasattr(input_sile, f"read_{routine}"):
+                    vector = getattr(input_sile, f"read_{routine}")(*values)
 
                 if vector is None:
                     # Try the read_data function
@@ -516,22 +559,34 @@ class xsfSile(Sile):
 
                 if vector is None:
                     # Use title to capitalize
-                    raise ValueError('{} could not be read from file: {}.'.format(routine.title(), input_file))
+                    raise ValueError(
+                        "{} could not be read from file: {}.".format(
+                            routine.title(), input_file
+                        )
+                    )
 
                 if len(vector) != len(ns._geometry):
-                    raise ValueError(f'read_{routine} could read from file: {input_file}, sizes does not conform to geometry.')
-                setattr(ns, '_vector', vector)
-        p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS[, FILE]'), nargs='+',
-                       action=Vectors,
-                       help="""Adds vector arrows for each atom, first argument is type (force, moment, ...).
+                    raise ValueError(
+                        f"read_{routine} could read from file: {input_file}, sizes does not conform to geometry."
+                    )
+                setattr(ns, "_vector", vector)
+
+        p.add_argument(
+            "--vector",
+            "-v",
+            metavar=("DATA", "*ARGS[, FILE]"),
+            nargs="+",
+            action=Vectors,
+            help="""Adds vector arrows for each atom, first argument is type (force, moment, ...).
 If the current input file contains the vectors no second argument is necessary, else
 the file containing the data is required as the last input.
 
 Any arguments inbetween are passed to the `read_data` function (in order).
 
 By default the vectors scaled by 1 / max(|V|) such that the longest vector has length 1.
-                       """)
+                       """,
+        )
 
 
-add_sile('xsf', xsfSile, case=False, gzip=True)
-add_sile('axsf', xsfSile, case=False, gzip=True)
+add_sile("xsf", xsfSile, case=False, gzip=True)
+add_sile("axsf", xsfSile, case=False, gzip=True)

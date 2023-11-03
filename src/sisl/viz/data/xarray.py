@@ -6,7 +6,6 @@ from .data import Data
 
 
 class XarrayData(Data):
-
     _data: Union[DataArray, Dataset]
 
     def __init__(self, data: Union[DataArray, Dataset]):
@@ -17,7 +16,7 @@ class XarrayData(Data):
 
         if hasattr(sisl_accessor, key):
             return getattr(sisl_accessor, key)
-        
+
         return getattr(self._data, key)
 
     def __dir__(self):
