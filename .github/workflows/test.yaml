@@ -10,9 +10,14 @@ env:
 
 
 on:
-  workflow_run:
-    workflows: [Lint]
-    types: [completed]
+  push:
+    paths:
+      - '**.py'
+      - '**.ipynb'
+  pull_request:
+    paths:
+      - '**.py'
+      - '**.ipynb'
   schedule:
     # only once every 4 days
     # We can always force run this.
@@ -32,11 +37,14 @@ on:
 jobs:
 
   # Define a few jobs that can be runned
-  check_if_runnable:
+  lint:
+    uses: ./.github/workflows/linter.yml
+
+  runnable:
+    needs:
     if: |
       github.event_name == 'schedule'
       && github.actor != 'dependabot[bot]'
-      && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,8 +53,10 @@ jobs:
       - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
 
   test_runs:
-    needs: [check_if_runnable]
-    if: ${{ contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped') }}
+    needs: [lint, runnable]
+    if: |
+      (contains(needs.runnable.result, 'success') || contains(needs.runnable.result, 'skipped'))
+      && contains(needs.lint.result, 'success')
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
