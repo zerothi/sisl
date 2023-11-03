@@ -10,9 +10,9 @@ env:
 
 
 on:
-  pull_request:
-    # all pull-requests on to main
-    branches: [main]
+  workflow_run:
+    workflows: [Lint]
+    types: [completed]
   schedule:
     # only once every 4 days
     # We can always force run this.
@@ -32,8 +32,11 @@ on:
 jobs:
 
   # Define a few jobs that can be runned
-  check_schedule:
-    if: ${{ github.event_name == 'schedule' }} && ${{ github.actor != 'dependabot[bot]' }}
+  check_if_runnable:
+    if: |
+	  github.event_name == 'schedule'
+	  && github.actor != 'dependabot[bot]'
+	  && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,8 +45,8 @@ jobs:
       - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
 
   test_runs:
-    needs: [check_schedule]
-    if: ${{ always() && (contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped')) }}
+    needs: [check_if_runnable]
+    if: ${{ contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped') }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
