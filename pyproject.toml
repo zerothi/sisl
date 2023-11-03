@@ -271,16 +271,18 @@ commands = pytest -s -rXs {posargs}
 
 [tool.isort]
 # how should sorting be done
-profile = "hug"
+profile = "black"
 sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
 known_first_party = ["sisl_toolbox", "sisl"]
-line_length = 90
+line_length = 88
 overwrite_in_place = true
 extend_skip = ["src/sisl/__init__.py"]
 
+[tool.black]
+line-length = 88
+target-version = ["py38", "py39", "py310", "py311", "py312"]
 
 
-# Options for cibuildwheel
 [tool.cibuildwheel]
 build-verbosity = 3
 test-extras = "test"

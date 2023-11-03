@@ -70,8 +70,9 @@ class PeriodicTable:
     True
     >>> 1.7 == PeriodicTable().radii(6,'vdw')
     True
-
     """
+
+    # fmt: off
     _Z_int = {
         'Actinium': 89, 'Ac': 89, '89': 89, 89: 89,
         'Aluminum': 13, 'Al': 13, '13': 13, 13: 13,
@@ -796,6 +797,7 @@ class PeriodicTable:
         117: -1,
         118: -1,
     }
+    # fmt: on
 
     def Z(self, key):
         """ Atomic number based on general input
