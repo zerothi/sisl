@@ -34,9 +34,9 @@ jobs:
   # Define a few jobs that can be runned
   check_if_runnable:
     if: |
-	  github.event_name == 'schedule'
-	  && github.actor != 'dependabot[bot]'
-	  && github.event.workflow_run.conclusion == 'success'
+      github.event_name == 'schedule'
+      && github.actor != 'dependabot[bot]'
+      && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
