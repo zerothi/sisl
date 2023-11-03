@@ -15,6 +15,8 @@ you should add this change to your `.git/config`, or in your global `.gitconfig`
     [filter "strip-notebook-output"]
         clean = "jupyter nbconvert --ClearOutputPreprocessor.enabled=True --to=notebook --stdin --stdout --log-level=ERROR"
 
+We also enforce the black style, please run black before committing.
+
 ## First-time contributors
 Add a comment on the issue and wait for the issue to be assigned before you start working on it. This helps to avoid multiple people working on similar issues.
 
