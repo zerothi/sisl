@@ -43,7 +43,7 @@ def filter_bands(
     else:
         filtered_bands = filtered_bands.where(
             (filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])
-        ).dropna("band", "all")
+        ).dropna("band", how="all")
         continous_bands = filtered_bands.dropna("k", how="all")
 
         # This is the new bands range
