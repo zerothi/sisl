@@ -2,6 +2,6 @@
 
  - [ ] Closes #xxxx
  - [ ] Tests added
- - [ ] Ranned `isort .` at top--level
+ - [ ] Ranned `isort .` and `black .` at top--level
  - [ ] Documentation for functionality, `docs/`
  - [ ] Changes documented, `CHANGELOG.md`
