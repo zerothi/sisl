@@ -41,7 +41,6 @@ jobs:
     uses: ./.github/workflows/linter.yml
 
   runnable:
-    needs:
     if: |
       github.event_name == 'schedule'
       && github.actor != 'dependabot[bot]'
