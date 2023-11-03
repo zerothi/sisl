@@ -326,8 +326,8 @@ nbsphinx_prolog = r"""
 .. raw:: html
 
      <div align="right">
-     Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sisl/master/{{ docname }}"> here</a>.
-     <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/zerothi/sisl/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
+     <a href="https://raw.githubusercontent.com/zerothi/sisl/master/{{ docname }}"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>.
+     <a href="https://mybinder.org/v2/gh/zerothi/sisl/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
      </div>
 
 """
