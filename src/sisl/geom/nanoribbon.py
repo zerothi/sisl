@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from dataclasses import dataclass, field
 from numbers import Integral
+from typing import Tuple
 
 import numpy as np
 
@@ -25,7 +26,11 @@ __all__ = [
 
 @set_module("sisl.geom")
 def nanoribbon(
-    width: int, bond: float, atoms, kind: str = "armchair", index: (int, int) = (3, 1)
+    width: int,
+    bond: float,
+    atoms,
+    kind: str = "armchair",
+    chirality: Tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a nanoribbon unit cell of type armchair, zigzag or (n,m)-chiral.
 
@@ -41,8 +46,8 @@ def nanoribbon(
        atom (or atoms) in the honeycomb lattice
     kind : {'armchair', 'zigzag', 'chiral'}
        type of ribbon
-    index :
-       chiral index (n, m), only used if `kind=chiral`
+    chirality :
+       index (n, m), only used if `kind=chiral`
 
     See Also
     --------
@@ -90,7 +95,7 @@ def nanoribbon(
 
         if kind == "chiral":
             # continue with the zigzag ribbon as building block
-            n, m = index
+            n, m = chirality
             ribbon = ribbon.tile(n + 1, 0)
             r = ribbon.xyz[1] - ribbon.xyz[width]
             ribbon.cell[0] += r + (m - 1) * (ribbon.xyz[2] - ribbon.xyz[0])
@@ -125,7 +130,7 @@ def graphene_nanoribbon(
     bond: float = 1.42,
     atoms=None,
     kind: str = "armchair",
-    index: (int, int) = (3, 1),
+    chirality: Tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a graphene nanoribbon
 
@@ -139,8 +144,8 @@ def graphene_nanoribbon(
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     kind : {'armchair', 'zigzag', 'chiral'}
        type of ribbon
-    index :
-       chiral index (n, m), only used if `kind=chiral`
+    chirality :
+       index (n, m), only used if `kind=chiral`
 
     See Also
     --------
@@ -153,7 +158,7 @@ def graphene_nanoribbon(
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
-    return nanoribbon(width, bond, atoms, kind=kind, index=index)
+    return nanoribbon(width, bond, atoms, kind=kind, chirality=chirality)
 
 
 @set_module("sisl.geom")
@@ -232,7 +237,7 @@ def cgnr(n: int, m: int, width: int, bond: float = 1.42, atoms=None) -> Geometry
     agnr : armchair graphene nanoribbon
     zgnr : zigzag graphene nanoribbon
     """
-    return graphene_nanoribbon(width, bond, atoms, kind="chiral", index=(n, m))
+    return graphene_nanoribbon(width, bond, atoms, kind="chiral", chirality=(n, m))
 
 
 @set_module("sisl.geom")

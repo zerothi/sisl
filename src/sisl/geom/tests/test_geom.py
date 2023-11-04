@@ -125,7 +125,7 @@ def test_nanoribbon():
         nanoribbon(w, 1.42, Atom(6), kind="armchair")
         nanoribbon(w, 1.42, Atom(6), kind="zigzag")
         nanoribbon(w, 1.42, Atom(6), kind="chiral")
-        nanoribbon(w, 1.42, Atom(6), kind="chiral", index=(2, 2))
+        nanoribbon(w, 1.42, Atom(6), kind="chiral", chirality=(2, 2))
         nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="armchair")
         a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="zigzag")
         assert is_right_handed(a)
