@@ -42,7 +42,7 @@ def nanoribbon(
     kind : {'armchair', 'zigzag', 'chiral'}
        type of ribbon
     index :
-       chiral index (n, m), only processed for chiral types
+       chiral index (n, m), only used if `kind=chiral`
 
     See Also
     --------
@@ -71,7 +71,7 @@ def nanoribbon(
         else:
             ribbon = ribbon.repeat(n, 1)
 
-    elif kind in ["zigzag", "chiral"]:
+    elif kind in ("zigzag", "chiral"):
         # Construct zigzag GNR
         ribbon = ribbon.rotate(90, [0, 0, -1], what="abc+xyz")
         if m == 1:
@@ -137,10 +137,10 @@ def graphene_nanoribbon(
        C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
-    kind : {'armchair', 'zigzag', 'chiral}
+    kind : {'armchair', 'zigzag', 'chiral'}
        type of ribbon
     index :
-       chiral index (n, m), only processed for chiral types
+       chiral index (n, m), only used if `kind=chiral`
 
     See Also
     --------
@@ -213,9 +213,9 @@ def cgnr(n: int, m: int, width: int, bond: float = 1.42, atoms=None) -> Geometry
     Parameters
     ----------
     n :
-       first chiral index
+       first chirality index (zigzag segments)
     m :
-       second chiral index
+       second chirality index (armchair segments)
     width :
        number of atoms in the transverse direction
     bond :
