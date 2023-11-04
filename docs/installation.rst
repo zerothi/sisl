@@ -184,10 +184,8 @@ the compilers used. Typically one may do
 
 but sometimes ``setuptools`` does not intercept the flags in the build process.
 Since 3.12 ``distutils`` has been deprecated and one needs to pass explicit linker flags to the CMake environment.
-If problems arise, please help out the community by figuring out how this works on Windows.
+If problems arise, please help out the community by figuring out how sisl can be compiled on Windows.
 
-Adapt to compilers. For an explanation, see `here <https://docs.python.org/3/install/index.html#location-and-names-of-config-files>`_
-or the `user issue <https://github.com/zerothi/sisl/issues/244>`_ which spurred this content.
 
 .. _installation-testing:
 

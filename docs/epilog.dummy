@@ -18,7 +18,7 @@
 .. _scikit-build-core: https://scikit-build-core.readthedocs.io/en/latest/
 .. _netcdf4-py: https://github.com/Unidata/netcdf4-python
 .. _numpy: https://www.numpy.org/
-.. _scipy: https://scipy.org/scipylib/index.html
+.. _scipy: https://docs.scipy.org/doc/scipy
 .. _pyparsing: https://github.com/pyparsing/pyparsing
 .. _matplotlib: https://matplotlib.org/
 .. _pytest: https://docs.pytest.org/en/stable/

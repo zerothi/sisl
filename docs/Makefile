@@ -20,3 +20,18 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+LINKCHECKDIR  = build/linkcheck
+
+.PHONY: spelling spell
+spell: spelling
+spelling:
+	$(SPHINXBUILD) -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+
+.PHONY: checklinks linkcheck
+checklinks: linkcheck
+linkcheck:
+	$(SPHINXBUILD) -b linkcheck "$(SOURCEDIR)" "$(LINKCHECKDIR)" $(SPHINXOPTS) $(O)
+	@echo
+	@echo "Check finished. Report is in $(LINKCHECKDIR)."
