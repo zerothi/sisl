@@ -8,11 +8,11 @@ from sisl._internal import set_module
 
 from ._common import geometry_define_nsc
 
-__all__ = ["honeycomb", "graphene", "honeycomb_flake", "graphene_flake"]
+__all__ = ["honeycomb", "graphene", "honeycomb_flake", "graphene_flake", "triangulene"]
 
 
 @set_module("sisl.geom")
-def honeycomb(bond: float, atoms, orthogonal: bool = False):
+def honeycomb(bond: float, atoms, orthogonal: bool = False) -> Geometry:
     """Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     This enables creating BN lattices with ease, or graphene lattices.
@@ -65,7 +65,7 @@ def honeycomb(bond: float, atoms, orthogonal: bool = False):
 
 
 @set_module("sisl.geom")
-def graphene(bond: float = 1.42, atoms=None, orthogonal: bool = False):
+def graphene(bond: float = 1.42, atoms=None, orthogonal: bool = False) -> Geometry:
     """Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     Parameters
@@ -204,3 +204,33 @@ def graphene_flake(
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
     return honeycomb_flake(shells, bond, atoms, vacuum)
+
+
+@set_module("sisl.geom")
+def triangulene(n: int, bond: float = 1.42, atoms=None) -> Geometry:
+    """Construction of an [n]-triangulene geometry
+
+    Parameters
+    ----------
+    n :
+       size of the triangulene
+    bond :
+       bond length between atoms (*not* lattice constant)
+    atoms :
+        the atom (or atoms) that the honeycomb lattice consists of.
+        Default to Carbon atom.
+    """
+    if atoms is None:
+        atoms = Atom(Z=6, R=bond * 1.01)
+    geom = graphene(bond=bond, atoms=atoms) * (n + 1, n + 1, 1)
+    idx = np.where(geom.xyz[:, 0] <= geom.cell[0, 0] + 0.01)[0]
+    geom = geom.sub(idx[1:])
+    geom.cell[:2] *= (n + 4) / (n + 1)
+
+    # Center the molecule in cell
+    geom = geom.move([geom.cell[0, 0] - geom.xyz[-1, 0], 0, geom.cell[2, 2] / 2])
+
+    # Set boundary conditions
+    geometry_define_nsc(geom, [False, False, False])
+
+    return geom

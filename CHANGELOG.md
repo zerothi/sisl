@@ -13,6 +13,8 @@ we hit release version 1.0.0.
 ## [0.14.3] - 2023-11-07
 
 ### Added
+- Creation of chiral GNRs (`kind=chiral` in `sisl.geom.nanoribbon`/`sisl.geom.graphene_nanoribbon` as well as `sisl.geom.cgnr`)
+- Creation of [n]-triangulenes (`sisl.geom.triangulene`)
 - Creation of honeycomb flakes (`sisl.geom.honeycomb_flake`,
   `sisl.geom.graphene_flake`). #636
 - added `Geometry.as_supercell` to create the supercell structure,
