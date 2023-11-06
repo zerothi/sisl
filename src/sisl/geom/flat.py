@@ -207,7 +207,7 @@ def graphene_flake(
 
 
 @set_module("sisl.geom")
-def triangulene(n: int, bond: float = 1.42, atoms=None) -> Geometry:
+def triangulene(n: int, bond: float = 1.42, atoms=None, vacuum: float = 20.0) -> Geometry:
     """Construction of an [n]-triangulene geometry
 
     Parameters
@@ -219,16 +219,21 @@ def triangulene(n: int, bond: float = 1.42, atoms=None) -> Geometry:
     atoms :
         the atom (or atoms) that the honeycomb lattice consists of.
         Default to Carbon atom.
+    vacuum:
+        Amount of vacuum to add to the cell on all directions
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
     geom = graphene(bond=bond, atoms=atoms) * (n + 1, n + 1, 1)
     idx = np.where(geom.xyz[:, 0] <= geom.cell[0, 0] + 0.01)[0]
     geom = geom.sub(idx[1:])
-    geom.cell[:2] *= (n + 4) / (n + 1)
+
+    # Set the cell according to the requested vacuum
+    size = np.max(geom.xyz[:], axis=0) - np.min(geom.xyz[:], axis=0)
+    geom.cell[:] = np.diag(size + vacuum)
 
     # Center the molecule in cell
-    geom = geom.move([geom.cell[0, 0] - geom.xyz[-1, 0], 0, geom.cell[2, 2] / 2])
+    geom = geom.move(geom.center(what="cell") - geom.center())
 
     # Set boundary conditions
     geometry_define_nsc(geom, [False, False, False])
