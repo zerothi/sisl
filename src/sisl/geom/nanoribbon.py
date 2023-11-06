@@ -30,6 +30,7 @@ def nanoribbon(
     bond: float,
     atoms,
     kind: str = "armchair",
+    vacuum: float = 20.0,
     chirality: Tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a nanoribbon unit cell of type armchair, zigzag or (n,m)-chiral.
@@ -46,6 +47,8 @@ def nanoribbon(
        atom (or atoms) in the honeycomb lattice
     kind : {'armchair', 'zigzag', 'chiral'}
        type of ribbon
+    vacuum :
+       separation in transverse direction
     chirality :
        index (n, m), only used if `kind=chiral`
 
@@ -75,6 +78,7 @@ def nanoribbon(
             ribbon = ribbon.remove(3 * (n + 1)).remove(0)
         else:
             ribbon = ribbon.repeat(n, 1)
+        ribbon.cell[1, 1] += vacuum
 
     elif kind in ("zigzag", "chiral"):
         # Construct zigzag GNR
@@ -86,9 +90,10 @@ def nanoribbon(
             ribbon = ribbon.tile(n, 0)
         # Invert y-coordinates
         ribbon.xyz[:, 1] *= -1
+
         # Set lattice vectors strictly orthogonal
         ribbon.cell[:, :] = np.diag(
-            [ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]]
+            [ribbon.cell[1, 0], -ribbon.cell[0, 1] + vacuum, ribbon.cell[2, 2]]
         )
         # Sort along x, then y
         ribbon = ribbon.sort(axis=(0, 1))
@@ -101,27 +106,22 @@ def nanoribbon(
             ribbon.cell[0] += r + (m - 1) * (ribbon.xyz[2] - ribbon.xyz[0])
             ribbon = ribbon.remove(range(width))
             # determine rotation angle
-            x = ribbon.cell[0].copy()
-            x /= x.dot(x) ** 0.5
-            angle = np.arccos(x.dot([1, 0, 0]))
+            x = ribbon.cell[0]
+            angle = np.arccos(x.dot([1, 0, 0]) / x.dot(x) ** 0.5)
             ribbon = ribbon.rotate(
                 angle, [0, 0, -1], origin=ribbon.xyz[0], rad=True, what="abc+xyz"
             )
-            # set lattice vectors orthogonal
-            ribbon.cell[0, 1] = ribbon.cell[1, 0] = 0
+            # first lattice vector strictly along x
+            ribbon.cell[0, 1] = 0
 
     else:
         raise ValueError(f"nanoribbon: kind must be armchair or zigzag ({kind})")
 
-    # Separate ribbons along y-axis
-    ribbon.cell[1, 1] += 20.0
-
-    # Move inside unit cell
-    xyz = ribbon.xyz.min(axis=0) * [1, 1, 0]
-
     geometry_define_nsc(ribbon, [True, False, False])
 
-    return ribbon.move(-xyz + [0, 10, 0])
+    ribbon = ribbon.move(ribbon.center(what="cell") - ribbon.center())
+
+    return ribbon
 
 
 @set_module("sisl.geom")
@@ -130,6 +130,7 @@ def graphene_nanoribbon(
     bond: float = 1.42,
     atoms=None,
     kind: str = "armchair",
+    vacuum: float = 20.0,
     chirality: Tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a graphene nanoribbon
@@ -144,6 +145,8 @@ def graphene_nanoribbon(
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     kind : {'armchair', 'zigzag', 'chiral'}
        type of ribbon
+    vacuum :
+       separation in transverse direction
     chirality :
        index (n, m), only used if `kind=chiral`
 
