@@ -115,6 +115,8 @@ stoolbox = "sisl_toolbox.cli:stoolbox_cli"
 
 
 [project.urls]
+# See here for which are allowed:
+#  https://github.com/pypi/warehouse/blob/main/warehouse/templates/packaging/detail.html
 Homepage = "https://zerothi.github.io/sisl"
 Releases = "https://github.com/zerothi/sisl/releases"
 Documentation = "https://zerothi.github.io/sisl"
