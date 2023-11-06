@@ -156,9 +156,9 @@ def test_zgnr():
 
 
 def test_cgnr():
-    a = cgnr(3, 1, 6)
-    a = cgnr(3, 1, 6, bond=1.6)
-    a = cgnr(3, 1, 6, atoms=["B", "N"])
+    cgnr(6, (3, 1), vacuum=0)
+    cgnr(6, (3, 1), bond=1.6)
+    a = cgnr(6, (3, 1), atoms=["B", "N"])
     assert is_right_handed(a)
 
 
