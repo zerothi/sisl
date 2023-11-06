@@ -207,7 +207,9 @@ def graphene_flake(
 
 
 @set_module("sisl.geom")
-def triangulene(n: int, bond: float = 1.42, atoms=None, vacuum: float = 20.0) -> Geometry:
+def triangulene(
+    n: int, bond: float = 1.42, atoms=None, vacuum: float = 20.0
+) -> Geometry:
     """Construction of an [n]-triangulene geometry
 
     Parameters
