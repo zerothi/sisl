@@ -161,11 +161,11 @@ def graphene_nanoribbon(
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
-    return nanoribbon(width, bond, atoms, kind=kind, chirality=chirality)
+    return nanoribbon(width, bond, atoms, kind=kind, vacuum=vacuum, chirality=chirality)
 
 
 @set_module("sisl.geom")
-def agnr(width: int, bond: float = 1.42, atoms=None) -> Geometry:
+def agnr(width: int, bond: float = 1.42, atoms=None, vacuum: float = 20.0) -> Geometry:
     r"""Construction of an armchair graphene nanoribbon
 
     Parameters
@@ -176,6 +176,8 @@ def agnr(width: int, bond: float = 1.42, atoms=None) -> Geometry:
        C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
+    vacuum :
+       separation in transverse direction
 
     See Also
     --------
@@ -186,11 +188,11 @@ def agnr(width: int, bond: float = 1.42, atoms=None) -> Geometry:
     zgnr : zigzag graphene nanoribbon
     cgnr : chiral graphene nanoribbon
     """
-    return graphene_nanoribbon(width, bond, atoms, kind="armchair")
+    return graphene_nanoribbon(width, bond, atoms, kind="armchair", vacuum=vacuum)
 
 
 @set_module("sisl.geom")
-def zgnr(width: int, bond: float = 1.42, atoms=None) -> Geometry:
+def zgnr(width: int, bond: float = 1.42, atoms=None, vacuum: float = 20.0) -> Geometry:
     r"""Construction of a zigzag graphene nanoribbon
 
     Parameters
@@ -201,6 +203,9 @@ def zgnr(width: int, bond: float = 1.42, atoms=None) -> Geometry:
        C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
+    vacuum :
+       separation in transverse direction
+
 
     See Also
     --------
@@ -211,25 +216,31 @@ def zgnr(width: int, bond: float = 1.42, atoms=None) -> Geometry:
     agnr : armchair graphene nanoribbon
     cgnr : chiral graphene nanoribbon
     """
-    return graphene_nanoribbon(width, bond, atoms, kind="zigzag")
+    return graphene_nanoribbon(width, bond, atoms, kind="zigzag", vacuum=vacuum)
 
 
 @set_module("sisl.geom")
-def cgnr(n: int, m: int, width: int, bond: float = 1.42, atoms=None) -> Geometry:
+def cgnr(
+    width: int,
+    chirality: Tuple[int, int],
+    bond: float = 1.42,
+    atoms=None,
+    vacuum: float = 20.0,
+) -> Geometry:
     r"""Construction of an (n, m, w)-chiral graphene nanoribbon
 
     Parameters
     ----------
-    n :
-       first chirality index (zigzag segments)
-    m :
-       second chirality index (armchair segments)
     width :
        number of atoms in the transverse direction
+    chirality :
+       index (n, m)
     bond :
        C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
+    vacuum :
+       separation in transverse direction
 
     See Also
     --------
@@ -240,7 +251,9 @@ def cgnr(n: int, m: int, width: int, bond: float = 1.42, atoms=None) -> Geometry
     agnr : armchair graphene nanoribbon
     zgnr : zigzag graphene nanoribbon
     """
-    return graphene_nanoribbon(width, bond, atoms, kind="chiral", chirality=(n, m))
+    return graphene_nanoribbon(
+        width, bond, atoms, kind="chiral", vacuum=vacuum, chirality=chirality
+    )
 
 
 @set_module("sisl.geom")
