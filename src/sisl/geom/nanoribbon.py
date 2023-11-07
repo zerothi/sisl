@@ -107,7 +107,9 @@ def nanoribbon(
             ribbon = ribbon.remove(range(width))
             # determine rotation angle
             x = ribbon.cell[0]
-            angle = np.arccos(x.dot([1, 0, 0]) / x.dot(x) ** 0.5)
+            angle = np.arccos(
+                x.dot([1, 0, 0]) / x.dot(x) ** 0.5
+            )  # angle of vectors, x and b=[1, 0, 0]
             ribbon = ribbon.rotate(
                 angle, [0, 0, -1], origin=ribbon.xyz[0], rad=True, what="abc+xyz"
             )
@@ -234,7 +236,7 @@ def cgnr(
     width :
        number of atoms in the transverse direction
     chirality :
-       index (n, m)
+       index (n, m) corresponding to an edge with n zigzag segments followed by m armchair segments
     bond :
        C-C bond length
     atoms : Atom, optional

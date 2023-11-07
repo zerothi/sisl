@@ -231,7 +231,7 @@ def triangulene(
     geom = geom.sub(idx[1:])
 
     # Set the cell according to the requested vacuum
-    size = np.max(geom.xyz[:], axis=0) - np.min(geom.xyz[:], axis=0)
+    size = geom.xyz.max(axis=0) - geom.xyz.min(axis=0)
     geom.cell[:] = np.diag(size + vacuum)
 
     # Center the molecule in cell
