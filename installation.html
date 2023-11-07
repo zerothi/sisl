@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1-f3633fb</title>
+  <title>Installation &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -123,7 +123,7 @@
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.8 or above</p></li>
 <li><p><a class="reference external" href="https://www.numpy.org/">numpy</a> (1.13 or later)</p></li>
-<li><p><a class="reference external" href="https://scipy.org/scipylib/index.html">scipy</a> (1.5 or later)</p></li>
+<li><p><a class="reference external" href="https://docs.scipy.org/doc/scipy">scipy</a> (1.5 or later)</p></li>
 <li><p><a class="reference external" href="https://github.com/pyparsing/pyparsing">pyparsing</a> (1.5.7 or later)</p></li>
 <li><p><a class="reference external" href="https://xarray.pydata.org/en/stable/index.html">xarray</a> (0.10.0 or later)</p></li>
 </ul>
@@ -257,16 +257,14 @@ of sisl (no fortran binary file support).</p>
 </div>
 <section id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h3>
-<p>To install <a class="reference internal" href="api/typing.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
+<p>To install <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
 the compilers used. Typically one may do</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;
 </pre></div>
 </div>
 <p>but sometimes <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> does not intercept the flags in the build process.
 Since 3.12 <code class="docutils literal notranslate"><span class="pre">distutils</span></code> has been deprecated and one needs to pass explicit linker flags to the CMake environment.
-If problems arise, please help out the community by figuring out how this works on Windows.</p>
-<p>Adapt to compilers. For an explanation, see <a class="reference external" href="https://docs.python.org/3/install/index.html#location-and-names-of-config-files">here</a>
-or the <a class="reference external" href="https://github.com/zerothi/sisl/issues/244">user issue</a> which spurred this content.</p>
+If problems arise, please help out the community by figuring out how sisl can be compiled on Windows.</p>
 </section>
 </section>
 <section id="testing-your-installation">
@@ -278,7 +276,7 @@ Testing the installation may be done by:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>sisl
 </pre></div>
 </div>
-<p>The above will run the default test-suite which covers most of the <a class="reference internal" href="api/typing.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> tool-box.
+<p>The above will run the default test-suite which covers most of the <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> tool-box.
 Additional tests may be runned by cloning the <a class="reference external" href="https://github.com/zerothi/sisl-files">sisl-files</a>
 and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS</em> as the <code class="docutils literal notranslate"><span class="pre">tests</span></code> path to the repository.</p>
 <p>A basic procedure would be:</p>

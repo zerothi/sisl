@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.car &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.vasp.car &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -116,29 +116,30 @@
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
+
 <span class="c1"># Import sile objects</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileVASP</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;carSileVASP&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;carSileVASP&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.vasp&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">carSileVASP</span><span class="p">(</span><span class="n">SileVASP</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; CAR VASP files for defining geomtries</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CAR VASP files for defining geomtries</span>
 
 <span class="sd">    This file-object handles both POSCAR and CONTCAR files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Setup the `carSile` after initialization &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the `carSile` after initialization&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="mf">1.0</span>
 
 <div class="viewcode-block" id="carSileVASP.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.write_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">group_species</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Writes the geometry to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -174,13 +175,13 @@
             <span class="n">idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">))</span>
 
         <span class="c1"># LABEL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;sisl output</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;sisl output</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Scale</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;  1.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;  1.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Write unit-cell</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{:18.9f}</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;   &quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{:18.9f}</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
 
@@ -190,7 +191,7 @@
         <span class="n">ia</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">ia</span> <span class="o">&lt;</span> <span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">:</span>
             <span class="n">atom</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span>
-            <span class="c1">#specie = geometry.atoms.specie[ia]</span>
+            <span class="c1"># specie = geometry.atoms.specie[ia]</span>
             <span class="n">ia_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">specie</span><span class="p">[</span><span class="n">ia</span><span class="p">:])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ia_end</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># remaining atoms</span>
@@ -201,28 +202,32 @@
             <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ia_end</span> <span class="o">-</span> <span class="n">ia</span><span class="p">)</span>
             <span class="n">ia</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="si">{:s}</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot; </span><span class="si">{:s}</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">))</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="si">{:d}</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot; </span><span class="si">{:d}</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">d</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">dynamic</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># We write in direct mode</span>
             <span class="n">dynamic</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+
             <span class="k">def</span> <span class="nf">todyn</span><span class="p">(</span><span class="n">fix</span><span class="p">):</span>
-                <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;Selective dynamics</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">b2s</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;F&#39;</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;Selective dynamics</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">b2s</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;F&quot;</span><span class="p">}</span>
+
             <span class="k">def</span> <span class="nf">todyn</span><span class="p">(</span><span class="n">fix</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fix</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{0}</span><span class="s1"> </span><span class="si">{0}</span><span class="s1"> </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">])</span>
-                <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;Cartesian</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="s2">&quot; </span><span class="si">{0}</span><span class="s2"> </span><span class="si">{0}</span><span class="s2"> </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">])</span>
+                <span class="k">return</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">b2s</span><span class="p">[</span><span class="n">fix</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;Cartesian</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dynamic</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="n">dynamic</span> <span class="o">=</span> <span class="p">[</span><span class="n">dynamic</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:18.9f}</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">3</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:18.9f}</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">3</span>
         <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:])</span> <span class="o">+</span> <span class="n">todyn</span><span class="p">(</span><span class="n">dynamic</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">ia</span><span class="p">]]))</span></div>
 
@@ -231,7 +236,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.read_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Lattice` object from the CONTCAR/POSCAR file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns `Lattice` object from the CONTCAR/POSCAR file&quot;&quot;&quot;</span>
 
         <span class="c1"># read first line</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># LABEL</span>
@@ -251,7 +256,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.read_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_dynamic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns Geometry object from the CONTCAR/POSCAR file</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns Geometry object from the CONTCAR/POSCAR file</span>
 
 <span class="sd">        Possibly also return the dynamics (if present).</span>
 
@@ -274,25 +279,28 @@
             <span class="c1"># We have no species...</span>
             <span class="c1"># We default to consecutive elements in the</span>
             <span class="c1"># periodic table.</span>
-            <span class="n">species</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">species_count</span><span class="p">))]</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
-                <span class="s2">&quot;POSCAR best format:&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;  &lt;Specie-1&gt; &lt;Specie-2&gt;&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;  &lt;#Specie-1&gt; &lt;#Specie-2&gt;&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Format not found, the species are defaulted to the first elements of the periodic table.&quot;</span><span class="p">])</span>
+            <span class="n">species</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">species_count</span><span class="p">))]</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;POSCAR best format:&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;  &lt;Specie-1&gt; &lt;Specie-2&gt;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;  &lt;#Specie-1&gt; &lt;#Specie-2&gt;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Format not found, the species are defaulted to the first elements of the periodic table.&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
             <span class="n">warn</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
         <span class="c1"># Create list of atoms to be used subsequently</span>
-        <span class="n">atom</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">[</span><span class="n">spec</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">spec</span><span class="p">,</span> <span class="n">nsp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">species_count</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsp</span><span class="p">)]</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Atom</span><span class="p">[</span><span class="n">spec</span><span class="p">]</span> <span class="k">for</span> <span class="n">spec</span><span class="p">,</span> <span class="n">nsp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">species_count</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsp</span><span class="p">)</span>
+        <span class="p">]</span>
 
         <span class="c1"># Number of atoms</span>
         <span class="n">na</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
 
         <span class="c1"># check whether this is Selective Dynamics</span>
         <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;Ss&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s2">&quot;Ss&quot;</span><span class="p">:</span>
             <span class="n">dynamics</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="c1"># pre-create the dynamic list</span>
             <span class="n">dynamic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">na</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
@@ -304,7 +312,7 @@
         <span class="c1"># Check whether this is in fractional or direct</span>
         <span class="c1"># coordinates (Direct == fractional)</span>
         <span class="n">cart</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;CcKk&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s2">&quot;CcKk&quot;</span><span class="p">:</span>
             <span class="n">cart</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">([</span><span class="n">na</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
@@ -312,7 +320,7 @@
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="p">[:</span><span class="mi">3</span><span class="p">]))</span>
             <span class="k">if</span> <span class="n">dynamics</span><span class="p">:</span>
-                <span class="n">dynamic</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]))</span>
+                <span class="n">dynamic</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]))</span>
 
         <span class="k">if</span> <span class="n">cart</span><span class="p">:</span>
             <span class="c1"># The unit of the coordinates are cartesian</span>
@@ -328,15 +336,15 @@
 
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">newkw</span><span class="p">)</span>
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;CAR&#39;</span><span class="p">,</span> <span class="n">carSileVASP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;POSCAR&#39;</span><span class="p">,</span> <span class="n">carSileVASP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;CONTCAR&#39;</span><span class="p">,</span> <span class="n">carSileVASP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;CAR&quot;</span><span class="p">,</span> <span class="n">carSileVASP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;POSCAR&quot;</span><span class="p">,</span> <span class="n">carSileVASP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;CONTCAR&quot;</span><span class="p">,</span> <span class="n">carSileVASP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

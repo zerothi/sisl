@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.basis &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.siesta.basis &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -120,12 +120,12 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileCDFSiesta</span><span class="p">,</span> <span class="n">SileSiesta</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ionxmlSileSiesta&#39;</span><span class="p">,</span> <span class="s1">&#39;ionncSileSiesta&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ionxmlSileSiesta&quot;</span><span class="p">,</span> <span class="s2">&quot;ionncSileSiesta&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ionxmlSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Basis set information in xml format</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basis set information in xml format</span>
 
 <span class="sd">    Note that the ``ion`` files are equivalent to the ``ion.xml`` files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -134,13 +134,13 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.read_basis">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns data associated with the ion.xml file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns data associated with the ion.xml file&quot;&quot;&quot;</span>
         <span class="c1"># Get the element-tree</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
 
         <span class="c1"># Get number of orbitals</span>
         <span class="n">label</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">Z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="c1"># atomic number, negative for floating</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># atomic number, negative for floating</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;mass&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 
         <span class="c1"># Read in the PAO&quot;s</span>
@@ -152,10 +152,9 @@
         <span class="c1"># All orbital data</span>
         <span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">paos</span><span class="p">:</span>
-
             <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
             <span class="n">l</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;l&quot;</span><span class="p">))</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">))</span> <span class="c1"># zeta</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">))</span>  <span class="c1"># zeta</span>
 
             <span class="n">q0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;population&quot;</span><span class="p">))</span>
 
@@ -181,7 +180,7 @@
             <span class="c1"># The fact that we have to have it normalized means that we need</span>
             <span class="c1"># to convert psi /sqrt(Bohr**3) -&gt; /sqrt(Ang**3)</span>
             <span class="c1"># \int psi^\dagger psi == 1</span>
-            <span class="n">psi</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+            <span class="n">psi</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
             <span class="c1"># Create the sphericalorbital and then the atomicorbital</span>
             <span class="n">sorb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">q0</span><span class="p">)</span>
@@ -196,7 +195,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ionncSileSiesta</span><span class="p">(</span><span class="n">SileCDFSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Basis set information in NetCDF files</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basis set information in NetCDF files</span>
 
 <span class="sd">    Note that the ``ion.nc`` files are equivalent to the ``ion.xml`` files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -204,7 +203,7 @@
 <div class="viewcode-block" id="ionncSileSiesta.read_basis">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ionncSileSiesta.html#sisl.io.siesta.ionncSileSiesta.read_basis">[docs]</a>
     <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns data associated with the ion.xml file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns data associated with the ion.xml file&quot;&quot;&quot;</span>
         <span class="n">no</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;norbs&quot;</span><span class="p">))</span>
 
         <span class="c1"># Get number of orbitals</span>
@@ -213,12 +212,12 @@
         <span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Mass</span><span class="p">)</span>
 
         <span class="c1"># Retrieve values</span>
-        <span class="n">orb_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_l&quot;</span><span class="p">)[:]</span> <span class="c1"># angular quantum number</span>
-        <span class="n">orb_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_n&quot;</span><span class="p">)[:]</span> <span class="c1"># principal quantum number</span>
-        <span class="n">orb_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_z&quot;</span><span class="p">)[:]</span> <span class="c1"># zeta</span>
-        <span class="n">orb_P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_ispol&quot;</span><span class="p">)[:]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="c1"># polarization shell, or not</span>
-        <span class="n">orb_q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_pop&quot;</span><span class="p">)[:]</span> <span class="c1"># q0 for the orbitals</span>
-        <span class="n">orb_delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)[:]</span> <span class="c1"># delta for the functions</span>
+        <span class="n">orb_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_l&quot;</span><span class="p">)[:]</span>  <span class="c1"># angular quantum number</span>
+        <span class="n">orb_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_n&quot;</span><span class="p">)[:]</span>  <span class="c1"># principal quantum number</span>
+        <span class="n">orb_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_z&quot;</span><span class="p">)[:]</span>  <span class="c1"># zeta</span>
+        <span class="n">orb_P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_ispol&quot;</span><span class="p">)[:]</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="c1"># polarization shell, or not</span>
+        <span class="n">orb_q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_pop&quot;</span><span class="p">)[:]</span>  <span class="c1"># q0 for the orbitals</span>
+        <span class="n">orb_delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)[:]</span>  <span class="c1"># delta for the functions</span>
         <span class="n">orb_psi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orb&quot;</span><span class="p">)[:,</span> <span class="p">:]</span>
 
         <span class="c1"># Now loop over all orbitals</span>
@@ -227,7 +226,6 @@
         <span class="c1"># All orbital data</span>
         <span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no</span><span class="p">):</span>
-
             <span class="n">n</span> <span class="o">=</span> <span class="n">orb_n</span><span class="p">[</span><span class="n">io</span><span class="p">]</span>
             <span class="n">l</span> <span class="o">=</span> <span class="n">orb_l</span><span class="p">[</span><span class="n">io</span><span class="p">]</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">orb_z</span><span class="p">[</span><span class="n">io</span><span class="p">]</span>
@@ -246,7 +244,7 @@
             <span class="c1"># The fact that we have to have it normalized means that we need</span>
             <span class="c1"># to convert psi /sqrt(Bohr**3) -&gt; /sqrt(Ang**3)</span>
             <span class="c1"># \int psi^\dagger psi == 1</span>
-            <span class="n">psi</span> <span class="o">=</span> <span class="n">orb_psi</span><span class="p">[</span><span class="n">io</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+            <span class="n">psi</span> <span class="o">=</span> <span class="n">orb_psi</span><span class="p">[</span><span class="n">io</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
             <span class="c1"># Create the sphericalorbital and then the atomicorbital</span>
             <span class="n">sorb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">orb_q0</span><span class="p">[</span><span class="n">io</span><span class="p">])</span>
@@ -260,8 +258,8 @@
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extracting basis-set information.&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
-        <span class="c1">#limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
+        <span class="c1"># limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
         <span class="n">short</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;short&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">opts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -290,7 +288,7 @@
         <span class="c1"># this gets converted later</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)[:]</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">aranged</span><span class="p">(</span><span class="n">ion_nc</span><span class="o">.</span><span class="n">orbital</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ion_nc</span><span class="o">.</span><span class="n">orbital</span> <span class="o">*=</span> <span class="n">r</span> <span class="o">**</span> <span class="n">ion_nc</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">*</span> <span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+        <span class="n">ion_nc</span><span class="o">.</span><span class="n">orbital</span> <span class="o">*=</span> <span class="n">r</span> <span class="o">**</span> <span class="n">ion_nc</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">*</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;pjnl_n&quot;</span><span class="p">)[:]</span>
@@ -299,26 +297,26 @@
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;proj&quot;</span><span class="p">)[:]</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;kbdelta&quot;</span><span class="p">)[:]</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">aranged</span><span class="p">(</span><span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">proj</span> <span class="o">*=</span> <span class="n">r</span> <span class="o">**</span> <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">*</span> <span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+        <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">proj</span> <span class="o">*=</span> <span class="n">r</span> <span class="o">**</span> <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">*</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
 
         <span class="n">vna</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;vna&quot;</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">aranged</span><span class="p">(</span><span class="n">vna</span><span class="p">[:]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">vna</span><span class="o">.</span><span class="n">Vna_delta</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">vna</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
-        <span class="n">ion_nc</span><span class="o">.</span><span class="n">vna</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vna</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="n">ion_nc</span><span class="o">.</span><span class="n">vna</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vna</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span><span class="o">**</span><span class="mi">3</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">vna</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
 
         <span class="c1"># this is charge (not 1/sqrt(charge))</span>
         <span class="n">chlocal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;chlocal&quot;</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">aranged</span><span class="p">(</span><span class="n">chlocal</span><span class="p">[:]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">chlocal</span><span class="o">.</span><span class="n">Chlocal_delta</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">chlocal</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
-        <span class="n">ion_nc</span><span class="o">.</span><span class="n">chlocal</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">chlocal</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="n">ion_nc</span><span class="o">.</span><span class="n">chlocal</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">chlocal</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span><span class="o">**</span><span class="mi">3</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">chlocal</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
 
         <span class="n">vlocal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;reduced_vlocal&quot;</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">aranged</span><span class="p">(</span><span class="n">vlocal</span><span class="p">[:]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">vlocal</span><span class="o">.</span><span class="n">Reduced_vlocal_delta</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">vlocal</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
-        <span class="n">ion_nc</span><span class="o">.</span><span class="n">vlocal</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vlocal</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="n">ion_nc</span><span class="o">.</span><span class="n">vlocal</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vlocal</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span><span class="o">**</span><span class="mi">3</span>
         <span class="n">ion_nc</span><span class="o">.</span><span class="n">vlocal</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
 
         <span class="k">if</span> <span class="s2">&quot;core&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
@@ -326,7 +324,7 @@
             <span class="n">core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;core&quot;</span><span class="p">)</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">aranged</span><span class="p">(</span><span class="n">core</span><span class="p">[:]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">core</span><span class="o">.</span><span class="n">Core_delta</span>
             <span class="n">ion_nc</span><span class="o">.</span><span class="n">core</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
-            <span class="n">ion_nc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">core</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="mi">3</span>
+            <span class="n">ion_nc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">core</span><span class="p">[:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Bohr2Ang</span><span class="o">**</span><span class="mi">3</span>
             <span class="n">ion_nc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
 
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
@@ -339,31 +337,34 @@
 
         <span class="c1"># l-quantum number</span>
         <span class="k">class</span> <span class="nc">lRange</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span>
-                         <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                         <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                         <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-                         <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-                         <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_l</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-l&quot;</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">lRange</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of l-shells that are plotted: &#39;s,f&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-l&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">lRange</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of l-shells that are plotted: &#39;s,f&#39;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># n quantum number</span>
         <span class="k">class</span> <span class="nc">nRange</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-n&quot;</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">nRange</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of n quantum numbers that are plotted: &#39;2-4,6&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-n&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">nRange</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of n quantum numbers that are plotted: &#39;2-4,6&#39;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -386,8 +387,9 @@
                 <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
                 <span class="c1"># Now plot different orbitals</span>
-                <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
-                                                   <span class="n">data</span><span class="o">.</span><span class="n">pol</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">orbital</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">pol</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">orbital</span>
+                <span class="p">):</span>
                     <span class="k">if</span> <span class="n">pol</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">pol</span> <span class="o">=</span> <span class="s2">&quot;P&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -400,7 +402,8 @@
 
                 <span class="c1"># plot projectors</span>
                 <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">proj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                        <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">e</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">proj</span><span class="p">):</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">e</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">kb</span><span class="o">.</span><span class="n">proj</span>
+                <span class="p">):</span>
                     <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">proj</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;n</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">l</span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2"> e=</span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;KB projectors&quot;</span><span class="p">)</span>
                 <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Distance [Ang]&quot;</span><span class="p">)</span>
@@ -426,8 +429,14 @@
                     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">),</span> <span class="n">action</span><span class="o">=</span><span class="n">Plot</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the content basis set file, possibly saving plot to a file.&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">),</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">Plot</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the content basis set file, possibly saving plot to a file.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
 

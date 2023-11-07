@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.scaleup.rham &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.scaleup.rham &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -112,16 +112,17 @@
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
 
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="o">*</span>
+
 <span class="c1"># Import sile objects</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileScaleUp</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rhamSileScaleUp&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rhamSileScaleUp&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="rhamSileScaleUp">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp">[docs]</a>
 <span class="k">class</span> <span class="nc">rhamSileScaleUp</span><span class="p">(</span><span class="n">SileScaleUp</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; rham file object for ScaleUp</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;rham file object for ScaleUp</span>
 
 <span class="sd">    This file contains the real-space Hamiltonian for a ScaleUp simulation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -130,7 +131,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.read_hamiltonian">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads a Hamiltonian from the Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Hamiltonian from the Sile&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
 
         <span class="c1"># Create a copy as we may change the</span>
@@ -149,7 +150,7 @@
             <span class="n">isc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]))</span>
             <span class="n">o1</span><span class="p">,</span> <span class="n">o2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
             <span class="n">rH</span><span class="p">,</span> <span class="n">iH</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">o1</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">o2</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rH</span><span class="p">,</span> <span class="n">iH</span>
+            <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">o1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">o2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rH</span><span class="p">,</span> <span class="n">iH</span>
 
         <span class="n">ns</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">no</span> <span class="o">=</span> <span class="mi">0</span>
@@ -168,7 +169,9 @@
         <span class="k">if</span> <span class="n">no</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">!=</span> <span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
             <span class="c1"># First try and read the orbocc file</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">species</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.rham&quot;</span><span class="p">,</span> <span class="s2">&quot;.orbocc&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read_atom</span><span class="p">()</span>
+                <span class="n">species</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.rham&quot;</span><span class="p">,</span> <span class="s2">&quot;.orbocc&quot;</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">read_atom</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">species</span><span class="o">.</span><span class="n">atom</span><span class="p">):</span>
                     <span class="n">g</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">_atom</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -177,8 +180,10 @@
 
         <span class="c1"># Check again, to be sure...</span>
         <span class="k">if</span> <span class="n">no</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">!=</span> <span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The Geometry has a different number of &#39;</span>
-                              <span class="s1">&#39;orbitals, please correct by adding the orbocc file.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The Geometry has a different number of &quot;</span>
+                <span class="s2">&quot;orbitals, please correct by adding the orbocc file.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Now, we know the size etc. of the Hamiltonian</span>
         <span class="n">m_sc</span> <span class="o">=</span> <span class="n">m_sc</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
@@ -194,12 +199,11 @@
 
         <span class="n">old_s</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">o1</span><span class="p">,</span> <span class="n">o2</span><span class="p">,</span> <span class="n">rH</span><span class="p">,</span> <span class="n">iH</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="n">s</span> <span class="o">!=</span> <span class="n">old_s</span><span class="p">:</span>
                 <span class="c1"># We need to create a new Hamiltonian</span>
                 <span class="n">H</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
                 <span class="n">old_s</span> <span class="o">=</span> <span class="n">s</span>
-                <span class="n">Hs</span><span class="p">[</span><span class="n">s</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span>
+                <span class="n">Hs</span><span class="p">[</span><span class="n">s</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span>
 
             <span class="n">i</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span>
             <span class="n">H</span><span class="p">[</span><span class="n">o1</span><span class="p">,</span> <span class="n">o2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">rH</span>
@@ -212,7 +216,7 @@
 
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;rham&#39;</span><span class="p">,</span> <span class="n">rhamSileScaleUp</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;rham&quot;</span><span class="p">,</span> <span class="n">rhamSileScaleUp</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

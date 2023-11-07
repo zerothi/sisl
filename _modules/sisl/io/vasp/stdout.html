@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.stdout &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.vasp.stdout &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -126,28 +126,42 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.vasp&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">stdoutSileVASP</span><span class="p">(</span><span class="n">SileVASP</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Output file from VASP &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Output file from VASP&quot;&quot;&quot;</span>
 
     <span class="n">_info_attributes_</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">_A</span><span class="p">(</span><span class="s2">&quot;completed&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;.*General timing and accounting&quot;</span><span class="p">,</span>
-           <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="p">:</span> <span class="kc">False</span><span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span><span class="s2">&quot;accuracy_reached&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;.*reached required accuracy&quot;</span><span class="p">,</span>
-           <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="p">:</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="n">_A</span><span class="p">(</span>
+            <span class="s2">&quot;completed&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;.*General timing and accounting&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">_A</span><span class="p">(</span>
+            <span class="s2">&quot;accuracy_reached&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;.*reached required accuracy&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">),</span>
     <span class="p">]</span>
 
 <div class="viewcode-block" id="stdoutSileVASP.completed">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.completed">[docs]</a>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16.0&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16.0&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the line &quot;General timing and accounting&quot; was found. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the line &quot;General timing and accounting&quot; was found.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">completed</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="stdoutSileVASP.accuracy_reached">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.accuracy_reached">[docs]</a>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16.0&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16.0&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">accuracy_reached</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the line &quot;reached required accuracy&quot; was found. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the line &quot;reached required accuracy&quot; was found.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">accuracy_reached</span><span class="p">()</span></div>
 
 
@@ -155,28 +169,40 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.cpu_time">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">cpu_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="s2">&quot;General timing and accounting&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the consumed cpu time (in seconds) from a given section &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the consumed cpu time (in seconds) from a given section&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s2">&quot;General timing and accounting&quot;</span><span class="p">:</span>
             <span class="n">nskip</span><span class="p">,</span> <span class="n">iplace</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cpu_time unknown flag &#39;</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cpu_time unknown flag &#39;</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nskip</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">iplace</span><span class="p">])</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cpu_time could not find flag &#39;</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">&#39; in file&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cpu_time could not find flag &#39;</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">&#39; in file&quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="stdoutSileVASP.read_energy">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.read_energy">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;use read_energy[:]() instead to get all entries&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.14&quot;</span><span class="p">)</span>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.14&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;use read_energy[:]() instead to get all entries&quot;</span><span class="p">,</span>
+        <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.&quot;</span><span class="p">,</span>
+        <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads an energy specification block from OUTCAR</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads an energy specification block from OUTCAR</span>
 
 <span class="sd">        The function steps to the next occurrence of the &quot;Free energy of the ion-electron system&quot; segment</span>
 
@@ -219,10 +245,12 @@
         <span class="p">}</span>
 
         <span class="c1"># read the energy tables</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Free energy of the ion-electron system&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Free energy of the ion-electron system&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span>
+            <span class="mi">0</span>
+        <span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c1"># -----</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># -----</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">E</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
         <span class="k">while</span> <span class="s2">&quot;----&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
@@ -248,7 +276,7 @@
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads cell+position+force data from OUTCAR for an ionic trajectory step</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads cell+position+force data from OUTCAR for an ionic trajectory step</span>
 
 <span class="sd">        The function steps to the block defined by the &quot;VOLUME and BASIS-vectors are now :&quot;</span>
 <span class="sd">        line to first read the cell vectors, then it steps to the &quot;TOTAL-FORCE (eV/Angst)&quot; segment</span>
@@ -263,17 +291,17 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c1"># skip 4 lines</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># skip 4 lines</span>
         <span class="n">C</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="n">C</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># direct lattice vectors</span>
+            <span class="n">C</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># direct lattice vectors</span>
         <span class="c1"># read a position-force table</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;TOTAL-FORCE (eV/Angst)&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c1"># -----</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># -----</span>
         <span class="n">P</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="k">while</span> <span class="s2">&quot;----&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
@@ -290,7 +318,9 @@
 
 
 
-<span class="n">outSileVASP</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span><span class="s2">&quot;outSileVASP has been deprecated in favor of stdoutSileVASP.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)(</span><span class="n">stdoutSileVASP</span><span class="p">)</span>
+<span class="n">outSileVASP</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span>
+    <span class="s2">&quot;outSileVASP has been deprecated in favor of stdoutSileVASP.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span>
+<span class="p">)(</span><span class="n">stdoutSileVASP</span><span class="p">)</span>
 
 <span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;OUTCAR&quot;</span><span class="p">,</span> <span class="n">stdoutSileVASP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;vasp.out&quot;</span><span class="p">,</span> <span class="n">stdoutSileVASP</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

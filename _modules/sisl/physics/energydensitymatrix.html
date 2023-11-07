@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.energydensitymatrix &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.physics.energydensitymatrix &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -121,7 +121,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EnergyDensityMatrix</span><span class="p">(</span><span class="n">_densitymatrix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Sparse energy density matrix object</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sparse energy density matrix object</span>
 
 <span class="sd">    Assigning or changing elements is as easy as with standard `numpy` assignments:</span>
 
@@ -204,14 +204,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">E</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the energy density matrix elements &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Access the energy density matrix elements&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UP</span>
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="EnergyDensityMatrix.Ek">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.Ek">[docs]</a>
-    <span class="k">def</span> <span class="nf">Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the energy density matrix for a given k-point</span>
+    <span class="k">def</span> <span class="nf">Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the energy density matrix for a given k-point</span>
 
 <span class="sd">        Creation and return of the energy density matrix for a given k-point (default to Gamma).</span>
 
@@ -269,8 +269,8 @@
 
 <div class="viewcode-block" id="EnergyDensityMatrix.dEk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.dEk">[docs]</a>
-    <span class="k">def</span> <span class="nf">dEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the energy density matrix derivative for a given k-point</span>
+    <span class="k">def</span> <span class="nf">dEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the energy density matrix derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the energy density matrix derivative for a given k-point (default to Gamma).</span>
 
@@ -327,8 +327,8 @@
 
 <div class="viewcode-block" id="EnergyDensityMatrix.ddEk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.ddEk">[docs]</a>
-    <span class="k">def</span> <span class="nf">ddEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the energy density matrix double derivative for a given k-point</span>
+    <span class="k">def</span> <span class="nf">ddEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the energy density matrix double derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the energy density matrix double derivative for a given k-point (default to Gamma).</span>
 
@@ -386,7 +386,7 @@
 <div class="viewcode-block" id="EnergyDensityMatrix.shift">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.shift">[docs]</a>
     <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">DM</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Shift the energy density matrix to a common energy by using a reference density matrix</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shift the energy density matrix to a common energy by using a reference density matrix</span>
 
 <span class="sd">        This is equal to performing this operation:</span>
 
@@ -406,14 +406,16 @@
 <span class="sd">           density matrix corresponding to the same geometry</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spsame</span><span class="p">(</span><span class="n">DM</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.shift requires the input DM to have &quot;</span>
-                            <span class="s2">&quot;the same sparsity as the shifted object.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.shift requires the input DM to have &quot;</span>
+                <span class="s2">&quot;the same sparsity as the shifted object.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">E</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="c1"># When the energy is zero, there is no shift</span>
             <span class="k">return</span>
 
@@ -425,7 +427,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.read">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads density matrix from `Sile` using `read_energy_density_matrix`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads density matrix from `Sile` using `read_energy_density_matrix`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -438,24 +440,26 @@
         <span class="c1"># This only works because, they *must*</span>
         <span class="c1"># have been imported previously</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">get_sile</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_energy_density_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_energy_density_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EnergyDensityMatrix.write">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.write">[docs]</a>
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method&quot;&quot;&quot;</span>
         <span class="c1"># This only works because, they *must*</span>
         <span class="c1"># have been imported previously</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">get_sile</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
             <span class="n">sile</span><span class="o">.</span><span class="n">write_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">write_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </pre></div>

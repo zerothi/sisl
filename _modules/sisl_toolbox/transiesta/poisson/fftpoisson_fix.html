@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -163,7 +163,7 @@
 
 <span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pyamg_solve&#39;</span><span class="p">,</span> <span class="s1">&#39;solve_poisson&#39;</span><span class="p">,</span> <span class="s1">&#39;fftpoisson_fix_cli&#39;</span><span class="p">,</span> <span class="s1">&#39;fftpoisson_fix_run&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pyamg_solve&quot;</span><span class="p">,</span> <span class="s2">&quot;solve_poisson&quot;</span><span class="p">,</span> <span class="s2">&quot;fftpoisson_fix_cli&quot;</span><span class="p">,</span> <span class="s2">&quot;fftpoisson_fix_run&quot;</span><span class="p">]</span>
 
 
 <span class="n">_BC</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">BoundaryCondition</span>
@@ -178,33 +178,56 @@
 
 <span class="k">def</span> <span class="nf">pyamg_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span> <span class="n">accel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">pyamg</span>
+
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Setting up pyamg solver... </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">ml</span> <span class="o">=</span> <span class="n">pyamg</span><span class="o">.</span><span class="n">aggregation</span><span class="o">.</span><span class="n">smoothed_aggregation_solver</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">max_levels</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">A</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ml</span><span class="p">)</span>
     <span class="n">residuals</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="c1"># residuals calculated in the solve function is a pre-conditioned residual</span>
-        <span class="c1">#residuals.append(np.linalg.norm(b - A.dot(x)) ** 0.5)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">{:4d}</span><span class="s2">  residual = </span><span class="si">{:.5e}</span><span class="s2">   x0-residual = </span><span class="si">{:.5e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">residuals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">residuals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">residuals</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">ml</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">residuals</span><span class="o">=</span><span class="n">residuals</span><span class="p">,</span>
-                 <span class="n">accel</span><span class="o">=</span><span class="n">accel</span><span class="p">,</span> <span class="n">cycle</span><span class="o">=</span><span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mf">1e7</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done solving the Poisson equation!&#39;</span><span class="p">)</span>
+        <span class="c1"># residuals.append(np.linalg.norm(b - A.dot(x)) ** 0.5)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;    </span><span class="si">{:4d}</span><span class="s2">  residual = </span><span class="si">{:.5e}</span><span class="s2">   x0-residual = </span><span class="si">{:.5e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">residuals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">residuals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">residuals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ml</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
+        <span class="n">b</span><span class="p">,</span>
+        <span class="n">tol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">residuals</span><span class="o">=</span><span class="n">residuals</span><span class="p">,</span>
+        <span class="n">accel</span><span class="o">=</span><span class="n">accel</span><span class="p">,</span>
+        <span class="n">cycle</span><span class="o">=</span><span class="s2">&quot;W&quot;</span><span class="p">,</span>
+        <span class="n">maxiter</span><span class="o">=</span><span class="mf">1e7</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done solving the Poisson equation!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
 
 
 <div class="viewcode-block" id="solve_poisson">
 <a class="viewcode-back" href="../../../../toolbox/transiesta/generated/sisl_toolbox.transiesta.poisson.solve_poisson.html#sisl_toolbox.transiesta.poisson.solve_poisson">[docs]</a>
-<span class="k">def</span> <span class="nf">solve_poisson</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="s2">&quot;empirical&quot;</span><span class="p">,</span>
-                  <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
-                  <span class="n">accel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">boundary_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                  <span class="n">device_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_boundary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">box</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">elecs_V</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Solve Poisson equation &quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">solve_poisson</span><span class="p">(</span>
+    <span class="n">geometry</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">,</span>
+    <span class="n">radius</span><span class="o">=</span><span class="s2">&quot;empirical&quot;</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
+    <span class="n">accel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">boundary_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">device_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">plot_boundary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">box</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">boundary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">elecs_V</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solve Poisson equation&quot;&quot;&quot;</span>
     <span class="n">error</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">elecs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">geometry</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Buffer&quot;</span><span class="p">,</span> <span class="s2">&quot;Device&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;+&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Buffer&quot;</span><span class="p">,</span> <span class="s2">&quot;Device&quot;</span><span class="p">]):</span>
             <span class="k">continue</span>
 
         <span class="c1"># This is actually an electrode</span>
@@ -219,24 +242,37 @@
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">elecs</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">elecs_V</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; missing electrode bias: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Missing electrode arguments for specifying the bias.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Missing electrode arguments for specifying the bias.&quot;</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">boundary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">_BC</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="k">def</span> <span class="nf">bc2bc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;periodic&#39;</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;dirichlet&#39;</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;neumann&#39;</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">NEUMANN</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;periodic&quot;</span><span class="p">:</span> <span class="s2">&quot;PERIODIC&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="s2">&quot;PERIODIC&quot;</span><span class="p">,</span>
+                <span class="n">_BC</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">:</span> <span class="s2">&quot;PERIODIC&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;dirichlet&quot;</span><span class="p">:</span> <span class="s2">&quot;DIRICHLET&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="s2">&quot;DIRICHLET&quot;</span><span class="p">,</span>
+                <span class="n">_BC</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">:</span> <span class="s2">&quot;DIRICHLET&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;neumann&quot;</span><span class="p">:</span> <span class="s2">&quot;NEUMANN&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="s2">&quot;NEUMANN&quot;</span><span class="p">,</span>
+                <span class="n">_BC</span><span class="o">.</span><span class="n">NEUMANN</span><span class="p">:</span> <span class="s2">&quot;NEUMANN&quot;</span><span class="p">,</span>
             <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+
         <span class="k">for</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span> <span class="ow">in</span> <span class="n">boundary</span><span class="p">:</span>
             <span class="n">bc</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">_BC</span><span class="p">,</span> <span class="n">bc2bc</span><span class="p">(</span><span class="n">bottom</span><span class="p">)),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_BC</span><span class="p">,</span> <span class="n">bc2bc</span><span class="p">(</span><span class="n">top</span><span class="p">))])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Requires a 3x2 list input for the boundary conditions.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Requires a 3x2 list input for the boundary conditions.&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_shape_tree</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Takes two lists A and B which returns a shape with a binary nesting</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Takes two lists A and B which returns a shape with a binary nesting</span>
 
 <span class="sd">        This makes further index handling much faster.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -268,10 +304,12 @@
     <span class="c1"># Create grid</span>
     <span class="n">geometry</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
     <span class="k">class</span> <span class="nc">_fake</span><span class="p">:</span>
         <span class="nd">@property</span>
         <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">shape</span>
+
         <span class="nd">@property</span>
         <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">dtype</span>
@@ -315,8 +353,13 @@
         <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">A</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">pyamg_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">accel</span><span class="o">=</span><span class="n">accel</span><span class="p">,</span>
-                        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;solving electrode boundary conditions&quot;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pyamg_solve</span><span class="p">(</span>
+            <span class="n">A</span><span class="p">,</span>
+            <span class="n">b</span><span class="p">,</span>
+            <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
+            <span class="n">accel</span><span class="o">=</span><span class="n">accel</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;solving electrode boundary conditions&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="k">del</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span>
@@ -326,8 +369,10 @@
         <span class="c1"># This ensures that once we set the boundaries we don&#39;t</span>
         <span class="c1"># get any side-effects</span>
         <span class="n">BC</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">BoundaryCondition</span>
-        <span class="n">periodic</span> <span class="o">=</span> <span class="p">[</span><span class="n">bc</span> <span class="o">==</span> <span class="n">BC</span><span class="o">.</span><span class="n">PERIODIC</span> <span class="ow">or</span> <span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
-                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">boundary_condition</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])]</span>
+        <span class="n">periodic</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">bc</span> <span class="o">==</span> <span class="n">BC</span><span class="o">.</span><span class="n">PERIODIC</span> <span class="ow">or</span> <span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">boundary_condition</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="p">]</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">BC</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">periodic</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
@@ -349,15 +394,20 @@
             <span class="n">new_sl</span> <span class="o">=</span> <span class="n">sl</span><span class="p">[:]</span>
             <span class="n">new_sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">new_sl</span><span class="p">)</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">pyamg_fix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[</span><span class="n">new_sl</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">pyamg_fix</span><span class="p">(</span>
+                <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[</span><span class="n">new_sl</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">new_sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">new_sl</span><span class="p">)</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">pyamg_fix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[</span><span class="n">new_sl</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">pyamg_fix</span><span class="p">(</span>
+                <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[</span><span class="n">new_sl</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">new_sl</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">plot_boundary</span><span class="p">:</span>
             <span class="n">dat</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="c1"># now plot every plane</span>
             <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
             <span class="n">slicex3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">index_exp</span><span class="p">[:]</span> <span class="o">*</span> <span class="mi">3</span>
             <span class="n">axs</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">shape</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -384,8 +434,13 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
         <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">_fake</span><span class="p">()</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">pyamg_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">accel</span><span class="o">=</span><span class="n">accel</span><span class="p">,</span>
-                        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;removing electrode boundaries and solving for edge fixing&quot;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pyamg_solve</span><span class="p">(</span>
+            <span class="n">A</span><span class="p">,</span>
+            <span class="n">b</span><span class="p">,</span>
+            <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
+            <span class="n">accel</span><span class="o">=</span><span class="n">accel</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;removing electrode boundaries and solving for edge fixing&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span>
@@ -405,61 +460,157 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">argp</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-    <span class="n">tuning</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;tuning&quot;</span><span class="p">,</span> <span class="s2">&quot;Tuning fine details of the Poisson calculation.&quot;</span><span class="p">)</span>
+    <span class="n">tuning</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span>
+        <span class="s2">&quot;tuning&quot;</span><span class="p">,</span> <span class="s2">&quot;Tuning fine details of the Poisson calculation.&quot;</span>
+    <span class="p">)</span>
 
-    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;-G&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta.TBT.nc&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;siesta.TBT.nc file which contains the geometry and electrode information, currently we cannot read that from fdf-files.&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--geometry&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-G&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta.TBT.nc&quot;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;siesta.TBT.nc file which contains the geometry and electrode information, currently we cannot read that from fdf-files.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--shape&quot;</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">),</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Grid shape, this *has* to be conforming to the TranSiesta calculation, read from output: &#39;InitMesh: MESH = A x B x C&#39;&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--shape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Grid shape, this *has* to be conforming to the TranSiesta calculation, read from output: &#39;InitMesh: MESH = A x B x C&#39;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">n</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="s2">&quot;second&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="s2">&quot;third&quot;</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="s2">&quot;abc&quot;</span><span class="p">:</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--boundary-condition-</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;-bc-</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">],</span>
-                       <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;BOTTOM&quot;</span><span class="p">,</span> <span class="s2">&quot;TOP&quot;</span><span class="p">),</span>
-                       <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Boundary condition along the </span><span class="si">{}</span><span class="s2"> lattice vector [periodic/p, neumann/n, dirichlet/d]. &quot;</span>
-                             <span class="s2">&quot;Specify separate BC at the start and end of the lattice vector, respectively.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">d</span><span class="p">])))</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;--boundary-condition-</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;-bc-</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">],</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;BOTTOM&quot;</span><span class="p">,</span> <span class="s2">&quot;TOP&quot;</span><span class="p">),</span>
+            <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;Boundary condition along the </span><span class="si">{}</span><span class="s2"> lattice vector [periodic/p, neumann/n, dirichlet/d]. &quot;</span>
+                <span class="s2">&quot;Specify separate BC at the start and end of the lattice vector, respectively.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">n</span><span class="p">[</span><span class="n">d</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
 
-    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--elec-V&quot;</span><span class="p">,</span> <span class="s2">&quot;-V&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specify chemical potential on electrode&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--elec-V&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-V&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specify chemical potential on electrode&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--pyamg-shape&quot;</span><span class="p">,</span> <span class="s2">&quot;-ps&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Grid used to solve the Poisson equation, if shape is different the Grid will be interpolated (order=2) after.&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--pyamg-shape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-ps&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Grid used to solve the Poisson equation, if shape is different the Grid will be interpolated (order=2) after.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--device&quot;</span><span class="p">,</span> <span class="s2">&quot;-D&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;VAL&quot;</span><span class="p">,</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Fix the value of all device atoms to a value. In some cases this turns out to yield a better box boundary. The default is to *not* fix the potential on the device atoms.&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--device&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-D&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;VAL&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Fix the value of all device atoms to a value. In some cases this turns out to yield a better box boundary. The default is to *not* fix the potential on the device atoms.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--radius&quot;</span><span class="p">,</span> <span class="s2">&quot;-R&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Radius of atoms when figuring out the electrode sizes, this corresponds to the extend of &quot;</span>
-                              <span class="s2">&quot;each electrode where boundary conditions are fixed. Should be tuned according to the atomic species [3 Ang]&quot;</span><span class="p">))</span>
+    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--radius&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-R&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Radius of atoms when figuring out the electrode sizes, this corresponds to the extend of &quot;</span>
+            <span class="s2">&quot;each electrode where boundary conditions are fixed. Should be tuned according to the atomic species [3 Ang]&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 
-    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--dtype&quot;</span><span class="p">,</span> <span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;f64&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;f32&quot;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Precision of data (d/f64==double, f/f32==single)&quot;</span><span class="p">)</span>
+    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--dtype&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;f64&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;f32&quot;</span><span class="p">],</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Precision of data (d/f64==double, f/f32==single)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--tolerance&quot;</span><span class="p">,</span> <span class="s2">&quot;-T&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;EPS&quot;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Precision required for the pyamg solver. NOTE when using single precision arrays this should probably be on the order of 1e-5&quot;</span><span class="p">)</span>
+    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--tolerance&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-T&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;EPS&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Precision required for the pyamg solver. NOTE when using single precision arrays this should probably be on the order of 1e-5&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--acceleration&quot;</span><span class="p">,</span> <span class="s2">&quot;-A&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;accel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;cg&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;METHOD&quot;</span><span class="p">,</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Acceleration method for pyamg. May be useful if it fails to converge</span>
+    <span class="n">tuning</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--acceleration&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-A&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;accel&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;cg&quot;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;METHOD&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Acceleration method for pyamg. May be useful if it fails to converge</span>
 
-<span class="s2">Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minimal_residual&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="s2">Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minimal_residual&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">test</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span> <span class="s2">&quot;Options used for testing output. None of these options should be used for production runs!&quot;</span><span class="p">)</span>
-    <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--box&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Only store the initial box solution (i.e. do not run PyAMG)&quot;</span><span class="p">)</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span>
+        <span class="s2">&quot;testing&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Options used for testing output. None of these options should be used for production runs!&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--box&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Only store the initial box solution (i.e. do not run PyAMG)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--no-boundary-fft&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;boundary_fft&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Once the electrode boundary conditions are solved we perform a second solution with boundaries fixed. Using this flag disables this second solution.&quot;</span><span class="p">)</span>
+    <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--no-boundary-fft&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;boundary_fft&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Once the electrode boundary conditions are solved we perform a second solution with boundaries fixed. Using this flag disables this second solution.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_DEBUG</span><span class="p">:</span>
-        <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;plot&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-                          <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot grid by averaging over the axis given as argument&quot;</span><span class="p">)</span>
+        <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--plot&quot;</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;plot&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot grid by averaging over the axis given as argument&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--plot-boundary&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;plot_boundary&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                          <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot all 6 edges of the box with their fixed values (just before 2nd pyamg solve step)&quot;</span><span class="p">)</span>
+        <span class="n">test</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--plot-boundary&quot;</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;plot_boundary&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot all 6 edges of the box with their fixed values (just before 2nd pyamg solve step)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
-    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--out&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output file to store the resulting Poisson solution. It *has* to have TSV.nc file ending to make the file conforming with TranSiesta.&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--out&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output file to store the resulting Poisson solution. It *has* to have TSV.nc file ending to make the file conforming with TranSiesta.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">is_sub</span><span class="p">:</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">fftpoisson_fix_run</span><span class="p">)</span>
@@ -469,7 +620,9 @@
 
 <span class="k">def</span> <span class="nf">fftpoisson_fix_run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;</span><span class="se">\n</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: No out-files has been specified, work will be carried out but not saved!</span><span class="se">\n</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&gt;</span><span class="se">\n</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: No out-files has been specified, work will be carried out but not saved!</span><span class="se">\n</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># Read in geometry</span>
     <span class="n">geometry</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
@@ -478,7 +631,9 @@
     <span class="n">elecs_V</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">elec_V</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Please specify all electrode potentials using --elec-V&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Please specify all electrode potentials using --elec-V&quot;</span>
+        <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">elec_V</span><span class="p">:</span>
         <span class="n">elecs_V</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
@@ -500,18 +655,29 @@
     <span class="n">boundary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">boundary_condition_b</span><span class="p">)</span>
     <span class="n">boundary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">boundary_condition_c</span><span class="p">)</span>
 
-    <span class="n">V</span> <span class="o">=</span> <span class="n">solve_poisson</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span><span class="p">,</span>
-                      <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
-                      <span class="n">accel</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">accel</span><span class="p">,</span> <span class="n">boundary_fft</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">boundary_fft</span><span class="p">,</span>
-                      <span class="n">device_val</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">plot_boundary</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">plot_boundary</span><span class="p">,</span>
-                      <span class="o">**</span><span class="n">elecs_V</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">solve_poisson</span><span class="p">(</span>
+        <span class="n">geometry</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">,</span>
+        <span class="n">radius</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span>
+        <span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">tolerance</span><span class="p">,</span>
+        <span class="n">box</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
+        <span class="n">accel</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">accel</span><span class="p">,</span>
+        <span class="n">boundary_fft</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">boundary_fft</span><span class="p">,</span>
+        <span class="n">device_val</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">plot_boundary</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">plot_boundary</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">elecs_V</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_DEBUG</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">plot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dat</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">plot</span><span class="p">)</span>
             <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
             <span class="n">axs</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">V</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">shape</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">V</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">shape</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="p">]</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 

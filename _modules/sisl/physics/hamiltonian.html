@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.hamiltonian &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.physics.hamiltonian &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -122,7 +122,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Hamiltonian</span><span class="p">(</span><span class="n">SparseOrbitalBZSpin</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Sparse Hamiltonian matrix object</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sparse Hamiltonian matrix object</span>
 
 <span class="sd">    Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:</span>
 
@@ -193,7 +193,7 @@
 <div class="viewcode-block" id="Hamiltonian.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize Hamiltonian &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Hamiltonian&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
 
@@ -206,14 +206,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the Hamiltonian elements &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Access the Hamiltonian elements&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UP</span>
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="Hamiltonian.Hk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.Hk">[docs]</a>
-    <span class="k">def</span> <span class="nf">Hk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian for a given k-point</span>
+    <span class="k">def</span> <span class="nf">Hk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the Hamiltonian for a given k-point</span>
 
 <span class="sd">        Creation and return of the Hamiltonian for a given k-point (default to Gamma).</span>
 
@@ -272,8 +272,8 @@
 
 <div class="viewcode-block" id="Hamiltonian.dHk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.dHk">[docs]</a>
-    <span class="k">def</span> <span class="nf">dHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian derivative for a given k-point</span>
+    <span class="k">def</span> <span class="nf">dHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the Hamiltonian derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the Hamiltonian derivative for a given k-point (default to Gamma).</span>
 
@@ -330,8 +330,8 @@
 
 <div class="viewcode-block" id="Hamiltonian.ddHk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.ddHk">[docs]</a>
-    <span class="k">def</span> <span class="nf">ddHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian double derivative for a given k-point</span>
+    <span class="k">def</span> <span class="nf">ddHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the Hamiltonian double derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the Hamiltonian double derivative for a given k-point (default to Gamma).</span>
 
@@ -389,7 +389,7 @@
 <div class="viewcode-block" id="Hamiltonian.shift">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.shift">[docs]</a>
     <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Shift the electronic structure by a constant energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shift the electronic structure by a constant energy</span>
 
 <span class="sd">        This is equal to performing this operation:</span>
 
@@ -409,7 +409,7 @@
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="c1"># When the energy is zero, there is no shift</span>
             <span class="k">return</span>
 
@@ -426,8 +426,8 @@
 
 <div class="viewcode-block" id="Hamiltonian.eigenvalue">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenvalue">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`</span>
+    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -454,11 +454,11 @@
 <span class="sd">        EigenvalueElectron</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sparse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;sparse&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;gauge&#39;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;gauge&quot;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
@@ -469,8 +469,8 @@
 
 <div class="viewcode-block" id="Hamiltonian.eigenstate">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates</span>
+    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -497,11 +497,11 @@
 <span class="sd">        EigenstateElectron</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sparse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;sparse&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="n">e</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">e</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;gauge&#39;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;gauge&quot;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
@@ -515,7 +515,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.read">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads Hamiltonian from `Sile` using `read_hamiltonian`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads Hamiltonian from `Sile` using `read_hamiltonian`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -528,31 +528,33 @@
         <span class="c1"># This only works because, they *must*</span>
         <span class="c1"># have been imported previously</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">get_sile</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Hamiltonian.write">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.write">[docs]</a>
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method&quot;&quot;&quot;</span>
         <span class="c1"># This only works because, they *must*</span>
         <span class="c1"># have been imported previously</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">get_sile</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
             <span class="n">sile</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Hamiltonian.fermi_level">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.fermi_level">[docs]</a>
-    <span class="k">def</span> <span class="nf">fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;fermi_dirac&#39;</span><span class="p">,</span> <span class="n">q_tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the Fermi-level using a Brillouinzone sampling and a target charge</span>
+    <span class="k">def</span> <span class="nf">fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">,</span> <span class="n">q_tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Fermi-level using a Brillouinzone sampling and a target charge</span>
 
 <span class="sd">        The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues</span>
 <span class="sd">        and subsequently fitting the Fermi level to the final charge (`q`).</span>
@@ -579,6 +581,7 @@
         <span class="k">if</span> <span class="n">bz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Gamma-point only</span>
             <span class="kn">from</span> <span class="nn">.brillouinzone</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
+
             <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Overwrite the parent in bz</span>
@@ -592,9 +595,11 @@
 
         <span class="c1"># Ensure we have an &quot;array&quot; in case of spin-polarized calculations</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
-                             <span class="s2">&quot;for 0 electrons.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
+                <span class="s2">&quot;for 0 electrons.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">distribution</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
@@ -632,8 +637,10 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span> <span class="ow">and</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
-                                 <span class="s2">&quot;for electrons (</span><span class="si">{q}</span><span class="s2">) equal to or above number of orbitals ({len(self)}).&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
+                    <span class="s2">&quot;for electrons (</span><span class="si">{q}</span><span class="s2">) equal to or above number of orbitals ({len(self)}).&quot;</span>
+                <span class="p">)</span>
             <span class="c1"># We need to do Fermi-level separately since the user requests</span>
             <span class="c1"># separate fillings</span>
             <span class="n">Ef</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -643,11 +650,12 @@
             <span class="c1"># Ensure a single charge</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">q</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
-                                 <span class="s2">&quot;for electrons (</span><span class="si">{q}</span><span class="s2">) equal to or above number of orbitals ({len(self)}).&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
+                    <span class="s2">&quot;for electrons (</span><span class="si">{q}</span><span class="s2">) equal to or above number of orbitals ({len(self)}).&quot;</span>
+                <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
-                <span class="n">Ef</span> <span class="o">=</span> <span class="n">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-                                            <span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">1</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">Ef</span> <span class="o">=</span> <span class="n">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">1</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">Ef</span> <span class="o">=</span> <span class="n">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">eigh</span><span class="p">())</span>
 

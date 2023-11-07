@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adding new backends &mdash; sisl 0.1-f3633fb</title>
+  <title>Adding new backends &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -19,7 +19,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -45,7 +45,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -128,13 +128,13 @@
            <div itemprop="articleBody">
              
   <div align="right">
-Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sisl/master//home/runner/work/sisl/sisl/docs/visualization/viz_module/diy/Adding new backends.ipynb"> here</a>.
-<span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/zerothi/sisl/master?filepath=/home/runner/work/sisl/sisl/docs/visualization/viz_module/diy/Adding new backends.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
+<a href="https://raw.githubusercontent.com/zerothi/sisl/main//home/runner/work/sisl/sisl/docs/visualization/viz_module/diy/Adding new backends.ipynb"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>.
+<a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath=/home/runner/work/sisl/sisl/docs/visualization/viz_module/diy/Adding new backends.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
 </div><section id="Adding-new-backends">
 <h1>Adding new backends<a class="headerlink" href="#Adding-new-backends" title="Link to this heading"></a></h1>
 <p>This notebook displays how to integrate a new plotting backend to <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code>.</p>
 <p>Let’s create a toy graphene band structure to illustrate the conceps throughout this notebook:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -143,19 +143,13 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 
 <span class="n">geom</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">(</span><span class="n">orthogonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">construct</span><span class="p">([(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7</span><span class="p">)],</span> <span class="p">)</span>
+<span class="n">H</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span>
+    <span class="p">[(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7</span><span class="p">)],</span>
+<span class="p">)</span>
 
-<span class="n">band_struct</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">BandStructure</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Gamma&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">])</span>
+<span class="n">band_struct</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">BandStructure</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Gamma&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-warn:0: SislWarning: Geometry.close_sc has been passed an &#39;atoms&#39; argument together with an R value larger than the orbital ranges. If used together with &#39;sparse-matrix.construct&#39; this can result in wrong couplings.
-</pre></div></div>
 </div>
 <p>The final display in the visualization module is controlled by the <code class="docutils literal notranslate"><span class="pre">Figure</span></code> class.</p>
 <div class="nbinput nblast docutils container">
@@ -585,8 +579,9 @@ class Figure(builtins.object)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="k">class</span> <span class="nc">TextFigure</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
 
+
+<span class="k">class</span> <span class="nc">TextFigure</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_init_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
@@ -655,9 +650,9 @@ class Figure(builtins.object)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div>                            <div id="e89cca17-f087-4923-802d-0641b97e127f" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("e89cca17-f087-4923-802d-0641b97e127f")) {                    Plotly.newPlot(                        "e89cca17-f087-4923-802d-0641b97e127f",                        [{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"0","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-8.099999999999982,-8.072607638045818,-7.990709406687042,-7.855144860176285,-7.667323911336286,-7.429245365342247,-7.143528539874381,-6.813465152136345,-6.4431033563623386,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"1","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-2.6999999999999975,-2.7808282798770527,-3.008082973902628,-3.3461469223041824,-3.7566133735920424,-4.207887035263717,-4.67653718043596,-5.145550759697494,-5.602358355124413,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"2","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[2.7000000000000117,2.7808282798770705,3.0080829739026447,3.346146922304194,3.756613373592053,4.207887035263727,4.676537180435975,5.145550759697502,5.602358355124416,6.037383539249433],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"3","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[8.100000000000001,8.072607638045836,7.990709406687062,7.855144860176306,7.667323911336302,7.429245365342262,7.143528539874395,6.813465152136357,6.443103356362345,6.037383539249433],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"scene":{"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},                        {"responsive": true}                    ).then(function(){
+<div>                            <div id="3c496b5a-27a1-4f5b-b03b-cfe5a11b8655" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("3c496b5a-27a1-4f5b-b03b-cfe5a11b8655")) {                    Plotly.newPlot(                        "3c496b5a-27a1-4f5b-b03b-cfe5a11b8655",                        [{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"0","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-8.099999999999982,-8.072607638045818,-7.990709406687042,-7.855144860176285,-7.667323911336286,-7.429245365342247,-7.143528539874381,-6.813465152136345,-6.4431033563623386,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"1","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-2.6999999999999975,-2.7808282798770527,-3.008082973902628,-3.3461469223041824,-3.7566133735920424,-4.207887035263717,-4.67653718043596,-5.145550759697494,-5.602358355124413,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"2","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[2.7000000000000117,2.7808282798770705,3.0080829739026447,3.346146922304194,3.756613373592053,4.207887035263727,4.676537180435975,5.145550759697502,5.602358355124416,6.037383539249433],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"3","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[8.100000000000001,8.072607638045836,7.990709406687062,7.855144860176306,7.667323911336302,7.429245365342262,7.143528539874395,6.813465152136357,6.443103356362345,6.037383539249433],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"scene":{"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},                        {"responsive": true}                    ).then(function(){
 
-var gd = document.getElementById('e89cca17-f087-4923-802d-0641b97e127f');
+var gd = document.getElementById('3c496b5a-27a1-4f5b-b03b-cfe5a11b8655');
 var x = new MutationObserver(function (mutations, observer) {{
         var display = window.getComputedStyle(gd).display;
         if (!display || display === 'none') {{

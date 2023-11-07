@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.table &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.table &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -117,12 +117,12 @@
 
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">Sile</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tableSile&#39;</span><span class="p">,</span> <span class="s1">&#39;TableSile&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tableSile&quot;</span><span class="p">,</span> <span class="s2">&quot;TableSile&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">tableSile</span><span class="p">(</span><span class="n">Sile</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; ASCII tabular formatted data</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ASCII tabular formatted data</span>
 
 <span class="sd">    A generic table data which will easily accommodate the most common write-outs of data</span>
 
@@ -178,15 +178,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Setup the `tableSile` after initialization &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the `tableSile` after initialization&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="tableSile.write_data">
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.write_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write tabular data to the file with optional header.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write tabular data to the file with optional header.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -229,31 +229,36 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fmt&#39;</span><span class="p">,</span> <span class="s1">&#39;.5e&#39;</span><span class="p">)</span>
-        <span class="n">newline</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;newline&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">delimiter</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;delimiter&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fmt&quot;</span><span class="p">,</span> <span class="s2">&quot;.5e&quot;</span><span class="p">)</span>
+        <span class="n">newline</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;newline&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">delimiter</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delimiter&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">def</span> <span class="nf">comment_newline</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot; Converts a list of str arguments into nicely formatted commented</span>
-<span class="sd">            and newlined output &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">comment_newline</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Converts a list of str arguments into nicely formatted commented</span>
+<span class="sd">            and newlined output&quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">_com</span>
             <span class="n">line</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">newline</span><span class="p">))</span>
             <span class="c1"># always append a newline</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">newline</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">_com</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_com</span><span class="si">}{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">line</span><span class="p">])</span> <span class="o">+</span> <span class="n">newline</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">newline</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">s</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">_com</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_com</span><span class="si">}{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="o">+</span> <span class="n">newline</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">line</span>
 
-        <span class="n">comment</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comment</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">comment</span> <span class="o">=</span> <span class="n">comment_newline</span><span class="p">(</span><span class="n">comment</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="n">comment_newline</span><span class="p">(</span><span class="n">comment</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">comment</span> <span class="o">=</span> <span class="n">comment_newline</span><span class="p">(</span><span class="n">newline</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">comment</span><span class="p">),</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="n">comment_newline</span><span class="p">(</span><span class="n">newline</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">comment</span><span class="p">),</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
 
-        <span class="n">header</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;header&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;header&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">comment_newline</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -262,9 +267,9 @@
         <span class="c1"># Finalize output</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">comment</span> <span class="o">+</span> <span class="n">header</span>
 
-        <span class="n">footer</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;footer&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">footer</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;footer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">footer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">footer</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">footer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">footer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -291,7 +296,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-        <span class="n">_fmt</span> <span class="o">=</span> <span class="s1">&#39;{:&#39;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+        <span class="n">_fmt</span> <span class="o">=</span> <span class="s2">&quot;{:&quot;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
 
         <span class="c1"># Reshape such that it becomes easy</span>
         <span class="n">ndim</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">ndim</span>
@@ -301,13 +306,17 @@
             <span class="n">dat</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">_fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fmts&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_fmt</span> <span class="o">+</span> <span class="n">delimiter</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">_fmt</span> <span class="o">+</span> <span class="n">newline</span><span class="p">)</span>
+            <span class="n">_fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;fmts&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">_fmt</span> <span class="o">+</span> <span class="n">delimiter</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">_fmt</span> <span class="o">+</span> <span class="n">newline</span>
+            <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">dat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">j</span><span class="p">]))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">newline</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">_fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fmts&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_fmt</span> <span class="o">+</span> <span class="n">delimiter</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">_fmt</span> <span class="o">+</span> <span class="n">newline</span><span class="p">)</span>
+            <span class="n">_fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;fmts&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">_fmt</span> <span class="o">+</span> <span class="n">delimiter</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">_fmt</span> <span class="o">+</span> <span class="n">newline</span>
+            <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">dat</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span>
 
@@ -319,7 +328,7 @@
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read tabular data from the file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read tabular data from the file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -335,15 +344,15 @@
 <span class="sd">            lines starting with this are discarded as comments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Override the comment in the file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
 
         <span class="c1"># Skip to next line</span>
         <span class="n">comment</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="c1"># Also read comments</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_comment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="p">):</span>
+        <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_comment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">):</span>
             <span class="n">comment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
@@ -356,18 +365,20 @@
 
         <span class="c1"># First we need to figure out the separator:</span>
         <span class="n">len_sep</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">sep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;delimiter&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">sep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delimiter&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">cur_sep</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">cur_sep</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">]:</span>
                 <span class="n">s</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cur_sep</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">len_sep</span><span class="p">:</span>
                     <span class="n">len_sep</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
                     <span class="n">sep</span> <span class="o">=</span> <span class="n">cur_sep</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.read_data could not determine &#39;</span>
-                                 <span class="s1">&#39;column separator...&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;.read_data could not determine &quot;</span>
+                    <span class="s2">&quot;column separator...&quot;</span>
+                <span class="p">)</span>
 
-        <span class="n">empty</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*\n&#39;</span><span class="p">)</span>
+        <span class="n">empty</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s*\n&quot;</span><span class="p">)</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># If we start a line by a comment, or a newline</span>
             <span class="c1"># then we have a new data set</span>
@@ -400,8 +411,8 @@
         <span class="k">if</span> <span class="n">dat</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">ret_comment</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ret_comment&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">ret_header</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ret_header&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">ret_comment</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ret_comment&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">ret_header</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ret_header&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ret_comment</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ret_header</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">dat</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">header</span>
@@ -417,8 +428,8 @@
 
 <span class="n">TableSile</span> <span class="o">=</span> <span class="n">tableSile</span>
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">tableSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span> <span class="n">tableSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="n">tableSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;dat&quot;</span><span class="p">,</span> <span class="n">tableSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.pht &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.tbtrans.pht &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -113,54 +113,62 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span>
 <span class="kn">from</span> <span class="nn">.tbt</span> <span class="kn">import</span> <span class="n">Ry2eV</span><span class="p">,</span> <span class="n">Ry2K</span><span class="p">,</span> <span class="n">tbtavncSileTBtrans</span><span class="p">,</span> <span class="n">tbtncSileTBtrans</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;phtncSilePHtrans&#39;</span><span class="p">,</span> <span class="s1">&#39;phtavncSilePHtrans&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;phtncSilePHtrans&quot;</span><span class="p">,</span> <span class="s2">&quot;phtavncSilePHtrans&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.phtrans&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">phtncSilePHtrans</span><span class="p">(</span><span class="n">tbtncSileTBtrans</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; PHtrans file object &quot;&quot;&quot;</span>
-    <span class="n">_trans_type</span> <span class="o">=</span> <span class="s1">&#39;PHT&#39;</span>
-    <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PHtrans file object&quot;&quot;&quot;</span>
+
+    <span class="n">_trans_type</span> <span class="o">=</span> <span class="s2">&quot;PHT&quot;</span>
+    <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span><span class="o">**</span><span class="mi">2</span>
 
 <div class="viewcode-block" id="phtncSilePHtrans.phonon_temperature">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.phtncSilePHtrans.html#sisl.io.tbtrans.phtncSilePHtrans.phonon_temperature">[docs]</a>
     <span class="k">def</span> <span class="nf">phonon_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Phonon bath temperature [Kelvin] &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2K</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Phonon bath temperature [Kelvin]&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;kT&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2K</span></div>
 
 
     <span class="k">def</span> <span class="nf">kT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Phonon bath temperature [eV] &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Phonon bath temperature [eV]&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;kT&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.phtrans&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">phtavncSilePHtrans</span><span class="p">(</span><span class="n">tbtavncSileTBtrans</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; PHtrans file object &quot;&quot;&quot;</span>
-    <span class="n">_trans_type</span> <span class="o">=</span> <span class="s1">&#39;PHT&#39;</span>
-    <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PHtrans file object&quot;&quot;&quot;</span>
+
+    <span class="n">_trans_type</span> <span class="o">=</span> <span class="s2">&quot;PHT&quot;</span>
+    <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span><span class="o">**</span><span class="mi">2</span>
 
 <div class="viewcode-block" id="phtavncSilePHtrans.phonon_temperature">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.phonon_temperature">[docs]</a>
     <span class="k">def</span> <span class="nf">phonon_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Phonon bath temperature [Kelvin] &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2K</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Phonon bath temperature [Kelvin]&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;kT&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2K</span></div>
 
 
     <span class="k">def</span> <span class="nf">kT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Phonon bath temperature [eV] &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Phonon bath temperature [eV]&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;kT&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
 
 
-<span class="k">for</span> <span class="n">_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;chemical_potential&#39;</span><span class="p">,</span> <span class="s1">&#39;electron_temperature&#39;</span><span class="p">,</span> <span class="s1">&#39;kT&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;current_parameter&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;shot_noise&#39;</span><span class="p">,</span> <span class="s1">&#39;noise_power&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">_name</span> <span class="ow">in</span> <span class="p">[</span>
+    <span class="s2">&quot;chemical_potential&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;electron_temperature&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;kT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;current&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;current_parameter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shot_noise&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;noise_power&quot;</span><span class="p">,</span>
+<span class="p">]:</span>
     <span class="nb">setattr</span><span class="p">(</span><span class="n">phtncSilePHtrans</span><span class="p">,</span> <span class="n">_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="nb">setattr</span><span class="p">(</span><span class="n">phtavncSilePHtrans</span><span class="p">,</span> <span class="n">_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;PHT.nc&#39;</span><span class="p">,</span> <span class="n">phtncSilePHtrans</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;PHT.AV.nc&#39;</span><span class="p">,</span> <span class="n">phtavncSilePHtrans</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;PHT.nc&quot;</span><span class="p">,</span> <span class="n">phtncSilePHtrans</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;PHT.AV.nc&quot;</span><span class="p">,</span> <span class="n">phtavncSilePHtrans</span><span class="p">)</span>
 </pre></div>
 
            </div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.eig &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.siesta.eig &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -125,7 +125,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">eigSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Eigenvalues as calculated in the SCF loop, easy plots using `sdata`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Eigenvalues as calculated in the SCF loop, easy plots using `sdata`</span>
 
 <span class="sd">    The .EIG file from Siesta contains the eigenvalues for k-points used during the SCF.</span>
 <span class="sd">    Using the command-line utility `sdata` one may plot the eigenvalue spectrum to visualize the</span>
@@ -184,7 +184,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_fermi_level">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Query the Fermi-level contained in the file</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Query the Fermi-level contained in the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -197,7 +197,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Read eigenvalues, as calculated and written by Siesta</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read eigenvalues, as calculated and written by Siesta</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -218,6 +218,7 @@
         <span class="n">eigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">ns</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nb</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="n">readline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span>
+
         <span class="k">def</span> <span class="nf">iterE</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
             <span class="n">ne</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
@@ -238,9 +239,9 @@
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Manipulate Siesta EIG file.&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
-        <span class="c1">#limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
-        <span class="c1">#short = kwargs.get(&quot;short&quot;, False)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
+        <span class="c1"># limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
+        <span class="c1"># short = kwargs.get(&quot;short&quot;, False)</span>
 
         <span class="c1"># We limit the import to occur here</span>
         <span class="kn">import</span> <span class="nn">argparse</span>
@@ -260,41 +261,59 @@
                 <span class="c1"># default T = 300 k</span>
                 <span class="n">units</span><span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">300</span><span class="p">,</span>
                 <span class="c1"># distribution type</span>
-                <span class="s2">&quot;gaussian&quot;</span>
+                <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
             <span class="p">],</span>
         <span class="p">}</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;_weights&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kpSileSiesta</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;EIG&quot;</span><span class="p">,</span> <span class="s2">&quot;KP&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;_weights&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kpSileSiesta</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;EIG&quot;</span><span class="p">,</span> <span class="s2">&quot;KP&quot;</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;_weights&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
 
         <span class="c1"># Energy grabs</span>
         <span class="k">class</span> <span class="nc">ERange</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--energy&quot;</span><span class="p">,</span> <span class="s2">&quot;-E&quot;</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of energies that are plotted: &#39;-1:0,1:2&#39; [eV]&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--energy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-E&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of energies that are plotted: &#39;-1:0,1:2&#39; [eV]&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># k-point weights</span>
         <span class="k">class</span> <span class="nc">KP</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_weights</span> <span class="o">=</span> <span class="n">kpSileSiesta</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--kp-file&quot;</span><span class="p">,</span> <span class="s2">&quot;-kp&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">KP</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The k-point file from which to read the band-weights (only applicable to --dos option)&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--kp-file&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-kp&quot;</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">KP</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The k-point file from which to read the band-weights (only applicable to --dos option)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># Energy grabs</span>
         <span class="k">class</span> <span class="nc">DOS</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">dos_self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># pylint: disable=E0213</span>
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+                <span class="n">dos_self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span>
+            <span class="p">):</span>  <span class="c1"># pylint: disable=E0213</span>
                 <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;_weights&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can not calculate DOS when k-point weights are unknown, please pass -kp before this command&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;Can not calculate DOS when k-point weights are unknown, please pass -kp before this command&quot;</span>
+                        <span class="p">)</span>
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> --dos the number of k-points for the eigenvalues and k-point weights &quot;</span>
-                                    <span class="s2">&quot;are different, please use -kp before --dos.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> --dos the number of k-points for the eigenvalues and k-point weights &quot;</span>
+                        <span class="s2">&quot;are different, please use -kp before --dos.&quot;</span>
+                    <span class="p">)</span>
 
                 <span class="c1"># Specify default settings</span>
                 <span class="n">dE</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_dos_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -312,7 +331,9 @@
                         <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                             <span class="n">distribution</span> <span class="o">=</span> <span class="n">value</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Too many values passed? Unknown value </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Too many values passed? Unknown value </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">?&quot;</span>
+                            <span class="p">)</span>
 
                 <span class="k">elif</span> <span class="n">n_eq</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">),</span> <span class="n">values</span><span class="p">):</span>
@@ -324,10 +345,14 @@
                         <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;dist&quot;</span><span class="p">):</span>
                             <span class="n">distribution</span> <span class="o">=</span> <span class="n">val</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown key: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">, should be one of [dE, kT, dist]&quot;</span><span class="p">)</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Unknown key: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">, should be one of [dE, kT, dist]&quot;</span>
+                            <span class="p">)</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mixing position arguments and keyword arguments is not allowed, either key=val or val, only&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Mixing position arguments and keyword arguments is not allowed, either key=val or val, only&quot;</span>
+                    <span class="p">)</span>
 
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">dE</span> <span class="o">=</span> <span class="n">units</span><span class="p">(</span><span class="n">dE</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
@@ -385,16 +410,22 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DOS T=</span><span class="si">{</span><span class="n">str_T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calc_dos</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_weights</span><span class="p">))</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--dos&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">DOS</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;dE, kT, DIST&quot;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Calculate (and internally store) the density of states from the .EIG file, &quot;</span>
-                       <span class="s2">&quot;dE = energy separation (5 meV), kT = smearing (300 K), DIST = distribution function (Gaussian). &quot;</span>
-                       <span class="s2">&quot;The arguments will be the new defaults for later --dos calls.&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--dos&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">DOS</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;dE, kT, DIST&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Calculate (and internally store) the density of states from the .EIG file, &quot;</span>
+            <span class="s2">&quot;dE = energy separation (5 meV), kT = smearing (300 K), DIST = distribution function (Gaussian). &quot;</span>
+            <span class="s2">&quot;The arguments will be the new defaults for later --dos calls.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-
             <span class="k">def</span> <span class="nf">_plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot; Plot data as contained in ns._data &quot;&quot;&quot;</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Plot data as contained in ns._data&quot;&quot;&quot;</span>
                 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
                 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
                 <span class="n">E</span> <span class="o">=</span> <span class="kc">None</span>
@@ -425,12 +456,12 @@
                 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
                 <span class="n">E</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span>
-                <span class="c1">#Emin = np.min(E)</span>
-                <span class="c1">#Emax = np.max(E)</span>
-                <span class="c1">#n = E.shape[1]</span>
+                <span class="c1"># Emin = np.min(E)</span>
+                <span class="c1"># Emax = np.max(E)</span>
+                <span class="c1"># n = E.shape[1]</span>
                 <span class="c1"># We need to setup a relatively good size of the scatter</span>
                 <span class="c1"># plots</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">#20. / max(Emax - Emin, n)</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># 20. / max(Emax - Emin, n)</span>
 
                 <span class="k">def</span> <span class="nf">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
@@ -466,26 +497,41 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="p">)</span>
 
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Plot</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the currently collected information (at its current invocation), or the eigenspectrum&quot;</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--plot&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">Plot</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the currently collected information (at its current invocation), or the eigenspectrum&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">Out</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-
                 <span class="n">out</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c1"># do nothing if data has not been collected</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No data has been collected in the arguments, nothing will be written, have you forgotten arguments?&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;No data has been collected in the arguments, nothing will be written, have you forgotten arguments?&quot;</span>
+                    <span class="p">)</span>
 
                 <span class="k">if</span> <span class="nb">sum</span><span class="p">((</span><span class="n">h</span> <span class="o">==</span> <span class="s2">&quot;Energy&quot;</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There are multiple non-commensurate energy-grids, saving data requires a single energy-grid.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;There are multiple non-commensurate energy-grids, saving data requires a single energy-grid.&quot;</span>
+                    <span class="p">)</span>
 
                 <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">tableSile</span>
-                <span class="n">tableSile</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
-                                               <span class="n">header</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--out&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Out</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Store currently collected information (at its current invocation) to the out file.&quot;</span><span class="p">)</span>
+
+                <span class="n">tableSile</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--out&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">Out</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Store currently collected information (at its current invocation) to the out file.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
 

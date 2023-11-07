@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.struct &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.siesta.struct &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -117,21 +117,21 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;structSileSiesta&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;structSileSiesta&quot;</span><span class="p">]</span>
 
 
-<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">structSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Geometry file &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Geometry file&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="structSileSiesta.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.write_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.9f&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
+    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.9f&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the geometry to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -144,15 +144,15 @@
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># Create format string for the cell-parameters</span>
-        <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;{:&#39;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s1">&#39;} &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">fmt_str</span> <span class="o">=</span> <span class="s2">&quot;   &quot;</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;{:&quot;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s2">&quot;} &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="si">:</span><span class="s1">12d</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="si">:</span><span class="s2">12d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Create format string for the atomic coordinates</span>
         <span class="n">fxyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span>
-        <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:3d}{:6d}</span><span class="s1"> &#39;</span>
-        <span class="n">fmt_str</span> <span class="o">+=</span> <span class="p">(</span><span class="s1">&#39;{:&#39;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s1">&#39;} &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">fmt_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:3d}{:6d}</span><span class="s2"> &quot;</span>
+        <span class="n">fmt_str</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;{:&quot;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s2">&quot;} &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ips</span> <span class="ow">in</span> <span class="n">geometry</span><span class="o">.</span><span class="n">iter_species</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">AtomGhost</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ips</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="o">*</span><span class="n">fxyz</span><span class="p">[</span><span class="n">ia</span><span class="p">]))</span>
@@ -164,7 +164,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.read_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Lattice` object from the STRUCT file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns `Lattice` object from the STRUCT file&quot;&quot;&quot;</span>
 
         <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
@@ -177,7 +177,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.read_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">species_Z</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a `Geometry` object from the STRUCT file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a `Geometry` object from the STRUCT file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -224,15 +224,15 @@
 
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">newkw</span><span class="p">)</span>
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;STRUCT_IN&#39;</span><span class="p">,</span> <span class="n">structSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;STRUCT_NEXT_ITER&#39;</span><span class="p">,</span> <span class="n">structSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;STRUCT_OUT&#39;</span><span class="p">,</span> <span class="n">structSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;STRUCT_IN&quot;</span><span class="p">,</span> <span class="n">structSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;STRUCT_NEXT_ITER&quot;</span><span class="p">,</span> <span class="n">structSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;STRUCT_OUT&quot;</span><span class="p">,</span> <span class="n">structSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

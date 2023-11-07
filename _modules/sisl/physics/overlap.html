@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.overlap &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.physics.overlap &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -119,7 +119,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Overlap</span><span class="p">(</span><span class="n">SparseOrbitalBZ</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse overlap matrix object</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sparse overlap matrix object</span>
 
 <span class="sd">    The Overlap object contains orbital overlaps. It should be used when the overlaps are not associated with</span>
 <span class="sd">    another physical object such as a Hamiltonian, as is the case with eg. Siesta onlyS outputs.</span>
@@ -144,7 +144,7 @@
 <div class="viewcode-block" id="Overlap.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Overlap.html#sisl.physics.Overlap.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Initialize Overlap &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initialize Overlap&quot;&quot;&quot;</span>
         <span class="c1"># Since this *is* the overlap matrix, we should never use the</span>
         <span class="c1"># orthogonal keyword</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;orthogonal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
@@ -160,7 +160,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the overlap elements &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Access the overlap elements&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -168,7 +168,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Overlap.html#sisl.physics.Overlap.fromsp">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromsp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create an Overlap object from a preset `Geometry` and a sparse matrix</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create an Overlap object from a preset `Geometry` and a sparse matrix</span>
 
 <span class="sd">        The passed sparse matrix is in one of `scipy.sparse` formats.</span>
 
@@ -199,7 +199,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Overlap.html#sisl.physics.Overlap.read">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads Overlap from `Sile` using `read_overlap`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads Overlap from `Sile` using `read_overlap`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -210,22 +210,24 @@
 <span class="sd">        * : args passed directly to ``read_overlap(,**)``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">get_sile</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_overlap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_overlap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Overlap.write">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Overlap.html#sisl.physics.Overlap.write">[docs]</a>
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">get_sile</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
             <span class="n">sile</span><span class="o">.</span><span class="n">write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </pre></div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.siesta_nc &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.siesta.siesta_nc &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -141,30 +141,30 @@
     <span class="n">has_fortran_module</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ncSileSiesta&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ncSileSiesta&quot;</span><span class="p">]</span>
 
-<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
-<span class="n">Ry2eV</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Ry&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
+<span class="n">Ry2eV</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Ry&quot;</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ncSileSiesta</span><span class="p">(</span><span class="n">SileCDFSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generic NetCDF output file containing a large variety of information &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic NetCDF output file containing a large variety of information&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ncSileSiesta.read_lattice_nsc">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_lattice_nsc">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_lattice_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns number of supercell connections &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;nsc&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns number of supercell connections&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;nsc&quot;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ncSileSiesta.read_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_lattice">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Lattice object from a Siesta.nc file &quot;&quot;&quot;</span>
-        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;cell&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Lattice object from a Siesta.nc file&quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;cell&quot;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="c1"># Yes, this is ugly, I really should implement my unit-conversion tool</span>
         <span class="n">cell</span> <span class="o">*=</span> <span class="n">Bohr2Ang</span>
         <span class="n">cell</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -178,18 +178,17 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_basis">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a set of atoms corresponding to the basis-sets in the nc file &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;BASIS&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a set of atoms corresponding to the basis-sets in the nc file&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;BASIS&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">basis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;BASIS&#39;</span><span class="p">]</span>
+        <span class="n">basis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;BASIS&quot;</span><span class="p">]</span>
         <span class="n">atom</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">a_str</span> <span class="ow">in</span> <span class="n">basis</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">a_str</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="s1">&#39;orbnl_l&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-
+            <span class="k">if</span> <span class="s2">&quot;orbnl_l&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
                 <span class="c1"># Do the easy thing.</span>
 
                 <span class="c1"># Get number of orbitals</span>
@@ -202,23 +201,22 @@
                 <span class="k">continue</span>
 
             <span class="c1"># Retrieve values</span>
-            <span class="n">orb_l</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;orbnl_l&#39;</span><span class="p">][:]</span> <span class="c1"># angular quantum number</span>
-            <span class="n">orb_n</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;orbnl_n&#39;</span><span class="p">][:]</span> <span class="c1"># principal quantum number</span>
-            <span class="n">orb_z</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;orbnl_z&#39;</span><span class="p">][:]</span> <span class="c1"># zeta</span>
-            <span class="n">orb_P</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;orbnl_ispol&#39;</span><span class="p">][:]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="c1"># polarization shell, or not</span>
-            <span class="n">orb_q0</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;orbnl_pop&#39;</span><span class="p">][:]</span> <span class="c1"># q0 for the orbitals</span>
-            <span class="n">orb_delta</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">][:]</span> <span class="c1"># delta for the functions</span>
-            <span class="n">orb_psi</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;orb&#39;</span><span class="p">][:,</span> <span class="p">:]</span>
+            <span class="n">orb_l</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;orbnl_l&quot;</span><span class="p">][:]</span>  <span class="c1"># angular quantum number</span>
+            <span class="n">orb_n</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;orbnl_n&quot;</span><span class="p">][:]</span>  <span class="c1"># principal quantum number</span>
+            <span class="n">orb_z</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;orbnl_z&quot;</span><span class="p">][:]</span>  <span class="c1"># zeta</span>
+            <span class="n">orb_P</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;orbnl_ispol&quot;</span><span class="p">][:]</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="c1"># polarization shell, or not</span>
+            <span class="n">orb_q0</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;orbnl_pop&quot;</span><span class="p">][:]</span>  <span class="c1"># q0 for the orbitals</span>
+            <span class="n">orb_delta</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">][:]</span>  <span class="c1"># delta for the functions</span>
+            <span class="n">orb_psi</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;orb&quot;</span><span class="p">][:,</span> <span class="p">:]</span>
 
             <span class="c1"># Now loop over all orbitals</span>
             <span class="n">orbital</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="c1"># Number of basis-orbitals (before m-expansion)</span>
-            <span class="n">no</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;norbs&#39;</span><span class="p">])</span>
+            <span class="n">no</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;norbs&quot;</span><span class="p">])</span>
 
             <span class="c1"># All orbital data</span>
             <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no</span><span class="p">):</span>
-
                 <span class="n">n</span> <span class="o">=</span> <span class="n">orb_n</span><span class="p">[</span><span class="n">io</span><span class="p">]</span>
                 <span class="n">l</span> <span class="o">=</span> <span class="n">orb_l</span><span class="p">[</span><span class="n">io</span><span class="p">]</span>
                 <span class="n">z</span> <span class="o">=</span> <span class="n">orb_z</span><span class="p">[</span><span class="n">io</span><span class="p">]</span>
@@ -237,7 +235,7 @@
                 <span class="c1"># The fact that we have to have it normalized means that we need</span>
                 <span class="c1"># to convert psi /sqrt(Bohr**3) -&gt; /sqrt(Ang**3)</span>
                 <span class="c1"># \int psi^\dagger psi == 1</span>
-                <span class="n">psi</span> <span class="o">=</span> <span class="n">orb_psi</span><span class="p">[</span><span class="n">io</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+                <span class="n">psi</span> <span class="o">=</span> <span class="n">orb_psi</span><span class="p">[</span><span class="n">io</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
                 <span class="c1"># Create the sphericalorbital and then the atomicorbital</span>
                 <span class="n">sorb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">orb_q0</span><span class="p">[</span><span class="n">io</span><span class="p">])</span>
@@ -259,17 +257,17 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_geometry">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns Geometry object from a Siesta.nc file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns Geometry object from a Siesta.nc file&quot;&quot;&quot;</span>
 
         <span class="c1"># Read supercell</span>
         <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
 
-        <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;xa&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;xa&quot;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">xyz</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s1">&#39;BASIS&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;BASIS&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
             <span class="n">basis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_basis</span><span class="p">()</span>
-            <span class="n">species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;BASIS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;basis&#39;</span><span class="p">][:]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;BASIS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;basis&quot;</span><span class="p">][:]</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">atom</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">([</span><span class="n">basis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">species</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -285,16 +283,16 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_force">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a vector with final forces contained. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;fa&#39;</span><span class="p">))</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">/</span> <span class="n">Bohr2Ang</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a vector with final forces contained.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;fa&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">/</span> <span class="n">Bohr2Ang</span></div>
 
 
 <div class="viewcode-block" id="ncSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_fermi_level">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the fermi-level &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;Ef&#39;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the fermi-level&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span></div>
 
 
     <span class="k">def</span> <span class="nf">_read_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -303,50 +301,50 @@
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
 
         <span class="c1"># Populate the things</span>
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;SPARSE&#39;</span><span class="p">]</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
 
         <span class="c1"># Now create the tight-binding stuff (we re-create the</span>
         <span class="c1"># array, hence just allocate the smallest amount possible)</span>
         <span class="n">C</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;n_col&#39;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;n_col&quot;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="c1"># Update maximum number of connections (in case future stuff happens)</span>
         <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
-        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;list_col&#39;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;list_col&quot;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="c1"># Copy information over</span>
         <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">)</span>
         <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dim</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="c1"># Convert from isc to sisl isc</span>
-        <span class="n">_csr_from_sc_off</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;isc_off&#39;</span><span class="p">][:,</span> <span class="p">:],</span> <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
+        <span class="n">_csr_from_sc_off</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;isc_off&quot;</span><span class="p">][:,</span> <span class="p">:],</span> <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">C</span>
 
     <span class="k">def</span> <span class="nf">_read_class_spin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Get the default spin channel</span>
-        <span class="n">spin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s1">&#39;spin&#39;</span><span class="p">))</span>
+        <span class="n">spin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">))</span>
 
         <span class="c1"># First read the geometry</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
 
         <span class="c1"># Populate the things</span>
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;SPARSE&#39;</span><span class="p">]</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
 
         <span class="c1"># Since we may read in an orthogonal basis (stored in a Siesta compliant file)</span>
         <span class="c1"># we can check whether it is orthogonal by checking the sum of the absolute S</span>
         <span class="c1"># I.e. whether only diagonal elements are present.</span>
-        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">orthogonal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">S</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span>
 
         <span class="c1"># Now create the tight-binding stuff (we re-create the</span>
         <span class="c1"># array, hence just allocate the smallest amount possible)</span>
         <span class="n">C</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="n">orthogonal</span><span class="p">)</span>
 
-        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;n_col&#39;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;n_col&quot;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="c1"># Update maximum number of connections (in case future stuff happens)</span>
         <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
-        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;list_col&#39;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;list_col&quot;</span><span class="p">][:],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="c1"># Copy information over</span>
         <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">)</span>
@@ -357,18 +355,18 @@
             <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">C</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span>
 
         <span class="c1"># Convert from isc to sisl isc</span>
-        <span class="n">_csr_from_sc_off</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;isc_off&#39;</span><span class="p">][:,</span> <span class="p">:],</span> <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
+        <span class="n">_csr_from_sc_off</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;isc_off&quot;</span><span class="p">][:,</span> <span class="p">:],</span> <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">C</span>
 
 <div class="viewcode-block" id="ncSileSiesta.read_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_overlap">[docs]</a>
     <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a overlap matrix from the underlying NetCDF file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a overlap matrix from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_class</span><span class="p">(</span><span class="n">Overlap</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;SPARSE&#39;</span><span class="p">]</span>
-        <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">][:]</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">][:]</span>
 
         <span class="k">return</span> <span class="n">S</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
 
@@ -376,21 +374,23 @@
 <div class="viewcode-block" id="ncSileSiesta.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_hamiltonian">[docs]</a>
     <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Hamiltonian from the underlying NetCDF file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Hamiltonian from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_class_spin</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;SPARSE&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s1">&#39;Ry&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.read_hamiltonian requires the stored matrix to be in Ry!&#39;</span><span class="p">)</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;Ry&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.read_hamiltonian requires the stored matrix to be in Ry!&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
-            <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
+            <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
 
         <span class="c1"># fix siesta specific notation</span>
         <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
 
         <span class="c1"># Shift to the Fermi-level</span>
-        <span class="n">Ef</span> <span class="o">=</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;Ef&#39;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
+        <span class="n">Ef</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
         <span class="n">H</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">Ef</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
@@ -399,17 +399,19 @@
 <div class="viewcode-block" id="ncSileSiesta.read_dynamical_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_dynamical_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">read_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a dynamical matrix from the underlying NetCDF file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dynamical matrix from the underlying NetCDF file</span>
 
 <span class="sd">        This assumes that the dynamical matrix is stored in the field &quot;H&quot; as would the</span>
 <span class="sd">        Hamiltonian. This is counter-intuitive but is required when using PHtrans.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_class_spin</span><span class="p">(</span><span class="n">DynamicalMatrix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;SPARSE&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s1">&#39;Ry**2&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.read_dynamical_matrix requires the stored matrix to be in Ry**2!&#39;</span><span class="p">)</span>
-        <span class="n">D</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;Ry**2&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.read_dynamical_matrix requires the stored matrix to be in Ry**2!&quot;</span>
+            <span class="p">)</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span><span class="o">**</span><span class="mi">2</span>
 
         <span class="k">return</span> <span class="n">D</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
 
@@ -417,13 +419,13 @@
 <div class="viewcode-block" id="ncSileSiesta.read_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_density_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">read_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a density matrix from the underlying NetCDF file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a density matrix from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="c1"># This also adds the spin matrix</span>
         <span class="n">DM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_class_spin</span><span class="p">(</span><span class="n">DensityMatrix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;SPARSE&#39;</span><span class="p">]</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
-            <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;DM&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;DM&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
 
         <span class="c1"># fix siesta specific notation</span>
         <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">DM</span><span class="p">)</span>
@@ -434,19 +436,19 @@
 <div class="viewcode-block" id="ncSileSiesta.read_energy_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_energy_density_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">read_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns energy density matrix from the underlying NetCDF file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns energy density matrix from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="n">EDM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_class_spin</span><span class="p">(</span><span class="n">EnergyDensityMatrix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Shift to the Fermi-level</span>
-        <span class="n">Ef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;Ef&#39;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
+        <span class="n">Ef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
         <span class="k">if</span> <span class="n">Ef</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">Ef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">Ef</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;SPARSE&#39;</span><span class="p">]</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
-            <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;EDM&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;DM&#39;</span> <span class="ow">in</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-                <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;DM&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ef</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;EDM&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s2">&quot;DM&quot;</span> <span class="ow">in</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;DM&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ef</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
         <span class="c1"># fix siesta specific notation</span>
         <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">EDM</span><span class="p">)</span>
@@ -457,20 +459,20 @@
 <div class="viewcode-block" id="ncSileSiesta.read_force_constant">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_force_constant">[docs]</a>
     <span class="k">def</span> <span class="nf">read_force_constant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the force-constant stored in the nc file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the force-constant stored in the nc file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        force constants : numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains</span>
 <span class="sd">                 contains the directions, and 3rd dimensions contains -/+ displacements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;FC&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.read_force_constant cannot find the FC group.&#39;</span><span class="p">)</span>
-        <span class="n">fc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;FC&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;FC&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.read_force_constant cannot find the FC group.&quot;</span><span class="p">)</span>
+        <span class="n">fc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;FC&quot;</span><span class="p">]</span>
 
-        <span class="n">disp</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;disp&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
-        <span class="n">f0</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;fa0&#39;</span><span class="p">][:,</span> <span class="p">:]</span>
-        <span class="n">fc</span> <span class="o">=</span> <span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;fa&#39;</span><span class="p">][:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">f0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="n">disp</span>
+        <span class="n">disp</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;disp&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;fa0&quot;</span><span class="p">][:,</span> <span class="p">:]</span>
+        <span class="n">fc</span> <span class="o">=</span> <span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;fa&quot;</span><span class="p">][:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">f0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="n">disp</span>
         <span class="n">fc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">return</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">/</span> <span class="n">Bohr2Ang</span></div>
 
@@ -478,14 +480,14 @@
     <span class="nd">@property</span>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">grids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a list of available grids in this file. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of available grids in this file.&quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;GRID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;GRID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ncSileSiesta.read_grid">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_grid">[docs]</a>
     <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads a grid in the current Siesta.nc file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a grid in the current Siesta.nc file</span>
 
 <span class="sd">        Enables the reading and processing of the grids created by Siesta</span>
 
@@ -505,12 +507,12 @@
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
 
         <span class="c1"># Shorthand</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;GRID&#39;</span><span class="p">]</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;GRID&quot;</span><span class="p">]</span>
 
         <span class="c1"># Create the grid</span>
-        <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;nx&#39;</span><span class="p">])</span>
-        <span class="n">ny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;ny&#39;</span><span class="p">])</span>
-        <span class="n">nz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;nz&#39;</span><span class="p">])</span>
+        <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;nx&quot;</span><span class="p">])</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;ny&quot;</span><span class="p">])</span>
+        <span class="n">nz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;nz&quot;</span><span class="p">])</span>
 
         <span class="c1"># Shorthand variable name</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
@@ -519,16 +521,17 @@
         <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">],</span> <span class="n">bc</span><span class="o">=</span><span class="n">Grid</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geom</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># Unit-conversion</span>
-        <span class="n">BohrC2AngC</span> <span class="o">=</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="n">BohrC2AngC</span> <span class="o">=</span> <span class="n">Bohr2Ang</span><span class="o">**</span><span class="mi">3</span>
 
-        <span class="n">unit</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rho&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
-                <span class="s1">&#39;RhoInit&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
-                <span class="s1">&#39;RhoTot&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
-                <span class="s1">&#39;RhoDelta&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
-                <span class="s1">&#39;RhoXC&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
-                <span class="s1">&#39;RhoBader&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
-                <span class="s1">&#39;Chlocal&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
-        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Rho&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
+            <span class="s2">&quot;RhoInit&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
+            <span class="s2">&quot;RhoTot&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
+            <span class="s2">&quot;RhoDelta&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
+            <span class="s2">&quot;RhoXC&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
+            <span class="s2">&quot;RhoBader&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
+            <span class="s2">&quot;Chlocal&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">BohrC2AngC</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">[:]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">unit</span>
@@ -538,7 +541,7 @@
             <span class="n">grid_reduce_indices</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;Ry&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;Ry&quot;</span><span class="p">:</span>
                 <span class="c1"># Convert to ev</span>
                 <span class="n">grid</span> <span class="o">*=</span> <span class="n">Ry2eV</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -547,7 +550,7 @@
 
         <span class="c1"># Read the grid, we want the z-axis to be the fastest</span>
         <span class="c1"># looping direction, hence x,y,z == 0,1,2</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">grid</span></div>
 
@@ -555,7 +558,7 @@
 <div class="viewcode-block" id="ncSileSiesta.write_basis">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_basis">[docs]</a>
     <span class="k">def</span> <span class="nf">write_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write the current atoms orbitals as the basis</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the current atoms orbitals as the basis</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -563,10 +566,10 @@
 <span class="sd">           atom specifications to write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">bs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;BASIS&#39;</span><span class="p">)</span>
+        <span class="n">bs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;BASIS&quot;</span><span class="p">)</span>
 
         <span class="c1"># Create variable of basis-indices</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="s1">&#39;basis&#39;</span><span class="p">,</span> <span class="s1">&#39;i4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;na_u&#39;</span><span class="p">,))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="s2">&quot;basis&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;na_u&quot;</span><span class="p">,))</span>
         <span class="n">b</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Basis of each atom by ID&quot;</span>
 
         <span class="k">for</span> <span class="n">isp</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">ia</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
@@ -574,8 +577,10 @@
             <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="n">bs</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
                 <span class="c1"># Assert the file sizes</span>
                 <span class="k">if</span> <span class="n">bs</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span><span class="o">.</span><span class="n">Number_of_orbitals</span> <span class="o">!=</span> <span class="n">a</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s1"> has erroneous data &#39;</span>
-                                     <span class="s1">&#39;in regards of the already stored dimensions.&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;File </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> has erroneous data &quot;</span>
+                        <span class="s2">&quot;in regards of the already stored dimensions.&quot;</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ba</span> <span class="o">=</span> <span class="n">bs</span><span class="o">.</span><span class="n">createGroup</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
                 <span class="n">ba</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">isp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -590,97 +595,110 @@
 
 
     <span class="k">def</span> <span class="nf">_write_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Internal method for writing settings.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method for writing settings.</span>
 
 <span class="sd">        Sadly the settings are not correct since we have no recollection of</span>
 <span class="sd">        what created the matrices.</span>
 <span class="sd">        So the values are just *some* values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the settings</span>
-        <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;SETTINGS&#39;</span><span class="p">)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="s1">&#39;ElectronicTemperature&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;SETTINGS&quot;</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="s2">&quot;ElectronicTemperature&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Electronic temperature used for smearing DOS&quot;</span>
         <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
         <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.025</span> <span class="o">/</span> <span class="n">Ry2eV</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="s1">&#39;BZ&#39;</span><span class="p">,</span> <span class="s1">&#39;i4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="s2">&quot;BZ&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Grid used for the Brillouin zone integration&quot;</span>
         <span class="n">v</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="s1">&#39;BZ_displ&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="s2">&quot;BZ_displ&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,))</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Monkhorst-Pack k-grid displacements&quot;</span>
         <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;b**-1&quot;</span>
-        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
 <div class="viewcode-block" id="ncSileSiesta.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_geometry">[docs]</a>
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates the NetCDF file and writes the geometry information &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates the NetCDF file and writes the geometry information&quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># Create initial dimensions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;n_s&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;no_s&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">*</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;no_u&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;na_u&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;n_s&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;no_s&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">*</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;no_u&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;na_u&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
 
         <span class="c1"># Create initial geometry</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;nsc&#39;</span><span class="p">,</span> <span class="s1">&#39;i4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Number of supercells in each unit-cell direction&#39;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;lasto&#39;</span><span class="p">,</span> <span class="s1">&#39;i4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;na_u&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Last orbital of equivalent atom&#39;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;xa&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;na_u&#39;</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Atomic coordinates&#39;</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Bohr&#39;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;cell&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Unit cell&#39;</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Bohr&#39;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;nsc&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Number of supercells in each unit-cell direction&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;lasto&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;na_u&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Last orbital of equivalent atom&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;xa&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;na_u&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Atomic coordinates&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Bohr&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Unit cell&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Bohr&quot;</span>
 
         <span class="c1"># Create designation of the creation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;sisl&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;sisl&quot;</span>
 
         <span class="c1"># Save stuff</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;nsc&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;xa&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span> <span class="o">/</span> <span class="n">Bohr2Ang</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">cell</span> <span class="o">/</span> <span class="n">Bohr2Ang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;nsc&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;xa&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span> <span class="o">/</span> <span class="n">Bohr2Ang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">cell</span> <span class="o">/</span> <span class="n">Bohr2Ang</span>
 
         <span class="c1"># Create basis group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_basis</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 
         <span class="c1"># Store the lasto variable as the remaining thing to do</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;lasto&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lasto</span> <span class="o">+</span> <span class="mi">1</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;lasto&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lasto</span> <span class="o">+</span> <span class="mi">1</span></div>
 
 
     <span class="k">def</span> <span class="nf">_write_sparsity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">nsc</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">._write_sparsity *must* be a finalized sparsity matrix&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">._write_sparsity *must* be a finalized sparsity matrix&quot;</span>
+            <span class="p">)</span>
         <span class="c1"># Create sparse group</span>
-        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;SPARSE&#39;</span><span class="p">)</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;SPARSE&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s1">&#39;n_col&#39;</span> <span class="ow">in</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;nnzs&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="ow">or</span> \
-               <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;n_col&#39;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:])</span> <span class="ow">or</span> \
-               <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;list_col&#39;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[:]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> \
-               <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;isc_off&#39;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">siesta_sc_off</span><span class="p">(</span><span class="o">*</span><span class="n">nsc</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> sparsity pattern stored *MUST* be equivalent for all matrices&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;n_col&quot;</span> <span class="ow">in</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;nnzs&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span>
+                <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;n_col&quot;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:])</span>
+                <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;list_col&quot;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[:]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;isc_off&quot;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">siesta_sc_off</span><span class="p">(</span><span class="o">*</span><span class="n">nsc</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> sparsity pattern stored *MUST* be equivalent for all matrices&quot;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="s1">&#39;nnzs&#39;</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="s1">&#39;n_col&#39;</span><span class="p">,</span> <span class="s1">&#39;i4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;no_u&#39;</span><span class="p">,))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="s2">&quot;n_col&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;no_u&quot;</span><span class="p">,))</span>
             <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Number of non-zero elements per row&quot;</span>
             <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]</span>
 
-            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="s1">&#39;list_col&#39;</span><span class="p">,</span> <span class="s1">&#39;i4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nnzs&#39;</span><span class="p">,),</span>
-                              <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">),),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
+                <span class="n">sp</span><span class="p">,</span>
+                <span class="s2">&quot;list_col&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;i4&quot;</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">&quot;nnzs&quot;</span><span class="p">,),</span>
+                <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">),),</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Supercell column indices in the sparse format&quot;</span>
             <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[:]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># correct for fortran indices</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="s1">&#39;isc_off&#39;</span><span class="p">,</span> <span class="s1">&#39;i4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;n_s&#39;</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="s2">&quot;isc_off&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;n_s&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
             <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Index of supercell coordinates&quot;</span>
             <span class="n">v</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">siesta_sc_off</span><span class="p">(</span><span class="o">*</span><span class="n">nsc</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="k">return</span> <span class="n">sp</span>
 
     <span class="k">def</span> <span class="nf">_write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">orthogonal</span><span class="p">,</span> <span class="n">S_idx</span><span class="p">):</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nnzs&#39;</span><span class="p">,),</span>
-                          <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">),),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
+            <span class="n">spgroup</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;nnzs&quot;</span><span class="p">,),</span> <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">),),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span>
+        <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Overlap matrix&quot;</span>
         <span class="k">if</span> <span class="n">orthogonal</span><span class="p">:</span>
             <span class="c1"># We need to create the orthogonal pattern</span>
@@ -707,11 +725,13 @@
                 <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">diag_idx</span><span class="p">]</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">._write_overlap &#39;</span>
-                                 <span class="s1">&#39;is trying to write an Overlap in Siesta format with &#39;</span>
-                                 <span class="sa">f</span><span class="s1">&#39;missing diagonal terms on rows </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1">. Please explicitly add *all* diagonal overlap terms.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">._write_overlap &quot;</span>
+                    <span class="s2">&quot;is trying to write an Overlap in Siesta format with &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;missing diagonal terms on rows </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">. Please explicitly add *all* diagonal overlap terms.&quot;</span>
+                <span class="p">)</span>
 
-            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">diag_idx</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.</span>
+            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">diag_idx</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span>
             <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">del</span> <span class="n">tmp</span>
         <span class="k">else</span><span class="p">:</span>
@@ -720,10 +740,12 @@
 <div class="viewcode-block" id="ncSileSiesta.write_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_overlap">[docs]</a>
     <span class="k">def</span> <span class="nf">write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write the overlap matrix to the NetCDF file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the overlap matrix to the NetCDF file&quot;&quot;&quot;</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.write_overlap cannot write a zero element sparse matrix!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_overlap cannot write a zero element sparse matrix!&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Convert to siesta CSR</span>
         <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
@@ -741,7 +763,7 @@
 <div class="viewcode-block" id="ncSileSiesta.write_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_hamiltonian">[docs]</a>
     <span class="k">def</span> <span class="nf">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes Hamiltonian model to file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes Hamiltonian model to file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -752,7 +774,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.write_hamiltonian cannot write a zero element sparse matrix!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_hamiltonian cannot write a zero element sparse matrix!&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Convert to siesta CSR</span>
         <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
@@ -762,18 +786,20 @@
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Currently we only allow writing a floating point Hamiltonian to the Siesta format&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Currently we only allow writing a floating point Hamiltonian to the Siesta format&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ef&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Fermi level&#39;</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Ry&#39;</span>
-        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Ef&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span> <span class="o">/</span> <span class="n">Ry2eV</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Qtot&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Total charge&#39;</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Qtot&#39;</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">q0</span><span class="p">))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Ef&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Fermi level&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">Ry2eV</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Qtot&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Total charge&quot;</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Qtot&quot;</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">q0</span><span class="p">))</span>
 
         <span class="c1"># Append the sparsity pattern</span>
         <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
@@ -781,8 +807,14 @@
         <span class="c1"># Save sparse matrices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="s1">&#39;nnzs&#39;</span><span class="p">),</span>
-                          <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
+            <span class="n">spgroup</span><span class="p">,</span>
+            <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;f8&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">),</span>
+            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Hamiltonian&quot;</span>
         <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
@@ -794,7 +826,7 @@
 <div class="viewcode-block" id="ncSileSiesta.write_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_density_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">write_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DM</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes density matrix model to file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes density matrix model to file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -803,7 +835,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.write_density_matrix cannot write a zero element sparse matrix!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_density_matrix cannot write a zero element sparse matrix!&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Convert to siesta CSR (we don&#39;t need to sort this matrix)</span>
         <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
@@ -813,18 +847,20 @@
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">DM</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Currently we only allow writing a floating point density matrix to the Siesta format&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">DM</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Currently we only allow writing a floating point density matrix to the Siesta format&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Qtot&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Total charge&#39;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Qtot&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Total charge&quot;</span>
         <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;Qtot&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Qtot&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s1">&#39;Q&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;Qtot&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;Qtot&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;Q&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
 
         <span class="c1"># Append the sparsity pattern</span>
         <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
@@ -832,8 +868,14 @@
         <span class="c1"># Save sparse matrices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="s1">&#39;DM&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="s1">&#39;nnzs&#39;</span><span class="p">),</span>
-                          <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
+            <span class="n">spgroup</span><span class="p">,</span>
+            <span class="s2">&quot;DM&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;f8&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">),</span>
+            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Density matrix&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
             <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
@@ -844,7 +886,7 @@
 <div class="viewcode-block" id="ncSileSiesta.write_energy_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_energy_density_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">write_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EDM</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes energy density matrix model to file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes energy density matrix model to file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -853,7 +895,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.write_energy_density_matrix cannot write a zero element sparse matrix!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_energy_density_matrix cannot write a zero element sparse matrix!&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># no need to sort this matrix</span>
         <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
@@ -863,22 +907,24 @@
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">EDM</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Currently we only allow writing a floating point density matrix to the Siesta format&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">EDM</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Currently we only allow writing a floating point density matrix to the Siesta format&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ef&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Fermi level&#39;</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Ry&#39;</span>
-        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Ef&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span> <span class="o">/</span> <span class="n">Ry2eV</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Qtot&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Total charge&#39;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Ef&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Fermi level&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">Ry2eV</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Qtot&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Total charge&quot;</span>
         <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;Qtot&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Qtot&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s1">&#39;Q&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;Qtot&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;Qtot&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;Q&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
 
         <span class="c1"># Append the sparsity pattern</span>
         <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
@@ -886,8 +932,14 @@
         <span class="c1"># Save sparse matrices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="s1">&#39;EDM&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="s1">&#39;nnzs&#39;</span><span class="p">),</span>
-                          <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
+            <span class="n">spgroup</span><span class="p">,</span>
+            <span class="s2">&quot;EDM&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;f8&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">),</span>
+            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Energy density matrix&quot;</span>
         <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
@@ -899,7 +951,7 @@
 <div class="viewcode-block" id="ncSileSiesta.write_dynamical_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_dynamical_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">write_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes dynamical matrix model to file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes dynamical matrix model to file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -908,7 +960,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.write_dynamical_matrix cannot write a zero element sparse matrix!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_dynamical_matrix cannot write a zero element sparse matrix!&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Convert to siesta CSR</span>
         <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
@@ -917,19 +971,21 @@
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">D</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Currently we only allow writing a floating point dynamical matrix to the Siesta format&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">D</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Currently we only allow writing a floating point dynamical matrix to the Siesta format&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ef&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Fermi level&#39;</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Ry&#39;</span>
-        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Qtot&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Total charge&#39;</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;e&#39;</span>
-        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Ef&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Fermi level&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Qtot&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Total charge&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;e&quot;</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="c1"># Append the sparsity pattern</span>
         <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
@@ -937,23 +993,29 @@
         <span class="c1"># Save sparse matrices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="s1">&#39;nnzs&#39;</span><span class="p">),</span>
-                          <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
+            <span class="n">spgroup</span><span class="p">,</span>
+            <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;f8&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">),</span>
+            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Dynamical matrix&quot;</span>
         <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry**2&quot;</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">Ry2eV</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">Ry2eV</span><span class="o">**</span><span class="mi">2</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_settings</span><span class="p">()</span></div>
 
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">newkw</span><span class="p">)</span>
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;nc&#39;</span><span class="p">,</span> <span class="n">ncSileSiesta</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="n">ncSileSiesta</span><span class="p">)</span>
 </pre></div>
 
            </div>

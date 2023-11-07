@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.gulp.fc &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.gulp.fc &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -120,18 +120,18 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileGULP</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fcSileGULP&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fcSileGULP&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.gulp&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">fcSileGULP</span><span class="p">(</span><span class="n">SileGULP</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; GULP output file object &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;GULP output file object&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="fcSileGULP.read_force_constant">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.read_force_constant">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_force_constant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a sparse matrix in coo format which contains the GULP force constant matrix.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a sparse matrix in coo format which contains the GULP force constant matrix.</span>
 
 <span class="sd">        This routine expects the units to be in eV/Ang**2.</span>
 
@@ -147,8 +147,8 @@
 <span class="sd">        FC : force constant in `scipy.sparse.coo_matrix` format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Default cutoff</span>
-        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cutoff&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dtype&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cutoff&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="c1"># Read number of atoms in the file...</span>
         <span class="n">na</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
@@ -163,7 +163,6 @@
         <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">):</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">ia</span> <span class="o">*</span> <span class="mi">3</span>
             <span class="k">for</span> <span class="n">ja</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">):</span>
-
                 <span class="c1"># read line that should contain:</span>
                 <span class="c1">#  ia ja</span>
                 <span class="n">lsplit</span> <span class="o">=</span> <span class="n">rl</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -177,19 +176,19 @@
 
             <span class="c1"># much faster assignment</span>
             <span class="n">fc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-            <span class="n">fc</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-            <span class="n">fc</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">fc</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">fc</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
         <span class="c1"># Convert to COO format</span>
         <span class="n">fc</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span>
-        <span class="n">fc</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">fc</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">fc</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">fc</span></div>
 
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;FORCE_CONSTANTS_2ND&#39;</span><span class="p">,</span> <span class="n">fcSileGULP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;FORCE_CONSTANTS_2ND&quot;</span><span class="p">,</span> <span class="n">fcSileGULP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

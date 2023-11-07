@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.lattice &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.lattice &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -157,21 +157,24 @@
 <a class="viewcode-back" href="../../api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.getitem">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for a specific integer entry by value, and not by name &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for a specific integer entry by value, and not by name&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">key</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">PERIODIC</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.getitem does not allow False, which BC should this refer to?&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.getitem does not allow False, which BC should this refer to?&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;U&quot;</span><span class="p">:</span> <span class="s2">&quot;UNKNOWN&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="s2">&quot;PERIODIC&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="s2">&quot;DIRICHLET&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="s2">&quot;NEUMANN&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="s2">&quot;OPEN&quot;</span><span class="p">,</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;U&quot;</span><span class="p">:</span> <span class="s2">&quot;UNKNOWN&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="s2">&quot;PERIODIC&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="s2">&quot;DIRICHLET&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="s2">&quot;NEUMANN&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="s2">&quot;OPEN&quot;</span><span class="p">,</span>
                 <span class="p">}[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">bc</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">bc</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
@@ -184,22 +187,21 @@
 </div>
 
 
+
 <span class="n">BoundaryConditionType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">BoundaryCondition</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span>
-<span class="n">SeqBoundaryConditionType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">BoundaryConditionType</span><span class="p">,</span>
-                                 <span class="n">Sequence</span><span class="p">[</span><span class="n">BoundaryConditionType</span><span class="p">]]</span>
+<span class="n">SeqBoundaryConditionType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">BoundaryConditionType</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BoundaryConditionType</span><span class="p">]]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Lattice</span><span class="p">(</span><span class="n">_Dispatchs</span><span class="p">,</span>
-              <span class="n">dispatchs</span><span class="o">=</span><span class="p">[</span>
-                  <span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span>
-                                          <span class="n">instance_dispatcher</span><span class="o">=</span><span class="n">TypeDispatcher</span><span class="p">)),</span>
-                  <span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span>
-                                         <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
-                <span class="p">],</span>
-              <span class="n">when_subclassing</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">,</span>
-              <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; A cell class to retain lattice vectors and a supercell structure</span>
+<span class="k">class</span> <span class="nc">Lattice</span><span class="p">(</span>
+    <span class="n">_Dispatchs</span><span class="p">,</span>
+    <span class="n">dispatchs</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">instance_dispatcher</span><span class="o">=</span><span class="n">TypeDispatcher</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">)),</span>
+    <span class="p">],</span>
+    <span class="n">when_subclassing</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A cell class to retain lattice vectors and a supercell structure</span>
 
 <span class="sd">    The supercell structure is comprising the *primary* unit-cell and neighbouring</span>
 <span class="sd">    unit-cells. The number of supercells is given by the attribute `nsc` which</span>
@@ -223,16 +225,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># We limit the scope of this Lattice object.</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cell&#39;</span><span class="p">,</span> <span class="s1">&#39;_origin&#39;</span><span class="p">,</span> <span class="s1">&#39;nsc&#39;</span><span class="p">,</span> <span class="s1">&#39;n_s&#39;</span><span class="p">,</span> <span class="s1">&#39;_sc_off&#39;</span><span class="p">,</span> <span class="s1">&#39;_isc_off&#39;</span><span class="p">,</span> <span class="s1">&#39;_bc&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;_origin&quot;</span><span class="p">,</span> <span class="s2">&quot;nsc&quot;</span><span class="p">,</span> <span class="s2">&quot;n_s&quot;</span><span class="p">,</span> <span class="s2">&quot;_sc_off&quot;</span><span class="p">,</span> <span class="s2">&quot;_isc_off&quot;</span><span class="p">,</span> <span class="s2">&quot;_bc&quot;</span><span class="p">)</span>
 
     <span class="c1">#: Internal reference to `BoundaryCondition` for simpler short-hands</span>
     <span class="n">BC</span> <span class="o">=</span> <span class="n">BoundaryCondition</span>
 
 <div class="viewcode-block" id="Lattice.__init__">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">boundary_condition</span><span class="p">:</span> <span class="n">SeqBoundaryConditionType</span> <span class="o">=</span><span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">):</span>
-
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cell</span><span class="p">,</span>
+        <span class="n">nsc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">boundary_condition</span><span class="p">:</span> <span class="n">SeqBoundaryConditionType</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="n">nsc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
@@ -255,18 +261,18 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Length of each lattice vector &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of each lattice vector&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Volume of cell &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Volume of cell&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])))</span>
 
 <div class="viewcode-block" id="Lattice.area">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.area">[docs]</a>
     <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax0</span><span class="p">,</span> <span class="n">ax1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the area spanned by the two axis `ax0` and `ax1` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the area spanned by the two axis `ax0` and `ax1`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">ax0</span><span class="p">,</span> <span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span></div>
 
 
@@ -289,19 +295,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Origin for the cell &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Origin for the cell&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span>
 
     <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set origin for the cell &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set origin for the cell&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">origin</span>
 
 <div class="viewcode-block" id="Lattice.toCuboid">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.toCuboid">[docs]</a>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toCuboid is deprecated, please use lattice.to[&#39;cuboid&#39;](...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15.0&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;toCuboid is deprecated, please use lattice.to[&#39;cuboid&#39;](...) instead.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; A cuboid with vectors as this unit-cell and center with respect to its origin</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A cuboid with vectors as this unit-cell and center with respect to its origin</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -313,12 +322,14 @@
 
 <div class="viewcode-block" id="Lattice.set_boundary_condition">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.set_boundary_condition">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_boundary_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                               <span class="n">boundary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                               <span class="n">a</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                               <span class="n">b</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                               <span class="n">c</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the boundary conditions on the grid</span>
+    <span class="k">def</span> <span class="nf">set_boundary_condition</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">boundary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqBoundaryConditionType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the boundary conditions on the grid</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -337,6 +348,7 @@
 <span class="sd">            if specifying periodic one one boundary, so must the opposite side.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">getitem</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">getitem</span>
+
         <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">v</span>
@@ -371,21 +383,28 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span><span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="c1"># shorthand for bc</span>
-        <span class="k">for</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">changed</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="o">==</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="o">!=</span> <span class="n">old</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">changed</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="o">==</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="o">!=</span> <span class="n">old</span>
+        <span class="p">):</span>
             <span class="k">if</span> <span class="n">bc</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bc</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.set_boundary_condition has a one non-periodic and &quot;</span>
-                                 <span class="s2">&quot;one periodic direction. If one direction is periodic, both instances &quot;</span>
-                                 <span class="s2">&quot;must have that BC.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.set_boundary_condition has a one non-periodic and &quot;</span>
+                    <span class="s2">&quot;one periodic direction. If one direction is periodic, both instances &quot;</span>
+                    <span class="s2">&quot;must have that BC.&quot;</span>
+                <span class="p">)</span>
             <span class="k">if</span> <span class="n">changed</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="o">~</span><span class="n">bc</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.set_boundary_condition is having image connections (nsc=</span><span class="si">{</span><span class="n">nsc</span><span class="si">}</span><span class="s2">&gt;1) &quot;</span>
-                     <span class="s2">&quot;while having a non-periodic boundary condition.&quot;</span><span class="p">)</span></div>
-
+                <span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.set_boundary_condition is having image connections (nsc=</span><span class="si">{</span><span class="n">nsc</span><span class="si">}</span><span class="s2">&gt;1) &quot;</span>
+                    <span class="s2">&quot;while having a non-periodic boundary condition.&quot;</span>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.parameters">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.parameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Cell parameters of this cell in 3 lengths and 3 angles</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Cell parameters of this cell in 3 lengths and 3 angles</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -414,7 +433,7 @@
 <span class="sd">            angle between a and b vectors</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rad</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="mf">1.</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
@@ -423,6 +442,7 @@
         <span class="n">abc</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
         <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">acos</span>
+
         <span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span> <span class="o">/</span> <span class="n">abc</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">acos</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span> <span class="o">*</span> <span class="n">f</span>
         <span class="n">beta</span> <span class="o">=</span> <span class="n">acos</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span> <span class="o">*</span> <span class="n">f</span>
@@ -432,7 +452,7 @@
 
 
     <span class="k">def</span> <span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">non_filled</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a zero filled array of length 3 &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a zero filled array of length 3&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_filled</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">non_filled</span>
@@ -463,13 +483,13 @@
         <span class="k">return</span> <span class="n">f</span>
 
     <span class="k">def</span> <span class="nf">_fill_sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supercell_index</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a filled supercell index by filling in zeros where needed &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a filled supercell index by filling in zeros where needed&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span><span class="p">(</span><span class="n">supercell_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Lattice.set_nsc">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.set_nsc">[docs]</a>
     <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sets the number of supercells in the 3 different cell directions</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the number of supercells in the 3 different cell directions</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -498,8 +518,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Supercells has to be of un-even size. The primary cell counts &quot;</span> <span class="o">+</span>
-                <span class="s2">&quot;one, all others count 2&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Supercells has to be of un-even size. The primary cell counts &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;one, all others count 2&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># We might use this very often, hence we store it</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_s</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">prodi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
@@ -511,7 +532,8 @@
 
         <span class="k">def</span> <span class="nf">ret_range</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">val</span> <span class="o">//</span> <span class="mi">2</span>
-            <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
         <span class="n">x</span> <span class="o">=</span> <span class="n">ret_range</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">ret_range</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">ret_range</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
@@ -533,35 +555,35 @@
 
 
     <span class="k">def</span> <span class="nf">_update_isc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Internal routine for updating the supercell indices &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine for updating the supercell indices&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">):</span>
             <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Integer supercell offsets &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Integer supercell offsets&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span>
 
     <span class="nd">@sc_off</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">sc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_off</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the supercell offset &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">sc_off</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the supercell offset&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">sc_off</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_isc_off</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">isc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Internal indexed supercell ``[ia, ib, ic] == i`` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal indexed supercell ``[ia, ib, ic] == i``&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterate the supercells and the indices of the supercells &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate the supercells and the indices of the supercells&quot;&quot;&quot;</span>
         <span class="k">yield from</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Lattice.copy">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.copy">[docs]</a>
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; A deepcopy of the object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A deepcopy of the object</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -592,7 +614,7 @@
 <div class="viewcode-block" id="Lattice.fit">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.fit">[docs]</a>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions</span>
 
 <span class="sd">        The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations</span>
 <span class="sd">        corresponding to the current supercell vectors.</span>
@@ -635,8 +657,10 @@
         <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">dot</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">ix</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not fit the cell parameters to the coordinates &#39;</span>
-                              <span class="s1">&#39;due to insufficient accuracy (try increase the tolerance)&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Could not fit the cell parameters to the coordinates &quot;</span>
+                <span class="s2">&quot;due to insufficient accuracy (try increase the tolerance)&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Reduce problem to allowed values below the tolerance</span>
         <span class="n">ix</span> <span class="o">=</span> <span class="n">ix</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
@@ -664,10 +688,10 @@
 
 <div class="viewcode-block" id="Lattice.swapaxes">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.swapaxes">[docs]</a>
-    <span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                 <span class="n">axes_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                 <span class="n">what</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Swaps axes `axes_a` and `axes_b`</span>
+    <span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">axes_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">axes_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Swaps axes `axes_a` and `axes_b`</span>
 
 <span class="sd">        Swapaxes is a versatile method for changing the order</span>
 <span class="sd">        of axes elements, either lattice vector order, or Cartesian</span>
@@ -725,10 +749,14 @@
                 <span class="n">axes_a</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span><span class="p">[</span><span class="n">axes_a</span><span class="p">]</span>
                 <span class="n">axes_b</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span><span class="p">[</span><span class="n">axes_b</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes could not understand &#39;what&#39; &quot;</span>
-                                 <span class="s2">&quot;must contain abc and/or xyz.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes could not understand &#39;what&#39; &quot;</span>
+                    <span class="s2">&quot;must contain abc and/or xyz.&quot;</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes_a</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes_b</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes axes arguments must be either all int or all str, not a mix.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes axes arguments must be either all int or all str, not a mix.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span>
         <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span>
@@ -736,7 +764,9 @@
         <span class="n">bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_condition</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes_a</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes_b</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes expects axes_a and axes_b to have the same lengeth </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">axes_a</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">axes_b</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes expects axes_a and axes_b to have the same lengeth </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">axes_a</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">axes_b</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes_a</span><span class="p">,</span> <span class="n">axes_b</span><span class="p">):</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
@@ -745,7 +775,9 @@
             <span class="n">bidx</span> <span class="o">=</span> <span class="s2">&quot;abcxyz&quot;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">aidx</span> <span class="o">//</span> <span class="mi">3</span> <span class="o">!=</span> <span class="n">bidx</span> <span class="o">//</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes expects axes_a and axes_b to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.swapaxes expects axes_a and axes_b to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates.&quot;</span>
+                <span class="p">)</span>
 
             <span class="k">if</span> <span class="n">aidx</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">idx</span><span class="p">[</span><span class="n">aidx</span><span class="p">],</span> <span class="n">idx</span><span class="p">[</span><span class="n">bidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">bidx</span><span class="p">],</span> <span class="n">idx</span><span class="p">[</span><span class="n">aidx</span><span class="p">]</span>
@@ -764,16 +796,15 @@
                 <span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
                 <span class="n">bc</span> <span class="o">=</span> <span class="n">bc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                              <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                              <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                              <span class="n">boundary_condition</span><span class="o">=</span><span class="n">bc</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">boundary_condition</span><span class="o">=</span><span class="n">bc</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.plane">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.plane">[docs]</a>
     <span class="k">def</span> <span class="nf">plane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Query point and plane-normal for the plane spanning `ax1` and `ax2`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query point and plane-normal for the plane spanning `ax1` and `ax2`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -836,7 +867,7 @@
 
         <span class="c1"># If d is positive then the normal vector is pointing towards</span>
         <span class="c1"># the center, so rotate 180</span>
-        <span class="k">if</span> <span class="n">dot3</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">up</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dot3</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">up</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">n</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="k">if</span> <span class="n">origin</span><span class="p">:</span>
@@ -846,7 +877,7 @@
 
 
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implement easy repeat function</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Implement easy repeat function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -870,7 +901,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">icell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the reciprocal (inverse) cell for the `Lattice`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the reciprocal (inverse) cell for the `Lattice`.</span>
 
 <span class="sd">        Note: The returned vectors are still in ``[0, :]`` format</span>
 <span class="sd">        and not as returned by an inverse LAPACK algorithm.</span>
@@ -879,7 +910,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the reciprocal cell for the `Lattice` with ``2*np.pi``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the reciprocal cell for the `Lattice` with ``2*np.pi``</span>
 
 <span class="sd">        Note: The returned vectors are still in [0, :] format</span>
 <span class="sd">        and not as returned by an inverse LAPACK algorithm.</span>
@@ -889,7 +920,7 @@
 <div class="viewcode-block" id="Lattice.cell2length">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.cell2length">[docs]</a>
     <span class="k">def</span> <span class="nf">cell2length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate cell vectors such that they each have length `length`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate cell vectors such that they each have length `length`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -915,20 +946,23 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cell2length length parameter should be a single &quot;</span>
-                                 <span class="s2">&quot;float, or an array of values according to axes argument.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cell2length length parameter should be a single &quot;</span>
+                    <span class="s2">&quot;float, or an array of values according to axes argument.&quot;</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">axes</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.rotate">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.rotate">[docs]</a>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;only&quot;</span><span class="p">,</span> <span class="s2">&quot;what&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;0.14.0&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span>
-               <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-               <span class="n">what</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Rotates the supercell, in-place by the angle around the vector</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;only&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;what&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.14.0&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rotates the supercell, in-place by the angle around the vector</span>
 
 <span class="sd">        One can control which cell vectors are rotated by designating them</span>
 <span class="sd">        individually with ``only=&#39;[abc]&#39;``.</span>
@@ -948,7 +982,11 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">abc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">xyz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">direction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">abc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">xyz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])),</span> <span class="n">v</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">direction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">abc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">xyz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])),</span>
+                <span class="n">v</span><span class="p">,</span>
+                <span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="c1"># flatten =&gt; copy</span>
         <span class="n">vn</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">vn</span> <span class="o">/=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span>
@@ -956,7 +994,7 @@
         <span class="n">q</span> <span class="o">/=</span> <span class="n">q</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>  <span class="c1"># normalize the quaternion</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">what</span><span class="p">:</span>
                 <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">idx</span><span class="p">:</span>
@@ -967,7 +1005,7 @@
 <div class="viewcode-block" id="Lattice.offset">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.offset">[docs]</a>
     <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the supercell offset of the supercell index &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the supercell offset of the supercell index&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">isc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">isc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span></div>
@@ -976,7 +1014,7 @@
 <div class="viewcode-block" id="Lattice.add">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Add two supercell lattice vectors to each other</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add two supercell lattice vectors to each other</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -999,7 +1037,7 @@
 <div class="viewcode-block" id="Lattice.add_vacuum">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.add_vacuum">[docs]</a>
     <span class="k">def</span> <span class="nf">add_vacuum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">orthogonal_to_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Add vacuum along the `axis` lattice vector</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add vacuum along the `axis` lattice vector</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1016,7 +1054,7 @@
         <span class="n">d</span> <span class="o">/=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">orthogonal_to_plane</span><span class="p">:</span>
             <span class="c1"># first calculate the normal vector of the other plane</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="n">cross3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">cross3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="n">axis</span> <span class="o">-</span> <span class="mi">2</span><span class="p">])</span>
             <span class="n">n</span> <span class="o">/=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
             <span class="c1"># now project onto cell</span>
             <span class="n">projection</span> <span class="o">=</span> <span class="n">n</span> <span class="o">@</span> <span class="n">d</span>
@@ -1034,7 +1072,7 @@
 <div class="viewcode-block" id="Lattice.sc_index">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.sc_index">[docs]</a>
     <span class="k">def</span> <span class="nf">sc_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_off</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the integer index in the sc_off list that corresponds to `sc_off`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the integer index in the sc_off list that corresponds to `sc_off`</span>
 
 <span class="sd">        Returns the index for the supercell in the global offset.</span>
 
@@ -1044,9 +1082,11 @@
 <span class="sd">            super cell specification. For each axis having value ``None`` all supercells</span>
 <span class="sd">            along that axis is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">_assert</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">m</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Requesting a non-existing supercell index&quot;</span><span class="p">)</span>
+
         <span class="n">hsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">//</span> <span class="mi">2</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sc_off</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1110,7 +1150,7 @@
 <div class="viewcode-block" id="Lattice.scale">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.scale">[docs]</a>
     <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;abc&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Scale lattice vectors</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scale lattice vectors</span>
 
 <span class="sd">        Does not scale `origin`.</span>
 
@@ -1127,13 +1167,15 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;xyz&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.scale argument what=&#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39; is not in [&#39;abc&#39;, &#39;xyz&#39;].&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.scale argument what=&#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39; is not in [&#39;abc&#39;, &#39;xyz&#39;].&quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.tile">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.tile">[docs]</a>
     <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Extend the unit-cell `reps` times along the `axis` lattice vector</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend the unit-cell `reps` times along the `axis` lattice vector</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1162,7 +1204,7 @@
 <div class="viewcode-block" id="Lattice.repeat">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.repeat">[docs]</a>
     <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Extend the unit-cell `reps` times along the `axis` lattice vector</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend the unit-cell `reps` times along the `axis` lattice vector</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1202,7 +1244,7 @@
 <div class="viewcode-block" id="Lattice.append">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.append">[docs]</a>
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Appends other `Lattice` to this grid along axis &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Appends other `Lattice` to this grid along axis&quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
         <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span>
         <span class="c1"># TODO fix nsc here</span>
@@ -1212,7 +1254,7 @@
 <div class="viewcode-block" id="Lattice.prepend">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.prepend">[docs]</a>
     <span class="k">def</span> <span class="nf">prepend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Prepends other `Lattice` to this grid along axis</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepends other `Lattice` to this grid along axis</span>
 
 <span class="sd">        For a `Lattice` object this is equivalent to `append`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1222,7 +1264,7 @@
 <div class="viewcode-block" id="Lattice.translate">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.translate">[docs]</a>
     <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Appends additional space to the object &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Appends additional space to the object&quot;&quot;&quot;</span>
         <span class="c1"># check which cell vector resembles v the most,</span>
         <span class="c1"># use that</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
@@ -1233,12 +1275,13 @@
         <span class="n">cell</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">v</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
 
+
     <span class="n">move</span> <span class="o">=</span> <span class="n">translate</span>
 
 <div class="viewcode-block" id="Lattice.center">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.center">[docs]</a>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns center of the `Lattice`, possibly with respect to an axis &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns center of the `Lattice`, possibly with respect to an axis&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="mf">0.5</span></div>
@@ -1248,7 +1291,7 @@
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.tocell">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">tocell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns a 3x3 unit-cell dependent on the input</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns a 3x3 unit-cell dependent on the input</span>
 
 <span class="sd">        1 argument</span>
 <span class="sd">          a unit-cell along Cartesian coordinates with side-length</span>
@@ -1301,7 +1344,8 @@
             <span class="n">gamma</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
 
             <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">sqrt</span>
-            <span class="n">pi180</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
+
+            <span class="n">pi180</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
 
             <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
             <span class="n">g</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">pi180</span>
@@ -1316,7 +1360,7 @@
             <span class="n">a</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">pi180</span>
             <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">cb</span> <span class="o">*</span> <span class="n">cg</span><span class="p">)</span> <span class="o">/</span> <span class="n">sg</span>
             <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">d</span>
-            <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">sb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">d</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">sb</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">cell</span>
 
         <span class="c1"># A complete cell</span>
@@ -1324,7 +1368,8 @@
             <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.&quot;</span><span class="p">)</span></div>
+            <span class="s2">&quot;Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.&quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.is_orthogonal">
@@ -1370,7 +1415,7 @@
 <div class="viewcode-block" id="Lattice.parallel">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.parallel">[docs]</a>
     <span class="k">def</span> <span class="nf">parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns true if the cell vectors are parallel to `other`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns true if the cell vectors are parallel to `other`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1392,7 +1437,7 @@
 <div class="viewcode-block" id="Lattice.angle">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.angle">[docs]</a>
     <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; The angle between two of the cell vectors</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The angle between two of the cell vectors</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1414,7 +1459,7 @@
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.read">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the supercell from the `Sile` using ``Sile.read_lattice``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the supercell from the `Sile` using ``Sile.read_lattice``</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1425,17 +1470,18 @@
         <span class="c1"># This only works because, they *must*</span>
         <span class="c1"># have been imported previously</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">get_sile</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.equal">
 <a class="viewcode-back" href="../../api/generated/sisl.Lattice.html#sisl.Lattice.equal">[docs]</a>
     <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Check whether two lattices are equivalent</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether two lattices are equivalent</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1451,7 +1497,8 @@
 
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a string representation of the object &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a string representation of the object&quot;&quot;&quot;</span>
+
         <span class="c1"># Create format for lattice vectors</span>
         <span class="k">def</span> <span class="nf">bcstr</span><span class="p">(</span><span class="n">bc</span><span class="p">):</span>
             <span class="n">left</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">getitem</span><span class="p">(</span><span class="n">bc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
@@ -1460,7 +1507,13 @@
                 <span class="k">return</span> <span class="n">left</span>
             <span class="n">right</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">getitem</span><span class="p">(</span><span class="n">bc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">]&quot;</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;ABC&#39;</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;=[</span><span class="si">{:.4f}</span><span class="s1">, </span><span class="si">{:.4f}</span><span class="s1">, </span><span class="si">{:.4f}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;ABC&quot;</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;=[</span><span class="si">{:.4f}</span><span class="s2">, </span><span class="si">{:.4f}</span><span class="s2">, </span><span class="si">{:.4f}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">origin</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.4f}</span><span class="s2">, </span><span class="si">{:.4f}</span><span class="s2">, </span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">     &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">bcstr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_condition</span><span class="p">))</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">nsc: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> origin=</span><span class="si">{</span><span class="n">origin</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> bc=[</span><span class="si">{</span><span class="n">bc</span><span class="si">}</span><span class="s2">]</span><span class="se">\n}}</span><span class="s2">&quot;</span>
@@ -1469,6 +1522,7 @@
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
         <span class="n">BC</span> <span class="o">=</span> <span class="n">BoundaryCondition</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_condition</span>
+
         <span class="k">def</span> <span class="nf">bcstr</span><span class="p">(</span><span class="n">bc</span><span class="p">):</span>
             <span class="n">left</span> <span class="o">=</span> <span class="n">BC</span><span class="o">.</span><span class="n">getitem</span><span class="p">(</span><span class="n">bc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">bc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">bc</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
@@ -1476,29 +1530,35 @@
                 <span class="k">return</span> <span class="n">left</span>
             <span class="n">right</span> <span class="o">=</span> <span class="n">BC</span><span class="o">.</span><span class="n">getitem</span><span class="p">(</span><span class="n">bc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">]&quot;</span>
+
         <span class="n">bc</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">bcstr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_condition</span><span class="p">))</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> a=</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">, b=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">, c=</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">, α=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">, β=</span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">, γ=</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s2">, bc=[</span><span class="si">{</span><span class="n">bc</span><span class="si">}</span><span class="s2">], nsc=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Equality check &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equality check&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; In-equality check &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;In-equality check&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span> <span class="o">==</span> <span class="n">b</span><span class="p">)</span>
 
     <span class="c1"># Create pickling routines</span>
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the state of this object &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;cell&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="s1">&#39;nsc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="s1">&#39;sc_off&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span> <span class="s1">&#39;origin&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">}</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the state of this object&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;cell&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
+            <span class="s2">&quot;nsc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span>
+            <span class="s2">&quot;sc_off&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span>
+            <span class="s2">&quot;origin&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
+        <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Re-create the state of this object &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;nsc&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;origin&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sc_off&#39;</span><span class="p">]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Re-create the state of this object&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;nsc&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;origin&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;sc_off&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__plot__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Plot the supercell in a specified ``matplotlib.Axes`` object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the supercell in a specified ``matplotlib.Axes`` object.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1513,17 +1573,17 @@
         <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="c1"># Try and default the color and alpha</span>
-        <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span>
-        <span class="k">if</span> <span class="s1">&#39;alpha&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="s2">&quot;color&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;k&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;alpha&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
 
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
         <span class="c1"># Ensure we have a new 3D Axes3D</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;projection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3d&#39;</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;projection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;3d&quot;</span>
 
         <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">d</span><span class="p">)</span>
 
@@ -1534,15 +1594,21 @@
             <span class="n">v</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">o</span><span class="p">[</span><span class="n">axis</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="p">])))</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">axes</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Axes3D&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">axes</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Axes3D&quot;</span><span class="p">):</span>
             <span class="c1"># We should plot in 3D plots</span>
             <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
                 <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vv</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">vv</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">vv</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span>
-            <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
-            <span class="n">axes</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
@@ -1552,17 +1618,19 @@
             <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v0</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v0</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
-        <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">axes</span>
+
 
 <span class="n">new_dispatch</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">new</span>
 <span class="n">to_dispatch</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">to</span>
 
+
 <span class="c1"># Define base-class for this</span>
 <span class="k">class</span> <span class="nc">LatticeNewDispatch</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base dispatcher from class passing arguments to Geometry class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base dispatcher from class passing arguments to Geometry class</span>
 
 <span class="sd">    This forwards all `__call__` calls to `dispatch`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1570,13 +1638,17 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+
 <span class="k">class</span> <span class="nc">LatticeNewLatticeDispatch</span><span class="p">(</span><span class="n">LatticeNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1"># for sanitation purposes</span>
         <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">lattice</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">lattice</span>
+
+
 <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Lattice</span><span class="p">,</span> <span class="n">LatticeNewLatticeDispatch</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">LatticeNewAseDispatch</span><span class="p">(</span><span class="n">LatticeNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aseg</span><span class="p">):</span>
@@ -1584,48 +1656,61 @@
         <span class="n">cell</span> <span class="o">=</span> <span class="n">aseg</span><span class="o">.</span><span class="n">get_cell</span><span class="p">()</span>
         <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">pbc</span> <span class="ow">in</span> <span class="n">aseg</span><span class="o">.</span><span class="n">pbc</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+
+
 <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ase&quot;</span><span class="p">,</span> <span class="n">LatticeNewAseDispatch</span><span class="p">)</span>
 
 <span class="c1"># currently we can&#39;t ensure the ase Atoms type</span>
 <span class="c1"># to get it by type(). That requires ase to be importable.</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">ase</span> <span class="kn">import</span> <span class="n">Cell</span> <span class="k">as</span> <span class="n">ase_Cell</span>
+
     <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ase_Cell</span><span class="p">,</span> <span class="n">LatticeNewAseDispatch</span><span class="p">)</span>
     <span class="c1"># ensure we don&#39;t pollute name-space</span>
     <span class="k">del</span> <span class="n">ase_Cell</span>
 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
     <span class="k">pass</span>
 
+
 <span class="k">class</span> <span class="nc">LatticeNewFileDispatch</span><span class="p">(</span><span class="n">LatticeNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Defer the `Lattice.read` method by passing down arguments &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Defer the `Lattice.read` method by passing down arguments&quot;&quot;&quot;</span>
         <span class="c1"># can work either on class or instance</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
 <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">LatticeNewFileDispatch</span><span class="p">)</span>
 <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">LatticeNewFileDispatch</span><span class="p">)</span>
 <span class="c1"># see sisl/__init__.py for new_dispatch.register(BaseSile, ...)</span>
 
 
 <span class="k">class</span> <span class="nc">LatticeToDispatch</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base dispatcher from class passing from Lattice class &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base dispatcher from class passing from Lattice class&quot;&quot;&quot;</span>
+
 
 <span class="k">class</span> <span class="nc">LatticeToAseDispatch</span><span class="p">(</span><span class="n">LatticeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">ase</span> <span class="kn">import</span> <span class="n">Cell</span> <span class="k">as</span> <span class="n">ase_Cell</span>
+
         <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ase_Cell</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
+
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ase&quot;</span><span class="p">,</span> <span class="n">LatticeToAseDispatch</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">LatticeToSileDispatch</span><span class="p">(</span><span class="n">LatticeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">lattice</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">LatticeToSileDispatch</span><span class="p">)</span>
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Path&quot;</span><span class="p">,</span> <span class="n">LatticeToSileDispatch</span><span class="p">)</span>
 <span class="c1"># to do geom.to[Path](path)</span>
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">LatticeToSileDispatch</span><span class="p">)</span>
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">LatticeToSileDispatch</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">LatticeToCuboidDispatch</span><span class="p">(</span><span class="n">LatticeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1650,6 +1735,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
                 <span class="n">cmin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cmin</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="n">cmax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cmax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
         <span class="n">cmin</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">cmax</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="n">cell</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
@@ -1657,6 +1743,7 @@
         <span class="n">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="n">cell</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
         <span class="n">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">Cuboid</span><span class="p">(</span><span class="n">cmax</span> <span class="o">-</span> <span class="n">cmin</span><span class="p">,</span> <span class="n">center_off</span><span class="p">)</span>
+
 
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">LatticeToCuboidDispatch</span><span class="p">)</span>
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Cuboid</span><span class="p">,</span> <span class="n">LatticeToCuboidDispatch</span><span class="p">)</span>
@@ -1667,14 +1754,18 @@
 
 
 <span class="k">class</span> <span class="nc">SuperCell</span><span class="p">(</span><span class="n">Lattice</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Deprecated class, please use `Lattice` instead &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deprecated class, please use `Lattice` instead&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">deprecate</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is deprecated; please use &#39;Lattice&#39; class instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+        <span class="n">deprecate</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is deprecated; please use &#39;Lattice&#39; class instead&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">LatticeChild</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Class to be inherited by using the ``self.lattice`` as a `Lattice` object</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to be inherited by using the ``self.lattice`` as a `Lattice` object</span>
 
 <span class="sd">    Initialize by a `Lattice` object and get access to several different</span>
 <span class="sd">    routines directly related to the `Lattice` class.</span>
@@ -1683,11 +1774,14 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;[deprecated] Return the lattice object associated with the `Lattice`.&quot;&quot;&quot;</span>
-        <span class="n">deprecate</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.sc is deprecated; please use &#39;lattice&#39; instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+        <span class="n">deprecate</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.sc is deprecated; please use &#39;lattice&#39; instead&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span>
 
     <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the number of super-cells in the `Lattice` object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the number of super-cells in the `Lattice` object</span>
 
 <span class="sd">        See `set_nsc` for allowed parameters.</span>
 
@@ -1702,7 +1796,7 @@
         <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Default supercell is a simple</span>
             <span class="c1"># 1x1x1 unit-cell</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">lattice</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">LatticeChild</span><span class="p">):</span>
@@ -1711,8 +1805,12 @@
             <span class="c1"># The supercell is given as a cell</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
 
-    <span class="n">set_sc</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span><span class="s2">&quot;set_sc is deprecated; please use set_lattice instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.14&quot;</span><span class="p">)(</span><span class="n">set_lattice</span><span class="p">)</span>
-    <span class="n">set_supercell</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span><span class="s2">&quot;set_sc is deprecated; please use set_lattice instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)(</span><span class="n">set_lattice</span><span class="p">)</span>
+    <span class="n">set_sc</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;set_sc is deprecated; please use set_lattice instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.14&quot;</span>
+    <span class="p">)(</span><span class="n">set_lattice</span><span class="p">)</span>
+    <span class="n">set_supercell</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;set_sc is deprecated; please use set_lattice instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span>
+    <span class="p">)(</span><span class="n">set_lattice</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1721,57 +1819,56 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `volume` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `volume`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">volume</span>
 
     <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax0</span><span class="p">,</span> <span class="n">ax1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the area spanned by the two axis `ax0` and `ax1` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the area spanned by the two axis `ax0` and `ax1`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ax0</span><span class="p">,</span> <span class="n">ax1</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `cell` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `cell`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">icell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `icell` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `icell`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">icell</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `rcell` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `rcell`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">rcell</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `origin` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `origin`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_s</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `n_s` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `n_s`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `nsc` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `nsc`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `sc_off` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `sc_off`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">isc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the inherent `Lattice` objects `isc_off` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the inherent `Lattice` objects `isc_off`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">isc_off</span>
 
     <span class="k">def</span> <span class="nf">sc_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Call local `Lattice` object `sc_index` function &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call local `Lattice` object `sc_index` function&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">boundary_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -1781,13 +1878,14 @@
     <span class="nd">@boundary_condition</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">boundary_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boundary_condition</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BoundaryConditionType</span><span class="p">]):</span>
         <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">Lattice</span><span class="o">.</span><span class="n">boundary_condition</span><span class="o">.</span><span class="vm">__doc__</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot use property to set boundary conditions of LatticeChild&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Cannot use property to set boundary conditions of LatticeChild&quot;</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pbc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">Lattice</span><span class="o">.</span><span class="n">pbc</span><span class="o">.</span><span class="vm">__doc__</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">pbc</span>
-
 </pre></div>
 
            </div>

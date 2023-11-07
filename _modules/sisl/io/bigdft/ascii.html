@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.bigdft.ascii &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.bigdft.ascii &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -124,23 +124,23 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;asciiSileBigDFT&quot;</span><span class="p">]</span>
 
 
-<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.bigdft&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">asciiSileBigDFT</span><span class="p">(</span><span class="n">SileBigDFT</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; ASCII file object for BigDFT &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ASCII file object for BigDFT&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize for `asciiSileBigDFT` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize for `asciiSileBigDFT`&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="asciiSileBigDFT.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.read_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads a supercell from the Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a supercell from the Sile&quot;&quot;&quot;</span>
 
         <span class="c1"># 1st line is arbitrary</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -160,29 +160,27 @@
         <span class="c1"># Now we need to read through and find keywords</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-
                 <span class="c1"># Read line also with comment</span>
                 <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
                 <span class="c1"># Empty line, means EOF</span>
-                <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                     <span class="k">break</span>
                 <span class="c1"># too short, continue</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">continue</span>
 
                 <span class="c1"># Check for keyword</span>
-                <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;keyword:&#39;</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="s1">&#39;reduced&#39;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;keyword:&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="s2">&quot;reduced&quot;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
                         <span class="n">is_frac</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">if</span> <span class="s1">&#39;angdeg&#39;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;angdeg&quot;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
                         <span class="n">is_angdeg</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">if</span> <span class="s1">&#39;bohr&#39;</span> <span class="ow">in</span> <span class="n">l</span> <span class="ow">or</span> <span class="s1">&#39;atomic&#39;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;bohr&quot;</span> <span class="ow">in</span> <span class="n">l</span> <span class="ow">or</span> <span class="s2">&quot;atomic&quot;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
                         <span class="n">is_bohr</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="k">continue</span>
 
                 <span class="k">elif</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span><span class="p">:</span>
-
                     <span class="c1"># this is a comment, cycle</span>
                     <span class="k">continue</span>
 
@@ -220,7 +218,7 @@
             <span class="c1"># The input is in skewed axis</span>
             <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([</span><span class="n">dxx</span><span class="p">,</span> <span class="n">dyx</span><span class="p">,</span> <span class="n">dyy</span><span class="p">,</span> <span class="n">dzx</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">dzz</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([[</span><span class="n">dxx</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="n">dyx</span><span class="p">,</span> <span class="n">dyy</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="n">dzx</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">dzz</span><span class="p">]])</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([[</span><span class="n">dxx</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="n">dyx</span><span class="p">,</span> <span class="n">dyy</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="n">dzx</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">dzz</span><span class="p">]])</span>
 
         <span class="c1"># Now create the geometry</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -242,27 +240,25 @@
 <div class="viewcode-block" id="asciiSileBigDFT.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.write_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the geometry to the contained file&quot;&quot;&quot;</span>
         <span class="c1"># Check that we can write to the file</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># Write out the cell</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;# Created by sisl</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;# Created by sisl</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># We write the cell coordinates as the cell coordinates</span>
-        <span class="n">fmt_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span>
-            <span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="n">fmt_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s2"> &quot;</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span>
 
         <span class="c1"># This also denotes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;#keyword: angstroem</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;#keyword: angstroem</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;# Geometry containing: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; atoms</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;# Geometry containing: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; atoms</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">f1_str</span> <span class="o">=</span> <span class="s1">&#39;{{1:</span><span class="si">{0}</span><span class="s1">}}  {{2:</span><span class="si">{0}</span><span class="s1">}}  {{3:</span><span class="si">{0}</span><span class="s1">}} {{0:2s}}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
-        <span class="n">f2_str</span> <span class="o">=</span> <span class="s1">&#39;{{2:</span><span class="si">{0}</span><span class="s1">}}  {{3:</span><span class="si">{0}</span><span class="s1">}}  {{4:</span><span class="si">{0}</span><span class="s1">}} {{0:2s}} {{1:s}}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
+        <span class="n">f1_str</span> <span class="o">=</span> <span class="s2">&quot;{{1:</span><span class="si">{0}</span><span class="s2">}}  {{2:</span><span class="si">{0}</span><span class="s2">}}  {{3:</span><span class="si">{0}</span><span class="s2">}} {{0:2s}}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
+        <span class="n">f2_str</span> <span class="o">=</span> <span class="s2">&quot;{{2:</span><span class="si">{0}</span><span class="s2">}}  {{3:</span><span class="si">{0}</span><span class="s2">}}  {{4:</span><span class="si">{0}</span><span class="s2">}} {{0:2s}} {{1:s}}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">iter_species</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">symbol</span> <span class="o">!=</span> <span class="n">a</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
@@ -270,11 +266,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">f1_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="o">*</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]))</span>
         <span class="c1"># Add a single new line</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">newkw</span><span class="p">)</span>

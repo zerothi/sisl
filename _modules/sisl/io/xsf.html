@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xsf &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.xsf &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -120,6 +120,7 @@
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">str_spec</span>
 
 <span class="kn">from</span> <span class="nn">._multiple</span> <span class="kn">import</span> <span class="n">SileBinder</span>
+
 <span class="c1"># Import sile objects</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -136,35 +137,41 @@
 
 <span class="k">def</span> <span class="nf">reset_values</span><span class="p">(</span><span class="o">*</span><span class="n">names_values</span><span class="p">,</span> <span class="n">animsteps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">animsteps</span><span class="p">:</span>
+
         <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">names_values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_animsteps</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">names_values</span><span class="p">:</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
+
         <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">names_values</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">names_values</span><span class="p">:</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">reset</span>
 
 
 <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="o">*</span><span class="n">funcs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Post-processes the returned value according to the funcs for multiple data &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Post-processes the returned value according to the funcs for multiple data&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
         <span class="k">nonlocal</span> <span class="n">funcs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">),</span> <span class="n">funcs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">funcs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">ret</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">post</span>
 
-        
+
 <span class="c1"># Implementation notice!</span>
 <span class="c1"># The XSF files are compatible with Vesta, but ONLY</span>
 <span class="c1"># if there are no empty lines!</span>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">xsfSile</span><span class="p">(</span><span class="n">Sile</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; XSF file for XCrySDen</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;XSF file for XCrySDen</span>
 
 <span class="sd">    When creating an XSF file one must denote how many geometries to write out.</span>
 <span class="sd">    It is also necessary to use the xsf in a context manager, otherwise it will</span>
@@ -181,9 +188,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Setup the `xsfSile` after initialization &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the `xsfSile` after initialization&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;w&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;steps&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -213,9 +220,11 @@
 <div class="viewcode-block" id="xsfSile.write_lattice">
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="n">reset_values</span><span class="p">((</span><span class="s2">&quot;_geometry_write&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">animsteps</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the supercell to the contained file</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the supercell to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -229,7 +238,10 @@
 
         <span class="c1"># Write out top-header stuff</span>
         <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">gmtime</span><span class="p">,</span> <span class="n">strftime</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;# File created by: sisl </span><span class="si">{}</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span>
+            <span class="s2">&quot;# File created by: sisl </span><span class="si">{}</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">()))</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;MOLECULE</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -238,13 +250,13 @@
         <span class="k">elif</span> <span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;POLYMER</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;CRYSTAL</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;CRYSTAL</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;# Primitive lattice vectors:</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_key_index</span><span class="p">(</span><span class="s1">&#39;PRIMVEC&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;# Primitive lattice vectors:</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_key_index</span><span class="p">(</span><span class="s2">&quot;PRIMVEC&quot;</span><span class="p">)</span>
 
         <span class="c1"># We write the cell coordinates as the cell coordinates</span>
-        <span class="n">fmt_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">fmt_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s2"> &quot;</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]))</span></div>
 
@@ -252,17 +264,17 @@
         <span class="c1"># Convert the unit cell to a conventional cell (90-90-90))</span>
         <span class="c1"># It seems this simply allows to store both formats in</span>
         <span class="c1"># the same file. However the below stuff is not correct.</span>
-        <span class="c1">#self._write_once(&#39;#\n# Conventional lattice vectors:\n#\n&#39;)</span>
-        <span class="c1">#self._write_key_index(&#39;CONVVEC&#39;)</span>
-        <span class="c1">#convcell = lattice.to.Cuboid(orthogonal=True)._v</span>
-        <span class="c1">#for i in [0, 1, 2]:</span>
+        <span class="c1"># self._write_once(&#39;#\n# Conventional lattice vectors:\n#\n&#39;)</span>
+        <span class="c1"># self._write_key_index(&#39;CONVVEC&#39;)</span>
+        <span class="c1"># convcell = lattice.to.Cuboid(orthogonal=True)._v</span>
+        <span class="c1"># for i in [0, 1, 2]:</span>
         <span class="c1">#    self._write(fmt_str.format(*convcell[i, :]))</span>
 
 <div class="viewcode-block" id="xsfSile.write_geometry">
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="n">reset_values</span><span class="p">((</span><span class="s2">&quot;_geometry_write&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">animsteps</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
+    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the geometry to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -280,10 +292,10 @@
         <span class="k">if</span> <span class="n">has_data</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;#</span><span class="se">\n</span><span class="s1"># Atomic coordinates (in primitive coordinates)</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;#</span><span class="se">\n</span><span class="s2"># Atomic coordinates (in primitive coordinates)</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_write</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_key_index</span><span class="p">(</span><span class="s2">&quot;PRIMCOORD&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span><span class="si">}</span><span class="s1"> 1</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span><span class="si">}</span><span class="s2"> 1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">non_valid_Z</span> <span class="o">=</span> <span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">Z</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_valid_Z</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -291,13 +303,13 @@
 
         <span class="k">if</span> <span class="n">has_data</span><span class="p">:</span>
             <span class="n">fmt_str</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;{{0:3d}}  {{1:</span><span class="si">{0}</span><span class="s1">}}  {{2:</span><span class="si">{0}</span><span class="s1">}}  {{3:</span><span class="si">{0}</span><span class="s1">}}   {{4:</span><span class="si">{0}</span><span class="s1">}}  {{5:</span><span class="si">{0}</span><span class="s1">}}  {{6:</span><span class="si">{0}</span><span class="s1">}}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s2">&quot;{{0:3d}}  {{1:</span><span class="si">{0}</span><span class="s2">}}  {{2:</span><span class="si">{0}</span><span class="s2">}}  {{3:</span><span class="si">{0}</span><span class="s2">}}   {{4:</span><span class="si">{0}</span><span class="s2">}}  {{5:</span><span class="si">{0}</span><span class="s2">}}  {{6:</span><span class="si">{0}</span><span class="s2">}}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">geometry</span><span class="p">:</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:],</span> <span class="n">data</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="o">*</span><span class="n">tmp</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;{{0:3d}}  {{1:</span><span class="si">{0}</span><span class="s1">}}  {{2:</span><span class="si">{0}</span><span class="s1">}}  {{3:</span><span class="si">{0}</span><span class="s1">}}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
+            <span class="n">fmt_str</span> <span class="o">=</span> <span class="s2">&quot;{{0:3d}}  {{1:</span><span class="si">{0}</span><span class="s2">}}  {{2:</span><span class="si">{0}</span><span class="s2">}}  {{3:</span><span class="si">{0}</span><span class="s2">}}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">geometry</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]))</span></div>
 
@@ -317,7 +329,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
-        <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
@@ -377,7 +389,9 @@
                 <span class="k">break</span>
 
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;CONVCOORD&quot;</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not implement reading CONVCOORD&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not implement reading CONVCOORD&quot;</span>
+                <span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;CRYSTAL&quot;</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_read_type</span> <span class="o">=</span> <span class="s2">&quot;CRYSTAL&quot;</span>
@@ -406,10 +420,12 @@
             <span class="n">cell</span> <span class="o">=</span> <span class="n">lattice</span>
 
         <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;MOLECULE&quot;</span><span class="p">:</span>
-            <span class="n">cell</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">))</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.0</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not find lattice parameters.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not find lattice parameters.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># overwrite the currently read cell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_cell</span> <span class="o">=</span> <span class="n">cell</span>
@@ -432,9 +448,11 @@
 <div class="viewcode-block" id="xsfSile.read_geometry">
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.read_geometry">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Geometry contained in file, and optionally the associated data</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Geometry contained in file, and optionally the associated data</span>
 
 <span class="sd">        If the file contains more geometries, one can read multiple geometries</span>
 <span class="sd">        by using the arguments `start`, `stop` and `step`.</span>
@@ -457,7 +475,7 @@
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_grid">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Store grid(s) data to an XSF file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store grid(s) data to an XSF file</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -483,48 +501,49 @@
         <span class="c1"># for now we do not allow an animation with grid data... should this</span>
         <span class="c1"># even work?</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_grid not allowed in an animation file.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_grid not allowed in an animation file.&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">geom</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">geom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">AtomUnknown</span><span class="p">(</span><span class="mi">999</span><span class="p">),</span> <span class="n">lattice</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
 
         <span class="c1"># Buffer size for writing</span>
-        <span class="n">buffersize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;buffersize&#39;</span><span class="p">,</span> <span class="mi">6144</span><span class="p">),</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">buffersize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffersize&quot;</span><span class="p">,</span> <span class="mi">6144</span><span class="p">),</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
         <span class="c1"># Format for precision</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fmt&#39;</span><span class="p">,</span> <span class="s1">&#39;.5e&#39;</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fmt&quot;</span><span class="p">,</span> <span class="s2">&quot;.5e&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;BEGIN_BLOCK_DATAGRID_3D</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;sisl_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;BEGIN_BLOCK_DATAGRID_3D</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;sisl_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
         <span class="c1"># Transfer all spaces to underscores (no spaces allowed)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">_v3</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;{:&#39;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s1">&#39;} &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">_v3</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;{:&quot;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s2">&quot;} &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="k">def</span> <span class="nf">write_cell</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
             <span class="c1"># Now write the grid</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;  </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">grid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">Grid</span><span class="p">):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;grid</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;grid</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># it must be a tuple</span>
                 <span class="n">name</span><span class="p">,</span> <span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;grid</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;grid</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
             <span class="n">is_complex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">is_complex</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; BEGIN_DATAGRID_3D_real_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; BEGIN_DATAGRID_3D_real_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; BEGIN_DATAGRID_3D_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; BEGIN_DATAGRID_3D_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="n">write_cell</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
 
@@ -532,35 +551,45 @@
             <span class="c1">#   for y</span>
             <span class="c1">#     for x</span>
             <span class="c1">#       write...</span>
-            <span class="n">_fmt</span> <span class="o">=</span> <span class="s1">&#39;{:&#39;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s1">&#39;}</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;external_loop&#39;</span><span class="p">,</span> <span class="s1">&#39;buffered&#39;</span><span class="p">],</span>
-                               <span class="n">op_flags</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;readonly&#39;</span><span class="p">]],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">buffersize</span><span class="o">=</span><span class="n">buffersize</span><span class="p">):</span>
+            <span class="n">_fmt</span> <span class="o">=</span> <span class="s2">&quot;{:&quot;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s2">&quot;}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;external_loop&quot;</span><span class="p">,</span> <span class="s2">&quot;buffered&quot;</span><span class="p">],</span>
+                <span class="n">op_flags</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;readonly&quot;</span><span class="p">]],</span>
+                <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+                <span class="n">buffersize</span><span class="o">=</span><span class="n">buffersize</span><span class="p">,</span>
+            <span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">((</span><span class="n">_fmt</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39; END_DATAGRID_3D</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot; END_DATAGRID_3D</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Skip if not complex</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">is_complex</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; BEGIN_DATAGRID_3D_imag_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; BEGIN_DATAGRID_3D_imag_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">write_cell</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">imag</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;external_loop&#39;</span><span class="p">,</span> <span class="s1">&#39;buffered&#39;</span><span class="p">],</span>
-                               <span class="n">op_flags</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;readonly&#39;</span><span class="p">]],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">buffersize</span><span class="o">=</span><span class="n">buffersize</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">imag</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;external_loop&quot;</span><span class="p">,</span> <span class="s2">&quot;buffered&quot;</span><span class="p">],</span>
+                <span class="n">op_flags</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;readonly&quot;</span><span class="p">]],</span>
+                <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+                <span class="n">buffersize</span><span class="o">=</span><span class="n">buffersize</span><span class="p">,</span>
+            <span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">((</span><span class="n">_fmt</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39; END_DATAGRID_3D</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot; END_DATAGRID_3D</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;END_BLOCK_DATAGRID_3D</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;END_BLOCK_DATAGRID_3D</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">newkw</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">ArgumentParser_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Adds arguments only if this file is an output file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds arguments only if this file is an output file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -568,29 +597,42 @@
 <span class="sd">           the parser which gets amended the additional output options.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">argparse</span>
+
         <span class="n">ns</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;namespace&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">class</span> <span class="nc">_</span><span class="p">():</span>
+
+            <span class="k">class</span> <span class="nc">_</span><span class="p">:</span>
                 <span class="k">pass</span>
+
             <span class="n">ns</span> <span class="o">=</span> <span class="n">_</span><span class="p">()</span>
 
         <span class="c1"># We will add the vector data</span>
         <span class="k">class</span> <span class="nc">VectorNoScale</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">no_value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;_vector_scale&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--no-vector-scale&quot;</span><span class="p">,</span> <span class="s2">&quot;-nsv&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">VectorNoScale</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Do not modify vector components (same as --vector-scale 1.)&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--no-vector-scale&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-nsv&quot;</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">VectorNoScale</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Do not modify vector components (same as --vector-scale 1.)&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="c1"># Default to scale the vectors</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;_vector_scale&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># We will add the vector data</span>
         <span class="k">class</span> <span class="nc">VectorScale</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;_vector_scale&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--vector-scale&#39;</span><span class="p">,</span> <span class="s1">&#39;-sv&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;SCALE&#39;</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">VectorScale</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Scale vector components by this factor.&quot;&quot;&quot;</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;_vector_scale&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--vector-scale&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-sv&quot;</span><span class="p">,</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;SCALE&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">VectorScale</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Scale vector components by this factor.&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># We will add the vector data</span>
         <span class="k">class</span> <span class="nc">Vectors</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
@@ -598,7 +640,7 @@
                 <span class="n">routine</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
                 <span class="c1"># Default input file</span>
-                <span class="n">input_file</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;_input_file&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">input_file</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;_input_file&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
                 <span class="c1"># Figure out which of the segments are a file</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -612,11 +654,12 @@
 
                 <span class="c1"># Try and read the vector</span>
                 <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span>
-                <span class="n">input_sile</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+                <span class="n">input_sile</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
 
                 <span class="n">vector</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">input_sile</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;read_</span><span class="si">{</span><span class="n">routine</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">):</span>
-                    <span class="n">vector</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">input_sile</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;read_</span><span class="si">{</span><span class="n">routine</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">input_sile</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;read_</span><span class="si">{</span><span class="n">routine</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+                    <span class="n">vector</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">input_sile</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;read_</span><span class="si">{</span><span class="n">routine</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">vector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># Try the read_data function</span>
@@ -635,25 +678,37 @@
 
                 <span class="k">if</span> <span class="n">vector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># Use title to capitalize</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> could not be read from file: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">routine</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span> <span class="n">input_file</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> could not be read from file: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">routine</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span> <span class="n">input_file</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;read_</span><span class="si">{</span><span class="n">routine</span><span class="si">}</span><span class="s1"> could read from file: </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s1">, sizes does not conform to geometry.&#39;</span><span class="p">)</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;_vector&#39;</span><span class="p">,</span> <span class="n">vector</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--vector&#39;</span><span class="p">,</span> <span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;*ARGS[, FILE]&#39;</span><span class="p">),</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">Vectors</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Adds vector arrows for each atom, first argument is type (force, moment, ...).</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;read_</span><span class="si">{</span><span class="n">routine</span><span class="si">}</span><span class="s2"> could read from file: </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">, sizes does not conform to geometry.&quot;</span>
+                    <span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;_vector&quot;</span><span class="p">,</span> <span class="n">vector</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--vector&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;DATA&quot;</span><span class="p">,</span> <span class="s2">&quot;*ARGS[, FILE]&quot;</span><span class="p">),</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">Vectors</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Adds vector arrows for each atom, first argument is type (force, moment, ...).</span>
 <span class="s2">If the current input file contains the vectors no second argument is necessary, else</span>
 <span class="s2">the file containing the data is required as the last input.</span>
 
 <span class="s2">Any arguments inbetween are passed to the `read_data` function (in order).</span>
 
 <span class="s2">By default the vectors scaled by 1 / max(|V|) such that the longest vector has length 1.</span>
-<span class="s2">                       &quot;&quot;&quot;</span><span class="p">)</span>
+<span class="s2">                       &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;xsf&#39;</span><span class="p">,</span> <span class="n">xsfSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;axsf&#39;</span><span class="p">,</span> <span class="n">xsfSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;xsf&quot;</span><span class="p">,</span> <span class="n">xsfSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;axsf&quot;</span><span class="p">,</span> <span class="n">xsfSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

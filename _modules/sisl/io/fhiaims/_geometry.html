@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.fhiaims._geometry &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.fhiaims._geometry &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -125,14 +125,16 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.fhiaims&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">inSileFHIaims</span><span class="p">(</span><span class="n">SileFHIaims</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; FHI-aims geometry file object &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;FHI-aims geometry file object&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="inSileFHIaims.write_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.write_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the supercell to the contained file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the supercell to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -151,8 +153,10 @@
 <div class="viewcode-block" id="inSileFHIaims.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.write_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="n">as_frac</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
+    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="n">as_frac</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the geometry to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -195,7 +199,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.read_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads supercell object from the file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads supercell object from the file&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="c1"># read until &quot;lattice_vector&quot; is found</span>
@@ -211,7 +215,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.read_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads Geometry object from the file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads Geometry object from the file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -242,7 +246,9 @@
 
         <span class="k">def</span> <span class="nf">ensure_length</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">add</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="s2">&quot;Found a velocity/initial_moment entry before an atom entry?&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
+                    <span class="s2">&quot;Found a velocity/initial_moment entry before an atom entry?&quot;</span>
+                <span class="p">)</span>
             <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
                 <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add</span><span class="p">)</span>
 
@@ -268,7 +274,7 @@
             <span class="c1"># we found an atom</span>
             <span class="n">sp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">),</span> <span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">),)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">velocity</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">moment</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -282,19 +288,19 @@
 <div class="viewcode-block" id="inSileFHIaims.read_velocity">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.read_velocity">[docs]</a>
     <span class="k">def</span> <span class="nf">read_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads velocity in the file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads velocity in the file&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="inSileFHIaims.read_moment">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.read_moment">[docs]</a>
     <span class="k">def</span> <span class="nf">read_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads initial moment in the file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads initial moment in the file&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="n">moment</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
 
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">newkw</span><span class="p">)</span>

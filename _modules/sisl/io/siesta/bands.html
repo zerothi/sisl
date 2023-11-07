@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.bands &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.siesta.bands &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -121,13 +121,13 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">bandsSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Bandstructure information &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bandstructure information&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="bandsSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.read_fermi_level">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the Fermi level in the bands file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Fermi level in the bands file&quot;&quot;&quot;</span>
         <span class="c1"># Luckily the data is in eV</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span></div>
 
@@ -136,7 +136,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dataarray</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns data associated with the bands file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns data associated with the bands file</span>
 
 <span class="sd">        The energy levels are shifted with respect to the Fermi-level.</span>
 
@@ -144,7 +144,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        as_dataarray: boolean, optional</span>
 <span class="sd">            if `True`, the information is returned as an `xarray.DataArray`</span>
-<span class="sd">            Ticks (if read) are stored as an attribute of the DataArray </span>
+<span class="sd">            Ticks (if read) are stored as an attribute of the DataArray</span>
 <span class="sd">            (under `array.ticks` and `array.ticklabels`)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">band_lines</span> <span class="o">=</span> <span class="kc">False</span>
@@ -197,7 +197,7 @@
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nl</span><span class="p">):</span>
                 <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="n">xlabels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-                <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">xlabels</span><span class="p">,</span> <span class="n">labels</span><span class="p">),</span> <span class="o">*</span><span class="n">vals</span>
 
         <span class="k">if</span> <span class="n">as_dataarray</span><span class="p">:</span>
@@ -205,18 +205,24 @@
 
             <span class="n">ticks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ticks&quot;</span><span class="p">:</span> <span class="n">xlabels</span><span class="p">,</span> <span class="s2">&quot;ticklabels&quot;</span><span class="p">:</span> <span class="n">labels</span><span class="p">}</span> <span class="k">if</span> <span class="n">band_lines</span> <span class="k">else</span> <span class="p">{}</span>
 
-            <span class="n">vals</span> <span class="o">=</span> <span class="n">DataArray</span><span class="p">(</span><span class="n">eb</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Energy&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span>
-                             <span class="n">coords</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">eb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
-                                     <span class="p">(</span><span class="s2">&quot;band&quot;</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">eb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))])</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">DataArray</span><span class="p">(</span>
+                <span class="n">eb</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Energy&quot;</span><span class="p">,</span>
+                <span class="n">attrs</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span>
+                <span class="n">coords</span><span class="o">=</span><span class="p">[</span>
+                    <span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">eb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                    <span class="p">(</span><span class="s2">&quot;band&quot;</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">eb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])),</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">vals</span></div>
 
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Manipulate bands file in sisl.&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
-        <span class="c1">#limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
+        <span class="c1"># limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
         <span class="n">short</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;short&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">opts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -232,28 +238,32 @@
         <span class="c1"># This will enable custom actions to interact with the geometry in a</span>
         <span class="c1"># straight forward manner.</span>
         <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span>
-            <span class="n">_bands</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">(),</span>
+            <span class="n">_bands</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">(),</span>
             <span class="n">_Emap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># Energy grabs</span>
         <span class="k">class</span> <span class="nc">ERange</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--energy&quot;</span><span class="p">,</span> <span class="s2">&quot;-E&quot;</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of energies that are plotted: &#39;-1:0,1:2&#39; [eV]&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--energy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-E&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Denote the sub-section of energies that are plotted: &#39;-1:0,1:2&#39; [eV]&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">BandsPlot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
                 <span class="c1"># Decide whether this is BandLines or BandPoints</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_bands</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="c1"># We do not plot &quot;points&quot;</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The bands file only contains points in the BZ, not a bandstructure.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;The bands file only contains points in the BZ, not a bandstructure.&quot;</span>
+                    <span class="p">)</span>
                 <span class="n">lbls</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_bands</span>
                 <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span>
                 <span class="c1"># Extract to tick-marks and names</span>
@@ -276,7 +286,9 @@
                     <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">lbls</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
                     <span class="c1"># We must plot spin-up/down separately</span>
                     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ud</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;UP&quot;</span><span class="p">,</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">]):</span>
-                        <span class="n">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Bandstructure SPIN-</span><span class="si">{</span><span class="n">ud</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">b</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span><span class="p">)</span>
+                        <span class="n">myplot</span><span class="p">(</span>
+                            <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Bandstructure SPIN-</span><span class="si">{</span><span class="n">ud</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">b</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span>
+                        <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
                     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
@@ -287,8 +299,14 @@
                     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">),</span> <span class="n">action</span><span class="o">=</span><span class="n">BandsPlot</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the bandstructure from the .bands file, possibly saving to a file.&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">),</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">BandsPlot</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span>
+            <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the bandstructure from the .bands file, possibly saving to a file.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
 

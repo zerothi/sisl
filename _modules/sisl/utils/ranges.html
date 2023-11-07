@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.utils.ranges &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.utils.ranges &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -118,7 +118,7 @@
 <div class="viewcode-block" id="strmap">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.strmap.html#sisl.utils.strmap">[docs]</a>
 <span class="k">def</span> <span class="nf">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Parse a string as though it was a slice and map all entries using ``func``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a string as though it was a slice and map all entries using ``func``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -174,8 +174,8 @@
             <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># there must be more [ than ]</span>
-            <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">del</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># Check the last input...</span>
     <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">commas</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
@@ -186,7 +186,6 @@
     <span class="c1"># with collected brackets.</span>
     <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">commas</span><span class="p">:</span>
-
         <span class="c1"># Split it in groups of reg-exps</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">seg</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -198,8 +197,9 @@
 
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># this is: ..[..]</span>
-            <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">strseq</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span>
-                      <span class="n">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">sep</span><span class="p">)))</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">strseq</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span> <span class="n">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">sep</span><span class="p">))</span>
+            <span class="p">)</span>
 
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strseq</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
@@ -211,7 +211,7 @@
 <div class="viewcode-block" id="strseq">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.strseq.html#sisl.utils.strseq">[docs]</a>
 <span class="k">def</span> <span class="nf">strseq</span><span class="p">(</span><span class="n">cast</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Accept a string and return the casted tuples of content based on ranges.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Accept a string and return the casted tuples of content based on ranges.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -269,7 +269,7 @@
 <div class="viewcode-block" id="erange">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.erange.html#sisl.utils.erange">[docs]</a>
 <span class="k">def</span> <span class="nf">erange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Returns the range with both ends includede &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the range with both ends includede&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span></div>
@@ -279,7 +279,7 @@
 <div class="viewcode-block" id="lstranges">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.lstranges.html#sisl.utils.lstranges">[docs]</a>
 <span class="k">def</span> <span class="nf">lstranges</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="n">erange</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Convert a `strmap` list into expanded ranges &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a `strmap` list into expanded ranges&quot;&quot;&quot;</span>
     <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># If an entry is a tuple, it means it is either</span>
     <span class="c1"># a range 0-1 == tuple(0, 1), or</span>
@@ -317,7 +317,7 @@
 <div class="viewcode-block" id="list2str">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.list2str.html#sisl.utils.list2str">[docs]</a>
 <span class="k">def</span> <span class="nf">list2str</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Convert a list of elements into a string of ranges</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a list of elements into a string of ranges</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -340,10 +340,10 @@
         <span class="n">t</span> <span class="o">+=</span> <span class="n">ln</span>
         <span class="k">if</span> <span class="n">ln</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">rng</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
-        <span class="c1">#elif ln == 2:</span>
+        <span class="c1"># elif ln == 2:</span>
         <span class="c1">#    rng += &quot;{}, {}&quot;.format(str(el), str(el+ln-1))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">rng</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">el</span><span class="o">+</span><span class="n">ln</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">rng</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">el</span> <span class="o">+</span> <span class="n">ln</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rng</span></div>
 
 
@@ -359,7 +359,7 @@
 <div class="viewcode-block" id="fileindex">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.fileindex.html#sisl.utils.fileindex">[docs]</a>
 <span class="k">def</span> <span class="nf">fileindex</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Parses a filename string into the filename and the indices.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a filename string into the filename and the indices.</span>
 
 <span class="sd">    This range can be formatted like this:</span>
 <span class="sd">      file[1,2,3-6]</span>

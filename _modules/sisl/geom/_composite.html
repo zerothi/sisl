@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom._composite &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.geom._composite &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -117,7 +117,6 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">CompositeGeometrySection</span><span class="p">:</span>
-
 <div class="viewcode-block" id="CompositeGeometrySection.build_section">
 <a class="viewcode-back" href="../../../api/generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection.build_section">[docs]</a>
     <span class="nd">@abstractmethod</span>
@@ -165,18 +164,19 @@
 <span class="sd">    **kwargs:</span>
 <span class="sd">        Keyword arguments used as defaults for the sections when the .</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># Parse sections into Section objects</span>
     <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
         <span class="c1"># If it is some arbitrary type, convert it to a tuple</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">(</span><span class="n">section_cls</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span>
         <span class="c1"># If we arrived here with a tuple, convert it to a dict</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">s</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fields</span><span class="p">(</span><span class="n">section_cls</span><span class="p">),</span> <span class="n">s</span><span class="p">)}</span>
         <span class="c1"># At this point it is either a dict or already a section object.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">section_cls</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">s</span><span class="p">})</span>
-        
+
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
     <span class="c1"># Then loop through all the sections.</span>
@@ -186,14 +186,14 @@
         <span class="n">section</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
 
         <span class="n">new_addition</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">build_section</span><span class="p">(</span><span class="n">prev</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">geom</span> <span class="o">=</span> <span class="n">new_addition</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">geom</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">new_addition</span><span class="p">)</span>
-        
+
         <span class="n">prev</span> <span class="o">=</span> <span class="n">section</span>
-    
+
     <span class="k">return</span> <span class="n">geom</span></div>
 
 

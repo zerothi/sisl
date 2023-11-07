@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.transiesta_grid &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.siesta.transiesta_grid &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -118,16 +118,16 @@
 <span class="kn">from</span> <span class="nn">.siesta_grid</span> <span class="kn">import</span> <span class="n">gridncSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileCDFSiesta</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tsvncSileSiesta&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tsvncSileSiesta&quot;</span><span class="p">]</span>
 
 
-<span class="n">_eV2Ry</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;eV&#39;</span><span class="p">,</span> <span class="s1">&#39;Ry&#39;</span><span class="p">)</span>
-<span class="n">_Ry2eV</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">_eV2Ry</span>
+<span class="n">_eV2Ry</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="s2">&quot;Ry&quot;</span><span class="p">)</span>
+<span class="n">_Ry2eV</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">_eV2Ry</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">tsvncSileSiesta</span><span class="p">(</span><span class="n">gridncSileSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; TranSiesta potential input Grid file object</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TranSiesta potential input Grid file object</span>
 
 <span class="sd">    This potential input file is mainly intended for the Hartree solution</span>
 <span class="sd">    which complements N-electrode calculations in TranSiesta.</span>
@@ -140,15 +140,15 @@
 <div class="viewcode-block" id="tsvncSileSiesta.read_grid">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tsvncSileSiesta.html#sisl.io.siesta.tsvncSileSiesta.read_grid">[docs]</a>
     <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the TranSiesta potential input grid &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the TranSiesta potential input grid&quot;&quot;&quot;</span>
         <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="c1"># Create the grid</span>
-        <span class="n">na</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">))</span>
-        <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">))</span>
-        <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">))</span>
+        <span class="n">na</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">))</span>
+        <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">))</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">))</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">)</span>
 
         <span class="c1"># Create the grid, Siesta uses periodic, always</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="n">nc</span><span class="p">,</span> <span class="n">nb</span><span class="p">,</span> <span class="n">na</span><span class="p">],</span> <span class="n">bc</span><span class="o">=</span><span class="n">Grid</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -163,26 +163,30 @@
 <div class="viewcode-block" id="tsvncSileSiesta.write_grid">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tsvncSileSiesta.html#sisl.io.siesta.tsvncSileSiesta.write_grid">[docs]</a>
     <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write the Poisson solution to the TSV.nc file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the Poisson solution to the TSV.nc file&quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">write_lattice</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
-        <span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Vmin&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">vmin</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Minimum value in the Poisson solution (for TranSiesta interpolation)&#39;</span>
-        <span class="n">vmin</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Ry&#39;</span>
-        <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Vmax&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,))</span>
-        <span class="n">vmax</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Maximum value in the Poisson solution (for TranSiesta interpolation)&#39;</span>
-        <span class="n">vmax</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Ry&#39;</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Vmin&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">vmin</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Minimum value in the Poisson solution (for TranSiesta interpolation)&quot;</span>
+        <span class="p">)</span>
+        <span class="n">vmin</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Vmax&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,))</span>
+        <span class="n">vmax</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Maximum value in the Poisson solution (for TranSiesta interpolation)&quot;</span>
+        <span class="p">)</span>
+        <span class="n">vmax</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
 
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">))</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;Poisson solution with custom boundary conditions&#39;</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Ry&#39;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">))</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Poisson solution with custom boundary conditions&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
 
         <span class="n">vmin</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">*</span> <span class="n">_eV2Ry</span>
         <span class="n">vmax</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">_eV2Ry</span>
@@ -190,7 +194,7 @@
 
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;TSV.nc&#39;</span><span class="p">,</span> <span class="n">tsvncSileSiesta</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;TSV.nc&quot;</span><span class="p">,</span> <span class="n">tsvncSileSiesta</span><span class="p">)</span>
 </pre></div>
 
            </div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.plots.pdos &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.viz.plots.pdos &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -126,11 +126,11 @@
 
 <span class="k">def</span> <span class="nf">pdos_plot</span><span class="p">(</span>
     <span class="n">pdos_data</span><span class="p">:</span> <span class="n">PDOSData</span><span class="p">,</span>
-    <span class="n">groups</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">OrbitalStyleQuery</span><span class="p">]</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DOS&quot;</span><span class="p">}],</span> 
+    <span class="n">groups</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">OrbitalStyleQuery</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DOS&quot;</span><span class="p">}],</span>
     <span class="n">Erange</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="n">E_axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+    <span class="n">E_axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span>
     <span class="n">line_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="s2">&quot;scatter&quot;</span><span class="p">,</span> <span class="s2">&quot;area_line&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;line&quot;</span><span class="p">,</span>
-    <span class="n">line_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> 
+    <span class="n">line_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the projected density of states.</span>
@@ -160,8 +160,14 @@
 
     <span class="n">orbital_manager</span> <span class="o">=</span> <span class="n">get_orbital_queries_manager</span><span class="p">(</span><span class="n">pdos_data</span><span class="p">)</span>
     <span class="n">groups_data</span> <span class="o">=</span> <span class="n">reduce_orbital_data</span><span class="p">(</span>
-        <span class="n">E_PDOS</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span> <span class="n">orb_dim</span><span class="o">=</span><span class="s2">&quot;orb&quot;</span><span class="p">,</span> <span class="n">spin_dim</span><span class="o">=</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">sanitize_group</span><span class="o">=</span><span class="n">orbital_manager</span><span class="p">,</span>
-        <span class="n">group_vars</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;dash&#39;</span><span class="p">),</span> <span class="n">groups_dim</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="n">drop_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">E_PDOS</span><span class="p">,</span>
+        <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
+        <span class="n">orb_dim</span><span class="o">=</span><span class="s2">&quot;orb&quot;</span><span class="p">,</span>
+        <span class="n">spin_dim</span><span class="o">=</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span>
+        <span class="n">sanitize_group</span><span class="o">=</span><span class="n">orbital_manager</span><span class="p">,</span>
+        <span class="n">group_vars</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;dash&quot;</span><span class="p">),</span>
+        <span class="n">groups_dim</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">,</span>
+        <span class="n">drop_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">spin_reduce</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -174,15 +180,24 @@
     <span class="c1"># A PlotterNode gets the processed data and creates abstract actions (backend agnostic)</span>
     <span class="c1"># that should be performed on the figure. The output of this node</span>
     <span class="c1"># must be fed to a figure (backend specific).</span>
-    <span class="n">final_groups_data</span> <span class="o">=</span> <span class="n">scale_variable</span><span class="p">(</span><span class="n">groups_data</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">line_scale</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">plot_actions</span> <span class="o">=</span> <span class="n">draw_xarray_xy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">final_groups_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="n">line_mode</span><span class="p">,</span> <span class="n">dependent_axis</span><span class="o">=</span><span class="n">dependent_axis</span><span class="p">)</span>
+    <span class="n">final_groups_data</span> <span class="o">=</span> <span class="n">scale_variable</span><span class="p">(</span>
+        <span class="n">groups_data</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">line_scale</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+    <span class="n">plot_actions</span> <span class="o">=</span> <span class="n">draw_xarray_xy</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">final_groups_data</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span>
+        <span class="n">what</span><span class="o">=</span><span class="n">line_mode</span><span class="p">,</span>
+        <span class="n">dependent_axis</span><span class="o">=</span><span class="n">dependent_axis</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">plot_actions</span><span class="o">=</span><span class="n">plot_actions</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="PdosPlot">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.PdosPlot.html#sisl.viz.PdosPlot">[docs]</a>
 <span class="k">class</span> <span class="nc">PdosPlot</span><span class="p">(</span><span class="n">OrbitalGroupsPlot</span><span class="p">):</span>
-
     <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">pdos_plot</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PdosPlot.split_DOS">
@@ -224,10 +239,11 @@
 <span class="sd">        &gt;&gt;&gt; # be replaced by the value of n.</span>
 <span class="sd">        &gt;&gt;&gt; plot.split_DOS(on=&quot;n+l&quot;, species=[&quot;Au&quot;], name=&quot;Au $ns&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_groups</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="n">on</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="n">clean</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_groups</span><span class="p">(</span>
+            <span class="n">on</span><span class="o">=</span><span class="n">on</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="n">clean</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
 </div>
 
-    
 </pre></div>
 
            </div>

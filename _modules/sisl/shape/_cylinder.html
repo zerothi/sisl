@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape._cylinder &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.shape._cylinder &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -125,7 +125,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EllipticalCylinder</span><span class="p">(</span><span class="n">PureShape</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; 3D elliptical cylinder</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;3D elliptical cylinder</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -154,7 +154,7 @@
 <span class="sd">    &gt;&gt;&gt; shape.within([1.4, 0, 1.1])</span>
 <span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_v&#39;</span><span class="p">,</span> <span class="s1">&#39;_nh&#39;</span><span class="p">,</span> <span class="s1">&#39;_iv&#39;</span><span class="p">,</span> <span class="s1">&#39;_h&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_v&quot;</span><span class="p">,</span> <span class="s2">&quot;_nh&quot;</span><span class="p">,</span> <span class="s2">&quot;_iv&quot;</span><span class="p">,</span> <span class="s2">&quot;_h&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="EllipticalCylinder.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.__init__">[docs]</a>
@@ -168,13 +168,17 @@
         <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
             <span class="n">vv</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> expected &#39;v&#39; to be of size (1,), (2,) or (2, 3), got </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> expected &#39;v&#39; to be of size (1,), (2,) or (2, 3), got </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># If the vectors are not orthogonal, orthogonalize them and issue a warning</span>
         <span class="n">vv_ortho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">vv</span> <span class="o">@</span> <span class="n">vv</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">fnorm2</span><span class="p">(</span><span class="n">vv</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">vv_ortho</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">1e-9</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="w"> </span><span class="si">}</span><span class="s2"> principal vectors are not orthogonal. &quot;</span>
-                 <span class="s2">&quot;sisl orthogonalizes the vectors (retaining 1st vector)!&quot;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="w"> </span><span class="si">}</span><span class="s2"> principal vectors are not orthogonal. &quot;</span>
+                <span class="s2">&quot;sisl orthogonalizes the vectors (retaining 1st vector)!&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">vv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">orthogonalize</span><span class="p">(</span><span class="n">vv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
@@ -204,14 +208,14 @@
 <div class="viewcode-block" id="EllipticalCylinder.volume">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.volume">[docs]</a>
     <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the volume of the shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the volume of the shape&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span></div>
 
 
 <div class="viewcode-block" id="EllipticalCylinder.scale">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.scale">[docs]</a>
     <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a new shape with all dimensions scaled according to `scale`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new shape with all dimensions scaled according to `scale`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -232,7 +236,7 @@
 <div class="viewcode-block" id="EllipticalCylinder.expand">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.expand">[docs]</a>
     <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Expand elliptical cylinder by a constant value along each vector and height</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Expand elliptical cylinder by a constant value along each vector and height</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -249,14 +253,16 @@
             <span class="n">v1</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">radius</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.expand requires the radius to be either (1,) or (3,)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.expand requires the radius to be either (1,) or (3,)&quot;</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">],</span> <span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EllipticalCylinder.within_index">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.within_index">[docs]</a>
-    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.e-8</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return indices of the points that are within the shape</span>
+    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-8</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return indices of the points that are within the shape</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -274,33 +280,33 @@
         <span class="c1"># Get indices where we should do the more</span>
         <span class="c1"># expensive exact check of being inside shape</span>
         <span class="c1"># I.e. this reduces the search space to the box</span>
-        <span class="k">return</span> <span class="n">indices_in_cylinder</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">+</span> <span class="n">tol</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">+</span> <span class="n">tol</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">indices_in_cylinder</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">tol</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">tol</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Height of the cylinder &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Height of the cylinder&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_h</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Radius of the ellipse base vectors &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Radius of the ellipse base vectors&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">radial_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; The radial vectors &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The radial vectors&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">height_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; The height vector &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The height vector&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nh</span>
 
 <div class="viewcode-block" id="EllipticalCylinder.toSphere">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.toSphere">[docs]</a>
     <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Convert to a sphere &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to a sphere&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
 
         <span class="c1"># figure out the distance from the center to the edge (along longest radius)</span>
@@ -315,8 +321,9 @@
 <div class="viewcode-block" id="EllipticalCylinder.toCuboid">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.toCuboid">[docs]</a>
     <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
+
         <span class="k">return</span> <span class="n">Cuboid</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nh</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 
@@ -327,6 +334,7 @@
 <span class="k">class</span> <span class="nc">EllipticalCylinderToSphere</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
+
         <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="c1"># figure out the distance from the center to the edge (along longest radius)</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span>
@@ -336,14 +344,17 @@
         <span class="c1"># Rescale each vector</span>
         <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
+
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">EllipticalCylinderToSphere</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">EllipticalCylinderToCuboid</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
+
         <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Cuboid</span><span class="p">([</span><span class="n">shape</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shape</span><span class="o">.</span><span class="n">_nh</span><span class="p">],</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
+
 
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">EllipticalCylinderToCuboid</span><span class="p">)</span>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fc &mdash; sisl 0.1-f3633fb</title>
+  <title>sisl.io.siesta.fc &mdash; sisl 0.1-303aea7</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
+        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f3633fb
+                0.1-303aea7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -117,18 +117,18 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fcSileSiesta&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fcSileSiesta&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">fcSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Force constant file &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Force constant file&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="fcSileSiesta.read_force">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.read_force">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads all displacement forces by multiplying with the displacement value</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads all displacement forces by multiplying with the displacement value</span>
 
 <span class="sd">        Since the force constant file does not contain the non-displaced configuration</span>
 <span class="sd">        this will only return forces on the displaced configurations minus the forces from</span>
@@ -164,8 +164,10 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">displacement</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_force assumes displacement=0.04 Bohr!&quot;</span><span class="p">)</span>
-                <span class="n">displacement</span> <span class="o">=</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_force assumes displacement=0.04 Bohr!&quot;</span>
+                <span class="p">)</span>
+                <span class="n">displacement</span> <span class="o">=</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
 
         <span class="c1"># Since the displacements changes sign (starting with a negative sign)</span>
         <span class="c1"># we can convert using this scheme</span>
@@ -178,7 +180,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.read_force_constant">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_force_constant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the force-constant stored in the FC file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the force-constant stored in the FC file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -203,7 +205,7 @@
         <span class="n">fc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                 <span class="c1"># empty line or nothing</span>
                 <span class="k">break</span>
             <span class="n">fc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
@@ -222,8 +224,8 @@
 
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;FC&#39;</span><span class="p">,</span> <span class="n">fcSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;FCC&#39;</span><span class="p">,</span> <span class="n">fcSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;FC&quot;</span><span class="p">,</span> <span class="n">fcSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;FCC&quot;</span><span class="p">,</span> <span class="n">fcSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>
