@@ -19,7 +19,7 @@ Here we list the different options:
    Benchmark and see if it actually improves (certain combinations will
    severly hurt performance).
 
-``SISL_VIZ_AUTOLOAD == false``
+``SISL_VIZ_AUTOLOAD = false``
    whether or not to autoload the visualization module.
    The visualization module imports many dependent modules.
    If you run small scripts that does not use the `sisl.viz` module, then
@@ -33,8 +33,8 @@ Here we list the different options:
 ``SISL_IO_DEFAULT = ''``
    The default IO methods `sisl.get_sile` will select files with this file-endings.
    For instance there are many ``stdout`` file types (for each DFT code).
-   Setting this to ``Siesta`` would force all files to first search for Siesta file
-   endings (see `sisl.io` for class names).
+   Setting this to ``Siesta`` would force all files to first search for classes ending
+   in ``Siesta`` (see `sisl.io` for class names).
 
 ``SISL_TMP = '.sisl_tmp'``
    certain internal methods of sisl will use a temporary folder for storing data.
