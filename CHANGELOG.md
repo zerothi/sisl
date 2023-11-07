@@ -5,11 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
-## [0.14.3] - YYYY-MM-DD
+
+## [0.14.4] - YYYY-MM-DD
+
+
+
+## [0.14.3] - 2023-11-07
 
 ### Added
 - Creation of honeycomb flakes (`sisl.geom.honeycomb_flake`,
-`sisl.geom.graphene_flake`). #636
+  `sisl.geom.graphene_flake`). #636
 - added `Geometry.as_supercell` to create the supercell structure,
   thanks to @pfebrer for the suggestion
 - added `Lattice.to` and `Lattice.new` to function the same

@@ -1,0 +1,63 @@
+
+Released 7 of November 2023.
+
+
+Contributors
+============
+
+A total of 2 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Pol Febrer
+
+Pull requests merged
+====================
+
+A total of 11 pull requests were merged for this release.
+
+* #627: Update DEPLOY.md with pyodide instructions
+* #628: maint: allow stopping traversal of node trees
+* #629: Lattice is now owning the boundary conditions
+* #630: Included missing notebook in the viz docs
+* #631: Added Info attributes to ascii class files
+* #634: fixed #633 due to weird combination of boundary lookups
+* #635: added an as_supercell which returns geometry in supercell
+* #636: Honeycomb flakes
+* #637: Optionally avoid custom node errors.
+* #639: Black linting
+* #642: Deprecated xarray argument
+
+[0.14.3] - 2023-11-07
+----------------------
+
+Added
+^^^^^^
+* Creation of honeycomb flakes (`sisl.geom.honeycomb_flake`,
+  `sisl.geom.graphene_flake`). #636
+* added `Geometry.as_supercell` to create the supercell structure,
+  thanks to @pfebrer for the suggestion
+* added `Lattice.to` and `Lattice.new` to function the same
+  as `Geometry`, added Lattice.to["Cuboid"]
+* added `Atom.to`, currently only `to.Sphere()`
+* enabled `Geometry.to|new.Sile(...)`
+* added logging in some modules, to be added in more stuff to allow easier
+  debugging.
+* marked all `toSphere|toEllipsoid|...` as deprecated
+* a simple extensionable method to add `Sile.info.<attr>` by exposing
+  attributes through an object on each class.
+  The _info_attributes_ contains a list of attributes that can be
+  discovered while reading ascii files see #509
+
+Fixed
+^^^^^^
+* fixed cases where `Geometry.close` would not catch all neighbours, #633
+
+Changed
+^^^^^^^^
+* sisl now enforces the black style
+* `Lattice` now holds the boundary conditions (not `Grid`), see #626
+* Some siles exposed certain properties containing basic information
+  about the content, say number of atoms/orbitals etc.
+  These will be moved to `sile.info.<attr>` instead to reduce
+  the number of methods exposed on each sile.
