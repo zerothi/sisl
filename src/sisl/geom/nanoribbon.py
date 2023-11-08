@@ -423,7 +423,11 @@ class _heteroribbon_section(CompositeGeometrySection):
 
     def build_section(self, prev):
         new_section = nanoribbon(
-            bond=self.bond, atoms=self.atoms, width=self.W, kind=self.kind, vacuum=self.vacuum,
+            bond=self.bond,
+            atoms=self.atoms,
+            width=self.W,
+            kind=self.kind,
+            vacuum=self.vacuum,
         )
 
         align, offset = self._align_offset(prev, new_section)
@@ -520,7 +524,8 @@ class _heteroribbon_section(CompositeGeometrySection):
             new_section = new_section.move(move)
         if new_max > geom.cell[1, 1]:
             geom = geom.add_vacuum(
-                new_max - geom.cell[self.trans_ax, self.trans_ax] + self.vacuum, self.trans_ax
+                new_max - geom.cell[self.trans_ax, self.trans_ax] + self.vacuum,
+                self.trans_ax,
             )
 
         self.xyz = new_section.xyz
