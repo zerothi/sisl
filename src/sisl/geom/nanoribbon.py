@@ -237,10 +237,8 @@ class _heteroribbon_section(CompositeGeometrySection):
     invert_first: bool = field(default=False, repr=False)
 
     def __post_init__(self):
-        if self.kind == "armchair":
+        if self.kind in ("armchair", "zigzag"):
             self.long_ax, self.trans_ax = 0, 1
-        elif self.kind == "zigzag":
-            self.long_ax, self.trans_ax = 1, 0
         else:
             raise ValueError("Unknown kind={kind}, must be one of zigzag or armchair")
 

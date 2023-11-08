@@ -8,6 +8,8 @@ we hit release version 1.0.0.
 
 ## [0.14.4] - YYYY-MM-DD
 
+### Fixed
+- growth direction for zigzag heteroribbons
 
 
 ## [0.14.3] - 2023-11-07
