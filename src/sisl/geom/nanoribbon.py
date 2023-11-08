@@ -294,6 +294,8 @@ class _heteroribbon_section(CompositeGeometrySection):
         The bond length of the ribbon.
     kind: {'armchair', 'zigzag'}
         The kind of ribbon that this section should be.
+    vacuum :
+        minimum separation in transverse direction
     shift_quantum: bool, optional
         Whether the implementation will assist avoiding lone atoms (< 2 neighbours).
 
