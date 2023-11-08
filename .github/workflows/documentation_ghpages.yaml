@@ -43,6 +43,7 @@ jobs:
           submodules: true
           # the files submodule uses lfs
           lfs: true
+          fetch-tags: true
 
       # This should generally not be required, but in the end it is just easier
       - name: Ensure system dependencies
