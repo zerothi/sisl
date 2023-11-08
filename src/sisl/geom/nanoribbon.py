@@ -322,6 +322,7 @@ class _heteroribbon_section(CompositeGeometrySection):
     atoms: Atom = None
     bond: float = None
     kind: str = "armchair"
+    vacuum: float = 20.0
     shift_quantum: bool = False
     on_lone_atom: str = field(default="ignore", repr=False)
     invert_first: bool = field(default=False, repr=False)
@@ -422,7 +423,7 @@ class _heteroribbon_section(CompositeGeometrySection):
 
     def build_section(self, prev):
         new_section = nanoribbon(
-            bond=self.bond, atoms=self.atoms, width=self.W, kind=self.kind
+            bond=self.bond, atoms=self.atoms, width=self.W, kind=self.kind, vacuum=self.vacuum,
         )
 
         align, offset = self._align_offset(prev, new_section)
@@ -511,7 +512,7 @@ class _heteroribbon_section(CompositeGeometrySection):
         new_min = new_section[:, self.trans_ax].min()
         new_max = new_section[:, self.trans_ax].max()
         if new_min < 0:
-            cell_offset = -new_min + 14
+            cell_offset = -new_min + self.vacuum
             geom = geom.add_vacuum(cell_offset, self.trans_ax)
             move = np.zeros(3)
             move[self.trans_ax] = cell_offset
@@ -519,7 +520,7 @@ class _heteroribbon_section(CompositeGeometrySection):
             new_section = new_section.move(move)
         if new_max > geom.cell[1, 1]:
             geom = geom.add_vacuum(
-                new_max - geom.cell[self.trans_ax, self.trans_ax] + 14, self.trans_ax
+                new_max - geom.cell[self.trans_ax, self.trans_ax] + self.vacuum, self.trans_ax
             )
 
         self.xyz = new_section.xyz
