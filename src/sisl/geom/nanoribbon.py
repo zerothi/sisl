@@ -69,6 +69,7 @@ def nanoribbon(
     n, m = width // 2, width % 2
 
     ribbon = geom.honeycomb(bond, atoms, orthogonal=True)
+    angle = 0
 
     kind = kind.lower()
     if kind == "armchair":
@@ -121,7 +122,12 @@ def nanoribbon(
 
     geometry_define_nsc(ribbon, [True, False, False])
 
+    # move geometry into middle of the cell
     ribbon = ribbon.move(ribbon.center(what="cell") - ribbon.center())
+
+    # first atom to zero along the first lattice vector
+    x = ribbon.xyz[0]
+    ribbon = ribbon.move([x[1] * np.tan(angle) - x[0], 0, 0])
 
     return ribbon
 
