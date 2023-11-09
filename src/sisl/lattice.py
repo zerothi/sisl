@@ -149,11 +149,11 @@ class Lattice(
         return fnorm(self.cell)
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Volume of cell"""
         return abs(dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :])))
 
-    def area(self, ax0, ax1):
+    def area(self, ax0, ax1) -> float:
         """Calculate the area spanned by the two axis `ax0` and `ax1`"""
         return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
 
@@ -358,7 +358,7 @@ class Lattice(
         """Return a filled supercell index by filling in zeros where needed"""
         return self._fill(supercell_index, dtype=np.int32)
 
-    def set_nsc(self, nsc=None, a=None, b=None, c=None):
+    def set_nsc(self, nsc=None, a=None, b=None, c=None) -> None:
         """Sets the number of supercells in the 3 different cell directions
 
         Parameters
@@ -449,7 +449,7 @@ class Lattice(
         """Iterate the supercells and the indices of the supercells"""
         yield from enumerate(self.sc_off)
 
-    def copy(self, cell=None, origin=None):
+    def copy(self, cell=None, origin=None) -> Lattice:
         """A deepcopy of the object
 
         Parameters
@@ -477,7 +477,7 @@ class Lattice(
             copy.sc_off = self.sc_off
         return copy
 
-    def fit(self, xyz, axis=None, tol=0.05):
+    def fit(self, xyz, axis=None, tol=0.05) -> Lattice:
         """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
 
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
@@ -661,7 +661,7 @@ class Lattice(
             cell.copy(), nsc=nsc.copy(), origin=origin.copy(), boundary_condition=bc
         )
 
-    def plane(self, ax1, ax2, origin=True):
+    def plane(self, ax1, ax2, origin=True) -> Tuple[ndarray, ndarray]:
         """Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
@@ -733,7 +733,7 @@ class Lattice(
         # We have to reverse the normal vector
         return -n, up
 
-    def __mul__(self, m):
+    def __mul__(self, m) -> Lattice:
         """Implement easy repeat function
 
         Parameters
@@ -757,7 +757,7 @@ class Lattice(
         return lattice
 
     @property
-    def icell(self):
+    def icell(self) -> ndarray:
         """Returns the reciprocal (inverse) cell for the `Lattice`.
 
         Note: The returned vectors are still in ``[0, :]`` format
@@ -766,7 +766,7 @@ class Lattice(
         return cell_invert(self.cell)
 
     @property
-    def rcell(self):
+    def rcell(self) -> ndarray:
         """Returns the reciprocal cell for the `Lattice` with ``2*np.pi``
 
         Note: The returned vectors are still in [0, :] format
@@ -853,13 +853,13 @@ class Lattice(
             cell[idx, :] = q.rotate(self.cell[idx, :])
         return self.copy(cell)
 
-    def offset(self, isc=None):
+    def offset(self, isc=None) -> Tuple[float, float, float]:
         """Returns the supercell offset of the supercell index"""
         if isc is None:
             return _a.arrayd([0, 0, 0])
         return dot(isc, self.cell)
 
-    def add(self, other):
+    def add(self, other) -> Lattice:
         """Add two supercell lattice vectors to each other
 
         Parameters
@@ -874,13 +874,13 @@ class Lattice(
         nsc = np.where(self.nsc > other.nsc, self.nsc, other.nsc)
         return self.__class__(cell, nsc=nsc, origin=origin)
 
-    def __add__(self, other):
+    def __add__(self, other) -> Lattice:
         return self.add(other)
 
     __radd__ = __add__
 
-    def add_vacuum(self, vacuum, axis, orthogonal_to_plane=False):
-        """Add vacuum along the `axis` lattice vector
+    def add_vacuum(self, vacuum, axis, orthogonal_to_plane=False) -> Lattice:
+        """Returns a new object with vacuum along the `axis` lattice vector
 
         Parameters
         ----------
@@ -911,7 +911,7 @@ class Lattice(
         cell[axis, :] += d * scale
         return self.copy(cell)
 
-    def sc_index(self, sc_off):
+    def sc_index(self, sc_off) -> Union[int, Sequence[int]]:
         """Returns the integer index in the sc_off list that corresponds to `sc_off`
 
         Returns the index for the supercell in the global offset.
@@ -968,7 +968,7 @@ class Lattice(
 
         return idx
 
-    def vertices(self):
+    def vertices(self) -> ndarray:
         """Vertices of the cell
 
         Returns
@@ -983,7 +983,7 @@ class Lattice(
         verts[:, :, 1, 2] = 1
         return verts @ self.cell
 
-    def scale(self, scale, what="abc"):
+    def scale(self, scale, what="abc") -> Lattice:
         """Scale lattice vectors
 
         Does not scale `origin`.
@@ -1005,7 +1005,7 @@ class Lattice(
             f"{self.__class__.__name__}.scale argument what='{what}' is not in ['abc', 'xyz']."
         )
 
-    def tile(self, reps, axis):
+    def tile(self, reps, axis) -> Lattice:
         """Extend the unit-cell `reps` times along the `axis` lattice vector
 
         Notes
@@ -1031,7 +1031,7 @@ class Lattice(
             nsc[axis] = max(1, int(math.ceil(h_nsc / reps))) * 2 + 1
         return self.__class__(cell, nsc=nsc, origin=origin)
 
-    def repeat(self, reps, axis):
+    def repeat(self, reps, axis) -> Lattice:
         """Extend the unit-cell `reps` times along the `axis` lattice vector
 
         Notes
@@ -1047,7 +1047,7 @@ class Lattice(
         """
         return self.tile(reps, axis)
 
-    def untile(self, reps, axis):
+    def untile(self, reps, axis) -> Lattice:
         """Reverses a `Lattice.tile` and returns the segmented version
 
         Notes
@@ -1065,21 +1065,21 @@ class Lattice(
 
     unrepeat = untile
 
-    def append(self, other, axis):
+    def append(self, other, axis) -> Lattice:
         """Appends other `Lattice` to this grid along axis"""
         cell = np.copy(self.cell)
         cell[axis, :] += other.cell[axis, :]
         # TODO fix nsc here
         return self.copy(cell)
 
-    def prepend(self, other, axis):
+    def prepend(self, other, axis) -> Lattice:
         """Prepends other `Lattice` to this grid along axis
 
         For a `Lattice` object this is equivalent to `append`.
         """
         return other.append(self, axis)
 
-    def translate(self, v):
+    def translate(self, v) -> Lattice:
         """Appends additional space to the object"""
         # check which cell vector resembles v the most,
         # use that
@@ -1093,14 +1093,14 @@ class Lattice(
 
     move = translate
 
-    def center(self, axis=None):
+    def center(self, axis=None) -> ndarray:
         """Returns center of the `Lattice`, possibly with respect to an axis"""
         if axis is None:
             return self.cell.sum(0) * 0.5
         return self.cell[axis, :] * 0.5
 
     @classmethod
-    def tocell(cls, *args):
+    def tocell(cls, *args) -> Lattice:
         r"""Returns a 3x3 unit-cell dependent on the input
 
         1 argument
@@ -1181,7 +1181,7 @@ class Lattice(
             "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct."
         )
 
-    def is_orthogonal(self, tol=0.001):
+    def is_orthogonal(self, tol=0.001) -> bool:
         """
         Returns true if the cell vectors are orthogonal.
 
@@ -1201,7 +1201,7 @@ class Lattice(
         i_s = dot3(cell[1, :], cell[2, :]) < tol and i_s
         return i_s
 
-    def is_cartesian(self, tol=0.001):
+    def is_cartesian(self, tol=0.001) -> bool:
         """
         Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)
 
@@ -1215,7 +1215,7 @@ class Lattice(
         # Check if any of them are above the threshold tolerance
         return ~np.any(np.abs(off_diagonal) > tol)
 
-    def parallel(self, other, axis=(0, 1, 2)):
+    def parallel(self, other, axis=(0, 1, 2)) -> bool:
         """Returns true if the cell vectors are parallel to `other`
 
         Parameters
@@ -1234,7 +1234,7 @@ class Lattice(
                 return False
         return True
 
-    def angle(self, i, j, rad=False):
+    def angle(self, i, j, rad=False) -> float:
         """The angle between two of the cell vectors
 
         Parameters
@@ -1253,7 +1253,7 @@ class Lattice(
         return math.degrees(ang)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Lattice:
         """Reads the supercell from the `Sile` using ``Sile.read_lattice``
 
         Parameters
@@ -1272,7 +1272,7 @@ class Lattice(
             with get_sile(sile, mode="r") as fh:
                 return fh.read_lattice(*args, **kwargs)
 
-    def equal(self, other, tol=1e-4):
+    def equal(self, other, tol=1e-4) -> bool:
         """Check whether two lattices are equivalent
 
         Parameters
@@ -1287,7 +1287,7 @@ class Lattice(
         same = same and np.allclose(self.origin, other.origin, atol=tol)
         return same
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Returns a string representation of the object"""
 
         # Create format for lattice vectors
@@ -1309,7 +1309,7 @@ class Lattice(
         bc = ",\n     ".join(map(bcstr, self.boundary_condition))
         return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s},\n bc=[{bc}]\n}}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         a, b, c, alpha, beta, gamma = map(lambda r: round(r, 4), self.parameters())
         BC = BoundaryCondition
         bc = self.boundary_condition
@@ -1325,11 +1325,11 @@ class Lattice(
         bc = ", ".join(map(bcstr, self.boundary_condition))
         return f"<{self.__module__}.{self.__class__.__name__} a={a}, b={b}, c={c}, α={alpha}, β={beta}, γ={gamma}, bc=[{bc}], nsc={self.nsc}>"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Equality check"""
         return self.equal(other)
 
-    def __ne__(self, b):
+    def __ne__(self, b) -> bool:
         """In-equality check"""
         return not (self == b)
 
@@ -1604,61 +1604,61 @@ class LatticeChild:
     )(set_lattice)
 
     @property
-    def length(self):
-        """Returns the inherent `Lattice` objects `length`"""
+    def length(self) -> float:
+        """Returns the inherent `Lattice.length`"""
         return self.lattice.length
 
     @property
-    def volume(self):
-        """Returns the inherent `Lattice` objects `volume`"""
+    def volume(self) -> float:
+        """Returns the inherent `Lattice.volume`"""
         return self.lattice.volume
 
-    def area(self, ax0, ax1):
+    def area(self, ax0, ax1) -> float:
         """Calculate the area spanned by the two axis `ax0` and `ax1`"""
         return self.lattice.area(ax0, ax1)
 
     @property
-    def cell(self):
-        """Returns the inherent `Lattice` objects `cell`"""
+    def cell(self) -> ndarray:
+        """Returns the inherent `Lattice.cell`"""
         return self.lattice.cell
 
     @property
-    def icell(self):
-        """Returns the inherent `Lattice` objects `icell`"""
+    def icell(self) -> ndarray:
+        """Returns the inherent `Lattice.icell`"""
         return self.lattice.icell
 
     @property
-    def rcell(self):
-        """Returns the inherent `Lattice` objects `rcell`"""
+    def rcell(self) -> ndarray:
+        """Returns the inherent `Lattice.rcell`"""
         return self.lattice.rcell
 
     @property
-    def origin(self):
-        """Returns the inherent `Lattice` objects `origin`"""
+    def origin(self) -> ndarray:
+        """Returns the inherent `Lattice.origin`"""
         return self.lattice.origin
 
     @property
-    def n_s(self):
-        """Returns the inherent `Lattice` objects `n_s`"""
+    def n_s(self) -> int:
+        """Returns the inherent `Lattice.n_s`"""
         return self.lattice.n_s
 
     @property
-    def nsc(self):
-        """Returns the inherent `Lattice` objects `nsc`"""
+    def nsc(self) -> ndarray:
+        """Returns the inherent `Lattice.nsc`"""
         return self.lattice.nsc
 
     @property
-    def sc_off(self):
-        """Returns the inherent `Lattice` objects `sc_off`"""
+    def sc_off(self) -> ndarray:
+        """Returns the inherent `Lattice.sc_off`"""
         return self.lattice.sc_off
 
     @property
-    def isc_off(self):
-        """Returns the inherent `Lattice` objects `isc_off`"""
+    def isc_off(self) -> ndarray:
+        """Returns the inherent `Lattice.isc_off`"""
         return self.lattice.isc_off
 
-    def sc_index(self, *args, **kwargs):
-        """Call local `Lattice` object `sc_index` function"""
+    def sc_index(self, *args, **kwargs) -> Union[int, Sequence[int]]:
+        """Call local `Lattice.sc_index` function"""
         return self.lattice.sc_index(*args, **kwargs)
 
     @property
