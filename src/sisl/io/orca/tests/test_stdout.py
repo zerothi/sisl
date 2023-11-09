@@ -271,7 +271,6 @@ def test_charge_orbital_reduced_unpol(sisl_files):
     assert S is None
 
 
-@pytest.mark.only
 def test_charge_orbital_full_unpol(sisl_files):
     f = sisl_files(_dir, "molecule2.output")
     out = stdoutSileORCA(f)
@@ -284,7 +283,6 @@ def test_charge_orbital_full_unpol(sisl_files):
     assert S is None
 
 
-@pytest.mark.only
 def test_read_energy(sisl_files):
     f = sisl_files(_dir, "molecule.output")
     out = stdoutSileORCA(f)

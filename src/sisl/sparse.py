@@ -1,7 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import reduce
+from functools import reduce, singledispatchmethod
 from numbers import Integral
 
 import numpy as np
@@ -15,6 +15,7 @@ from numpy import (
     argsort,
     asarray,
     atleast_1d,
+    bool_,
     broadcast,
     concatenate,
     copyto,
@@ -512,6 +513,40 @@ column indices of the sparse elements
         # Signal that we indeed have finalized the data
         self._finalized = sort
 
+    @singledispatchmethod
+    def _sanitize(self, idx, axis=0) -> ndarray:
+        """Sanitize the input indices to a conforming numpy array"""
+        if idx is None:
+            if axis < 0:
+                return _a.arangei(np.max(self.shape))
+            return _a.arangei(self.shape[axis])
+        idx = _a.asarrayi(idx)
+        if idx.size == 0:
+            return _a.asarrayi([])
+        elif idx.dtype == bool_:
+            return idx.nonzero()[0].astype(np.int32)
+        return idx
+
+    @_sanitize.register
+    def _(self, idx: ndarray, axis=0) -> ndarray:
+        if idx.dtype == bool_:
+            return np.flatnonzero(idx).astype(np.int32)
+        return idx.astype(np.int32, copy=False)
+
+    @_sanitize.register
+    def _(self, idx: slice, axis=0) -> ndarray:
+        start, stop, step = idx.start, idx.stop, idx.step
+        if start is None:
+            start = 0
+        if stop is None:
+            if axis < 0:
+                stop = np.max(self.shape)
+            else:
+                stop = self.shape[axis]
+        if step is None:
+            step = 1
+        return _a.arangei(start, stop, step)
+
     def edges(self, row, exclude=None):
         """Retrieve edges (connections) of a given `row` or list of `row`'s
 
@@ -524,11 +559,11 @@ column indices of the sparse elements
         exclude : int or list of int, optional
            remove edges which are in the `exclude` list.
         """
-        row = unique(_a.asarrayi(row))
+        row = unique(self._sanitize(row))
         if exclude is None:
             exclude = []
         else:
-            exclude = unique(_a.asarrayi(exclude))
+            exclude = unique(self._sanitize(exclude))
 
         # Now get the edges
         ptr = self.ptr
@@ -558,7 +593,7 @@ column indices of the sparse elements
         cnz = count_nonzero
 
         # Sort the columns
-        columns = unique(_a.asarrayi(columns))
+        columns = unique(self._sanitize(columns, axis=1))
         n_cols = cnz(columns < self.shape[1])
 
         # Grab pointers
@@ -674,8 +709,8 @@ column indices of the sparse elements
         clean : bool, optional
            whether the new translated columns, outside the shape, should be deleted or not (default delete)
         """
-        old = _a.asarrayi(old)
-        new = _a.asarrayi(new)
+        old = self._sanitize(old, axis=1)
+        new = self._sanitize(new, axis=1)
 
         if len(old) != len(new):
             raise ValueError(
@@ -730,7 +765,7 @@ column indices of the sparse elements
         rows : int or array_like, optional
            only scale the column values that exists in these rows, default to all
         """
-        cols = _a.asarrayi(cols)
+        cols = self._sanitize(cols, axis=1)
 
         if np_any(cols >= self.shape[1]):
             raise ValueError(
@@ -857,7 +892,7 @@ column indices of the sparse elements
                 for c in self.col[ptr : ptr + n]:
                     yield r, c
         else:
-            for r in _a.asarrayi(row).ravel():
+            for r in self._sanitize(row).ravel():
                 n = self.ncol[r]
                 ptr = self.ptr[r]
                 for c in self.col[ptr : ptr + n]:
@@ -899,6 +934,7 @@ column indices of the sparse elements
         IndexError
             for indices out of bounds
         """
+        i = self._sanitize(i)
         if asarray(i).size == 0:
             return arrayi([])
         if i < 0 or i >= self.shape[0]:
@@ -910,7 +946,7 @@ column indices of the sparse elements
         #                     " must only be performed at one row-element at a time.\n"
         #                     "However, multiple columns at a time are allowed.")
         # Ensure flattened array...
-        j = asarrayi(j).ravel()
+        j = self._sanitize(j, axis=1).ravel()
         if len(j) == 0:
             return arrayi([])
         if np_any(j < 0) or np_any(j >= self.shape[1]):
@@ -1063,8 +1099,7 @@ column indices of the sparse elements
         numpy.ndarray
             indices of the existing elements
         """
-        # Ensure flattened array...
-        j = asarrayi(j)
+        j = self._sanitize(j, axis=1)
 
         # Make it a little easier
         ptr = self.ptr[i]
@@ -1088,8 +1123,7 @@ column indices of the sparse elements
         numpy.ndarray
             indices of existing elements
         """
-        # Ensure flattened array...
-        j = asarrayi(j).ravel()
+        j = self._sanitize(j, axis=1).ravel()
 
         # Make it a little easier
         ptr = self.ptr[i]
@@ -1208,9 +1242,9 @@ column indices of the sparse elements
         data[isnan(data)] = 0
 
         # Determine how the indices should work
-        i = key[0]
-        j = key[1]
-        if isinstance(i, (list, ndarray)) and isinstance(j, (list, ndarray)):
+        i = self._sanitize(key[0])
+        j = self._sanitize(key[1], axis=1)
+        if i.size > 1 and isinstance(j, (list, ndarray)):
             # Create a b-cast object to iterate
             # Note that this does not do the actual b-casting and thus
             # we can iterate and operate as though it was an actual array
@@ -1335,7 +1369,7 @@ column indices of the sparse elements
                 idx = (ncol > 0).nonzero()[0]
                 rows = repeat(idx.astype(int32, copy=False), ncol[idx])
         else:
-            rows = _a.asarray(rows).ravel()
+            rows = self._sanitize(rows).ravel()
             ncol = ncol[rows]
             cols = col[array_arange(ptr[rows], n=ncol, dtype=int32)]
             if not only_cols:
@@ -1562,7 +1596,7 @@ column indices of the sparse elements
         indices : array_like
            the indices of the rows *and* columns that are removed in the sparse pattern
         """
-        indices = asarrayi(indices)
+        indices = self._sanitize(indices, axis=-1)
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] >= self.shape[1]:
@@ -1583,7 +1617,7 @@ column indices of the sparse elements
         indices : array_like
            the indices of the rows *and* columns that are retained in the sparse pattern
         """
-        indices = asarrayi(indices).ravel()
+        indices = self._sanitize(indices, axis=-1).ravel()
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] == self.shape[1]:
