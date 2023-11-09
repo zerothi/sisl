@@ -509,6 +509,12 @@ class TestSparseAtom:
         S.finalize()
         assert np.sum(S, axis=(0, 1)) == pytest.approx(1 * 2 * 2)
 
+    def test_sanitize_atoms_assign(self, setup):
+        g = graphene(atoms=Atom(6, R=1.43))
+        S = SparseAtom(g)
+        for i in range(2):
+            S[i, 1:4] = 1
+
     def test_fromsp1(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
         lil = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
@@ -769,3 +775,10 @@ def test_translate_sparse_atoms():
     assert transl_both[1, 1] == 2
     assert transl_both[0, 1] == 0
     assert transl_both[0, 3] == 3
+
+
+def test_sanitize_orbs_assign():
+    g = graphene(atoms=Atom(6, R=[1.43, 1.66]))
+    S = SparseOrbital(g)
+    for i in range(2):
+        S[i, 1:4] = 1

@@ -384,6 +384,18 @@ class Geometry(
         return atoms
 
     @_sanitize_atoms.register
+    def _(self, atoms: slice) -> ndarray:
+        # TODO consider doing range(self.na)[atoms]
+        start, stop, step = atoms.start, atoms.stop, atoms.step
+        if start is None:
+            start = 0
+        if stop is None:
+            stop = self.na
+        if step is None:
+            step = 1
+        return np.arange(start, stop, step)
+
+    @_sanitize_atoms.register
     def _(self, atoms: str) -> ndarray:
         return self.names[atoms]
 
@@ -448,6 +460,17 @@ class Geometry(
     def _(self, orbitals: str) -> ndarray:
         atoms = self._sanitize_atoms(orbitals)
         return self.a2o(atoms, all=True)
+
+    @_sanitize_orbs.register
+    def _(self, orbitals: slice) -> ndarray:
+        start, stop, step = orbitals.start, orbitals.stop, orbitals.step
+        if start is None:
+            start = 0
+        if stop is None:
+            stop = self.na
+        if step is None:
+            step = 1
+        return np.arange(start, stop, step)
 
     @_sanitize_orbs.register
     def _(self, orbitals: AtomCategory) -> ndarray:

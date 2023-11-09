@@ -1225,7 +1225,6 @@ class SparseAtom(_SparseGeometry):
         Override set item for slicing operations and enables easy
         setting of parameters in a sparse matrix
         """
-        dd = self._def_dim
         if len(key) > 2:
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
@@ -1233,6 +1232,10 @@ class SparseAtom(_SparseGeometry):
                 off = self.geometry.sc_index(key[-1]) * self.na
                 key = [el for el in key[:-1]]
                 key[1] = self.geometry.sc2uc(key[1]) + off
+        key = tuple(
+            self.geometry._sanitize_atoms(k) if i < 2 else k for i, k in enumerate(key)
+        )
+        dd = self._def_dim
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -1648,7 +1651,6 @@ class SparseOrbital(_SparseGeometry):
         Override set item for slicing operations and enables easy
         setting of parameters in a sparse matrix
         """
-        dd = self._def_dim
         if len(key) > 2:
             # This may be a specification of supercell indices
             if isinstance(key[-1], tuple):
@@ -1656,6 +1658,10 @@ class SparseOrbital(_SparseGeometry):
                 off = self.geometry.sc_index(key[-1]) * self.no
                 key = [el for el in key[:-1]]
                 key[1] = self.geometry.osc2uc(key[1]) + off
+        key = tuple(
+            self.geometry._sanitize_orbs(k) if i < 2 else k for i, k in enumerate(key)
+        )
+        dd = self._def_dim
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
