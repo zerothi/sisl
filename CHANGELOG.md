@@ -8,6 +8,10 @@ we hit release version 1.0.0.
 
 ## [0.14.4] - YYYY-MM-DD
 
+### Added
+- enabled Grid.to|new with the most basic stuff
+  str|Path|Grid|pyamg
+
 ### Fixed
 - enabled slicing in matrix assignments, #650
 

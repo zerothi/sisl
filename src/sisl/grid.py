@@ -4,6 +4,7 @@
 import logging
 from math import pi
 from numbers import Integral, Real
+from pathlib import Path
 
 import numpy as np
 from numpy import add, asarray, cos, dot, floor, int32, ogrid, sin, take
@@ -12,6 +13,8 @@ from scipy.sparse import SparseEfficiencyWarning
 from scipy.sparse import diags as sp_diags
 
 from . import _array as _a
+from ._dispatch_class import _Dispatchs
+from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from ._help import dtype_complex_to_real, wrap_filterwarnings
 from ._internal import set_module
 from .geometry import Geometry
@@ -37,7 +40,20 @@ _log = logging.getLogger(__name__)
 
 
 @set_module("sisl")
-class Grid(LatticeChild):
+class Grid(
+    LatticeChild,
+    _Dispatchs,
+    dispatchs=[
+        (
+            "new",
+            ClassDispatcher(
+                "new", obj_getattr="error", instance_dispatcher=TypeDispatcher
+            ),
+        ),
+        ("to", ClassDispatcher("to", obj_getattr="error", type_dispatcher=None)),
+    ],
+    when_subclassing="copy",
+):
     """Real-space grid information with associated geometry.
 
     This grid object handles cell vectors and divisions of said grid.
@@ -1349,6 +1365,10 @@ class Grid(LatticeChild):
 
         A.eliminate_zeros()
 
+    @deprecation(
+        "Grid.topyamg is deprecated in favor of Grid.to.pyamg",
+        "0.16.0",
+    )
     def topyamg(self, dtype=None):
         r"""Create a `pyamg` stencil matrix to be used in pyamg
 
@@ -1766,6 +1786,84 @@ The 3rd argument is the mode to use; wrap/mirror/constant/reflect/nearest
 
         # We have now created all arguments
         return p, namespace
+
+
+new_dispatch = Grid.new
+to_dispatch = Grid.to
+
+
+# Define base-class for this
+class GridNewDispatch(AbstractDispatch):
+    """Base dispatcher from class passing arguments to Grid class
+
+    This forwards all `__call__` calls to `dispatch`
+    """
+
+    def __call__(self, *args, **kwargs):
+        return self.dispatch(*args, **kwargs)
+
+
+class GridNewGridDispatch(GridNewDispatch):
+    def dispatch(self, grid, copy=False):
+        """Return grid as-is (no copy), for sanitization purposes"""
+        if copy:
+            return grid.copy()
+        return grid
+
+
+new_dispatch.register(Grid, GridNewGridDispatch)
+
+
+class GridNewFileDispatch(GridNewDispatch):
+    def dispatch(self, *args, **kwargs):
+        """Defer the `Grid.read` method by passing down arguments"""
+        # can work either on class or instance
+        cls = self._get_class()
+        return cls.read(*args, **kwargs)
+
+
+new_dispatch.register(str, GridNewFileDispatch)
+new_dispatch.register(Path, GridNewFileDispatch)
+
+
+class GridToDispatch(AbstractDispatch):
+    """Base dispatcher from class passing from Grid class"""
+
+
+class GridToSileDispatch(GridToDispatch):
+    def dispatch(self, *args, **kwargs):
+        grid = self._get_object()
+        return grid.write(*args, **kwargs)
+
+
+to_dispatch.register("str", GridToSileDispatch)
+to_dispatch.register("Path", GridToSileDispatch)
+# to do grid.to[Path](path)
+to_dispatch.register(str, GridToSileDispatch)
+to_dispatch.register(Path, GridToSileDispatch)
+
+
+class GridTopyamgDispatch(GridToDispatch):
+    def dispatch(self, dtype=None):
+        grid = self._get_object()
+        from pyamg.gallery import poisson
+
+        if dtype is None:
+            dtype = grid.dtype
+        # Initially create the CSR matrix
+        A = poisson(grid.shape, dtype=dtype, format="csr")
+        b = np.zeros(A.shape[0], dtype=A.dtype)
+
+        # Now apply the boundary conditions
+        grid.pyamg_boundary_condition(A, b)
+        return A, b
+
+
+to_dispatch.register("pyamg", GridTopyamgDispatch)
+
+
+# Clean up
+del new_dispatch, to_dispatch
 
 
 @set_module("sisl")
