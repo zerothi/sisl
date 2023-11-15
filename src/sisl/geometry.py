@@ -495,7 +495,7 @@ class Geometry(
         )
 
     def as_primary(
-        self, na_primary: int, axes=(0, 1, 2), ret_super: bool = False
+        self, na_primary: int, axes: Sequence[int] = (0, 1, 2), ret_super: bool = False
     ) -> Union[Geometry, Tuple[Geometry, Lattice]]:
         """Reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
@@ -506,7 +506,7 @@ class Geometry(
         ----------
         na_primary :
            number of atoms in the primary unit cell
-        axes : array_like, optional
+        axes :
            only search the given directions for supercells, default to all directions
         ret_super :
            also return the number of supercells used in each direction
@@ -1260,8 +1260,8 @@ class Geometry(
         self,
         other: GeometryLikeType,
         eps: float = 0.1,
-        offset=(0.0, 0.0, 0.0),
-        offset_other=(0.0, 0.0, 0.0),
+        offset: Sequence[float] = (0.0, 0.0, 0.0),
+        offset_other: Sequence[float] = (0.0, 0.0, 0.0),
     ) -> Tuple[ndarray, ndarray]:
         """Calculate the overlapping indices between two geometries
 
@@ -1277,9 +1277,9 @@ class Geometry(
            Geometry to compare with `self`
         eps :
            atoms within this distance will be considered *equivalent*
-        offset : list of float, optional
+        offset :
            offset for `self.xyz` before comparing
-        offset_other : list of float, optional
+        offset_other :
            offset for `other.xyz` before comparing
 
         Examples
@@ -2425,7 +2425,11 @@ class Geometry(
         return self.__mul__(m, "repeat")
 
     def angle(
-        self, atoms: AtomsArgument, dir=(1.0, 0, 0), ref=None, rad: bool = False
+        self,
+        atoms: AtomsArgument,
+        dir: Union[str, int, Sequence[int]] = (1.0, 0, 0),
+        ref: Optional[Union[int, Sequence[float]]] = None,
+        rad: bool = False,
     ) -> Union[float, ndarray]:
         r"""The angle between atom `atoms` and the direction `dir`, with possibility of a reference coordinate `ref`
 
@@ -2442,12 +2446,12 @@ class Geometry(
         ----------
         atoms :
            indices/boolean of all atoms where angles should be calculated on
-        dir : str, int or array_like, optional
+        dir :
            the direction from which the angle is calculated from, default to ``x``.
            An integer specifies the corresponding lattice vector as the direction.
-        ref : int or array_like, optional
+        ref :
            the reference point from which the vectors are drawn, default to origin
-           An integer species an atomic index.
+           An integer specifies an atomic index.
         rad :
            whether the returned value is in radians
         """
@@ -2648,7 +2652,9 @@ class Geometry(
     move = translate
 
     def translate2uc(
-        self, atoms: Optional[AtomsArgument] = None, axes=None
+        self,
+        atoms: Optional[AtomsArgument] = None,
+        axes: Optional[Union[int, bool, Sequence[int]]] = None,
     ) -> Geometry:
         """Translates atoms in the geometry into the unit cell
 
@@ -2671,10 +2677,10 @@ class Geometry(
 
         Parameters
         ----------
-        atoms : int or array_like, optional
+        atoms :
              only translate the given atomic indices, if not specified, all
              atoms will be translated
-        axes : int or array_like or True or None optional
+        axes :
              only translate certain lattice directions, `None` specifies
              only the directions with supercells, `True` specifies all
              directions.
@@ -2731,14 +2737,14 @@ class Geometry(
 
         Parameters
         ----------
-        axes_a : int or str
+        axes_a :
            the old axis indices (or labels if `str`)
            A string will translate each character as a specific
            axis index.
            Lattice vectors are denoted by ``abc`` while the
            Cartesian coordinates are denote by ``xyz``.
            If `str`, then `what` is not used.
-        axes_b : int or str
+        axes_b :
            the new axis indices, same as `axes_a`
            old axis indices (or labels)
         what : {'abc', 'xyz', 'abc+xyz'}
@@ -2814,7 +2820,7 @@ class Geometry(
 
         Parameters
         ----------
-        atoms : array_like
+        atoms :
             list of atomic indices to find center of
         what : {'xyz', 'mm:xyz', 'mass', 'mass:pbc', 'cell'}
             determine which center to calculate
@@ -3021,7 +3027,9 @@ class Geometry(
 
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
-    def add(self, other: LatticeOrGeometryLike, offset=(0, 0, 0)) -> Geometry:
+    def add(
+        self, other: LatticeOrGeometryLike, offset: Sequence[float] = (0, 0, 0)
+    ) -> Geometry:
         """Merge two geometries (or a Geometry and Lattice) by adding the two atoms together
 
         If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
@@ -3029,9 +3037,9 @@ class Geometry(
 
         Parameters
         ----------
-        other : Geometry or Lattice
+        other :
             Other geometry class which is added
-        offset : (3,), optional
+        offset :
             offset in geometry of `other` when adding the atoms. Only if `other` is
             of instance `Geometry`.
 
@@ -3250,7 +3258,10 @@ class Geometry(
         return self.add(o)
 
     def replace(
-        self, atoms: AtomsArgument, other: GeometryLike, offset=None
+        self,
+        atoms: AtomsArgument,
+        other: GeometryLike,
+        offset: Sequence[float] = (0.0, 0.0, 0.0),
     ) -> Geometry:
         """Create a new geometry from `self` and replace `atoms` with `other`
 
@@ -3262,7 +3273,7 @@ class Geometry(
         other :
             the other Geometry to insert instead, the unit-cell will not
             be used.
-        offset : (3,), optional
+        offset :
             the offset for `other` when adding its coordinates, default to no offset
         """
         # Find lowest value in atoms
@@ -3303,7 +3314,10 @@ class Geometry(
         )
 
     def mirror(
-        self, method, atoms: Optional[AtomsArgument] = None, point=(0, 0, 0)
+        self,
+        method,
+        atoms: Optional[AtomsArgument] = None,
+        point: Sequence[float] = (0, 0, 0),
     ) -> Geometry:
         r"""Mirrors the atomic coordinates about a plane given by its normal vector
 
@@ -3320,7 +3334,7 @@ class Geometry(
            or user defined vector (`v`) which is defining a plane.
         atoms :
            only mirror a subset of atoms
-        point: (3,), optional
+        point:
            mirror coordinates around the plane that intersects the *method* vector
            and this point
 
@@ -3416,12 +3430,17 @@ class Geometry(
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.lattice.offset(isc)
 
-    def scale(self, scale, what: str = "abc", scale_atoms: bool = True) -> Geometry:
+    def scale(
+        self,
+        scale: Union[float, Sequence[float]],
+        what: str = "abc",
+        scale_atoms: bool = True,
+    ) -> Geometry:
         """Scale coordinates and unit-cell to get a new geometry with proper scaling
 
         Parameters
         ----------
-        scale : float or array-like of floats with shape (3,)
+        scale :
            the scale factor for the new geometry (lattice vectors, coordinates
            and the atomic radii are scaled).
         what: {"abc", "xyz"}
@@ -3834,7 +3853,9 @@ class Geometry(
             return ret
         return ret[0]
 
-    def bond_correct(self, ia: int, atoms: AtomsArgument, method="calc") -> None:
+    def bond_correct(
+        self, ia: int, atoms: AtomsArgument, method: Union[str, float] = "calc"
+    ) -> None:
         """Corrects the bond between `ia` and the `atoms`.
 
         Corrects the bond-length between atom `ia` and `atoms` in such
@@ -3849,7 +3870,7 @@ class Geometry(
             The atom to be displaced according to the atomic radius
         atoms :
             The atom(s) from which the radius should be reduced.
-        method : str, float, optional
+        method :
             If str will use that as lookup in `Atom.radius`.
             Else it will be the new bond-length.
         """
@@ -4580,7 +4601,7 @@ class Geometry(
     def __ne__(self, other):
         return not (self == other)
 
-    def sparserij(self, dtype=np.float64, na_iR: int = 1000, method="rand"):
+    def sparserij(self, dtype=np.float64, na_iR: int = 1000, method: str = "rand"):
         """Return the sparse matrix with all distances in the matrix
         The sparse matrix will only be defined for the elements which have
         orbitals overlapping with other atoms.
@@ -4592,7 +4613,7 @@ class Geometry(
         na_iR :
            number of atoms within the sphere for speeding
            up the `iter_block` loop.
-        method : str, optional
+        method :
            see `iter_block` for details
 
         Returns
@@ -4791,7 +4812,11 @@ class Geometry(
         return d
 
     def within_inf(
-        self, lattice: Lattice, periodic=None, tol: float = 1e-5, origin=None
+        self,
+        lattice: Lattice,
+        periodic: Optional[Sequence[bool]] = None,
+        tol: float = 1e-5,
+        origin: Sequence[float] = (0.0, 0.0, 0.0),
     ) -> Tuple[ndarray, ndarray, ndarray]:
         """Find all atoms within a provided supercell
 
@@ -4812,14 +4837,14 @@ class Geometry(
         ----------
         lattice : Lattice or LatticeChild
             the supercell in which this geometry should be expanded into.
-        periodic : list of bool
+        periodic :
             explicitly define the periodic directions, by default the periodic
             directions are only where ``self.nsc > 1``.
         tol :
             length tolerance for the fractional coordinates to be on a duplicate site (in Ang).
             This allows atoms within `tol` of the cell boundaries to be taken as *inside* the
             cell.
-        origin : (3,) of float, optional
+        origin :
             origin that is the basis for comparison, default to 0.
 
         Returns
