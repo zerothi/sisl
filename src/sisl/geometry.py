@@ -5565,6 +5565,19 @@ class GeometryNewGeometryDispatch(GeometryNewDispatch):
 new_dispatch.register(Geometry, GeometryNewGeometryDispatch)
 
 
+class GeometryNewFileDispatch(GeometryNewDispatch):
+    def dispatch(self, *args, **kwargs):
+        """Defer the `Geometry.read` method by passing down arguments"""
+        # can work either on class or instance
+        cls = self._get_class()
+        return cls.read(*args, **kwargs)
+
+
+new_dispatch.register(str, GeometryNewFileDispatch)
+new_dispatch.register(Path, GeometryNewFileDispatch)
+# see sisl/__init__.py for new_dispatch.register(BaseSile, GeometryNewFileDispatcher)
+
+
 class GeometryNewAseDispatch(GeometryNewDispatch):
     def dispatch(self, aseg, **kwargs):
         """Convert an ``ase`` object into a `Geometry`"""
@@ -5632,20 +5645,21 @@ except Exception:
     pass
 
 
-class GeometryNewFileDispatch(GeometryNewDispatch):
-    def dispatch(self, *args, **kwargs):
-        """Defer the `Geometry.read` method by passing down arguments"""
-        # can work either on class or instance
-        return self._obj.read(*args, **kwargs)
-
-
-new_dispatch.register(str, GeometryNewFileDispatch)
-new_dispatch.register(Path, GeometryNewFileDispatch)
-# see sisl/__init__.py for new_dispatch.register(BaseSile, GeometryNewFileDispatcher)
-
-
 class GeometryToDispatch(AbstractDispatch):
     """Base dispatcher from class passing from Geometry class"""
+
+
+class GeometryToSileDispatch(GeometryToDispatch):
+    def dispatch(self, *args, **kwargs):
+        geom = self._get_object()
+        return geom.write(*args, **kwargs)
+
+
+to_dispatch.register("str", GeometryToSileDispatch)
+to_dispatch.register("Path", GeometryToSileDispatch)
+# to do geom.to[Path](path)
+to_dispatch.register(str, GeometryToSileDispatch)
+to_dispatch.register(Path, GeometryToSileDispatch)
 
 
 class GeometryToAseDispatch(GeometryToDispatch):
@@ -5689,19 +5703,6 @@ class GeometryTopymatgenDispatch(GeometryToDispatch):
 to_dispatch.register("pymatgen", GeometryTopymatgenDispatch)
 
 
-class GeometryToSileDispatch(GeometryToDispatch):
-    def dispatch(self, *args, **kwargs):
-        geom = self._get_object()
-        return geom.write(*args, **kwargs)
-
-
-to_dispatch.register("str", GeometryToSileDispatch)
-to_dispatch.register("Path", GeometryToSileDispatch)
-# to do geom.to[Path](path)
-to_dispatch.register(str, GeometryToSileDispatch)
-to_dispatch.register(Path, GeometryToSileDispatch)
-
-
 class GeometryToDataframeDispatch(GeometryToDispatch):
     def dispatch(self, *args, **kwargs):
         import pandas as pd
@@ -5736,7 +5737,7 @@ class GeometryToDataframeDispatch(GeometryToDispatch):
 
 to_dispatch.register("dataframe", GeometryToDataframeDispatch)
 
-# Remove references
+# Clean up
 del new_dispatch, to_dispatch
 
 
