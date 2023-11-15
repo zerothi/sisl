@@ -30,8 +30,8 @@ This script is a command-line utility with several options (please refer to
 --help). There are a few important flags you should know about:
 
   --tolerance [tol] specify the tolerance of the solution, the tighter the longer solution time
-  --pyamg-shape [nx ny nz] shape for which the solution is calculated (impacts speed)
-  --shape [nx ny nz] final shape of the solution, if pyamg-shape is not the same the solution will be interpolated (order=2)
+  --shape-solver [nx ny nz] shape for which the solution is calculated (impacts speed)
+  --shape [nx ny nz] final shape of the solution, if shape-solver is not the same the solution will be interpolated (order=2)
   --dtype [f|d] the data-type used to solve the Poisson equation
   --out [file] any sisl compatible grid file, please at least do --out V.TSV.nc which is compatible with TranSiesta.
 
@@ -192,8 +192,8 @@ def solve_poisson(
 
         return AA | BB
 
-    # Create grid
-    geometry.set_boundary_condition(bc)
+    # Create grid and specify boundary conditions
+    geometry.lattice.set_boundary_condition(bc)
     grid = si.Grid(shape, geometry=geometry, dtype=dtype)
 
     class _fake:
@@ -209,7 +209,7 @@ def solve_poisson(
     grid.grid = _fake()
 
     # Construct matrices we need to specify the boundary conditions on
-    A, b = grid.topyamg()
+    A, b = grid.to.pyamg()
 
     # Short-hand notation
     xyz = geometry.xyz
@@ -268,8 +268,8 @@ def solve_poisson(
         for i in (0, 1, 2):
             if periodic[i]:
                 bc[i, :] = BC.PERIODIC
-        grid.set_bc(bc)
-        A, b = grid.topyamg()
+        grid.lattice.set_boundary_condition(bc)
+        A, b = grid.to.pyamg()
 
         # Solve only for the boundary fixed
         def sl2idx(grid, sl):
@@ -400,6 +400,8 @@ def fftpoisson_fix_cli(subp=None):
     )
 
     p.add_argument(
+        "--shape-solver",
+        "-ss",
         "--pyamg-shape",
         "-ps",
         nargs=3,
@@ -475,7 +477,7 @@ Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minim
         action="store_false",
         dest="boundary_fft",
         default=True,
-        help="Once the electrode boundary conditions are solved we perform a second solution with boundaries fixed. Using this flag disables this second solution.",
+        help="Disable the 2nd solution with the boundaries fixed. Generally, this solver will first solve for the electrode boundary conditions, then for the fixed box boundary conditains (gotten from the first solution).",
     )
 
     if _DEBUG:
@@ -534,10 +536,10 @@ def fftpoisson_fix_run(args):
         dtype = np.float64
 
     # Now we can solve Poisson
-    if args.pyamg_shape is None:
+    if args.shape_solver is None:
         shape = args.shape
     else:
-        shape = args.pyamg_shape
+        shape = args.shape_solver
 
     # Create the boundary conditions
     boundary = []
