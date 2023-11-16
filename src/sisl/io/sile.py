@@ -14,7 +14,7 @@ from typing import Any, Callable, Optional, Union
 
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
-from sisl.messages import SislInfo, SislWarning, deprecate, info
+from sisl.messages import SislInfo, SislWarning, deprecate, info, warn
 from sisl.utils.misc import str_spec
 
 from ._help import *
@@ -500,7 +500,7 @@ class BaseSile:
             relative_to = Path(relative_to)
         try:
             d = self._directory.relative_to(relative_to.resolve())
-        except ValueError: # in case they are not relative
+        except ValueError:  # in case they are not relative
             d = self._directory
         return d
 
