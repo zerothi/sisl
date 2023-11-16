@@ -494,6 +494,12 @@ class BaseSile:
         """File of the current `Sile`"""
         return basename(self._file)
 
+    def base_directory(self, relative_to="."):
+        """Retrieve the base directory of the file, relative to the path `relative_to`"""
+        if isinstance(relative_to, str):
+            relative_to = Path(relative_to)
+        return self._directory.relative_to(relative_to.resolve())
+
     def dir_file(self, filename=None, filename_base=""):
         """File of the current `Sile`"""
         if filename is None:
@@ -630,11 +636,7 @@ class BaseSile:
         # Check if the directory is relative to the current path
         # If so, only print the relative path, otherwise print the full path
         d = self._directory
-        try:
-            # bypass d.is_relative_to, added in 3.9
-            d = d.relative_to(Path(".").resolve())
-        except Exception:
-            pass
+        d = self._directory.relative_to(Path(".").resolve())
         return f"{self.__class__.__name__}({self.base_file!s}, base={d!s})"
 
 
