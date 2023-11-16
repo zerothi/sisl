@@ -1443,7 +1443,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         .. math::
             T_{\mu \nu}(E) = i [
             (\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)
-            -:
+            -
             (\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],
 
         It is easy to show that the above matrix obeys :math:`T_{\mu\nu}=-T_{\nu\mu}`.
