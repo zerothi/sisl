@@ -74,12 +74,28 @@ class Cuboid(PureShape):
 
     def __str__(self):
         return self.__class__.__name__ + "{{O({1} {2} {3}), vol: {0}}}".format(
-            self.volume(), *self.origin
+            self.volume, *self.origin
         )
 
+    @property
     def volume(self):
         """Return volume of Cuboid"""
         return abs(dot3(self._v[0, :], cross3(self._v[1, :], self._v[2, :])))
+
+    @property
+    def origin(self):
+        """Return the origin of the Cuboid (lower-left corner)"""
+        return self.center - (self._v * 0.5).sum(0)
+
+    @origin.setter
+    def origin(self, origin):
+        """Re-setting the origin can sometimes be necessary"""
+        self.center = origin + (self._v * 0.5).sum(0)
+
+    @property
+    def edge_length(self):
+        """The lengths of each of the vector that defines the cuboid"""
+        return fnorm(self._v)
 
     def scale(self, scale):
         """Scale the cuboid box size (center is retained)
@@ -165,21 +181,6 @@ class Cuboid(PureShape):
         # So, sadly, the bigger the cell the bigger the tolerance
         # However due to numerics this is probably best anyway
         return indices_gt_le(tmp, -tol, 1.0 + tol)
-
-    @property
-    def origin(self):
-        """Return the origin of the Cuboid (lower-left corner)"""
-        return self.center - (self._v * 0.5).sum(0)
-
-    @origin.setter
-    def origin(self, origin):
-        """Re-setting the origin can sometimes be necessary"""
-        self.center = origin + (self._v * 0.5).sum(0)
-
-    @property
-    def edge_length(self):
-        """The lengths of each of the vector that defines the cuboid"""
-        return fnorm(self._v)
 
 
 to_dispatch = Cuboid.to

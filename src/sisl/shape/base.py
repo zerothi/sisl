@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from math import sqrt as msqrt
+from typing import Sequence
 
 import numpy as np
 
@@ -82,7 +83,20 @@ class Shape(
     def __init__(self, center=(0, 0, 0)):
         if center is None:
             center = (0, 0, 0)
-        self._center = _a.arrayd(center)
+        center = _a.asarrayd(center).flatten()
+        if center.size == 0:
+            center = _a.asarrayd([0, 0, 0])
+        elif center.size == 1:
+            center = np.repeat(center, 3).flatten()
+        if center.size != 3:
+            raise ValueError(
+                f"{self.__class__.__name__} requires setting a center to have 1/3 values."
+            )
+        self._center = center
+
+    def copy(self):
+        """Create a new copy of this object."""
+        return self.__class__(self.center)
 
     @property
     def center(self):
@@ -95,10 +109,16 @@ class Shape(
         self._center[:] = center
 
     def scale(self, scale):
-        """Return a new Shape with a scaled size"""
+        """Return a new Shape with scaled size"""
         raise NotImplementedError(
             f"{self.__class__.__name__}.scale has not been implemented"
         )
+
+    def translate(self, xyz: Sequence[float]):
+        """Translate the center of the shape by `xyz`."""
+        copy = self.copy()
+        copy.center = copy.center + xyz
+        return copy
 
     @deprecation(
         "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
@@ -231,13 +251,23 @@ class CompositeShape(Shape):
         cls.__slots__ = ()
         cls.__str__ = _composite_name(composite_name)
 
+    def copy(self):
+        """Create a new copy of this object."""
+        return self.__class__(self.A, self.B)
+
     @property
     def center(self):
         """Average center of composite shapes"""
         return (self.A.center + self.B.center) * 0.5
 
-    @staticmethod
-    def volume():
+    @center.setter
+    def center(self, center):
+        """Set the geometric center of the shape"""
+        self.A.center[:] = center
+        self.B.center[:] = center
+
+    @property
+    def volume(self):
         """Volume of a composite shape is current undefined, so a negative number is returned (may change)"""
         # The volume for these set operators cannot easily be defined, so
         # we should rather not do anything about it.
@@ -258,10 +288,8 @@ class CompositeShape(Shape):
         return self.to.Sphere(*args, **kwargs)
 
     def scale(self, scale):
+        """Return a new Shape with scaled center coords and shapes"""
         return self.__class__(self.A.scale(scale), self.B.scale(scale))
-
-    def copy(self):
-        return self.__class__(self.A, self.B)
 
 
 class ToSphereDispatch(ShapeToDispatch):
@@ -442,7 +470,8 @@ class PureShape(Shape):
 
     __slots__ = ()
 
-    def volume(self, *args, **kwargs):
+    @property
+    def volume(self):
         raise NotImplementedError(
             f"{self.__class__.__name__}.volume has not been implemented"
         )
@@ -501,7 +530,8 @@ class NullShape(PureShape, dispatchs=[("to", "copy")]):
         """Return a cuboid with side-lengths 1e-64"""
         return self.to.Cuboid(*args, **kwargs)
 
-    def volume(self, *args, **kwargs):
+    @property
+    def volume(self):
         """The volume of a null shape is exactly 0."""
         return 0.0
 

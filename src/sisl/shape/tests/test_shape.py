@@ -21,19 +21,21 @@ def test_binary_op():
     new = new - new
     new = new & (new | e) ^ s
     new.center
+    new2 = new.translate([0, 1, 2])
+    assert not np.allclose(new.center, new2.center)
 
-    assert new.volume() < 0.0
+    assert new.volume < 0.0
     str(new)
 
 
 def test_null():
     null = NullShape()
-    assert null.volume() == 0.0
+    assert null.volume == 0.0
     assert len(null.within_index(np.random.rand(1000, 3))) == 0
 
-    assert null.to.Ellipsoid().volume() < 1e-64
-    assert null.to.Cuboid().volume() < 1e-64
-    assert null.to.Sphere().volume() < 1e-64
+    assert null.to.Ellipsoid().volume < 1e-64
+    assert null.to.Cuboid().volume < 1e-64
+    assert null.to.Sphere().volume < 1e-64
 
 
 def test_binary_op_within():

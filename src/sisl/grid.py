@@ -789,7 +789,7 @@ class Grid(
         # by the actual shape
         cuboid = shape.to.Cuboid()
         ellipsoid = shape.to.Ellipsoid()
-        if ellipsoid.volume() > cuboid.volume():
+        if ellipsoid.volume > cuboid.volume:
             idx = self._index_shape_cuboid(cuboid)
         else:
             idx = self._index_shape_ellipsoid(ellipsoid)

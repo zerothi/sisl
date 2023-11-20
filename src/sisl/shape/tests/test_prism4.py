@@ -59,11 +59,11 @@ def test_toellipsoid():
 def test_create_cube():
     cube = Cube(1.0)
     cube = Cube(1.0, [1.0] * 3)
-    assert cube.volume() == pytest.approx(1.0)
-    assert cube.scale(2).volume() == pytest.approx(2**3)
-    assert cube.scale([2] * 3).volume() == pytest.approx(2**3)
-    assert cube.expand(2).volume() == pytest.approx(3**3)
-    assert cube.expand([2] * 3).volume() == pytest.approx(3**3)
+    assert cube.volume == pytest.approx(1.0)
+    assert cube.scale(2).volume == pytest.approx(2**3)
+    assert cube.scale([2] * 3).volume == pytest.approx(2**3)
+    assert cube.expand(2).volume == pytest.approx(3**3)
+    assert cube.expand([2] * 3).volume == pytest.approx(3**3)
 
 
 def test_expand_fail():
@@ -74,9 +74,9 @@ def test_expand_fail():
 
 def test_vol1():
     cube = Cuboid([1.0] * 3)
-    assert cube.volume() == 1.0
+    assert cube.volume == 1.0
     cube = Cuboid([1.0, 2.0, 3.0])
-    assert cube.volume() == 6.0
+    assert cube.volume == 6.0
 
     return
     a = (1.0 / 3) ** 0.5
@@ -84,7 +84,7 @@ def test_vol1():
     v1 = [-a, a, 0]
     v2 = [0, 0, a]
     cube = Cuboid([v0, v1, v2])
-    assert cube.volume() == 1.0
+    assert cube.volume == 1.0
 
 
 def test_origin():
@@ -108,3 +108,9 @@ def test_within_index1():
     assert (
         cube.within_index([[-1.0] * 3, [-1.0, 0.5, 0.2], [0.1, 0.5, 0.2]]) == [0, 1, 2]
     ).any()
+
+
+def test_translate():
+    el = Cuboid(1.0, 1.0)
+    el2 = el.translate([0, 1, 2])
+    assert not np.allclose(el.center, el2.center)

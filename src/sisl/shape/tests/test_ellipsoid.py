@@ -33,7 +33,7 @@ def test_create_ellipsoid():
     assert np.allclose(el.radius + 0.1, e2.radius)
     e2 = el.scale([1.1, 2.1, 3.1])
     assert np.allclose(el.radius + [0.1, 1.1, 2.1], e2.radius)
-    assert el.expand(2).volume() == pytest.approx(4 / 3 * np.pi * 3**3)
+    assert el.expand(2).volume == pytest.approx(4 / 3 * np.pi * 3**3)
     str(el)
 
 
@@ -65,9 +65,9 @@ def test_create_ellipsoid_fail2():
 def test_create_sphere():
     el = Sphere(1.0)
     el = Sphere(1.0, center=[1.0] * 3)
-    assert el.volume() == pytest.approx(4 / 3 * np.pi)
-    assert el.scale(2).volume() == pytest.approx(4 / 3 * np.pi * 2**3)
-    assert el.expand(2).volume() == pytest.approx(4 / 3 * np.pi * 3**3)
+    assert el.volume == pytest.approx(4 / 3 * np.pi)
+    assert el.scale(2).volume == pytest.approx(4 / 3 * np.pi * 2**3)
+    assert el.expand(2).volume == pytest.approx(4 / 3 * np.pi * 3**3)
 
 
 def test_scale1():
@@ -161,3 +161,9 @@ def test_sphere_and():
             assert C.radius == pytest.approx(A.radius)
         else:
             assert C.radius < A.radius
+
+
+def test_translate():
+    el = Sphere(1.0, 1.0)
+    el2 = el.translate([0, 1, 2])
+    assert not np.allclose(el.center, el2.center)

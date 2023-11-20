@@ -73,15 +73,26 @@ class Ellipsoid(PureShape):
     def copy(self):
         return self.__class__(self._v, self.center)
 
+    @property
+    def volume(self):
+        """Return the volume of the shape"""
+        return 4.0 / 3.0 * pi * product3(self.radius)
+
+    @property
+    def radius(self):
+        """Return the radius of the Ellipsoid"""
+        return fnorm(self._v)
+
+    @property
+    def radial_vector(self):
+        """The radial vectors"""
+        return self._v
+
     def __str__(self):
         cr = np.array([self.center, self.radius])
         return self.__class__.__name__ + (
             "{{c({0:.2f} {1:.2f} {2:.2f}) " "r({3:.2f} {4:.2f} {5:.2f})}}"
         ).format(*cr.ravel())
-
-    def volume(self):
-        """Return the volume of the shape"""
-        return 4.0 / 3.0 * pi * product3(self.radius)
 
     def scale(self, scale):
         """Return a new shape with a larger corresponding to `scale`
@@ -120,6 +131,10 @@ class Ellipsoid(PureShape):
             )
         return self.__class__([v0, v1, v2], self.center)
 
+    @deprecation(
+        "toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.",
+        "0.15",
+    )
     def toEllipsoid(self):
         """Return an ellipsoid that encompass this shape (a copy)"""
         return self.copy()
@@ -161,16 +176,6 @@ class Ellipsoid(PureShape):
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
         return indices_in_sphere(tmp, 1.0 + tol)
-
-    @property
-    def radius(self):
-        """Return the radius of the Ellipsoid"""
-        return fnorm(self._v)
-
-    @property
-    def radial_vector(self):
-        """The radial vectors"""
-        return self._v
 
 
 to_dispatch = Ellipsoid.to
@@ -236,9 +241,15 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
     def copy(self):
         return self.__class__(self.radius, self.center)
 
+    @property
     def volume(self):
         """Return the volume of the sphere"""
         return 4.0 / 3.0 * pi * self.radius**3
+
+    @property
+    def radius(self):
+        """Return the radius of the Sphere"""
+        return self._v[0, 0]
 
     def scale(self, scale):
         """Return a new sphere with a larger radius
@@ -259,11 +270,6 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
            the extension in Ang per ellipsoid radial vector
         """
         return self.__class__(self.radius + radius, self.center)
-
-    @property
-    def radius(self):
-        """Return the radius of the Sphere"""
-        return self._v[0, 0]
 
     @deprecation(
         "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"

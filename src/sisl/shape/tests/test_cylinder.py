@@ -34,6 +34,7 @@ def test_create_ellipticalcylinder():
     assert np.allclose(el.radius + [0.1, 1.1], e2.radius)
     assert np.allclose(el.height + 2.1, e2.height)
     str(el)
+    e2.volume
 
 
 def test_ellipticalcylinder_within():
@@ -52,3 +53,9 @@ def test_tosphere():
 def test_tocuboid():
     el = EllipticalCylinder([1.0, 1.0], 1.0)
     el.to.Cuboid()
+
+
+def test_translate():
+    el = EllipticalCylinder([1.0, 1.0], 1.0)
+    el2 = el.translate([0, 1, 2])
+    assert not np.allclose(el.center, el2.center)

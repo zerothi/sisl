@@ -8,7 +8,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._indices import indices_in_cylinder
 from sisl._internal import set_module
-from sisl.messages import warn
+from sisl.messages import deprecation, warn
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
 from .base import PureShape, ShapeToDispatch
@@ -92,9 +92,30 @@ class EllipticalCylinder(PureShape):
     def copy(self):
         return self.__class__(self.radial_vector, self.height, self.center)
 
+    @property
     def volume(self):
         """Return the volume of the shape"""
         return pi * np.product(self.radius) * self.height
+
+    @property
+    def height(self):
+        """Height of the cylinder"""
+        return self._h
+
+    @property
+    def radius(self):
+        """Radius of the ellipse base vectors"""
+        return fnorm(self._v)
+
+    @property
+    def radial_vector(self):
+        """The radial vectors"""
+        return self._v
+
+    @property
+    def height_vector(self):
+        """The height vector"""
+        return self._nh
 
     def scale(self, scale: float):
         """Create a new shape with all dimensions scaled according to `scale`
@@ -158,26 +179,9 @@ class EllipticalCylinder(PureShape):
         # I.e. this reduces the search space to the box
         return indices_in_cylinder(tmp, 1.0 + tol, 1.0 + tol)
 
-    @property
-    def height(self):
-        """Height of the cylinder"""
-        return self._h
-
-    @property
-    def radius(self):
-        """Radius of the ellipse base vectors"""
-        return fnorm(self._v)
-
-    @property
-    def radial_vector(self):
-        """The radial vectors"""
-        return self._v
-
-    @property
-    def height_vector(self):
-        """The height vector"""
-        return self._nh
-
+    @deprecation(
+        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+    )
     def toSphere(self):
         """Convert to a sphere"""
         from .ellipsoid import Sphere
@@ -190,6 +194,9 @@ class EllipticalCylinder(PureShape):
         # Rescale each vector
         return Sphere(r, self.center.copy())
 
+    @deprecation(
+        "toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15"
+    )
     def toCuboid(self):
         """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""
         from .prism4 import Cuboid
