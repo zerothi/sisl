@@ -175,6 +175,7 @@ from .sile import *
 # enabling the actual print-out
 from .bigdft import *
 from .cube import *
+from .fhiaims import *
 from .gulp import *
 from .ham import *
 from .molden import *

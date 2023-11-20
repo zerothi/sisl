@@ -18,7 +18,7 @@ __all__ = ["inSileFHIaims"]
 
 @set_module("sisl.io.fhiaims")
 class inSileFHIaims(SileFHIaims):
-    """FHI-aims geometry file object"""
+    """FHI-aims ``geometry.in`` file object"""
 
     @sile_fh_open()
     @deprecate_argument(
