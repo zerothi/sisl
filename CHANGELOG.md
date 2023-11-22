@@ -19,6 +19,7 @@ we hit release version 1.0.0.
 ### Fixed
 - enabled slicing in matrix assignments, #650
 - changed `Shape.volume()` to `Shape.volume` 
+- growth direction for zigzag heteroribbons
 
 ### Changed
 - `vacuum` is now an optional parameter for all ribbon structures
