@@ -74,6 +74,14 @@ def test_flat_flakes():
     )
 
 
+def test_triangulene():
+    g = triangulene(3)
+    assert g.na == 22
+    g = triangulene(3, atoms=["B", "N"])
+    assert g.atoms.nspecie == 2
+    g = triangulene(3, bond=1.6)
+
+
 def test_nanotube():
     a = nanotube(1.42)
     assert is_right_handed(a)
@@ -116,6 +124,8 @@ def test_nanoribbon():
     for w in range(0, 5):
         nanoribbon(w, 1.42, Atom(6), kind="armchair")
         nanoribbon(w, 1.42, Atom(6), kind="zigzag")
+        nanoribbon(w, 1.42, Atom(6), kind="chiral")
+        nanoribbon(w, 1.42, Atom(6), kind="chiral", chirality=(2, 2))
         nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="armchair")
         a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="zigzag")
         assert is_right_handed(a)
@@ -128,6 +138,9 @@ def test_nanoribbon():
 
 
 def test_graphene_nanoribbon():
+    graphene_nanoribbon(6, kind="armchair")
+    graphene_nanoribbon(6, kind="zigzag")
+    graphene_nanoribbon(6, kind="chiral")
     a = graphene_nanoribbon(5)
     assert is_right_handed(a)
 
@@ -139,6 +152,13 @@ def test_agnr():
 
 def test_zgnr():
     a = zgnr(5)
+    assert is_right_handed(a)
+
+
+def test_cgnr():
+    cgnr(6, (3, 1), vacuum=0)
+    cgnr(6, (3, 1), bond=1.6)
+    a = cgnr(6, (3, 1), atoms=["B", "N"])
     assert is_right_handed(a)
 
 

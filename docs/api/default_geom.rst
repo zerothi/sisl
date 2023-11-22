@@ -42,6 +42,15 @@ Surfaces (slabs)
    fcc_slab
    rocksalt_slab
 
+0D materials
+============
+
+.. autosummary::
+   :toctree: generated/
+
+   honeycomb_flake
+   graphene_flake
+   triangulene
 
 1D materials
 ============
@@ -52,6 +61,7 @@ Surfaces (slabs)
    nanoribbon
    agnr
    zgnr
+   cgnr
    graphene_nanoribbon
    nanotube
    heteroribbon
@@ -67,8 +77,6 @@ Surfaces (slabs)
    honeycomb
    bilayer
    graphene
-   honeycomb_flake
-   graphene_flake
 
 
 Helpers

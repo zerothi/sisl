@@ -12,11 +12,16 @@ we hit release version 1.0.0.
 - enabled `Grid.to|new` with the most basic stuff
   str|Path|Grid|pyamg
 - `Shape.translate`, to easily translate entire shape constructs, #655
+- Creation of chiral GNRs (`kind=chiral` in `sisl.geom.nanoribbon`/`sisl.geom.graphene_nanoribbon`
+  as well as `sisl.geom.cgnr`)
+- Creation of [n]-triangulenes (`sisl.geom.triangulene`)
 
 ### Fixed
 - enabled slicing in matrix assignments, #650
 - changed `Shape.volume()` to `Shape.volume` 
 
+### Changed
+- `vacuum` is now an optional parameter for all ribbon structures
 
 
 ## [0.14.3] - 2023-11-07
