@@ -182,3 +182,4 @@ class inSileFHIaims(SileFHIaims):
 
 
 add_sile("geometry.in", inSileFHIaims, case=False, gzip=True)
+add_sile("aims", inSileFHIaims, case=False, gzip=True)
