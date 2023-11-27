@@ -1110,6 +1110,35 @@ class hsxSileSiesta(SileBinSiesta):
         # now create atoms object
         atoms = Atoms([atoms[ia] for ia in isa])
 
+        base = kwargs.get("geometry", kwargs.get("geom", None))
+        if base is None:
+            return atoms
+
+        # Now compare the atoms such that we select the best one
+        def get_best(aF, aI):
+            if len(aF) != len(aI):
+                # the file has the correct number of orbitals
+                return aF
+
+            if aF.Z != aI.Z:
+                return aF
+
+            # check for orbitals being atomicorbital
+            for orb in aI:
+                if not isinstance(orb, AtomicOrbital):
+                    return aF
+
+            for oF, oI in zip(aF, aI):
+                for prop in ("n", "l", "m", "zeta", "P"):
+                    if getattr(oF, prop) != getattr(oI, prop):
+                        return aF
+
+            # the atoms are the same, so we select the input atom
+            # since it likely contains the spherical functions
+            # and the charge
+            return aI
+
+        atoms = Atoms(map(get_best, atoms, base))
         return atoms
 
     def _r_geometry_v0(self, **kwargs):

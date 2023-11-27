@@ -17,6 +17,7 @@ we hit release version 1.0.0.
 - Creation of [n]-triangulenes (`sisl.geom.triangulene`)
 
 ### Fixed
+- HSX file reads should respect input geometry arguments
 - enabled slicing in matrix assignments, #650
 - changed `Shape.volume()` to `Shape.volume` 
 - growth direction for zigzag heteroribbons
