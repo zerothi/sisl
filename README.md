@@ -57,7 +57,7 @@ of places to search/ask for answers:
 If sisl was used to produce scientific contributions, please use this [DOI][doi] for citation.
 We recommend to specify the version of sisl in combination of this citation:
 
-    @misc{zerothi_sisl,
+    @software{zerothi_sisl,
       author = {Papior, Nick},
       title  = {sisl: v<fill-version>},
       year   = {2023},

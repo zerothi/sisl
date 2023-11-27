@@ -58,7 +58,7 @@ import sisl._version as _version
 __version__ = _version.version
 __version_tuple__ = _version.version_tuple
 __bibtex__ = f"""# BibTeX information if people wish to cite
-@misc{{zerothi_sisl,
+@software{{zerothi_sisl,
     author = {{Papior, Nick}},
     title  = {{sisl: v{__version__}}},
     year   = {{ {year} }},
