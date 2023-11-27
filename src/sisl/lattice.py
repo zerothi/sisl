@@ -1305,7 +1305,7 @@ class Lattice(
                 for i in (0, 1, 2)
             ]
         )
-        origin = "{:.4f}, {:.4f}, {:.4f}".format(*self.origin)
+        origin = "[{:.4f}, {:.4f}, {:.4f}]".format(*self.origin)
         bc = ",\n     ".join(map(bcstr, self.boundary_condition))
         return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s},\n bc=[{bc}]\n}}"
 
