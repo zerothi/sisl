@@ -151,11 +151,11 @@ class Lattice(
     @property
     def volume(self) -> float:
         """Volume of cell"""
-        return abs(dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :])))
+        return abs(dot3(self.cell[0], cross3(self.cell[1], self.cell[2])))
 
     def area(self, ax0, ax1) -> float:
         """Calculate the area spanned by the two axis `ax0` and `ax1`"""
-        return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
+        return (cross3(self.cell[ax0], self.cell[ax1]) ** 2).sum() ** 0.5
 
     @property
     def boundary_condition(self) -> np.ndarray:
@@ -256,7 +256,7 @@ class Lattice(
         for d, v in enumerate([a, b, c]):
             v = conv(v)
             if v is not None:
-                self._bc[d, :] = v
+                self._bc[d] = v
 
         # shorthand for bc
         for nsc, bc, changed in zip(
@@ -317,9 +317,9 @@ class Lattice(
         from math import acos
 
         cell = cell / abc.reshape(-1, 1)
-        alpha = acos(dot3(cell[1, :], cell[2, :])) * f
-        beta = acos(dot3(cell[0, :], cell[2, :])) * f
-        gamma = acos(dot3(cell[0, :], cell[1, :])) * f
+        alpha = acos(dot3(cell[1], cell[2])) * f
+        beta = acos(dot3(cell[0], cell[2])) * f
+        gamma = acos(dot3(cell[0], cell[1])) * f
 
         return abc[0], abc[1], abc[2], alpha, beta, gamma
 
@@ -426,7 +426,7 @@ class Lattice(
     def _update_isc_off(self):
         """Internal routine for updating the supercell indices"""
         for i in range(self.n_s):
-            d = self.sc_off[i, :]
+            d = self.sc_off[i]
             self._isc_off[d[0], d[1], d[2]] = i
 
     @property
@@ -527,7 +527,7 @@ class Lattice(
             )
 
         # Reduce problem to allowed values below the tolerance
-        ix = ix[idx, :]
+        ix = ix[idx]
 
         # Reduce to total repetitions
         ireps = np.amax(ix, axis=0) - np.amin(ix, axis=0) + 1
@@ -543,9 +543,9 @@ class Lattice(
                     ireps[ax] = 1
 
         # Enlarge the cell vectors
-        cell[0, :] *= ireps[0]
-        cell[1, :] *= ireps[1]
-        cell[2, :] *= ireps[2]
+        cell[0] *= ireps[0]
+        cell[1] *= ireps[1]
+        cell[2] *= ireps[2]
 
         return self.copy(cell)
 
@@ -714,7 +714,7 @@ class Lattice(
         Hence this may be used to further reduce certain computations.
         """
         cell = self.cell
-        n = cross3(cell[ax1, :], cell[ax2, :])
+        n = cross3(cell[ax1], cell[ax2])
         # Normalize
         n /= dot3(n, n) ** 0.5
         # Now we need to figure out if the normal vector
@@ -850,7 +850,7 @@ class Lattice(
             if d in what:
                 idx.append(i)
         if idx:
-            cell[idx, :] = q.rotate(self.cell[idx, :])
+            cell[idx] = q.rotate(self.cell[idx])
         return self.copy(cell)
 
     def offset(self, isc=None) -> Tuple[float, float, float]:
@@ -893,7 +893,7 @@ class Lattice(
            when projected onto the normal vector of the other two axis.
         """
         cell = np.copy(self.cell)
-        d = cell[axis, :].copy()
+        d = cell[axis].copy()
         d /= fnorm(d)
         if orthogonal_to_plane:
             # first calculate the normal vector of the other plane
@@ -908,7 +908,7 @@ class Lattice(
         else:
             scale = vacuum
         # normalize to get direction vector
-        cell[axis, :] += d * scale
+        cell[axis] += d * scale
         return self.copy(cell)
 
     def sc_index(self, sc_off) -> Union[int, Sequence[int]]:
@@ -1022,7 +1022,7 @@ class Lattice(
         cell = np.copy(self.cell)
         nsc = np.copy(self.nsc)
         origin = np.copy(self.origin)
-        cell[axis, :] *= reps
+        cell[axis] *= reps
         # Only reduce the size if it is larger than 5
         if nsc[axis] > 3 and reps > 1:
             # This is number of connections for the primary cell
@@ -1060,7 +1060,7 @@ class Lattice(
         tile : opposite of this method
         """
         cell = np.copy(self.cell)
-        cell[axis, :] /= reps
+        cell[axis] /= reps
         return self.copy(cell)
 
     unrepeat = untile
@@ -1068,7 +1068,7 @@ class Lattice(
     def append(self, other, axis) -> Lattice:
         """Appends other `Lattice` to this grid along axis"""
         cell = np.copy(self.cell)
-        cell[axis, :] += other.cell[axis, :]
+        cell[axis] += other.cell[axis]
         # TODO fix nsc here
         return self.copy(cell)
 
@@ -1087,8 +1087,8 @@ class Lattice(
         p = np.empty([3], np.float64)
         cl = fnorm(cell)
         for i in range(3):
-            p[i] = abs(np.sum(cell[i, :] * v)) / cl[i]
-        cell[np.argmax(p), :] += v
+            p[i] = abs(np.sum(cell[i] * v)) / cl[i]
+        cell[np.argmax(p)] += v
         return self.copy(cell)
 
     move = translate
@@ -1097,7 +1097,7 @@ class Lattice(
         """Returns center of the `Lattice`, possibly with respect to an axis"""
         if axis is None:
             return self.cell.sum(0) * 0.5
-        return self.cell[axis, :] * 0.5
+        return self.cell[axis] * 0.5
 
     @classmethod
     def tocell(cls, *args) -> Lattice:
@@ -1193,12 +1193,12 @@ class Lattice(
         # Convert to unit-vector cell
         cell = np.copy(self.cell)
         cl = fnorm(cell)
-        cell[0, :] = cell[0, :] / cl[0]
-        cell[1, :] = cell[1, :] / cl[1]
-        cell[2, :] = cell[2, :] / cl[2]
-        i_s = dot3(cell[0, :], cell[1, :]) < tol
-        i_s = dot3(cell[0, :], cell[2, :]) < tol and i_s
-        i_s = dot3(cell[1, :], cell[2, :]) < tol and i_s
+        cell[0] = cell[0] / cl[0]
+        cell[1] = cell[1] / cl[1]
+        cell[2] = cell[2] / cl[2]
+        i_s = dot3(cell[0], cell[1]) < tol
+        i_s = dot3(cell[0], cell[2]) < tol and i_s
+        i_s = dot3(cell[1], cell[2]) < tol and i_s
         return i_s
 
     def is_cartesian(self, tol=0.001) -> bool:
@@ -1228,8 +1228,8 @@ class Lattice(
         axis = _a.asarrayi(axis).ravel()
         # Convert to unit-vector cell
         for i in axis:
-            a = self.cell[i, :] / fnorm(self.cell[i, :])
-            b = other.cell[i, :] / fnorm(other.cell[i, :])
+            a = self.cell[i] / fnorm(self.cell[i])
+            b = other.cell[i] / fnorm(other.cell[i])
             if abs(dot3(a, b) - 1) > 0.001:
                 return False
         return True
@@ -1246,8 +1246,8 @@ class Lattice(
         rad : bool, optional
            whether the returned value is in radians
         """
-        n = fnorm(self.cell[[i, j], :])
-        ang = math.acos(dot3(self.cell[i, :], self.cell[j, :]) / (n[0] * n[1]))
+        n = fnorm(self.cell[[i, j]])
+        ang = math.acos(dot3(self.cell[i], self.cell[j]) / (n[0] * n[1]))
         if rad:
             return ang
         return math.degrees(ang)
@@ -1529,9 +1529,9 @@ class LatticeToCuboidDispatch(LatticeToDispatch):
 
         cmin = cell.min(0)
         cmax = cell.max(0)
-        find_min_max(cmin, cmax, cell[[0, 1], :].sum(0))
-        find_min_max(cmin, cmax, cell[[0, 2], :].sum(0))
-        find_min_max(cmin, cmax, cell[[1, 2], :].sum(0))
+        find_min_max(cmin, cmax, cell[[0, 1]].sum(0))
+        find_min_max(cmin, cmax, cell[[0, 2]].sum(0))
+        find_min_max(cmin, cmax, cell[[1, 2]].sum(0))
         find_min_max(cmin, cmax, cell.sum(0))
         return Cuboid(cmax - cmin, center_off)
 
