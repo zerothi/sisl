@@ -15,12 +15,16 @@ we hit release version 1.0.0.
 - Creation of chiral GNRs (`kind=chiral` in `sisl.geom.nanoribbon`/`sisl.geom.graphene_nanoribbon`
   as well as `sisl.geom.cgnr`)
 - Creation of [n]-triangulenes (`sisl.geom.triangulene`)
+- added `offset` argument in `Geometry.add_vacuum` to enable shifting atomic coordinates
 
 ### Fixed
+- `Lattice` objects now issues a warning when created with 0-length vectors
 - HSX file reads should respect input geometry arguments
 - enabled slicing in matrix assignments, #650
 - changed `Shape.volume()` to `Shape.volume` 
 - growth direction for zigzag heteroribbons
+- `BandStructure` points can now automatically add the `nsc == 1` axis as would
+  be done for assigning matrix elements (it fills with 0's).
 
 ### Changed
 - `vacuum` is now an optional parameter for all ribbon structures

@@ -25,7 +25,7 @@ from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from ._internal import set_module
 from ._lattice import cell_invert, cell_reciprocal
 from ._math_small import cross3, dot3
-from .messages import SislError, deprecate, deprecate_argument, deprecation, info
+from .messages import SislError, deprecate, deprecate_argument, deprecation, info, warn
 from .quaternion import Quaternion
 from .shape.prism4 import Cuboid
 from .utils.mathematics import fnorm
@@ -130,6 +130,11 @@ class Lattice(
         # If the length of cell is 6 it must be cell-parameters, not
         # actual cell coordinates
         self.cell = self.tocell(cell)
+        if np.any(self.length < 1e-7):
+            warn(
+                f"{self.__class__.__name__} got initialized with one or more "
+                "lattice vector(s) with 0 length. Use with care."
+            )
 
         if origin is None:
             self._origin = _a.zerosd(3)

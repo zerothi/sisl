@@ -254,8 +254,8 @@ def _slab_with_vacuum(func, *args, **kwargs):
             **kwargs,
         )
         # add vacuum
-        vacuum = Lattice([0, 0, vacuums.pop(0)])
-        out = out.add(vacuum, offset=(0, 0, vacuum.cell[2, 2]))
+        vacuum = vacuums.pop(0)
+        out = out.add_vacuum(vacuum, 2, offset=(0, 0, vacuum))
         ivacuum += 1
         islab += 1
 
@@ -275,9 +275,9 @@ def _slab_with_vacuum(func, *args, **kwargs):
         if layer is None:
             dx = out.cell[2, 2] - out.xyz[:, 2].max()
             # this ensures the vacuum is exactly vacuums[iv]
-            vacuum = Lattice([0, 0, vacuums.pop(0) - dx])
+            vacuum = vacuums.pop(0) - dx
             ivacuum += 1
-            out = out.add(vacuum)
+            out = out.add_vacuum(vacuum, 2)
         else:
             geom = func(
                 *args,

@@ -3040,8 +3040,8 @@ class Geometry(
         other :
             Other geometry class which is added
         offset :
-            offset in geometry of `other` when adding the atoms. Only if `other` is
-            of instance `Geometry`.
+            offset in geometry of `other` when adding the atoms.
+            Otherwise it is the offset of the `self` atoms.
 
         See Also
         --------
@@ -3049,6 +3049,16 @@ class Geometry(
         prepend : prending geometries
         attach : attach a geometry
         insert : insert a geometry
+
+        Examples
+        --------
+        >>> first = Geometry(...)
+        >>> second = Geometry(...)
+        >>> lattice = Lattice(...)
+        >>> added = first.add(second, offset=(0, 0, 2))
+        >>> assert np.allclose(added.xyz[:len(first)], first.xyz)
+        >>> assert np.allclose(added.xyz[len(first):] - [0, 0, 2], second.xyz)
+
         """
         if isinstance(other, Lattice):
             xyz = self.xyz.copy() + _a.arrayd(offset)
@@ -3063,7 +3073,9 @@ class Geometry(
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
-    def add_vacuum(self, vacuum: float, axis: int) -> Geometry:
+    def add_vacuum(
+        self, vacuum: float, axis: int, offset: Sequence[float] = (0, 0, 0)
+    ) -> Geometry:
         """Add vacuum along the `axis` lattice vector
 
         When the vacuum is bigger than the maximum orbital ranges the
@@ -3076,12 +3088,15 @@ class Geometry(
            amount of vacuum added, in Ang
         axis :
            the lattice vector to add vacuum along
+        offset :
+            offset in geometry when adding the vacuum.
 
         Returns
         -------
         Geometry : a new geometry with added vacuum
         """
         new = self.copy()
+        new.xyz += _a.arrayd(offset)
         new.set_lattice(self.lattice.add_vacuum(vacuum, axis))
         if vacuum > self.maxR() + 0.001:
             # only overwrite along axis

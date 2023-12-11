@@ -709,6 +709,21 @@ class TestGeometry:
         assert len(double) == len(setup.g) * 2
         assert np.allclose(setup.g.cell * 2, double.cell)
 
+    def test_add_vacuum(self, setup):
+        g = setup.g
+        added = setup.g.add_vacuum(g.cell[2, 2], 2)
+        assert len(added) == len(g)
+        assert np.allclose(
+            added.lattice.length, g.lattice.length + [0, 0, g.cell[2, 2]]
+        )
+        assert np.allclose(added.xyz, g.xyz)
+        added = g.add_vacuum(g.cell[2, 2], 2, offset=(1, 2, 3))
+        assert len(added) == len(g)
+        assert np.allclose(
+            added.lattice.length, g.lattice.length + [0, 0, g.cell[2, 2]]
+        )
+        assert np.allclose(added.xyz, g.xyz + [1, 2, 3])
+
     def test_insert(self, setup):
         double = setup.g.insert(0, setup.g)
         assert len(double) == len(setup.g) * 2

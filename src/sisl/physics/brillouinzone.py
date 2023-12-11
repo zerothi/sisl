@@ -307,12 +307,19 @@ class BrillouinZone:
 
     def __str__(self):
         """String representation of the BrillouinZone"""
+        parent = str(self._parent_lattice()).replace("\n", "\n ")
+        return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
+
+    def _parent_lattice(self):
+        """Ensures to return the lattice of the parent, however it may be nested"""
         parent = self.parent
         if isinstance(parent, Lattice):
-            parent = str(parent).replace("\n", "\n ")
-        else:
-            parent = str(parent.lattice).replace("\n", "\n ")
-        return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
+            return parent
+        if isinstance(parent.lattice, Lattice):
+            return parent.lattice
+        raise ValueError(
+            f"{self.__class__.__name__} could not extract the lattice object, it must be located elsewhere."
+        )
 
     def __getstate__(self):
         """Return dictionary with the current state"""
@@ -877,10 +884,7 @@ class MonkhorstPack(BrillouinZone):
 
     def __str__(self):
         """String representation of `MonkhorstPack`"""
-        if isinstance(self.parent, Lattice):
-            p = self.parent
-        else:
-            p = self.parent.lattice
+        p = self._parent_lattice()
         return (
             "{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[0]:.5f}], trs: {trs},"
             "\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.5f} {disp[1]:.5f} {disp[2]:.5f}],"
@@ -1217,7 +1221,8 @@ class BandStructure(BrillouinZone):
        An object with associated `parent.cell` and `parent.rcell` or
        an array of floats which may be turned into a `Lattice`
     points : array_like of float
-       a list of points that are the *corners* of the path
+       a list of points that are the *corners* of the path.
+       Define a discontinuity in the points by adding a `None` in the list.
     divisions : int or array_like of int
        number of divisions in each segment.
        If a single integer is passed it is the total number
@@ -1243,9 +1248,9 @@ class BandStructure(BrillouinZone):
     >>> bs = BandStructure(lattice, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
     >>> bs = BandStructure(lattice, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
 
-    A disconnected band structure may be created by either having a point of 0 length, or None.
+    A disconnected band structure may be created by having None as the element.
     Note that the number of names does not contain the empty points (they are simply removed).
-    Such a band-structure may be useful when one is not interested in a fully connected band structure.
+    Such a band-structure may be useful when one is interested in a discontinuous band structure.
 
     >>> bs = BandStructure(lattice, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200)
     """
@@ -1259,6 +1264,7 @@ class BandStructure(BrillouinZone):
     def __init__(self, parent, *args, **kwargs):
         # points, divisions, names=None):
         super().__init__(parent)
+        lattice = self._parent_lattice()
 
         points = kwargs.pop("points", None)
         if points is None:
@@ -1266,6 +1272,31 @@ class BandStructure(BrillouinZone):
                 points, *args = args
             else:
                 raise ValueError(f"{self.__class__.__name__} 'points' argument missing")
+
+        # Extract the jump indices
+        # In that case it is a disconnected path
+        def is_empty(p):
+            try:
+                return len(p) == 0
+            except Exception:
+                return p is None
+
+        jump_idx = []
+        _points = []
+        for i, p in enumerate(points):
+            if is_empty(p):
+                if i > 0:
+                    # we can't have a jump at the first index
+                    jump_idx.append(i)
+            else:
+                _points.append(lattice._fill(p, dtype=np.float64))
+
+        # convert to exact array and correct for removed indices
+        jump_idx = _a.arrayi(jump_idx) - _a.arangei(len(jump_idx))
+
+        # fill with correct points
+        self.points = _a.arrayd(_points)
+        del _points  # clean-up for clarity
 
         divisions = kwargs.pop("divisions", None)
         if divisions is None:
@@ -1294,26 +1325,9 @@ class BandStructure(BrillouinZone):
                 f"{self.__class__.__name__} unknown keyword arguments after parsing [points, divisions, names, jump_dk]: {list(kwargs.keys())}"
             )
 
-        # Copy over points
-        # Check if any of the points is None or has length 0
-        # In that case it is a disconnected path
-        def is_empty(ix):
-            try:
-                return len(ix[1]) == 0
-            except Exception:
-                return ix[1] is None
-
-        # filter out jump directions
-        jump_idx = _a.arrayi([i for i, _ in filter(is_empty, enumerate(points))])
-
-        # store only *valid* points
-        self.points = _a.arrayd([p for i, p in enumerate(points) if i not in jump_idx])
-
         # remove erroneous jumps
-        if len(points) - 1 in jump_idx:
+        if len(self.points) in jump_idx:
             jump_idx = jump_idx[:-1]
-        if 0 in jump_idx:
-            jump_idx = jump_idx[1:]
 
         if self._jump_dk.size > 1 and jump_idx.size != self._jump_dk.size:
             raise ValueError(
@@ -1322,8 +1336,6 @@ class BandStructure(BrillouinZone):
 
         # The jump-idx is equal to using np.split(self.points, jump_idx)
         # which then returns continuous sections
-        # correct for removed indices
-        jump_idx -= np.arange(len(jump_idx))
         self._jump_idx = jump_idx
 
         # If the array has fewer points we try and determine

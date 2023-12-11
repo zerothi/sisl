@@ -28,15 +28,12 @@ def setup():
         def __init__(self):
             self.s1 = Lattice(1, nsc=[3, 3, 1])
             self.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
+            self.s3 = Lattice(1, nsc=[3, 1, 3])
 
     return t()
 
 
 class TestBrillouinZone:
-    def setUp(self, setup):
-        setup.s1 = Lattice(1, nsc=[3, 3, 1])
-        setup.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
-
     def test_bz1(self, setup):
         bz = BrillouinZone(1.0)
         str(bz)
@@ -250,10 +247,6 @@ class TestBrillouinZone:
 
 @pytest.mark.monkhorstpack
 class TestMonkhorstPack:
-    def setUp(self, setup):
-        setup.s1 = Lattice(1, nsc=[3, 3, 1])
-        setup.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
-
     def test_class(self, setup):
         class Test(LatticeChild):
             def __init__(self, lattice):
@@ -736,10 +729,6 @@ class TestMonkhorstPack:
 
 @pytest.mark.bandstructure
 class TestBandStructure:
-    def setUp(self, setup):
-        setup.s1 = Lattice(1, nsc=[3, 3, 1])
-        setup.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
-
     def test_pbz1(self, setup):
         bz = BandStructure(setup.s1, [[0] * 3, [0.5] * 3], 300)
         assert len(bz) == 300
@@ -760,6 +749,11 @@ class TestBandStructure:
 
     def test_pbs_divisions(self, setup):
         bz = BandStructure(setup.s1, [[0] * 3, [0.25] * 3, [0.5] * 3], [10, 10])
+        assert len(bz) == 21
+
+    def test_pbc_fill(self, setup):
+        bz = BandStructure(setup.s3, [[0] * 2, [0.25] * 2, [0.5] * 2], [10, 10])
+        assert np.allclose(bz.k[:, 1], 0)
         assert len(bz) == 21
 
     def test_pbs_missing_arguments(self, setup):

@@ -423,6 +423,11 @@ class TestLattice:
             lattice.sc_off = np.zeros([10000, 3])
 
 
+def test_zero_length():
+    with pytest.warns(sisl.SislWarning):
+        Lattice([1, 0, 0])
+
+
 def _dot(u, v):
     """Dot product u . v"""
     return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
