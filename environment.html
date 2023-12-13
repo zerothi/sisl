@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Environment variables &mdash; sisl 0.1-303aea7</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/custom_styles.css" type="text/css" />
+  <title>Environment variables &mdash; sisl 0.1-3b8117a</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css?v=cafe85c1" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=7cdae6a9"></script>
+        <script src="_static/documentation_options.js?v=705340c0"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-303aea7
+                0.1-3b8117a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -127,7 +129,7 @@ flag for OpenMP in linear algebra libraries.
 Benchmark and see if it actually improves (certain combinations will
 severly hurt performance).</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">SISL_VIZ_AUTOLOAD</span> <span class="pre">==</span> <span class="pre">false</span></code></dt><dd><p>whether or not to autoload the visualization module.
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_VIZ_AUTOLOAD</span> <span class="pre">=</span> <span class="pre">false</span></code></dt><dd><p>whether or not to autoload the visualization module.
 The visualization module imports many dependent modules.
 If you run small scripts that does not use the <a class="reference internal" href="api/viz/index.html#module-sisl.viz" title="sisl.viz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code></a> module, then
 it is recommended to keep this to be false.</p>
@@ -138,8 +140,8 @@ to see if progress is actually being made.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">SISL_IO_DEFAULT</span> <span class="pre">=</span> <span class="pre">''</span></code></dt><dd><p>The default IO methods <code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.get_sile</span></code> will select files with this file-endings.
 For instance there are many <code class="docutils literal notranslate"><span class="pre">stdout</span></code> file types (for each DFT code).
-Setting this to <code class="docutils literal notranslate"><span class="pre">Siesta</span></code> would force all files to first search for Siesta file
-endings (see <a class="reference internal" href="api/io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code></a> for class names).</p>
+Setting this to <code class="docutils literal notranslate"><span class="pre">Siesta</span></code> would force all files to first search for classes ending
+in <code class="docutils literal notranslate"><span class="pre">Siesta</span></code> (see <a class="reference internal" href="api/io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code></a> for class names).</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">SISL_TMP</span> <span class="pre">=</span> <span class="pre">'.sisl_tmp'</span></code></dt><dd><p>certain internal methods of sisl will use a temporary folder for storing data.
 The default is a new folder in the currently executed directory.</p>

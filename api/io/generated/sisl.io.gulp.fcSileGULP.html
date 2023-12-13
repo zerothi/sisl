@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.gulp.fcSileGULP &mdash; sisl 0.1-303aea7</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/custom_styles.css" type="text/css" />
+  <title>sisl.io.gulp.fcSileGULP &mdash; sisl 0.1-3b8117a</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=7cdae6a9"></script>
+        <script src="../../../_static/documentation_options.js?v=705340c0"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-303aea7
+                0.1-3b8117a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -152,25 +154,28 @@
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.close" title="sisl.io.gulp.fcSileGULP.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.base_directory" title="sisl.io.gulp.fcSileGULP.base_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_directory</span></code></a>([relative_to])</p></td>
+<td><p>Retrieve the base directory of the file, relative to the path <em class="xref py py-obj">relative_to</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.close" title="sisl.io.gulp.fcSileGULP.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.dir_file" title="sisl.io.gulp.fcSileGULP.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.dir_file" title="sisl.io.gulp.fcSileGULP.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.read" title="sisl.io.gulp.fcSileGULP.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.read" title="sisl.io.gulp.fcSileGULP.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.read_force_constant" title="sisl.io.gulp.fcSileGULP.read_force_constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force_constant</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.read_force_constant" title="sisl.io.gulp.fcSileGULP.read_force_constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force_constant</span></code></a>(**kwargs)</p></td>
 <td><p>Returns a sparse matrix in coo format which contains the GULP force constant matrix.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.write" title="sisl.io.gulp.fcSileGULP.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.write" title="sisl.io.gulp.fcSileGULP.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.base_file" title="sisl.io.gulp.fcSileGULP.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.base_file" title="sisl.io.gulp.fcSileGULP.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.file" title="sisl.io.gulp.fcSileGULP.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.gulp.fcSileGULP.file" title="sisl.io.gulp.fcSileGULP.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
 </tbody>
@@ -270,6 +275,12 @@ If false, only the first match will update the value</p>
 <dd><p>Just to pass away the args and kwargs</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.gulp.fcSileGULP.base_directory">
+<span class="sig-name descname"><span class="pre">base_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.gulp.fcSileGULP.base_directory" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the base directory of the file, relative to the path <em class="xref py py-obj">relative_to</em></p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.io.gulp.fcSileGULP.base_file">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_file</span></span><a class="headerlink" href="#sisl.io.gulp.fcSileGULP.base_file" title="Link to this definition"></a></dt>
@@ -321,7 +332,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dd class="field-even"><p><strong>FC</strong></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>force constant in <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="(in SciPy v1.11.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.coo_matrix</span></code></a> format</p>
+<dd class="field-odd"><p>force constant in <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="(in SciPy v1.11.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.coo_matrix</span></code></a> format</p>
 </dd>
 </dl>
 </dd></dl>

@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1-303aea7</title>
-      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/custom_styles.css" type="text/css" />
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1-3b8117a</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=7cdae6a9"></script>
+        <script src="../../../../_static/documentation_options.js?v=705340c0"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-303aea7
+                0.1-3b8117a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -558,7 +560,7 @@
         <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
             <span class="n">NORM</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">):</span>
             <span class="n">NORM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_d</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -635,7 +637,7 @@
         <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
             <span class="n">NORM</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="k">elif</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">):</span>
             <span class="n">NORM</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_d</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error on norm keyword in DOS request&quot;</span><span class="p">)</span>
@@ -683,7 +685,7 @@
         <span class="c1"># atom is specified</span>
         <span class="c1"># Return the pivoting orbitals for the atom</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2p</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">):</span>
             <span class="n">NORM</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="nb">sum</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
@@ -819,11 +821,18 @@
     <span class="k">def</span> <span class="nf">BDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bulk density of states (DOS) (1/eV).</span>
 
-<span class="sd">        Extract the bulk DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region</span>
+<span class="sd">        Extract the bulk DOS from electrode `elec`.</span>
 
 <span class="sd">        .. math::</span>
 
 <span class="sd">           \mathrm{BDOS}_\mathfrak{el}(E) = -\frac{1}{\pi} \Im\mathbf{G}(E)</span>
+
+<span class="sd">        This returns the density of states for the full (Bloch-expanded) electrode.</span>
+<span class="sd">        When `norm` is &#39;none&#39;, the DOS is the full DOS for all electrode atoms (fully expanded),</span>
+<span class="sd">        if you want to get the DOS for the minimal (un-expanded) electrode unit-cell,</span>
+<span class="sd">        then divide by ``np.prod(tbt.bloch(elec))``.</span>
+<span class="sd">        When `norm` is anything else, it will be normalised to the number of atoms/orbitals</span>
+<span class="sd">        in the electrode.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -837,7 +846,7 @@
 <span class="sd">        sum : bool, optional</span>
 <span class="sd">           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.</span>
 <span class="sd">        norm : {&#39;none&#39;, &#39;atom&#39;, &#39;orbital&#39;, &#39;all&#39;}</span>
-<span class="sd">           whether the returned quantities are summed or normed by total number of orbitals.</span>
+<span class="sd">           whether the returned quantities are summed over all orbitals or normed by number of orbitals in the electrode.</span>
 <span class="sd">           Currently one cannot extract DOS per atom/orbital.</span>
 
 <span class="sd">        See Also</span>
@@ -849,11 +858,11 @@
         <span class="c1"># Hence the non-normalized quantity needs to be multiplied by</span>
         <span class="c1">#  product(bloch)</span>
         <span class="n">elec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">):</span>
             <span class="c1"># This is normalized per non-expanded unit-cell, so no need to do Bloch</span>
             <span class="n">fact</span> <span class="o">=</span> <span class="n">eV2Ry</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;no_u&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fact</span> <span class="o">=</span> <span class="n">eV2Ry</span>
+            <span class="n">fact</span> <span class="o">=</span> <span class="n">eV2Ry</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bloch</span><span class="p">(</span><span class="n">elec</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">sum</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_E</span><span class="p">(</span><span class="s2">&quot;DOS&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">fact</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1291,7 +1300,7 @@
 
             <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
             <span class="c1"># Shorten to the unit-cell if there are no more</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1606,7 +1615,7 @@
 <span class="sd">        .. math::</span>
 <span class="sd">            T_{\mu \nu}(E) = i [</span>
 <span class="sd">            (\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)</span>
-<span class="sd">            -:</span>
+<span class="sd">            -</span>
 <span class="sd">            (\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],</span>
 
 <span class="sd">        It is easy to show that the above matrix obeys :math:`T_{\mu\nu}=-T_{\nu\mu}`.</span>
@@ -2954,10 +2963,7 @@
                 <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  * no information available&quot;</span><span class="p">)</span>
                 <span class="k">continue</span>
 
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">bloch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bloch</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">bloch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
+            <span class="n">bloch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bloch</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">n_btd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_btd</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -3883,7 +3889,7 @@
     <span class="n">_write_default</span> <span class="o">=</span> <span class="n">write_tbtav</span>
 
 
-<span class="k">for</span> <span class="n">_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;shot_noise&quot;</span><span class="p">,</span> <span class="s2">&quot;noise_power&quot;</span><span class="p">,</span> <span class="s2">&quot;fano&quot;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;shot_noise&quot;</span><span class="p">,</span> <span class="s2">&quot;noise_power&quot;</span><span class="p">,</span> <span class="s2">&quot;fano&quot;</span><span class="p">):</span>
     <span class="nb">setattr</span><span class="p">(</span><span class="n">tbtavncSileTBtrans</span><span class="p">,</span> <span class="n">_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
 
