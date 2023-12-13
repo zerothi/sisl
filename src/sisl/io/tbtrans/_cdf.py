@@ -438,7 +438,10 @@ class _devncSileTBtrans(_ncSileTBtrans):
         elec : str or int
            bloch expansions of electrode
         """
-        return self._value("bloch", self._elec(elec))
+        try:
+            return self._value("bloch", self._elec(elec))
+        except Exception:
+            return _a.onesi(3)
 
     @lru_cache(maxsize=16)
     def n_btd(self, elec=None):

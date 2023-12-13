@@ -18,6 +18,8 @@ we hit release version 1.0.0.
 - added `offset` argument in `Geometry.add_vacuum` to enable shifting atomic coordinates
 
 ### Fixed
+- `BDOS` from TBtrans calculations now returns the full DOS of all (Bloch-expanded)
+  atoms
 - `Lattice` objects now issues a warning when created with 0-length vectors
 - HSX file reads should respect input geometry arguments
 - enabled slicing in matrix assignments, #650

@@ -434,7 +434,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         norm = norm.lower()
         if norm == "none":
             NORM = 1
-        elif norm in ["all", "atom", "orbital"]:
+        elif norm in ("all", "atom", "orbital"):
             NORM = self.no_d
         else:
             raise ValueError(
@@ -510,7 +510,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         norm = norm.lower()
         if norm == "none":
             NORM = 1.0
-        elif norm in ["all", "atom", "orbital"]:
+        elif norm in ("all", "atom", "orbital"):
             NORM = float(self.no_d)
         else:
             raise ValueError("Error on norm keyword in DOS request")
@@ -558,7 +558,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # atom is specified
         # Return the pivoting orbitals for the atom
         p = self.a2p(atoms)
-        if norm in ["orbital", "atom"]:
+        if norm in ("orbital", "atom"):
             NORM = float(len(p))
 
         if sum or isinstance(atoms, Integral):
@@ -686,11 +686,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def BDOS(self, elec=0, E=None, kavg=True, sum=True, norm="none") -> ndarray:
         r"""Bulk density of states (DOS) (1/eV).
 
-        Extract the bulk DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
+        Extract the bulk DOS from electrode `elec`.
 
         .. math::
 
            \mathrm{BDOS}_\mathfrak{el}(E) = -\frac{1}{\pi} \Im\mathbf{G}(E)
+
+        This returns the density of states for the full (Bloch-expanded) electrode.
+        When `norm` is 'none', the DOS is the full DOS for all electrode atoms (fully expanded),
+        if you want to get the DOS for the minimal (un-expanded) electrode unit-cell,
+        then divide by ``np.prod(tbt.bloch(elec))``.
+        When `norm` is anything else, it will be normalised to the number of atoms/orbitals
+        in the electrode.
 
         Parameters
         ----------
@@ -704,7 +711,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}
-           whether the returned quantities are summed or normed by total number of orbitals.
+           whether the returned quantities are summed over all orbitals or normed by number of orbitals in the electrode.
            Currently one cannot extract DOS per atom/orbital.
 
         See Also
@@ -716,11 +723,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Hence the non-normalized quantity needs to be multiplied by
         #  product(bloch)
         elec = self._elec(elec)
-        if norm in ["atom", "orbital", "all"]:
+        if norm in ("atom", "orbital", "all"):
             # This is normalized per non-expanded unit-cell, so no need to do Bloch
             fact = eV2Ry / len(self._dimension("no_u", elec))
         else:
-            fact = eV2Ry
+            fact = eV2Ry * np.prod(self.bloch(elec))
         if sum:
             return self._value_E("DOS", elec, kavg=kavg, E=E).sum(-1) * fact
         else:
@@ -1142,7 +1149,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             nsc = np.copy(geom.nsc)
             # Shorten to the unit-cell if there are no more
-            for i in [0, 1, 2]:
+            for i in (0, 1, 2):
                 if nsc[i] == 1:
                     isc[i] = 0
                 if not isc[i] is None:
@@ -2734,10 +2741,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 prnt("  * no information available")
                 continue
 
-            try:
-                bloch = self.bloch(elec)
-            except Exception:
-                bloch = [1] * 3
+            bloch = self.bloch(elec)
             try:
                 n_btd = self.n_btd(elec)
             except Exception:
@@ -3659,7 +3663,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
     _write_default = write_tbtav
 
 
-for _name in ["shot_noise", "noise_power", "fano"]:
+for _name in ("shot_noise", "noise_power", "fano"):
     setattr(tbtavncSileTBtrans, _name, None)
 
 
