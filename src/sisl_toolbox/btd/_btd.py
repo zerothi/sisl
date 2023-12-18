@@ -586,7 +586,7 @@ class DeviceGreen:
         slabel = fdf.get("SystemLabel", "siesta")
         # Test if the TBT output file exists:
         tbt = None
-        for end in ["TBT.nc", "TBT_UP.nc", "TBT_DN.nc"]:
+        for end in ("TBT.nc", "TBT_UP.nc", "TBT_DN.nc"):
             if Path(f"{slabel}.{end}").is_file():
                 tbt = f"{slabel}.{end}"
         if tbt is None:
@@ -634,16 +634,16 @@ class DeviceGreen:
 
             block = fdf.get(f"{ts_prefix}")
             Helec = fdf.get(f"{ts_prefix}.HS")
-            bulk = fdf.get(f"TS.Elecs.Bulk", True)
-            eta = fdf.get(f"TS.Elecs.Eta", 1e-3, unit="eV")
+            bulk = fdf.get("TS.Elecs.Bulk", True)
+            eta = fdf.get("TS.Elecs.Eta", 1e-3, unit="eV")
             bloch = [1, 1, 1]
             for i in range(3):
                 bloch[i] = fdf.get(f"{ts_prefix}.Bloch.A{i+1}", 1)
             if is_tbtrans:
                 block = fdf.get(f"{tbt_prefix}", block)
                 Helec = fdf.get(f"{tbt_prefix}.HS", Helec)
-                bulk = fdf.get(f"TBT.Elecs.Bulk", bulk)
-                eta = fdf.get(f"TBT.Elecs.Eta", eta, unit="eV")
+                bulk = fdf.get("TBT.Elecs.Bulk", bulk)
+                eta = fdf.get("TBT.Elecs.Eta", eta, unit="eV")
                 for i in range(3):
                     bloch[i] = fdf.get(f"{tbt_prefix}.Bloch.A{i+1}", bloch[i])
 
@@ -657,17 +657,17 @@ class DeviceGreen:
                 Helec = si.get_sile(Helec).read_hamiltonian()
             else:
                 raise ValueError(
-                    f"{self.__class__.__name__}.from_fdf could not find "
+                    f"{cls.__name__}.from_fdf could not find "
                     f"electrode HS in block: {prefix} ??"
                 )
 
             # Get semi-infinite direction
             semi_inf = None
-            for suf in ["-direction", "-dir", ""]:
+            for suf in ("-direction", "-dir", ""):
                 semi_inf = block_get(dic, f"semi-inf{suf}", semi_inf)
             if semi_inf is None:
                 raise ValueError(
-                    f"{self.__class__.__name__}.from_fdf could not find "
+                    f"{cls.__name__}.from_fdf could not find "
                     f"electrode semi-inf-direction in block: {prefix} ??"
                 )
             # convert to sisl infinite
@@ -676,9 +676,9 @@ class DeviceGreen:
                 semi_inf[1:], semi_inf[1:]
             )
             # Check that semi_inf is a recursive one!
-            if not semi_inf in ["-a", "+a", "-b", "+b", "-c", "+c"]:
+            if semi_inf not in ("-a", "+a", "-b", "+b", "-c", "+c"):
                 raise NotImplementedError(
-                    f"{self.__class__.__name__} does not implement other "
+                    f"{cls.__name__} does not implement other "
                     "self energies than the recursive one."
                 )
 
@@ -1070,6 +1070,7 @@ class DeviceGreen:
         return func()
 
     def _green_array(self):
+        """Calculate the Green function on a full np.array matrix"""
         n = len(self.pvt)
         G = np.empty([n, n], dtype=self._data.A[0].dtype)
 
@@ -1121,6 +1122,9 @@ class DeviceGreen:
         return G
 
     def _green_btd(self):
+        """Calculate the Green function only in the BTD matrix elements.
+
+        Stored in a `BlockMatrix` class."""
         G = BlockMatrix(self.btd)
         BI = G.block_indexer
         nb = len(BI)
@@ -1150,6 +1154,9 @@ class DeviceGreen:
         return G
 
     def _green_bm(self):
+        """Calculate the full Green function.
+
+        Stored in a `BlockMatrix` class."""
         G = self._green_btd()
         BI = G.block_indexer
         nb = len(BI)
@@ -1170,6 +1177,9 @@ class DeviceGreen:
         return G
 
     def _green_bd(self):
+        """Calculate the Green function only along the diagonal block matrices.
+
+        Stored in a `BlockMatrix` class."""
         G = BlockMatrix(self.btd)
         BI = G.block_indexer
         nb = len(BI)
@@ -1189,6 +1199,9 @@ class DeviceGreen:
         return G
 
     def _green_sparse(self):
+        """Calculate the Green function only in where the sparse H and S are non-zero.
+
+        Stored in a `scipy.sparse.csr_matrix` class."""
         # create a sparse matrix
         G = self.H.Sk(format="csr", dtype=self._data.A[0].dtype)
         # pivot the matrix
@@ -1254,6 +1267,9 @@ class DeviceGreen:
         return G
 
     def _green_diag_block(self, idx):
+        """Calculate the Green function only on specific (neighbouring) diagonal block matrices.
+
+        Stored in a `np.array` class."""
         nb = len(self.btd)
         nbm1 = nb - 1
 
@@ -1316,6 +1332,9 @@ class DeviceGreen:
         return blocks, G
 
     def _green_column(self, idx):
+        """Calculate the full Green function column for a subset of columns.
+
+        Stored in a `np.array` class."""
         # To calculate the full Gf for specific column indices
         # These indices should maximally be spanning 2 blocks
         nb = len(self.btd)
@@ -1396,7 +1415,13 @@ class DeviceGreen:
         return G
 
     def spectral(
-        self, elec, E, k=(0, 0, 0), format="array", method="column", herm=True
+        self,
+        elec,
+        E,
+        k=(0, 0, 0),
+        format: str = "array",
+        method: str = "column",
+        herm: bool = True,
     ):
         r"""Calculate the spectral function for a given `E` and `k` point from a given electrode
 
@@ -1426,6 +1451,11 @@ class DeviceGreen:
            Depending on the size of the BTD blocks one may be faster than the
            other. For large systems you are recommended to time the different methods
            and stick with the fastest one, they are numerically identical.
+        herm:
+           The spectral function is a Hermitian matrix, by default (True), the methods
+           that can utilize the Hermitian property only calculates the lower triangular
+           part of :math:`\mathbf A`, and then copies the Hermitian to the upper part.
+           By setting this to `False` the entire matrix is explicitly calculated.
         """
         # the herm flag is considered useful for testing, there is no need to
         # play with it. So it isn't documented.
@@ -1448,11 +1478,23 @@ class DeviceGreen:
         return func(elec, herm)
 
     def _spectral_column_array(self, elec, herm):
+        """Spectral function from a column array (`herm` not used)"""
         G = self._green_column(self.elecs_pvt_dev[elec].ravel())
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ dagger(G)
 
     def _spectral_column_bm(self, elec, herm):
+        """Spectral function from a column array
+
+        Returns a `BlockMatrix` class with all elements calculated.
+
+        Parameters
+        ----------
+        herm: bool
+           if true, only calculate the lower triangular part, and copy
+           the Hermitian part to the upper triangular part.
+           Else, calculate the full matrix via MM.
+        """
         G = self._green_column(self.elecs_pvt_dev[elec].ravel())
         nb = len(self.btd)
 
@@ -1487,6 +1529,17 @@ class DeviceGreen:
         return btd
 
     def _spectral_column_btd(self, elec, herm):
+        """Spectral function from a column array
+
+        Returns a `BlockMatrix` class with only BTD blocks calculated.
+
+        Parameters
+        ----------
+        herm: bool
+           if true, only calculate the lower triangular part, and copy
+           the Hermitian part to the upper triangular part.
+           Else, calculate the full matrix via MM.
+        """
         G = self._green_column(self.elecs_pvt_dev[elec].ravel())
         nb = len(self.btd)
 
@@ -1781,7 +1834,14 @@ class DeviceGreen:
         return DOS[idx], U[:, idx]
 
     def scattering_state(
-        self, elec, E, k=(0, 0, 0), cutoff=0.0, method="svd:gamma", *args, **kwargs
+        self,
+        elec,
+        E,
+        k=(0, 0, 0),
+        cutoff=0.0,
+        method: str = "svd:gamma",
+        *args,
+        **kwargs,
     ):
         r"""Calculate the scattering states for a given `E` and `k` point from a given electrode
 
@@ -2063,7 +2123,7 @@ class DeviceGreen:
         return S
 
     def eigenchannel(self, state, elec_to, ret_coeff=False):
-        r""" Calculate the eigen channel from scattering states entering electrodes `elec_to`
+        r""" Calculate the eigenchannel from scattering states entering electrodes `elec_to`
 
         The energy and k-point is inferred from the `state` object as returned from
         `scattering_state`.
