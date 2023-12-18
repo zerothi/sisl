@@ -2811,12 +2811,12 @@ class Geometry(
 
         By specifying `what` one can control whether it should be:
 
-        * ``xyz|position``: Center of coordinates (default)
+        * ``cop|xyz|position``: Center of coordinates (default)
         * ``mm:xyz`` or ``mm(xyz)``: Center of minimum/maximum of coordinates
-        * ``mass``: Center of mass
-        * ``mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it
+        * ``com|mass``: Center of mass
+        * ``com:pbc|mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it
             may likely be because of a completely periodic system with no true center of mass
-        * ``cell``: Center of cell
+        * ``cou|cell``: Center of cell
 
         Parameters
         ----------
@@ -2825,7 +2825,8 @@ class Geometry(
         what : {'xyz', 'mm:xyz', 'mass', 'mass:pbc', 'cell'}
             determine which center to calculate
         """
-        if "cell" == what:
+        what = what.lower()
+        if what in ("cou", "cell", "lattice"):
             return self.lattice.center()
 
         if atoms is None:
@@ -2833,7 +2834,7 @@ class Geometry(
         else:
             g = self.sub(atoms)
 
-        if "mass:pbc" == what:
+        if what in ("com:pbc", "mass:pbc"):
             mass = g.mass
             sum_mass = mass.sum()
             # the periodic center of mass is determined by transfering all
@@ -2847,14 +2848,14 @@ class Geometry(
             avg_theta = np.arctan2(-avg_sin, -avg_cos) / (2 * np.pi) + 0.5
             return avg_theta @ g.lattice.cell
 
-        if "mass" == what:
+        if what in ("com", "mass"):
             mass = g.mass
-            return dot(mass, g.xyz) / np.sum(mass)
+            return mass @ g.xyz / mass.sum()
 
         if what in ("mm:xyz", "mm(xyz)"):
             return (g.xyz.min(0) + g.xyz.max(0)) / 2
 
-        if what in ("xyz", "position"):
+        if what in ("cop", "xyz", "position"):
             return np.mean(g.xyz, axis=0)
 
         raise ValueError(
