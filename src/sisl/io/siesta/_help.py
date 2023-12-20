@@ -4,9 +4,9 @@
 import numpy as np
 
 import sisl._array as _a
-from sisl.sparse import _rows_and_cols
-from sisl.messages import warn
 from sisl import SislError
+from sisl.messages import warn
+from sisl.sparse import _rows_and_cols
 
 try:
     from . import _siesta
