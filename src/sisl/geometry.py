@@ -373,7 +373,7 @@ class Geometry(
         atoms = _a.asarray(atoms)
         if atoms.size == 0:
             return _a.asarrayl([])
-        elif atoms.dtype == bool_:
+        if atoms.dtype == bool_:
             return atoms.nonzero()[0]
         return atoms
 

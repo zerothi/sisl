@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.14.4] - YYYY-MM-DD
 
 ### Added
+- `SparseCSR.toarray` to comply with array handling (equivalent to `todense`)
 - enabled `Grid.to|new` with the most basic stuff
   str|Path|Grid|pyamg
 - `Shape.translate`, to easily translate entire shape constructs, #655
@@ -18,6 +19,11 @@ we hit release version 1.0.0.
 - added `offset` argument in `Geometry.add_vacuum` to enable shifting atomic coordinates
 
 ### Fixed
+- `SparseCSR` ufunc handling, in some corner cases could the dtype casting do things
+  wrongly.
+- fixed corner cases where the `SparseCSR.diags(offsets=)` would add elements
+  in non-existing elements
+- some cases of writing orthogonal matrices to TSHS/nc file formats #661
 - `BDOS` from TBtrans calculations now returns the full DOS of all (Bloch-expanded)
   atoms
 - `Lattice` objects now issues a warning when created with 0-length vectors
@@ -30,6 +36,8 @@ we hit release version 1.0.0.
 
 ### Changed
 - `vacuum` is now an optional parameter for all ribbon structures
+- enabled `array_fill_repeat` with custom axis, to tile along specific
+  dimensions
 
 
 ## [0.14.3] - 2023-11-07

@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import math as m
+import operator
 import sys
 
 import numpy as np
@@ -19,14 +20,18 @@ pytestmark = [
 
 
 @pytest.fixture
-def setup():
-    class t:
-        def __init__(self):
-            self.s1 = SparseCSR((10, 100), dtype=np.int32)
-            self.s1d = SparseCSR((10, 100))
-            self.s2 = SparseCSR((10, 100, 2))
+def s1():
+    return SparseCSR((10, 100), dtype=np.int32)
 
-    return t()
+
+@pytest.fixture
+def s1d():
+    return SparseCSR((10, 100))
+
+
+@pytest.fixture
+def s2():
+    return SparseCSR((10, 100, 2))
 
 
 def test_indices():
@@ -62,6 +67,13 @@ def test_fail_init2():
         SparseCSR((data, indices, indptr, indptr), shape=(100, 20, 20))
 
 
+def test_init_csr_inputs():
+    data = np.empty([2, 2], np.float64)
+    indices = np.arange(2)
+    indptr = np.arange(3)
+    SparseCSR((data, indices, indptr))
+
+
 def test_fail_align1():
     s1 = SparseCSR((10, 100), dtype=np.int32)
     s2 = SparseCSR((20, 100), dtype=np.int32)
@@ -80,12 +92,11 @@ def test_set_get1():
     assert np.all(s1[1, [1, 6], 1] == [2, 0])
 
 
-def test_init1(setup):
-    str(setup.s1)
-    assert setup.s1.dtype == np.int32
-    assert setup.s2.dtype == np.float64
-    assert np.allclose(setup.s1.data, setup.s1.data)
-    assert np.allclose(setup.s2.data, setup.s2.data)
+def test_init1(s1, s2, s1d):
+    str(s1)
+    assert s1.dtype == np.int32
+    assert s1d.dtype == np.float64
+    assert s2.dtype == np.float64
 
 
 def test_init2():
@@ -180,43 +191,56 @@ def test_extend1():
     assert np.allclose(csr[0, [0, 1, 2]], [0, 1, 2])
 
 
-def test_diag1():
+def test_diags_1():
     csr = SparseCSR((10, 10), nnzpr=1, dtype=np.int32)
     csr1 = csr.diags(10)
     assert csr1.shape[0] == 10
     assert csr1.shape[1] == 10
     assert csr1.shape[2] == 1
     assert csr1.nnz == 10
+    assert np.allclose(csr1.toarray()[..., 0], np.diag(np.full(10, 10)))
     csr2 = csr.diags(10)
     csr3 = csr.diags(np.zeros(10, np.int32))
     assert csr2.spsame(csr3)
 
 
-def test_diag2():
+def test_diags_2():
     csr = SparseCSR((10, 10), dim=3, nnzpr=1, dtype=np.int32)
     csr1 = csr.diags(10, dim=1)
-    csr2 = csr.diags(10, dim=2)
+    csr2 = csr.diags(10, dim=2, dtype=np.int16)
     assert csr1.shape[2] == 1
     assert csr2.shape[2] == 2
     assert csr1.nnz == 10
     assert csr2.nnz == 10
     assert csr1.spsame(csr2)
+    # TODO fix diags such that it won't affect
+    assert csr1.dtype == np.int64
+    assert csr2.dtype == np.int16
 
 
-def test_diag3():
-    csr = SparseCSR((10, 10), dim=3, nnzpr=1, dtype=np.int32)
-    csr1 = csr.diags(10, dim=1, dtype=np.int16)
-    csr2 = csr.diags(10, dim=2, dtype=np.float64)
-    assert csr1.shape[2] == 1
-    assert csr2.shape[2] == 2
-    assert csr1.nnz == 10
-    assert csr2.nnz == 10
-    assert csr1.dtype == np.int16
-    assert csr2.dtype == np.float64
+def test_diags_offsets():
+    csr = SparseCSR((10, 10), dtype=np.int32)
+    m = csr.diags(1)
+    assert m.nnz == 10
+    assert np.sum(m) == 10
+    m = csr.diags(1, offsets=1)
+    assert m.nnz == 9
+    assert np.sum(m) == 9
+    m = csr.diags(1, offsets=2)
+    assert m.nnz == 8
+    assert np.sum(m) == 8
+    m = csr.diags(1, offsets=-2)
+    assert m.nnz == 8
+    assert np.sum(m) == 8
 
 
-def test_create1(setup):
-    s1d = setup.s1d
+def test_diags_multiple_diagonals():
+    csr = SparseCSR((10, 10), dim=2, dtype=np.int32)
+    m = csr.diags([[1, 2]])
+    assert np.allclose(m[0, 0], [1, 2])
+
+
+def test_create1(s1d):
     s1d[0, [1, 2, 3]] = 1
     assert s1d.nnz == 3
     s1d[2, [1, 2, 3]] = 1
@@ -231,8 +255,7 @@ def test_create1(setup):
     s1d.empty()
 
 
-def test_create2(setup):
-    s1 = setup.s1
+def test_create2(s1):
     assert len(s1) == s1.shape[0]
     for i in range(10):
         j = range(i * 4, i * 4 + 3)
@@ -241,11 +264,9 @@ def test_create2(setup):
         for jj in j:
             assert s1[0, jj] == i
             assert s1[1, jj] == 0
-    s1.empty()
 
 
-def test_create3(setup):
-    s1 = setup.s1
+def test_create3(s1):
     for i in range(10):
         j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
@@ -255,90 +276,91 @@ def test_create3(setup):
         for jj in j:
             assert s1[0, jj] == i
             assert s1[1, jj] == 0
-    s1.empty()
 
 
-def test_create_1d_bcasting_data_1d(setup):
-    s1 = setup.s1.copy()
+def test_create_1d_bcasting_data_1d(s1):
+    s2 = s1.copy()
     for i in range(10):
         j = range(i * 4, i * 4 + 3)
-        s1[0, j] = i
-        s1[1, j] = i
-        s1[2, j] = i
-        s1[3, j] = i
+        s2[0, j] = i
+        s2[1, j] = i
+        s2[2, j] = i
+        s2[3, j] = i
 
-    s2 = setup.s1.copy()
+    s3 = s1.copy()
     for i in range(10):
         j = np.arange(i * 4, i * 4 + 3).reshape(1, -1)
-        s2[np.arange(4).reshape(-1, 1), j] = i
+        s3[np.arange(4).reshape(-1, 1), j] = i
 
-    assert s1.spsame(s2)
-    assert np.sum(s1 - s2) == 0
+    assert s2.spsame(s3)
+    assert np.sum(s2 - s3) == 0
 
 
 @pytest.mark.xfail(
     sys.platform.startswith("win"), reason="Unknown windows error in b-casting"
 )
-def test_create_1d_bcasting_data_2d(setup):
-    s1 = setup.s1.copy()
+def test_create_1d_bcasting_data_2d(s1):
+    s2 = s1.copy()
     data = np.random.randint(1, 100, (4, 3))
     for i in range(10):
         j = range(i * 4, i * 4 + 3)
-        s1[0, j] = data[0, :]
-        s1[1, j] = data[1, :]
-        s1[2, j] = data[2, :]
-        s1[3, j] = data[3, :]
+        s2[0, j] = data[0, :]
+        s2[1, j] = data[1, :]
+        s2[2, j] = data[2, :]
+        s2[3, j] = data[3, :]
 
-    s2 = setup.s1.copy()
+    s3 = s1.copy()
     for i in range(10):
         j = np.arange(i * 4, i * 4 + 3).reshape(1, -1)
-        s2[np.arange(4).reshape(-1, 1), j] = data
+        s3[np.arange(4).reshape(-1, 1), j] = data
 
-    assert s1.spsame(s2)
-    assert np.sum(s1 - s2) == 0
+    assert s2.spsame(s3)
+    assert np.sum(s2 - s3) == 0
 
 
-def test_create_1d_diag(setup):
-    s1 = setup.s1.copy()
+def test_create_1d_diag(s1):
+    s2 = s1.copy()
     data = np.random.randint(1, 100, len(s1))
     d = np.arange(len(s1))
     for i in d:
-        s1[i, i] = data[i]
+        s2[i, i] = data[i]
 
-    s2 = setup.s1.copy()
-    s2[d, d] = data
+    s3 = s1.copy()
+    s3[d, d] = data
 
-    assert s1.spsame(s2)
-    assert np.sum(s1 - s2) == 0
+    assert s2.spsame(s3)
+    assert np.sum(s2 - s3) == 0
 
 
-def test_create_2d_diag_0d(setup):
-    s1 = setup.s2.copy()
+def test_create_2d_diag_0d(s2):
+    S1 = s2.copy()
     data = 1
-    d = np.arange(len(s1))
+    d = np.arange(len(s2))
     for i in d:
-        s1[i, i] = data
-    s2 = setup.s2.copy()
-    s2[d, d] = data
-    s3 = setup.s2.copy()
-    s3[d, d, 0] = data
-    s3[d, d, 1] = data
+        S1[i, i] = data
+    S2 = s2.copy()
+    S2[d, d] = data
 
-    assert s1.spsame(s2)
-    assert np.sum(s1 - s2) == 0
-    assert s1.spsame(s3)
-    assert np.sum(s1 - s3) == 0
+    S3 = s2.copy()
+    S3[d, d, 0] = data
+    S3[d, d, 1] = data
+
+    assert S1.spsame(S2)
+    assert np.sum(S1 - S2) == 0
+    assert S1.spsame(S3)
+    assert np.sum(S1 - S3) == 0
 
 
-def test_create_2d_diag_1d(setup):
-    s1 = setup.s2.copy()
+def test_create_2d_diag_1d(s2):
+    s1 = s2.copy()
+    s3 = s2.copy()
+
     data = np.random.randint(1, 100, len(s1))
     d = np.arange(len(s1))
     for i in d:
         s1[i, i] = data[i]
-    s2 = setup.s2.copy()
+
     s2[d, d] = data
-    s3 = setup.s2.copy()
     s3[d, d, 0] = data
     s3[d, d, 1] = data
 
@@ -348,15 +370,16 @@ def test_create_2d_diag_1d(setup):
     assert np.sum(s1 - s3) == 0
 
 
-def test_create_2d_diag_2d(setup):
-    s1 = setup.s2.copy()
+def test_create_2d_diag_2d(s2):
+    s1 = s2.copy()
+    s3 = s2.copy()
+
     data = np.random.randint(1, 100, len(s1) * 2).reshape(-1, 2)
     d = np.arange(len(s1))
     for i in d:
         s1[i, i] = data[i]
-    s2 = setup.s2.copy()
+
     s2[d, d] = data
-    s3 = setup.s2.copy()
     s3[d, d, 0] = data[:, 0]
     s3[d, d, 1] = data[:, 1]
 
@@ -366,8 +389,10 @@ def test_create_2d_diag_2d(setup):
     assert np.sum(s1 - s3) == 0
 
 
-def test_create_2d_data_2d(setup):
-    s1 = setup.s2.copy()
+def test_create_2d_data_2d(s2):
+    s1 = s2.copy()
+    s3 = s2.copy()
+
     # matrix assignment
     I = np.arange(len(s1) // 2)
     data = np.random.randint(1, 100, I.size**2).reshape(I.size, I.size)
@@ -376,11 +401,10 @@ def test_create_2d_data_2d(setup):
         s1[i, I, 1] = data[i]
 
     I.shape = (-1, 1)
-    s2 = setup.s2.copy()
+
     s2[I, I.T, 0] = data
     s2[I, I.T, 1] = data
 
-    s3 = setup.s2.copy()
     s3[I, I.T] = data[:, :, None]
 
     assert s1.spsame(s2)
@@ -389,8 +413,9 @@ def test_create_2d_data_2d(setup):
     assert np.sum(s1 - s3) == 0
 
 
-def test_create_2d_data_3d(setup):
-    s1 = setup.s2.copy()
+def test_create_2d_data_3d(s2):
+    s1 = s2.copy()
+
     # matrix assignment
     I = np.arange(len(s1) // 2)
     data = np.random.randint(1, 100, I.size**2 * 2).reshape(I.size, I.size, 2)
@@ -398,56 +423,49 @@ def test_create_2d_data_3d(setup):
         s1[i, I] = data[i]
 
     I.shape = (-1, 1)
-    s2 = setup.s2.copy()
     s2[I, I.T] = data
 
     assert s1.spsame(s2)
     assert np.sum(s1 - s2) == 0
 
 
-def test_copy_dims(setup):
-    s1 = setup.s2.copy(dims=0)
-    assert np.allclose(setup.s2._D[:, 0], s1._D[:, 0])
-    s1 = setup.s2.copy(dims=1)
-    assert np.allclose(setup.s2._D[:, 1], s1._D[:, 0])
+def test_copy_dims(s2):
+    s2[2, 2] = [2, 3]
+    s1 = s2.copy(dims=0)
+    assert np.allclose(s2._D[:, 0], s1._D[:, 0])
+    s1 = s2.copy(dims=1)
+    assert np.allclose(s2._D[:, 1], s1._D[:, 0])
 
-    s1 = setup.s2.copy(dims=[1, 0])
-    assert np.allclose(setup.s2._D[:, 1], s1._D[:, 0])
-    assert np.allclose(setup.s2._D[:, 0], s1._D[:, 1])
+    s1 = s2.copy(dims=[1, 0])
+    assert np.allclose(s2._D[:, 1], s1._D[:, 0])
+    assert np.allclose(s2._D[:, 0], s1._D[:, 1])
 
 
-def test_fail_data_3d_to_1d(setup):
-    s2 = setup.s2
+def test_fail_data_3d_to_1d(s2):
     # matrix assignment
     I = np.arange(len(s2) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size * 2).reshape(I.size, 1, 2)
     with pytest.raises(ValueError):
         s2[I, I.T] = data
-    s2.empty()
 
 
-def test_fail_data_2d_to_2d(setup):
-    s2 = setup.s2
+def test_fail_data_2d_to_2d(s2):
     # matrix assignment
     I = np.arange(len(s2) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size**2).reshape(I.size, I.size)
     with pytest.raises(ValueError):
         s2[I, I.T] = data
-    s2.empty()
 
 
-def test_fail_data_2d_to_3d(setup):
-    s2 = setup.s2
+def test_fail_data_2d_to_3d(s2):
     # matrix assignment
     I = np.arange(len(s2) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size**2).reshape(I.size, I.size)
     with pytest.raises(ValueError):
         s2[I, I.T, [0, 1]] = data
-    s2.empty()
 
 
-def test_finalize1(setup):
-    s1 = setup.s1
+def test_finalize1(s1):
     s1[0, [1, 2, 3]] = 1
     s1[2, [1, 2, 3]] = 1.0
     s1[1, [3, 2, 1]] = 1.0
@@ -467,8 +485,7 @@ def test_finalize1(setup):
     assert not s1.finalized
 
 
-def test_finalize2(setup):
-    s1 = setup.s1
+def test_finalize2(s1):
     s1[0, [1, 2, 3]] = 1
     s1[2, [1, 2, 3]] = 1.0
     s1[1, [3, 2, 1]] = 1.0
@@ -483,11 +500,9 @@ def test_finalize2(setup):
     assert np.allclose(s1.col[p[1] : p[1] + n[1]], [3, 2, 1])
     assert not s1.finalized
     assert len(s1.col) == 9
-    s1.empty()
 
 
-def test_iterator1(setup):
-    s1 = setup.s1
+def test_iterator1(s1):
     s1[0, [1, 2, 3]] = 1
     s1[2, [1, 2, 4]] = 1.0
     e = [[1, 2, 3], [], [1, 2, 4]]
@@ -513,11 +528,8 @@ def test_iterator1(setup):
         assert j in e[i]
         assert d == 1.0
 
-    s1.empty()
 
-
-def test_iterator2(setup):
-    s1 = setup.s1
+def test_iterator2(s1):
     e = [[1, 2, 3], [], [1, 2, 4]]
     s1[0, [1, 2, 3]] = 1
     s1[2, [1, 2, 4]] = 1.0
@@ -535,11 +547,8 @@ def test_iterator2(setup):
             assert c in e[r]
             assert d == 1.0
 
-    s1.empty()
 
-
-def test_iterator3(setup):
-    s1 = setup.s1
+def test_iterator3(s1):
     e = [[1, 2, 3], [], [1, 2, 4]]
     s1[0, [1, 2, 3]] = 1
     s1[2, [1, 2, 4]] = 1.0
@@ -560,11 +569,9 @@ def test_iterator3(setup):
             assert c in [0, 1]
             n += 1
         assert n == nvals
-    s1.empty()
 
 
-def test_delitem1(setup):
-    s1 = setup.s1
+def test_delitem1(s1):
     s1[0, [1, 2, 3]] = 1
     assert s1.nnz == 3
     del s1[0, 1]
@@ -584,42 +591,34 @@ def test_delitem1(setup):
         assert s1[i, 0] == 0
     del s1[range(2), range(3), 0]
     assert s1.nnz == 0
-    s1.empty()
 
 
-def test_contains1(setup):
-    s1 = setup.s1
+def test_contains1(s1):
     s1[0, [1, 2, 3]] = 1
     assert s1.nnz == 3
     assert [0, 1] in s1
     assert [0, [1, 3]] in s1
-    s1.empty()
 
 
-def test_sub1(setup):
-    s1 = setup.s1
+def test_sub1(s1):
     s1[0, [1, 2, 3]] = 1
     assert s1.nnz == 3
     s1 = s1.sub([0, 1])
     assert s1.nnz == 1
     assert s1.shape[0] == 2
     assert s1.shape[1] == 2
-    s1.empty()
 
 
-def test_remove1(setup):
-    s1 = setup.s1
+def test_remove1(s1):
     s1[0, [1, 2, 3]] = 1
     assert s1.nnz == 3
     s2 = s1.remove([1])
     assert s2.nnz == 2
     assert s2.shape[0] == s1.shape[0] - 1
     assert s2.shape[1] == s1.shape[1] - 1
-    s1.empty()
 
 
-def test_eliminate_zeros1(setup):
-    s1 = setup.s1
+def test_eliminate_zeros1(s1):
     s1[0, [1, 2, 3]] = 1
     s1[1, [1, 2, 3]] = 0
     assert s1.nnz == 6
@@ -628,11 +627,9 @@ def test_eliminate_zeros1(setup):
     assert s1[1, 1] == 0
     assert s1[1, 2] == 0
     assert s1[1, 3] == 0
-    s1.empty()
 
 
-def test_eliminate_zeros_tolerance(setup):
-    s1 = setup.s1
+def test_eliminate_zeros_tolerance(s1):
     s1[0, [1, 2, 3]] = 1
     s1[1, [1, 2, 3]] = 2
     assert s1.nnz == 6
@@ -643,10 +640,9 @@ def test_eliminate_zeros_tolerance(setup):
     assert s1[0, 1] == 0
     assert s1[0, 2] == 0
     assert s1[0, 3] == 0
-    s1.empty()
 
 
-def test_eliminate_zeros_tolerance_ndim(setup):
+def test_eliminate_zeros_tolerance_ndim():
     s = SparseCSR((3, 3, 3))
     s[1, [0, 1, 2]] = 0.1
     s[1, [0, 1, 2], 1] = 0.05
@@ -662,9 +658,7 @@ def test_eliminate_zeros_tolerance_ndim(setup):
     assert s.nnz == 0
 
 
-def test_spsame(setup):
-    s1 = setup.s1
-    s2 = setup.s2
+def test_spsame(s1, s2):
     s1[0, [1, 2, 3]] = 1
     s2[0, [1, 2, 3]] = (1, 1)
     assert s1.spsame(s2)
@@ -672,20 +666,15 @@ def test_spsame(setup):
     assert not s1.spsame(s2)
     s1.align(s2)
     assert s1.spsame(s2)
-    s1.empty()
-    s2.empty()
 
 
 @pytest.mark.xfail(reason="same index assignment in single statement")
-def test_set_same_index(setup):
-    s1 = setup.s1
+def test_set_same_index(s1):
     s1[0, [1, 1]] = 1
     assert s1.nnz == 1
-    s1.empty()
 
 
-def test_delete_col1(setup):
-    s1 = setup.s1
+def test_delete_col1(s1):
     nc = s1.shape[1]
     s1[0, [1, 3]] = 1
     s1[1, [1, 2, 3]] = 1
@@ -702,11 +691,9 @@ def test_delete_col1(setup):
     s1.delete_columns(100000, True)
     assert s1.nnz == 2
     assert s1.shape[1] == nc - 1
-    s1.empty()
 
 
-def test_delete_col2(setup):
-    s1 = setup.s1
+def test_delete_col2(s1):
     nc = s1.shape[1]
     s1[1, [1, 2, 3]] = 1
     assert s1.nnz == 3
@@ -716,12 +703,10 @@ def test_delete_col2(setup):
     s1.delete_columns(2, True)
     assert s1.nnz == 1
     assert s1.shape[1] == nc - 1
-    s1.empty()
 
 
-def test_delete_col3(setup):
-    s1 = setup.s1.copy()
-    s2 = setup.s1.copy()
+def test_delete_col3(s1):
+    s2 = s1.copy()
     nc = s1.shape[1]
     for i in range(10):
         s1[i, [3, 2, 1]] = 1
@@ -753,8 +738,7 @@ def test_delete_col4():
     assert s1.spsame(s2)
 
 
-def test_delete_col5(setup):
-    s1 = setup.s1
+def test_delete_col5(s1):
     nc = s1.shape[1]
     s1[1, [1, 2, 3]] = 1
     assert s1.nnz == 3
@@ -770,11 +754,9 @@ def test_delete_col5(setup):
     s1.delete_columns(100000, True)
     assert s1.nnz == 1
     assert s1.shape[1] == nc - 1
-    s1.empty()
 
 
-def test_delete_col6(setup):
-    s1 = setup.s1
+def test_delete_col6(s1):
     nc = s1.shape[1]
     for i in range(3):
         s1[i, [1, 2, 3]] = 1
@@ -782,11 +764,9 @@ def test_delete_col6(setup):
     s1.delete_columns(2)
     assert s1.nnz == 6
     assert s1.shape[1] == nc - 1
-    s1.empty()
 
 
-def test_translate_col1(setup):
-    s1 = setup.s1
+def test_translate_col1(s1):
     s1[1, 1] = 1
     s1[1, 2] = 2
     s1[1, 3] = 3
@@ -795,11 +775,9 @@ def test_translate_col1(setup):
     assert s1.nnz == 3
     assert s1[1, 1] == 3
     assert s1[1, 3] == 1
-    s1.empty()
 
 
-def test_translate_col2(setup):
-    s1 = setup.s1
+def test_translate_col2(s1):
     s1[1, 1] = 1
     s1[1, 2] = 2
     s1[1, 3] = 3
@@ -808,11 +786,9 @@ def test_translate_col2(setup):
     assert s1.nnz == 2
     assert s1[1, 3] == 1
     assert s1[1, 1] == 0
-    s1.empty()
 
 
-def test_translate_col3(setup):
-    s1 = setup.s1
+def test_translate_col3(s1):
     for i in range(3):
         s1[i, 1] = 1
         s1[i, 2] = 2
@@ -828,11 +804,9 @@ def test_translate_col3(setup):
     for i in range(3):
         assert s1[i, 1] == 1
         assert s1[i, 3] == 3
-    s1.empty()
 
 
-def test_translate_col4(setup):
-    s1 = setup.s1
+def test_translate_col4(s1):
     nc = s1.shape[1]
     for i in range(3):
         s1[i, 1] = 1
@@ -851,11 +825,9 @@ def test_translate_col4(setup):
     for i in range(3):
         assert s1[i, 1] == 0
         assert s1[i, 3] == 3
-    s1.empty()
 
 
-def test_edges1(setup):
-    s1 = setup.s1
+def test_edges1(s1):
     s1[1, 1] = 1
     s1[1, 2] = 2
     s1[1, 3] = 3
@@ -863,11 +835,9 @@ def test_edges1(setup):
     assert np.all(s1.edges(1, exclude=[1]) == [2, 3])
     assert np.all(s1.edges(1, exclude=2) == [1, 3])
     assert len(s1.edges(2)) == 0
-    s1.empty()
 
 
-def test_nonzero1(setup):
-    s1 = setup.s1
+def test_nonzero1(s1):
     s1[2, 1] = 1
     s1[1, 1] = 1
     s1[1, 2] = 2
@@ -887,11 +857,9 @@ def test_nonzero1(setup):
     r, c = s1.nonzero(rows=[0, 1])
     assert np.all(r == [1, 1, 1])
     assert np.all(c == [1, 2, 3])
-    s1.empty()
 
 
-def test_op1(setup):
-    s1 = setup.s1
+def test_op1(s1):
     for i in range(10):
         j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
@@ -925,11 +893,9 @@ def test_op1(setup):
         for jj in j:
             assert s1[0, jj] == i**2
             assert s1[1, jj] == 0
-    s1.empty()
 
 
-def test_op2(setup):
-    s1 = setup.s1
+def test_op2(s1):
     for i in range(10):
         j = range(i * 4, i * 4 + 3)
         s1[0, j] = i
@@ -996,12 +962,10 @@ def test_op2(setup):
             assert s[0, jj], 2 ** s1[0 == jj]
             assert s1[0, jj] == i
             assert s[1, jj] == 0
-    s1.empty()
 
 
-def test_op_csr(setup):
+def test_op_csr(s1):
     csr = sc.sparse.csr_matrix((10, 100), dtype=np.int32)
-    s1 = setup.s1
     for i in range(10):
         j = range(i + 2)
         s1[0, j] = i
@@ -1063,7 +1027,6 @@ def test_op_csr(setup):
             assert s1[0, jj] == i
             assert s[1, jj] == 0
         assert s[0, 0] == i**2
-    s1.empty()
 
 
 def test_op3():
@@ -1076,6 +1039,7 @@ def test_op3():
     for op in ["add", "sub", "mul", "pow"]:
         func = getattr(S, f"__{op}__")
         s = func(1)
+        # 1 will promote to whatever numpy will cast it to
         assert s.dtype == np.int32
         s = func(1.0)
         assert s.dtype == np.float64
@@ -1140,6 +1104,141 @@ def test_op4():
     assert s.dtype == np.float64
     s = 1.0j**S
     assert s.dtype == np.complex128
+
+
+def binary():
+    op = operator
+    ops = [
+        op.mod,
+        op.mul,
+        op.add,
+        op.sub,
+        op.floordiv,
+        op.truediv,
+    ]
+    return ops
+
+
+def binary_int():
+    op = operator
+    return [op.pow]
+
+
+def unary():
+    op = operator
+    ops = [
+        op.abs,
+        op.neg,
+        op.pos,
+    ]
+    return ops
+
+
+@pytest.fixture(scope="module")
+def matrix_sisl_csr():
+    matrix = []
+
+    def add3(m):
+        matrix.append(m)
+        m = m.copy()
+        m.finalize(sort=False)
+        matrix.append(m)
+        m = m.copy()
+        m.finalize(sort=True)
+        matrix.append(m)
+
+    # diagonal
+    m = SparseCSR((10, 80), dtype=np.int32)
+    for i in range(10):
+        m[i, i] = 1
+    add3(m)
+
+    # not completely full (some empty ncol)
+
+    m = SparseCSR((10, 80), dtype=np.int32)
+    m[0, [1, 0]] = [12, 2]
+    m[2, 2] = 1
+    m[4, [4, 0]] = [2, 3]
+    m[5, [5, 0]] = [3, 5]
+    add3(m)
+
+    # all more than 1 coupling, and not sorted
+    m = SparseCSR((10, 80), dtype=np.int32)
+    m[0, [1, 0]] = [11, 0]
+    m[1, [10, 50, 20]] = [14, 20, 43]
+    m[2, [4, 7, 3, 1]] = [2, 5, 4, 10]
+    m[3, [4, 7, 3, 1]] = [2, 5, 4, 10]
+    m[4, [1, 5, 3, 21]] = [2, 5, 4, 10]
+    m[5, [53, 52, 3, 21]] = [31, 6, 7, 12]
+    m[6, [43, 32, 1, 6]] = [3, 6, 7, 16]
+    m[7, [65, 44, 3, 2]] = [3, 6, 73, 31]
+    m[8, [66, 45, 6, 8]] = [4, 3, 12, 357]
+    m[9, [55, 44, 33, 22]] = [4, 3, 11, 27]
+    add3(m)
+    return matrix
+
+
+@pytest.fixture(scope="module")
+def matrix_csr_matrix():
+    matrix = []
+
+    csr_matrix = sc.sparse.csr_matrix
+
+    def add3(m):
+        matrix.append(m)
+        m = m.copy()
+        m.sort_indices()
+        matrix.append(m)
+
+    # diagonal
+    m = csr_matrix((10, 80), dtype=np.int32)
+    for i in range(10):
+        m[i, i] = 1
+    add3(m)
+
+    # not completely full (some empty ncol)
+
+    m = csr_matrix((10, 80), dtype=np.int32)
+    m[0, [1, 0]] = [11, 3]
+    m[2, 2] = 10
+    m[4, [4, 0]] = [22, 40]
+    m[5, [5, 0]] = [33, 51]
+    add3(m)
+
+    # all more than 1 coupling, and not sorted
+    m = csr_matrix((10, 80), dtype=np.int32)
+    m[0, [1, 0]] = [12, 4]
+    m[1, [10, 50, 20]] = [11, 20, 401]
+    m[2, [4, 7, 3, 1]] = [2, 5, 4, 10]
+    m[3, [4, 7, 3, 1]] = [2, 5, 4, 10]
+    m[4, [1, 5, 3, 21]] = [2, 5, 4, 10]
+    m[5, [53, 52, 3, 21]] = [3, 6, 7, 14]
+    m[6, [43, 32, 1, 6]] = [3, 6, 7, 11]
+    m[7, [65, 44, 3, 2]] = [3, 6, 7, 12]
+    m[8, [66, 45, 6, 8]] = [4, 3, 15, 7]
+    m[9, [55, 44, 33, 22]] = [4, 3, 14, 7]
+    add3(m)
+    return matrix
+
+
+@pytest.mark.parametrize("op", binary())
+def test_op_binary(matrix_sisl_csr, matrix_csr_matrix, op):
+    for m in matrix_sisl_csr:
+        mD = m.toarray()[..., 0]
+        if op not in (operator.add, operator.sub):
+            v = op(m, 3)
+            assert np.allclose(op(mD, 3), v.toarray()[..., 0])
+
+        if op not in (operator.truediv, operator.floordiv):
+            for m2 in matrix_sisl_csr:
+                m2D = m2.toarray()[..., 0]
+                v = op(m, m2)
+                assert np.allclose(op(mD, m2D), v.toarray()[..., 0])
+
+            for m2 in matrix_csr_matrix:
+                m2D = m2.toarray()
+                v = op(m, m2)
+                assert np.allclose(op(mD, m2D), v.toarray()[..., 0])
 
 
 def test_op5():
@@ -1232,9 +1331,13 @@ def test_op_numpy_scalar():
     assert isinstance(s, SparseCSR)
     assert s.dtype == np.complex64
 
-    s = np.exp(1j * S)
+    s = 1j * S
     assert isinstance(s, SparseCSR)
-    assert s.dtype == np.complex64
+    assert s.dtype == (1j * np.array([1j], dtype=np.complex64)).dtype
+
+    s = np.exp(s)
+    assert isinstance(s, SparseCSR)
+    assert s.dtype == np.exp(1j * np.array([1j], dtype=np.complex64)).dtype
 
 
 def test_op_sparse_dim():

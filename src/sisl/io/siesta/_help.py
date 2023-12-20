@@ -4,6 +4,8 @@
 import numpy as np
 
 import sisl._array as _a
+from sisl.sparse import _rows_and_cols
+from sisl.messages import warn
 from sisl import SislError
 
 try:
@@ -25,21 +27,12 @@ def _ensure_diagonal(csr):
     since missing items will be set to 0 which should be 1 in
     non-orthogonal basis sets.
     """
-    # Create index arrays
-    row = (csr.ncol > 0).nonzero()[0]
-    row = np.repeat(row, csr.ncol[row])
-    # Ensure we only take those elements that are in play (i.e. this
-    # will work regardless of the csr being finalized or not)
-    col = csr.col[_a.array_arange(csr.ptr[:-1], n=csr.ncol, dtype=np.int32)]
-
-    # figure out where they are the same (diagonals)
-    present_diags = row[row == col]
-
-    # Now figure out which elements are missing
-    missing_diags = np.delete(np.arange(csr.shape[0]), present_diags)
-
-    for row in missing_diags:
-        csr[row, row] = 0.0
+    old_nnz = csr.nnz
+    csr += csr.diags(0, dim=1)
+    if csr.nnz != old_nnz:
+        warn(
+            "ensuring the sparse matrix having diagonal elements changed the sparsity pattern."
+        )
 
 
 def _csr_from_siesta(geom, csr):

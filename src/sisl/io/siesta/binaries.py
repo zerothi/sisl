@@ -403,9 +403,11 @@ class tshsSileSiesta(onlysSileSiesta):
                 "a zero element sparse matrix!"
             )
 
+        sort = kwargs.get("sort", True)
+
         # Convert to siesta CSR
-        _csr_to_siesta(H.geometry, csr)
-        csr.finalize(sort=kwargs.get("sort", True))
+        _csr_to_siesta(H.geometry, csr, diag=True)
+        csr.finalize(sort=sort)
         _mat_spin_convert(csr, H.spin)
 
         # Extract the data to pass to the fortran routine
@@ -414,17 +416,22 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # Get H and S
         if H.orthogonal:
-            h = csr._D
-            s = csr.diags(1.0, dim=1)
-            # Ensure all data is correctly formatted (i.e. have the same sparsity pattern)
-            s.align(csr)
-            s.finalize(sort=kwargs.get("sort", True))
-            if s.nnz != len(h):
+            s = csr.copy(dims=0)
+            s.empty(keep_nnz=True)
+            s += s.diags(1)
+            missing_diags = s.nnz - csr.nnz
+            if missing_diags:
+                # This should never happen as _csr_to_siesta should ensure
+                # that the diagonal entries always exists.
+                # Hence it gets changed before writing.
+                # Not compeletely optimal, but for now this is OK
                 raise SislError(
+                    f"{self.__class__.__name__}.write_hamiltonian "
                     "The diagonal elements of your orthogonal Hamiltonian "
-                    "have not been defined, this is a requirement."
+                    f"have not been defined. Got {len(csr) - missing_diags} elements, expected {len(csr)}."
                 )
-            s = s._D[:, 0]
+            h = csr._D
+            s = s._D
         else:
             h = csr._D[:, : H.S_idx]
             s = csr._D[:, H.S_idx]

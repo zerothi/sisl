@@ -96,11 +96,7 @@ def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
             shuffle(edges)
             DM[io, edges] = 2.0
 
-        if not sort:
-            with pytest.raises(ValueError):
-                DM.write(sile, sort=sort)
-        else:
-            DM.write(sile, sort=sort)
+        DM.write(sile, sort=sort)
 
 
 def test_nc_overlap(sisl_tmp, sisl_system):

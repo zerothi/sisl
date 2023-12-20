@@ -43,7 +43,7 @@ from numpy.lib.mixins import NDArrayOperatorsMixin
 from scipy.sparse import csr_matrix, issparse
 
 from . import _array as _a
-from ._array import array_arange, arrayi, asarrayi, fulli
+from ._array import array_arange
 from ._help import array_fill_repeat, isiterable
 from ._indices import indices, indices_only
 from ._internal import set_module
@@ -55,6 +55,27 @@ from .utils.mathematics import intersect_and_diff_sets
 # we use it slightly differently and thus require this new sparse pattern.
 
 __all__ = ["SparseCSR", "ispmatrix", "ispmatrixd"]
+
+
+def _rows_and_cols(csr, rows=None):
+    """Retrieve the sparse patterns rows and columns from the sparse matrix
+
+    Possibly only retrieving it for a subset of rows.
+    """
+    ptr = csr.ptr
+    ncol = csr.ncol
+    col = csr.col
+    if rows is None:
+        cols = col[array_arange(ptr[:-1], n=ncol, dtype=int32)]
+        idx = (ncol > 0).nonzero()[0]
+        rows = repeat(idx.astype(int32, copy=False), ncol[idx])
+    else:
+        rows = csr._sanitize(rows).ravel()
+        ncol = ncol[rows]
+        cols = col[array_arange(ptr[rows], n=ncol, dtype=int32)]
+        idx = (ncol > 0).nonzero()[0]
+        rows = repeat(rows[idx].astype(int32, copy=False), ncol[idx])
+    return rows, cols
 
 
 def _ncol_to_indptr(ncol):
@@ -99,6 +120,9 @@ class SparseCSR(NDArrayOperatorsMixin):
     - ``SparseCSR((M,N,K)[, dtype])``
       creating a sparse matrix with ``M`` rows, ``N`` columns
       and ``K`` elements per sparse element.
+    - ``SparseCSR((data, ptr, indices), [shape, dtype])``
+      creating a sparse matrix with specific data as would
+      be used when creating `scipy.sparse.csr_matrix`.
 
     Additionally these parameters control the
     creation of the sparse matrix.
@@ -131,6 +155,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         # a non-zero element, the # of elements
         # for the insert row is increased at least by this number
         self._ns = 10
+        self._finalized = False
 
         if issparse(arg1):
             # This is a sparse matrix
@@ -193,6 +218,8 @@ column indices of the sparse elements
                     self._D[:, :] = arg1[0]
                 else:
                     self._D[:, 0] = arg1[0]
+                if np.all(self.ncol <= 1):
+                    self._finalized = True
 
     def __init_shape(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None, **kwargs):
         # The shape of the data...
@@ -241,7 +268,7 @@ column indices of the sparse elements
         # in the sparsity pattern
         self.ncol = _a.zerosi([M])
         # Create pointer array
-        self.ptr = _a.cumsumi(fulli(M + 1, nnzpr)) - nnzpr
+        self.ptr = _a.cumsumi(_a.fulli(M + 1, nnzpr)) - nnzpr
         # Create column array
         self.col = _a.fulli(nnz, -1)
         # Store current number of non-zero elements
@@ -252,12 +279,11 @@ column indices of the sparse elements
         # thus automatically zeroing the other dimensions.
         self._D = zeros([nnz, K], dtype)
 
-        # Denote that this sparsity pattern hasn't been finalized
-        self._finalized = False
-
     @classmethod
     def sparsity_union(cls, *spmats, dtype=None, dim=None, value=0):
         """Create a SparseCSR with constant fill value in all places that `spmats` have nonzeros
+
+        By default the returned matrix will be sorted.
 
         Parameters
         ----------
@@ -316,20 +342,14 @@ column indices of the sparse elements
         # get the diagonal components
         diag = np.zeros([self.shape[0], self.shape[2]], dtype=self.dtype)
 
-        ptr = self.ptr
-        ncol = self.ncol
-        col = self.col
-        D = self._D
+        rows, cols = _rows_and_cols(self)
 
         # Now retrieve rows and cols
-        idx = (ncol > 0).nonzero()[0]
-        row = repeat(idx.astype(int32, copy=False), ncol[idx])
-        idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
-        col = col[idx]
+        idx = array_arange(self.ptr[:-1], n=self.ncol, dtype=int32)
         # figure out the indices where we have a diagonal index
-        diag_idx = np.equal(row, col)
+        diag_idx = np.equal(rows, cols)
         idx = idx[diag_idx]
-        diag[row[diag_idx]] = D[idx]
+        diag[rows[diag_idx]] = self._D[idx]
         if self.shape[2] == 1:
             return diag.ravel()
         return diag
@@ -352,23 +372,33 @@ column indices of the sparse elements
         """
         if dim is None:
             dim = self.shape[2]
+        diagonals = np.asarray(diagonals)
         if dtype is None:
-            dtype = self.dtype
+            dtype = np.result_type(self.dtype, diagonals.dtype)
 
         # Now create the sparse matrix
         shape = list(self.shape)
         shape[2] = dim
         shape = tuple(shape)
 
+        offsets = array_fill_repeat(offsets, shape[0], cls=dtype)
+
+        # Create the index-pointer, data and values
+        data = array_fill_repeat(diagonals, shape[0], axis=0, cls=dtype)
+        indices = _a.arangei(shape[0]) + offsets
+
+        # create the pointer.
+        idx_ok = np.logical_and(0 <= indices, indices < shape[1])
+        data = data[idx_ok]
+        ptr1 = _a.onesi(shape[0])
+        ptr1[~idx_ok] = 0
+        indices = indices[idx_ok]
+        ptr = _a.emptyi(shape[0] + 1)
+        ptr[0] = 0
+        ptr[1:] = np.cumsum(ptr1)
+
         # Delete the last entry, regardless of the size, the diagonal
-        D = self.__class__(shape, dtype=dtype)
-
-        diagonals = array_fill_repeat(diagonals, D.shape[0], cls=dtype)
-        offsets = array_fill_repeat(offsets, D.shape[0], cls=dtype)
-
-        # Create diagonal elements
-        for i in range(D.shape[0]):
-            D[i, i + offsets[i]] = diagonals[i]
+        D = self.__class__((data, indices, ptr), shape=shape, dtype=dtype)
 
         return D
 
@@ -523,7 +553,7 @@ column indices of the sparse elements
         idx = _a.asarrayi(idx)
         if idx.size == 0:
             return _a.asarrayi([])
-        elif idx.dtype == bool_:
+        if idx.dtype == bool_:
             return idx.nonzero()[0].astype(np.int32)
         return idx
 
@@ -782,6 +812,10 @@ column indices of the sparse elements
         # Scale values where columns coincide with scaling factor
         self._D[idx[scale_idx]] *= scale
 
+    def toarray(self):
+        """Return a dense `numpy.ndarray` which has 3 dimensions (self.shape)"""
+        return sparse_dense(self)
+
     def todense(self):
         """Return a dense `numpy.ndarray` which has 3 dimensions (self.shape)"""
         return sparse_dense(self)
@@ -935,11 +969,16 @@ column indices of the sparse elements
             for indices out of bounds
         """
         i = self._sanitize(i)
-        if asarray(i).size == 0:
-            return arrayi([])
+        if i.size == 0:
+            return _a.arrayi([])
+        if i.size > 1:
+            raise ValueError(
+                "extending the sparse matrix is only allowed for single rows at a time"
+            )
         if i < 0 or i >= self.shape[0]:
             raise IndexError(f"row index is out-of-bounds {i} : {self.shape[0]}")
-        i1 = int(i) + 1
+        i1 = i + 1
+
         # We skip this check and let sisl die if wrong input is given...
         # if not isinstance(i, Integral):
         #    raise ValueError("Retrieving/Setting elements in a sparse matrix"
@@ -948,7 +987,7 @@ column indices of the sparse elements
         # Ensure flattened array...
         j = self._sanitize(j, axis=1).ravel()
         if len(j) == 0:
-            return arrayi([])
+            return _a.arrayi([])
         if np_any(j < 0) or np_any(j >= self.shape[1]):
             raise IndexError(f"column index is out-of-bounds {j} : {self.shape[1]}")
 
@@ -985,7 +1024,6 @@ column indices of the sparse elements
         new_nnz = new_n - int(ptr[i1]) + ncol_ptr_i
 
         if new_nnz > 0:
-            # print(f"new_nnz {i} : {new_nnz}")
             # Ensure that it is not-set as finalized
             # There is no need to set it all the time.
             # Simply because the first call to finalize
@@ -1058,7 +1096,7 @@ column indices of the sparse elements
             raise IndexError("row index is out-of-bounds")
 
         # fast reference
-        i1 = int(i) + 1
+        i1 = i + 1
 
         # Ensure that it is not-set as finalized
         # There is no need to set it all the time.
@@ -1159,8 +1197,10 @@ column indices of the sparse elements
 
         # Get original values
         sl = slice(ptr[i], ptr[i] + ncol[i], None)
-        oC = self.col[sl]
-        oD = self._D[sl, :]
+        oC = self.col[sl].copy()
+        self.col[sl] = -1
+        oD = self._D[sl, :].copy()
+        self._D[sl, :] = 0
 
         # Now create the compressed data...
         index -= ptr[i]
@@ -1448,10 +1488,9 @@ column indices of the sparse elements
         new = self.__class__(shape, dtype=dtype, nnz=1)
 
         # The default sizes are not passed
-        # Hence we *must* copy the arrays
-        # directly
-        copyto(new.ptr, self.ptr, casting="same_kind")
-        copyto(new.ncol, self.ncol, casting="same_kind")
+        # Hence we *must* copy the arrays directly
+        new.ptr[:] = self.ptr[:]
+        new.ncol[:] = self.ncol[:]
         new.col = self.col.copy()
         new._nnz = self.nnz
 
@@ -1730,7 +1769,6 @@ column indices of the sparse elements
             D = self._D.copy()
         else:
             idx = array_arange(self.ptr[:-1], n=ncol, dtype=int32)
-            # ptr = _ncol_to_indptr(ncol)
             col = self.col[idx]
             D = self._D[idx, :].copy()
             del idx
@@ -1787,30 +1825,61 @@ column indices of the sparse elements
     # numpy dispatch methods
     __array_priority__ = 14
 
+    def __array__(self, dtype=None):
+        out = self.toarray()
+        if dtype is None:
+            return out
+        return out.astype(dtype, copy=False)
+
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
-        # print(f"{self.__class__.__name__}.__array_ufunc__ :", ufunc, method)
         out = kwargs.pop("out", None)
 
         if getattr(ufunc, "signature", None) is not None:
             # The signature is not a scalar operation
             return NotImplemented
 
+        dtypes = []
         if out is not None:
             (out,) = out
             kwargs["dtype"] = out.dtype
+        else:
+            for arg in inputs:
+                # this exercise is required to ensure that we don't
+                # prematurely promote dtypes.
+                # For instance,
+                #    SparseCSR(dtype=np.complex64) * 1j
+                # should remain np.complex64.
+                # Yet, if one does np.asarray(1j) you'll get
+                # np.complex128.
+                # This means that we should let the ufunc do any
+                # promotions necessary.
+                if isscalar(arg):
+                    pass
+                elif isinstance(arg, (tuple, list, ndarray)):
+                    arg = arg[0]
+                try:
+                    dtypes.append(arg.dtype)
+                except AttributeError:
+                    dtypes.append(type(arg))
 
         if method == "__call__":
+            if dtypes:
+                dtypes.append(None)
+                kwargs["dtype"] = ufunc.resolve_dtypes(tuple(dtypes))[-1]
             result = _ufunc_call(ufunc, *inputs, **kwargs)
         elif method == "reduce":
+            if dtypes:
+                dtypes = [None] + dtypes + [None]
+                kwargs["dtype"] = ufunc.resolve_dtypes(tuple(dtypes), reduction=True)[
+                    -1
+                ]
             result = _ufunc_reduce(ufunc, *inputs, **kwargs)
         elif method == "outer":
-            # print("running outer")
             # Currently I don't know what to do here
             # We don't have multidimensional sparse matrices,
             # but perhaps that could be needed later?
             return NotImplemented
         else:
-            # print("running method = ", method)
             return NotImplemented
 
         if out is None:
@@ -1827,8 +1896,10 @@ column indices of the sparse elements
             out.ncol[:] = result.ncol[:]
             out.ptr[:] = result.ptr[:]
             # this will copy
-            out.col = result.col
-            out._D = result._D.astype(kwargs.get("dtype", out.dtype))
+            out.col = result.col.copy()
+            out._D = result._D.astype(out.dtype)
+            out._nnz = result.nnz
+            del result
         else:
             out = NotImplemented
         return out
@@ -1860,8 +1931,16 @@ column indices of the sparse elements
             self.ptr = state["ptr"]
 
 
-def _get_reduced_shape(shape):
-    return tuple(s for s in shape[::-1] if s > 1)[::-1]
+def _get_reduced_shape(arr):
+    # return the reduced shape by removing any dimensions with length 1
+    if isscalar(arr):
+        return tuple()
+    if isinstance(arr, (tuple, list)):
+        n = len(arr)
+        if n > 1:
+            return (n,) + _get_reduced_shape(arr[0])
+        return tuple()
+    return np.squeeze(arr).shape
 
 
 def _ufunc(ufunc, a, b, **kwargs):
@@ -1869,46 +1948,49 @@ def _ufunc(ufunc, a, b, **kwargs):
         if issparse(b) or isinstance(b, (SparseCSR, tuple)):
             return _ufunc_sp_sp(ufunc, a, b, **kwargs)
         return _ufunc_sp_ndarray(ufunc, a, b, **kwargs)
-    elif isinstance(b, SparseCSR):
+    if isinstance(b, SparseCSR):
         return _ufunc_ndarray_sp(ufunc, a, b, **kwargs)
     return ufunc(a, b, **kwargs)
 
 
 def _ufunc_sp_ndarray(ufunc, a, b, **kwargs):
-    if len(_get_reduced_shape(b.shape)) > 1:
+    if len(_get_reduced_shape(b)) > 1:
         # there are shapes for individiual
         # we will now calculate a full matrix
-        return ufunc(a.todense(), b, **kwargs)
+        return ufunc(a.toarray(), b, **kwargs)
 
     # create a copy
-    out = a.copy(dtype=kwargs.get("dtype", a.dtype))
+    out = a.copy(dtype=kwargs["dtype"])
     if out.ptr[-1] == out.nnz:
-        ufunc(a._D, b, **kwargs, out=out._D)
+        out._D = ufunc(a._D, b, **kwargs)
     else:
         # limit the values
         # since slicing non-uniform ranges does not return
         # a view, we can't use
         #   ufunc(..., out=out._D[idx, :])
         idx = array_arange(a.ptr[:-1], n=a.ncol)
-        out._D[idx, :] = ufunc(a._D[idx, :], b, **kwargs)
+        out._D[idx] = ufunc(a._D[idx, :], b, **kwargs)
         del idx
     return out
 
 
 def _ufunc_ndarray_sp(ufunc, a, b, **kwargs):
-    if len(_get_reduced_shape(a.shape)) > 1:
+    if len(_get_reduced_shape(a)) > 1:
         # there are shapes for individiual
         # we will now calculate a full matrix
-        return ufunc(a, b.todense(), **kwargs)
+        return ufunc(a, b.toarray(), **kwargs)
 
     # create a copy
-    out = b.copy(dtype=kwargs.get("dtype", b.dtype))
+    out = b.copy(dtype=kwargs["dtype"])
     if out.ptr[-1] == out.nnz:
-        ufunc(a, b._D, **kwargs, out=out._D)
+        out._D = ufunc(a, b._D, **kwargs)
     else:
         # limit the values
+        # since slicing non-uniform ranges does not return
+        # a view, we can't use
+        #   ufunc(..., out=out._D[idx, :])
         idx = array_arange(b.ptr[:-1], n=b.ncol)
-        out._D[idx, :] = ufunc(a, b._D[idx, :], **kwargs)
+        out._D[idx] = ufunc(a, b._D[idx, :], **kwargs)
         del idx
     return out
 
@@ -1927,7 +2009,13 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
                 return slice(mat.ptr[r], mat.ptr[r] + mat.ncol[r])
 
             accessors = mat.dim, mat.col, mat._D, rowslice
-            issorted = mat.finalized
+            # check whether they are actually sorted
+            if mat.finalized:
+                rows, cols = _rows_and_cols(mat)
+                rows, cols = np.diff(rows), np.diff(cols)
+                issorted = np.all(cols[rows == 0] > 0)
+            else:
+                issorted = False
         else:
             # makes this work for all matrices
             # and csr_matrix.tocsr is a no-op
@@ -1956,7 +2044,7 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
         raise ValueError(f"could not broadcast sparse matrices {a.shape} and {b.shape}")
 
     # create union of the sparsity pattern
-    out = SparseCSR.sparsity_union(a, b, dim=max(adim, bdim))
+    out = SparseCSR.sparsity_union(a, b, dim=max(adim, bdim), dtype=kwargs["dtype"])
 
     for r in range(out.shape[0]):
         offset = out.ptr[r]
@@ -1964,11 +2052,11 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
 
         asl = arow(r)
         aidx = afindidx(ocol, acol[asl], offset)
-        asl = arange(asl.start, asl.stop)
+        asl = _a.arangei(asl.start, asl.stop)
 
         bsl = brow(r)
         bidx = bfindidx(ocol, bcol[bsl], offset)
-        bsl = arange(bsl.start, bsl.stop)
+        bsl = _a.arangei(bsl.start, bsl.stop)
 
         # Common indices
         iover, aover, bover, iaonly, ibonly = intersect_and_diff_sets(aidx, bidx)
@@ -2000,39 +2088,22 @@ def _ufunc_call(ufunc, *in_args, **kwargs):
         if isinstance(arg, SparseCSR):
             args.append(arg)
         elif isscalar(arg) or isinstance(arg, (tuple, list, ndarray)):
-            args.append(asarray(arg))
+            args.append(arg)
         elif issparse(arg):
             args.append(arg)
         else:
             return
 
-    if "dtype" not in kwargs:
-        kwargs["dtype"] = np.result_type(*args)
-
-    # Input arguments are corrected
-    # Get resulting shape
-    # Currently we don't check shapes and output,
-    # however this function fails in case the shapes
-    # are not b-castable.
-    def spshape(arg):
-        if issparse(arg):
-            # spmatrices can only ever have 2 dimensions
-            # but SparseCSR always have 3, so we pad with ones.
-            return arg.shape + (1,)
-        return arg.shape
-
-    # shape = _get_bcast_shape(*tuple(spshape(arg) for arg in args))
-
     if len(args) == 1:
         a = args[0]
         # create a copy
-        out = a.copy(dtype=kwargs.get("dtype", a.dtype))
+        out = a.copy(dtype=kwargs["dtype"])
         if out.ptr[-1] == out.nnz:
-            ufunc(a._D[:, :], **kwargs, out=out._D)
+            out._D = ufunc(a._D, **kwargs)
         else:
             # limit the values
             idx = array_arange(a.ptr[:-1], n=a.ncol)
-            out._D[idx, :] = ufunc(a._D[idx, :], **kwargs)
+            out._D[idx] = ufunc(a._D[idx, :], **kwargs)
             del idx
         return out
 
@@ -2043,9 +2114,6 @@ def _ufunc_call(ufunc, *in_args, **kwargs):
 
 
 def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
-    if "dtype" not in kwargs:
-        kwargs["dtype"] = np.result_type(array, *args)
-
     # currently the initial argument does not work properly if the
     # size isn't correct
     if np.asarray(kwargs.get("initial", 0.0)).ndim > 1:
@@ -2082,7 +2150,7 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
     elif axis == 1:
         pass
     elif axis == 2:
-        out = array.copy(dims=range(array.shape[2] - 1), dtype=kwargs.get("dtype"))
+        out = array.copy(dims=range(array.shape[2] - 1), dtype=kwargs["dtype"])
         out._D[:, 0] = ufunc.reduce(array._D, axis=1, *args, **kwargs)
         return out
     else:
@@ -2090,9 +2158,8 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
             f"Unknown axis argument in ufunc.reduce call on {array.__class__.__name__}"
         )
 
-    ret = empty(
-        [array.shape[0], array.shape[2]], dtype=kwargs.get("dtype", array.dtype)
-    )
+    ret = empty([array.shape[0], array.shape[2]], dtype=kwargs["dtype"])
+
     # Now do ufunc calculations, note that initial gets passed directly
     ptr = array.ptr
     ncol = array.ncol

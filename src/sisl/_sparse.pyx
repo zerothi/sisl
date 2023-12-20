@@ -251,12 +251,13 @@ def _sparse_dense(shape,
 
     cdef Py_ssize_t nr = ncol.shape[0]
     cdef V = np.zeros(shape, dtype=dtype)
+    cdef VV = V[:, ::1]
     cdef Py_ssize_t r, ind, ix, s2
 
     s2 = shape[2]
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             for ix in range(s2):
-                V[r, col[ind], ix] += D[ind, ix]
+                VV[r, col[ind], ix] += D[ind, ix]
 
     return V

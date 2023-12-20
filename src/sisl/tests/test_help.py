@@ -21,6 +21,8 @@ def test_array_fill_repeat1():
     assert array_fill_repeat([1], 20).shape[0] == 20
     assert array_fill_repeat([1, 2], 20).shape[0] == 20
     assert array_fill_repeat(1, 20).shape[0] == 20
+    assert array_fill_repeat([[1]], 20, axis=0).shape == (20, 1)
+    assert array_fill_repeat([[1, 2]], 20, axis=0).shape == (20, 2)
 
 
 def test_array_fill_repeat2():
