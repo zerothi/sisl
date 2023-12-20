@@ -45,21 +45,27 @@ class AtomNeighbours(AtomCategory):
             if isinstance(args[-1], AtomCategory):
                 *args, kwargs["neighbour"] = args
 
-        self._min = 0
-        self._max = 2**31
+        _min = 0
+        _max = 2**31
 
         if len(args) == 1:
-            self._min = args[0]
-            self._max = args[0]
+            _min = args[0]
+            _max = args[0]
 
         elif len(args) == 2:
-            self._min = args[0]
-            self._max = args[1]
+            _min = args[0]
+            _max = args[1]
 
-        if "min" in kwargs:
-            self._min = kwargs.pop("min")
-        if "max" in kwargs:
-            self._max = kwargs.pop("max")
+        _min = kwargs.pop("min", _min)
+        _max = kwargs.pop("max", _max)
+
+        if _min is None:
+            _min = 0
+        if _max is None:
+            _max = 2**31
+
+        self._min = _min
+        self._max = _max
 
         if self._min == self._max:
             name = f"={self._max}"
@@ -83,9 +89,9 @@ class AtomNeighbours(AtomCategory):
     def R(self, atom):
         if self._R is None:
             return (0.01, atom.maxR())
-        elif callable(self._R):
+        if callable(self._R):
             return self._R(atom)
-        elif isinstance(self._R, (tuple, list, ndarray)):
+        if isinstance(self._R, (tuple, list, ndarray)):
             return self._R
         return (0.01, self._R)
 
@@ -93,7 +99,10 @@ class AtomNeighbours(AtomCategory):
     def categorize(self, geometry, atoms=None):
         """Check if geometry and atoms matches the neighbour criteria"""
         idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[1]
-        if len(idx) < self._min:
+        # quick escape the lower bound, in case we have more than max, they could
+        # be limited by the self._in type
+        n = len(idx)
+        if n < self._min:
             return NullCategory()
 
         # Check if we have a condition
@@ -101,8 +110,8 @@ class AtomNeighbours(AtomCategory):
             # Get category of neighbours
             cat = self._in.categorize(geometry, geometry.asc2uc(idx))
             idx = [i for i, c in zip(idx, cat) if not isinstance(c, NullCategory)]
-        n = len(idx)
-        if self._min <= n and n <= self._max:
+            n = len(idx)
+        if self._min <= n <= self._max:
             return self
         return NullCategory()
 

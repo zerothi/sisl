@@ -1,19 +1,25 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from abc import abstractmethod
 from dataclasses import copy, dataclass, fields
 
+from sisl import Geometry
+from sisl._internal import set_module
 from sisl.messages import SislError, warn
 
-__all__ = ["composite_geometry", "CompositeGeometrySection"]
+__all__ = ["composite_geometry", "CompositeGeometrySection", "GeometrySection"]
 
 
+@set_module("sisl.geom")
 @dataclass
 class CompositeGeometrySection:
     @abstractmethod
-    def build_section(self, geometry):
+    def build_section(self, previous: Geometry) -> Geometry:
         ...
 
     @abstractmethod
-    def add_section(self, geometry, geometry_addition):
+    def add_section(self, geometry: Geometry, geometry_addition: Geometry) -> Geometry:
         ...
 
     def _junction_error(self, prev, msg, what):
@@ -29,6 +35,24 @@ class CompositeGeometrySection:
             warn(msg)
 
 
+@set_module("sisl.geom")
+@dataclass
+class GeometrySection(CompositeGeometrySection):
+    """Basic geometry section which does nothing, it simply returns a geometry
+
+    When attaching two geometries they will be `Geometry.add`, without changes
+    """
+
+    geometry: Geometry
+
+    def build_section(self, geometry):
+        # it does not matter what the prior geometry was, we just add one
+        return self.geometry
+
+    def add_section(self, geometry, geometry_addition):
+        return geometry.add(geometry_addition)
+
+
 def composite_geometry(sections, section_cls, **kwargs):
     """Creates a composite geometry from a list of sections.
 
@@ -36,7 +60,7 @@ def composite_geometry(sections, section_cls, **kwargs):
 
     Parameters
     ----------
-    sections: array-like of (_geom_section or tuple or dict)
+    sections: array-like of (_geom_section or Geometry or tuple or dict)
         A list of sections to be added to the ribbon.
 
         Each section is either a `composite_geometry.section` or something that will
@@ -49,6 +73,8 @@ def composite_geometry(sections, section_cls, **kwargs):
 
     # Parse sections into Section objects
     def conv(s):
+        if isinstance(s, Geometry):
+            return GeometrySection(s)
         # If it is some arbitrary type, convert it to a tuple
         if not isinstance(s, (section_cls, tuple, dict)):
             s = (s,)
