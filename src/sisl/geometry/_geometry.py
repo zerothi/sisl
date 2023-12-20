@@ -43,28 +43,28 @@ if TYPE_CHECKING:
         LatticeOrGeometryLike,
     )
 
-from . import _array as _a
-from . import _plot as plt
-from ._category import Category, GenericCategory
-from ._dispatch_class import _Dispatchs
-from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from ._help import isndarray
-from ._indices import (
+import sisl._array as _a
+import sisl._plot as plt
+from sisl._category import Category, GenericCategory
+from sisl._dispatch_class import _Dispatchs
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from sisl._help import isndarray
+from sisl._indices import (
     indices_gt_le,
     indices_in_sphere_with_dist,
     indices_le,
     list_index_le,
 )
-from ._internal import set_module
-from ._math_small import cross3, is_ascending
-from ._namedindex import NamedIndex
-from .atom import Atom, Atoms
-from .lattice import Lattice, LatticeChild
-from .messages import SislError, deprecate_argument, info, warn
-from .orbital import Orbital
-from .quaternion import Quaternion
-from .shape import Cube, Shape, Sphere
-from .utils import (
+from sisl._internal import set_module
+from sisl._math_small import cross3, is_ascending
+from sisl._namedindex import NamedIndex
+from sisl.atom import Atom, Atoms
+from sisl.lattice import Lattice, LatticeChild
+from sisl.messages import SislError, deprecate_argument, info, warn
+from sisl.orbital import Orbital
+from sisl.quaternion import Quaternion
+from sisl.shape import Cube, Shape, Sphere
+from sisl.utils import (
     angle,
     cmd,
     default_ArgumentParser,
@@ -74,9 +74,9 @@ from .utils import (
     str_spec,
     strmap,
 )
-from .utils.mathematics import fnorm
+from sisl.utils.mathematics import fnorm
 
-__all__ = ["Geometry", "sgeom"]
+__all__ = ["Geometry", "sgeom", "AtomCategory"]
 
 _log = logging.getLogger("sisl")
 _log.info(f"adding logger: {__name__}")
@@ -181,6 +181,8 @@ class Geometry(
     Atoms : contained atoms ``self.atoms``
     Atom : contained atoms are each an object of this
     """
+
+    _funcs = set()
 
     @deprecate_argument(
         "sc",
@@ -2620,37 +2622,6 @@ class Geometry(
         a = acos(np.sum(lm * lv))
         return self.rotate(a, cp, rad=True)
 
-    def translate(
-        self, v, atoms: Optional[AtomsArgument] = None, cell: bool = False
-    ) -> Geometry:
-        """Translates the geometry by `v`
-
-        One can translate a subset of the atoms by supplying `atoms`.
-
-        Returns a copy of the structure translated by `v`.
-
-        Parameters
-        ----------
-        v : float or array_like
-             the value or vector to displace all atomic coordinates
-             It should just be broad-castable with the geometry's coordinates.
-        atoms : int or array_like, optional
-             only displace the given atomic indices, if not specified, all
-             atoms will be displaced
-        cell : bool, optional
-             If True the supercell also gets enlarged by the vector
-        """
-        g = self.copy()
-        if atoms is None:
-            g.xyz += np.asarray(v, g.xyz.dtype)
-        else:
-            g.xyz[self._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)
-        if cell:
-            g.set_lattice(g.lattice.translate(v))
-        return g
-
-    move = translate
-
     def translate2uc(
         self,
         atoms: Optional[AtomsArgument] = None,
@@ -4642,7 +4613,7 @@ class Geometry(
         iter_block : the method for looping the atoms
         distance : create a list of distances
         """
-        from .sparse_geometry import SparseAtom
+        from sisl.sparse_geometry import SparseAtom
 
         rij = SparseAtom(self, nnzpr=20, dtype=dtype)
 
@@ -5851,8 +5822,6 @@ lattice vector.
             if isfile(i_file):
                 geometry = get_sile(input_file).read_geometry()
             else:
-                from .messages import info
-
                 info(f"Cannot find file '{input_file}'!")
                 geometry = Geometry
                 stdout_geom = False

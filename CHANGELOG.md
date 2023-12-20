@@ -10,6 +10,7 @@ we hit release version 1.0.0.
 
 ### Added
 - better error messages when users request quantities not calculated by Siesta/TBtrans
+- functional programming of the `Geometry` class
 - `SparseCSR.toarray` to comply with array handling (equivalent to `todense`)
 - enabled `Grid.to|new` with the most basic stuff
   str|Path|Grid|pyamg
