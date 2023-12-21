@@ -38,9 +38,12 @@ def build_table(nbins: cnp.int64_t, bin_indices: cnp.int64_t[:]):
     """
     n_atoms = bin_indices.shape[0]
 
-    list_array: cnp.int64_t[:] = np.zeros(n_atoms, dtype=np.int64)
-    counts: cnp.int64_t[:] = np.zeros(nbins, dtype=np.int64)
-    heads: cnp.int64_t[:] = np.full(nbins, -1, dtype=np.int64)
+    list_array_obj = np.zeros(n_atoms, dtype=np.int64)
+    list_array: cnp.int64_t[:] = list_array_obj
+    counts_obj = np.zeros(nbins, dtype=np.int64)
+    counts: cnp.int64_t[:] = counts_obj
+    heads_obj = np.full(nbins, -1, dtype=np.int64)
+    heads: cnp.int64_t[:] = heads_obj
 
     # Loop through all atoms
     for at in range(n_atoms):
@@ -54,10 +57,10 @@ def build_table(nbins: cnp.int64_t, bin_indices: cnp.int64_t[:]):
         heads[bin_index] = at
 
         # Update the count of this bin (increment it by 1).
-        counts[bin_index] = counts[bin_index] + 1
+        counts[bin_index] += 1
 
     # Return the memory views as numpy arrays
-    return np.asarray(list_array), np.asarray(heads), np.asarray(counts)
+    return list_array_obj, heads_obj, counts_obj
 
 
 @cython.boundscheck(False)
@@ -135,20 +138,22 @@ def get_pairs(
     """
     N_ind = at_indices.shape[0]
 
-    i_pair: cython.int = 0
+    i_pair: cython.size_t = 0
 
     ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
     neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
 
-    neighs: cnp.int64_t[:, :] = np.zeros((max_npairs, 5), dtype=np.int64)
-    split_indices: cnp.int64_t[:] = np.zeros(N_ind, dtype=np.int64)
+    neighs_obj: cnp.ndarray = np.zeros([max_npairs, 5], dtype=np.int64)
+    neighs: cnp.int64_t[:, :] = neighs_obj
+    split_indices_obj: cnp.ndarray = np.zeros(N_ind, dtype=np.int64)
+    split_indices: cnp.int64_t[:] = split_indices_obj
 
     for search_index in range(N_ind):
         at = at_indices[search_index]
 
         for j in range(8):
             # Find the bin index.
-            bin_index = indices[search_index, j]
+            bin_index: cnp.int64_t = indices[search_index, j]
 
             # Get the first atom index in this bin
             neigh_at: cnp.int64_t = heads[bin_index]
@@ -181,11 +186,10 @@ def get_pairs(
                 # instead of moving potential neighbors to the unit cell
                 # because in this way we reduce the number of operations.
                 for i in range(3):
-                    ref_xyz[i] = (
-                        ref_xyz[i]
-                        - cell[0, i] * neigh_isc[0]
-                        - cell[1, i] * neigh_isc[1]
-                        - cell[2, i] * neigh_isc[2]
+                    ref_xyz[i] -= (
+                        cell[0, i] * neigh_isc[0]
+                        + cell[1, i] * neigh_isc[1]
+                        + cell[2, i] * neigh_isc[2]
                     )
 
             # Loop through all atoms that are in this bin.
@@ -228,7 +232,7 @@ def get_pairs(
         # We have finished this search, store the breakpoint.
         split_indices[search_index] = i_pair
 
-    return np.asarray(neighs), np.asarray(split_indices)
+    return neighs_obj, split_indices_obj
 
 
 @cython.boundscheck(False)
@@ -306,12 +310,12 @@ def get_all_unique_pairs(
 
     N_ats = list_array.shape[0]
 
-    i_pair: cython.int = 0
+    i_pair: cython.size_t = 0
 
     ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
     neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
 
-    neighs: cnp.int64_t[:, :] = np.zeros((max_npairs, 5), dtype=np.int64)
+    neighs: cnp.int64_t[:, :] = np.zeros([max_npairs, 5], dtype=np.int64)
 
     for at in range(N_ats):
         if self_interaction:
@@ -325,7 +329,7 @@ def get_all_unique_pairs(
 
         for j in range(8):
             # Find the bin index.
-            bin_index = indices[at, j]
+            bin_index: cnp.int64_t = indices[at, j]
 
             # Get the first atom index in this bin
             neigh_at: cnp.int64_t = heads[bin_index]
@@ -358,11 +362,10 @@ def get_all_unique_pairs(
                 # instead of moving potential neighbors to the unit cell
                 # because in this way we reduce the number of operations.
                 for i in range(3):
-                    ref_xyz[i] = (
-                        ref_xyz[i]
-                        - cell[0, i] * neigh_isc[0]
-                        - cell[1, i] * neigh_isc[1]
-                        - cell[2, i] * neigh_isc[2]
+                    ref_xyz[i] -= (
+                        cell[0, i] * neigh_isc[0]
+                        + cell[1, i] * neigh_isc[1]
+                        + cell[2, i] * neigh_isc[2]
                     )
 
             # Loop through all atoms that are in this bin.
@@ -483,7 +486,7 @@ def get_close(
 
     N_ind = search_xyz.shape[0]
 
-    i_pair: cython.int = 0
+    i_pair: cython.size_t = 0
 
     ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
     neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
@@ -494,7 +497,7 @@ def get_close(
     for search_index in range(N_ind):
         for j in range(8):
             # Find the bin index.
-            bin_index = indices[search_index, j]
+            bin_index: cnp.int64_t = indices[search_index, j]
 
             # Get the first atom index in this bin
             neigh_at: cnp.int64_t = heads[bin_index]
@@ -527,11 +530,10 @@ def get_close(
                 # instead of moving potential neighbors to the unit cell
                 # because in this way we reduce the number of operations.
                 for i in range(3):
-                    ref_xyz[i] = (
-                        ref_xyz[i]
-                        - cell[0, i] * neigh_isc[0]
-                        - cell[1, i] * neigh_isc[1]
-                        - cell[2, i] * neigh_isc[2]
+                    ref_xyz[i] -= (
+                        cell[0, i] * neigh_isc[0]
+                        + cell[1, i] * neigh_isc[1]
+                        + cell[2, i] * neigh_isc[2]
                     )
 
             # Loop through all atoms that are in this bin.

@@ -1,38 +1,31 @@
+from functools import partial
+
 import numpy as np
 import pytest
 
 from sisl import Geometry
 from sisl.geom import NeighFinder
 
+pytestmark = [pytest.mark.neighbour]
 
-@pytest.fixture(scope="module", params=[True, False])
-def sphere_overlap(request):
+
+tr_fixture = partial(pytest.fixture, scope="module", params=[True, False])
+
+
+def request_param(request):
     return request.param
 
 
-@pytest.fixture(scope="module", params=[True, False])
-def multiR(request):
-    return request.param
-
-
-@pytest.fixture(scope="module", params=[True, False])
-def self_interaction(request):
-    return request.param
-
-
-@pytest.fixture(scope="module", params=[False, True])
-def post_setup(request):
-    return request.param
-
-
-@pytest.fixture(scope="module", params=[False, True])
-def pbc(request):
-    return request.param
+sphere_overlap = tr_fixture()(request_param)
+multiR = tr_fixture()(request_param)
+self_interaction = tr_fixture()(request_param)
+post_setup = tr_fixture()(request_param)
+pbc = tr_fixture()(request_param)
 
 
 @pytest.fixture(scope="module")
 def neighfinder(sphere_overlap, multiR):
-    geom = Geometry([[0, 0, 0], [1.2, 0, 0], [9, 0, 0]], lattice=np.diag([10, 10, 7]))
+    geom = Geometry([[0, 0, 0], [1.2, 0, 0], [9, 0, 0]], lattice=[10, 10, 7])
 
     R = np.array([1.1, 1.5, 1.2]) if multiR else 1.5
 
@@ -75,7 +68,7 @@ def expected_neighs(sphere_overlap, multiR, self_interaction, pbc):
 
 
 def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
-    geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=np.diag([10, 10, 7]))
+    geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=[10, 10, 7])
 
     R = np.array([0.9, 1.5]) if multiR else 1.5
 
@@ -243,7 +236,7 @@ def test_R_too_big(pbc):
     """Test the case when R is so big that it needs a bigger bin
     than the unit cell."""
 
-    geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=np.diag([2, 10, 10]))
+    geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=[2, 10, 10])
 
     neighfinder = NeighFinder(geom, R=1.5)
 
@@ -264,8 +257,6 @@ def test_R_too_big(pbc):
     expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
     if pbc:
         expected_neighs.insert(0, [0, 1, -1, 0, 0])
-
-    print(neighs, expected_neighs)
 
     assert neighs.shape == (len(expected_neighs), 5)
     assert np.all(neighs == expected_neighs)
