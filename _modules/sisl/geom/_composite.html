@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom._composite &mdash; sisl 0.1-3b8117a</title>
+  <title>sisl.geom._composite &mdash; sisl 0.1-c667b7e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
@@ -19,7 +19,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=705340c0"></script>
+        <script src="../../../_static/documentation_options.js?v=68ce3467"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-3b8117a
+                0.1-c667b7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -107,29 +107,33 @@
            <div itemprop="articleBody">
              
   <h1>Source code for sisl.geom._composite</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
 
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">warn</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;composite_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;CompositeGeometrySection&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;composite_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;CompositeGeometrySection&quot;</span><span class="p">,</span> <span class="s2">&quot;GeometrySection&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="CompositeGeometrySection">
-<a class="viewcode-back" href="../../../api/generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection">[docs]</a>
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">CompositeGeometrySection</span><span class="p">:</span>
 <div class="viewcode-block" id="CompositeGeometrySection.build_section">
 <a class="viewcode-back" href="../../../api/generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection.build_section">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">build_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">build_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
         <span class="o">...</span></div>
 
 
 <div class="viewcode-block" id="CompositeGeometrySection.add_section">
 <a class="viewcode-back" href="../../../api/generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection.add_section">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">add_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">geometry_addition</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">geometry_addition</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
         <span class="o">...</span></div>
 
 
@@ -143,8 +147,25 @@
         <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;warn&quot;</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+            <span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GeometrySection</span><span class="p">(</span><span class="n">CompositeGeometrySection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic geometry section which does nothing, it simply returns a geometry</span>
+
+<span class="sd">    When attaching two geometries they will be `Geometry.add`, without changes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span>
+
+    <span class="k">def</span> <span class="nf">build_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+        <span class="c1"># it does not matter what the prior geometry was, we just add one</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
+
+    <span class="k">def</span> <span class="nf">add_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">geometry_addition</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">geometry_addition</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="composite_geometry">
@@ -156,7 +177,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    sections: array-like of (_geom_section or tuple or dict)</span>
+<span class="sd">    sections: array-like of (_geom_section or Geometry or tuple or dict)</span>
 <span class="sd">        A list of sections to be added to the ribbon.</span>
 
 <span class="sd">        Each section is either a `composite_geometry.section` or something that will</span>
@@ -169,6 +190,8 @@
 
     <span class="c1"># Parse sections into Section objects</span>
     <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">GeometrySection</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="c1"># If it is some arbitrary type, convert it to a tuple</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">(</span><span class="n">section_cls</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
             <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span>

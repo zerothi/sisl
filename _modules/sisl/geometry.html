@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1-3b8117a</title>
+  <title>sisl.geometry &mdash; sisl 0.1-c667b7e</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
@@ -19,7 +19,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=705340c0"></script>
+        <script src="../../_static/documentation_options.js?v=68ce3467"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-3b8117a
+                0.1-c667b7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -491,7 +491,7 @@
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">atoms</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayl</span><span class="p">([])</span>
-        <span class="k">elif</span> <span class="n">atoms</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">bool_</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">atoms</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">bool_</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">atoms</span>
 
@@ -3039,12 +3039,12 @@
 
 <span class="sd">        By specifying `what` one can control whether it should be:</span>
 
-<span class="sd">        * ``xyz|position``: Center of coordinates (default)</span>
+<span class="sd">        * ``cop|xyz|position``: Center of coordinates (default)</span>
 <span class="sd">        * ``mm:xyz`` or ``mm(xyz)``: Center of minimum/maximum of coordinates</span>
-<span class="sd">        * ``mass``: Center of mass</span>
-<span class="sd">        * ``mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it</span>
+<span class="sd">        * ``com|mass``: Center of mass</span>
+<span class="sd">        * ``com:pbc|mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it</span>
 <span class="sd">            may likely be because of a completely periodic system with no true center of mass</span>
-<span class="sd">        * ``cell``: Center of cell</span>
+<span class="sd">        * ``cou|cell``: Center of cell</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -3053,7 +3053,8 @@
 <span class="sd">        what : {&#39;xyz&#39;, &#39;mm:xyz&#39;, &#39;mass&#39;, &#39;mass:pbc&#39;, &#39;cell&#39;}</span>
 <span class="sd">            determine which center to calculate</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;cell&quot;</span> <span class="o">==</span> <span class="n">what</span><span class="p">:</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="n">what</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cou&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3061,7 +3062,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;mass:pbc&quot;</span> <span class="o">==</span> <span class="n">what</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;com:pbc&quot;</span><span class="p">,</span> <span class="s2">&quot;mass:pbc&quot;</span><span class="p">):</span>
             <span class="n">mass</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">mass</span>
             <span class="n">sum_mass</span> <span class="o">=</span> <span class="n">mass</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="c1"># the periodic center of mass is determined by transfering all</span>
@@ -3075,14 +3076,14 @@
             <span class="n">avg_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="o">-</span><span class="n">avg_sin</span><span class="p">,</span> <span class="o">-</span><span class="n">avg_cos</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span>
             <span class="k">return</span> <span class="n">avg_theta</span> <span class="o">@</span> <span class="n">g</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span>
 
-        <span class="k">if</span> <span class="s2">&quot;mass&quot;</span> <span class="o">==</span> <span class="n">what</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;com&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">):</span>
             <span class="n">mass</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">mass</span>
-            <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mass</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mass</span> <span class="o">@</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span> <span class="o">/</span> <span class="n">mass</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mm:xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;mm(xyz)&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
 
-        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cop&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Geometry &mdash; sisl 0.1-3b8117a</title>
+  <title>sisl.Geometry &mdash; sisl 0.1-c667b7e</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
@@ -20,7 +20,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=705340c0"></script>
+        <script src="../../_static/documentation_options.js?v=68ce3467"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -46,7 +46,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-3b8117a
+                0.1-c667b7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -1046,15 +1046,15 @@ Else it will be the new bond-length.</p></li>
 <dd><p>Returns the center of the geometry</p>
 <p>By specifying <cite>what</cite> one can control whether it should be:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">xyz|position</span></code>: Center of coordinates (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cop|xyz|position</span></code>: Center of coordinates (default)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mm:xyz</span></code> or <code class="docutils literal notranslate"><span class="pre">mm(xyz)</span></code>: Center of minimum/maximum of coordinates</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mass</span></code>: Center of mass</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">com|mass</span></code>: Center of mass</p></li>
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">mass:pbc</span></code>: Center of mass using periodicity, if the point 0, 0, 0 is returned it</dt><dd><p>may likely be because of a completely periodic system with no true center of mass</p>
+<dt><code class="docutils literal notranslate"><span class="pre">com:pbc|mass:pbc</span></code>: Center of mass using periodicity, if the point 0, 0, 0 is returned it</dt><dd><p>may likely be because of a completely periodic system with no true center of mass</p>
 </dd>
 </dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cell</span></code>: Center of cell</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cou|cell</span></code>: Center of cell</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

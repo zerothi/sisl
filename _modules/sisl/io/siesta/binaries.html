@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-3b8117a</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-c667b7e</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -19,7 +19,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=705340c0"></script>
+        <script src="../../../../_static/documentation_options.js?v=68ce3467"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-3b8117a
+                0.1-c667b7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -529,9 +529,11 @@
                 <span class="s2">&quot;a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
+        <span class="n">sort</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
         <span class="c1"># Convert to siesta CSR</span>
-        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
-        <span class="n">csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">)</span>
         <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
 
         <span class="c1"># Extract the data to pass to the fortran routine</span>
@@ -540,17 +542,22 @@
 
         <span class="c1"># Get H and S</span>
         <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-            <span class="n">h</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">diags</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># Ensure all data is correctly formatted (i.e. have the same sparsity pattern)</span>
-            <span class="n">s</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span>
-            <span class="n">s</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">nnz</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">keep_nnz</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="n">s</span><span class="o">.</span><span class="n">diags</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">missing_diags</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">nnz</span> <span class="o">-</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span>
+            <span class="k">if</span> <span class="n">missing_diags</span><span class="p">:</span>
+                <span class="c1"># This should never happen as _csr_to_siesta should ensure</span>
+                <span class="c1"># that the diagonal entries always exists.</span>
+                <span class="c1"># Hence it gets changed before writing.</span>
+                <span class="c1"># Not compeletely optimal, but for now this is OK</span>
                 <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_hamiltonian &quot;</span>
                     <span class="s2">&quot;The diagonal elements of your orthogonal Hamiltonian &quot;</span>
-                    <span class="s2">&quot;have not been defined, this is a requirement.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;have not been defined. Got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">missing_diags</span><span class="si">}</span><span class="s2"> elements, expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">_D</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">h</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:</span> <span class="n">H</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">H</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span>

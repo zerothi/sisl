@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.btd.DeviceGreen &mdash; sisl 0.1-3b8117a</title>
+  <title>sisl_toolbox.btd.DeviceGreen &mdash; sisl 0.1-c667b7e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
@@ -20,7 +20,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=705340c0"></script>
+        <script src="../../../_static/documentation_options.js?v=68ce3467"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -46,7 +46,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-3b8117a
+                0.1-c667b7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -193,7 +193,7 @@ This does not take all things into consideration, but should cover most problems
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel" title="sisl_toolbox.btd.DeviceGreen.eigenchannel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenchannel</span></code></a>(state, elec_to[, ret_coeff])</p></td>
-<td><p>Calculate the eigen channel from scattering states entering electrodes <em class="xref py py-obj">elec_to</em></p></td>
+<td><p>Calculate the eigenchannel from scattering states entering electrodes <em class="xref py py-obj">elec_to</em></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="sisl_toolbox.btd.DeviceGreen.from_fdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_fdf</span></code></a>(fdf[, prefix, use_tbt_se, eta])</p></td>
 <td><p>Return a new <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen" title="sisl_toolbox.btd.DeviceGreen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviceGreen</span></code></a> using information gathered from the fdf</p></td>
@@ -234,7 +234,7 @@ This does not take all things into consideration, but should cover most problems
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.eigenchannel">
 <span class="sig-name descname"><span class="pre">eigenchannel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.eigenchannel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel" title="Link to this definition"></a></dt>
-<dd><p>Calculate the eigen channel from scattering states entering electrodes <em class="xref py py-obj">elec_to</em></p>
+<dd><p>Calculate the eigenchannel from scattering states entering electrodes <em class="xref py py-obj">elec_to</em></p>
 <p>The energy and k-point is inferred from the <em class="xref py py-obj">state</em> object as returned from
 <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="sisl_toolbox.btd.DeviceGreen.scattering_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_state</span></code></a>.</p>
 <p>The eigenchannels are the eigen states of the transmission matrix in the
@@ -391,11 +391,11 @@ and requires a substantial amount of memory.
 The <code class="docutils literal notranslate"><span class="pre">svd:gamma</span></code> is the fastests while retaining complete precision.
 The <code class="docutils literal notranslate"><span class="pre">svd:A</span></code> may be even faster for very large systems with
 very little loss of precision, since it diagonalizes <span class="math notranslate nohighlight">\(\mathbf A\)</span> in
-the subspace of the electrode <em class="xref py py-obj">elec</em> and reduces the propagated part of the spectral
+the subspace of the electrode <cite>elec</cite> and reduces the propagated part of the spectral
 matrix.</p></li>
 <li><p><strong>cutoff_elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Only used for <code class="docutils literal notranslate"><span class="pre">method=svd:A</span></code>. The initial block of the spectral function is
 diagonalized and only eigenvectors with eigenvalues <code class="docutils literal notranslate"><span class="pre">&gt;=cutoff_elec</span></code> are retained,
-thus reducing the initial propagated modes. The normalization explained for <em class="xref py py-obj">cutoff</em>
+thus reducing the initial propagated modes. The normalization explained for <cite>cutoff</cite>
 also applies here.</p></li>
 </ul>
 </dd>
@@ -415,7 +415,7 @@ One may recreate the spectral function with <code class="docutils literal notran
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.spectral">
 <span class="sig-name descname"><span class="pre">spectral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'column'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">herm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.spectral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.spectral" title="Link to this definition"></a></dt>
-<dd><p>Calculate the spectral function for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point from a given electrode</p>
+<dd><p>Calculate the spectral function for a given <cite>E</cite> and <cite>k</cite> point from a given electrode</p>
 <p>The spectral function is calculated as:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf A_{\mathfrak{e}}(E,\mathbf k) = \mathbf G(E,\mathbf k)\boldsymbol\Gamma_{\mathfrak{e}}(E,\mathbf k)
@@ -438,6 +438,10 @@ One may recreate the spectral function with <code class="docutils literal notran
 Depending on the size of the BTD blocks one may be faster than the
 other. For large systems you are recommended to time the different methods
 and stick with the fastest one, they are numerically identical.</p></li>
+<li><p><strong>herm</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – The spectral function is a Hermitian matrix, by default (True), the methods
+that can utilize the Hermitian property only calculates the lower triangular
+part of <span class="math notranslate nohighlight">\(\mathbf A\)</span>, and then copies the Hermitian to the upper part.
+By setting this to <cite>False</cite> the entire matrix is explicitly calculated.</p></li>
 </ul>
 </dd>
 </dl>
