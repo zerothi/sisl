@@ -111,8 +111,26 @@ class ConditionalExpressionSyntaxNode(SyntaxNode):
     def function(test, true, false):
         return true if test else false
 
+    def get_diagram_label(self):
+        """Returns the label to be used in diagrams when displaying this node."""
+        return "if/else"
+
 
 class CompareSyntaxNode(SyntaxNode):
+    _op_to_symbol = {
+        "eq": "==",
+        "ne": "!=",
+        "gt": ">",
+        "lt": "<",
+        "ge": ">=",
+        "le": "<=",
+        None: "compare",
+    }
+
     @staticmethod
     def function(left, op: str, right):
         return getattr(operator, op)(left, right)
+
+    def get_diagram_label(self):
+        """Returns the label to be used in diagrams when displaying this node."""
+        return self._op_to_symbol.get(self._prev_evaluated_inputs.get("op"))

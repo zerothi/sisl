@@ -343,8 +343,9 @@ class Network:
             for node in nodes:
                 graph_node = graph.nodes[node]
 
+                node_obj = self._workflow.dryrun_nodes.get(node)
+
                 if node_help:
-                    node_obj = self._workflow.dryrun_nodes.get(node)
                     title = (
                         _get_node_inputs_str(node_obj) if node_obj is not None else ""
                     )
@@ -359,6 +360,7 @@ class Network:
                         "level": level,
                         "title": title,
                         "font": font,
+                        "label": node_obj.get_diagram_label(),
                         **node_props,
                     }
                 )

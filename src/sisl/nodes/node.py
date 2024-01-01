@@ -677,6 +677,10 @@ class Node(NDArrayOperatorsMixin):
         if not self.context["lazy"]:
             self.get()
 
+    def get_diagram_label(self):
+        """Returns the label to be used in diagrams when displaying this node."""
+        return None
+
 
 class DummyInputValue(Node):
     """A dummy node that can be used as a placeholder for input values."""
