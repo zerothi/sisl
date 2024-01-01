@@ -362,9 +362,34 @@ class Node(NDArrayOperatorsMixin):
     def evaluate_input_node(node: Node):
         return node.get()
 
-    def get(self):
+    def _get_evaluated_inputs(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        """Evaluates all inputs.
+
+        This function is ONLY called by the get method.
+
+        The default implementation just goes over the inputs and, if they are nodes,
+        makes them compute their output. But some nodes might need more complex things,
+        like only evaluating some inputs depending on the value of other inputs.
+
+        Parameters
+        ----------
+        inputs : Dict[str, Any]
+            The input dictionary, possibly containing nodes to evaluate.
+        """
         # Map all inputs to their values. That is, if they are nodes, call the get
         # method on them so that we get the updated output. This recursively evaluates nodes.
+        return self.map_inputs(
+            inputs=inputs,
+            func=self.evaluate_input_node,
+            only_nodes=True,
+        )
+
+    def get(self):
+        """Returns the output of the node, possibly running the computation.
+
+        The computation of the node is only performed if the output is outdated,
+        otherwise this function just returns the stored output.
+        """
         self._logger.setLevel(getattr(logging, self.context["log_level"].upper()))
 
         logs = logging.StreamHandler(StringIO())
@@ -375,11 +400,7 @@ class Node(NDArrayOperatorsMixin):
         self._logger.debug("Getting output from node...")
         self._logger.debug(f"Raw inputs: {self._inputs}")
 
-        evaluated_inputs = self.map_inputs(
-            inputs=self._inputs,
-            func=self.evaluate_input_node,
-            only_nodes=True,
-        )
+        evaluated_inputs = self._get_evaluated_inputs(self._inputs)
 
         self._logger.debug(f"Evaluated inputs: {evaluated_inputs}")
 

@@ -12,7 +12,6 @@ from ..plotters.xarray import draw_xarray_xy
 from ..plotutils import random_color
 from ..processors.bands import calculate_gap, draw_gaps, filter_bands, style_bands
 from ..processors.data import accept_data
-from ..processors.logic import matches
 from ..processors.orbital import get_orbital_queries_manager, reduce_orbital_data
 from ..processors.xarray import scale_variable
 from .orbital_groups_plot import OrbitalGroupsPlot
@@ -95,8 +94,8 @@ def bands_plot(
     )
 
     # Determine what goes on each axis
-    x = matches(E_axis, "x", ret_true="E", ret_false="k")
-    y = matches(E_axis, "y", ret_true="E", ret_false="k")
+    x = "E" if E_axis == "x" else "k"
+    y = "E" if E_axis == "y" else "k"
 
     # Get the actions to plot lines
     bands_plottings = draw_xarray_xy(
@@ -267,12 +266,10 @@ def fatbands_plot(
     )
 
     # Determine what goes on each axis
-    x = matches(E_axis, "x", ret_true="E", ret_false="k")
-    y = matches(E_axis, "y", ret_true="E", ret_false="k")
+    x = "E" if E_axis == "x" else "k"
+    y = "E" if E_axis == "y" else "k"
 
-    sanitized_fatbands_mode = matches(
-        groups, [], ret_true="none", ret_false=fatbands_mode
-    )
+    sanitized_fatbands_mode = "none" if groups == [] else fatbands_mode
 
     # Get the actions to plot lines
     fatbands_plottings = draw_xarray_xy(
