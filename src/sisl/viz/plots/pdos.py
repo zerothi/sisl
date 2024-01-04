@@ -11,7 +11,7 @@ from ..figure import Figure, get_figure
 from ..plot import Plot
 from ..plotters.xarray import draw_xarray_xy
 from ..processors.data import accept_data
-from ..processors.logic import matches, swap
+from ..processors.logic import swap
 from ..processors.orbital import get_orbital_queries_manager, reduce_orbital_data
 from ..processors.xarray import filter_energy_range, scale_variable
 from .orbital_groups_plot import OrbitalGroupsPlot
@@ -65,8 +65,8 @@ def pdos_plot(
     )
 
     # Determine what goes on each axis
-    x = matches(E_axis, "x", ret_true="E", ret_false="PDOS")
-    y = matches(E_axis, "y", ret_true="E", ret_false="PDOS")
+    x = "E" if E_axis == "x" else "PDOS"
+    y = "E" if E_axis == "y" else "PDOS"
 
     dependent_axis = swap(E_axis, ("x", "y"))
 

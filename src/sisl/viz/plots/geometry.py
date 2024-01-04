@@ -28,7 +28,6 @@ from ..processors.geometry import (
     style_bonds,
     tile_data_sc,
 )
-from ..processors.logic import matches, switch
 from ..processors.xarray import scale_variable, select
 
 
@@ -180,7 +179,7 @@ def geometry_plot(
     # thread/process, potentially increasing speed.
     parsed_atom_style = parse_atoms_style(geometry, atoms_style=atoms_style)
     atoms_dataset = add_xyz_to_dataset(parsed_atom_style)
-    atoms_filter = switch(show_atoms, sanitized_atoms, [])
+    atoms_filter = sanitized_atoms if show_atoms else []
     filtered_atoms = select(atoms_dataset, "atom", atoms_filter)
     tiled_atoms = tile_data_sc(filtered_atoms, nsc=nsc)
     sc_atoms = stack_sc_data(tiled_atoms, newname="sc_atom", dims=["atom"])
@@ -205,7 +204,7 @@ def geometry_plot(
 
     # Here we start to process bonds
     bonds = find_all_bonds(geometry)
-    show_bonds = matches(ndim, 1, False, show_bonds)
+    show_bonds = show_bonds if ndim > 1 else False
     styled_bonds = style_bonds(bonds, bonds_style)
     bonds_dataset = add_xyz_to_bonds_dataset(styled_bonds)
     bonds_filter = sanitize_bonds_selection(
@@ -230,7 +229,7 @@ def geometry_plot(
     )
 
     # And now the cell
-    show_cell = matches(ndim, 1, False, show_cell)
+    show_cell = show_cell if ndim > 1 else False
     cell_plottings = cell_plot_actions(
         cell=geometry,
         show_cell=show_cell,
@@ -376,7 +375,7 @@ def sites_plot(
     )
 
     # And now the cell
-    show_cell = matches(ndim, 1, False, show_cell)
+    show_cell = show_cell if ndim > 1 else show_cell
     cell_plottings = cell_plot_actions(
         cell=fake_geometry,
         show_cell=show_cell,

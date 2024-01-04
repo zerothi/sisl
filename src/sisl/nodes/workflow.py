@@ -14,7 +14,13 @@ from sisl.messages import warn
 
 from .context import temporal_context
 from .node import DummyInputValue, Node
-from .syntax_nodes import DictSyntaxNode, ListSyntaxNode, TupleSyntaxNode
+from .syntax_nodes import (
+    CompareSyntaxNode,
+    ConditionalExpressionSyntaxNode,
+    DictSyntaxNode,
+    ListSyntaxNode,
+    TupleSyntaxNode,
+)
 from .utils import traverse_tree_backward, traverse_tree_forward
 
 register_environ_variable(
@@ -337,8 +343,9 @@ class Network:
             for node in nodes:
                 graph_node = graph.nodes[node]
 
+                node_obj = self._workflow.dryrun_nodes.get(node)
+
                 if node_help:
-                    node_obj = self._workflow.dryrun_nodes.get(node)
                     title = (
                         _get_node_inputs_str(node_obj) if node_obj is not None else ""
                     )
@@ -353,6 +360,7 @@ class Network:
                         "level": level,
                         "title": title,
                         "font": font,
+                        "label": node_obj.get_diagram_label(),
                         **node_props,
                     }
                 )
@@ -996,6 +1004,15 @@ class Workflow(Node):
 class NodeConverter(ast.NodeTransformer):
     """AST transformer that converts a function into a workflow."""
 
+    ast_to_operator = {
+        ast.Eq: "eq",
+        ast.NotEq: "ne",
+        ast.Lt: "lt",
+        ast.LtE: "le",
+        ast.Gt: "gt",
+        ast.GtE: "ge",
+    }
+
     def __init__(
         self,
         *args,
@@ -1101,6 +1118,53 @@ class NodeConverter(ast.NodeTransformer):
 
         return new_node
 
+    def visit_IfExp(self, node: ast.IfExp) -> Any:
+        """Converts the if expression syntax into a call to the ConditionalExpressionSyntaxNode."""
+        new_node = ast.Call(
+            func=ast.Name(id="ConditionalExpressionSyntaxNode", ctx=ast.Load()),
+            args=[
+                self.visit(node.test),
+                self.visit(node.body),
+                self.visit(node.orelse),
+            ],
+            keywords=[],
+        )
+
+        ast.fix_missing_locations(new_node)
+
+        return new_node
+
+    def visit_Compare(self, node: ast.Compare) -> Any:
+        """Converts the comparison syntax into CompareSyntaxNode call."""
+        if len(node.ops) > 1:
+            return self.generic_visit(node)
+
+        op = node.ops[0]
+        if op.__class__ not in self.ast_to_operator:
+            return self.generic_visit(node)
+
+        new_node = ast.Call(
+            func=ast.Name(id="CompareSyntaxNode", ctx=ast.Load()),
+            args=[
+                self.visit(node.left),
+                ast.Constant(value=self.ast_to_operator[op.__class__], ctx=ast.Load()),
+                self.visit(node.comparators[0]),
+            ],
+            keywords=[],
+        )
+
+        ast.fix_missing_locations(new_node)
+
+        # new_node = ast.Call(
+        #     func=ast.Name(id=self.ast_to_operator[op.__class__], ctx=ast.Load()),
+        #     args=[self.visit(node.left), self.visit(node.comparators[0])],
+        #     keywords=[],
+        # )
+
+        # ast.fix_missing_locations(new_node)
+
+        return new_node
+
 
 def nodify_func(
     func: FunctionType,
@@ -1183,6 +1247,8 @@ def nodify_func(
         "ListSyntaxNode": ListSyntaxNode,
         "TupleSyntaxNode": TupleSyntaxNode,
         "DictSyntaxNode": DictSyntaxNode,
+        "ConditionalExpressionSyntaxNode": ConditionalExpressionSyntaxNode,
+        "CompareSyntaxNode": CompareSyntaxNode,
         **func_namespace,
     }
     if assign_fn_key is not None:
