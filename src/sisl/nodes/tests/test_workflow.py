@@ -3,6 +3,7 @@ from typing import Type
 import pytest
 
 from sisl.nodes import Node, Workflow
+from sisl.nodes.node import ConstantNode
 from sisl.nodes.utils import traverse_tree_forward
 
 
@@ -186,3 +187,50 @@ def test_workflow_inside_workflow(triple_sum):
 
     assert first_triple_sum.nodes[triple_sum._sum_key]._nupdates == 1
     assert first_triple_sum.nodes[f"{triple_sum._sum_key}_1"]._nupdates == 2
+
+
+def test_outdated(triple_sum):
+    wf = triple_sum(2, 3, 4)
+
+    # Test that the workflow knows it is outdated in all possible situations
+    assert wf._outdated == True
+
+    wf.get()
+    assert wf._outdated == False
+
+    wf.update_inputs(a=3)
+    assert wf._outdated == True
+
+    inp = ConstantNode(3)
+    wf.update_inputs(a=inp)
+
+    wf.get()
+    assert wf._outdated == False
+    inp.update_inputs(value=5)
+    assert wf._outdated == True
+
+    # Now test that the workflow lets connected nodes that they are outdated.
+    out = ConstantNode(wf)
+
+    out.get()
+    assert out._outdated == False
+
+    wf.update_inputs(a=4)
+    assert out._outdated == True
+
+
+def test_errored(triple_sum):
+    wf = triple_sum(2, 3, 4)
+
+    assert wf._errored == False
+    wf.get()
+    assert wf._errored == False
+
+    wf.update_inputs(a={"c": "f"})
+    assert wf._errored == False
+    with pytest.raises(Exception):
+        wf.get()
+    assert wf._errored == True
+
+    wf.update_inputs(a={"c": "m"})
+    assert wf._errored == False

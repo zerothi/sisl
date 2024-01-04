@@ -824,6 +824,22 @@ class Workflow(Node):
 
     network = NetworkDescriptor()
 
+    def _set_outdated(self, value: bool):
+        self.nodes.output._outdated = value
+
+    def _get_outdated(self) -> bool:
+        return self.nodes.output._outdated
+
+    _outdated = property(fset=_set_outdated, fget=_get_outdated)
+
+    def _receive_output_link(self, node):
+        super()._receive_output_link(node)
+        self.nodes.output._receive_output_link(node)
+
+    def _receive_output_unlink(self, node):
+        super()._receive_output_unlink(node)
+        self.nodes.output._receive_output_unlink(node)
+
     @classmethod
     def from_node_tree(cls, output_node: Node, workflow_name: Union[str, None] = None):
         """Creates a workflow class from a node.
@@ -975,7 +991,12 @@ class Workflow(Node):
 
         It will recompute it if necessary.
         """
-        return self.nodes.output.get()
+        self._errored = False
+        try:
+            return self.nodes.output.get()
+        except:
+            self._errored = True
+            raise
 
     def update_inputs(self, **inputs):
         """Updates the inputs of the workflow."""
@@ -989,6 +1010,8 @@ class Workflow(Node):
             self.nodes.inputs[input_key].update_inputs(value=value)
 
         self._inputs.update(inputs)
+
+        self._receive_outdated()
 
         return self
 
