@@ -209,7 +209,7 @@ def test_real_space_HS(setup, k_axes, semi_axis, trs, bz, unfold):
         return
     RSE = RealSpaceSE(setup.HS, semi_axis, k_axes, (unfold, unfold, unfold))
     RSE.set_options(dk=100, trs=trs, bz=bz)
-    RSE.initialize()
+    RSE.setup()
     RSE.green(0.1)
 
 
@@ -236,7 +236,7 @@ def test_real_space_H_3d():
     H.construct(([0.001, 1.01], (0, -1)))
     RSE = RealSpaceSE(H, 0, [1, 2], (3, 4, 2))
     RSE.set_options(dk=100, trs=True)
-    RSE.initialize()
+    RSE.setup()
     nk = np.ones(3, np.int32)
     nk[[1, 2]] = 23
     bz = BrillouinZone(H, nk)
@@ -393,8 +393,7 @@ def test_real_space_SI_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
     surf = setup.HS.tile(4, 1)
     surf.set_nsc(b=1)
     RSI = RealSpaceSI(semi, surf, k_axes, (unfold, 1, unfold))
-    RSI.set_options(dk=100, trs=trs, bz=bz)
-    RSI.initialize()
+    RSI.setup(dk=100, trs=trs, bz=bz)
     RSI.self_energy(0.1, bulk=bulk, coupling=coupling)
 
 
@@ -414,7 +413,7 @@ def test_real_space_SI_H(
     surf.set_nsc(b=1)
     RSI = RealSpaceSI(semi, surf, k_axes, (unfold, 1, unfold))
     RSI.set_options(dk=100, trs=trs, bz=bz, semi_bulk=semi_bulk)
-    RSI.initialize()
+    RSI.setup()
     RSI.self_energy(0.1, bulk=bulk, coupling=coupling)
 
 
@@ -424,7 +423,7 @@ def test_real_space_SI_H_test(setup):
     surf.set_nsc(b=1)
     RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
     RSI.set_options(dk=100, trs=False, bz=None)
-    RSI.initialize()
+    RSI.setup()
     RSI.green(0.1, [0, 0, 0.1], dtype=np.complex128)
     RSI.self_energy(0.1, [0, 0, 0.1])
     RSI.clear()
@@ -435,8 +434,7 @@ def test_real_space_SI_H_k_trs(setup):
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
     RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
-    RSI.set_options(dk=100, trs=True, bz=None)
-    RSI.initialize()
+    RSI.setup(dk=100, trs=True, bz=None)
     with pytest.raises(ValueError):
         RSI.green(0.1, [0, 0, 0.1], dtype=np.complex128)
 
