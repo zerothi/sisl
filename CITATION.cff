@@ -9,6 +9,9 @@ authors:
     given-names: Nick
     orcid: "https://orcid.org/0000-0003-3038-1855"
     alias: zerothi
+  - family-names: Febrer
+    given-names: Pol
+    alias: pfebrer
 title: sisl
 identifiers:
   - description: "Collection DOI for any sisl version."
