@@ -1,43 +1,41 @@
-from numbers import Real
 from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
 
 from sisl import Geometry
 from sisl.typing import AtomsArgument
-from sisl.utils.mathematics import fnorm
 
-from . import _neigh_operations
+from . import _operations
 
 
-class NeighFinder:
-    """Efficient linear scaling finding of neighbours.
+class NeighborFinder:
+    """Efficient linear scaling finding of neighbors.
 
     Once this class is instantiated, a table is build. Then,
-    the neighbour finder can be queried as many times as wished
+    the neighbor finder can be queried as many times as wished
     as long as the geometry doesn't change.
 
     Note that the radius (`R`) is used to build the table.
-    Therefore, if one wants to look for neighbours using a different
-    R, one needs to create another finder or call `setup_finder`.
+    Therefore, if one wants to look for neighbors using a different
+    R, one needs to create another finder or call `setup`.
 
     Parameters
     ----------
     geometry: sisl.Geometry
-        the geometry to find neighbours in
+        the geometry to find neighbors in
     R: float or array-like of shape (geometry.na), optional
-        The radius to consider two atoms neighbours.
+        The radius to consider two atoms neighbors.
         If it is a single float, the same radius is used for all atoms.
         If it is an array, it should contain the radius for each atom.
 
         If not provided, an array is constructed, where the radius for
         each atom is its maxR.
-    sphere_overlap: bool, optional
-        If `True`, two atoms are considered neighbours if their spheres
+    overlap: bool, optional
+        If `True`, two atoms are considered neighbors if their spheres
         overlap.
-        If `False`, two atoms are considered neighbours if the second atom
+        If `False`, two atoms are considered neighbors if the second atom
         is within the sphere of the first atom. Note that this implies that
-        atom `i` might be atom `j`'s neighbour while the opposite is not true.
+        atom `i` might be atom `j`'s neighbor while the opposite is not true.
 
         If not provided, it will be `True` if `R` is an array and `False` if
         it is a single float.
@@ -51,11 +49,9 @@ class NeighFinder:
     nbins: Tuple[int, int, int]
     total_nbins: int
 
-    R: Union[float, np.ndarray]
-    _aux_R: Union[
-        float, np.ndarray
-    ]  # If the geometry has been tiled, R is also tiled here
-    _sphere_overlap: bool
+    R: np.ndarray
+    _aux_R: np.ndarray
+    _overlap: bool
 
     # Data structure
     _list: np.ndarray  # (natoms, )
@@ -65,27 +61,27 @@ class NeighFinder:
     def __init__(
         self,
         geometry: Geometry,
-        R: Union[float, np.ndarray, None] = None,
-        sphere_overlap: Optional[bool] = None,
+        R: Optional[Union[float, np.ndarray]] = None,
+        overlap: bool = False,
     ):
-        self.setup_finder(geometry, R=R, sphere_overlap=sphere_overlap)
+        self.setup(geometry, R=R, overlap=overlap)
 
-    def setup_finder(
+    def setup(
         self,
         geometry: Optional[Geometry] = None,
-        R: Union[float, np.ndarray, None] = None,
-        sphere_overlap: Optional[bool] = None,
+        R: Optional[Union[float, np.ndarray]] = None,
+        overlap: bool = None,
     ):
-        """Prepares everything for neighbour finding.
+        """Prepares everything for neighbor finding.
 
         Parameters
         ----------
         geometry: sisl.Geometry, optional
-            the geometry to find neighbours in.
+            the geometry to find neighbors in.
 
             If not provided, the current geometry is kept.
         R: float or array-like of shape (geometry.na), optional
-            The radius to consider two atoms neighbours.
+            The radius to consider two atoms neighbors.
             If it is a single float, the same radius is used for all atoms.
             If it is an array, it should contain the radius for each atom.
 
@@ -93,27 +89,22 @@ class NeighFinder:
             each atom is its maxR.
 
             Note that negative R values are allowed
-        sphere_overlap: bool, optional
-            If `True`, two atoms are considered neighbours if their spheres
+        overlap: bool
+            If `True`, two atoms are considered neighbors if their spheres
             overlap.
-            If `False`, two atoms are considered neighbours if the second atom
+            If `False`, two atoms are considered neighbors if the second atom
             is within the sphere of the first atom. Note that this implies that
-            atom `i` might be atom `j`'s neighbour while the opposite is not true.
-
-            If not provided, it will be `True` if `R` is an array and `False` if
-            it is a single float.
+            atom `i` might be atom `j`'s neighbor while the opposite is not true.
         """
         # Set the geometry. Copy it because we may need to modify the supercell size.
         if geometry is not None:
             self.geometry = geometry.copy()
 
-        # If R is not a single float, make sure it is a numpy array
-        R_is_float = isinstance(R, Real)
-        if not R_is_float:
-            R = np.array(R)
         # If R was not provided, build an array of Rs
         if R is None:
             R = self.geometry.atoms.maxR(all=True)
+        else:
+            R = np.asarray(R)
 
         # Set the radius
         self.R = R
@@ -121,9 +112,7 @@ class NeighFinder:
 
         # If sphere overlap was not provided, set it to False if R is a single float
         # and True otherwise.
-        if sphere_overlap is None:
-            sphere_overlap = not R_is_float
-        self._sphere_overlap = sphere_overlap
+        self._overlap = overlap
 
         # Determine the bin_size as the maximum DIAMETER to ensure that we ALWAYS
         # only need to look one bin away for neighbors.
@@ -133,7 +122,7 @@ class NeighFinder:
             raise ValueError(
                 "All R values are 0 or less. Please provide some positive values"
             )
-        if sphere_overlap:
+        if overlap:
             # In the case when we want to check for sphere overlap, the size should
             # be twice as big.
             bin_size *= 2
@@ -142,7 +131,7 @@ class NeighFinder:
         # a position is exactly at the center of a bin.
         bin_size += 0.01
 
-        lattice_sizes = fnorm(self.geometry.cell, axis=-1)
+        lattice_sizes = self.geometry.length
 
         if bin_size > np.min(lattice_sizes):
             self._R_too_big = True
@@ -153,7 +142,7 @@ class NeighFinder:
             nsc = np.ceil(bin_size / lattice_sizes) // 2 * 2 + 1
             # And then set it as the number of supercells.
             self.geometry.set_nsc(nsc.astype(int))
-            if isinstance(self._aux_R, np.ndarray):
+            if self._aux_R.ndim == 1:
                 self._aux_R = np.tile(self._aux_R, self.geometry.n_s)
 
             all_xyz = []
@@ -166,7 +155,7 @@ class NeighFinder:
             )
 
             # Recompute lattice sizes
-            lattice_sizes = fnorm(self._bins_geometry.cell, axis=-1)
+            lattice_sizes = self._bins_geometry.length
 
         else:
             # Nothing to modify, we can use the geometry and bin it as it is.
@@ -181,12 +170,12 @@ class NeighFinder:
         # Get the scalar bin indices of all atoms
         scalar_bin_indices = self._get_bin_indices(self._bins_geometry.fxyz)
 
-        # Build the tables that will allow us to look for neighbours in an efficient
+        # Build the tables that will allow us to look for neighbors in an efficient
         # and linear scaling manner.
         self._build_table(scalar_bin_indices)
 
     def _build_table(self, bin_indices):
-        """Builds the tables that will allow efficient linear scaling neighbour search.
+        """Builds the tables that will allow efficient linear scaling neighbor search.
 
         Parameters
         ----------
@@ -194,7 +183,7 @@ class NeighFinder:
             Array containing the scalar bin index for each atom.
         """
         # Call the fortran routine that builds the table
-        self._list, self._heads, self._counts = _neigh_operations.build_table(
+        self._list, self._heads, self._counts = _operations.build_table(
             self.total_nbins, bin_indices
         )
 
@@ -274,7 +263,7 @@ class NeighFinder:
     def _get_search_indices(self, fxyz, cartesian=False):
         """Gets the bin indices to explore for a given fractional coordinate.
 
-        Given a fractional coordinate, we will need to look for neighbours
+        Given a fractional coordinate, we will need to look for neighbors
         in its own bin, and one bin away in each direction. That is, $2^3=8$ bins.
 
         Parameters
@@ -303,7 +292,7 @@ class NeighFinder:
         bin_indices = self._get_bin_indices(fxyz, floor=False, cartesian=True)
         bin_indices = np.atleast_2d(bin_indices)
 
-        # Determine which is the neighbouring cell that we need to look for
+        # Determine which is the neighboring cell that we need to look for
         # along each direction.
         signs = np.ones(bin_indices.shape, dtype=int)
         signs[(bin_indices % 1) < 0.5] = -1
@@ -346,21 +335,21 @@ class NeighFinder:
 
     def _correct_pairs_R_too_big(
         self,
-        neighbour_pairs: np.ndarray,  # (n_pairs, 5)
+        neighbor_pairs: np.ndarray,  # (n_pairs, 5)
         split_ind: Union[int, np.ndarray],  # (n_queried_atoms, )
         pbc: np.ndarray,  # (3, )
     ):
         """Correction to atom and supercell indices when the binning has been done on a tiled geometry"""
-        is_sc_neigh = neighbour_pairs[:, 1] >= self.geometry.na
+        is_sc_neigh = neighbor_pairs[:, 1] >= self.geometry.na
 
         invalid = None
         if not np.any(pbc):
             invalid = is_sc_neigh
         else:
-            pbc_neighs = neighbour_pairs.copy()
+            pbc_neighs = neighbor_pairs.copy()
 
             sc_neigh, uc_neigh = np.divmod(
-                neighbour_pairs[:, 1][is_sc_neigh], self.geometry.na
+                neighbor_pairs[:, 1][is_sc_neigh], self.geometry.na
             )
             isc_neigh = self.geometry.sc_off[sc_neigh]
 
@@ -370,42 +359,42 @@ class NeighFinder:
             if not np.all(pbc):
                 invalid = pbc_neighs[:, 2:][:, ~pbc].any(axis=1)
 
-            neighbour_pairs = pbc_neighs
+            neighbor_pairs = pbc_neighs
 
         if invalid is not None:
-            neighbour_pairs = neighbour_pairs[~invalid]
+            neighbor_pairs = neighbor_pairs[~invalid]
             if isinstance(split_ind, int):
                 split_ind = split_ind - invalid.sum()
             else:
                 split_ind = split_ind - np.cumsum(invalid)[split_ind - 1]
 
-        return neighbour_pairs, split_ind
+        return neighbor_pairs, split_ind
 
-    def find_neighbours(
+    def find_neighbors(
         self,
         atoms: AtomsArgument = None,
         as_pairs: bool = False,
         self_interaction: bool = False,
         pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True),
     ):
-        """Find neighbours as specified in the finder.
+        """Find neighbors as specified in the finder.
 
-        This routine only executes the action of finding neighbours,
-        the parameters of the search (`geometry`, `R`, `sphere_overlap`...)
-        are defined when the finder is initialized or by calling `setup_finder`.
+        This routine only executes the action of finding neighbors,
+        the parameters of the search (`geometry`, `R`, `overlap`...)
+        are defined when the finder is initialized or by calling `setup`.
 
         Parameters
         ----------
         atoms: optional
-            the atoms for which neighbours are desired. Anything that can
+            the atoms for which neighbors are desired. Anything that can
             be sanitized by `sisl.Geometry` is a valid value.
 
-            If not provided, neighbours for all atoms are searched.
+            If not provided, neighbors for all atoms are searched.
         as_pairs: bool, optional
             If `True` pairs of atoms are returned. Otherwise a list containing
-            the neighbours for each atom is returned.
+            the neighbors for each atom is returned.
         self_interaction: bool, optional
-            whether to consider an atom a neighbour of itself.
+            whether to consider an atom a neighbor of itself.
         pbc: bool or array-like of shape (3, )
             whether periodic conditions should be considered.
             If a single bool is passed, all directions use that value.
@@ -415,7 +404,7 @@ class NeighFinder:
         np.ndarray or list:
             If `as_pairs=True`:
                 A `np.ndarray` of shape (n_pairs, 5) is returned.
-                Each pair `ij` means that `j` is a neighbour of `i`.
+                Each pair `ij` means that `j` is a neighbor of `i`.
                 The three extra columns are the supercell indices of atom `j`.
             If `as_pairs=False`:
                 A list containing a numpy array of shape (n_neighs, 4) for each atom.
@@ -439,8 +428,8 @@ class NeighFinder:
         if not self_interaction:
             max_pairs -= search_indices.shape[0]
 
-        # Find the neighbour pairs
-        neighbour_pairs, split_ind = _neigh_operations.get_pairs(
+        # Find the neighbor pairs
+        neighbor_pairs, split_ind = _operations.get_pairs(
             atoms,
             search_indices,
             isc,
@@ -452,36 +441,36 @@ class NeighFinder:
             self._bins_geometry.cell,
             pbc,
             thresholds,
-            self._sphere_overlap,
+            self._overlap,
         )
 
-        # Correct neighbour indices for the case where R was too big and
+        # Correct neighbor indices for the case where R was too big and
         # we needed to create an auxiliary supercell.
         if self._R_too_big:
-            neighbour_pairs, split_ind = self._correct_pairs_R_too_big(
-                neighbour_pairs, split_ind, pbc
+            neighbor_pairs, split_ind = self._correct_pairs_R_too_big(
+                neighbor_pairs, split_ind, pbc
             )
 
         if as_pairs:
-            # Just return the neighbour pairs
-            return neighbour_pairs[: split_ind[-1]]
+            # Just return the neighbor pairs
+            return neighbor_pairs[: split_ind[-1]]
         else:
-            # Split to get the neighbours of each atom
-            return np.split(neighbour_pairs[:, 1:], split_ind, axis=0)[:-1]
+            # Split to get the neighbors of each atom
+            return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
 
     def find_all_unique_pairs(
         self,
         self_interaction: bool = False,
         pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True),
     ):
-        """Find all unique neighbour pairs within the geometry.
+        """Find all unique neighbor pairs within the geometry.
 
         A pair of atoms is considered unique if atoms have the same index
         and correspond to the same unit cell. As an example, the connection
         atom 0 (unit cell) to atom 5 (1, 0, 0) is not the same as the
         connection atom 5 (unit cell) to atom 0 (-1, 0, 0).
 
-        Note that this routine can not be called if `sphere_overlap` is
+        Note that this routine can not be called if `overlap` is
         set to `False` and the radius is not a single float. In that case,
         there is no way of defining "uniqueness" since pair `ij` can have
         a different threshold radius than pair `ji`.
@@ -489,15 +478,15 @@ class NeighFinder:
         Parameters
         ----------
         atoms: optional
-            the atoms for which neighbours are desired. Anything that can
+            the atoms for which neighbors are desired. Anything that can
             be sanitized by `sisl.Geometry` is a valid value.
 
-            If not provided, neighbours for all atoms are searched.
+            If not provided, neighbors for all atoms are searched.
         as_pairs: bool, optional
             If `True` pairs of atoms are returned. Otherwise a list containing
-            the neighbours for each atom is returned.
+            the neighbors for each atom is returned.
         self_interaction: bool, optional
-            whether to consider an atom a neighbour of itself.
+            whether to consider an atom a neighbor of itself.
         pbc: bool or array-like of shape (3, )
             whether periodic conditions should be considered.
             If a single bool is passed, all directions use that value.
@@ -505,33 +494,33 @@ class NeighFinder:
         Returns
         ----------
         np.ndarray of shape (n_pairs, 5):
-            Each pair `ij` means that `j` is a neighbour of `i`.
+            Each pair `ij` means that `j` is a neighbor of `i`.
             The three extra columns are the supercell indices of atom `j`.
         """
-        if not self._sphere_overlap and not isinstance(self._aux_R, Real):
+        if not self._overlap and self._aux_R.ndim == 1:
             raise ValueError(
                 "Unique atom pairs do not make sense if we are not looking for sphere overlaps."
-                " Please setup the finder again setting `sphere_overlap` to `True` if you wish so."
+                " Please setup the finder again setting `overlap` to `True` if you wish so."
             )
 
         # In the case where we tiled the geometry to do the binning, it is much better to
-        # just find all neighbours and then drop duplicate connections. Otherwise it is a bit of a mess.
+        # just find all neighbors and then drop duplicate connections. Otherwise it is a bit of a mess.
         if self._R_too_big:
-            # Find all neighbours
-            all_neighbours = self.find_neighbours(
+            # Find all neighbors
+            all_neighbors = self.find_neighbors(
                 as_pairs=True, self_interaction=self_interaction, pbc=pbc
             )
 
             # Find out which of the pairs are uc connections
-            is_uc_neigh = ~np.any(all_neighbours[:, 2:], axis=1)
+            is_uc_neigh = ~np.any(all_neighbors[:, 2:], axis=1)
 
             # Create an array with unit cell connections where duplicates are removed
-            unique_uc = np.unique(np.sort(all_neighbours[is_uc_neigh][:, :2]), axis=0)
-            uc_neighbours = np.zeros((len(unique_uc), 5), dtype=int)
-            uc_neighbours[:, :2] = unique_uc
+            unique_uc = np.unique(np.sort(all_neighbors[is_uc_neigh][:, :2]), axis=0)
+            uc_neighbors = np.zeros((len(unique_uc), 5), dtype=int)
+            uc_neighbors[:, :2] = unique_uc
 
             # Concatenate the uc connections with the rest of the connections.
-            return np.concatenate((uc_neighbours, all_neighbours[~is_uc_neigh]))
+            return np.concatenate((uc_neighbors, all_neighbors[~is_uc_neigh]))
 
         # Cast R and pbc into arrays of appropiate shape and type.
         thresholds = np.full(self.geometry.na, self.R, dtype=np.float64)
@@ -549,8 +538,8 @@ class NeighFinder:
         if not self_interaction:
             max_pairs -= search_indices.shape[0]
 
-        # Find all unique neighbour pairs
-        neighbour_pairs, n_pairs = _neigh_operations.get_all_unique_pairs(
+        # Find all unique neighbor pairs
+        neighbor_pairs, n_pairs = _operations.get_all_unique_pairs(
             search_indices,
             isc,
             self._heads,
@@ -561,10 +550,10 @@ class NeighFinder:
             self.geometry.cell,
             pbc,
             thresholds,
-            self._sphere_overlap,
+            self._overlap,
         )
 
-        return neighbour_pairs[:n_pairs]
+        return neighbor_pairs[:n_pairs]
 
     def find_close(
         self,
@@ -574,18 +563,18 @@ class NeighFinder:
     ):
         """Find all atoms that are close to some coordinates in space.
 
-        This routine only executes the action of finding neighbours,
-        the parameters of the search (`geometry`, `R`, `sphere_overlap`...)
-        are defined when the finder is initialized or by calling `setup_finder`.
+        This routine only executes the action of finding neighbors,
+        the parameters of the search (`geometry`, `R`, `overlap`...)
+        are defined when the finder is initialized or by calling `setup`.
 
         Parameters
         ----------
         xyz: array-like of shape ([npoints], 3)
-            the coordinates for which neighbours are desired.
+            the coordinates for which neighbors are desired.
         as_pairs: bool, optional
             If `True` pairs are returned, where the first item is the index
             of the point and the second one is the atom index.
-            Otherwise a list containing the neighbours for each point is returned.
+            Otherwise a list containing the neighbors for each point is returned.
         pbc: bool or array-like of shape (3, )
             whether periodic conditions should be considered.
             If a single bool is passed, all directions use that value.
@@ -595,7 +584,7 @@ class NeighFinder:
         np.ndarray or list:
             If `as_pairs=True`:
                 A `np.ndarray` of shape (n_pairs, 5) is returned.
-                Each pair `ij` means that `j` is a neighbour of `i`.
+                Each pair `ij` means that `j` is a neighbor of `i`.
                 The three extra columns are the supercell indices of atom `j`.
             If `as_pairs=False`:
                 A list containing a numpy array of shape (n_neighs, 4) for each atom.
@@ -615,8 +604,8 @@ class NeighFinder:
 
         max_pairs = at_counts.sum()
 
-        # Find the neighbour pairs
-        neighbour_pairs, split_ind = _neigh_operations.get_close(
+        # Find the neighbor pairs
+        neighbor_pairs, split_ind = _operations.get_close(
             xyz,
             search_indices,
             isc,
@@ -629,16 +618,16 @@ class NeighFinder:
             thresholds,
         )
 
-        # Correct neighbour indices for the case where R was too big and
+        # Correct neighbor indices for the case where R was too big and
         # we needed to create an auxiliary supercell.
         if self._R_too_big:
-            neighbour_pairs, split_ind = self._correct_pairs_R_too_big(
-                neighbour_pairs, split_ind, pbc
+            neighbor_pairs, split_ind = self._correct_pairs_R_too_big(
+                neighbor_pairs, split_ind, pbc
             )
 
         if as_pairs:
-            # Just return the neighbour pairs
-            return neighbour_pairs[: split_ind[-1]]
+            # Just return the neighbor pairs
+            return neighbor_pairs[: split_ind[-1]]
         else:
-            # Split to get the neighbours of each position
-            return np.split(neighbour_pairs[:, 1:], split_ind, axis=0)[:-1]
+            # Split to get the neighbors of each position
+            return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]

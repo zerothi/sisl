@@ -4,9 +4,9 @@ import numpy as np
 import pytest
 
 from sisl import Geometry
-from sisl.geom import NeighFinder
+from sisl.geom import NeighborFinder
 
-pytestmark = [pytest.mark.neighbour]
+pytestmark = [pytest.mark.neighbor]
 
 
 tr_fixture = partial(pytest.fixture, scope="module", params=[True, False])
@@ -29,7 +29,7 @@ def neighfinder(sphere_overlap, multiR):
 
     R = np.array([1.1, 1.5, 1.2]) if multiR else 1.5
 
-    neighfinder = NeighFinder(geom, R=R, sphere_overlap=sphere_overlap)
+    neighfinder = NeighborFinder(geom, R=R, overlap=sphere_overlap)
 
     neighfinder.assert_consistency()
 
@@ -75,18 +75,18 @@ def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
     if post_setup:
         # We are going to create a data structure with the wrong parameters,
         # and then update it.
-        finder = NeighFinder(geom, R=R - 0.7, sphere_overlap=not sphere_overlap)
-        finder.setup_finder(R=R, sphere_overlap=sphere_overlap)
+        finder = NeighborFinder(geom, R=R - 0.7, overlap=not sphere_overlap)
+        finder.setup(R=R, overlap=sphere_overlap)
     else:
         # Initialize finder with the right parameters.
-        finder = NeighFinder(geom, R=R, sphere_overlap=sphere_overlap)
+        finder = NeighborFinder(geom, R=R, overlap=sphere_overlap)
 
     # Check that R is properly set when its a scalar and an array.
     if multiR:
         assert isinstance(finder.R, np.ndarray)
         assert np.all(finder.R == R)
     else:
-        assert isinstance(finder.R, float)
+        assert finder.R.ndim == 0
         assert finder.R == R
 
     # Assert that we have stored a copy of the geometry
@@ -115,7 +115,7 @@ def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
 
 
 def test_neighbour_pairs(neighfinder, self_interaction, pbc, expected_neighs):
-    neighs = neighfinder.find_neighbours(
+    neighs = neighfinder.find_neighbors(
         as_pairs=True, self_interaction=self_interaction, pbc=pbc
     )
 
@@ -130,8 +130,8 @@ def test_neighbour_pairs(neighfinder, self_interaction, pbc, expected_neighs):
     assert np.all(neighs == [*first_at_neighs, *second_at_neighs, *third_at_neighs])
 
 
-def test_neighbours_lists(neighfinder, self_interaction, pbc, expected_neighs):
-    neighs = neighfinder.find_neighbours(
+def test_neighbors_lists(neighfinder, self_interaction, pbc, expected_neighs):
+    neighs = neighfinder.find_neighbors(
         as_pairs=False, self_interaction=self_interaction, pbc=pbc
     )
 
@@ -149,7 +149,7 @@ def test_neighbours_lists(neighfinder, self_interaction, pbc, expected_neighs):
         assert neighs[i].shape == (
             len(i_at_neighs),
             4,
-        ), f"Wrong shape for neighbours of atom {i}"
+        ), f"Wrong shape for neighbors of atom {i}"
 
     # Check values
     for i, i_at_neighs in enumerate(
@@ -160,11 +160,11 @@ def test_neighbours_lists(neighfinder, self_interaction, pbc, expected_neighs):
 
         assert np.all(
             neighs[i] == i_at_neighs[:, 1:]
-        ), f"Wrong values for neighbours of atom {i}"
+        ), f"Wrong values for neighbors of atom {i}"
 
 
 def test_all_unique_pairs(neighfinder, self_interaction, pbc, expected_neighs):
-    if isinstance(neighfinder.R, np.ndarray) and not neighfinder._sphere_overlap:
+    if neighfinder.R.ndim == 1 and not neighfinder._overlap:
         with pytest.raises(ValueError):
             neighfinder.find_all_unique_pairs(
                 self_interaction=self_interaction, pbc=pbc
@@ -199,26 +199,26 @@ def test_close(neighfinder, pbc):
     neighs = neighfinder.find_close([0.3, 0, 0], as_pairs=True, pbc=pbc)
 
     expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
-    if pbc and isinstance(neighfinder.R, float):
+    if pbc and neighfinder.R.ndim == 0:
         expected_neighs.append([0, 2, -1, 0, 0])
 
     assert neighs.shape == (len(expected_neighs), 5)
     assert np.all(neighs == expected_neighs)
 
 
-def test_no_neighbours(pbc):
-    """Test the case where there are no neighbours, to see that it doesn't crash."""
+def test_no_neighbors(pbc):
+    """Test the case where there are no neighbors, to see that it doesn't crash."""
 
     geom = Geometry([[0, 0, 0]])
 
-    finder = NeighFinder(geom, R=1.5)
+    finder = NeighborFinder(geom, R=1.5)
 
-    neighs = finder.find_neighbours(as_pairs=True, pbc=pbc)
+    neighs = finder.find_neighbors(as_pairs=True, pbc=pbc)
 
     assert isinstance(neighs, np.ndarray)
     assert neighs.shape == (0, 5)
 
-    neighs = finder.find_neighbours(as_pairs=False, pbc=pbc)
+    neighs = finder.find_neighbors(as_pairs=False, pbc=pbc)
 
     assert isinstance(neighs, list)
     assert len(neighs) == 1
@@ -238,7 +238,7 @@ def test_R_too_big(pbc):
 
     geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=[2, 10, 10])
 
-    neighfinder = NeighFinder(geom, R=1.5)
+    neighfinder = NeighborFinder(geom, R=1.5)
 
     neighs = neighfinder.find_all_unique_pairs(pbc=pbc)
 
@@ -250,7 +250,7 @@ def test_R_too_big(pbc):
     assert neighs.shape == (len(expected_neighs), 5)
     assert np.all(neighs == expected_neighs)
 
-    neighfinder = NeighFinder(geom, R=[0.6, 2.2])
+    neighfinder = NeighborFinder(geom, R=[0.6, 2.2], overlap=True)
 
     neighs = neighfinder.find_close([[0.5, 0, 0]], as_pairs=True, pbc=pbc)
 

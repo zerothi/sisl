@@ -1,6 +1,6 @@
 # In this directory we have a set of libraries
 # We will need to link to the Numpy includes
-foreach(source _neigh_operations)
+foreach(source _operations)
   add_cython_library(
     SOURCE ${source}.py
     LIBRARY ${source}
