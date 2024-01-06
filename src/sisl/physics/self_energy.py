@@ -21,7 +21,7 @@ from sisl._help import array_replace
 from sisl._internal import set_module
 from sisl.linalg import inv, linalg_info, solve
 from sisl.linalg.base import _compute_lwork
-from sisl.messages import info, warn
+from sisl.messages import deprecation, info, warn
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.sparse_geometry import _SparseGeometry
@@ -687,8 +687,7 @@ class RealSpaceSE(SelfEnergy):
     >>> H = Hamiltonian(graphene)
     >>> H.construct([(0.1, 1.44), (0, -2.7)])
     >>> rse = RealSpaceSE(H, 0, 1, (3, 4, 1))
-    >>> rse.set_options(eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
-    >>> rse.initialize()
+    >>> rse.setup(eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
     >>> rse.green(0.1) # eta = 1e-3
     >>> rse.green(0.1 + 1j * 1e-4) # eta = 1e-4
 
@@ -736,8 +735,7 @@ class RealSpaceSE(SelfEnergy):
             # The BrillouinZone used for integration
             "bz": None,
         }
-        self.set_options(**options)
-        self.initialize()
+        self.setup(**options)
 
     def __len__(self):
         r"""Dimension of the self-energy"""
@@ -763,7 +761,7 @@ class RealSpaceSE(SelfEnergy):
     def set_options(self, **options):
         r"""Update options in the real-space self-energy
 
-        After updating options one should re-call `initialize` for consistency.
+        After updating options one should re-call `setup` for consistency.
 
         Parameters
         ----------
@@ -875,8 +873,16 @@ class RealSpaceSE(SelfEnergy):
             return PC, atoms
         return PC
 
+    @deprecation(
+        "RealSpaceSE.initialize is deprecated in favor of RealSpaceSE.setup, please update code.",
+        "0.16.0",
+    )
     def initialize(self):
-        r"""Initialize the internal data-arrays used for efficient calculation of the real-space quantities
+        """See setup"""
+        self.setup()
+
+    def setup(self, **options):
+        r"""Setup the internal data-arrays used for efficient calculation of the real-space quantities
 
         This method should first be called *after* all options has been specified.
 
@@ -884,7 +890,13 @@ class RealSpaceSE(SelfEnergy):
         integration Brillouin zone based on ``dk`` and ``trs`` options. The :math:`\mathbf k` point sampling corresponds
         to the number of points in the non-folded system and thus the final sampling is equivalent to the
         sampling times the unfolding (per :math:`\mathbf k` direction).
+
+        See Also
+        --------
+        set_options : for argument details
         """
+        self.set_options(**options)
+
         s_ax = self._semi_axis
         k_ax = self._k_axes
 
@@ -1232,7 +1244,7 @@ class RealSpaceSE(SelfEnergy):
         return G
 
     def clear(self):
-        """Clears the internal arrays created in `initialize`"""
+        """Clears the internal arrays created in `setup`"""
         del self._calc
 
 
@@ -1258,7 +1270,7 @@ class RealSpaceSI(SelfEnergy):
     surface : SparseOrbitalBZ
         parent object containing the surface of system. `semi` is attached into this
         object via the overlapping regions, the atoms that overlap `semi` and `surface`
-        are determined in the `initialize` routine.
+        are determined in the `setup` routine.
         `semi` and `surface` must have parallel lattice vectors.
     k_axes : array_like of int
         axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
@@ -1299,8 +1311,7 @@ class RealSpaceSI(SelfEnergy):
     >>> Hsurf = H.tile(3, 0)
     >>> Hsurf.set_nsc(a=1)
     >>> rsi = RealSpaceSI(se, Hsurf, 1, (1, 4, 1))
-    >>> rsi.set_options(eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
-    >>> rsi.initialize()
+    >>> rsi.setup(eta=1e-3, bz=MonkhorstPack(H, [1, 1000, 1]))
     >>> rsi.green(0.1) # eta = 1e-3
     >>> rsi.green(0.1 + 1j * 1e-4) # eta = 1e-4
 
@@ -1402,8 +1413,7 @@ class RealSpaceSI(SelfEnergy):
             # The BrillouinZone used for integration
             "bz": None,
         }
-        self.set_options(**options)
-        self.initialize()
+        self.setup(**options)
 
     def __len__(self):
         r"""Dimension of the self-energy"""
@@ -1432,7 +1442,7 @@ class RealSpaceSI(SelfEnergy):
     def set_options(self, **options):
         r"""Update options in the real-space self-energy
 
-        After updating options one should re-call `initialize` for consistency.
+        After updating options one should re-call `setup` for consistency.
 
         Parameters
         ----------
@@ -1593,7 +1603,15 @@ class RealSpaceSI(SelfEnergy):
             return PC, atom_idx
         return PC
 
+    @deprecation(
+        "RealSpaceSI.initialize is deprecated in favor of RealSpaceSI.setup, please update code.",
+        "0.16.0",
+    )
     def initialize(self):
+        """See setup"""
+        self.setup()
+
+    def setup(self, **options):
         r"""Initialize the internal data-arrays used for efficient calculation of the real-space quantities
 
         This method should first be called *after* all options has been specified.
@@ -1602,7 +1620,12 @@ class RealSpaceSI(SelfEnergy):
         integration Brillouin zone based on the ``dk`` option. The :math:`\mathbf k` point sampling corresponds
         to the number of points in the non-folded system and thus the final sampling is equivalent to the
         sampling times the unfolding (per :math:`\mathbf k` direction).
+
+        See Also
+        --------
+        set_options : for argument details
         """
+        self.set_options(**options)
         P0 = self.real_space_parent()
 
         V_atoms = self.real_space_coupling(True)[1]
@@ -1863,5 +1886,5 @@ class RealSpaceSI(SelfEnergy):
         return G
 
     def clear(self):
-        """Clears the internal arrays created in `initialize`"""
+        """Clears the internal arrays created in `setup`"""
         del self._calc
