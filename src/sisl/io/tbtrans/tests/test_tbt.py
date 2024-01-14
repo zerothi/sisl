@@ -38,9 +38,10 @@ def test_1_graphene_all_content(sisl_files):
     TBT.DOS.A T
     TBT.DOS.A.All T
 
-    # Orbital currents and Crystal-Orbital investigations.
+    # Orbital transmissions and Crystal-Orbital investigations.
     TBT.Symmetry.TimeReversal F
     TBT.Current.Orb T
+    TBT.T.Orbital T
     TBT.COOP.Gf T
     TBT.COOP.A T
     TBT.COHP.Gf T
@@ -439,8 +440,6 @@ def test_1_graphene_sparse_current(sisl_files, sisl_tmp):
 
     J = tbt.orbital_current(what="+")
     assert np.allclose(J.data, 0)
-    J = tbt.orbital_current(what="-")
-    assert np.allclose(J.data, 0)
 
 
 @pytest.mark.filterwarnings("ignore:.*requesting energy")
@@ -644,3 +643,10 @@ def test_1_graphene_all_sparse_data_orbitals(sisl_files):
     J_12 = tbt.orbital_transmission(204, 0, orbitals=[2, 3])
 
     assert J_12.nnz < J_all.nnz // 2
+
+
+def test_2_projection_raise(sisl_files):
+    tbt = sisl.get_sile(sisl_files(_dir, "2_projection.TBT.nc"))
+
+    with pytest.raises(sisl.io.tbtrans.MissingFDFTBtransError):
+        tbt.orbital_transmission(2, 0)

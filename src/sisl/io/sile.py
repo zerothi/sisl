@@ -10,13 +10,15 @@ from operator import and_, contains
 from os.path import basename, splitext
 from pathlib import Path
 from textwrap import dedent, indent
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
+import sisl.io._exceptions as _exceptions
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
 from sisl.messages import SislInfo, SislWarning, deprecate, info, warn
 from sisl.utils.misc import str_spec
 
+from ._exceptions import *
 from ._help import *
 
 # Public used objects
@@ -28,10 +30,8 @@ __all__ += [
     "Sile",
     "SileCDF",
     "SileBin",
-    "SileError",
-    "SileWarning",
-    "SileInfo",
 ]
+__all__.extend(_exceptions.__all__)
 
 # Decorators or sile-specific functions
 __all__ += ["sile_fh_open", "sile_raise_write", "sile_raise_read"]
@@ -73,12 +73,11 @@ class _sile_rule:
         self.base_names = [c.__name__.lower() for c in self.bases]
 
     def __str__(self):
-        s = "{cls}{{case={case}, suffix={suffix}, gzip={gzip},\n ".format(
-            cls=self.cls.__name__, case=self.case, suffix=self.suffix, gzip=self.gzip
+        s = ",\n ".join(map(lambda x: x.__name, self.bases))
+        return (
+            f"{self.cls.__name__}{{case={self.case}, "
+            f"suffix={self.suffix}, gzip={self.gzip},\n {s}\n}}"
         )
-        for b in self.bases:
-            s += f" {b.__name__},\n "
-        return s[:-3] + "\n}"
 
     def __repr__(self):
         return (
@@ -313,7 +312,7 @@ def get_sile_class(filename, *args, **kwargs):
         # Check for files without ending, or that they are directly zipped
         lext = splitext(f)
         while len(lext[1]) > 0:
-            end = lext[1] + end
+            end = f"{lext[1]}{end}"
             if end[0] == ".":
                 end_list.append(end[1:])
             else:
@@ -521,8 +520,8 @@ class BaseSile:
         """
         for key in kwargs.keys():
             # Loop all keys and try to read the quantities
-            if hasattr(self, "read_" + key):
-                func = getattr(self, "read_" + key)
+            if hasattr(self, f"read_{key}"):
+                func = getattr(self, f"read_{key}")
                 # Call read
                 return func(kwargs[key], **kwargs)
 
@@ -549,8 +548,8 @@ class BaseSile:
 
         for key in kwargs.keys():
             # Loop all keys and try to write the quantities
-            if hasattr(self, "write_" + key):
-                func = getattr(self, "write_" + key)
+            if hasattr(self, f"write_{key}"):
+                func = getattr(self, f"write_{key}")
                 # Call write
                 func(kwargs[key], **kwargs)
 
@@ -561,7 +560,6 @@ class BaseSile:
 
         This method can be overwritten.
         """
-        pass
 
     def _base_setup(self, *args, **kwargs):
         """Setup the `Sile` after initialization
@@ -633,7 +631,6 @@ class BaseSile:
         p : ArgumentParser
            the argument parser to add the arguments to.
         """
-        pass
 
     def __str__(self):
         """Return a representation of the `Sile`"""
@@ -744,7 +741,6 @@ class BufferSile:
 
     def close(self):
         """Will not close the file since this is passed by the user"""
-        pass
 
 
 @set_module("sisl.io")
@@ -1483,7 +1479,7 @@ def sile_raise_write(self, ok=("w", "a")):
         raise SileError(
             (
                 "Writing to file not possible; allowed "
-                "modes={}, used mode={}".format(ok, self._mode)
+                f"modes={ok}, used mode={self._mode}"
             ),
             self,
         )
@@ -1499,36 +1495,3 @@ def sile_raise_read(self, ok=("r", "a")):
             f"modes={ok}, used mode={self._mode}",
             self,
         )
-
-
-@set_module("sisl.io")
-class SileError(IOError):
-    """Define an error object related to the Sile objects"""
-
-    def __init__(self, value, obj=None):
-        self.value = value
-        self.obj = obj
-
-    def __str__(self):
-        if self.obj:
-            return f"{self.value!s} in {self.obj!s}"
-        else:
-            return self.value
-
-
-@set_module("sisl.io")
-class SileWarning(SislWarning):
-    """Warnings that informs users of things to be carefull about when using their retrieved data
-
-    These warnings should be issued whenever a read/write routine is unable to retrieve all information
-    but are non-influential in the sense that sisl is still able to perform the action.
-    """
-
-    pass
-
-
-@set_module("sisl.io")
-class SileInfo(SislInfo):
-    """Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning."""
-
-    pass

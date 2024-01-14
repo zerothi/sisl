@@ -14,6 +14,7 @@ from sisl.unit.siesta import unit_convert
 from sisl.utils import collect_action, default_ArgumentParser, list2str
 
 from ..sile import add_sile
+from .sile import missing_input_fdf
 from .tbt import tbtncSileTBtrans
 
 __all__ = ["tbtprojncSileTBtrans"]
@@ -43,11 +44,11 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             elec_mol_proj = elec_mol_proj.split(".")
         if len(elec_mol_proj) == 1:
             return elec_mol_proj
-        elif len(elec_mol_proj) != 3:
+        if len(elec_mol_proj) != 3:
             raise ValueError(
                 f"Projection specification does not contain 3 fields: <electrode>.<molecule>.<projection> is required."
             )
-        return [elec_mol_proj[i] for i in [1, 2, 0]]
+        return [elec_mol_proj[i] for i in (1, 2, 0)]
 
     @property
     def elecs(self):
@@ -85,6 +86,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         mol = self.groups[molecule]
         return list(mol.groups.keys())
 
+    @missing_input_fdf([("TBT.Projs.DOS.A", "True")])
     def ADOS(
         self,
         elec_mol_proj,
@@ -138,6 +140,15 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             * eV2Ry
         )
 
+    def orbital_transmission(self, E, elec_mol_proj, *args, **kwargs):
+        mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
+        super().orbital_transmission(E, mol_proj_elec, *args, **kwargs)
+
+    # TODO fix doc strings for elec specification, the argument isn't called 'elec', but
+    # elec_mol_proj_from
+    orbital_transmission.__doc__ = tbtncSileTBtrans.orbital_transmission.__doc__
+
+    @missing_input_fdf([("TBT.Projs.T.All", "True")])
     def transmission(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
         """Transmission from `mol_proj_elec_from` to `mol_proj_elec_to`
 
@@ -160,6 +171,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             elec_mol_proj_to = ".".join(elec_mol_proj_to)
         return self._value_avg(elec_mol_proj_to + ".T", mol_proj_elec, kavg=kavg)
 
+    @missing_input_fdf([("TBT.Projs.T.Eig", "<int>")])
     def transmission_eig(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
         """Transmission eigenvalues from `elec_mol_proj_from` to `elec_mol_proj_to`
 
@@ -182,6 +194,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             elec_mol_proj_to = ".".join(elec_mol_proj_to)
         return self._value_avg(elec_mol_proj_to + ".T.Eig", mol_proj_elec, kavg=kavg)
 
+    @missing_input_fdf([("TBT.Projs.DM.A", "True")])
     def Adensity_matrix(
         self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None, geometry=None
     ):
@@ -243,6 +256,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             DM = DensityMatrix.fromsp(geometry, dm)
         return DM
 
+    @missing_input_fdf([("TBT.Projs.COOP.A", "True")])
     def orbital_ACOOP(self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None):
         r""" Orbital COOP analysis of the projected spectral function
 
@@ -306,9 +320,12 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         atom_ACOHP : atomic COHP analysis of the projected spectral function
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
-        COOP = self._sparse_data("COOP", mol_proj_elec, E, kavg, isc, orbitals) * eV2Ry
+        COOP = (
+            self._sparse_matrix("COOP", mol_proj_elec, E, kavg, isc, orbitals) * eV2Ry
+        )
         return COOP
 
+    @missing_input_fdf([("TBT.Projs.COHP.A", "True")])
     def orbital_ACOHP(self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None):
         r"""Orbital COHP analysis of the projected spectral function
 
@@ -350,7 +367,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         atom_ACOOP : atomic COOP analysis of the projected spectral function
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
-        COHP = self._sparse_data("COHP", mol_proj_elec, E, kavg, isc, orbitals)
+        COHP = self._sparse_matrix("COHP", mol_proj_elec, E, kavg, isc, orbitals)
         return COHP
 
     @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")

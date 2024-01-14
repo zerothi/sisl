@@ -38,35 +38,25 @@ _sisl_warn_registry = {}
 class SislException(Exception):
     """Sisl exception"""
 
-    pass
-
 
 @set_module("sisl")
 class SislError(SislException):
     """Sisl error"""
-
-    pass
 
 
 @set_module("sisl")
 class SislWarning(SislException, UserWarning):
     """Sisl warnings"""
 
-    pass
-
 
 @set_module("sisl")
 class SislDeprecation(SislWarning, FutureWarning):
     """Sisl deprecation warnings for end-users"""
 
-    pass
-
 
 @set_module("sisl")
 class SislInfo(SislWarning):
     """Sisl informations"""
-
-    pass
 
 
 @set_module("sisl")

@@ -41,15 +41,18 @@ class phtavncSilePHtrans(tbtavncSileTBtrans):
         return self._value("kT", self._elec(elec))[0] * Ry2eV
 
 
-for _name in [
+for _name in (
     "chemical_potential",
     "electron_temperature",
     "kT",
+    "orbital_current",
+    "bond_current",
+    "vector_current",
     "current",
     "current_parameter",
     "shot_noise",
     "noise_power",
-]:
+):
     setattr(phtncSilePHtrans, _name, None)
     setattr(phtavncSilePHtrans, _name, None)
 
