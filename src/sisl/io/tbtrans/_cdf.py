@@ -12,7 +12,7 @@ import sisl._array as _a
 from sisl import Atom, Geometry, Lattice
 from sisl._indices import indices
 from sisl._internal import set_module
-from sisl.messages import info, warn
+from sisl.messages import deprecate, info, warn
 from sisl.physics.distribution import fermi_dirac
 from sisl.unit.siesta import unit_convert
 
@@ -88,7 +88,13 @@ class _ncSileTBtrans(SileCDFTBtrans):
         """The associated geometry from this file"""
         return self.read_geometry()
 
-    geom = geometry
+    @property
+    def geom(self):
+        """Same as `geometry`, but deprecated"""
+        deprecate(
+            f"{self.__class__.__name__}.geom is deprecated, please use '.geometry'."
+        )
+        return self.geometry
 
     @property
     @lru_cache(maxsize=1)

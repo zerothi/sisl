@@ -10,6 +10,7 @@ except Exception:
 
 import itertools
 from functools import reduce
+from typing import List, Optional, Union
 
 import numpy as np
 
@@ -41,6 +42,7 @@ from sisl.utils import (
 
 from ..sile import add_sile, get_sile, sile_raise_write
 from ._cdf import _devncSileTBtrans
+from .sile import missing_input_fdf
 
 __all__ = ["tbtncSileTBtrans", "tbtavncSileTBtrans"]
 
@@ -150,37 +152,36 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         f = kwargs.get("file", f)
         tbtavncSileTBtrans(f, mode="w", access=0).write_tbtav(self)
 
-    def _value_avg(self, name, tree=None, kavg=False):
+    def _value_avg(
+        self,
+        name: str,
+        tree: Optional[Union[str, List[str]]] = None,
+        kavg: bool = False,
+    ):
         """Local method for obtaining the data from the SileCDF.
 
-        This method checks how the file is access, i.e. whether
+        This method checks how the file is accessed, i.e. whether
         data is stored in the object or it should be read consequtively.
+
+        Parameters
+        ----------
+        name: str
+            name of the variable (located in `tree`)
+        tree: str or list of str, optional
+            the group location of the variable
+        kavg: bool, optional
+            whether to k-average the quantity
         """
         if self._access > 0:
             if name in self._data:
                 return self._data[name]
 
-        try:
-            v = self._variable(name, tree=tree)
-        except KeyError as err:
-            group = None
-            if isinstance(tree, list):
-                group = ".".join(tree)
-            elif not tree is None:
-                group = tree
-            if not group is None:
-                raise KeyError(
-                    f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file."
-                )
-            raise KeyError(
-                f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file."
-            )
+        v = self._variable(name, tree=tree)
 
         if self._k_avg:
             return v[:]
 
         # Perform normalization
-        orig_shape = v.shape
         if isinstance(kavg, bool):
             if kavg:
                 wkpt = self.wk
@@ -188,13 +189,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = v[0, ...] * wkpt[0]
                 for i in range(1, nk):
                     data += v[i, :] * wkpt[i]
-                data.shape = orig_shape[1:]
             else:
                 data = v[:]
 
         elif isinstance(kavg, Integral):
             data = v[kavg, ...]
-            data.shape = orig_shape[1:]
 
         else:
             raise ValueError(
@@ -204,50 +203,54 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Return data
         return data
 
-    def _value_E(self, name, tree=None, kavg=False, E=None):
-        """Local method for obtaining the data from the SileCDF using an E index."""
+    def _value_E(
+        self,
+        name: str,
+        tree: Optional[Union[str, List[str]]] = None,
+        kavg: bool = False,
+        E: Optional[Union[int, float]] = None,
+    ):
+        """Local method for obtaining energy resolved data from the SileCDF.
+
+        This method checks how the file is accessed, i.e. whether
+        data is stored in the object or it should be read consequtively.
+
+        Parameters
+        ----------
+        name: str
+            name of the variable (located in `tree`)
+        tree: str or list of str, optional
+            the group location of the variable
+        kavg: bool, optional
+            whether to k-average the quantity
+        E: int or float, optional
+            if provided, only extract the quantity based on the energy `E`.
+        """
         if E is None:
             return self._value_avg(name, tree, kavg)
 
         # Ensure that it is an index
         iE = self.Eindex(E)
 
-        try:
-            v = self._variable(name, tree=tree)
-        except KeyError:
-            group = None
-            if isinstance(tree, list):
-                group = ".".join(tree)
-            elif not tree is None:
-                group = tree
-            if not group is None:
-                raise KeyError(
-                    f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file."
-                )
-            raise KeyError(
-                f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file."
-            )
+        v = self._variable(name, tree=tree)
+
         if self._k_avg:
             return v[iE, ...]
 
         wkpt = self.wk
 
         # Perform normalization
-        orig_shape = v.shape
-
         if isinstance(kavg, bool):
             if kavg:
                 nk = len(wkpt)
                 data = np.array(v[0, iE, ...]) * wkpt[0]
                 for i in range(1, nk):
                     data += v[i, iE, ...] * wkpt[i]
-                data.shape = orig_shape[2:]
             else:
-                data = np.array(v[:, iE, ...])
+                data = v[:, iE, ...]
 
         elif isinstance(kavg, Integral):
-            data = np.array(v[kavg, iE, ...])
-            data.shape = orig_shape[2:]
+            data = v[kavg, iE, ...]
 
         else:
             raise ValueError(
@@ -257,6 +260,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Return data
         return data
 
+    @missing_input_fdf([("TBT.T.All", "True")])
     def transmission(self, elec_from=0, elec_to=1, kavg=True) -> ndarray:
         r"""Transmission from `elec_from` to `elec_to`.
 
@@ -296,6 +300,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self._value_avg(f"{elec_to}.T", elec_from, kavg=kavg)
 
+    @missing_input_fdf([("TBT.T.Out", "True"), ("TBT.T.All", "True")])
     def reflection(self, elec=0, kavg=True, from_single=False) -> ndarray:
         r"""Reflection into electrode `elec`
 
@@ -350,6 +355,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return BT - T
 
+    @missing_input_fdf([("TBT.T.Eig", "<int>")])
     def transmission_eig(self, elec_from=0, elec_to=1, kavg=True) -> ndarray:
         """Transmission eigenvalues from `elec_from` to `elec_to`.
 
@@ -377,6 +383,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self._value_avg(f"{elec_to}.T.Eig", elec_from, kavg=kavg)
 
+    @missing_input_fdf([("TBT.T.Bulk", "True")])
     def transmission_bulk(self, elec=0, kavg=True) -> ndarray:
         """Bulk transmission for the `elec` electrode
 
@@ -584,6 +591,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return nDOS
 
+    @missing_input_fdf([("TBT.DOS.Gf", "True")])
     def DOS(
         self, E=None, kavg=True, atoms=None, orbitals=None, sum=True, norm="none"
     ) -> ndarray:
@@ -628,6 +636,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             * eV2Ry
         )
 
+    @missing_input_fdf([("TBT.DOS.A", "True")])
     def ADOS(
         self,
         elec=0,
@@ -683,6 +692,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             * eV2Ry
         )
 
+    @missing_input_fdf([("TBT.DOS.Elecs", "True")])
     def BDOS(self, elec=0, E=None, kavg=True, sum=True, norm="none") -> ndarray:
         r"""Bulk density of states (DOS) (1/eV).
 
@@ -1431,6 +1441,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "argument only has been deprecated in favor of what, please update your code.",
         "0.14.0",
     )
+    @missing_input_fdf([("TBT.T.Orbital", "True"), ("TBT.Current.Orb", "True")])
     def orbital_transmission(
         self, E, elec=0, kavg=True, isc=None, what: str = "all", orbitals=None
     ) -> csr_matrix:
@@ -1536,6 +1547,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "argument only has been deprecated in favor of what, please update your code.",
         "0.14.0",
     )
+    @missing_input_fdf([("TBT.T.Orbital", "True"), ("TBT.Current.Orb", "True")])
     def orbital_current(
         self,
         elec=0,
@@ -2106,6 +2118,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.sparse_orbital_to_scalar(Jij, activity=activity)
 
+    @missing_input_fdf([("TBT.DM.Gf", "True")])
     def density_matrix(
         self, E, kavg=True, isc=None, orbitals=None, geometry=None
     ) -> csr_matrix:
@@ -2159,6 +2172,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             None, E, kavg, isc, orbitals=orbitals, geometry=geometry
         )
 
+    @missing_input_fdf([("TBT.DM.A", "True")])
     def Adensity_matrix(
         self, elec, E, kavg=True, isc=None, orbitals=None, geometry=None
     ) -> csr_matrix:
@@ -2223,6 +2237,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             DM = DensityMatrix.fromsp(geometry, dm)
         return DM
 
+    @missing_input_fdf([("TBT.COOP.Gf", "True")])
     def orbital_COOP(self, E, kavg=True, isc=None, orbitals=None) -> csr_matrix:
         r""" Orbital COOP analysis of the Green function
 
@@ -2288,6 +2303,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self.orbital_ACOOP(E, None, kavg=kavg, isc=isc, orbitals=orbitals)
 
+    @missing_input_fdf([("TBT.COOP.A", "True")])
     def orbital_ACOOP(
         self, E, elec=0, kavg=True, isc=None, orbitals=None
     ) -> csr_matrix:
@@ -2447,6 +2463,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         COOP = self.orbital_ACOOP(E, elec, kavg=kavg, isc=isc, orbitals=orbitals)
         return self.sparse_orbital_to_atom(COOP, uc)
 
+    @missing_input_fdf([("TBT.COHP.Gf", "True")])
     def orbital_COHP(self, E, kavg=True, isc=None, orbitals=None) -> csr_matrix:
         r"""Orbital resolved COHP analysis of the Green function
 
@@ -2494,6 +2511,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self.orbital_ACOHP(E, None, kavg=kavg, isc=isc, orbitals=orbitals)
 
+    @missing_input_fdf([("TBT.COHP.A", "True")])
     def orbital_ACOHP(
         self, E, elec=0, kavg=True, isc=None, orbitals=None
     ) -> csr_matrix:
@@ -2772,7 +2790,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             truefalse("DOS" in gelec.variables, "DOS bulk", ["TBT.DOS.Elecs"])
             truefalse("ADOS" in gelec.variables, "DOS spectral", ["TBT.DOS.A"])
             truefalse(
-                "J" in gelec.variables, "orbital-transmission", ["TBT.Current.Orb"]
+                "J" in gelec.variables,
+                "orbital-transmission",
+                ["TBT.T.Orbital", "TBT.Current.Orb"],
             )
             truefalse("DM" in gelec.variables, "Density matrix spectral", ["TBT.DM.A"])
             truefalse("COOP" in gelec.variables, "COOP spectral", ["TBT.COOP.A"])

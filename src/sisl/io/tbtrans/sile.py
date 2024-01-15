@@ -1,11 +1,31 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 from sisl._internal import set_module
+from sisl.io.siesta import MissingFDFSiestaError
 
-from ..sile import Sile, SileBin, SileCDF
+from ..sile import Sile, SileBin, SileCDF, missing_input
 
-__all__ = ["SileTBtrans", "SileCDFTBtrans", "SileBinTBtrans"]
+__all__ = [
+    "SileTBtrans",
+    "SileCDFTBtrans",
+    "SileBinTBtrans",
+    "MissingFDFTBtransError",
+    "missing_input_fdf",
+]
+
+
+@set_module("sisl.io.tbtrans")
+class MissingFDFTBtransError(MissingFDFSiestaError):
+    pass
+
+
+@set_module("sisl.io.tbtrans")
+def missing_input_fdf(
+    inputs, executable: str = "siesta", when_exception: Exception = KeyError
+):
+    return missing_input(executable, inputs, MissingFDFTBtransError, when_exception)
 
 
 @set_module("sisl.io.tbtrans")
