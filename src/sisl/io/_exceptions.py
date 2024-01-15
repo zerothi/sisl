@@ -12,6 +12,7 @@ __all__ = [
     "SileError",
     "SileWarning",
     "SileInfo",
+    "MissingInputSileException",
     "MissingInputSileError",
     "MissingInputSileInfo",
     "MissingInputSileWarning",
@@ -61,10 +62,7 @@ class MissingInputSileException(SislException):
     """
 
     def __init__(
-        self,
-        executable: str,
-        inputs: InputsType,
-        method: Callable,
+        self, executable: str, inputs: InputsType, method: Callable, msg: str = ""
     ):
         # Formulate the error message
         try:
@@ -80,7 +78,7 @@ class MissingInputSileException(SislException):
         str_except = "\n".join(map(parse, inputs))
 
         super().__init__(
-            f"Data from method '{name}' failed due to missing output values.\n\n"
+            f"{msg}\nData from method '{name}' failed due to missing output values.\n\n"
             f"This is because of missing options in the input file for executable {executable}.\n"
             f"Please read up on the following flags in the manual of '{executable}' to figure out "
             f"how to retrieve the expected quantities:\n{str_except}"
