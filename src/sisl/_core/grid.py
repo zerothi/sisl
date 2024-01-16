@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import logging
 from math import pi
-from numbers import Integral, Real
+from numbers import Real
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 from numpy import add, asarray, cos, dot, floor, int32, ogrid, sin, take
@@ -17,7 +18,7 @@ from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from sisl._help import dtype_complex_to_real, wrap_filterwarnings
 from sisl._internal import set_module
-from sisl.messages import SislError, deprecate_argument, deprecation
+from sisl.messages import deprecate_argument, deprecation
 from sisl.shape import Shape
 from sisl.utils import (
     cmd,
@@ -31,7 +32,7 @@ from sisl.utils import (
 from sisl.utils.mathematics import fnorm
 
 from .geometry import Geometry
-from .lattice import BoundaryCondition, LatticeChild
+from .lattice import BoundaryCondition, Lattice, LatticeChild
 
 __all__ = ["Grid", "sgrid"]
 
@@ -66,12 +67,12 @@ class Grid(
         a list of integers specifies the exact grid size.
     bc : list of int (3, 2) or (3, ), optional
         the boundary conditions for each of the cell's planes. Default to periodic BC.
-    lattice : Lattice, optional
+    lattice :
         the lattice that this grid represents. `lattice` has precedence if both `geometry` and `lattice`
         has been specified. Defaults to ``[1, 1, 1]``.
     dtype : numpy.dtype, optional
         the data-type of the grid, default to `numpy.float64`.
-    geometry : Geometry, optional
+    geometry :
         associated geometry with the grid. If `lattice` has not been passed the lattice will
         be taken from this geometry.
 
@@ -118,7 +119,14 @@ class Grid(
         "argument bc has been deprecated (removed) in favor of the boundary conditions in Lattice, please update your code.",
         "0.15.0",
     )
-    def __init__(self, shape, bc=None, lattice=None, dtype=None, geometry=None):
+    def __init__(
+        self,
+        shape,
+        bc=None,
+        lattice: Optional[Lattice] = None,
+        dtype=None,
+        geometry: Optional[Geometry] = None,
+    ):
         self.set_lattice(None)
 
         # Create the atomic structure in the grid, if possible
@@ -423,41 +431,6 @@ class Grid(
             d["geometry"] = self.geometry.copy()
         return d
 
-    def copy(self, dtype=None):
-        r"""Copy the object, possibly changing the data-type"""
-        d = self._sc_geometry_dict()
-        if dtype is None:
-            d["dtype"] = self.dtype
-        else:
-            d["dtype"] = dtype
-        grid = self.__class__([1] * 3, **d)
-        # This also ensures the shape is copied!
-        grid.grid = self.grid.astype(dtype=d["dtype"])
-        return grid
-
-    def swapaxes(self, a, b):
-        """Swap two axes in the grid (also swaps axes in the lattice)
-
-        If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
-
-        Parameters
-        ----------
-        a, b : int
-            axes indices to be swapped
-        """
-        # Create index vector
-        idx = _a.arangei(3)
-        idx[b] = a
-        idx[a] = b
-        s = np.copy(self.shape)
-        d = self._sc_geometry_dict()
-        d["lattice"] = d["lattice"].swapaxes(a, b)
-        d["dtype"] = self.dtype
-        grid = self.__class__(s[idx], **d)
-        # We need to force the C-order or we loose the contiguity
-        grid.grid = np.copy(np.swapaxes(self.grid, a, b), order="C")
-        return grid
-
     @property
     def dcell(self):
         """Voxel cell size"""
@@ -604,60 +577,6 @@ class Grid(
         else:
             sub = _a.arangei(0, idx)
         return self.sub(sub, axis)
-
-    def sub(self, idx, axis):
-        """Retains certain indices from a specified axis.
-
-        Works exactly opposite to `remove`.
-
-        Parameters
-        ----------
-        idx : array_like
-           the indices of the grid axis `axis` to be retained
-        axis : int
-           the axis segment from which we retain the indices `idx`
-        """
-        idx = _a.asarrayi(idx).ravel()
-        shift_geometry = False
-        if len(idx) > 1:
-            if np.allclose(np.diff(idx), 1):
-                shift_geometry = not self.geometry is None
-
-        if shift_geometry:
-            grid = self._copy_sub(len(idx), axis)
-            min_xyz = self.dcell[axis, :] * idx[0]
-            # Now shift the geometry according to what is retained
-            geom = self.geometry.translate(-min_xyz)
-            geom.set_lattice(grid.lattice)
-            grid.set_geometry(geom)
-        else:
-            grid = self._copy_sub(len(idx), axis, scale_geometry=True)
-
-        # Remove the indices
-        # First create the opposite, index
-        if axis == 0:
-            grid.grid[:, :, :] = self.grid[idx, :, :]
-        elif axis == 1:
-            grid.grid[:, :, :] = self.grid[:, idx, :]
-        elif axis == 2:
-            grid.grid[:, :, :] = self.grid[:, :, idx]
-
-        return grid
-
-    def remove(self, idx, axis):
-        """Removes certain indices from a specified axis.
-
-        Works exactly opposite to `sub`.
-
-        Parameters
-        ----------
-        idx : array_like
-           the indices of the grid axis `axis` to be removed
-        axis : int
-           the axis segment from which we remove all indices `idx`
-        """
-        ret_idx = np.delete(_a.arangei(self.shape[axis]), _a.asarrayi(idx))
-        return self.sub(ret_idx, axis)
 
     def index2xyz(self, index):
         """Real-space coordinates of indices related to the grid
@@ -911,20 +830,6 @@ class Grid(
             return floor(
                 dot(icell[axis, :], coord.reshape(-1, 3).T) * shape[axis]
             ).T.astype(int32, copy=False)
-
-    def append(self, other, axis):
-        """Appends other `Grid` to this grid along axis"""
-        shape = list(self.shape)
-        shape[axis] += other.shape[axis]
-        d = self._sc_geometry_dict()
-        if "geometry" in d:
-            if not other.geometry is None:
-                d["geometry"] = d["geometry"].append(other.geometry, axis)
-        else:
-            d["geometry"] = other.geometry
-        d["lattice"] = self.lattice.append(other.lattice, axis)
-        d["dtype"] = self.dtype
-        return self.__class__(shape, **d)
 
     @staticmethod
     def read(sile, *args, **kwargs):

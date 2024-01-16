@@ -1,8 +1,9 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
 
-from functools import singledispatch, wraps
+from functools import singledispatch
 from textwrap import dedent
 from typing import Callable, Optional
 
@@ -58,7 +59,9 @@ def _append_doc_dispatch(method: Callable, cls: type):
     method_registry = _registry[name]
 
     # Append to doc string
-    doc = f"\n{cls.__name__}.{name}: when first argument is of type '{cls.__name__}'"
+    doc = (
+        f"\n{cls.__name__}.{name}: equivalent to '{name}({cls.__name__.lower()}, ...)'."
+    )
     method_registry.__doc__ += doc
 
 
@@ -79,6 +82,8 @@ def register_sisl_dispatch(
 
     name = method.__name__
     if name not in _registry:
+        # create a new method that will be stored
+        # as a place-holder for the dispatch methods.
 
         def method_registry(*args, **kwargs):
             """Dispatch method"""
