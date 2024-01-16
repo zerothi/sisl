@@ -308,11 +308,6 @@ class TestLattice:
     def test_icell(self, setup):
         assert np.allclose(setup.lattice.rcell, setup.lattice.icell * 2 * np.pi)
 
-    def test_translate1(self, setup):
-        lattice = setup.lattice.translate([0, 0, 10])
-        assert np.allclose(lattice.cell[2, :2], setup.lattice.cell[2, :2])
-        assert np.allclose(lattice.cell[2, 2], setup.lattice.cell[2, 2] + 10)
-
     def test_center1(self, setup):
         assert np.allclose(
             setup.lattice.center(), np.sum(setup.lattice.cell, axis=0) / 2

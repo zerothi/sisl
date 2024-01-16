@@ -4,7 +4,7 @@
 from functools import wraps
 
 from sisl._category import Category, NullCategory
-from sisl.geometry import AtomCategory
+from sisl._core.geometry import AtomCategory
 
 __all__ = ["NullCategory", "AtomCategory"]
 
@@ -24,5 +24,5 @@ def _sanitize_loop(func):
 
 
 # class AtomCategory(Category)
-# is defined in sisl/geometry.py since it is required in
+# is defined in sisl._core.geometry.py since it is required in
 # that instance.

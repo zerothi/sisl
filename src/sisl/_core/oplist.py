@@ -13,8 +13,8 @@ import operator as op
 from functools import wraps
 from itertools import zip_longest
 
-from ._help import isiterable
-from ._internal import set_module
+from sisl._help import isiterable
+from sisl._internal import set_module
 
 __all__ = ["oplist"]
 

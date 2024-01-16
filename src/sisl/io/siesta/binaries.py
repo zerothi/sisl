@@ -1062,7 +1062,7 @@ class hsxSileSiesta(SileBinSiesta):
         # to python index
         isa -= 1
 
-        from sisl.atom import _ptbl
+        from sisl._core.atom import _ptbl
 
         # try and convert labels into symbols
         # We do this by:

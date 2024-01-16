@@ -18,17 +18,25 @@ from typing import Optional, Sequence, Tuple, Union
 import numpy as np
 from numpy import dot, ndarray
 
-from . import _array as _a
-from . import _plot as plt
-from ._dispatch_class import _Dispatchs
-from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from ._internal import set_module
+import sisl._array as _a
+import sisl._plot as plt
+from sisl._dispatch_class import _Dispatchs
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from sisl._internal import set_module
+from sisl._math_small import cross3, dot3
+from sisl.messages import (
+    SislError,
+    deprecate,
+    deprecate_argument,
+    deprecation,
+    info,
+    warn,
+)
+from sisl.shape.prism4 import Cuboid
+from sisl.utils.mathematics import fnorm
+
 from ._lattice import cell_invert, cell_reciprocal
-from ._math_small import cross3, dot3
-from .messages import SislError, deprecate, deprecate_argument, deprecation, info, warn
 from .quaternion import Quaternion
-from .shape.prism4 import Cuboid
-from .utils.mathematics import fnorm
 
 __all__ = ["Lattice", "SuperCell", "LatticeChild", "BoundaryCondition"]
 
@@ -1010,32 +1018,6 @@ class Lattice(
             f"{self.__class__.__name__}.scale argument what='{what}' is not in ['abc', 'xyz']."
         )
 
-    def tile(self, reps, axis) -> Lattice:
-        """Extend the unit-cell `reps` times along the `axis` lattice vector
-
-        Notes
-        -----
-        This is *exactly* equivalent to the `repeat` routine.
-
-        Parameters
-        ----------
-        reps : int
-            number of times the unit-cell is repeated along the specified lattice vector
-        axis : int
-            the lattice vector along which the repetition is performed
-        """
-        cell = np.copy(self.cell)
-        nsc = np.copy(self.nsc)
-        origin = np.copy(self.origin)
-        cell[axis] *= reps
-        # Only reduce the size if it is larger than 5
-        if nsc[axis] > 3 and reps > 1:
-            # This is number of connections for the primary cell
-            h_nsc = nsc[axis] // 2
-            # The new number of supercells will then be
-            nsc[axis] = max(1, int(math.ceil(h_nsc / reps))) * 2 + 1
-        return self.__class__(cell, nsc=nsc, origin=origin)
-
     def repeat(self, reps, axis) -> Lattice:
         """Extend the unit-cell `reps` times along the `axis` lattice vector
 
@@ -1083,20 +1065,6 @@ class Lattice(
         For a `Lattice` object this is equivalent to `append`.
         """
         return other.append(self, axis)
-
-    def translate(self, v) -> Lattice:
-        """Appends additional space to the object"""
-        # check which cell vector resembles v the most,
-        # use that
-        cell = np.copy(self.cell)
-        p = np.empty([3], np.float64)
-        cl = fnorm(cell)
-        for i in range(3):
-            p[i] = abs(np.sum(cell[i] * v)) / cl[i]
-        cell[np.argmax(p)] += v
-        return self.copy(cell)
-
-    move = translate
 
     def center(self, axis=None) -> ndarray:
         """Returns center of the `Lattice`, possibly with respect to an axis"""

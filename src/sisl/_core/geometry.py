@@ -58,11 +58,7 @@ from sisl._indices import (
 from sisl._internal import set_module
 from sisl._math_small import cross3, is_ascending
 from sisl._namedindex import NamedIndex
-from sisl.atom import Atom, Atoms
-from sisl.lattice import Lattice, LatticeChild
 from sisl.messages import SislError, deprecate_argument, info, warn
-from sisl.orbital import Orbital
-from sisl.quaternion import Quaternion
 from sisl.shape import Cube, Shape, Sphere
 from sisl.utils import (
     angle,
@@ -75,6 +71,11 @@ from sisl.utils import (
     strmap,
 )
 from sisl.utils.mathematics import fnorm
+
+from .atom import Atom, Atoms
+from .lattice import Lattice, LatticeChild
+from .orbital import Orbital
+from .quaternion import Quaternion
 
 __all__ = ["Geometry", "sgeom", "AtomCategory"]
 
@@ -181,8 +182,6 @@ class Geometry(
     Atoms : contained atoms ``self.atoms``
     Atom : contained atoms are each an object of this
     """
-
-    _funcs = set()
 
     @deprecate_argument(
         "sc",
@@ -2209,68 +2208,6 @@ class Geometry(
                 "The tolerance between the coordinates can be altered using rtol, atol"
             )
         return new
-
-    def tile(self, reps: int, axis: int) -> Geometry:
-        """Tile the geometry to create a bigger one
-
-        The atomic indices are retained for the base structure.
-
-        Tiling and repeating a geometry will result in the same geometry.
-        The *only* difference between the two is the final ordering of the atoms.
-
-        Parameters
-        ----------
-        reps :
-           number of tiles (repetitions)
-        axis :
-           direction of tiling, 0, 1, 2 according to the cell-direction
-
-        Examples
-        --------
-        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1.)
-        >>> g = geom.tile(2,axis=0)
-        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
-        [[0.   0.   0. ]
-         [0.5  0.   0. ]
-         [1.   0.   0. ]
-         [1.5  0.   0. ]]
-        >>> g = geom.tile(2,0).tile(2,axis=1)
-        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
-        [[0.   0.   0. ]
-         [0.5  0.   0. ]
-         [1.   0.   0. ]
-         [1.5  0.   0. ]
-         [0.   1.   0. ]
-         [0.5  1.   0. ]
-         [1.   1.   0. ]
-         [1.5  1.   0. ]]
-
-        See Also
-        --------
-        repeat : equivalent but different ordering of final structure
-        untile : opposite method of this
-        """
-        if reps < 1:
-            raise ValueError(
-                f"{self.__class__.__name__}.tile requires a repetition above 0"
-            )
-
-        lattice = self.lattice.tile(reps, axis)
-
-        # Our first repetition *must* be with
-        # the former coordinate
-        xyz = np.tile(self.xyz, (reps, 1))
-        # We may use broadcasting rules instead of repeating stuff
-        xyz.shape = (reps, self.na, 3)
-        nr = _a.arangei(reps)
-        nr.shape = (reps, 1, 1)
-        # Correct the unit-cell offsets
-        xyz += nr * self.cell[axis, :]
-        xyz.shape = (-1, 3)
-
-        # Create the geometry and return it (note the smaller atoms array
-        # will also expand via tiling)
-        return self.__class__(xyz, atoms=self.atoms.tile(reps), lattice=lattice)
 
     def repeat(self, reps: int, axis: int) -> Geometry:
         """Create a repeated geometry
@@ -5670,7 +5607,7 @@ class GeometryTopymatgenDispatch(GeometryToDispatch):
     def dispatch(self, **kwargs):
         from pymatgen.core import Lattice, Molecule, Structure
 
-        from sisl.atom import PeriodicTable
+        from sisl._core.atom import PeriodicTable
 
         # ensure we have an object
         geom = self._get_object()

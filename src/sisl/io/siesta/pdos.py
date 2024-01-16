@@ -4,12 +4,12 @@
 import numpy as np
 
 from sisl._array import arrayd, arrayi, asarrayi
+from sisl._core.atom import Atom, Atoms, PeriodicTable
+from sisl._core.geometry import Geometry
+from sisl._core.orbital import AtomicOrbital
 from sisl._help import xml_parse
 from sisl._internal import set_module
-from sisl.atom import Atom, Atoms, PeriodicTable
-from sisl.geometry import Geometry
 from sisl.messages import SislWarning, warn
-from sisl.orbital import AtomicOrbital
 from sisl.unit.siesta import unit_convert
 from sisl.utils import (
     collect_action,

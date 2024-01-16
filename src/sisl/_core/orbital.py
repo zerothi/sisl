@@ -23,14 +23,13 @@ else:
 
 from scipy.interpolate import UnivariateSpline
 
+import sisl._array as _a
+import sisl._plot as plt
+from sisl._internal import set_module
 from sisl.constant import a0
-
-from . import _array as _a
-from . import _plot as plt
-from ._internal import set_module
-from .messages import warn
-from .shape import Sphere
-from .utils.mathematics import cart2spher
+from sisl.messages import warn
+from sisl.shape import Sphere
+from sisl.utils.mathematics import cart2spher
 
 __all__ = [
     "Orbital",
@@ -354,11 +353,12 @@ class Orbital:
 
         # Since all these things depend on other elements
         # we will simply import them here.
+        from sisl.physics.electron import wavefunction
+
         from .atom import Atom
         from .geometry import Geometry
         from .grid import Grid
         from .lattice import Lattice
-        from .physics.electron import wavefunction
 
         lattice = Lattice(R * 2, origin=[-R] * 3)
         if isinstance(atom, Atom):

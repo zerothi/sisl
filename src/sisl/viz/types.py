@@ -8,9 +8,9 @@ import numpy as np
 import numpy.typing as npt
 
 import sisl
-from sisl.geometry import AtomCategory, Geometry
+from sisl._core.geometry import AtomCategory, Geometry
+from sisl._core.lattice import Lattice, LatticeChild
 from sisl.io.sile import BaseSile
-from sisl.lattice import Lattice, LatticeChild
 from sisl.typing import AtomsArgument
 
 PathLike = Union[str, Path, BaseSile]

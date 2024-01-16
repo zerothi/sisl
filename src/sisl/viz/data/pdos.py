@@ -8,7 +8,7 @@ import numpy as np
 from xarray import DataArray
 
 import sisl
-from sisl.geometry import Geometry
+from sisl._core.geometry import Geometry
 from sisl.io import fdfSileSiesta, pdosSileSiesta, tbtncSileTBtrans, wfsxSileSiesta
 from sisl.physics import Hamiltonian, Spin
 from sisl.physics.distribution import get_distribution

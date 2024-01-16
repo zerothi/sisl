@@ -74,9 +74,6 @@ import sisl._environ as _environ
 # import the common options used
 from ._common import *
 
-# Import oplist
-from .oplist import oplist
-
 # Import plot routine
 from ._plot import plot as plot
 
@@ -109,15 +106,9 @@ import sisl.utils as utils
 import sisl.mixing as mixing
 
 # Below are sisl-specific imports
-from .quaternion import *
 from .shape import *
 
-from .lattice import *
-from .atom import *
-
-from .orbital import *
-from .geometry import *
-from .grid import *
+from ._core import *
 
 from .sparse import *
 from .sparse_geometry import *
@@ -170,6 +161,11 @@ import sisl.geom as geom
 
 if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD"):
     from . import viz
+
+from ._ufuncs import expose_registered_methods
+
+expose_registered_methods("sisl")
+del expose_registered_methods
 
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith("_")]

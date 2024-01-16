@@ -144,13 +144,13 @@ import numpy as np
 from numpy import argsort, dot, pi, sum
 
 import sisl._array as _a
+from sisl._core.grid import Grid
+from sisl._core.lattice import Lattice
+from sisl._core.oplist import oplist
+from sisl._core.quaternion import Quaternion
 from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
-from sisl.grid import Grid
-from sisl.lattice import Lattice
 from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
-from sisl.oplist import oplist
-from sisl.quaternion import Quaternion
 from sisl.unit import units
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm

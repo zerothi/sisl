@@ -1,7 +1,6 @@
 from typing import Callable, ChainMap, Literal, Optional, Sequence, Tuple, Union
 
-from sisl.geometry import Geometry
-from sisl.grid import Grid
+from sisl._core import Geometry, Grid
 
 from ..data import EigenstateData
 from ..figure import Figure, get_figure

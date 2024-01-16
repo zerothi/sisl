@@ -12,16 +12,14 @@ from scipy.ndimage import zoom as ndimage_zoom
 from scipy.sparse import SparseEfficiencyWarning
 from scipy.sparse import diags as sp_diags
 
-from . import _array as _a
-from ._dispatch_class import _Dispatchs
-from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from ._help import dtype_complex_to_real, wrap_filterwarnings
-from ._internal import set_module
-from .geometry import Geometry
-from .lattice import BoundaryCondition, LatticeChild
-from .messages import SislError, deprecate_argument, deprecation
-from .shape import Shape
-from .utils import (
+import sisl._array as _a
+from sisl._dispatch_class import _Dispatchs
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from sisl._help import dtype_complex_to_real, wrap_filterwarnings
+from sisl._internal import set_module
+from sisl.messages import SislError, deprecate_argument, deprecation
+from sisl.shape import Shape
+from sisl.utils import (
     cmd,
     default_ArgumentParser,
     default_namespace,
@@ -30,7 +28,10 @@ from .utils import (
     str_spec,
     strseq,
 )
-from .utils.mathematics import fnorm
+from sisl.utils.mathematics import fnorm
+
+from .geometry import Geometry
+from .lattice import BoundaryCondition, LatticeChild
 
 __all__ = ["Grid", "sgrid"]
 
@@ -657,42 +658,6 @@ class Grid(
         """
         ret_idx = np.delete(_a.arangei(self.shape[axis]), _a.asarrayi(idx))
         return self.sub(ret_idx, axis)
-
-    def tile(self, reps, axis):
-        """Tile grid to create a bigger one
-
-        The atomic indices for the base Geometry will be retained.
-
-        Parameters
-        ----------
-        reps : int
-           number of tiles (repetitions)
-        axis : int
-           direction of tiling, 0, 1, 2 according to the cell-direction
-
-        Raises
-        ------
-        SislError : when the lattice is not commensurate with the geometry
-
-        See Also
-        --------
-        Geometry.tile : equivalent method for Geometry class
-        """
-        if not self._is_commensurate():
-            raise SislError(
-                f"{self.__class__.__name__} cannot tile the grid since the contained"
-                " Geometry and Lattice are not commensurate."
-            )
-        grid = self.copy()
-        grid.grid = None
-        reps_all = [1, 1, 1]
-        reps_all[axis] = reps
-        grid.grid = np.tile(self.grid, reps_all)
-        lattice = self.lattice.tile(reps, axis)
-        if self.geometry is not None:
-            grid.set_geometry(self.geometry.tile(reps, axis))
-        grid.set_lattice(lattice)
-        return grid
 
     def index2xyz(self, index):
         """Real-space coordinates of indices related to the grid

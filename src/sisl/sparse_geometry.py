@@ -32,13 +32,14 @@ from scipy.sparse import csr_matrix
 if TYPE_CHECKING:
     from sisl.typing import AtomsArgument
 
+from sisl._core.atom import Atom
+from sisl._core.geometry import Geometry
+from sisl._core.orbital import Orbital
+
 from . import _array as _a
 from ._array import array_arange
 from ._internal import set_module
-from .atom import Atom
-from .geometry import Geometry
 from .messages import SislError, SislWarning, progressbar, warn
-from .orbital import Orbital
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
 from .utils.ranges import list2str
 

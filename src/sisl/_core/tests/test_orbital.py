@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from scipy import interpolate as interp
 
-from sisl.orbital import (
+from sisl._core.orbital import (
     AtomicOrbital,
     GTOrbital,
     HydrogenicOrbital,

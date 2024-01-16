@@ -19,7 +19,7 @@ __all__ = ["register_geometry_function"]
 
 register_geometry_function = partial(
     register_sisl_function,
-    cls=Geometry,
     name=lambda name: name[2:],
-    module="sisl.geometry",
+    cls=Geometry,
+    module="sisl._core.geometry",
 )

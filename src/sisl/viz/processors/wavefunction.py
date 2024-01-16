@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 import sisl
-from sisl.geometry import Geometry
+from sisl._core.geometry import Geometry
 from sisl.grid import Grid
 from sisl.physics.electron import EigenstateElectron, wavefunction
 from sisl.physics.hamiltonian import Hamiltonian

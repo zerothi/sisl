@@ -7,7 +7,7 @@ import numpy as np
 import numpy.typing as npt
 from xarray import Dataset
 
-from sisl.lattice import Lattice, LatticeChild
+from sisl._core.lattice import Lattice, LatticeChild
 
 # from ...types import CellLike
 # from .coords import project_to_axes, CoordsDataset

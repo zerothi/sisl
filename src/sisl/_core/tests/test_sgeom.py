@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from sisl import Atom, Geometry, Lattice
-from sisl.geometry import sgeom
+from sisl._core.geometry import sgeom
 
 
 @pytest.fixture
