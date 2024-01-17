@@ -23,6 +23,7 @@ __all__ = [
     "GridLike",
     "LatticeOrGeometry",
     "LatticeOrGeometryLike",
+    "IndexArgument",
     "AtomsArgument",
     "OrbitalsArgument",
 ]
@@ -66,11 +67,12 @@ LatticeOrGeometryLike = Union[
     GeometryLike,
 ]
 
+IndexArgument = Union[npt.NDArray[Union[np.int_, np.bool_]], int]
+
 # An atoms like argument that may be parsed by Geometry._sanitize_atoms
 AtomsArgument = Union[
-    npt.NDArray[Union[np.int_, np.bool_]],
+    IndexArgument,
     str,
-    int,
     dict,
     Atom,
     AtomCategory,
@@ -80,9 +82,8 @@ AtomsArgument = Union[
 
 # An atoms like argument that may be parsed by Geometry._sanitize_orbs
 OrbitalsArgument = Union[
-    npt.NDArray[Union[np.int_, np.bool_]],
+    IndexArgument,
     str,
-    int,
     dict,
     AtomCategory,
     Shape,

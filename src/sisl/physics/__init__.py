@@ -91,6 +91,7 @@ from . import electron, phonon
 # Patch BrillouinZone objects and import apply classes
 from ._brillouinzone_apply import *
 from ._feature import *
+from ._ufuncs_state import *
 from .bloch import *
 from .brillouinzone import *
 from .densitymatrix import *

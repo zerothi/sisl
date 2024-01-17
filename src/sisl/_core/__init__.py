@@ -5,11 +5,11 @@
 Core functionality exposed here.
 """
 # We will not expose anything here, it is a registration module
-from . import _geometry_ufuncs, _grid_ufuncs, _lattice_ufuncs, geometry, grid, lattice
+from . import _ufuncs_geometry, _ufuncs_grid, _ufuncs_lattice, geometry, grid, lattice
 from .atom import *
 from .geometry import *
 from .grid import *
 from .lattice import *
-from .oplist import oplist
+from .oplist import *
 from .orbital import *
 from .quaternion import *

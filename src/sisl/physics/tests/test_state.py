@@ -280,21 +280,21 @@ def test_state_rotate():
     assert -np.pi / 4 == pytest.approx(np.angle(s.state[1, 0]))
     assert 0 == pytest.approx(np.angle(s.state[1, 1]))
 
-    s.rotate()  # individual false
+    s.rotate(inplace=True)  # individual false
     assert 0 == pytest.approx(np.angle(s.state[0, 0]))
     assert -np.pi / 4 == pytest.approx(np.angle(s.state[0, 1]))
     assert -np.pi / 2 == pytest.approx(np.angle(s.state[1, 0]))
     assert -np.pi / 4 == pytest.approx(np.angle(s.state[1, 1]))
 
     s = state.copy()
-    s.rotate(individual=True)
+    s.rotate(individual=True, inplace=True)
     assert 0 == pytest.approx(np.angle(s.state[0, 0]))
     assert -np.pi / 4 == pytest.approx(np.angle(s.state[0, 1]))
     assert 0 == pytest.approx(np.angle(s.state[1, 0]))
     assert np.pi / 4 == pytest.approx(np.angle(s.state[1, 1]))
 
     s = state.copy()
-    s.rotate(np.pi / 4, individual=True)
+    s = s.rotate(np.pi / 4, individual=True)
     assert np.pi / 4 == pytest.approx(np.angle(s.state[0, 0]))
     assert 0 == pytest.approx(np.angle(s.state[0, 1]))
     assert np.pi / 4 == pytest.approx(np.angle(s.state[1, 0]))

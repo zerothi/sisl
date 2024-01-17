@@ -32,12 +32,16 @@ def register_sisl_function(name, cls, module=None):
         if callable(name):
             name = name(func.__name__)
 
-        if hasattr(cls, name):
-            warn(
-                f"registration of function {repr(func)} under name "
-                f"{repr(name)} for type {repr(cls)} is overriding a preexisting "
-                f"attribute with the same name."
-            )
+        old_method = getattr(cls, name, None)
+        if old_method is not None:
+            # Check that the attribute is actually created on the class it-self
+            # This will prohibit warn against functions for derived classes
+            if old_method.__qualname__.startswith(cls.__name__):
+                warn(
+                    f"registration of function {repr(func)} under name "
+                    f"{repr(name)} for type {repr(cls)} is overriding a preexisting "
+                    f"attribute with the same name."
+                )
 
         setattr(cls, name, func)
         if not hasattr(cls, "_funcs"):

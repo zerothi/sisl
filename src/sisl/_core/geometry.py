@@ -405,7 +405,7 @@ class Geometry(
 
     @_sanitize_atoms.register(AtomCategory)
     @_sanitize_atoms.register(GenericCategory)
-    def _(self, atoms) -> ndarray:
+    def _(self, atoms: Union[AtomCategory, GenericCategory]) -> ndarray:
         # First do categorization
         cat = atoms.categorize(self)
 

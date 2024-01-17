@@ -78,6 +78,9 @@ def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
      [1.   1.   0. ]
      [1.5  1.   0. ]]
 
+    In functional form:
+    >>> tile(geom, 2, axis=0)
+
     See Also
     --------
     repeat : equivalent but different ordering of final structure
@@ -153,9 +156,13 @@ def untile(
     >>> np.allclose(g.xyz, G.xyz)
     True
 
+    In functional form:
+    >>> untile(geom, 2, axis=0)
+
     See Also
     --------
     tile : opposite method of this
+    repeat : equivalent geometry as `tile` but different ordering of final structure
     """
     if geometry.na % reps != 0:
         raise ValueError(
@@ -228,9 +235,13 @@ def repeat(geometry: Geometry, reps: int, axis: int) -> Geometry:
      [1.5  0.   0. ]
      [1.5  1.   0. ]]
 
+    In functional form:
+    >>> repeat(geom, 2, axis=0)
+
     See Also
     --------
-    tile : equivalent but different ordering of final structure
+    tile : equivalent geometry as `repeat` but different ordering of final structure
+    unrepeat : opposite method of this
     """
     if reps < 1:
         raise ValueError(
