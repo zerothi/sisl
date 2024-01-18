@@ -5,13 +5,14 @@ from __future__ import annotations
 
 from functools import reduce
 from numbers import Integral
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument, warn
+from sisl.typing import AtomsArgument, Coord, CoordOrScalar, LatticeOrGeometryLike
 from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
 
@@ -19,18 +20,11 @@ from .geometry import Geometry
 from .lattice import Lattice
 from .quaternion import Quaternion
 
-AtomsArgument = "AtomsArgument"
-LatticeOrGeometryLike = "LatticeOrGeometryLike"
-Coord = "Coord"
-CoordOrScalar = "CoordOrScalar"
-if TYPE_CHECKING:
-    from sisl.typing import AtomsArgument, Coord, CoordOrScalar, LatticeOrGeometryLike
-
 # Nothing gets exposed here
 __all__ = []
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def copy(geometry: Geometry) -> Geometry:
     """Create a new object with the same content (a copy)."""
     g = geometry.__class__(
@@ -42,7 +36,7 @@ def copy(geometry: Geometry) -> Geometry:
     return g
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
     """Tile the geometry to create a bigger one
 
@@ -53,9 +47,9 @@ def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
 
     Parameters
     ----------
-    reps :
+    reps : int
        number of tiles (repetitions)
-    axis :
+    axis : int
        direction of tiling, 0, 1, 2 according to the cell-direction
 
     Examples
@@ -109,7 +103,7 @@ def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
     return geometry.__class__(xyz, atoms=geometry.atoms.tile(reps), lattice=lattice)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def untile(
     geometry: Geometry,
     reps: int,
@@ -187,7 +181,7 @@ def untile(
     return new
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def repeat(geometry: Geometry, reps: int, axis: int) -> Geometry:
     """Create a repeated geometry
 
@@ -266,7 +260,7 @@ def repeat(geometry: Geometry, reps: int, axis: int) -> Geometry:
     return geometry.__class__(xyz, atoms=geometry.atoms.repeat(reps), lattice=lattice)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def unrepeat(geometry: Geometry, reps: int, axis: int, *args, **kwargs) -> Geometry:
     """Unrepeats the geometry similarly as `untile`
 
@@ -284,7 +278,7 @@ def unrepeat(geometry: Geometry, reps: int, axis: int, *args, **kwargs) -> Geome
     return geometry.sub(atoms).untile(reps, axis, *args, **kwargs)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def translate(
     geometry: Geometry,
     v: CoordOrScalar,
@@ -302,7 +296,7 @@ def translate(
     v :
          the value or vector to displace all atomic coordinates
          It should just be broad-castable with the geometry's coordinates.
-    atoms :
+    atoms : AtomsArgument, optional
          only displace the given atomic indices, if not specified, all
          atoms will be displaced
     cell :
@@ -322,7 +316,7 @@ def translate(
 Geometry.move = Geometry.translate
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     """Create a new `Geometry` with a subset of this `Geometry`
 
@@ -332,7 +326,7 @@ def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
 
     Parameters
     ----------
-    atoms :
+    atoms : AtomsArgument
         indices/boolean of all atoms to be removed
 
     See Also
@@ -348,7 +342,7 @@ def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     )
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     """Remove atoms from the geometry.
 
@@ -358,7 +352,7 @@ def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
 
     Parameters
     ----------
-    atoms :
+    atoms : AtomsArgument
         indices/boolean of all atoms to be removed
 
     See Also
@@ -372,7 +366,7 @@ def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     return geometry.sub(atoms)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 @deprecate_argument(
     "only",
     "what",
@@ -410,7 +404,7 @@ def rotate(
          the origin of rotation. Anything but ``[0, 0, 0]`` is equivalent
          to a `geometry.move(-origin).rotate(...).move(origin)`.
          If this is an `int` it corresponds to the atomic index.
-    atoms :
+    atoms : AtomsArgument
          only rotate the given atomic indices, if not specified, all
          atoms will be rotated.
     rad :
@@ -490,7 +484,7 @@ def rotate(
     return geometry.__class__(xyz, atoms=geometry.atoms.copy(), lattice=lattice)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def swapaxes(
     geometry: Geometry,
     axes_a: Union[int, str],
@@ -571,7 +565,7 @@ def swapaxes(
     )
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def center(
     geometry: Geometry, atoms: Optional[AtomsArgument] = None, what: str = "xyz"
 ) -> np.ndarray:
@@ -631,7 +625,7 @@ def center(
     )
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def append(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
@@ -719,7 +713,7 @@ def append(
     return geometry.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def prepend(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
@@ -807,7 +801,7 @@ def prepend(
     return geometry.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Geometry, module="sisl")
 def add(
     geometry: Geometry,
     other: LatticeOrGeometryLike,

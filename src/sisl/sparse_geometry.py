@@ -7,7 +7,7 @@ import functools as ftool
 import warnings
 from collections import namedtuple
 from numbers import Integral
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 import numpy as np
 from numpy import (
@@ -29,6 +29,7 @@ from numpy.lib.mixins import NDArrayOperatorsMixin
 from scipy.sparse import csr_matrix
 
 from sisl._core import Atom, Geometry, Orbital
+from sisl.typing import AtomsArgument
 
 from . import _array as _a
 from ._array import array_arange
@@ -36,9 +37,6 @@ from ._internal import set_module
 from .messages import SislError, SislWarning, progressbar, warn
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
 from .utils.ranges import list2str
-
-if TYPE_CHECKING:
-    from sisl.typing import AtomsArgument
 
 __all__ = ["SparseAtom", "SparseOrbital"]
 

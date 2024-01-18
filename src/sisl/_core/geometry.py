@@ -12,7 +12,7 @@ from itertools import product
 from math import acos
 from numbers import Integral, Real
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Iterator, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from numpy import (
@@ -33,16 +33,6 @@ from numpy import (
     unique,
 )
 
-from sisl._typing_ext.numpy import ArrayLike, NDArray
-
-if TYPE_CHECKING:
-    from sisl.typing import (
-        AtomsArgument,
-        OrbitalsArgument,
-        SileType,
-        LatticeOrGeometryLike,
-    )
-
 import sisl._array as _a
 import sisl._plot as plt
 from sisl._category import Category, GenericCategory
@@ -58,8 +48,10 @@ from sisl._indices import (
 from sisl._internal import set_module
 from sisl._math_small import cross3, is_ascending
 from sisl._namedindex import NamedIndex
+from sisl._typing_ext.numpy import ArrayLike, NDArray
 from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.shape import Cube, Shape, Sphere
+from sisl.typing import AtomsArgument, OrbitalsArgument, SileLike
 from sisl.utils import (
     angle,
     cmd,
@@ -759,7 +751,7 @@ class Geometry(
         return self.Rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
     @staticmethod
-    def read(sile: SileType, *args, **kwargs) -> Geometry:
+    def read(sile: SileLike, *args, **kwargs) -> Geometry:
         """Reads geometry from the `Sile` using `Sile.read_geometry`
 
         Parameters
@@ -782,7 +774,7 @@ class Geometry(
             with get_sile(sile, mode="r") as fh:
                 return fh.read_geometry(*args, **kwargs)
 
-    def write(self, sile: SileType, *args, **kwargs) -> None:
+    def write(self, sile: SileLike, *args, **kwargs) -> None:
         """Writes geometry to the `Sile` using `sile.write_geometry`
 
         Parameters

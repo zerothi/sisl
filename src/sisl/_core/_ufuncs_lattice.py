@@ -6,28 +6,25 @@ from __future__ import annotations
 import math
 from functools import reduce
 from numbers import Integral
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument
+from sisl.typing import Coord
 from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
 
 from .lattice import Lattice
 from .quaternion import Quaternion
 
-Coord = "Coord"
-if TYPE_CHECKING:
-    from sisl.typing import Coord
-
 # Nothing gets exposed here
 __all__ = []
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def copy(lattice: Lattice, cell=None, origin: Optional[Coord] = None) -> Lattice:
     """A deepcopy of the object
 
@@ -57,7 +54,7 @@ def copy(lattice: Lattice, cell=None, origin: Optional[Coord] = None) -> Lattice
     return copy
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def swapaxes(
     lattice: Lattice,
     axes_a: Union[int, str],
@@ -174,7 +171,7 @@ def swapaxes(
     )
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 @deprecate_argument(
     "only",
     "what",
@@ -228,7 +225,7 @@ def rotate(
     return lattice.copy(cell)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def add(lattice: Lattice, other) -> Lattice:
     """Add two supercell lattice vectors to each other
 
@@ -245,7 +242,7 @@ def add(lattice: Lattice, other) -> Lattice:
     return lattice.__class__(cell, nsc=nsc, origin=origin)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
     """Extend the unit-cell `reps` times along the `axis` lattice vector
 
@@ -273,7 +270,7 @@ def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
     return lattice.__class__(cell, nsc=nsc, origin=origin)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def repeat(lattice: Lattice, reps: int, axis: int) -> Lattice:
     """Extend the unit-cell `reps` times along the `axis` lattice vector
 
@@ -291,7 +288,7 @@ def repeat(lattice: Lattice, reps: int, axis: int) -> Lattice:
     return lattice.tile(reps, axis)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def untile(lattice: Lattice, reps: int, axis: int) -> Lattice:
     """Reverses a `Lattice.tile` and returns the segmented version
 
@@ -312,7 +309,7 @@ def untile(lattice: Lattice, reps: int, axis: int) -> Lattice:
 Lattice.unrepeat = untile
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def append(lattice: Lattice, other, axis: int) -> Lattice:
     """Appends other `Lattice` to this grid along axis"""
     cell = np.copy(lattice.cell)
@@ -321,7 +318,7 @@ def append(lattice: Lattice, other, axis: int) -> Lattice:
     return lattice.copy(cell)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def prepend(lattice: Lattice, other, axis: int) -> Lattice:
     """Prepends other `Lattice` to this grid along axis
 
@@ -330,7 +327,7 @@ def prepend(lattice: Lattice, other, axis: int) -> Lattice:
     return other.append(lattice, axis)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Lattice, module="sisl")
 def center(lattice: Lattice, axis: Optional[int] = None) -> np.ndarray:
     """Returns center of the `Lattice`, possibly with respect to an axis"""
     if axis is None:

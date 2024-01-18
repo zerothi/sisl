@@ -70,19 +70,19 @@ def _append_doc_dispatch(method: Callable, cls: type):
 
 
 def register_sisl_dispatch(
-    module: Optional[str] = None, method: Optional[Callable] = None
+    cls: type, module: Optional[str] = None, method: Optional[Callable] = None
 ):
     """Create a new dispatch method from a method
 
     If the method has not been registrered before, it will be created.
     """
     global _registry
-    if method is None:
-        if module is None:
-            return lambda f: register_sisl_dispatch(method=f)
+    if method is None and module is None:
+        return lambda f: register_sisl_dispatch(cls, method=f)
+    elif method is None:
         if isinstance(module, str):
-            return lambda f: register_sisl_dispatch(module, method=f)
-        return register_sisl_dispatch(method=module)
+            return lambda f: register_sisl_dispatch(cls, module, method=f)
+        return register_sisl_dispatch(cls, method=module)
 
     name = method.__name__
     if name not in _registry:
@@ -114,7 +114,7 @@ def register_sisl_dispatch(
     # items in the registry of the function
     keys = method_registry.registry.keys()
     old_registry = set(keys)
-    method_registry.register(method)
+    method_registry.register(cls, method)
     new_registry = set(keys)
 
     for cls in new_registry - old_registry:

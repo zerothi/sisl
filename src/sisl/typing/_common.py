@@ -4,33 +4,39 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Sequence, Union
+from typing import TYPE_CHECKING, Any, Callable, Sequence, Union
 
 import numpy as np
 
 import sisl._typing_ext.numpy as npt
-from sisl import Atom, Atoms, BaseSile, Geometry, Grid, Lattice, Shape
-from sisl._category import GenericCategory
-from sisl.geom.category import AtomCategory
+
+# To prevent import cycles place any internal imports in the branch below
+# and use a string literal forward reference to it in subsequent types
+# https://mypy.readthedocs.io/en/latest/common_issues.html#import-cycles
+if TYPE_CHECKING:
+    from sisl import Atom, Atoms, BaseSile, Geometry, Grid, Lattice, Shape
+    from sisl._category import GenericCategory
+    from sisl.geom.category import AtomCategory
 
 __all__ = [
+    "AtomsArgument",
     "AtomsLike",
     "Coord",
     "CoordOrScalar",
-    "SileLike",
+    "FuncType",
     "GeometryLike",
-    "LatticeLike",
     "GridLike",
+    "IndexArgument",
+    "LatticeLike",
     "LatticeOrGeometry",
     "LatticeOrGeometryLike",
-    "IndexArgument",
-    "AtomsArgument",
     "OrbitalsArgument",
+    "SileLike",
 ]
 
 AtomsLike = Union[
-    Atom,
-    Atoms,
+    "Atom",
+    "Atoms",
 ]
 
 Coord = Sequence[float]
@@ -38,28 +44,31 @@ CoordOrScalar = Union[float, Coord]
 
 SileLike = Union[
     str,
-    BaseSile,
+    "BaseSile",
     Path,
 ]
 
 GeometryLike = Union[
     SileLike,
-    Geometry,
+    "Geometry",
 ]
+
+# Short for *any* function
+FuncType = Callable[..., Any]
 
 LatticeLike = Union[
     SileLike,
-    Lattice,
+    "Lattice",
 ]
 
 GridLike = Union[
     SileLike,
-    Grid,
+    "Grid",
 ]
 
 LatticeOrGeometry = Union[
-    Lattice,
-    Geometry,
+    "Lattice",
+    "Geometry",
 ]
 
 LatticeOrGeometryLike = Union[
@@ -74,10 +83,10 @@ AtomsArgument = Union[
     IndexArgument,
     str,
     dict,
-    Atom,
-    AtomCategory,
-    GenericCategory,
-    Shape,
+    "Atom",
+    "AtomCategory",
+    "GenericCategory",
+    "Shape",
 ]
 
 # An atoms like argument that may be parsed by Geometry._sanitize_orbs
@@ -85,6 +94,6 @@ OrbitalsArgument = Union[
     IndexArgument,
     str,
     dict,
-    AtomCategory,
-    Shape,
+    "AtomCategory",
+    "Shape",
 ]

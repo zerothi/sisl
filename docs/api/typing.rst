@@ -14,12 +14,16 @@ The typing types is shown below:
    :toctree: generated/
 
    AtomsArgument
-   OrbitalsArgument
-   SileLike
    AtomsLike
-   LatticeLike
+   Coord
+   CoordOrScalar
+   FuncType
    GeometryLike
+   GridLike
+   IndexArgument
+   LatticeLike
    LatticeOrGeometry
    LatticeOrGeometryLike
-
+   OrbitalsArgument
+   SileLike
    

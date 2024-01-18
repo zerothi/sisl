@@ -3,24 +3,21 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 import numpy as np
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
+from sisl.typing import IndexArgument
 
 from .state import Coefficient, State, StateC
-
-IndexArgument = "IndexArgument"
-if TYPE_CHECKING:
-    from sisl.typing import IndexArgument
 
 # Nothing gets exposed here
 __all__ = []
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(Coefficient, module="sisl.physics")
 def copy(coefficient: Coefficient) -> Coefficient:
     """Return a copy (only the coefficients are copied). ``parent`` and ``info`` are passed by reference"""
     out = coefficient.__class__(coefficient.c.copy(), coefficient.parent)
@@ -28,7 +25,7 @@ def copy(coefficient: Coefficient) -> Coefficient:
     return out
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(State, module="sisl.physics")
 def copy(state: State) -> State:
     """Return a copy (only the state is copied). ``parent`` and ``info`` are passed by reference"""
     out = state.__class__(state.state.copy(), state.parent)
@@ -36,7 +33,7 @@ def copy(state: State) -> State:
     return out
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(StateC, module="sisl.physics")
 def copy(statec: StateC):
     """Return a copy (only the coefficients and states are copied), ``parent`` and ``info`` are passed by reference"""
     out = statec.__class__(statec.state.copy(), statec.c.copy(), statec.parent)
@@ -44,7 +41,7 @@ def copy(statec: StateC):
     return out
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(Coefficient, module="sisl.physics")
 def sub(
     coefficient: Coefficient, index: IndexArgument, inplace: bool = False
 ) -> Optional[Coefficient]:
@@ -71,7 +68,7 @@ def sub(
         return out
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(Coefficient, module="sisl.physics")
 def remove(coefficient: Coefficient, index: IndexArgument, inplace: bool = False):
     """Return a new coefficient without the specified coefficients
 
@@ -91,7 +88,7 @@ def remove(coefficient: Coefficient, index: IndexArgument, inplace: bool = False
     return coefficient.sub(index, inplace)
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(State, module="sisl.physics")
 def sub(state: State, index: IndexArgument, inplace: bool = False) -> Optional[State]:
     """Return a new state with only the specified states
 
@@ -116,7 +113,7 @@ def sub(state: State, index: IndexArgument, inplace: bool = False) -> Optional[S
         return out
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(State, module="sisl.physics")
 def remove(
     state: State, index: IndexArgument, inplace: bool = False
 ) -> Optional[State]:
@@ -138,7 +135,7 @@ def remove(
     return state.sub(index, inplace)
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(StateC, module="sisl.physics")
 def sub(
     statec: StateC, index: IndexArgument, inplace: bool = False
 ) -> Optional[StateC]:
@@ -166,7 +163,7 @@ def sub(
         return out
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(StateC, module="sisl.physics")
 def remove(
     statec: StateC, index: IndexArgument, inplace: bool = False
 ) -> Optional[StateC]:
@@ -188,7 +185,7 @@ def remove(
     return statec.sub(index, inplace)
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(State, module="sisl.physics")
 def rotate(
     state: State, phi: float = 0.0, individual: bool = False, inplace: bool = False
 ):
@@ -232,7 +229,7 @@ def rotate(
     return out
 
 
-@register_sisl_dispatch(module="sisl.physics")
+@register_sisl_dispatch(State, module="sisl.physics")
 def tile(
     state: State, reps: int, axis: int, normalize: bool = False, offset: float = 0
 ) -> State:

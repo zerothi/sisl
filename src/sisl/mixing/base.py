@@ -7,7 +7,7 @@ import operator as op
 from abc import abstractmethod
 from collections import deque
 from numbers import Integral
-from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, TypeVar, Union
+from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
 from sisl._internal import set_module
 from sisl._typing_ext.numpy import ArrayLike

@@ -3,25 +3,22 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Sequence, Union
+from typing import Optional, Sequence, Union
 
 import numpy as np
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import SislError
+from sisl.typing import GridLike
 
 from .grid import Grid
-
-GridLike = "GridLike"
-if TYPE_CHECKING:
-    from sisl.typing import GridLike
 
 # Nothing gets exposed here
 __all__ = []
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Grid, module="sisl")
 def copy(grid: Grid, dtype=None):
     """Copy the object, possibly changing the data-type"""
     d = grid._sc_geometry_dict()
@@ -35,7 +32,7 @@ def copy(grid: Grid, dtype=None):
     return out
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Grid, module="sisl")
 def swapaxes(grid: Grid, axis_a: int, axis_b: int):
     """Swap two axes in the grid (also swaps axes in the lattice)
 
@@ -60,7 +57,7 @@ def swapaxes(grid: Grid, axis_a: int, axis_b: int):
     return out
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Grid, module="sisl")
 def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
     """Retains certain indices from a specified axis.
 
@@ -101,7 +98,7 @@ def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
     return out
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Grid, module="sisl")
 def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
     """Removes certain indices from a specified axis.
 
@@ -118,7 +115,7 @@ def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
     return grid.sub(ret_idx, axis)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Grid, module="sisl")
 def append(grid: Grid, other: GridLike, axis: int):
     """Appends other `Grid` to this grid along axis"""
     shape = list(grid.shape)
@@ -135,7 +132,7 @@ def append(grid: Grid, other: GridLike, axis: int):
     return grid.__class__(shape, **d)
 
 
-@register_sisl_dispatch(module="sisl")
+@register_sisl_dispatch(Grid, module="sisl")
 def tile(grid: Grid, reps: int, axis: int):
     """Tile grid to create a bigger one
 

@@ -55,13 +55,14 @@ copyright = f"2015-{date.today().year}, {author}"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
+    "sphinx.ext.coverage",
     "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
-    "sphinx_autodoc_typehints",
+    "sphinx_copybutton",
     "sphinxcontrib.jquery",  # a bug in 4.1.0 means search didn't work without explicit extension
     "sphinx_inline_tabs",
     # plotting and advanced usage
@@ -239,6 +240,16 @@ latex_documents = [
 # class_members_toctree = False
 # If this is false we do not have double method sections
 # numpydoc_show_class_members = False
+
+# Attributes section will be formatted as methods
+numpydoc_attributes_as_param_list = False
+
+# Plot directives for matplotlib
+plot_include_source = True
+plot_formats = [("png", 90)]
+plot_pre_code = """\
+import numpy as np
+import sisl as si"""
 
 # -----------------------------------------------------------------------------
 # Intersphinx configuration
