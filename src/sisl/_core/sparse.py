@@ -57,24 +57,44 @@ from sisl.utils.mathematics import intersect_and_diff_sets
 __all__ = ["SparseCSR", "ispmatrix", "ispmatrixd"]
 
 
-def _rows_and_cols(csr, rows=None):
-    """Retrieve the sparse patterns rows and columns from the sparse matrix
+def _to_coo(csr, data: bool = True, rows=None):
+    """Retrieve the CSR information in a sanitized manner
 
-    Possibly only retrieving it for a subset of rows.
+    I.e. as COO format with data stripped, or only rows and columns
+
+    Parameters
+    ----------
+    csr: SparseCSR
+        matrix to sanitize
+    data: bool
+        whether the data should also be returned sanitized
+    rows:
+        only return for a subset of rowsj
+
+    Returns
+    -------
+    rows, cols : always
+    matrix_data : when `data` is True
     """
     ptr = csr.ptr
     ncol = csr.ncol
     col = csr.col
+    D = csr._D
+
     if rows is None:
-        cols = col[array_arange(ptr[:-1], n=ncol, dtype=int32)]
-        idx = (ncol > 0).nonzero()[0]
-        rows = repeat(idx.astype(int32, copy=False), ncol[idx])
+        idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
     else:
         rows = csr._sanitize(rows).ravel()
         ncol = ncol[rows]
-        cols = col[array_arange(ptr[rows], n=ncol, dtype=int32)]
-        idx = (ncol > 0).nonzero()[0]
-        rows = repeat(rows[idx].astype(int32, copy=False), ncol[idx])
+        idx = array_arange(ptr[rows], n=ncol, dtype=int32)
+    if data:
+        D = D[idx]
+    cols = col[idx]
+    idx = (ncol > 0).nonzero()[0]
+    rows = repeat(idx.astype(int32, copy=False), ncol[idx])
+
+    if data:
+        return rows, cols, D
     return rows, cols
 
 
@@ -342,7 +362,7 @@ column indices of the sparse elements
         # get the diagonal components
         diag = np.zeros([self.shape[0], self.shape[2]], dtype=self.dtype)
 
-        rows, cols = _rows_and_cols(self)
+        rows, cols = _to_coo(self, data=False)
 
         # Now retrieve rows and cols
         idx = array_arange(self.ptr[:-1], n=self.ncol, dtype=int32)
@@ -2011,7 +2031,7 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
             accessors = mat.dim, mat.col, mat._D, rowslice
             # check whether they are actually sorted
             if mat.finalized:
-                rows, cols = _rows_and_cols(mat)
+                rows, cols = _to_coo(mat, data=False)
                 rows, cols = np.diff(rows), np.diff(cols)
                 issorted = np.all(cols[rows == 0] > 0)
             else:

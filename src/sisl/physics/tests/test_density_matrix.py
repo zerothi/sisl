@@ -13,6 +13,7 @@ from sisl import (
     Geometry,
     Grid,
     Lattice,
+    SparseAtom,
     SphericalOrbital,
     Spin,
 )
@@ -164,6 +165,14 @@ class TestDensityMatrix:
         m = D.mulliken("atom")
         assert m[0].sum() == pytest.approx(3)
         assert m[1].sum() == pytest.approx(1)
+
+    @pytest.mark.parametrize("method", ["wiberg", "mayer", "bond+anti"])
+    @pytest.mark.parametrize("option", ["", ":spin"])
+    def test_bond_order(self, setup, method, option):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        BO = D.bond_order(method + option)
+        assert isinstance(BO, SparseAtom)
 
     def test_rho1(self, setup):
         D = setup.D.copy()

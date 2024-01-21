@@ -6,7 +6,7 @@ from numbers import Integral
 
 import numpy as np
 from numpy import add, dot, logical_and, repeat, subtract, unique
-from scipy.sparse import csr_matrix
+from scipy.sparse import coo_matrix, csr_matrix
 from scipy.sparse import hstack as ss_hstack
 from scipy.sparse import tril, triu
 
@@ -19,11 +19,37 @@ from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import progressbar, warn
+from sisl.sparse import SparseCSR, _ncol_to_indptr, _to_coo
+from sisl.sparse_geometry import SparseAtom, SparseOrbital
 
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
 
 __all__ = ["DensityMatrix"]
+
+
+def _get_density(DM, what="sum"):
+    DM = DM.T
+    if what == "sum":
+        if DM.shape[0] in (2, 4, 8):
+            return DM[0] + DM[1]
+        return DM[0]
+    if what == "spin":
+        m = np.empty([3, DM.shape[1]], dtype=DM.dtype)
+        if DM.shape[0] == 8:
+            m[0] = DM[2] + DM[6]
+            m[1] = -DM[3] + DM[7]
+            m[2] = DM[0] - DM[1]
+        elif DM.shape[0] == 4:
+            m[0] = 2 * DM[2]
+            m[1] = -2 * DM[3]
+            m[2] = DM[0] - DM[1]
+        elif DM.shape[0] == 2:
+            m[:2, :] = 0.0
+            m[2] = DM[0] - DM[1]
+        elif DM.shape[0] == 1:
+            m[...] = 0.0
+        return m
 
 
 class _densitymatrix(SparseOrbitalBZSpin):
@@ -396,6 +422,103 @@ class _densitymatrix(SparseOrbitalBZSpin):
         raise NotImplementedError(
             f"{self.__class__.__name__}.mulliken only allows projection [orbital, atom]"
         )
+
+    def bond_order(self, method: str = "mayer"):
+        r"""Bond-order calculation using Mayer, Wiberg or other methods
+
+        For ``method='wiberg'``, the bond-order is calculated as:
+
+        .. math::
+            B_{\alpha\beta}^{\mathrm{Wiberg}} = \sum_{\nu\in \alpha}\sum_{\mu\in \beta} D_{\nu\mu}^2
+
+        For ``method='mayer'``, the bond-order is calculated as:
+
+        .. math::
+            B_{\alpha\beta}^{\mathrm{Mayer}} = \sum_{\nu\in \alpha}\sum_{\mu\in \beta} D_{\nu\mu}S_{\nu\mu}D_{\mu\nu}S_{\mu\nu}
+
+
+        For ``method='bond+anti'``, the bond-order is calculated as:
+
+        .. math::
+            B_{\alpha\beta}^{\mathrm{b}+\mathrm{ab}} = \sum_{\nu\in \alpha}\sum_{\mu\in \beta} D_{\nu\mu}S_{\nu\mu} / 2
+
+        For all options one can do the bond-order calculation for the
+        spin components. Albeit, their meaning may be more doubtful.
+        Simply add ``':spin'`` to the `method` argument, and the returned
+        quantity will be spin-resolved.
+
+
+        Note
+        ----
+        Wiberg and Mayer will be equivalent for orthogonal basis sets.
+
+        It is unclear what the spin-density bond-order really means.
+
+        Parameters
+        ----------
+        method : {mayer, wiberg, bond+anti}[:spin]
+            which method to calculate the bond-order with
+
+        Returns
+        -------
+        SparseAtom : with the bond-order between any two atoms, in a supercell matrix.
+        """
+        method = method.lower()
+
+        # split method to retrieve options
+        m, *opts = method.split(":")
+
+        # only extract the summed density
+        what = "sum"
+        if "spin" in opts:
+            # do this for each spin x, y, z
+            what = "spin"
+            del opts[opts.index("spin")]
+
+        # Check that there are no un-used options
+        if opts:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got non-valid options {opts}"
+            )
+
+        # get all rows and columns
+        rows, cols, DM = _to_coo(self._csr)
+
+        # Add factor S, if needed
+        if not self.orthogonal:
+            if method != "wiberg":
+                DM = DM[:, :-1] * DM[:, -1].reshape(-1, 1)
+
+        # Convert to requested matrix form
+        DM = _get_density(DM, what)
+        if m in ("wiberg", "mayer"):
+            # calculate the bond-order matrix
+            DM **= 2
+        elif m == "bond+anti":
+            # sum of COOP for each atom
+            DM /= 2
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got non-valid method {method}"
+            )
+
+        # create the sparseatom object
+        geom = self.geometry
+        rows = geom.o2a(rows)
+        cols = geom.o2a(cols)
+
+        shape = (geom.na, geom.na_s)
+        if DM.ndim == 2:
+            data = []
+            for d in DM:
+                d = coo_matrix((d, (rows, cols)), shape=shape).tocsr()
+                d.sum_duplicates()
+                data.append(d)
+        else:
+            data = coo_matrix((DM, (rows, cols)), shape=shape).tocsr()
+            data.sum_duplicates()
+
+        return SparseAtom.fromsp(geom, data)
 
     def density(self, grid, spinor=None, tol=1e-7, eta=None):
         r"""Expand the density matrix to the charge density on a grid

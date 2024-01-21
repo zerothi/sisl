@@ -11,6 +11,7 @@ we hit release version 1.0.0.
 ### Added
 - added an efficient neighbor finder, #393
 - enabled reading DFTB+ output Hamiltonian and overlap matrices, #579
+- `bond_order` for `DensityMatrix` objects, #507
 - better error messages when users request quantities not calculated by Siesta/TBtrans
 - functional programming of the basic sisl classes
   Now many of the `Geometry|Lattice|Grid.* manipulation routines which
