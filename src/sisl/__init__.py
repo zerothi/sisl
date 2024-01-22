@@ -74,9 +74,6 @@ import sisl._environ as _environ
 # import the common options used
 from ._common import *
 
-# Import the Selector
-from .selector import *
-
 # Import oplist
 from .oplist import oplist
 

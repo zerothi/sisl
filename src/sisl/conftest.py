@@ -283,7 +283,6 @@ def pytest_configure(config):
         "geom_category",
         "plot",
         "slow",
-        "selector",
         "overlap",
         "mixing",
         "typing",
