@@ -675,20 +675,6 @@ class BrillouinZone:
     def __len__(self):
         return len(self._k)
 
-    def write(self, sile, *args, **kwargs):
-        """Writes k-points to a `~sisl.io.tableSile`.
-
-        This allows one to pass a `tableSile` or a file-name.
-        """
-        from sisl.io import tableSile
-
-        kw = np.concatenate((self.k, self.weight.reshape(-1, 1)), axis=1)
-        if isinstance(sile, tableSile):
-            sile.write_data(kw.T, *args, **kwargs)
-        else:
-            with tableSile(sile, "w") as fh:
-                fh.write_data(kw.T, *args, **kwargs)
-
 
 @set_module("sisl.physics")
 class MonkhorstPack(BrillouinZone):

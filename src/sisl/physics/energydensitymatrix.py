@@ -322,15 +322,3 @@ class EnergyDensityMatrix(_densitymatrix):
         else:
             with get_sile(sile, mode="r") as fh:
                 return fh.read_energy_density_matrix(*args, **kwargs)
-
-    def write(self, sile, *args, **kwargs) -> None:
-        """Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method"""
-        # This only works because, they *must*
-        # have been imported previously
-        from sisl.io import BaseSile, get_sile
-
-        if isinstance(sile, BaseSile):
-            sile.write_energy_density_matrix(self, *args, **kwargs)
-        else:
-            with get_sile(sile, mode="w") as fh:
-                fh.write_energy_density_matrix(self, *args, **kwargs)

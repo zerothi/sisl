@@ -3,11 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional
-
 import numpy as np
 
 from sisl._ufuncs import register_sisl_dispatch
+from sisl.typing import SileLike
 
 from .brillouinzone import BandStructure, BrillouinZone, MonkhorstPack
 
@@ -65,3 +64,19 @@ def copy(bs: BandStructure, parent=None):
         parent, bs.points.copy(), bs.divisions.copy(), bs.names[:], jump_dk=bs._jump_dk
     )
     return out
+
+
+@register_sisl_dispatch(BrillouinZone, module="sisl.physics")
+def write(bz: BrillouinZone, sile: SileLike, *args, **kwargs):
+    """Writes k-points to a `~sisl.io.tableSile`.
+
+    This allows one to pass a `tableSile` or a file-name.
+    """
+    from sisl.io import tableSile
+
+    kw = np.concatenate((bz.k, bz.weight.reshape(-1, 1)), axis=1)
+    if isinstance(sile, tableSile):
+        sile.write_data(kw.T, *args, **kwargs)
+    else:
+        with tableSile(sile, "w") as fh:
+            fh.write_data(kw.T, *args, **kwargs)

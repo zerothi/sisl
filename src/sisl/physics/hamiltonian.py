@@ -405,18 +405,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
             with get_sile(sile, mode="r") as fh:
                 return fh.read_hamiltonian(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs) -> None:
-        """Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method"""
-        # This only works because, they *must*
-        # have been imported previously
-        from sisl.io import BaseSile, get_sile
-
-        if isinstance(sile, BaseSile):
-            sile.write_hamiltonian(self, *args, **kwargs)
-        else:
-            with get_sile(sile, mode="w") as fh:
-                fh.write_hamiltonian(self, *args, **kwargs)
-
     def fermi_level(self, bz=None, q=None, distribution="fermi_dirac", q_tol=1e-10):
         """Calculate the Fermi-level using a Brillouinzone sampling and a target charge
 

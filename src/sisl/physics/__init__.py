@@ -86,18 +86,28 @@ Sparse matrices
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
 
 """
-from . import electron, phonon
+
+from ._feature import *
+from .distribution import *
+from .sparse import *
+from .spin import *
+from .state import *
+
+# isort: split
 
 # Patch BrillouinZone objects and import apply classes
-from ._brillouinzone_apply import *
-from ._feature import *
-from ._ufuncs_brillouinzone import *
-from ._ufuncs_state import *
 from .bloch import *
 from .brillouinzone import *
 from .densitymatrix import *
-from .distribution import *
 from .dynamicalmatrix import *
+from .energydensitymatrix import *
+from .hamiltonian import *
+from .overlap import *
+from .self_energy import *
+
+# isort: split
+
+from . import electron, phonon
 from .electron import (
     CoefficientElectron,
     EigenstateElectron,
@@ -106,9 +116,6 @@ from .electron import (
     StateCElectron,
     StateElectron,
 )
-from .energydensitymatrix import *
-from .hamiltonian import *
-from .overlap import *
 from .phonon import (
     CoefficientPhonon,
     EigenmodePhonon,
@@ -117,7 +124,14 @@ from .phonon import (
     ModeCPhonon,
     ModePhonon,
 )
-from .self_energy import *
-from .sparse import *
-from .spin import *
-from .state import *
+
+# isort: split
+
+from ._brillouinzone_apply import *
+from ._ufuncs_brillouinzone import *
+from ._ufuncs_densitymatrix import *
+from ._ufuncs_dynamicalmatrix import *
+from ._ufuncs_energydensitymatrix import *
+from ._ufuncs_hamiltonian import *
+from ._ufuncs_overlap import *
+from ._ufuncs_state import *
