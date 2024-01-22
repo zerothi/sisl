@@ -35,6 +35,9 @@ we hit release version 1.0.0.
 - `BandStructure` points can now automatically add the `nsc == 1` axis as would
   be done for assigning matrix elements (it fills with 0's).
 
+### Removed
+- removed `Selector` and `TimeSelector`, they were never used internally
+
 ### Changed
 - `vacuum` is now an optional parameter for all ribbon structures
 - enabled `array_fill_repeat` with custom axis, to tile along specific
