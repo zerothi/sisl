@@ -859,26 +859,6 @@ class Grid(
             with get_sile(sile, mode="r") as fh:
                 return fh.read_grid(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs) -> None:
-        """Writes grid to the `Sile` using `write_grid`
-
-        Parameters
-        ----------
-        sile : Sile, str or pathlib.Path
-            a `Sile` object which will be used to write the grid
-            if it is a string it will create a new sile using `get_sile`
-        """
-
-        # This only works because, they *must*
-        # have been imported previously
-        from sisl.io import BaseSile, get_sile
-
-        if isinstance(sile, BaseSile):
-            sile.write_grid(self, *args, **kwargs)
-        else:
-            with get_sile(sile, mode="w") as fh:
-                fh.write_grid(self, *args, **kwargs)
-
     def __str__(self):
         """String of object"""
         s = "{name}{{kind: {kind}, shape: [{shape[0]} {shape[1]} {shape[2]}],\n".format(

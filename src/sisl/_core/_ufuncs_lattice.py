@@ -13,7 +13,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument
-from sisl.typing import Coord
+from sisl.typing import Coord, SileLike
 from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
 
@@ -52,6 +52,34 @@ def copy(lattice: Lattice, cell=None, origin: Optional[Coord] = None) -> Lattice
     if not np.allclose(copy.sc_off, lattice.sc_off):
         copy.sc_off = lattice.sc_off
     return copy
+
+
+@register_sisl_dispatch(Lattice, module="sisl")
+def write(lattice: Lattice, sile: SileLike, *args, **kwargs) -> None:
+    """Writes latticey to the `sile` using `sile.write_lattice`
+
+    Parameters
+    ----------
+    sile :
+        a `Sile` object which will be used to write the lattice
+        if it is a string it will create a new sile using `get_sile`
+    *args, **kwargs:
+        Any other args will be passed directly to the
+        underlying routine
+
+    See Also
+    --------
+    read : reads a `Lattice` from a given `Sile`/file
+    """
+    # This only works because, they *must*
+    # have been imported previously
+    from sisl.io import BaseSile, get_sile
+
+    if isinstance(sile, BaseSile):
+        sile.write_lattice(lattice, *args, **kwargs)
+    else:
+        with get_sile(sile, mode="w") as fh:
+            fh.write_lattice(lattice, *args, **kwargs)
 
 
 @register_sisl_dispatch(Lattice, module="sisl")

@@ -33,6 +33,34 @@ def copy(grid: Grid, dtype=None):
 
 
 @register_sisl_dispatch(Grid, module="sisl")
+def write(grid: Grid, sile: SileLike, *args, **kwargs) -> None:
+    """Writes grid to the `sile` using `sile.write_grid`
+
+    parameters
+    ----------
+    sile :
+        a `Sile` object which will be used to write the grid
+        if it is a string it will create a new sile using `get_sile`
+    *args, **kwargs:
+        Any other args will be passed directly to the
+        underlying routine
+
+    See Also
+    --------
+    read : reads a `Grid` from a given `Sile`/file
+    """
+    # this only works because, they *must*
+    # have been imported previously
+    from sisl.io import BaseSile, get_sile
+
+    if isinstance(sile, BaseSile):
+        sile.write_grid(grid, *args, **kwargs)
+    else:
+        with get_sile(sile, mode="w") as fh:
+            fh.write_grid(grid, *args, **kwargs)
+
+
+@register_sisl_dispatch(Grid, module="sisl")
 def swapaxes(grid: Grid, axis_a: int, axis_b: int):
     """Swap two axes in the grid (also swaps axes in the lattice)
 

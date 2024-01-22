@@ -11,7 +11,7 @@ sisl objects.
 
 .. list of methods that currently are dispatched can be created via
 
-     grep "def " ../../src/**/_ufuncs_*.py | tr '(' ' ' | awk '{print "  ",$2}' | sort | uniq >> core.rst
+     grep -A 2 register_sisl_dispatch ../../src/**/_ufuncs_*.py | grep def | tr '(' ' ' | awk '{print "  ",$2}' | sort | uniq >> core.rst
 
 
 .. autosummary::
@@ -21,13 +21,17 @@ sisl objects.
    append
    center
    copy
+   insert
    prepend
    remove
    repeat
    rotate
+   sort
    sub
+   swap
    swapaxes
    tile
    translate
    unrepeat
    untile
+   write

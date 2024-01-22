@@ -582,21 +582,6 @@ class BrillouinZone:
 
         return BrillouinZone(parent, k, w)
 
-    def copy(self, parent=None):
-        """Create a copy of this object, optionally changing the parent
-
-        Parameters
-        ----------
-        parent : optional
-           change the parent
-        """
-        if parent is None:
-            parent = self.parent
-        bz = self.__class__(parent, self._k, self.weight)
-        bz._k = self._k.copy()
-        bz._w = self._w.copy()
-        return bz
-
     @property
     def k(self):
         """A list of all k-points (if available)"""
@@ -918,24 +903,6 @@ class MonkhorstPack(BrillouinZone):
         self._size = state["size"]
         self._centered = state["centered"]
         self._trs = state["trs"]
-
-    def copy(self, parent=None):
-        """Create a copy of this object, optionally changing the parent
-
-        Parameters
-        ----------
-        parent : optional
-           change the parent
-        """
-        if parent is None:
-            parent = self.parent
-        bz = self.__class__(
-            parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0
-        )
-        # this is required due to replace calls
-        bz._k = self._k.copy()
-        bz._w = self._w.copy()
-        return bz
 
     @classmethod
     def grid(cls, n, displ=0.0, size=1.0, centered=True, trs=False):
@@ -1417,21 +1384,6 @@ class BandStructure(BrillouinZone):
 
         self._k = k
         self._w = _a.fulld(len(self.k), 1 / len(self.k))
-
-    def copy(self, parent=None):
-        """Create a copy of this object, optionally changing the parent
-
-        Parameters
-        ----------
-        parent : optional
-           change the parent
-        """
-        if parent is None:
-            parent = self.parent
-        bz = self.__class__(
-            parent, self.points, self.divisions, self.names, jump_dk=self._jump_dk
-        )
-        return bz
 
     def __getstate__(self):
         """Return dictionary with the current state"""
