@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1-c667b7e</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1-4f73db8</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -19,7 +19,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=68ce3467"></script>
+        <script src="../../../../_static/documentation_options.js?v=a767115e"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c667b7e
+                0.1-4f73db8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -119,6 +119,7 @@
 
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -150,6 +151,7 @@
 
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span>
 <span class="kn">from</span> <span class="nn">._cdf</span> <span class="kn">import</span> <span class="n">_devncSileTBtrans</span>
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">missing_input_fdf</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tbtncSileTBtrans&quot;</span><span class="p">,</span> <span class="s2">&quot;tbtavncSileTBtrans&quot;</span><span class="p">]</span>
 
@@ -262,37 +264,36 @@
         <span class="n">tbtavncSileTBtrans</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">access</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">write_tbtav</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_value_avg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_value_avg</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tree</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Local method for obtaining the data from the SileCDF.</span>
 
-<span class="sd">        This method checks how the file is access, i.e. whether</span>
+<span class="sd">        This method checks how the file is accessed, i.e. whether</span>
 <span class="sd">        data is stored in the object or it should be read consequtively.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: str</span>
+<span class="sd">            name of the variable (located in `tree`)</span>
+<span class="sd">        tree: str or list of str, optional</span>
+<span class="sd">            the group location of the variable</span>
+<span class="sd">        kavg: bool, optional</span>
+<span class="sd">            whether to k-average the quantity</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_access</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="n">group</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tree</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">group</span> <span class="o">=</span> <span class="n">tree</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not retrieve key &#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; due to missing flags in the input file.&quot;</span>
-                <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not retrieve key &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; due to missing flags in the input file.&quot;</span>
-            <span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k_avg</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="p">[:]</span>
 
         <span class="c1"># Perform normalization</span>
-        <span class="n">orig_shape</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kavg</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">kavg</span><span class="p">:</span>
                 <span class="n">wkpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wk</span>
@@ -300,13 +301,11 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nk</span><span class="p">):</span>
                     <span class="n">data</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">orig_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:]</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kavg</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">kavg</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">orig_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -316,50 +315,54 @@
         <span class="c1"># Return data</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">_value_E</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Local method for obtaining the data from the SileCDF using an E index.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_value_E</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tree</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Local method for obtaining energy resolved data from the SileCDF.</span>
+
+<span class="sd">        This method checks how the file is accessed, i.e. whether</span>
+<span class="sd">        data is stored in the object or it should be read consequtively.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: str</span>
+<span class="sd">            name of the variable (located in `tree`)</span>
+<span class="sd">        tree: str or list of str, optional</span>
+<span class="sd">            the group location of the variable</span>
+<span class="sd">        kavg: bool, optional</span>
+<span class="sd">            whether to k-average the quantity</span>
+<span class="sd">        E: int or float, optional</span>
+<span class="sd">            if provided, only extract the quantity based on the energy `E`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">E</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_avg</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">kavg</span><span class="p">)</span>
 
         <span class="c1"># Ensure that it is an index</span>
         <span class="n">iE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Eindex</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">group</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tree</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">group</span> <span class="o">=</span> <span class="n">tree</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not retrieve key &#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; due to missing flags in the input file.&quot;</span>
-                <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not retrieve key &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; due to missing flags in the input file.&quot;</span>
-            <span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k_avg</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="p">[</span><span class="n">iE</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
         <span class="n">wkpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wk</span>
 
         <span class="c1"># Perform normalization</span>
-        <span class="n">orig_shape</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kavg</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">kavg</span><span class="p">:</span>
                 <span class="n">nk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wkpt</span><span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">iE</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nk</span><span class="p">):</span>
                     <span class="n">data</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">iE</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">orig_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">[:,</span> <span class="n">iE</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="n">iE</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kavg</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">kavg</span><span class="p">,</span> <span class="n">iE</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">orig_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">kavg</span><span class="p">,</span> <span class="n">iE</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -371,6 +374,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.All&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transmission from `elec_from` to `elec_to`.</span>
 
@@ -413,6 +417,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.reflection">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.reflection">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Out&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.T.All&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">from_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reflection into electrode `elec`</span>
 
@@ -470,6 +475,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.transmission_eig">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_eig">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Eig&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;int&gt;&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">transmission_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transmission eigenvalues from `elec_from` to `elec_to`.</span>
 
@@ -500,6 +506,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.transmission_bulk">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_bulk">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Bulk&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">transmission_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Bulk transmission for the `elec` electrode</span>
 
@@ -713,6 +720,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.DOS">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.DOS">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DOS.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -760,6 +768,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.ADOS">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.ADOS">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DOS.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">ADOS</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -818,6 +827,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.BDOS">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.BDOS">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DOS.Elecs&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">BDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bulk density of states (DOS) (1/eV).</span>
 
@@ -1596,6 +1606,7 @@
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14.0&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
@@ -1704,6 +1715,7 @@
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14.0&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -2295,6 +2307,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.density_matrix">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DM.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">density_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
@@ -2351,6 +2364,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.Adensity_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.Adensity_matrix">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DM.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">Adensity_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
@@ -2418,6 +2432,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_COOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COOP">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COOP.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the Green function</span>
 
@@ -2486,6 +2501,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_ACOOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOOP">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COOP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
@@ -2654,6 +2670,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_COHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COHP">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COHP.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orbital resolved COHP analysis of the Green function</span>
 
@@ -2704,6 +2721,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_ACOHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOHP">[docs]</a>
+    <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COHP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
@@ -2994,7 +3012,9 @@
             <span class="n">truefalse</span><span class="p">(</span><span class="s2">&quot;DOS&quot;</span> <span class="ow">in</span> <span class="n">gelec</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s2">&quot;DOS bulk&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;TBT.DOS.Elecs&quot;</span><span class="p">])</span>
             <span class="n">truefalse</span><span class="p">(</span><span class="s2">&quot;ADOS&quot;</span> <span class="ow">in</span> <span class="n">gelec</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s2">&quot;DOS spectral&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;TBT.DOS.A&quot;</span><span class="p">])</span>
             <span class="n">truefalse</span><span class="p">(</span>
-                <span class="s2">&quot;J&quot;</span> <span class="ow">in</span> <span class="n">gelec</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s2">&quot;orbital-transmission&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">]</span>
+                <span class="s2">&quot;J&quot;</span> <span class="ow">in</span> <span class="n">gelec</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span>
+                <span class="s2">&quot;orbital-transmission&quot;</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">],</span>
             <span class="p">)</span>
             <span class="n">truefalse</span><span class="p">(</span><span class="s2">&quot;DM&quot;</span> <span class="ow">in</span> <span class="n">gelec</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s2">&quot;Density matrix spectral&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;TBT.DM.A&quot;</span><span class="p">])</span>
             <span class="n">truefalse</span><span class="p">(</span><span class="s2">&quot;COOP&quot;</span> <span class="ow">in</span> <span class="n">gelec</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s2">&quot;COOP spectral&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;TBT.COOP.A&quot;</span><span class="p">])</span>
@@ -3910,7 +3930,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

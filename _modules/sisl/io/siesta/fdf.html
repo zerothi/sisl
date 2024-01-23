@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-c667b7e</title>
+  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-4f73db8</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -19,7 +19,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=68ce3467"></script>
+        <script src="../../../../_static/documentation_options.js?v=a767115e"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c667b7e
+                0.1-4f73db8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -112,6 +112,7 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">itools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span>
@@ -158,7 +159,7 @@
 <span class="kn">from</span> <span class="nn">.orb_indx</span> <span class="kn">import</span> <span class="n">orbindxSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.siesta_grid</span> <span class="kn">import</span> <span class="n">gridncSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.siesta_nc</span> <span class="kn">import</span> <span class="n">ncSileSiesta</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">MissingFDFSiestaInfo</span><span class="p">,</span> <span class="n">SileSiesta</span>
 <span class="kn">from</span> <span class="nn">.struct</span> <span class="kn">import</span> <span class="n">structSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.xv</span> <span class="kn">import</span> <span class="n">xvSileSiesta</span>
 
@@ -170,6 +171,7 @@
 <span class="n">_LOGICAL</span> <span class="o">=</span> <span class="n">_LOGICAL_FALSE</span> <span class="o">+</span> <span class="n">_LOGICAL_TRUE</span>
 
 <span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
+<span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_parse_output_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">order_True</span><span class="p">,</span> <span class="n">order_False</span><span class="p">):</span>
@@ -223,18 +225,21 @@
 
 
 <span class="k">def</span> <span class="nf">_track</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="n">msg_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">track</span><span class="p">:</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_track_file</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_track_file</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;reading file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: file &#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&#39; exists.&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;could not find file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">track</span><span class="p">:</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: file &#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">MissingFDFSiestaInfo</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="n">_track</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
@@ -861,7 +866,6 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_nsc_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;number of supercells could not be read from output files. Assuming molecule cell &quot;</span>
@@ -872,14 +876,16 @@
 
     <span class="k">def</span> <span class="nf">_r_lattice_nsc_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_r_lattice_nsc_orb_indx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.ORB_INDX&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_orb_indx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_orb_indx</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Write.OrbitalIndex&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)]</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">orbindxSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -916,7 +922,6 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -956,7 +961,7 @@
     <span class="k">def</span> <span class="nf">_r_lattice_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read supercell from &lt;&gt;.nc file</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -986,14 +991,14 @@
 
     <span class="k">def</span> <span class="nf">_r_lattice_tshs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSHS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.HS.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">tshsSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_r_lattice_onlys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.onlyS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_onlys</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_onlys</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.S.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">onlysSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -1057,7 +1062,7 @@
     <span class="k">def</span> <span class="nf">_r_force_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read forces from the nc file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_force_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_force_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_force</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -1084,7 +1089,7 @@
 
     <span class="k">def</span> <span class="nf">_r_force_constant_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_force_constant_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_force_constant_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;FC&quot;</span> <span class="ow">in</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
@@ -1117,7 +1122,7 @@
 <span class="sd">            fermi-level</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;EIG&quot;</span><span class="p">,</span> <span class="s2">&quot;bands&quot;</span><span class="p">],</span> <span class="p">[]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;EIG&quot;</span><span class="p">,</span> <span class="s2">&quot;bands&quot;</span><span class="p">),</span> <span class="p">[]</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_fermi_level_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1130,21 +1135,21 @@
 
     <span class="k">def</span> <span class="nf">_r_fermi_level_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_fermi_level_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_fermi_level_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_fermi_level</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_r_fermi_level_tsde</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSDE&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_fermi_level_tsde</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_fermi_level_tsde</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.DE.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">tsdeSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_fermi_level</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_r_fermi_level_tshs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSHS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_fermi_level_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_fermi_level_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.HS.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">tshsSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_fermi_level</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -1587,8 +1592,6 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_geometry_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">(read_geometry) found in file=</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -1616,7 +1619,7 @@
     <span class="k">def</span> <span class="nf">_r_geometry_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns `Geometry` object from the STRUCT_* files&quot;&quot;&quot;</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">end</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;STRUCT_NEXT_ITER&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT_OUT&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT_IN&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">end</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;STRUCT_NEXT_ITER&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT_OUT&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT_IN&quot;</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_struct</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
@@ -1638,7 +1641,7 @@
     <span class="k">def</span> <span class="nf">_r_geometry_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read geometry from &lt;&gt;.nc file</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -1646,7 +1649,7 @@
     <span class="k">def</span> <span class="nf">_r_geometry_tshs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read geometry from &lt;&gt;.TSHS file</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSHS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.HS.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="c1"># Default to a geometry with the correct atomic numbers etc.</span>
             <span class="k">return</span> <span class="n">tshsSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
@@ -1655,7 +1658,7 @@
     <span class="k">def</span> <span class="nf">_r_geometry_hsx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read geometry from &lt;&gt;.TSHS file</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.HSX&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Save.HS&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="c1"># Default to a geometry with the correct atomic numbers etc.</span>
             <span class="k">return</span> <span class="n">hsxSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
@@ -1826,8 +1829,6 @@
                 <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">(read_grid) found in file=</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -1835,7 +1836,7 @@
     <span class="k">def</span> <span class="nf">_r_grid_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Read grid from the &lt;&gt;.nc file</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_grid_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_grid_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="c1"># Capitalize correctly</span>
             <span class="n">name</span> <span class="o">=</span> <span class="p">{</span>
@@ -2004,10 +2005,10 @@
 
     <span class="k">def</span> <span class="nf">_r_basis_orb_indx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.ORB_INDX&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_basis_orb_indx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_basis_orb_indx</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Write.OrbitalIndex&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Siesta basis information is read from </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">, the radial functions are not accessible.&quot;</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Siesta basis information is read from &#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&#39;; radial functions are not accessible.&quot;</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">orbindxSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_basis</span><span class="p">(</span><span class="n">atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_basis_fdf</span><span class="p">())</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -2233,7 +2234,6 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">DM</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_density_matrix_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">DM</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_density_matrix</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">DM</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -2241,7 +2241,7 @@
     <span class="k">def</span> <span class="nf">_r_density_matrix_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Try and read the density matrix by reading the &lt;&gt;.nc&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_density_matrix_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_density_matrix_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="n">DM</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="c1"># this *should* also contain the overlap matrix</span>
@@ -2251,7 +2251,7 @@
     <span class="k">def</span> <span class="nf">_r_density_matrix_tsde</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read density matrix from the TSDE file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSDE&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_density_matrix_tsde</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_density_matrix_tsde</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.DE.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="n">DM</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -2294,7 +2294,6 @@
                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">EDM</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_energy_density_matrix</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">EDM</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -2302,7 +2301,7 @@
     <span class="k">def</span> <span class="nf">_r_energy_density_matrix_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read energy density matrix by reading the &lt;&gt;.nc&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_energy_density_matrix_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_energy_density_matrix_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_energy_density_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -2310,7 +2309,9 @@
     <span class="k">def</span> <span class="nf">_r_energy_density_matrix_tsde</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read energy density matrix from the TSDE file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSDE&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_energy_density_matrix_tsde</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r_energy_density_matrix_tsde</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.DE.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)]</span>
+        <span class="p">)</span>
         <span class="n">EDM</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -2340,7 +2341,6 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_overlap_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_overlap</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -2348,7 +2348,7 @@
     <span class="k">def</span> <span class="nf">_r_overlap_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read overlap from the nc file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_overlap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -2356,7 +2356,7 @@
     <span class="k">def</span> <span class="nf">_r_overlap_tshs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read overlap from the TSHS file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSHS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.HS.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="n">S</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -2368,7 +2368,7 @@
     <span class="k">def</span> <span class="nf">_r_overlap_hsx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read overlap from the HSX file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.HSX&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Save.HS&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="n">S</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -2380,7 +2380,7 @@
     <span class="k">def</span> <span class="nf">_r_overlap_onlys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read overlap from the onlyS file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.onlyS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_onlys</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_overlap_onlys</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.S.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="n">S</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -2409,7 +2409,6 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">H</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hamiltonian_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">H</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">H</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -2417,7 +2416,7 @@
     <span class="k">def</span> <span class="nf">_r_hamiltonian_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read Hamiltonian from the nc file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hamiltonian_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hamiltonian_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -2425,7 +2424,7 @@
     <span class="k">def</span> <span class="nf">_r_hamiltonian_tshs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read Hamiltonian from the TSHS file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSHS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hamiltonian_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hamiltonian_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.HS.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="n">H</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -2437,7 +2436,7 @@
     <span class="k">def</span> <span class="nf">_r_hamiltonian_hsx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read Hamiltonian from the HSX file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.HSX&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hamiltonian_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hamiltonian_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Save.HS&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="n">H</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">hsxSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -2633,7 +2632,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

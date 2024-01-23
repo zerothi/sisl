@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.sile &mdash; sisl 0.1-c667b7e</title>
+  <title>sisl.io.sile &mdash; sisl 0.1-4f73db8</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
@@ -19,7 +19,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=68ce3467"></script>
+        <script src="../../../_static/documentation_options.js?v=a767115e"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c667b7e
+                0.1-4f73db8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -119,13 +119,15 @@
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">basename</span><span class="p">,</span> <span class="n">splitext</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span><span class="p">,</span> <span class="n">indent</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">import</span> <span class="nn">sisl.io._exceptions</span> <span class="k">as</span> <span class="nn">_exceptions</span>
 <span class="kn">from</span> <span class="nn">sisl._environ</span> <span class="kn">import</span> <span class="n">get_environ_variable</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislInfo</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">str_spec</span>
 
+<span class="kn">from</span> <span class="nn">._exceptions</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># Public used objects</span>
@@ -137,10 +139,8 @@
     <span class="s2">&quot;Sile&quot;</span><span class="p">,</span>
     <span class="s2">&quot;SileCDF&quot;</span><span class="p">,</span>
     <span class="s2">&quot;SileBin&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SileError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SileWarning&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SileInfo&quot;</span><span class="p">,</span>
 <span class="p">]</span>
+<span class="n">__all__</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_exceptions</span><span class="o">.</span><span class="n">__all__</span><span class="p">)</span>
 
 <span class="c1"># Decorators or sile-specific functions</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;sile_fh_open&quot;</span><span class="p">,</span> <span class="s2">&quot;sile_raise_write&quot;</span><span class="p">,</span> <span class="s2">&quot;sile_raise_read&quot;</span><span class="p">]</span>
@@ -182,12 +182,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">base_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bases</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">{{case=</span><span class="si">{case}</span><span class="s2">, suffix=</span><span class="si">{suffix}</span><span class="s2">, gzip=</span><span class="si">{gzip}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">case</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gzip</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">__name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bases</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">case=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">case</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;suffix=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">, gzip=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gzip</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bases</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> &quot;</span>
-        <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">}&quot;</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -422,7 +421,7 @@
         <span class="c1"># Check for files without ending, or that they are directly zipped</span>
         <span class="n">lext</span> <span class="o">=</span> <span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">lext</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">lext</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">end</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lext</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">end</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">if</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span><span class="p">:</span>
                 <span class="n">end_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
             <span class="k">else</span><span class="p">:</span>
@@ -641,8 +640,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="c1"># Loop all keys and try to read the quantities</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;read_&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">):</span>
-                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;read_&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;read_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;read_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="c1"># Call read</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -672,8 +671,8 @@
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="c1"># Loop all keys and try to write the quantities</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;write_&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">):</span>
-                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;write_&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;write_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;write_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="c1"># Call write</span>
                 <span class="n">func</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -685,7 +684,6 @@
 
 <span class="sd">        This method can be overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_base_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the `Sile` after initialization</span>
@@ -757,7 +755,6 @@
 <span class="sd">        p : ArgumentParser</span>
 <span class="sd">           the argument parser to add the arguments to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a representation of the `Sile`&quot;&quot;&quot;</span>
@@ -868,7 +865,6 @@
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Will not close the file since this is passed by the user&quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
@@ -1625,7 +1621,7 @@
         <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
             <span class="p">(</span>
                 <span class="s2">&quot;Writing to file not possible; allowed &quot;</span>
-                <span class="s2">&quot;modes=</span><span class="si">{}</span><span class="s2">, used mode=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ok</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;modes=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2">, used mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">),</span>
             <span class="bp">self</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1641,42 +1637,6 @@
             <span class="sa">f</span><span class="s2">&quot;modes=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2">, used mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="bp">self</span><span class="p">,</span>
         <span class="p">)</span>
-
-
-<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SileError</span><span class="p">(</span><span class="ne">IOError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define an error object related to the Sile objects&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="SileError.__init__">
-<a class="viewcode-back" href="../../../api/io/generated/sisl.io.SileError.html#sisl.io.SileError.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span></div>
-
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">!s}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="si">!s}</span><span class="s2">&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-
-
-<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SileWarning</span><span class="p">(</span><span class="n">SislWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warnings that informs users of things to be carefull about when using their retrieved data</span>
-
-<span class="sd">    These warnings should be issued whenever a read/write routine is unable to retrieve all information</span>
-<span class="sd">    but are non-influential in the sense that sisl is still able to perform the action.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">pass</span>
-
-
-<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SileInfo</span><span class="p">(</span><span class="n">SislInfo</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning.&quot;&quot;&quot;</span>
-
-    <span class="k">pass</span>
 </pre></div>
 
            </div>
@@ -1686,7 +1646,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

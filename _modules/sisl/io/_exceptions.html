@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io._exceptions &mdash; sisl 0.1-4f73db8</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=a767115e"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-4f73db8
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.io._exceptions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.io._exceptions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">SislException</span><span class="p">,</span> <span class="n">SislInfo</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;SileError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SileWarning&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SileInfo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MissingInputSileException&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MissingInputSileError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MissingInputSileInfo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MissingInputSileWarning&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;missing_input&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SileError</span><span class="p">(</span><span class="n">SislError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define an error object related to the Sile objects&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SileError.__init__">
+<a class="viewcode-back" href="../../../api/io/generated/sisl.io.SileError.html#sisl.io.SileError.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">!s}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="si">!s}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SileWarning</span><span class="p">(</span><span class="n">SislWarning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warnings that informs users of things to be carefull about when using their retrieved data</span>
+
+<span class="sd">    These warnings should be issued whenever a read/write routine is unable to retrieve all information</span>
+<span class="sd">    but are non-influential in the sense that sisl is still able to perform the action.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SileInfo</span><span class="p">(</span><span class="n">SislInfo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning.&quot;&quot;&quot;</span>
+
+
+<span class="n">InputsType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+
+
+<span class="k">class</span> <span class="nc">MissingInputSileException</span><span class="p">(</span><span class="n">SislException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for constructing error/warnings when a fdf flag is missing from the input file.</span>
+
+<span class="sd">    This error message should preferably be raised through:</span>
+
+<span class="sd">    &gt;&gt;&gt; raise InheritedClass(method, [&quot;Diag.ParallelOverk&quot;]) from exc</span>
+
+<span class="sd">    to retain a proper context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">InputsType</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">):</span>
+        <span class="c1"># Formulate the error message</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;  * </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;  * </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">str_except</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">parse</span><span class="p">,</span> <span class="n">inputs</span><span class="p">))</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s2">Data from method &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; failed due to missing output values.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;This is because of missing options in the input file for executable </span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Please read up on the following flags in the manual of &#39;</span><span class="si">{</span><span class="n">executable</span><span class="si">}</span><span class="s2">&#39; to figure out &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;how to retrieve the expected quantities:</span><span class="se">\n</span><span class="si">{</span><span class="n">str_except</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">MissingInputSileError</span><span class="p">(</span><span class="n">MissingInputSileException</span><span class="p">,</span> <span class="n">SileError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Issued when specific flags in the input file can be used to extract data&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">MissingInputSileWarning</span><span class="p">(</span><span class="n">MissingInputSileException</span><span class="p">,</span> <span class="n">SileWarning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Issued when specific flags in the input file can be used to extract data&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">MissingInputSileInfo</span><span class="p">(</span><span class="n">MissingInputSileException</span><span class="p">,</span> <span class="n">SileInfo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Issued when specific flags in the input file can be used to extract data&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">missing_input</span><span class="p">(</span>
+    <span class="n">executable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">inputs</span><span class="p">:</span> <span class="n">InputsType</span><span class="p">,</span>
+    <span class="n">what</span><span class="p">:</span> <span class="n">MissingInputSileException</span><span class="p">,</span>
+    <span class="n">when_exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="ne">Exception</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Issues warnings, or errors based on `when` and `what`&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="n">what_inst</span> <span class="o">=</span> <span class="n">what</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">when_exception</span><span class="p">,</span> <span class="ne">Warning</span><span class="p">):</span>
+            <span class="c1"># we should do a warning catch thing</span>
+            <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">deco</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">)</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">what_inst</span><span class="p">,</span> <span class="n">MissingInputSileWarning</span><span class="p">):</span>
+                        <span class="n">warn</span><span class="p">(</span><span class="n">what_inst</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">what_inst</span><span class="p">,</span> <span class="n">MissingInputSileInfo</span><span class="p">):</span>
+                        <span class="n">info</span><span class="p">(</span><span class="n">what_inst</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">what_inst</span><span class="p">,</span> <span class="n">MissingInputSileError</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="n">what_inst</span>
+
+                <span class="k">return</span> <span class="n">ret</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># it must be ane error to be raised</span>
+            <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">deco</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">what</span> <span class="k">as</span> <span class="n">ke</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">what_inst</span> <span class="kn">from</span> <span class="nn">ke.__cause__</span>
+                <span class="k">except</span> <span class="n">when_exception</span> <span class="k">as</span> <span class="n">ke</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">what_inst</span> <span class="kn">from</span> <span class="nn">ke</span>
+
+        <span class="k">return</span> <span class="n">deco</span>
+
+    <span class="k">return</span> <span class="n">decorator</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

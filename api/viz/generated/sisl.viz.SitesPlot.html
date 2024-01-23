@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.SitesPlot &mdash; sisl 0.1-c667b7e</title>
+  <title>sisl.viz.SitesPlot &mdash; sisl 0.1-4f73db8</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
@@ -20,7 +20,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=68ce3467"></script>
+        <script src="../../../_static/documentation_options.js?v=a767115e"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c667b7e
+                0.1-4f73db8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -192,22 +192,25 @@ If None, the default colorscale is used for each backend.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.get" title="sisl.viz.SitesPlot.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>()</p></td>
 <td><p>Returns the up to date output of the workflow.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.get_input" title="sisl.viz.SitesPlot.get_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_input</span></code></a>(key)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.get_diagram_label" title="sisl.viz.SitesPlot.get_diagram_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_diagram_label</span></code></a>()</p></td>
+<td><p>Returns the label to be used in diagrams when displaying this node.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.get_input" title="sisl.viz.SitesPlot.get_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_input</span></code></a>(key)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.get_tree" title="sisl.viz.SitesPlot.get_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tree</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.get_tree" title="sisl.viz.SitesPlot.get_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tree</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.is_output_outdated" title="sisl.viz.SitesPlot.is_output_outdated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_output_outdated</span></code></a>(evaluated_inputs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.is_output_outdated" title="sisl.viz.SitesPlot.is_output_outdated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_output_outdated</span></code></a>(evaluated_inputs)</p></td>
 <td><p>Checks if the node needs to be ran</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.map_inputs" title="sisl.viz.SitesPlot.map_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_inputs</span></code></a>(inputs, func[, only_nodes, exclude])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.map_inputs" title="sisl.viz.SitesPlot.map_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_inputs</span></code></a>(inputs, func[, only_nodes, exclude])</p></td>
 <td><p>Maps all inputs of the node applying a given function.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.merge" title="sisl.viz.SitesPlot.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(*others, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.merge" title="sisl.viz.SitesPlot.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(*others, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.plot_class_key" title="sisl.viz.SitesPlot.plot_class_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_class_key</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.plot_class_key" title="sisl.viz.SitesPlot.plot_class_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_class_key</span></code></a>()</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">rtype<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
@@ -215,40 +218,40 @@ If None, the default colorscale is used for each backend.</p></li>
 </dl>
 </p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.recursive_update_inputs" title="sisl.viz.SitesPlot.recursive_update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recursive_update_inputs</span></code></a>([cls])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.recursive_update_inputs" title="sisl.viz.SitesPlot.recursive_update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recursive_update_inputs</span></code></a>([cls])</p></td>
 <td><p>Updates the inputs of the node recursively.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.setup" title="sisl.viz.SitesPlot.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.setup" title="sisl.viz.SitesPlot.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Sets up the node based on its initial inputs.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.update_inputs" title="sisl.viz.SitesPlot.update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_inputs</span></code></a>(**inputs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.update_inputs" title="sisl.viz.SitesPlot.update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_inputs</span></code></a>(**inputs)</p></td>
 <td><p>Updates the inputs of the workflow.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.update_settings" title="sisl.viz.SitesPlot.update_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_settings</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.update_settings" title="sisl.viz.SitesPlot.update_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_settings</span></code></a>(*args, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.DELETE_KWARG" title="sisl.viz.SitesPlot.DELETE_KWARG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DELETE_KWARG</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.DELETE_KWARG" title="sisl.viz.SitesPlot.DELETE_KWARG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DELETE_KWARG</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.context" title="sisl.viz.SitesPlot.context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">context</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.context" title="sisl.viz.SitesPlot.context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">context</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.default_inputs" title="sisl.viz.SitesPlot.default_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_inputs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.default_inputs" title="sisl.viz.SitesPlot.default_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_inputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.dryrun_nodes" title="sisl.viz.SitesPlot.dryrun_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dryrun_nodes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.dryrun_nodes" title="sisl.viz.SitesPlot.dryrun_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dryrun_nodes</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.inputs" title="sisl.viz.SitesPlot.inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.inputs" title="sisl.viz.SitesPlot.inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.network" title="sisl.viz.SitesPlot.network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.network" title="sisl.viz.SitesPlot.network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.nodes" title="sisl.viz.SitesPlot.nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.nodes" title="sisl.viz.SitesPlot.nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.logs" title="sisl.viz.SitesPlot.logs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logs</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.SitesPlot.logs" title="sisl.viz.SitesPlot.logs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -396,6 +399,12 @@ If None, the default colorscale is used for each backend.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.SitesPlot.get_diagram_label">
+<span class="sig-name descname"><span class="pre">get_diagram_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.SitesPlot.get_diagram_label" title="Link to this definition"></a></dt>
+<dd><p>Returns the label to be used in diagrams when displaying this node.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.SitesPlot.get_input">
 <span class="sig-name descname"><span class="pre">get_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.SitesPlot.get_input" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -514,7 +523,7 @@ as they are.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

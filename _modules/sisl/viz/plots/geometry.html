@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.plots.geometry &mdash; sisl 0.1-c667b7e</title>
+  <title>sisl.viz.plots.geometry &mdash; sisl 0.1-4f73db8</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -19,7 +19,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=68ce3467"></script>
+        <script src="../../../../_static/documentation_options.js?v=a767115e"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c667b7e
+                0.1-4f73db8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -137,7 +137,6 @@
     <span class="n">style_bonds</span><span class="p">,</span>
     <span class="n">tile_data_sc</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..processors.logic</span> <span class="kn">import</span> <span class="n">matches</span><span class="p">,</span> <span class="n">switch</span>
 <span class="kn">from</span> <span class="nn">..processors.xarray</span> <span class="kn">import</span> <span class="n">scale_variable</span><span class="p">,</span> <span class="n">select</span>
 
 
@@ -289,7 +288,7 @@
     <span class="c1"># thread/process, potentially increasing speed.</span>
     <span class="n">parsed_atom_style</span> <span class="o">=</span> <span class="n">parse_atoms_style</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">atoms_style</span><span class="o">=</span><span class="n">atoms_style</span><span class="p">)</span>
     <span class="n">atoms_dataset</span> <span class="o">=</span> <span class="n">add_xyz_to_dataset</span><span class="p">(</span><span class="n">parsed_atom_style</span><span class="p">)</span>
-    <span class="n">atoms_filter</span> <span class="o">=</span> <span class="n">switch</span><span class="p">(</span><span class="n">show_atoms</span><span class="p">,</span> <span class="n">sanitized_atoms</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">atoms_filter</span> <span class="o">=</span> <span class="n">sanitized_atoms</span> <span class="k">if</span> <span class="n">show_atoms</span> <span class="k">else</span> <span class="p">[]</span>
     <span class="n">filtered_atoms</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">atoms_dataset</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="n">atoms_filter</span><span class="p">)</span>
     <span class="n">tiled_atoms</span> <span class="o">=</span> <span class="n">tile_data_sc</span><span class="p">(</span><span class="n">filtered_atoms</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
     <span class="n">sc_atoms</span> <span class="o">=</span> <span class="n">stack_sc_data</span><span class="p">(</span><span class="n">tiled_atoms</span><span class="p">,</span> <span class="n">newname</span><span class="o">=</span><span class="s2">&quot;sc_atom&quot;</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">])</span>
@@ -314,7 +313,7 @@
 
     <span class="c1"># Here we start to process bonds</span>
     <span class="n">bonds</span> <span class="o">=</span> <span class="n">find_all_bonds</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-    <span class="n">show_bonds</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">show_bonds</span><span class="p">)</span>
+    <span class="n">show_bonds</span> <span class="o">=</span> <span class="n">show_bonds</span> <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
     <span class="n">styled_bonds</span> <span class="o">=</span> <span class="n">style_bonds</span><span class="p">(</span><span class="n">bonds</span><span class="p">,</span> <span class="n">bonds_style</span><span class="p">)</span>
     <span class="n">bonds_dataset</span> <span class="o">=</span> <span class="n">add_xyz_to_bonds_dataset</span><span class="p">(</span><span class="n">styled_bonds</span><span class="p">)</span>
     <span class="n">bonds_filter</span> <span class="o">=</span> <span class="n">sanitize_bonds_selection</span><span class="p">(</span>
@@ -339,7 +338,7 @@
     <span class="p">)</span>
 
     <span class="c1"># And now the cell</span>
-    <span class="n">show_cell</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">show_cell</span><span class="p">)</span>
+    <span class="n">show_cell</span> <span class="o">=</span> <span class="n">show_cell</span> <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
     <span class="n">cell_plottings</span> <span class="o">=</span> <span class="n">cell_plot_actions</span><span class="p">(</span>
         <span class="n">cell</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
         <span class="n">show_cell</span><span class="o">=</span><span class="n">show_cell</span><span class="p">,</span>
@@ -488,7 +487,7 @@
     <span class="p">)</span>
 
     <span class="c1"># And now the cell</span>
-    <span class="n">show_cell</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">show_cell</span><span class="p">)</span>
+    <span class="n">show_cell</span> <span class="o">=</span> <span class="n">show_cell</span> <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">show_cell</span>
     <span class="n">cell_plottings</span> <span class="o">=</span> <span class="n">cell_plot_actions</span><span class="p">(</span>
         <span class="n">cell</span><span class="o">=</span><span class="n">fake_geometry</span><span class="p">,</span>
         <span class="n">show_cell</span><span class="o">=</span><span class="n">show_cell</span><span class="p">,</span>
@@ -525,7 +524,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
