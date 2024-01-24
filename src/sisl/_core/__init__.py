@@ -19,4 +19,10 @@ from .sparse_geometry import *
 # isort: on
 
 # We will not expose anything here, it is a registration module
-from . import _ufuncs_geometry, _ufuncs_grid, _ufuncs_lattice, geometry, grid, lattice
+from . import (
+    _ufuncs_geometry,
+    _ufuncs_grid,
+    _ufuncs_lattice,
+    _ufuncs_sparse,
+    _ufuncs_sparse_geometry,
+)

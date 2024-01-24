@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Sequence, Union
 
 import numpy as np
+import scipy.sparse as sps
 
 import sisl._typing_ext.numpy as npt
 
@@ -33,7 +34,10 @@ __all__ = [
     "LatticeOrGeometryLike",
     "OrbitalsArgument",
     "SileLike",
+    "SparseMatrix",
+    "SparseMatrixExt",
 ]
+
 
 AtomsLike = Union[
     "Atom",
@@ -99,4 +103,17 @@ OrbitalsArgument = Union[
     dict,
     "AtomCategory",
     "Shape",
+]
+
+if hasattr(sps, "sparray"):
+    SparseMatrixExt = Union[
+        sps.spmatrix,
+        sps.sparray,
+    ]
+else:
+    SparseMatrixExt = Union[sps.spmatrix,]
+
+SparseMatrix = Union[
+    SparseMatrixExt,
+    "SparseCSR",
 ]
