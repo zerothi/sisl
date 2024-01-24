@@ -9,11 +9,11 @@ import sisl._array as _a
 
 # Import the geometry object
 from sisl import Atom, Geometry, Lattice, SparseOrbitalBZSpin
+from sisl._core.sparse import _ncol_to_indptr
 
 # Import sile objects
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
-from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 
 from ..siesta._help import _csr_from_sc_off, _csr_to_siesta, _mat_spin_convert

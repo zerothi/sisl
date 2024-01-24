@@ -3280,7 +3280,7 @@ class Geometry(
         iter_block : the method for looping the atoms
         distance : create a list of distances
         """
-        from sisl.sparse_geometry import SparseAtom
+        from .sparse_geometry import SparseAtom
 
         rij = SparseAtom(self, nnzpr=20, dtype=dtype)
 

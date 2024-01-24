@@ -9,8 +9,8 @@ import scipy as sc
 
 import sisl.messages as sm
 from sisl import Atom, Cuboid, Geometry, Lattice
+from sisl._core.sparse_geometry import *
 from sisl.geom import fcc, graphene
-from sisl.sparse_geometry import *
 
 pytestmark = [
     pytest.mark.sparse,

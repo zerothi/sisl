@@ -110,9 +110,6 @@ from .shape import *
 
 from ._core import *
 
-from .sparse import *
-from .sparse_geometry import *
-
 # Physical quantities and required classes
 from .physics import *
 

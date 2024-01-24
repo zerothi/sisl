@@ -21,12 +21,12 @@ from scipy.sparse import SparseEfficiencyWarning, csr_matrix, issparse
 
 import sisl._array as _a
 from sisl import Atoms, Geometry, constant
+from sisl._core.sparse import _ncol_to_indptr
 from sisl._help import wrap_filterwarnings
 from sisl._internal import set_module
 from sisl.messages import SislError, deprecate, deprecate_argument, info, warn
 from sisl.physics.densitymatrix import DensityMatrix
 from sisl.physics.distribution import fermi_dirac
-from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 
 # Import sile objects

@@ -13,12 +13,12 @@ from scipy.sparse import tril, triu
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
 from sisl import Geometry, Lattice
+from sisl._core.sparse import SparseCSR, _ncol_to_indptr
+from sisl._core.sparse_geometry import SparseOrbital
 from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import progressbar, warn
-from sisl.sparse import SparseCSR, _ncol_to_indptr
-from sisl.sparse_geometry import SparseOrbital
 
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin

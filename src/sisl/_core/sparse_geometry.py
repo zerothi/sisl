@@ -28,15 +28,15 @@ from numpy import (
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from scipy.sparse import csr_matrix
 
+from sisl import _array as _a
+from sisl._array import array_arange
 from sisl._core import Atom, Geometry, Orbital
+from sisl._internal import set_module
+from sisl.messages import SislError, SislWarning, progressbar, warn
 from sisl.typing import AtomsArgument
+from sisl.utils.ranges import list2str
 
-from . import _array as _a
-from ._array import array_arange
-from ._internal import set_module
-from .messages import SislError, SislWarning, progressbar, warn
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
-from .utils.ranges import list2str
 
 __all__ = ["SparseAtom", "SparseOrbital"]
 

@@ -4,12 +4,19 @@
 """
 Core functionality exposed here.
 """
-# We will not expose anything here, it is a registration module
-from . import _ufuncs_geometry, _ufuncs_grid, _ufuncs_lattice, geometry, grid, lattice
+from .oplist import *
+from .quaternion import *
+
+# isort: off
+from .orbital import *
 from .atom import *
+from .lattice import *
 from .geometry import *
 from .grid import *
-from .lattice import *
-from .oplist import *
-from .orbital import *
-from .quaternion import *
+from .sparse import *
+from .sparse_geometry import *
+
+# isort: on
+
+# We will not expose anything here, it is a registration module
+from . import _ufuncs_geometry, _ufuncs_grid, _ufuncs_lattice, geometry, grid, lattice

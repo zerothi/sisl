@@ -8,6 +8,7 @@ import numpy as np
 
 from sisl import Atom, AtomGhost, Atoms, Geometry, Grid, Lattice, SphericalOrbital
 from sisl._array import aranged, array_arange
+from sisl._core.sparse import _ncol_to_indptr
 from sisl._internal import set_module
 from sisl.physics import (
     DensityMatrix,
@@ -17,7 +18,6 @@ from sisl.physics import (
     SparseOrbitalBZ,
 )
 from sisl.physics.overlap import Overlap
-from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 
 from .._help import grid_reduce_indices
