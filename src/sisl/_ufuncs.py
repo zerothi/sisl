@@ -8,6 +8,7 @@ from textwrap import dedent
 from typing import Callable, Optional
 
 from sisl.messages import SislError, warn
+from sisl.typing import FuncType
 
 __all__ = ["register_sisl_function"]
 
@@ -19,10 +20,10 @@ __all__ = ["register_sisl_function"]
 _registry = {}
 
 
-def register_sisl_function(name, cls, module=None):
+def register_sisl_function(name: str, cls: type, module: Optional[str] = None):
     """Decorate a function and hook it into the {cls} for calling it directly"""
 
-    def decorator(func):
+    def decorator(func: FuncType):
         nonlocal name, cls, module
 
         if module is None:
@@ -52,7 +53,7 @@ def register_sisl_function(name, cls, module=None):
     return decorator
 
 
-def _append_doc_dispatch(method: Callable, cls: type):
+def _append_doc_dispatch(method: FuncType, cls: type):
     """Append to the doc-string of the dispatch method retrieved by `method` that the `cls` class can be used"""
     global _registry
 
@@ -70,58 +71,63 @@ def _append_doc_dispatch(method: Callable, cls: type):
 
 
 def register_sisl_dispatch(
-    cls: type, module: Optional[str] = None, method: Optional[Callable] = None
+    cls: Optional[type] = None,
+    *,
+    cls_name: Optional[str] = None,
+    module: Optional[str] = None,
 ):
     """Create a new dispatch method from a method
 
     If the method has not been registrered before, it will be created.
     """
     global _registry
-    if method is None and module is None:
-        return lambda f: register_sisl_dispatch(cls, method=f)
-    elif method is None:
-        if isinstance(module, str):
-            return lambda f: register_sisl_dispatch(cls, module, method=f)
-        return register_sisl_dispatch(cls, method=module)
 
-    name = method.__name__
-    if name not in _registry:
-        # create a new method that will be stored
-        # as a place-holder for the dispatch methods.
+    def deco(method: FuncType):
+        nonlocal cls, cls_name, module
 
-        def method_registry(*args, **kwargs):
-            """Dispatch method"""
-            raise SislError
+        name = method.__name__
+        if cls_name is None:
+            cls_name = name
+        if name not in _registry:
+            # create a new method that will be stored
+            # as a place-holder for the dispatch methods.
 
-        doc = dedent(
-            f"""\
-                Dispatcher for '{name}'
+            def method_registry(*args, **kwargs):
+                raise SislError(
+                    f"Calling '{name}' with a non-registered type, {type(args[0])} has not been registered."
+                )
 
-                See also
-                --------
-                """
-        )
-        method_registry.__doc__ = doc
-        method_registry.__name__ = name
-        method_registry.__module__ = "sisl"
-        _registry[name] = singledispatch(method_registry)
+            doc = dedent(
+                f"""\
+                    Dispatcher for '{name}'
 
-    # Retrieve the dispatched method
-    method_registry = _registry[name]
-    # Retrieve old methods, so we can extract what to dispatch methods
-    # too
-    # We need to copy the keys list, otherwise it will be a weakref to the
-    # items in the registry of the function
-    keys = method_registry.registry.keys()
-    old_registry = set(keys)
-    method_registry.register(cls, method)
-    new_registry = set(keys)
+                    See also
+                    --------
+                    """
+            )
+            method_registry.__doc__ = doc
+            method_registry.__name__ = name
+            method_registry.__module__ = "sisl"
+            _registry[name] = singledispatch(method_registry)
 
-    for cls in new_registry - old_registry:
-        _append_doc_dispatch(method, cls)
-        register_sisl_function(name, cls)(method)
+        # Retrieve the dispatched method
+        method_registry = _registry[name]
+        # Retrieve old methods, so we can extract what to dispatch methods
+        # too
+        # We need to copy the keys list, otherwise it will be a weakref to the
+        # items in the registry of the function
+        keys = method_registry.registry.keys()
+        old_registry = set(keys)
+        method_registry.register(cls, method)
+        new_registry = set(keys)
 
-    return method
+        for cls in new_registry - old_registry:
+            _append_doc_dispatch(method, cls)
+            register_sisl_function(cls_name, cls)(method)
+
+        return method
+
+    return deco
 
 
 def expose_registered_methods(module: str):

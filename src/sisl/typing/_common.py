@@ -27,6 +27,7 @@ __all__ = [
     "GeometryLike",
     "GridLike",
     "IndexArgument",
+    "KPoint",
     "LatticeLike",
     "LatticeOrGeometry",
     "LatticeOrGeometryLike",
@@ -41,6 +42,8 @@ AtomsLike = Union[
 
 Coord = Sequence[float]
 CoordOrScalar = Union[float, Coord]
+
+KPoint = Sequence[float]
 
 SileLike = Union[
     str,
