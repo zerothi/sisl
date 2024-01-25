@@ -20,6 +20,7 @@ from .sparse_geometry import *
 
 # We will not expose anything here, it is a registration module
 from . import (
+    _ufuncs_atom,
     _ufuncs_geometry,
     _ufuncs_grid,
     _ufuncs_lattice,

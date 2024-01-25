@@ -1085,68 +1085,6 @@ class Atom(
                 return i
         raise KeyError("Could not find `orbital` in the list of orbitals.")
 
-    def sub(self, orbitals):
-        """Return the same atom with only a subset of the orbitals present
-
-        Parameters
-        ----------
-        orbitals : array_like
-           indices of the orbitals to retain
-
-        Returns
-        -------
-        Atom
-            with only the subset of orbitals
-
-        Raises
-        ------
-        ValueError
-           if the number of orbitals removed is too large or some indices are outside the allowed range
-        """
-        orbitals = _a.arrayi(orbitals).ravel()
-        if len(orbitals) > self.no:
-            raise ValueError(
-                f"{self.__class__.__name__}.sub tries to remove more than the number of orbitals on an atom."
-            )
-        if np.any(orbitals >= self.no):
-            raise ValueError(
-                f"{self.__class__.__name__}.sub tries to remove a non-existing orbital io > no."
-            )
-
-        orbs = [self.orbitals[o].copy() for o in orbitals]
-        return self.copy(orbitals=orbs)
-
-    def remove(self, orbitals):
-        """Return the same atom without a specific set of orbitals
-
-        Parameters
-        ----------
-        orbitals : array_like
-           indices of the orbitals to remove
-
-        Returns
-        -------
-        Atom
-            without the specified orbitals
-
-        See Also
-        --------
-        sub : retain a selected set of orbitals
-        """
-        orbs = np.delete(_a.arangei(self.no), orbitals)
-        return self.sub(orbs)
-
-    def copy(self, Z=None, orbitals=None, mass=None, tag=None):
-        """Return copy of this object"""
-        if orbitals is None:
-            orbitals = [orb.copy() for orb in self]
-        return self.__class__(
-            self.Z if Z is None else Z,
-            orbitals,
-            self.mass if mass is None else mass,
-            self.tag if tag is None else tag,
-        )
-
     def radius(self, method="calc"):
         """Return the atomic radii of the atom (in Ang)
 
@@ -1513,14 +1451,6 @@ class Atoms:
         uorbs = _a.arrayi([a.no for a in self.atom])
         self._firsto = np.insert(_a.cumsumi(uorbs[self.specie]), 0, 0)
 
-    def copy(self):
-        """Return a copy of this atom"""
-        atoms = Atoms()
-        atoms._atom = [a.copy() for a in self._atom]
-        atoms._specie = np.copy(self._specie)
-        atoms._update_orbitals()
-        return atoms
-
     @property
     def atom(self):
         """List of unique atoms in this group of atoms"""
@@ -1602,19 +1532,6 @@ class Atoms:
         """Array of atomic numbers"""
         uZ = _a.arrayi([a.Z for a in self.atom])
         return uZ[self.specie[:]]
-
-    def scale(self, scale):
-        """Scale the atomic radii and return an equivalent atom.
-
-        Parameters
-        ----------
-        scale : float
-           the scale factor for the atomic radii
-        """
-        atoms = Atoms()
-        atoms._atom = [a.scale(scale) for a in self.atom]
-        atoms._specie = np.copy(self._specie)
-        return atoms
 
     def index(self, atom):
         """Return the indices of the atom object"""
@@ -1750,46 +1667,6 @@ class Atoms:
 
         return atoms
 
-    def sub(self, atoms):
-        """Return a subset of the list"""
-        atoms = _a.asarrayi(atoms).ravel()
-        new_atoms = Atoms()
-        new_atoms._atom = self._atom[:]
-        new_atoms._specie = self._specie[atoms]
-        new_atoms._update_orbitals()
-        return new_atoms
-
-    def remove(self, atoms):
-        """Remove a set of atoms"""
-        atoms = _a.asarrayi(atoms).ravel()
-        idx = np.setdiff1d(np.arange(len(self)), atoms, assume_unique=True)
-        return self.sub(idx)
-
-    def tile(self, reps):
-        """Tile this atom object"""
-        atoms = self.copy()
-        atoms._specie = np.tile(atoms._specie, reps)
-        atoms._update_orbitals()
-        return atoms
-
-    def repeat(self, reps):
-        """Repeat this atom object"""
-        atoms = self.copy()
-        atoms._specie = np.repeat(atoms._specie, reps)
-        atoms._update_orbitals()
-        return atoms
-
-    def swap(self, a, b):
-        """Swaps all atoms"""
-        a = _a.asarrayi(a)
-        b = _a.asarrayi(b)
-        atoms = self.copy()
-        spec = np.copy(atoms._specie)
-        atoms._specie[a] = spec[b]
-        atoms._specie[b] = spec[a]
-        atoms._update_orbitals()
-        return atoms
-
     def swap_atom(self, a, b):
         """Swap specie index positions"""
         speciea = self.specie_index(a)
@@ -1808,42 +1685,6 @@ class Atoms:
         atoms._update_orbitals()
         return atoms
 
-    def append(self, other):
-        """Append `other` to this list of atoms and return the appended version
-
-        Parameters
-        ----------
-        other : Atoms or Atom
-           new atoms to be added
-
-        Returns
-        -------
-        Atoms
-            merging of this objects atoms and the `other` objects atoms.
-        """
-        if not isinstance(other, Atoms):
-            other = Atoms(other)
-
-        atoms = self.copy()
-        spec = np.copy(other._specie)
-        for i, atom in enumerate(other.atom):
-            try:
-                s = atoms.specie_index(atom)
-            except KeyError:
-                s = len(atoms.atom)
-                atoms._atom.append(atom)
-            spec = np.where(other._specie == i, s, spec)
-        atoms._specie = np.concatenate((atoms._specie, spec))
-        atoms._update_orbitals()
-        return atoms
-
-    add = append
-
-    def prepend(self, other):
-        if not isinstance(other, Atoms):
-            other = Atoms(other)
-        return other.append(self)
-
     def reverse(self, atoms=None):
         """Returns a reversed geometry
 
@@ -1856,28 +1697,6 @@ class Atoms:
             copy._specie[atoms] = self._specie[atoms[::-1]]
         copy._update_orbitals()
         return copy
-
-    def insert(self, index, other):
-        """Insert other atoms into the list of atoms at index"""
-        if isinstance(other, Atom):
-            other = Atoms(other)
-        else:
-            other = other.copy()
-
-        # Create a copy for insertion
-        atoms = self.copy()
-
-        spec = other._specie[:]
-        for i, atom in enumerate(other.atom):
-            if atom not in atoms:
-                s = len(atoms.atom)
-                atoms._atom.append(atom)
-            else:
-                s = atoms.specie_index(atom)
-            spec = np.where(spec == i, s, spec)
-        atoms._specie = np.insert(atoms._specie, index, spec)
-        atoms._update_orbitals()
-        return atoms
 
     def __str__(self):
         """Return the `Atoms` in str"""
