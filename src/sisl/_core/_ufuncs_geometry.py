@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import reduce
 from numbers import Integral
-from typing import Optional, Union
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -72,7 +72,9 @@ def write(geometry: Geometry, sile: SileLike, *args, **kwargs) -> None:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def sort(geometry: Geometry, **kwargs) -> Union[Geometry, Tuple[Geometry, List]]:
+def sort(
+    geometry: Geometry, **kwargs
+) -> Union[Geometry, Tuple[Geometry, List[List[int]]]]:
     r"""Sort atoms in a nested fashion according to various criteria
 
     There are many ways to sort a `Geometry`.
@@ -1014,9 +1016,9 @@ def rotate(
          lattice vectors (abc). Providing several is the combined direction.
     origin :
          the origin of rotation. Anything but ``[0, 0, 0]`` is equivalent
-         to a `geometry.move(-origin).rotate(...).move(origin)`.
+         to a `geometry.translate(-origin).rotate(...).translate(origin)`.
          If this is an `int` it corresponds to the atomic index.
-    atoms : AtomsArgument
+    atoms :
          only rotate the given atomic indices, if not specified, all
          atoms will be rotated.
     rad :
