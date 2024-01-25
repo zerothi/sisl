@@ -13,7 +13,7 @@ __all__ = []
 
 
 @register_sisl_dispatch(EnergyDensityMatrix, module="sisl.physics")
-def write(edm: EnergyDensityMatrix, sile: SileLike, *args, **kwargs):
+def write(edm: EnergyDensityMatrix, sile: SileLike, *args, **kwargs) -> None:
     """Writes an energy density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method"""
     # This only works because, they *must*
     # have been imported previously

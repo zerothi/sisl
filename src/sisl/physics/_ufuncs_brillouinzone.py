@@ -15,7 +15,7 @@ __all__ = []
 
 
 @register_sisl_dispatch(BrillouinZone, module="sisl.physics")
-def copy(bz: BrillouinZone, parent=None):
+def copy(bz: BrillouinZone, parent=None) -> BrillouinZone:
     """Create a copy of this object, optionally changing the parent
 
     Parameters
@@ -30,7 +30,7 @@ def copy(bz: BrillouinZone, parent=None):
 
 
 @register_sisl_dispatch(MonkhorstPack, module="sisl.physics")
-def copy(mp: MonkhorstPack, parent=None):
+def copy(mp: MonkhorstPack, parent=None) -> MonkhorstPack:
     """Create a copy of this object, optionally changing the parent
 
     Parameters
@@ -50,7 +50,7 @@ def copy(mp: MonkhorstPack, parent=None):
 
 
 @register_sisl_dispatch(BandStructure, module="sisl.physics")
-def copy(bs: BandStructure, parent=None):
+def copy(bs: BandStructure, parent=None) -> BandStructure:
     """Create a copy of this object, optionally changing the parent
 
     Parameters
@@ -67,7 +67,7 @@ def copy(bs: BandStructure, parent=None):
 
 
 @register_sisl_dispatch(BrillouinZone, module="sisl.physics")
-def write(bz: BrillouinZone, sile: SileLike, *args, **kwargs):
+def write(bz: BrillouinZone, sile: SileLike, *args, **kwargs) -> None:
     """Writes k-points to a `~sisl.io.tableSile`.
 
     This allows one to pass a `tableSile` or a file-name.

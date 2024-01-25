@@ -266,17 +266,6 @@ class Orbital:
 
         return same and self.tag == other.tag
 
-    def copy(self):
-        """Create an exact copy of this object"""
-        return self.__class__(self.R, self.q0, self.tag)
-
-    def scale(self, scale):
-        """Scale the orbital by extending R by `scale`"""
-        R = self.R * scale
-        if R < 0:
-            R = -1.0
-        return self.__class__(R, self.q0, self.tag)
-
     def __eq__(self, other):
         return self.equal(other)
 
@@ -786,10 +775,6 @@ class SphericalOrbital(Orbital):
         r""":math:`l` quantum number"""
         return self._l
 
-    def copy(self):
-        """Create an exact copy of this object"""
-        return self.__class__(self.l, self._radial, R=self.R, q0=self.q0, tag=self.tag)
-
     def equal(self, other, psi=False, radial=False):
         """Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
@@ -1143,19 +1128,6 @@ class AtomicOrbital(Orbital):
         r"""Orbital with radial part"""
         return self._orb
 
-    def copy(self):
-        """Create an exact copy of this object"""
-        return self.__class__(
-            n=self.n,
-            l=self.l,
-            m=self.m,
-            zeta=self.zeta,
-            P=self.P,
-            spherical=self.orb.copy(),
-            q0=self.q0,
-            tag=self.tag,
-        )
-
     def equal(self, other, psi=False, radial=False):
         """Compare two orbitals by comparing their radius, and possibly the radial and psi functions
 
@@ -1421,12 +1393,6 @@ class HydrogenicOrbital(AtomicOrbital):
 
         super().__init__(n, l, m, **kwargs)
 
-    def copy(self):
-        """Create an exact copy of this object"""
-        return self.__class__(
-            self.n, self.l, self.m, self._Z, R=self.R, q0=self.q0, tag=self.tag
-        )
-
     def _radial(self, r):
         r"""Radial functional for the Hydrogenic orbital"""
         H = self._radial_helper
@@ -1546,19 +1512,6 @@ class _ExponentialOrbital(Orbital):
         # update R in case the user did not specify it
         R = kwargs.pop("R", None)
         super().__init__(*args, R=R, **kwargs)
-
-    def copy(self):
-        """Create an exact copy of this object"""
-        return self.__class__(
-            n=self.n,
-            l=self.l,
-            m=self.m,
-            alpha=self.alpha,
-            coeff=self.coeff,
-            R=self.R,
-            q0=self.q0,
-            tag=self.tag,
-        )
 
     def __str__(self):
         """A string representation of the object"""

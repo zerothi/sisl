@@ -13,7 +13,7 @@ __all__ = []
 
 
 @register_sisl_dispatch(Overlap, module="sisl.physics")
-def write(S: Overlap, sile: SileLike, *args, **kwargs):
+def write(S: Overlap, sile: SileLike, *args, **kwargs) -> None:
     """Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method"""
     # This only works because, they *must*
     # have been imported previously

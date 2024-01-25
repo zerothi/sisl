@@ -13,7 +13,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument
-from sisl.typing import Coord, SileLike
+from sisl.typing import Coord, CoordOrScalar, SileLike
 from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
 
@@ -361,3 +361,27 @@ def center(lattice: Lattice, axis: Optional[int] = None) -> np.ndarray:
     if axis is None:
         return lattice.cell.sum(0) * 0.5
     return lattice.cell[axis] * 0.5
+
+
+@register_sisl_dispatch(Lattice, module="sisl")
+def scale(lattice: Lattice, scale: CoordOrScalar, what: str = "abc") -> Lattice:
+    """Scale lattice vectors
+
+    Does not scale `origin`.
+
+    Parameters
+    ----------
+    scale :
+       the scale factor for the new lattice vectors.
+    what: {"abc", "xyz"}
+       If three different scale factors are provided, whether each scaling factor
+       is to be applied on the corresponding lattice vector ("abc") or on the
+       corresponding cartesian coordinate ("xyz").
+    """
+    if what == "abc":
+        return lattice.copy((lattice.cell.T * scale).T)
+    if what == "xyz":
+        return lattice.copy(lattice.cell * scale)
+    raise ValueError(
+        f"{lattice.__class__.__name__}.scale argument what='{what}' is not in ['abc', 'xyz']."
+    )

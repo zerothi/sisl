@@ -125,24 +125,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """See :meth:`~sparse.SparseCSR.empty` for details"""
         self._csr.empty(keep_nnz)
 
-    def copy(self, dtype=None):
-        """A copy of this object
-
-        Parameters
-        ----------
-        dtype : numpy.dtype, optional
-           it is possible to convert the data to a different data-type
-           If not specified, it will use ``self.dtype``
-        """
-        if dtype is None:
-            dtype = self.dtype
-        new = self.__class__(
-            self.geometry.copy(), self.dim, dtype, 1, **self._cls_kwargs()
-        )
-        # Be sure to copy the content of the SparseCSR object
-        new._csr = self._csr.copy(dtype=dtype)
-        return new
-
     @property
     def dim(self):
         """Number of components per element"""

@@ -12,7 +12,6 @@ from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import IndexArgument
 
 from .atom import Atom, Atoms
-from .sparse import SparseCSR
 
 # Nothing gets exposed here
 __all__ = []
@@ -199,7 +198,7 @@ def remove(atom: Atom, orbitals: IndexArgument) -> Atom:
 
     Parameters
     ----------
-    orbitals : array_like
+    orbitals :
        indices of the orbitals to remove
 
     Returns
@@ -213,6 +212,20 @@ def remove(atom: Atom, orbitals: IndexArgument) -> Atom:
     """
     orbs = np.delete(_a.arangei(atom.no), orbitals)
     return atom.sub(orbs)
+
+
+@register_sisl_dispatch(Atom, module="sisl")
+def scale(atom: Atom, scale: float) -> Atom:
+    """Scale the atomic radii and return an equivalent atom.
+
+    Parameters
+    ----------
+    scale :
+       the scale factor for the atomic radii
+    """
+    new = atom.copy()
+    new._orbitals = [o.scale(scale) for o in atom.orbitals]
+    return new
 
 
 @register_sisl_dispatch(Atom, module="sisl")

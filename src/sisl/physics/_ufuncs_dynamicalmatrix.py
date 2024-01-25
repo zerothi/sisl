@@ -13,7 +13,7 @@ __all__ = []
 
 
 @register_sisl_dispatch(DynamicalMatrix, module="sisl.physics")
-def write(dyn: DynamicalMatrix, sile: SileLike, *args, **kwargs):
+def write(dyn: DynamicalMatrix, sile: SileLike, *args, **kwargs) -> None:
     """Writes a dynamical matrix to the `Sile` as implemented in the :code:`Sile.write_dynamical_matrix` method"""
     # This only works because, they *must*
     # have been imported previously

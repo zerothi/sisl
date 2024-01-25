@@ -108,7 +108,7 @@ def sort(geometry: Geometry, **kwargs) -> Union[Geometry, Tuple[Geometry, List]]
        lattice vector. This ensures that `atol` is meaningful for both `axis` and `lattice` since
        they will be on the same order of magnitude.
        This behaves differently than `numpy.lexsort`!
-    vector : (3, ), optional
+    vector : Coord, optional
        sort along a user defined vector, similar to `lattice` but with a user defined
        direction. Note that `lattice` sorting and `vector` sorting are *only* equivalent
        when the lattice vector is orthogonal to the other lattice vectors.
@@ -283,44 +283,44 @@ def sort(geometry: Geometry, **kwargs) -> Union[Geometry, Tuple[Geometry, List]]
     class NestedList:
         __slots__ = ("_idx",)
 
-        def __init__(self, idx=None, sort=False):
-            self._idx = []
+        def __init__(geometry, idx=None, sort=False):
+            geometry._idx = []
             if not idx is None:
-                self.append(idx, sort)
+                geometry.append(idx, sort)
 
-        def append(self, idx, sort=False):
+        def append(geometry, idx, sort=False):
             if isinstance(idx, (tuple, list, np.ndarray)):
                 if isinstance(idx[0], (tuple, list, np.ndarray)):
                     for ix in idx:
-                        self.append(ix, sort)
+                        geometry.append(ix, sort)
                     return
             elif isinstance(idx, NestedList):
                 idx = idx.tolist()
             if len(idx) > 0:
                 if sort:
-                    self._idx.append(np.sort(idx))
+                    geometry._idx.append(np.sort(idx))
                 else:
-                    self._idx.append(np.asarray(idx))
+                    geometry._idx.append(np.asarray(idx))
 
-        def __iter__(self):
-            yield from self._idx
+        def __iter__(geometry):
+            yield from geometry._idx
 
-        def __len__(self):
-            return len(self._idx)
+        def __len__(geometry):
+            return len(geometry._idx)
 
-        def ravel(self):
-            if len(self) == 0:
+        def ravel(geometry):
+            if len(geometry) == 0:
                 return np.array([], dtype=np.int64)
-            return np.concatenate([i for i in self]).ravel()
+            return np.concatenate([i for i in geometry]).ravel()
 
-        def tolist(self):
-            return self._idx
+        def tolist(geometry):
+            return geometry._idx
 
-        def __str__(self):
-            if len(self) == 0:
-                return f"{self.__class__.__name__}{{empty}}"
-            out = ",\n ".join(map(lambda x: str(x.tolist()), self))
-            return f"{self.__class__.__name__}{{\n {out}}}"
+        def __str__(geometry):
+            if len(geometry) == 0:
+                return f"{geometry.__class__.__name__}{{empty}}"
+            out = ",\n ".join(map(lambda x: str(x.tolist()), geometry))
+            return f"{geometry.__class__.__name__}{{\n {out}}}"
 
     def _sort(val, atoms, **kwargs):
         """We do not sort according to lexsort"""
@@ -431,7 +431,7 @@ def sort(geometry: Geometry, **kwargs) -> Union[Geometry, Tuple[Geometry, List]]
 
     def _group_vals(vals, groups, atoms, **kwargs):
         """
-        vals should be of size len(self) and be parsable
+        vals should be of size len(geometry) and be parsable
         by numpy
         """
         nl = NestedList()
@@ -659,9 +659,9 @@ def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
 
     Parameters
     ----------
-    reps : int
+    reps :
        number of tiles (repetitions)
-    axis : int
+    axis :
        direction of tiling, 0, 1, 2 according to the cell-direction
 
     Examples
@@ -908,7 +908,7 @@ def translate(
     v :
          the value or vector to displace all atomic coordinates
          It should just be broad-castable with the geometry's coordinates.
-    atoms : AtomsArgument, optional
+    atoms :
          only displace the given atomic indices, if not specified, all
          atoms will be displaced
     cell :
@@ -938,7 +938,7 @@ def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
 
     Parameters
     ----------
-    atoms : AtomsArgument
+    atoms :
         indices/boolean of all atoms to be removed
 
     See Also
@@ -964,7 +964,7 @@ def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
 
     Parameters
     ----------
-    atoms : AtomsArgument
+    atoms :
         indices/boolean of all atoms to be removed
 
     See Also
@@ -1461,3 +1461,65 @@ def add(
         atoms = geometry.atoms.add(other.atoms)
         names = geometry._names.merge(other._names, offset=len(geometry))
     return geometry.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
+
+
+@register_sisl_dispatch(Geometry, module="sisl")
+def scale(
+    geometry: Geometry,
+    scale: CoordOrScalar,
+    what: str = "abc",
+    scale_atoms: bool = True,
+) -> Geometry:
+    """Scale coordinates and unit-cell to get a new geometry with proper scaling
+
+    Parameters
+    ----------
+    scale :
+       the scale factor for the new geometry (lattice vectors, coordinates
+       and the atomic radii are scaled).
+    what: {"abc", "xyz"}
+       ``abc``
+         Is applied on the corresponding lattice vector and the fractional coordinates.
+       ``xyz``
+         Is applied only to the atomic coordinates.
+       If three different scale factors are provided, each will correspond to the
+       Cartesian direction/lattice vector.
+    scale_atoms :
+       whether atoms (basis) should be scaled as well.
+    """
+    # Ensure we are dealing with a numpy array
+    scale = np.asarray(scale)
+
+    # Scale the supercell
+    lattice = geometry.lattice.scale(scale, what=what)
+
+    if what == "xyz":
+        # It is faster to rescale coordinates by simply multiplying them by the scale
+        xyz = geometry.xyz * scale
+        max_scale = scale.max()
+
+    elif what == "abc":
+        # Scale the coordinates by keeping fractional coordinates the same
+        xyz = geometry.fxyz @ lattice.cell
+
+        if scale_atoms:
+            # To rescale atoms, we need to know the span of each cartesian coordinate before and
+            # after the scaling, and scale the atoms according to the coordinate that has
+            # been scaled by the largest factor.
+            prev_verts = geometry.lattice.vertices().reshape(8, 3)
+            prev_span = prev_verts.max(axis=0) - prev_verts.min(axis=0)
+            scaled_verts = lattice.vertices().reshape(8, 3)
+            scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
+            max_scale = (scaled_span / prev_span).max()
+    else:
+        raise ValueError(
+            f"{geometry.__class__.__name__}.scale got wrong what argument, must be one of abc|xyz"
+        )
+
+    if scale_atoms:
+        # Atoms are rescaled to the maximum scale factor
+        atoms = geometry.atoms.scale(max_scale)
+    else:
+        atoms = geometry.atoms.copy()
+
+    return geometry.__class__(xyz, atoms=atoms, lattice=lattice)

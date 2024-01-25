@@ -1119,18 +1119,6 @@ class Atom(
             mR = max(mR, o.R)
         return mR
 
-    def scale(self, scale):
-        """Scale the atomic radii and return an equivalent atom.
-
-        Parameters
-        ----------
-        scale : float
-           the scale factor for the atomic radii
-        """
-        new = self.copy()
-        new._orbitals = [o.scale(scale) for o in self.orbitals]
-        return new
-
     def __iter__(self):
         """Loop on all orbitals in this atom"""
         yield from self.orbitals

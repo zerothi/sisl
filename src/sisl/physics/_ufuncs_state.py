@@ -34,7 +34,7 @@ def copy(state: State) -> State:
 
 
 @register_sisl_dispatch(StateC, module="sisl.physics")
-def copy(statec: StateC):
+def copy(statec: StateC) -> StateC:
     """Return a copy (only the coefficients and states are copied), ``parent`` and ``info`` are passed by reference"""
     out = statec.__class__(statec.state.copy(), statec.c.copy(), statec.parent)
     out.info = statec.info
@@ -69,7 +69,9 @@ def sub(
 
 
 @register_sisl_dispatch(Coefficient, module="sisl.physics")
-def remove(coefficient: Coefficient, index: IndexArgument, inplace: bool = False):
+def remove(
+    coefficient: Coefficient, index: IndexArgument, inplace: bool = False
+) -> Optional[Coefficient]:
     """Return a new coefficient without the specified coefficients
 
     Parameters
@@ -188,7 +190,7 @@ def remove(
 @register_sisl_dispatch(State, module="sisl.physics")
 def rotate(
     state: State, phi: float = 0.0, individual: bool = False, inplace: bool = False
-):
+) -> Optional[State]:
     r"""Rotate all states to rotate the largest component to be along the angle `phi`
 
     The states will be rotated according to:

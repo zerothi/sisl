@@ -786,28 +786,6 @@ class Lattice(
         verts[:, :, 1, 2] = 1
         return verts @ self.cell
 
-    def scale(self, scale, what="abc") -> Lattice:
-        """Scale lattice vectors
-
-        Does not scale `origin`.
-
-        Parameters
-        ----------
-        scale : float or (3,)
-           the scale factor for the new lattice vectors.
-        what: {"abc", "xyz"}
-           If three different scale factors are provided, whether each scaling factor
-           is to be applied on the corresponding lattice vector ("abc") or on the
-           corresponding cartesian coordinate ("xyz").
-        """
-        if what == "abc":
-            return self.copy((self.cell.T * scale).T)
-        if what == "xyz":
-            return self.copy(self.cell * scale)
-        raise ValueError(
-            f"{self.__class__.__name__}.scale argument what='{what}' is not in ['abc', 'xyz']."
-        )
-
     @classmethod
     def tocell(cls, *args) -> Lattice:
         r"""Returns a 3x3 unit-cell dependent on the input

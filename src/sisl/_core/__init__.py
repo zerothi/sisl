@@ -24,6 +24,7 @@ from . import (
     _ufuncs_geometry,
     _ufuncs_grid,
     _ufuncs_lattice,
+    _ufuncs_orbital,
     _ufuncs_sparse,
     _ufuncs_sparse_geometry,
 )

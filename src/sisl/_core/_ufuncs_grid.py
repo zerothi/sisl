@@ -10,7 +10,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import SislError
-from sisl.typing import GridLike
+from sisl.typing import GridLike, SileLike
 
 from .grid import Grid
 
@@ -19,7 +19,7 @@ __all__ = []
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def copy(grid: Grid, dtype=None):
+def copy(grid: Grid, dtype=None) -> Grid:
     """Copy the object, possibly changing the data-type"""
     d = grid._sc_geometry_dict()
     if dtype is None:
@@ -61,7 +61,7 @@ def write(grid: Grid, sile: SileLike, *args, **kwargs) -> None:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def swapaxes(grid: Grid, axis_a: int, axis_b: int):
+def swapaxes(grid: Grid, axis_a: int, axis_b: int) -> Grid:
     """Swap two axes in the grid (also swaps axes in the lattice)
 
     If ``swapaxes(0, 1)`` it returns the 0 in the 1 values.
@@ -86,7 +86,7 @@ def swapaxes(grid: Grid, axis_a: int, axis_b: int):
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
+def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: int) -> Grid:
     """Retains certain indices from a specified axis.
 
     Works exactly opposite to `remove`.
@@ -127,7 +127,7 @@ def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
+def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: int) -> Grid:
     """Removes certain indices from a specified axis.
 
     Works exactly opposite to `sub`.
@@ -144,7 +144,7 @@ def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: int):
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def append(grid: Grid, other: GridLike, axis: int):
+def append(grid: Grid, other: GridLike, axis: int) -> Grid:
     """Appends other `Grid` to this grid along axis"""
     shape = list(grid.shape)
     other = grid.new(other)
@@ -161,7 +161,7 @@ def append(grid: Grid, other: GridLike, axis: int):
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def tile(grid: Grid, reps: int, axis: int):
+def tile(grid: Grid, reps: int, axis: int) -> Grid:
     """Tile grid to create a bigger one
 
     The atomic indices for the base Geometry will be retained.

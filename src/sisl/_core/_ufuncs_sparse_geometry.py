@@ -13,14 +13,32 @@ from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import AtomsArgument
 
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
-from .sparse_geometry import SparseAtom, SparseOrbital
+from .sparse_geometry import SparseAtom, SparseOrbital, _SparseGeometry
 
 # Nothing gets exposed here
 __all__ = []
 
 
+@register_sisl_dispatch(_SparseGeometry, module="sisl")
+def copy(S: _SparseGeometry, dtype=None) -> _SparseGeometry:
+    """A copy of this object
+
+    Parameters
+    ----------
+    dtype : numpy.dtype, optional
+       it is possible to convert the data to a different data-type
+       If not specified, it will use ``self.dtype``
+    """
+    if dtype is None:
+        dtype = S.dtype
+    new = S.__class__(S.geometry.copy(), S.dim, dtype, 1, **S._cls_kwargs())
+    # Be sure to copy the content of the SparseCSR object
+    new._csr = S._csr.copy(dtype=dtype)
+    return new
+
+
 @register_sisl_dispatch(SparseAtom, module="sisl")
-def tile(SA: SparseAtom, reps: int, axis: int):
+def tile(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     """Create a tiled sparse atom object, equivalent to `Geometry.tile`
 
     The already existing sparse elements are extrapolated
@@ -110,7 +128,7 @@ def tile(SA: SparseAtom, reps: int, axis: int):
 
 
 @register_sisl_dispatch(SparseAtom, module="sisl")
-def repeat(SA: SparseAtom, reps: int, axis: int):
+def repeat(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     """Create a repeated sparse atom object, equivalent to `Geometry.repeat`
 
     The already existing sparse elements are extrapolated
@@ -201,7 +219,7 @@ def repeat(SA: SparseAtom, reps: int, axis: int):
 
 
 @register_sisl_dispatch(SparseOrbital, module="sisl")
-def tile(SO: SparseOrbital, reps: int, axis: int):
+def tile(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     """Create a tiled sparse orbital object, equivalent to `Geometry.tile`
 
     The already existing sparse elements are extrapolated
@@ -285,7 +303,7 @@ def tile(SO: SparseOrbital, reps: int, axis: int):
 
 
 @register_sisl_dispatch(SparseOrbital, module="sisl")
-def repeat(SO: SparseOrbital, reps: int, axis: int):
+def repeat(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     """Create a repeated sparse orbital object, equivalent to `Geometry.repeat`
 
     The already existing sparse elements are extrapolated
@@ -400,7 +418,7 @@ def repeat(SO: SparseOrbital, reps: int, axis: int):
 
 
 @register_sisl_dispatch(SparseAtom, module="sisl")
-def sub(SA: SparseAtom, atoms: AtomsArgument):
+def sub(SA: SparseAtom, atoms: AtomsArgument) -> SparseAtom:
     """Create a subset of this sparse matrix by only retaining the elements corresponding to the `atoms`
 
     Indices passed *MUST* be unique.
@@ -435,7 +453,7 @@ def sub(SA: SparseAtom, atoms: AtomsArgument):
 
 
 @register_sisl_dispatch(SparseOrbital, module="sisl")
-def sub(SO: SparseOrbital, atoms: AtomsArgument):
+def sub(SO: SparseOrbital, atoms: AtomsArgument) -> SparseOrbital:
     """Create a subset of this sparse matrix by only retaining the atoms corresponding to `atoms`
 
     Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.
@@ -478,7 +496,7 @@ def sub(SO: SparseOrbital, atoms: AtomsArgument):
 
 @register_sisl_dispatch(SparseAtom, module="sisl")
 @register_sisl_dispatch(SparseOrbital, module="sisl")
-def remove(S: _SparseGeometry, atoms: AtomsArgument):
+def remove(S: _SparseGeometry, atoms: AtomsArgument) -> _SparseGeometry:
     """Create a subset of this sparse matrix by removing the atoms corresponding to `atoms`
 
     Negative indices are wrapped and thus works.
