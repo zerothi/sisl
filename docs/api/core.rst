@@ -26,6 +26,7 @@ sisl objects.
    remove
    repeat
    rotate
+   scale
    sort
    sub
    swap
