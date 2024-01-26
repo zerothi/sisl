@@ -746,48 +746,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Whether the contained data is finalized and non-used elements have been removed"""
         return self._csr.finalized
 
-    def sub(self, atoms):
-        """Create a subset of this sparse matrix by retaining the atoms corresponding to `atoms`
-
-        Indices passed must be unique.
-
-        Negative indices are wrapped and thus works.
-
-        Parameters
-        ----------
-        atoms : array_like of int
-            indices of removed atoms
-
-        See Also
-        --------
-        Geometry.remove : equivalent to the resulting `Geometry` from this routine
-        Geometry.sub : the negative of `Geometry.remove`
-        remove : the negative of `sub`, i.e. remove a subset of atoms
-        """
-        pass
-
-    def swap(self, a, b):
-        """Swaps atoms in the sparse geometry to obtain a new order of atoms
-
-        This can be used to reorder elements of a geometry.
-
-        Parameters
-        ----------
-        a : array_like
-             the first list of atomic coordinates
-        b : array_like
-             the second list of atomic coordinates
-        """
-        a = _a.asarrayi(a)
-        b = _a.asarrayi(b)
-        # Create full index list
-        full = _a.arangei(len(self.geometry))
-        # Regardless of whether swapping or new indices are requested
-        # this should work.
-        full[a] = b
-        full[b] = a
-        return self.sub(full)
-
     def untile(self, prefix, reps, axis, segment=0, *args, sym=True, **kwargs):
         """Untiles a sparse model into a minimum segment, reverse of `tile`
 

@@ -37,6 +37,32 @@ def copy(S: _SparseGeometry, dtype=None) -> _SparseGeometry:
     return new
 
 
+@register_sisl_dispatch(_SparseGeometry, module="sisl")
+def swap(
+    S: _SparseGeometry, atoms_a: AtomsArgument, atoms_b: AtomsArgument
+) -> _SparseGeometry:
+    """Swaps atoms in the sparse geometry to obtain a new order of atoms
+
+    This can be used to reorder elements of a geometry.
+
+    Parameters
+    ----------
+    atoms_a :
+         the first list of atomic coordinates
+    atoms_b :
+         the second list of atomic coordinates
+    """
+    atoms_a = S.geometry._sanitize_atoms(atoms_a)
+    atoms_b = S.geometry._sanitize_atoms(atoms_b)
+    # Create full index list
+    full = _a.arange(len(S.geometry))
+    # Regardless of whether swapping or new indices are requested
+    # this should work.
+    full[atoms_a] = atoms_b
+    full[atoms_b] = atoms_a
+    return S.sub(full)
+
+
 @register_sisl_dispatch(SparseAtom, module="sisl")
 def tile(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     """Create a tiled sparse atom object, equivalent to `Geometry.tile`

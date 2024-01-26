@@ -21,9 +21,12 @@ The typing types is shown below:
    GeometryLike
    GridLike
    IndexArgument
+   KPoint
    LatticeLike
    LatticeOrGeometry
    LatticeOrGeometryLike
    OrbitalsArgument
    SileLike
+   SparseMatrix
+   SparseMatrixExt
    
