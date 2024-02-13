@@ -99,6 +99,7 @@ class Ishii2010Dispatch(ReferenceDispatch):
     Instead of using the :math:`\lambda_0` as parameter name, we use ``t`` for the
     coupling strength.
     """
+
     doi = "10.1103/PhysRevLett.104.116801"
 
     def dispatch(self, t=-2.7, a=1.42, orthogonal=False):

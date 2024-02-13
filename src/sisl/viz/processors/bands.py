@@ -150,9 +150,11 @@ def calculate_gap(bands_data: xr.Dataset) -> dict:
         "gap": gap,
         "k": (VB["k"].values, CB["k"].values),
         "bands": (VB["band"].values, CB["band"].values),
-        "spin": (VB["spin"].values, CB["spin"].values)
-        if bands_data.attrs["spin"].is_polarized
-        else (0, 0),
+        "spin": (
+            (VB["spin"].values, CB["spin"].values)
+            if bands_data.attrs["spin"].is_polarized
+            else (0, 0)
+        ),
         "Es": (float(VBtop), float(CBbot)),
     }
 

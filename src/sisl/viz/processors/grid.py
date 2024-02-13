@@ -351,9 +351,9 @@ def sub_grid(
             lims = np.zeros((2, 3))
             # If the cell was transformed, then we need to modify
             # the range to get what the user wants.
-            lims[
-                :, ax
-            ] = ax_range  # + self.offsets["cell_transform"][ax] - self.offsets["origin"][ax]
+            lims[:, ax] = (
+                ax_range  # + self.offsets["cell_transform"][ax] - self.offsets["origin"][ax]
+            )
 
             origin[ax] += ax_range[0]
 

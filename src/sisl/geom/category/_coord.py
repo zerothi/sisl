@@ -54,6 +54,7 @@ class AtomFracSite(AtomCategory):
     ...    else:
     ...        assert c == B_site
     """
+
     __slots__ = (
         f"_{a}" for a in ("cell", "icell", "length", "atol", "offset", "foffset")
     )
@@ -159,6 +160,7 @@ class AtomXYZ(AtomCategory):
             AtomXYZ.fx < 3 == AtomXYZ.fx(None, 3) == AtomXYZ(f_x=(None, 3)) == AtomXYZ(f_x_lt=3)
 
     """
+
     __slots__ = ("_coord_check",)
 
     def __init__(self, *args, **kwargs):

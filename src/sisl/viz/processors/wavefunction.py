@@ -54,8 +54,7 @@ def get_ith_eigenstate(eigenstate: EigenstateElectron, i: int):
     return eigenstate[wf_i]
 
 
-class WavefunctionDataNode(GridDataNode):
-    ...
+class WavefunctionDataNode(GridDataNode): ...
 
 
 @WavefunctionDataNode.register

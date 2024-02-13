@@ -38,6 +38,7 @@ class AtomNeighbours(AtomCategory):
     >>> AtomNeighbours(4, R=(1, 1.44)) # 4 neighbours within (1, Geometry.maxR())
     >>> AtomNeighbours(4, R=lambda atom: (0.01, PeriodicTable().radius(atom.Z))) # 4 neighbours within (0.01, <>)
     """
+
     __slots__ = ("_min", "_max", "_in", "_R")
 
     def __init__(self, *args, **kwargs):

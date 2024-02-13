@@ -130,6 +130,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     The API for this class are largely equivalent to the arguments of the `sdata` command-line
     tool, with the execption that the command-line tool uses Fortran indexing numbers (1-based).
     """
+
     _trans_type = "TBT"
     _E2eV = Ry2eV
 

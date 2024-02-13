@@ -103,6 +103,7 @@ class CategoryMeta(ABCMeta):
 @set_module("sisl.category")
 class Category(metaclass=CategoryMeta):
     r"""A category"""
+
     __slots__ = ("_name", "_wrapper")
 
     def __init__(self, name=None):
@@ -297,6 +298,7 @@ class GenericCategory(Category):
 @set_module("sisl.category")
 class NullCategory(GenericCategory):
     r"""Special Null class which always represents a classification not being *anything*"""
+
     __slots__ = tuple()
 
     def __init__(self):

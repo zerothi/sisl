@@ -2561,9 +2561,7 @@ if has_fortran_module:
     )
     add_sile(
         "RHOINIT",
-        _type(
-            "rhoinitSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}
-        ),
+        _type("rhoinitSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
     )
     add_sile(
         "RHOXC",
@@ -2583,9 +2581,7 @@ if has_fortran_module:
     )
     add_sile(
         "TOCH",
-        _type(
-            "totalrhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}
-        ),
+        _type("totalrhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
     )
     # The following two files *require* that
     #  STM.DensityUnits   Ele/bohr**3
@@ -2597,9 +2593,7 @@ if has_fortran_module:
     )
     add_sile(
         "STM.LDOS",
-        _type(
-            "stmldosSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}
-        ),
+        _type("stmldosSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
     )
     add_sile("VH", _type("hartreeSileSiesta", _gridSileSiesta, {"grid_unit": _Ry2eV}))
     add_sile(

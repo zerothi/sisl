@@ -388,9 +388,11 @@ class BandsData(XarrayData):
         if isinstance(bz, sisl.BandStructure) and len(bz._jump_idx) > 0:
             old_coords = bands_data.coords
             coords = {
-                name: bz.insert_jump(old_coords[name])
-                if name == "k"
-                else old_coords[name].values
+                name: (
+                    bz.insert_jump(old_coords[name])
+                    if name == "k"
+                    else old_coords[name].values
+                )
                 for name in old_coords
             }
 

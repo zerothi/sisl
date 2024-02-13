@@ -81,8 +81,7 @@ class OrbitalQuery(Query):
 
 
 @dataclass
-class OrbitalStyleQuery(StyleSpec, OrbitalQuery):
-    ...
+class OrbitalStyleQuery(StyleSpec, OrbitalQuery): ...
 
 
 OrbitalQueries = Sequence[OrbitalQuery]

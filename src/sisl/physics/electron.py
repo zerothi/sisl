@@ -1622,18 +1622,21 @@ class _electron_State:
 @set_module("sisl.physics.electron")
 class CoefficientElectron(Coefficient):
     r"""Coefficients describing some physical quantity related to electrons"""
+
     __slots__ = []
 
 
 @set_module("sisl.physics.electron")
 class StateElectron(_electron_State, State):
     r"""A state describing a physical quantity related to electrons"""
+
     __slots__ = []
 
 
 @set_module("sisl.physics.electron")
 class StateCElectron(_electron_State, StateC):
     r"""A state describing a physical quantity related to electrons, with associated coefficients of the state"""
+
     __slots__ = []
 
     def velocity(self, *args, **kwargs):
@@ -1724,6 +1727,7 @@ class EigenvalueElectron(CoefficientElectron):
 
     This holds routines that enable the calculation of density of states.
     """
+
     __slots__ = []
 
     @property
@@ -1765,6 +1769,7 @@ class EigenvectorElectron(StateElectron):
 
     This holds routines that enable the calculation of spin moments.
     """
+
     __slots__ = []
 
 
@@ -1775,6 +1780,7 @@ class EigenstateElectron(StateCElectron):
     This holds routines that enable the calculation of (projected) density of states,
     spin moments (spin texture).
     """
+
     __slots__ = []
 
     @property

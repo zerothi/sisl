@@ -62,6 +62,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     >>> np.allclose(Hdev_pvt, Hdev[pvt_dev, pvt_dev.T])
     True
     """
+
     _trans_type = "TBT"
     _E2eV = Ry2eV
 

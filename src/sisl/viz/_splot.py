@@ -238,15 +238,17 @@ def splot():
         # Extra configuration that the user requested for the display
         config = {
             "editable": args.editable,
-            "modeBarButtonsToAdd": [
-                "drawline",
-                "drawopenpath",
-                "drawclosedpath",
-                "drawcircle",
-                "drawrect",
-                "eraseshape",
-            ]
-            if args.drawable
-            else [],
+            "modeBarButtonsToAdd": (
+                [
+                    "drawline",
+                    "drawopenpath",
+                    "drawclosedpath",
+                    "drawcircle",
+                    "drawrect",
+                    "eraseshape",
+                ]
+                if args.drawable
+                else []
+            ),
         }
         plot.show(config=config)

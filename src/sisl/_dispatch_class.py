@@ -18,6 +18,7 @@ class A(_Dispatchs,
 A.new.register ..
 A.hello.register ..
 """
+
 import logging
 from collections import namedtuple
 from typing import Any, Optional, Sequence, Union

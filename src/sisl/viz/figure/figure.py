@@ -759,7 +759,9 @@ class Figure:
 
         Usually supported by the normal draw_balls_3D
         """
-        return self.draw_balls_3D(x, y, z, name=name, marker=marker, row=row, col=col, **kwargs)
+        return self.draw_balls_3D(
+            x, y, z, name=name, marker=marker, row=row, col=col, **kwargs
+        )
 
     def draw_arrows_3D(
         self,

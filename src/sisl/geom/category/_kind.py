@@ -26,6 +26,7 @@ class AtomZ(AtomCategory):
     Z : int or array_like
        atomic number match for several values this is equivalent to AND
     """
+
     __slots__ = ("_Z",)
 
     def __init__(self, Z):
@@ -62,6 +63,7 @@ class AtomTag(AtomCategory):
     tag : str
        The tag you want atoms to match. It can be a regex expression.
     """
+
     __slots__ = ("_compiled_re", "_re")
 
     def __init__(self, tag):
@@ -113,6 +115,7 @@ class AtomIndex(AtomCategory):
     >>> aidx = AtomIndex(mod=3) # [1, 2, 4, 5, ...]: range(na) - range(0, na, 3)
     >>> geom.sub(aidx) == geom.sub(range(0, len(geom), 3))
     """
+
     __slots__ = ("_op_val",)
 
     def __init__(self, *args, **kwargs):
@@ -272,6 +275,7 @@ class AtomSeq(AtomIndex):
 
 class AtomEven(AtomCategory):
     r"""Classify atoms based on indices (even in this case)"""
+
     __slots__ = []
 
     def __init__(self):
@@ -291,6 +295,7 @@ class AtomEven(AtomCategory):
 @set_module("sisl.geom")
 class AtomOdd(AtomCategory):
     r"""Classify atoms based on indices (odd in this case)"""
+
     __slots__ = []
 
     def __init__(self):

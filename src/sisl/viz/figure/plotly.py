@@ -59,7 +59,7 @@ pio.templates["sisl"] = go.layout.Template(
                     ),
                 )
             },
-        }
+        },
         # "editrevision": True
         # "title": {"xref": "paper", "x": 0.5, "text": "Whhhhhhhat up", "pad": {"b": 0}}
     },
@@ -116,7 +116,7 @@ pio.templates["sisl_dark"] = go.layout.Template(
                     ),
                 )
             },
-        }
+        },
         # "editrevision": True
         # "title": {"xref": "paper", "x": 0.5, "text": "Whhhhhhhat up", "pad": {"b": 0}}
     },

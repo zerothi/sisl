@@ -154,6 +154,7 @@ class Orbital:
     The optimization problem depends heavily on the ``func`` since the tails are
     important for real-space quantities.
     """
+
     __slots__ = ("_R", "_tag", "_q0")
 
     def __init__(self, R, q0=0.0, tag=""):
@@ -669,6 +670,7 @@ class SphericalOrbital(Orbital):
     ...       fill_value=(0., 0.), kind="cubic", bounds_error=False)))
     True
     """
+
     # Additional slots (inherited classes retain the same slots)
     __slots__ = ("_l", "_radial")
 

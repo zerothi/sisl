@@ -47,6 +47,7 @@ class EllipticalCylinder(PureShape):
     >>> shape.within([1.4, 0, 1.1])
     False
     """
+
     __slots__ = ("_v", "_nh", "_iv", "_h")
 
     def __init__(self, v, h: float, axes=(0, 1), center=None):

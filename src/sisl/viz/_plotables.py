@@ -276,9 +276,11 @@ def register_data_source(
             "data_args": data_args,
             "replaced_data_args": replaced_data_args,
             "data_var_kwarg": data_var_kwarg,
-            "plot_var_kwarg": new_parameters[-1].name
-            if new_parameters[-1].kind == inspect.Parameter.VAR_KEYWORD
-            else None,
+            "plot_var_kwarg": (
+                new_parameters[-1].name
+                if new_parameters[-1].kind == inspect.Parameter.VAR_KEYWORD
+                else None
+            ),
         }
 
         def _plot(
@@ -393,10 +395,12 @@ def register_sile_method(
         "data_args": data_args,
         "replaced_data_args": replaced_data_args,
         "data_var_kwarg": data_var_kwarg,
-        "plot_var_kwarg": new_parameters[-1].name
-        if len(new_parameters) > 0
-        and new_parameters[-1].kind == inspect.Parameter.VAR_KEYWORD
-        else None,
+        "plot_var_kwarg": (
+            new_parameters[-1].name
+            if len(new_parameters) > 0
+            and new_parameters[-1].kind == inspect.Parameter.VAR_KEYWORD
+            else None
+        ),
     }
 
     signature = signature.replace(parameters=new_parameters)

@@ -187,6 +187,7 @@ class BrillouinZoneDispatcher(ClassDispatcher):
 
     Please see :ref:`physics.brillouinzone` for further examples.
     """
+
     pass
 
 

@@ -4,8 +4,7 @@ from typing import Any, Dict
 from .node import Node
 
 
-class SyntaxNode(Node):
-    ...
+class SyntaxNode(Node): ...
 
 
 class ListSyntaxNode(SyntaxNode):

@@ -68,6 +68,7 @@ class DIISMixer(BaseHistoryWeightMixer):
     metric : callable, optional
        the metric used for the two values, defaults to ``lambda a, b: a.ravel().conj().dot(b.ravel).real``
     """
+
     __slots__ = ("_metric",)
 
     def __init__(
@@ -179,6 +180,7 @@ class AdaptiveDIISMixer(DIISMixer):
     be relatively far from the true saddle point, and for small values we
     will be close to the saddle point.
     """
+
     __slots__ = ("_weight_min", "_weight_delta")
 
     def __init__(

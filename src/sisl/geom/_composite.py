@@ -15,12 +15,12 @@ __all__ = ["composite_geometry", "CompositeGeometrySection", "GeometrySection"]
 @dataclass
 class CompositeGeometrySection:
     @abstractmethod
-    def build_section(self, previous: Geometry) -> Geometry:
-        ...
+    def build_section(self, previous: Geometry) -> Geometry: ...
 
     @abstractmethod
-    def add_section(self, geometry: Geometry, geometry_addition: Geometry) -> Geometry:
-        ...
+    def add_section(
+        self, geometry: Geometry, geometry_addition: Geometry
+    ) -> Geometry: ...
 
     def _junction_error(self, prev, msg, what):
         """Helper function to raise an error if the junction is not valid.

@@ -106,8 +106,7 @@ def test_default_context(lazy_init):
         return val
 
     @Node.from_func(context={"lazy": False, "lazy_init": lazy_init})
-    def alert_change(val: int):
-        ...
+    def alert_change(val: int): ...
 
     val = calc(1)
 

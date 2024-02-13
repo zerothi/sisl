@@ -86,9 +86,9 @@ class Network:
             if edge_labels:
                 props["label"] = key
 
-            props[
-                "title"
-            ] = f"{node_out.__class__.__name__}() -> {node_in.__class__.__name__}.{key}"
+            props["title"] = (
+                f"{node_out.__class__.__name__}() -> {node_in.__class__.__name__}.{key}"
+            )
             return props
 
         # Get the workflow's nodes
@@ -942,9 +942,11 @@ class Workflow(Node):
             inps = {
                 k: WorkflowInput(
                     input_key=k,
-                    value=param.default
-                    if param.default != inspect.Parameter.empty
-                    else Node._blank,
+                    value=(
+                        param.default
+                        if param.default != inspect.Parameter.empty
+                        else Node._blank
+                    ),
                 )
                 for k, param in sig.parameters.items()
                 if param.kind

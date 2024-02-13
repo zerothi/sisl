@@ -29,6 +29,7 @@ class LinearMixer(BaseHistoryWeightMixer):
     weight : float, optional
        mixing weight
     """
+
     __slots__ = ()
 
     def __call__(self, f: T, df: T, append: bool = True) -> T:
