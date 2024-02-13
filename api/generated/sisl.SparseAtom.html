@@ -4,9 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SparseAtom &mdash; sisl 0.1-4f73db8</title>
+  <title>sisl.SparseAtom &mdash; sisl 0.1-d55f5c9</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -20,9 +21,11 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=a767115e"></script>
+        <script src="../../_static/documentation_options.js?v=652fde92"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -44,7 +47,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-4f73db8
+                0.1-d55f5c9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -101,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core.html">Functional</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
@@ -201,7 +205,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseAtom.sub" title="sisl.SparseAtom.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(atoms)</p></td>
 <td><p>Create a subset of this sparse matrix by only retaining the elements corresponding to the <em class="xref py py-obj">atoms</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseAtom.swap" title="sisl.SparseAtom.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>(a, b)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseAtom.swap" title="sisl.SparseAtom.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>(atoms_a, atoms_b)</p></td>
 <td><p>Swaps atoms in the sparse geometry to obtain a new order of atoms</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseAtom.tile" title="sisl.SparseAtom.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
@@ -247,7 +251,7 @@
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.Rij">
-<span class="sig-name descname"><span class="pre">Rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.Rij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.Rij" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse_geometry.html#SparseAtom.Rij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.Rij" title="Link to this definition"></a></dt>
 <dd><p>Create a sparse matrix with vectors between atoms</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -311,9 +315,9 @@ up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.SparseAtom.create_construct" title="sisl.SparseAtom.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a></dt><dd><p>a generic function used to create a generic function which this routine requires</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.SparseAtom.tile" title="sisl.SparseAtom.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>tiling <em>after</em> construct is much faster for very large systems</p>
+<dt><a class="reference internal" href="sisl.tile.html#sisl.tile" title="sisl.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>tiling <em>after</em> construct is much faster for very large systems</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.SparseAtom.repeat" title="sisl.SparseAtom.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>repeating <em>after</em> construct is much faster for very large systems</p>
+<dt><a class="reference internal" href="sisl.repeat.html#sisl.repeat" title="sisl.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>repeating <em>after</em> construct is much faster for very large systems</p>
 </dd>
 </dl>
 </div>
@@ -321,7 +325,7 @@ up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.copy" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_SparseGeometry</span></span></span><a class="headerlink" href="#sisl.SparseAtom.copy" title="Link to this definition"></a></dt>
 <dd><p>A copy of this object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -477,7 +481,7 @@ of the class.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.iter_nnz">
-<span class="sig-name descname"><span class="pre">iter_nnz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.iter_nnz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.iter_nnz" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">iter_nnz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse_geometry.html#SparseAtom.iter_nnz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.iter_nnz" title="Link to this definition"></a></dt>
 <dd><p>Iterations of the non-zero elements</p>
 <p>An iterator on the sparse matrix with, row and column</p>
 <p class="rubric">Examples</p>
@@ -500,7 +504,7 @@ of the class.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.nonzero">
-<span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.nonzero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.nonzero" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse_geometry.html#SparseAtom.nonzero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.nonzero" title="Link to this definition"></a></dt>
 <dd><p>Indices row and column indices where non-zero elements exists</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -521,12 +525,12 @@ of the class.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.remove">
-<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.remove" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtomsArgument</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_SparseGeometry</span></span></span><a class="headerlink" href="#sisl.SparseAtom.remove" title="Link to this definition"></a></dt>
 <dd><p>Create a subset of this sparse matrix by removing the atoms corresponding to <em class="xref py py-obj">atoms</em></p>
 <p>Negative indices are wrapped and thus works.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – indices of removed atoms</p>
+<dd class="field-odd"><p><strong>atoms</strong> – indices of removed atoms</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -536,7 +540,7 @@ of the class.</p></li>
 </dd>
 <dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.sub" title="sisl.Geometry.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></a></dt><dd><p>the negative of <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.remove" title="sisl.Geometry.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></a></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.SparseAtom.sub" title="sisl.SparseAtom.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a></dt><dd><p>the opposite of <a class="reference internal" href="#sisl.SparseAtom.remove" title="sisl.SparseAtom.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>, i.e. retain a subset of atoms</p>
+<dt><a class="reference internal" href="sisl.sub.html#sisl.sub" title="sisl.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a></dt><dd><p>the opposite of <a class="reference internal" href="sisl.remove.html#sisl.remove" title="sisl.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>, i.e. retain a subset of atoms</p>
 </dd>
 </dl>
 </div>
@@ -544,15 +548,15 @@ of the class.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.repeat">
-<span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.repeat" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.SparseAtom" title="sisl.SparseAtom"><span class="pre">SparseAtom</span></a></span></span><a class="headerlink" href="#sisl.SparseAtom.repeat" title="Link to this definition"></a></dt>
 <dd><p>Create a repeated sparse atom object, equivalent to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.repeat</span></code></a></p>
 <p>The already existing sparse elements are extrapolated
 to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+<li><p><strong>reps</strong> – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
+<li><p><strong>axis</strong> – 0, 1, 2 according to the cell-direction</p></li>
 </ul>
 </dd>
 </dl>
@@ -563,7 +567,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 </dd>
 <dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.SparseAtom.tile" title="sisl.SparseAtom.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
+<dt><a class="reference internal" href="sisl.tile.html#sisl.tile" title="sisl.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
 </dd>
 </dl>
 </div>
@@ -590,7 +594,7 @@ elements per matrix element.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.rij">
-<span class="sig-name descname"><span class="pre">rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.rij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.rij" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse_geometry.html#SparseAtom.rij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.rij" title="Link to this definition"></a></dt>
 <dd><p>Create a sparse matrix with the distance between atoms</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -606,7 +610,7 @@ structure is completed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.set_nsc">
-<span class="sig-name descname"><span class="pre">set_nsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.set_nsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.set_nsc" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_nsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse_geometry.html#SparseAtom.set_nsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.set_nsc" title="Link to this definition"></a></dt>
 <dd><p>Reset the number of allowed supercells in the sparse atom</p>
 <p>If one reduces the number of supercells <em>any</em> sparse element
 that references the supercell will be deleted.</p>
@@ -641,13 +645,13 @@ that references the supercell will be deleted.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.sub">
-<span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.sub" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtomsArgument</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.SparseAtom" title="sisl.SparseAtom"><span class="pre">SparseAtom</span></a></span></span><a class="headerlink" href="#sisl.SparseAtom.sub" title="Link to this definition"></a></dt>
 <dd><p>Create a subset of this sparse matrix by only retaining the elements corresponding to the <em class="xref py py-obj">atoms</em></p>
 <p>Indices passed <em>MUST</em> be unique.</p>
 <p>Negative indices are wrapped and thus works.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – indices of retained atoms</p>
+<dd class="field-odd"><p><strong>atoms</strong> – indices of retained atoms</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -657,7 +661,7 @@ that references the supercell will be deleted.</p>
 </dd>
 <dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.sub" title="sisl.Geometry.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></a></dt><dd><p>equivalent to the resulting <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> from this routine</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.SparseAtom.remove" title="sisl.SparseAtom.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></dt><dd><p>the negative of <a class="reference internal" href="#sisl.SparseAtom.sub" title="sisl.SparseAtom.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>, i.e. remove a subset of atoms</p>
+<dt><a class="reference internal" href="sisl.remove.html#sisl.remove" title="sisl.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></dt><dd><p>the negative of <a class="reference internal" href="sisl.sub.html#sisl.sub" title="sisl.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>, i.e. remove a subset of atoms</p>
 </dd>
 </dl>
 </div>
@@ -665,14 +669,14 @@ that references the supercell will be deleted.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.swap">
-<span class="sig-name descname"><span class="pre">swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.swap" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtomsArgument</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtomsArgument</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_SparseGeometry</span></span></span><a class="headerlink" href="#sisl.SparseAtom.swap" title="Link to this definition"></a></dt>
 <dd><p>Swaps atoms in the sparse geometry to obtain a new order of atoms</p>
 <p>This can be used to reorder elements of a geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>a</strong> (<em>array_like</em>) – the first list of atomic coordinates</p></li>
-<li><p><strong>b</strong> (<em>array_like</em>) – the second list of atomic coordinates</p></li>
+<li><p><strong>atoms_a</strong> – the first list of atomic coordinates</p></li>
+<li><p><strong>atoms_b</strong> – the second list of atomic coordinates</p></li>
 </ul>
 </dd>
 </dl>
@@ -680,7 +684,7 @@ that references the supercell will be deleted.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.tile">
-<span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.tile" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.SparseAtom" title="sisl.SparseAtom"><span class="pre">SparseAtom</span></a></span></span><a class="headerlink" href="#sisl.SparseAtom.tile" title="Link to this definition"></a></dt>
 <dd><p>Create a tiled sparse atom object, equivalent to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></p>
 <p>The already existing sparse elements are extrapolated
 to the new supercell by repeating them in blocks like the coordinates.</p>
@@ -690,17 +694,17 @@ is required to greatly increase performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+<li><p><strong>reps</strong> – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
+<li><p><strong>axis</strong> – 0, 1, 2 according to the cell-direction</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.SparseAtom.repeat" title="sisl.SparseAtom.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
+<dt><a class="reference internal" href="sisl.repeat.html#sisl.repeat" title="sisl.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.SparseAtom.untile" title="sisl.SparseAtom.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a></dt><dd><p>opposite of this method</p>
+<dt><a class="reference internal" href="sisl.untile.html#sisl.untile" title="sisl.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a></dt><dd><p>opposite of this method</p>
 </dd>
 <dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></dt><dd><p>the same ordering as the final geometry</p>
 </dd>
@@ -727,7 +731,7 @@ dimension is the overlap matrix)</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.translate2uc">
-<span class="sig-name descname"><span class="pre">translate2uc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.translate2uc" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">translate2uc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtomsArgument</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.translate2uc" title="Link to this definition"></a></dt>
 <dd><p>Translates all primary atoms to the unit cell.</p>
 <p>With this, the coordinates of the geometry are translated to the unit cell
 and the supercell connections in the matrix are updated accordingly.</p>
@@ -736,7 +740,7 @@ and the supercell connections in the matrix are updated accordingly.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<em>AtomsArgument</em><em>, </em><em>optional</em>) – only translate the specified atoms. If not specified, all
 atoms will be translated.</p></li>
-<li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>array_like</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – only translate certain lattice directions, <cite>None</cite> species
+<li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>array_like</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – only translate certain lattice directions, <em class="xref py py-obj">None</em> species
 only the periodic directions</p></li>
 </ul>
 </dd>
@@ -757,8 +761,8 @@ only the periodic directions</p></li>
 Thus when one transposes a sparse geometry one should <em>ideally</em> get the same
 matrix. This is true for the Hamiltonian, density matrix, etc.</p>
 <p>This routine transposes all rows and columns such that any interaction between
-row, <cite>r</cite>, and column <cite>c</cite> in a given supercell <cite>(i,j,k)</cite> will be transposed
-into row <cite>c</cite>, column <cite>r</cite> in the supercell <cite>(-i,-j,-k)</cite>.</p>
+row, <em class="xref py py-obj">r</em>, and column <em class="xref py py-obj">c</em> in a given supercell <em class="xref py py-obj">(i,j,k)</em> will be transposed
+into row <em class="xref py py-obj">c</em>, column <em class="xref py py-obj">r</em> in the supercell <em class="xref py py-obj">(-i,-j,-k)</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – the returned columns for the transposed structure will be sorted
@@ -787,36 +791,36 @@ if this is true, default</p>
 <dt class="sig sig-object py" id="sisl.SparseAtom.unrepeat">
 <span class="sig-name descname"><span class="pre">unrepeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.unrepeat" title="Link to this definition"></a></dt>
 <dd><p>Unrepeats the sparse model into different parts (retaining couplings)</p>
-<p>Please see <cite>untile</cite> for details, the algorithm and arguments are the same however,
-this is the opposite of <cite>repeat</cite>.</p>
+<p>Please see <a class="reference internal" href="sisl.untile.html#sisl.untile" title="sisl.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a> for details, the algorithm and arguments are the same however,
+this is the opposite of <a class="reference internal" href="sisl.repeat.html#sisl.repeat" title="sisl.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.untile">
-<span class="sig-name descname"><span class="pre">untile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseAtom.untile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.untile" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">untile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse_geometry.html#SparseAtom.untile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseAtom.untile" title="Link to this definition"></a></dt>
 <dd><p>Untiles the sparse model into different parts (retaining couplings)</p>
 <p>Recreates a new sparse object with only the cutted
 atoms in the structure. This will preserve matrix elements in the supercell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of repetitions the tiling function created (opposite meaning as in <cite>untile</cite>)</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of repetitions the tiling function created (opposite meaning as in <a class="reference internal" href="sisl.untile.html#sisl.untile" title="sisl.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>)</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which axis to untile along</p></li>
 <li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – which segment to retain. Generally each segment should be equivalent, however
 requesting individiual segments can help uncover inconsistencies in the sparse matrix</p></li>
-<li><p><strong>*args</strong> – arguments passed directly to <cite>Geometry.untile</cite></p></li>
+<li><p><strong>*args</strong> – arguments passed directly to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.untile</span></code></a></p></li>
 <li><p><strong>sym</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
 return <code class="docutils literal notranslate"><span class="pre">(M</span> <span class="pre">+</span> <span class="pre">M.transpose())/2</span></code>, else return data as is.
 False should generally only be used for debugging precision of the matrix elements,
 or if one wishes to check the warnings.</p></li>
-<li><p><strong>**kwargs</strong> – keyword arguments passed directly to <cite>Geometry.untile</cite></p></li>
+<li><p><strong>**kwargs</strong> – keyword arguments passed directly to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.untile</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <cite>axis</cite> are assumed to have periodic boundary
+<p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> are assumed to have periodic boundary
 conditions.</p>
-<p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <cite>axis</cite> it is important to
+<p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> it is important to
 untile <em>as much as possible</em>. This is because otherwise the algorithm cannot determine
 the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
 untile to the unit-cell, and subsequently tile 3 times.</p>
@@ -838,7 +842,7 @@ it will halve the coupling and use the same coupling to the left, which is clear
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.SparseAtom.tile" title="sisl.SparseAtom.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
+<dt><a class="reference internal" href="sisl.tile.html#sisl.tile" title="sisl.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
 </dd>
 <dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.untile</span></code></a></dt><dd><p>same as this method, see details about parameters here</p>
 </dd>

@@ -4,9 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.typing.OrbitalsArgument &mdash; sisl 0.1-4f73db8</title>
+  <title>sisl.typing.OrbitalsArgument &mdash; sisl 0.1-d55f5c9</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -20,16 +21,18 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=a767115e"></script>
+        <script src="../../_static/documentation_options.js?v=652fde92"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="sisl.typing.SileLike" href="sisl.typing.SileLike.html" />
-    <link rel="prev" title="sisl.typing.AtomsArgument" href="sisl.typing.AtomsArgument.html" /> 
+    <link rel="prev" title="sisl.typing.LatticeOrGeometryLike" href="sisl.typing.LatticeOrGeometryLike.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,7 +47,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-4f73db8
+                0.1-d55f5c9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -90,20 +93,29 @@
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core.html">Functional</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../typing.html">Typing</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="sisl.typing.AtomsArgument.html">sisl.typing.AtomsArgument</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.AtomsLike.html">sisl.typing.AtomsLike</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.Coord.html">sisl.typing.Coord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.CoordOrScalar.html">sisl.typing.CoordOrScalar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.FuncType.html">sisl.typing.FuncType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.GeometryLike.html">sisl.typing.GeometryLike</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.GridLike.html">sisl.typing.GridLike</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.IndexArgument.html">sisl.typing.IndexArgument</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.KPoint.html">sisl.typing.KPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.LatticeLike.html">sisl.typing.LatticeLike</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.LatticeOrGeometry.html">sisl.typing.LatticeOrGeometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.LatticeOrGeometryLike.html">sisl.typing.LatticeOrGeometryLike</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">sisl.typing.OrbitalsArgument</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#sisl.typing.OrbitalsArgument"><code class="docutils literal notranslate"><span class="pre">OrbitalsArgument</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="sisl.typing.SileLike.html">sisl.typing.SileLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.typing.AtomsLike.html">sisl.typing.AtomsLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.typing.LatticeLike.html">sisl.typing.LatticeLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.typing.GeometryLike.html">sisl.typing.GeometryLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.typing.LatticeOrGeometry.html">sisl.typing.LatticeOrGeometry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.typing.LatticeOrGeometryLike.html">sisl.typing.LatticeOrGeometryLike</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.SparseMatrix.html">sisl.typing.SparseMatrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl.typing.SparseMatrixExt.html">sisl.typing.SparseMatrixExt</a></li>
 </ul>
 </li>
 </ul>
@@ -141,7 +153,7 @@
 <dl class="py data">
 <dt class="sig sig-object py" id="sisl.typing.OrbitalsArgument">
 <span class="sig-prename descclassname"><span class="pre">sisl.typing.</span></span><span class="sig-name descname"><span class="pre">OrbitalsArgument</span></span><a class="headerlink" href="#sisl.typing.OrbitalsArgument" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int64</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool_</span></code></a>]]], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <a class="reference internal" href="sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomCategory</span></code></a>, <a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code></a>]</p>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int64</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool_</span></code></a>]]], <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomCategory</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>]</p>
 </dd></dl>
 
 </section>
@@ -150,7 +162,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.typing.AtomsArgument.html" class="btn btn-neutral float-left" title="sisl.typing.AtomsArgument" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.typing.LatticeOrGeometryLike.html" class="btn btn-neutral float-left" title="sisl.typing.LatticeOrGeometryLike" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="sisl.typing.SileLike.html" class="btn btn-neutral float-right" title="sisl.typing.SileLike" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

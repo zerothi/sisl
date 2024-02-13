@@ -4,9 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.Figure &mdash; sisl 0.1-4f73db8</title>
+  <title>sisl.viz.Figure &mdash; sisl 0.1-d55f5c9</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -20,9 +21,11 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=a767115e"></script>
+        <script src="../../../_static/documentation_options.js?v=652fde92"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -44,7 +47,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-4f73db8
+                0.1-d55f5c9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -99,6 +102,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core.html">Functional</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../io/index.html">Input/Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../nodes.html">Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing</a></li>
@@ -280,7 +284,7 @@ the scatter. This will of course be framework specific</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.Figure.draw_arrows">
-<span class="sig-name descname"><span class="pre">draw_arrows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_arrows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_arrows" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">draw_arrows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_arrows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_arrows" title="Link to this definition"></a></dt>
 <dd><p>Draws multiple arrows using the generic draw_line method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -291,7 +295,7 @@ the scatter. This will of course be framework specific</p></li>
 <li><p><strong>arrowhead_angle</strong> (<em>angle</em>) – the angle that the arrow head forms with the direction of the arrow (in degrees).</p></li>
 <li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – multiplying factor to display the arrows. It does not affect the underlying data,
 therefore if the data is somehow displayed it should be without the scale factor.</p></li>
-<li><p><strong>annotate</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – whether to annotate the arrows with the vector they represent.</p></li>
+<li><p><strong>annotate</strong> – whether to annotate the arrows with the vector they represent.</p></li>
 <li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
 <li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
 </ul>
@@ -301,7 +305,7 @@ therefore if the data is somehow displayed it should be without the scale factor
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.Figure.draw_arrows_3D">
-<span class="sig-name descname"><span class="pre">draw_arrows_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_arrows_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_arrows_3D" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">draw_arrows_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_arrows_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_arrows_3D" title="Link to this definition"></a></dt>
 <dd><p>Draws multiple 3D arrows using the generic draw_line_3D method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -344,9 +348,9 @@ therefore if the data is somehow displayed it should be without the scale factor
 <li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the line</p></li>
 <li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
-should at least be able to implement <cite>line[“color”]</cite> and <cite>line[“width”]</cite></p></li>
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em></p></li>
 <li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
-should at least be able to implement <cite>marker[“color”]</cite> and <cite>marker[“size”]</cite></p></li>
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em></p></li>
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
 other options could be annotating. However, it is not necessary that this
 argument is supported.</p></li>
@@ -371,9 +375,9 @@ the line. This will of course be framework specific</p></li>
 <li><p><strong>z</strong> (<em>array-like</em>) – the coordinates of the points along the Z axis.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the line</p></li>
 <li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
-should at least be able to implement <cite>line[“color”]</cite> and <cite>line[“width”]</cite></p></li>
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em></p></li>
 <li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
-should at least be able to implement <cite>marker[“color”]</cite> and <cite>marker[“size”]</cite></p></li>
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em></p></li>
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
 other options could be annotating. However, it is not necessary that this
 argument is supported.</p></li>
@@ -403,8 +407,8 @@ the line. This will of course be framework specific</p></li>
 <li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
 <li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
-should at least be able to implement <cite>line[“color”]</cite> and <cite>line[“width”]</cite>, but
-it is very advisable that it supports also <cite>line[“opacity”]</cite>.</p></li>
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em>, but
+it is very advisable that it supports also <em class="xref py py-obj">line[“opacity”]</em>.</p></li>
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
 other options could be annotating. However, it is not necessary that this
 argument is supported.</p></li>
@@ -464,8 +468,8 @@ the scatter. This will of course be framework specific</p></li>
 <li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
 <li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
-should at least be able to implement <cite>line[“color”]</cite> and <cite>line[“width”]</cite>, but
-it is very advisable that it supports also <cite>line[“opacity”]</cite>.</p></li>
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em>, but
+it is very advisable that it supports also <em class="xref py py-obj">line[“opacity”]</em>.</p></li>
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
 other options could be annotating. However, it is not necessary that this
 argument is supported.</p></li>
@@ -524,8 +528,8 @@ the scatter. This will of course be framework specific</p></li>
 <li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
 <li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
-should at least be able to implement <cite>marker[“color”]</cite> and <cite>marker[“size”]</cite>, but
-it is very advisable that it supports also <cite>marker[“opacity”]</cite> and <cite>marker[“colorscale”]</cite></p></li>
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em>, but
+it is very advisable that it supports also <em class="xref py py-obj">marker[“opacity”]</em> and <em class="xref py py-obj">marker[“colorscale”]</em></p></li>
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
 other options could be annotating. However, it is not necessary that this
 argument is supported.</p></li>
@@ -550,7 +554,7 @@ the scatter. This will of course be framework specific</p></li>
 <li><p><strong>z</strong> (<em>array-like</em>) – the coordinates of the points along the Z axis.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
 <li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
-should at least be able to implement <cite>marker[“color”]</cite> and <cite>marker[“size”]</cite></p></li>
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em></p></li>
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
 other options could be annotating. However, it is not necessary that this
 argument is supported.</p></li>
@@ -577,7 +581,7 @@ the scatter. This will of course be framework specific</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.Figure.init_figure">
-<span class="sig-name descname"><span class="pre">init_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">composite_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.init_figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.init_figure" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">init_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">composite_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'same_axes'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'multiple'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'multiple_x'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'multiple_y'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'subplots'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'animation'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.init_figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.init_figure" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -602,7 +606,7 @@ functionality.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.Figure.to">
-<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.to" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.to" title="Link to this definition"></a></dt>
 <dd><p>Converts the figure to another backend.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
