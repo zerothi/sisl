@@ -16,13 +16,13 @@ except ImportError:
 
 import sisl._array as _a
 from sisl import Atom, AtomicOrbital, Atoms, Geometry, Grid, Lattice, SparseCSR
+from sisl._core.sparse import _ncol_to_indptr
 from sisl._internal import set_module
 from sisl.messages import SislError, info, warn
 from sisl.physics import BrillouinZone, DensityMatrix, EnergyDensityMatrix, Hamiltonian
 from sisl.physics.electron import EigenstateElectron
 from sisl.physics.overlap import Overlap
 from sisl.physics.sparse import SparseOrbitalBZ
-from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 
 from .._help import grid_reduce_indices
@@ -1062,7 +1062,7 @@ class hsxSileSiesta(SileBinSiesta):
         # to python index
         isa -= 1
 
-        from sisl.atom import _ptbl
+        from sisl._core.atom import _ptbl
 
         # try and convert labels into symbols
         # We do this by:

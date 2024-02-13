@@ -108,23 +108,34 @@ information regarding the creation of the object
 """
 
     @singledispatchmethod
-    def _sanitize_index(self, idx):
+    def _sanitize_index(self, index) -> np.ndarray:
         r"""Ensure indices are transferred to acceptable integers"""
-        if idx is None:
+        if index is None:
             # in case __len__ is not defined, this will fail...
             return np.arange(len(self))
-        idx = _a.asarray(idx)
-        if idx.size == 0:
+        index = _a.asarray(index)
+        if index.size == 0:
             return _a.asarrayl([])
-        elif idx.dtype == bool_:
-            return idx.nonzero()[0]
-        return idx
+        elif index.dtype == bool_:
+            return index.nonzero()[0]
+        return index
 
-    @_sanitize_index.register(ndarray)
-    def _(self, idx):
-        if idx.dtype == bool_:
-            return np.flatnonzero(idx)
-        return idx
+    @_sanitize_index.register
+    def _(self, index: np.ndarray) -> np.ndarray:
+        if index.dtype == bool_:
+            return np.flatnonzero(index)
+        return index
+
+    @_sanitize_index.register
+    def _(self, index: slice) -> ndarray:
+        start, stop, step = index.start, index.stop, index.step
+        if start is None:
+            start = 0
+        if stop is None:
+            stop = len(self)
+        if step is None:
+            step = 1
+        return np.arange(start, stop, step)
 
 
 @set_module("sisl.physics")
@@ -179,12 +190,6 @@ coefficients retained in this object
         """Returns the shape of the coefficients"""
         return self.c.shape
 
-    def copy(self):
-        """Return a copy (only the coefficients are copied). ``parent`` and ``info`` are passed by reference"""
-        copy = self.__class__(self.c.copy(), self.parent)
-        copy.info = self.info
-        return copy
-
     def degenerate(self, eps=1e-8):
         """Find degenerate coefficients with a specified precision
 
@@ -214,47 +219,6 @@ coefficients retained in this object
         for idx in IDX:
             deg.append(np.append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
-
-    def sub(self, idx, inplace=False):
-        """Return a new coefficient with only the specified coefficients
-
-        Parameters
-        ----------
-        idx : int or array_like
-            indices that are retained in the returned object
-        inplace : bool, optional
-            whether the values will be retained inplace
-
-        Returns
-        -------
-        Coefficient
-            a new coefficient only containing the requested elements, only if `inplace` is false
-        """
-        idx = self._sanitize_index(idx)
-        if inplace:
-            self.c = self.c[idx]
-        else:
-            sub = self.__class__(self.c[idx], self.parent)
-            sub.info = self.info
-            return sub
-
-    def remove(self, idx, inplace=False):
-        """Return a new coefficient without the specified coefficients
-
-        Parameters
-        ----------
-        idx : int or array_like
-            indices that are removed in the returned object
-        inplace : bool, optional
-            whether the values will be removed inplace
-
-        Returns
-        -------
-        Coefficient
-            a new coefficient without containing the requested elements
-        """
-        idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
-        return self.sub(idx, inplace)
 
     def __getitem__(self, key):
         """Return a new coefficient object with only one associated coefficient
@@ -354,53 +318,6 @@ state coefficients
         """Returns the shape of the state"""
         return self.state.shape
 
-    def copy(self):
-        """Return a copy (only the state is copied). ``parent`` and ``info`` are passed by reference"""
-        copy = self.__class__(self.state.copy(), self.parent)
-        copy.info = self.info
-        return copy
-
-    def sub(self, idx, inplace=False):
-        """Return a new state with only the specified states
-
-        Parameters
-        ----------
-        idx : int or array_like
-            indices that are retained in the returned object
-        inplace : bool, optional
-            whether the values will be retained inplace
-
-        Returns
-        -------
-        State
-           a new state only containing the requested elements, only if `inplace` is false
-        """
-        idx = self._sanitize_index(idx)
-        if inplace:
-            self.state = self.state[idx]
-        else:
-            sub = self.__class__(self.state[idx], self.parent)
-            sub.info = self.info
-            return sub
-
-    def remove(self, idx, inplace=False):
-        """Return a new state without the specified vectors
-
-        Parameters
-        ----------
-        idx : int or array_like
-            indices that are removed in the returned object
-        inplace : bool, optional
-            whether the values will be removed inplace
-
-        Returns
-        -------
-        State
-            a new state without containing the requested elements, only if `inplace` is false
-        """
-        idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
-        return self.sub(idx, inplace)
-
     def translate(self, isc):
         r"""Translate the vectors to a new unit-cell position
 
@@ -428,77 +345,6 @@ state coefficients
         if not np.allclose(k, 0):
             # there will only be a phase if k != 0
             s.state *= exp(2j * _pi * k @ isc)
-        return s
-
-    def tile(self, reps, axis, normalize=False, offset=0):
-        r"""Tile the state vectors for a new supercell
-
-        Tiling a state vector makes use of the Bloch factors for a state by utilizing
-
-        .. math::
-
-           \psi_{\mathbf k}(\mathbf r + \mathbf T) \propto e^{i\mathbf k\cdot \mathbf T}
-
-        where :math:`\mathbf T = i\mathbf a_0 + j\mathbf a_1 + l\mathbf a_2`. Note that `axis`
-        selects which of the :math:`\mathbf a_i` vectors that are translated and `reps` corresponds
-        to the :math:`i`, :math:`j` and :math:`l` variables. The `offset` moves the individual states
-        by said amount, i.e. :math:`i\to i+\mathrm{offset}`.
-
-        Parameters
-        ----------
-        reps : int
-           number of repetitions along a specific lattice vector
-        axis : int
-           lattice vector to tile along
-        normalize: bool, optional
-           whether the states are normalized upon return, may be useful for
-           eigenstates
-        offset: float, optional
-           the offset for the phase factors
-
-        See Also
-        --------
-        Geometry.tile
-        """
-        # the parent gets tiled
-        parent = self.parent.tile(reps, axis)
-        # the k-point gets reduced
-        k = _a.asarrayd(self.info.get("k", [0] * 3))
-
-        # now tile the state vectors
-        state = np.tile(self.state, (1, reps)).astype(np.complex128, copy=False)
-        # re-shape to apply phase-factors
-        state.shape = (len(self), reps, -1)
-
-        # Tiling stuff is trivial since we simply
-        # translate the bloch coefficients with:
-        #   exp(i k.T)
-        # with T being
-        #   i * a_0 + j * a_1 + k * a_2
-        # We can leave out the lattice vectors entirely
-        phase = exp(2j * _pi * k[axis] * (_a.aranged(reps) + offset))
-
-        state *= phase.reshape(1, -1, 1)
-        state.shape = (len(self), -1)
-
-        # update new k; when we double the system, we halve the periodicity
-        # and hence we need to account for this
-        k[axis] = k[axis] * reps % 1
-        while k[axis] > 0.5:
-            k[axis] -= 1
-        while k[axis] <= -0.5:
-            k[axis] += 1
-
-        # this allows us to make the same usable for StateC classes
-        s = self.copy()
-        s.parent = parent
-        s.state = state
-        # update the k-point
-        s.info = dict(**self.info)
-        s.info.update({"k": k})
-
-        if normalize:
-            return s.normalize()
         return s
 
     def __getitem__(self, key):
@@ -928,38 +774,6 @@ state coefficients
         else:
             return self.sub(oidx)
 
-    def rotate(self, phi=0.0, individual=False):
-        r"""Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
-
-        The states will be rotated according to:
-
-        .. math::
-
-            S' = S / S^\dagger_{\phi-\mathrm{max}} \exp (i \phi),
-
-        where :math:`S^\dagger_{\phi-\mathrm{max}}` is the phase of the component with the largest amplitude
-        and :math:`\phi` is the angle to align on.
-
-        Parameters
-        ----------
-        phi : float, optional
-           angle to align the state at (in radians), 0 is the positive real axis
-        individual : bool, optional
-           whether the rotation is per state, or a single maximum component is chosen.
-        """
-        # Convert angle to complex phase
-        phi = exp(1j * phi)
-        s = self.state.view()
-        if individual:
-            for i in range(len(self)):
-                # Find the maximum amplitude index
-                idx = np.argmax(np.absolute(s[i, :]))
-                s[i, :] *= phi * np.conj(s[i, idx] / np.absolute(s[i, idx]))
-        else:
-            # Find the maximum amplitude index among all elements
-            idx = np.unravel_index(np.argmax(np.absolute(s)), s.shape)
-            s *= phi * np.conj(s[idx] / np.absolute(s[idx]))
-
     def change_gauge(self, gauge, offset=(0, 0, 0)):
         r"""In-place change of the gauge of the state coefficients
 
@@ -1094,12 +908,6 @@ coefficients assigned to each state
                 f"{self.__class__.__name__} could not be created with coefficients and states "
                 "having unequal length."
             )
-
-    def copy(self):
-        """Return a copy (only the coefficients and states are copied), ``parent`` and ``info`` are passed by reference"""
-        copy = self.__class__(self.state.copy(), self.c.copy(), self.parent)
-        copy.info = self.info
-        return copy
 
     def normalize(self):
         r"""Return a normalized state where each state has :math:`|\psi|^2=1`
@@ -1527,48 +1335,6 @@ coefficients assigned to each state
         for idx in IDX:
             deg.append(np.append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
-
-    def sub(self, idx, inplace=False):
-        """Return a new state with only the specified states
-
-        Parameters
-        ----------
-        idx : int or array_like
-            indices that are retained in the returned object
-        inplace : bool, optional
-            whether the values will be retained inplace
-
-        Returns
-        -------
-        StateC
-            a new object with a subset of the states, only if `inplace` is false
-        """
-        idx = self._sanitize_index(idx).ravel()
-        if inplace:
-            self.state = self.state[idx]
-            self.c = self.c[idx]
-        else:
-            sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)
-            sub.info = self.info
-            return sub
-
-    def remove(self, idx, inplace=False):
-        """Return a new state without the specified indices
-
-        Parameters
-        ----------
-        idx : int or array_like
-            indices that are removed in the returned object
-        inplace : bool, optional
-            whether the values will be removed inplace
-
-        Returns
-        -------
-        StateC
-            a new state without containing the requested elements, only if `inplace` is false
-        """
-        idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
-        return self.sub(idx, inplace)
 
     def asState(self):
         s = State(self.state.copy(), self.parent)

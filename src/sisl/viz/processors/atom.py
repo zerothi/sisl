@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 from xarray import DataArray, Dataset
 
-from sisl import Geometry
+from sisl._core import Geometry
 from sisl.messages import SislError
 
 from .xarray import Group, group_reduce

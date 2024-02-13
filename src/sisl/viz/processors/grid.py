@@ -8,9 +8,9 @@ from scipy.ndimage import affine_transform
 from xarray import DataArray
 
 import sisl
-from sisl import Geometry, Grid
 from sisl import _array as _a
-from sisl._lattice import cell_invert
+from sisl._core import Geometry, Grid
+from sisl._core._lattice import cell_invert
 
 from .cell import infer_cell_axes, is_1D_cartesian, is_cartesian_unordered
 

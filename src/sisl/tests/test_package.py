@@ -16,22 +16,35 @@ def test_version():
     sisl.__version__
 
 
-def test_import1():
+def test_import_simple():
     # The imports should only be visible in the io module
-    s = sisl.BaseSile
-    s = sisl.Sile
-    s = sisl.SileCDF
-    s = sisl.SileBin
-    s = sisl.io.xyzSile
+    sisl.BaseSile
+    sisl.Sile
+    sisl.SileCDF
+    sisl.SileBin
+    sisl.io.xyzSile
 
 
-def test_import2():
+def test_import_only_in_io():
     # The imports should only be visible in the io module
     with pytest.raises(AttributeError):
         sisl.xyzSile
 
 
-def test_import3():
+def test_import_only_in_io_from():
     # The imports should only be visible in the io module
     with pytest.raises(ImportError):
         from sisl import xyzSile
+
+
+def test_dispatch_methods():
+    # sisl exposes some dispatch methods via
+    #  sisl._ufuncs and sisl._core._*_ufuncs.py
+    # For instance tile is the first, true dispatch
+    # method used.
+    sisl.tile
+
+
+def test_dispatch_methods_not_allowed():
+    with pytest.raises(sisl.SislError):
+        sisl.tile(2)

@@ -10,6 +10,16 @@ we hit release version 1.0.0.
 
 ### Added
 - better error messages when users request quantities not calculated by Siesta/TBtrans
+- functional programming of the basic sisl classes
+  Now many of the `Geometry|Lattice|Grid.* manipulation routines which
+  returns new objects, are subjected to dispatch methods.
+  E.g.
+
+      sisl.tile(geometry, 2, axis=1)
+      geometry.tile(2, axis=1)
+
+  will call the same method. The first uses a dispatch method, and a `SislError`
+  will be raised if the dispatch argument is not implemented.
 - `SparseCSR.toarray` to comply with array handling (equivalent to `todense`)
 - enabled `Grid.to|new` with the most basic stuff
   str|Path|Grid|pyamg
@@ -39,6 +49,8 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- removed `Lattice.translate|move`, they did not make sense, and so their
+  usage should be deferred to `Lattice.add` instead.
 - `vacuum` is now an optional parameter for all ribbon structures
 - enabled `array_fill_repeat` with custom axis, to tile along specific
   dimensions

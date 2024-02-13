@@ -8,8 +8,8 @@ import pytest
 import scipy as sc
 
 from sisl import Atom, Geometry, Lattice
+from sisl._core.sparse_geometry import *
 from sisl.geom import fcc, graphene
-from sisl.sparse_geometry import *
 
 pytestmark = [pytest.mark.sparse, pytest.mark.sparse_geometry]
 

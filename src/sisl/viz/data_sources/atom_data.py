@@ -1,6 +1,6 @@
 import numpy as np
 
-from sisl.atom import AtomGhost, PeriodicTable
+from sisl._core.atom import AtomGhost, PeriodicTable
 
 from .data_source import DataSource
 

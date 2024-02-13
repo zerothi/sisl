@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from sisl import Atom, Geometry, Grid, Lattice, get_sile
-from sisl.grid import sgrid
+from sisl._core.grid import sgrid
 
 _dir = osp.join("sisl")
 

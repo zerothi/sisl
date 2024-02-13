@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import logging
 import math
-import warnings
 from enum import IntEnum, auto
 from numbers import Integral
 from pathlib import Path
@@ -18,17 +17,17 @@ from typing import Optional, Sequence, Tuple, Union
 import numpy as np
 from numpy import dot, ndarray
 
-from . import _array as _a
-from . import _plot as plt
-from ._dispatch_class import _Dispatchs
-from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from ._internal import set_module
+import sisl._array as _a
+import sisl._plot as plt
+from sisl._dispatch_class import _Dispatchs
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from sisl._internal import set_module
+from sisl._math_small import cross3, dot3
+from sisl.messages import SislError, deprecate, deprecation, info, warn
+from sisl.shape.prism4 import Cuboid
+from sisl.utils.mathematics import fnorm
+
 from ._lattice import cell_invert, cell_reciprocal
-from ._math_small import cross3, dot3
-from .messages import SislError, deprecate, deprecate_argument, deprecation, info, warn
-from .quaternion import Quaternion
-from .shape.prism4 import Cuboid
-from .utils.mathematics import fnorm
 
 __all__ = ["Lattice", "SuperCell", "LatticeChild", "BoundaryCondition"]
 
@@ -454,34 +453,6 @@ class Lattice(
         """Iterate the supercells and the indices of the supercells"""
         yield from enumerate(self.sc_off)
 
-    def copy(self, cell=None, origin=None) -> Lattice:
-        """A deepcopy of the object
-
-        Parameters
-        ----------
-        cell : array_like
-           the new cell parameters
-        origin : array_like
-           the new origin
-        """
-        d = dict()
-        d["nsc"] = self.nsc.copy()
-        d["boundary_condition"] = self.boundary_condition.copy()
-        if origin is None:
-            d["origin"] = self.origin.copy()
-        else:
-            d["origin"] = origin
-        if cell is None:
-            d["cell"] = self.cell.copy()
-        else:
-            d["cell"] = np.array(cell)
-
-        copy = self.__class__(**d)
-        # Ensure that the correct super-cell information gets carried through
-        if not np.allclose(copy.sc_off, self.sc_off):
-            copy.sc_off = self.sc_off
-        return copy
-
     def fit(self, xyz, axis=None, tol=0.05) -> Lattice:
         """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
 
@@ -553,118 +524,6 @@ class Lattice(
         cell[2] *= ireps[2]
 
         return self.copy(cell)
-
-    def swapaxes(
-        self, axes_a: Union[int, str], axes_b: Union[int, str], what: str = "abc"
-    ) -> Lattice:
-        r"""Swaps axes `axes_a` and `axes_b`
-
-        Swapaxes is a versatile method for changing the order
-        of axes elements, either lattice vector order, or Cartesian
-        coordinate orders.
-
-        Parameters
-        ----------
-        axes_a : int or str
-           the old axis indices (or labels if `str`)
-           A string will translate each character as a specific
-           axis index.
-           Lattice vectors are denoted by ``abc`` while the
-           Cartesian coordinates are denote by ``xyz``.
-           If `str`, then `what` is not used.
-        axes_b : int or str
-           the new axis indices, same as `axes_a`
-        what : {"abc", "xyz", "abc+xyz"}
-           which elements to swap, lattice vectors (``abc``), or
-           Cartesian coordinates (``xyz``), or both.
-           This argument is only used if the axes arguments are
-           ints.
-
-        Examples
-        --------
-
-        Swap the first two axes
-
-        >>> sc_ba = sc.swapaxes(0, 1)
-        >>> assert np.allclose(sc_ba.cell[(1, 0, 2)], sc.cell)
-
-        Swap the Cartesian coordinates of the lattice vectors
-
-        >>> sc_yx = sc.swapaxes(0, 1, what="xyz")
-        >>> assert np.allclose(sc_ba.cell[:, (1, 0, 2)], sc.cell)
-
-        Consecutive swapping:
-        1. abc -> bac
-        2. bac -> bca
-
-        >>> sc_bca = sc.swapaxes("ab", "bc")
-        >>> assert np.allclose(sc_ba.cell[:, (1, 0, 2)], sc.cell)
-        """
-        if isinstance(axes_a, int) and isinstance(axes_b, int):
-            idx = [0, 1, 2]
-            idx[axes_a], idx[axes_b] = idx[axes_b], idx[axes_a]
-
-            if "abc" in what or "cell" in what:
-                if "xyz" in what:
-                    axes_a = "abc"[axes_a] + "xyz"[axes_a]
-                    axes_b = "abc"[axes_b] + "xyz"[axes_b]
-                else:
-                    axes_a = "abc"[axes_a]
-                    axes_b = "abc"[axes_b]
-            elif "xyz" in what:
-                axes_a = "xyz"[axes_a]
-                axes_b = "xyz"[axes_b]
-            else:
-                raise ValueError(
-                    f"{self.__class__.__name__}.swapaxes could not understand 'what' "
-                    "must contain abc and/or xyz."
-                )
-        elif (not isinstance(axes_a, str)) or (not isinstance(axes_b, str)):
-            raise ValueError(
-                f"{self.__class__.__name__}.swapaxes axes arguments must be either all int or all str, not a mix."
-            )
-
-        cell = self.cell
-        nsc = self.nsc
-        origin = self.origin
-        bc = self.boundary_condition
-
-        if len(axes_a) != len(axes_b):
-            raise ValueError(
-                f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to have the same lengeth {len(axes_a)}, {len(axes_b)}."
-            )
-
-        for a, b in zip(axes_a, axes_b):
-            idx = [0, 1, 2]
-
-            aidx = "abcxyz".index(a)
-            bidx = "abcxyz".index(b)
-
-            if aidx // 3 != bidx // 3:
-                raise ValueError(
-                    f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates."
-                )
-
-            if aidx < 3:
-                idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
-                # we are dealing with lattice vectors
-                cell = cell[idx]
-                nsc = nsc[idx]
-                bc = bc[idx]
-
-            else:
-                aidx -= 3
-                bidx -= 3
-                idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
-
-                # we are dealing with cartesian coordinates
-                cell = cell[:, idx]
-                origin = origin[idx]
-                bc = bc[idx]
-
-        return self.__class__(
-            cell.copy(), nsc=nsc.copy(), origin=origin.copy(), boundary_condition=bc
-        )
 
     def plane(self, ax1, ax2, origin=True) -> Tuple[ndarray, ndarray]:
         """Query point and plane-normal for the plane spanning `ax1` and `ax2`
@@ -812,72 +671,11 @@ class Lattice(
                 )
         return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
-    )
-    def rotate(self, angle, v, rad: bool = False, what: str = "abc") -> Lattice:
-        """Rotates the supercell, in-place by the angle around the vector
-
-        One can control which cell vectors are rotated by designating them
-        individually with ``only='[abc]'``.
-
-        Parameters
-        ----------
-        angle : float
-             the angle of which the geometry should be rotated
-        v     : array_like or str or int
-             the vector around the rotation is going to happen
-             ``v = [1,0,0]`` will rotate in the ``yz`` plane
-        what : combination of ``"abc"``, str, optional
-             only rotate the designated cell vectors.
-        rad : bool, optional
-             Whether the angle is in radians (True) or in degrees (False)
-        """
-        if isinstance(v, Integral):
-            v = direction(v, abc=self.cell, xyz=np.diag([1, 1, 1]))
-        elif isinstance(v, str):
-            v = reduce(
-                lambda a, b: a + direction(b, abc=self.cell, xyz=np.diag([1, 1, 1])),
-                v,
-                0,
-            )
-        # flatten => copy
-        vn = _a.asarrayd(v).flatten()
-        vn /= fnorm(vn)
-        q = Quaternion(angle, vn, rad=rad)
-        q /= q.norm()  # normalize the quaternion
-        cell = np.copy(self.cell)
-        idx = []
-        for i, d in enumerate("abc"):
-            if d in what:
-                idx.append(i)
-        if idx:
-            cell[idx] = q.rotate(self.cell[idx])
-        return self.copy(cell)
-
     def offset(self, isc=None) -> Tuple[float, float, float]:
         """Returns the supercell offset of the supercell index"""
         if isc is None:
             return _a.arrayd([0, 0, 0])
         return dot(isc, self.cell)
-
-    def add(self, other) -> Lattice:
-        """Add two supercell lattice vectors to each other
-
-        Parameters
-        ----------
-        other : Lattice, array_like
-           the lattice vectors of the other supercell to add
-        """
-        if not isinstance(other, Lattice):
-            other = Lattice(other)
-        cell = self.cell + other.cell
-        origin = self.origin + other.origin
-        nsc = np.where(self.nsc > other.nsc, self.nsc, other.nsc)
-        return self.__class__(cell, nsc=nsc, origin=origin)
 
     def __add__(self, other) -> Lattice:
         return self.add(other)
@@ -987,122 +785,6 @@ class Lattice(
         verts[:, 1, :, 1] = 1
         verts[:, :, 1, 2] = 1
         return verts @ self.cell
-
-    def scale(self, scale, what="abc") -> Lattice:
-        """Scale lattice vectors
-
-        Does not scale `origin`.
-
-        Parameters
-        ----------
-        scale : float or (3,)
-           the scale factor for the new lattice vectors.
-        what: {"abc", "xyz"}
-           If three different scale factors are provided, whether each scaling factor
-           is to be applied on the corresponding lattice vector ("abc") or on the
-           corresponding cartesian coordinate ("xyz").
-        """
-        if what == "abc":
-            return self.copy((self.cell.T * scale).T)
-        if what == "xyz":
-            return self.copy(self.cell * scale)
-        raise ValueError(
-            f"{self.__class__.__name__}.scale argument what='{what}' is not in ['abc', 'xyz']."
-        )
-
-    def tile(self, reps, axis) -> Lattice:
-        """Extend the unit-cell `reps` times along the `axis` lattice vector
-
-        Notes
-        -----
-        This is *exactly* equivalent to the `repeat` routine.
-
-        Parameters
-        ----------
-        reps : int
-            number of times the unit-cell is repeated along the specified lattice vector
-        axis : int
-            the lattice vector along which the repetition is performed
-        """
-        cell = np.copy(self.cell)
-        nsc = np.copy(self.nsc)
-        origin = np.copy(self.origin)
-        cell[axis] *= reps
-        # Only reduce the size if it is larger than 5
-        if nsc[axis] > 3 and reps > 1:
-            # This is number of connections for the primary cell
-            h_nsc = nsc[axis] // 2
-            # The new number of supercells will then be
-            nsc[axis] = max(1, int(math.ceil(h_nsc / reps))) * 2 + 1
-        return self.__class__(cell, nsc=nsc, origin=origin)
-
-    def repeat(self, reps, axis) -> Lattice:
-        """Extend the unit-cell `reps` times along the `axis` lattice vector
-
-        Notes
-        -----
-        This is *exactly* equivalent to the `tile` routine.
-
-        Parameters
-        ----------
-        reps : int
-            number of times the unit-cell is repeated along the specified lattice vector
-        axis : int
-            the lattice vector along which the repetition is performed
-        """
-        return self.tile(reps, axis)
-
-    def untile(self, reps, axis) -> Lattice:
-        """Reverses a `Lattice.tile` and returns the segmented version
-
-        Notes
-        -----
-        Untiling will not correctly re-calculate nsc since it has no
-        knowledge of connections.
-
-        See Also
-        --------
-        tile : opposite of this method
-        """
-        cell = np.copy(self.cell)
-        cell[axis] /= reps
-        return self.copy(cell)
-
-    unrepeat = untile
-
-    def append(self, other, axis) -> Lattice:
-        """Appends other `Lattice` to this grid along axis"""
-        cell = np.copy(self.cell)
-        cell[axis] += other.cell[axis]
-        # TODO fix nsc here
-        return self.copy(cell)
-
-    def prepend(self, other, axis) -> Lattice:
-        """Prepends other `Lattice` to this grid along axis
-
-        For a `Lattice` object this is equivalent to `append`.
-        """
-        return other.append(self, axis)
-
-    def translate(self, v) -> Lattice:
-        """Appends additional space to the object"""
-        # check which cell vector resembles v the most,
-        # use that
-        cell = np.copy(self.cell)
-        p = np.empty([3], np.float64)
-        cl = fnorm(cell)
-        for i in range(3):
-            p[i] = abs(np.sum(cell[i] * v)) / cl[i]
-        cell[np.argmax(p)] += v
-        return self.copy(cell)
-
-    move = translate
-
-    def center(self, axis=None) -> ndarray:
-        """Returns center of the `Lattice`, possibly with respect to an axis"""
-        if axis is None:
-            return self.cell.sum(0) * 0.5
-        return self.cell[axis] * 0.5
 
     @classmethod
     def tocell(cls, *args) -> Lattice:

@@ -28,6 +28,7 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    viz/index
    unit_constant
    utilities
+   core
 
 .. toctree::
    :maxdepth: 1

@@ -2,10 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl._array import aranged, arrayd
+from sisl._core.atom import Atom
+from sisl._core.orbital import SphericalOrbital
 from sisl._help import xml_parse
 from sisl._internal import set_module
-from sisl.atom import Atom
-from sisl.orbital import SphericalOrbital
 from sisl.unit.siesta import unit_convert
 from sisl.utils import PropertyDict, strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace

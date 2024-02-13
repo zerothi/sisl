@@ -228,7 +228,7 @@ ignore-patterns = [
 extension-pkg-allow-list = [
    "sisl._math_small",
    "sisl._indices",
-   "sisl._lattice",
+   "sisl._core._lattice",
    "sisl.io.siesta._siesta",
    "sisl.physics._bloch",
    "sisl.physics._matrix_k",

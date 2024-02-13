@@ -20,13 +20,13 @@ except ImportError:
     _has_xarray = False
 
 import sisl._array as _a
+from sisl._core.grid import Grid
+from sisl._core.lattice import Lattice
+from sisl._core.oplist import oplist
 from sisl._dispatcher import AbstractDispatch
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
-from sisl.grid import Grid
-from sisl.lattice import Lattice
 from sisl.messages import SislError, progressbar
-from sisl.oplist import oplist
 from sisl.unit import units
 from sisl.utils.mathematics import cart2spher
 from sisl.utils.misc import allow_kwargs

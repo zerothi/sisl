@@ -10,8 +10,8 @@ import pytest
 import scipy as sc
 
 from sisl._array import array_arange
-from sisl.sparse import *
-from sisl.sparse import indices
+from sisl._core.sparse import *
+from sisl._core.sparse import indices
 
 pytestmark = [
     pytest.mark.sparse,

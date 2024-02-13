@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from sisl import _array as ar
-from sisl.oplist import oplist
+from sisl._core.oplist import oplist
 
 pytestmark = pytest.mark.oplist
 

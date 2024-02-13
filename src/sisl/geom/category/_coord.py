@@ -9,9 +9,9 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._category import CategoryMeta
+from sisl._core._lattice import cell_invert
+from sisl._core.lattice import Lattice, LatticeChild
 from sisl._internal import set_module
-from sisl._lattice import cell_invert
-from sisl.lattice import Lattice, LatticeChild
 from sisl.messages import deprecate_argument
 from sisl.shape import *
 from sisl.utils.misc import direction

@@ -42,14 +42,14 @@ from numpy import (
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from scipy.sparse import csr_matrix, issparse
 
-from . import _array as _a
-from ._array import array_arange
-from ._help import array_fill_repeat, isiterable
-from ._indices import indices, indices_only
-from ._internal import set_module
-from ._sparse import sparse_dense
-from .messages import SislError, warn
-from .utils.mathematics import intersect_and_diff_sets
+from sisl import _array as _a
+from sisl._array import array_arange
+from sisl._help import array_fill_repeat, isiterable
+from sisl._indices import indices, indices_only
+from sisl._internal import set_module
+from sisl._sparse import sparse_dense
+from sisl.messages import SislError, warn
+from sisl.utils.mathematics import intersect_and_diff_sets
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.

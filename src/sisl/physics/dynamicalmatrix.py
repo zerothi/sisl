@@ -333,15 +333,3 @@ class DynamicalMatrix(SparseOrbitalBZ):
         else:
             with get_sile(sile, mode="r") as fh:
                 return fh.read_dynamical_matrix(*args, **kwargs)
-
-    def write(self, sile, *args, **kwargs) -> None:
-        """Writes a dynamical matrix to the `Sile` as implemented in the :code:`Sile.write_dynamical_matrix` method"""
-        # This only works because, they *must*
-        # have been imported previously
-        from sisl.io import BaseSile, get_sile
-
-        if isinstance(sile, BaseSile):
-            sile.write_dynamical_matrix(self, *args, **kwargs)
-        else:
-            with get_sile(sile, mode="w") as fh:
-                fh.write_dynamical_matrix(self, *args, **kwargs)

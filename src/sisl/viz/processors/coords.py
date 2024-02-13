@@ -7,8 +7,8 @@ import numpy as np
 import numpy.typing as npt
 from xarray import Dataset
 
-from sisl._lattice import cell_invert
-from sisl.lattice import Lattice, LatticeChild
+from sisl._core._lattice import cell_invert
+from sisl._core.lattice import Lattice, LatticeChild
 from sisl.utils.mathematics import fnorm
 
 from .axes import axes_cross_product, axis_direction, get_ax_title

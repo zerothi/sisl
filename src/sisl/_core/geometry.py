@@ -7,12 +7,12 @@ from __future__ import annotations
 import logging
 import warnings
 from collections import OrderedDict
-from functools import reduce, singledispatchmethod
+from functools import singledispatchmethod
 from itertools import product
 from math import acos
 from numbers import Integral, Real
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Iterator, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from numpy import (
@@ -33,38 +33,26 @@ from numpy import (
     unique,
 )
 
-from sisl._typing_ext.numpy import ArrayLike, NDArray
-
-if TYPE_CHECKING:
-    from sisl.typing import (
-        AtomsArgument,
-        OrbitalsArgument,
-        SileType,
-        LatticeOrGeometryLike,
-    )
-
-from . import _array as _a
-from . import _plot as plt
-from ._category import Category, GenericCategory
-from ._dispatch_class import _Dispatchs
-from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from ._help import isndarray
-from ._indices import (
+import sisl._array as _a
+import sisl._plot as plt
+from sisl._category import Category, GenericCategory
+from sisl._dispatch_class import _Dispatchs
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from sisl._help import isndarray
+from sisl._indices import (
     indices_gt_le,
     indices_in_sphere_with_dist,
     indices_le,
     list_index_le,
 )
-from ._internal import set_module
-from ._math_small import cross3, is_ascending
-from ._namedindex import NamedIndex
-from .atom import Atom, Atoms
-from .lattice import Lattice, LatticeChild
-from .messages import SislError, deprecate_argument, info, warn
-from .orbital import Orbital
-from .quaternion import Quaternion
-from .shape import Cube, Shape, Sphere
-from .utils import (
+from sisl._internal import set_module
+from sisl._math_small import cross3, is_ascending
+from sisl._namedindex import NamedIndex
+from sisl._typing_ext.numpy import ArrayLike, NDArray
+from sisl.messages import SislError, deprecate_argument, info, warn
+from sisl.shape import Cube, Shape, Sphere
+from sisl.typing import AtomsArgument, OrbitalsArgument, SileLike
+from sisl.utils import (
     angle,
     cmd,
     default_ArgumentParser,
@@ -74,9 +62,13 @@ from .utils import (
     str_spec,
     strmap,
 )
-from .utils.mathematics import fnorm
+from sisl.utils.mathematics import fnorm
 
-__all__ = ["Geometry", "sgeom"]
+from .atom import Atom, Atoms
+from .lattice import Lattice, LatticeChild
+from .orbital import Orbital
+
+__all__ = ["Geometry", "sgeom", "AtomCategory"]
 
 _log = logging.getLogger("sisl")
 _log.info(f"adding logger: {__name__}")
@@ -405,7 +397,7 @@ class Geometry(
 
     @_sanitize_atoms.register(AtomCategory)
     @_sanitize_atoms.register(GenericCategory)
-    def _(self, atoms) -> ndarray:
+    def _(self, atoms: Union[AtomCategory, GenericCategory]) -> ndarray:
         # First do categorization
         cat = atoms.categorize(self)
 
@@ -759,7 +751,7 @@ class Geometry(
         return self.Rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
     @staticmethod
-    def read(sile: SileType, *args, **kwargs) -> Geometry:
+    def read(sile: SileLike, *args, **kwargs) -> Geometry:
         """Reads geometry from the `Sile` using `Sile.read_geometry`
 
         Parameters
@@ -782,35 +774,9 @@ class Geometry(
             with get_sile(sile, mode="r") as fh:
                 return fh.read_geometry(*args, **kwargs)
 
-    def write(self, sile: SileType, *args, **kwargs) -> None:
-        """Writes geometry to the `Sile` using `sile.write_geometry`
-
-        Parameters
-        ----------
-        sile :
-            a `Sile` object which will be used to write the geometry
-            if it is a string it will create a new sile using `get_sile`
-        *args, **kwargs:
-            Any other args will be passed directly to the
-            underlying routine
-
-        See Also
-        --------
-        read : reads a `Geometry` from a given `Sile`/file
-        """
-        # This only works because, they *must*
-        # have been imported previously
-        from sisl.io import BaseSile, get_sile
-
-        if isinstance(sile, BaseSile):
-            sile.write_geometry(self, *args, **kwargs)
-        else:
-            with get_sile(sile, mode="w") as fh:
-                fh.write_geometry(self, *args, **kwargs)
-
     def __str__(self) -> str:
         """str of the object"""
-        s = self.__class__.__name__ + f"{{na: {self.na}, no: {self.no},\n "
+        s = f"{self.__class__.__name__}{{na: {self.na}, no: {self.no},\n "
         s += str(self.atoms).replace("\n", "\n ")
         if len(self.names) > 0:
             s += ",\n " + str(self.names).replace("\n", "\n ")
@@ -1248,14 +1214,6 @@ class Geometry(
                 f"{self.__class__.__name__}.iter_block got unexpected 'method' argument: {method}"
             )
 
-    def copy(self) -> Geometry:
-        """Create a new object with the same content (a copy)."""
-        g = self.__class__(
-            np.copy(self.xyz), atoms=self.atoms.copy(), lattice=self.lattice.copy()
-        )
-        g._names = self.names.copy()
-        return g
-
     def overlap(
         self,
         other: GeometryLikeType,
@@ -1316,522 +1274,6 @@ class Geometry(
             self_extend([ia] * idx.size)
             other_extend(idx)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
-
-    def sort(self, **kwargs) -> Union[Geometry, Tuple[Geometry, List]]:
-        r"""Sort atoms in a nested fashion according to various criteria
-
-        There are many ways to sort a `Geometry`.
-        - by Cartesian coordinates, `axis`
-        - by lattice vectors, `lattice`
-        - by user defined vectors, `vector`
-        - by grouping atoms, `group`
-        - by a user defined function, `func`
-        - by a user defined function using internal sorting algorithm, `func_sort`
-
-        - a combination of the above in arbitrary order
-
-        Additionally one may sort ascending or descending.
-
-        This method allows nested sorting based on keyword arguments.
-
-        Parameters
-        ----------
-        atoms : int or array_like, optional
-           only perform sorting algorithm for subset of atoms. This is *NOT* a positional dependent
-           argument. All sorting algorithms will _only_ be performed on these atoms.
-           Default, all atoms will be sorted.
-        ret_atoms : bool, optional
-           return a list of list for the groups of atoms that have been sorted.
-        axis : int or tuple of int, optional
-           sort coordinates according to Cartesian coordinates, if a tuple of
-           ints is passed it will be equivalent to ``sort(axis0=axis[0], axis1=axis[1])``.
-           This behaves differently than `numpy.lexsort`!
-        lattice : int or tuple of int, optional
-           sort coordinates according to lattice vectors, if a tuple of
-           ints is passed it will be equivalent to ``sort(lattice0=lattice[0], lattice1=lattice[1])``.
-           Note that before sorting we multiply the fractional coordinates by the length of the
-           lattice vector. This ensures that `atol` is meaningful for both `axis` and `lattice` since
-           they will be on the same order of magnitude.
-           This behaves differently than `numpy.lexsort`!
-        vector : (3, ), optional
-           sort along a user defined vector, similar to `lattice` but with a user defined
-           direction. Note that `lattice` sorting and `vector` sorting are *only* equivalent
-           when the lattice vector is orthogonal to the other lattice vectors.
-        group : {'Z', 'symbol', 'tag', 'species'} or (str, ...), optional
-           group together a set of atoms by various means.
-           `group` may be one of the listed strings.
-           For ``'Z'`` atoms will be grouped in atomic number
-           For ``'symbol'`` atoms will be grouped by their atomic symbol.
-           For ``'tag'`` atoms will be grouped by their atomic tag.
-           For ``'species'`` atoms will be sorted according to their specie index.
-           If a tuple/list is passed the first item is described. All subsequent items are a
-           list of groups, where each group comprises elements that should be sorted on an
-           equal footing. If one of the groups is None, that group will be replaced with all
-           non-mentioned elements. See examples.
-        func : callable or list-like of callable, optional
-           pass a sorting function which should have an interface like ``func(geometry, atoms, **kwargs)``.
-           The first argument is the geometry to sort. The 2nd argument is a list of indices in
-           the current group of sorted atoms. And ``**kwargs`` are any optional arguments
-           currently collected, i.e. `ascend`, `atol` etc.
-           The function should return either a list of atoms, or a list of list of atoms (in which
-           case the atomic indices have been split into several groups that will be sorted individually
-           for subsequent sorting methods).
-           In either case the returned indices must never hold any other indices but the ones passed
-           as ``atoms``.
-           If a list/tuple of functions, they will be processed in that order.
-        func_sort : callable or list-like of callable, optional
-           pass a function returning a 1D array corresponding to all atoms in the geometry.
-           The interface should simply be: ``func(geometry)``.
-           Those values will be passed down to the internal sorting algorithm.
-           To be compatible with `atol` the returned values from `func_sort` should
-           be on the scale of coordinates (in Ang).
-        ascend, descend : bool, optional
-            control ascending or descending sorting for all subsequent sorting methods.
-            Default ``ascend=True``.
-        atol : float, optional
-            absolute tolerance when sorting numerical arrays for subsequent sorting methods.
-            When a selection of sorted coordinates are grouped via `atol`, we ensure such
-            a group does not alter its indices. I.e. the group is *always* ascending indices.
-            Note this may have unwanted side-effects if `atol` is very large compared
-            to the difference between atomic coordinates.
-            Default ``1e-9``.
-
-        Notes
-        -----
-        The order of arguments is also the sorting order. ``sort(axis=0, lattice=0)`` is different
-        from ``sort(lattice=0, axis=0)``
-
-        All arguments may be suffixed with integers. This allows multiple keyword arguments
-        to control sorting algorithms
-        in different order. It also allows changing of sorting settings between different calls.
-        Note that the integers have no relevance to the order of execution!
-        See examples.
-
-        Returns
-        -------
-        geometry : Geometry
-            sorted geometry
-        index : list of list of indices
-            indices that would sort the original structure to the output, only returned if `ret_atoms` is True
-
-        Examples
-        --------
-        >>> geom = sisl.geom.bilayer(top_atoms=sisl.Atom[5, 7], bottom_atoms=sisl.Atom(6))
-        >>> geom = geom.tile(5, 0).repeat(7, 1)
-
-        Sort according to :math:`x` coordinate
-
-        >>> geom.sort(axis=0)
-
-        Sort according to :math:`z`, then :math:`x` for each group created from first sort
-
-        >>> geom.sort(axis=(2, 0))
-
-        Sort according to :math:`z`, then first lattice vector
-
-        >>> geom.sort(axis=2, lattice=0)
-
-        Sort according to :math:`z` (ascending), then first lattice vector (descending)
-
-        >>> geom.sort(axis=2, ascend=False, lattice=0)
-
-        Sort according to :math:`z` (descending), then first lattice vector (ascending)
-        Note how integer suffixes has no importance.
-
-        >>> geom.sort(ascend1=False, axis=2, ascend0=True, lattice=0)
-
-        Sort only atoms ``range(1, 5)`` first by :math:`z`, then by first lattice vector
-
-        >>> geom.sort(axis=2, lattice=0, atoms=np.arange(1, 5))
-
-        Sort two groups of atoms ``[range(1, 5), range(5, 10)]`` (individually) by :math:`z` coordinate
-
-        >>> geom.sort(axis=2, atoms=[np.arange(1, 5), np.arange(5, 10)])
-
-        The returned sorting indices may be used for manual sorting. Note
-        however, that this requires one to perform a sorting for all atoms.
-        In such a case the following sortings are equal.
-
-        >>> geom0, atoms0 = geom.sort(axis=2, lattice=0, ret_atoms=True)
-        >>> _, atoms1 = geom.sort(axis=2, ret_atoms=True)
-        >>> geom1, atoms1 = geom.sort(lattice=0, atoms=atoms1, ret_atoms=True)
-        >>> geom2 = geom.sub(np.concatenate(atoms0))
-        >>> geom3 = geom.sub(np.concatenate(atoms1))
-        >>> assert geom0 == geom1
-        >>> assert geom0 == geom2
-        >>> assert geom0 == geom3
-
-        Default sorting is equivalent to ``axis=(0, 1, 2)``
-
-        >>> assert geom.sort() == geom.sort(axis=(0, 1, 2))
-
-        Sort along a user defined vector ``[2.2, 1., 0.]``
-
-        >>> geom.sort(vector=[2.2, 1., 0.])
-
-        Integer specification has no influence on the order of operations.
-        It is _always_ the keyword argument order that determines the operation.
-
-        >>> assert geom.sort(axis2=1, axis0=0, axis1=2) == geom.sort(axis=(1, 0, 2))
-
-        Sort by atomic numbers
-
-        >>> geom.sort(group='Z') # 5, 6, 7
-
-        One may group several elements together on an equal footing (``None`` means all non-mentioned elements)
-        The order of the groups are important (the first two are _not_ equal, the last three _are_ equal)
-
-        >>> geom.sort(group=('symbol', 'C'), axis=2) # C will be sorted along z
-        >>> geom.sort(axis=1, atoms='C', axis1=2) # all along y, then C sorted along z
-        >>> geom.sort(group=('symbol', 'C', None)) # C, [B, N]
-        >>> geom.sort(group=('symbol', None, 'C')) # [B, N], C
-        >>> geom.sort(group=('symbol', ['N', 'B'], 'C')) # [B, N], C (B and N unaltered order)
-        >>> geom.sort(group=('symbol', ['B', 'N'], 'C')) # [B, N], C (B and N unaltered order)
-
-        A group based sorting can use *anything* that can be fetched from the `Atom` object,
-        sort first according to mass, then for all with the same mass, sort according to atomic
-        tag:
-
-        >>> geom.sort(group0='mass', group1='tag')
-
-        A too high `atol` may have unexpected side-effects. This is because of the way
-        the sorting algorithm splits the sections for nested sorting.
-        So for coordinates with a continuous displacement the sorting may break and group
-        a large range into 1 group. Consider the following array to be split in groups
-        while sorting.
-
-        An example would be a linear chain with a middle point with a much shorter distance.
-
-        >>> x = np.arange(5) * 0.1
-        >>> x[3:] -= 0.095
-        y = z = np.zeros(5)
-        geom = si.Geometry(np.stack((x, y, z), axis=1))
-        >>> geom.xyz[:, 0]
-        [0.    0.1   0.2   0.205 0.305]
-
-        In this case a high tolerance (``atol>0.005``) would group atoms 2 and 3
-        together
-
-        >>> geom.sort(atol=0.01, axis=0, ret_atoms=True)[1]
-        [[0], [1], [2, 3], [4]]
-
-        However, a very low tolerance will not find these two as atoms close
-        to each other.
-
-        >>> geom.sort(atol=0.001, axis=0, ret_atoms=True)[1]
-        [[0], [1], [2], [3], [4]]
-        """
-
-        # We need a way to easily handle nested lists
-        # This small class handles lists and allows appending nested lists
-        # while flattening them.
-        class NestedList:
-            __slots__ = ("_idx",)
-
-            def __init__(self, idx=None, sort=False):
-                self._idx = []
-                if not idx is None:
-                    self.append(idx, sort)
-
-            def append(self, idx, sort=False):
-                if isinstance(idx, (tuple, list, ndarray)):
-                    if isinstance(idx[0], (tuple, list, ndarray)):
-                        for ix in idx:
-                            self.append(ix, sort)
-                        return
-                elif isinstance(idx, NestedList):
-                    idx = idx.tolist()
-                if len(idx) > 0:
-                    if sort:
-                        self._idx.append(np.sort(idx))
-                    else:
-                        self._idx.append(np.asarray(idx))
-
-            def __iter__(self):
-                yield from self._idx
-
-            def __len__(self):
-                return len(self._idx)
-
-            def ravel(self):
-                if len(self) == 0:
-                    return np.array([], dtype=np.int64)
-                return concatenate([i for i in self]).ravel()
-
-            def tolist(self):
-                return self._idx
-
-            def __str__(self):
-                if len(self) == 0:
-                    return f"{self.__class__.__name__}{{empty}}"
-                out = ",\n ".join(map(lambda x: str(x.tolist()), self))
-                return f"{self.__class__.__name__}{{\n {out}}}"
-
-        def _sort(val, atoms, **kwargs):
-            """We do not sort according to lexsort"""
-            if len(val) <= 1:
-                # no values to sort
-                return atoms
-
-            # control ascend vs descending
-            ascend = kwargs["ascend"]
-            atol = kwargs["atol"]
-
-            new_atoms = NestedList()
-            for atom in atoms:
-                if len(atom) <= 1:
-                    # no need for complexity
-                    new_atoms.append(atom)
-                    continue
-
-                # Sort values
-                jdx = atom[argsort(val[atom])]
-                if ascend:
-                    d = diff(val[jdx]) > atol
-                else:
-                    jdx = jdx[::-1]
-                    d = diff(val[jdx]) < -atol
-                new_atoms.append(split(jdx, d.nonzero()[0] + 1), sort=True)
-            return new_atoms
-
-        # Functions allowed by external users
-        funcs = dict()
-
-        def _axis(axis, atoms, **kwargs):
-            """Cartesian coordinate sort"""
-            if isinstance(axis, int):
-                axis = (axis,)
-            for ax in axis:
-                atoms = _sort(self.xyz[:, ax], atoms, **kwargs)
-            return atoms
-
-        funcs["axis"] = _axis
-
-        def _lattice(lattice, atoms, **kwargs):
-            """
-            We scale the fractional coordinates with the lattice vector length.
-            This ensures `atol` has a meaningful size for very large structures.
-            """
-            if isinstance(lattice, int):
-                lattice = (lattice,)
-            fxyz = self.fxyz
-            for ax in lattice:
-                atoms = _sort(fxyz[:, ax] * self.lattice.length[ax], atoms, **kwargs)
-            return atoms
-
-        funcs["lattice"] = _lattice
-
-        def _vector(vector, atoms, **kwargs):
-            """
-            Calculate fraction of positions along a vector and sort along it.
-            We first normalize the vector to ensure that `atol` is meaningful
-            for very large structures (ensures scale is on the order of Ang).
-
-            A vector projection will only be equivalent to lattice projection
-            when a lattice vector is orthogonal to the other lattice vectors.
-            """
-            # Ensure we are using a copied data array
-            vector = _a.asarrayd(vector).copy()
-            # normalize
-            vector /= fnorm(vector)
-            # Perform a . b^ == scalar projection
-            return _sort(self.xyz.dot(vector), atoms, **kwargs)
-
-        funcs["vector"] = _vector
-
-        def _funcs(funcs, atoms, **kwargs):
-            """
-            User defined function (tuple/list of function)
-            """
-
-            def _func(func, atoms, kwargs):
-                nl = NestedList()
-                for atom in atoms:
-                    # TODO add check that
-                    #  res = func(...) in a
-                    # A user *may* remove an atom from the sorting here (but
-                    # that negates all sorting of that atom)
-                    nl.append(func(self, atom, **kwargs))
-                return nl
-
-            if callable(funcs):
-                funcs = [funcs]
-            for func in funcs:
-                atoms = _func(func, atoms, kwargs)
-            return atoms
-
-        funcs["func"] = _funcs
-
-        def _func_sort(funcs, atoms, **kwargs):
-            """
-            User defined function, but using internal sorting
-            """
-            if callable(funcs):
-                funcs = [funcs]
-            for func in funcs:
-                atoms = _sort(func(self), atoms, **kwargs)
-            return atoms
-
-        funcs["func_sort"] = _func_sort
-
-        def _group_vals(vals, groups, atoms, **kwargs):
-            """
-            vals should be of size len(self) and be parsable
-            by numpy
-            """
-            nl = NestedList()
-
-            # Create unique list of values
-            uniq_vals = np.unique(vals)
-            if len(groups) == 0:
-                # fake the groups argument
-                groups = [[i] for i in uniq_vals]
-            else:
-                # Check if one of the elements of group is None
-                # In this case we replace it with the missing rest
-                # of the missing unique items
-                try:
-                    none_idx = groups.index(None)
-
-                    # we have a None (ensure we use a list, tuples are
-                    # immutable)
-                    groups = list(groups)
-                    groups[none_idx] = []
-
-                    uniq_groups = np.unique(concatenate(groups))
-                    # add a new group that is in uniq_vals, but not in uniq_groups
-                    rest = uniq_vals[isin(uniq_vals, uniq_groups, invert=True)]
-                    groups[none_idx] = rest
-                except ValueError:
-                    # there is no None in the list
-                    pass
-
-            for at in atoms:
-                # reduce search
-                at_vals = vals[at]
-                # loop group values
-                for group in groups:
-                    # retain original indexing
-                    nl.append(at[isin(at_vals, group)])
-            return nl
-
-        def _group(method_group, atoms, **kwargs):
-            """
-            Group based sorting is based on a named identification.
-
-            group: str or tuple of (str, list of lists)
-
-            symbol: order by symbol (most cases same as Z)
-            Z: order by atomic number
-            tag: order by atom tag (should be the same as specie)
-            specie/species: order by specie (in order of contained in the Geometry)
-            """
-            # Create new list
-            nl = NestedList()
-
-            if isinstance(method_group, str):
-                method = method_group
-                groups = []
-            elif isinstance(method_group[0], str):
-                method, *in_groups = method_group
-
-                # Ensure all groups are lists
-                groups = []
-                NoneType = type(None)
-                for group in in_groups:
-                    if isinstance(group, (tuple, list, ndarray, NoneType)):
-                        groups.append(group)
-                    else:
-                        groups.append([group])
-            else:
-                # a special case where group is a list of lists
-                # i.e. [[0, 1, 2], [3, 4, 5]]
-                for idx in method_group:
-                    idx = self._sanitize_atoms(idx)
-                    for at in atoms:
-                        nl.append(at[isin(at, idx)])
-                return nl
-
-            # See if the attribute exists for the atoms
-            if method.lower() == "species":
-                # this one has two spelling options!
-                method = "specie"
-
-            # now get them through `getattr`
-            if hasattr(self.atoms[0], method):
-                vals = [getattr(a, method) for a in self.atoms]
-
-            elif hasattr(self.atoms[0], method.lower()):
-                method = method.lower()
-                vals = [getattr(a, method) for a in self.atoms]
-
-            else:
-                raise ValueError(
-                    f"{self.__class__.__name__}.sort group only supports attributes that can be fetched from Atom objects, some are [Z, species, tag, symbol, mass, ...] and more"
-                )
-
-            return _group_vals(np.array(vals), groups, atoms, **kwargs)
-
-        funcs["group"] = _group
-
-        def stripint(s):
-            """Remove integers from end of string -> Allow multiple arguments"""
-            if s[-1] in "0123456789":
-                return stripint(s[:-1])
-            return s
-
-        # Now perform cumultative sort function
-        # Our point is that we would like to allow users to do consecutive sorting
-        # based on different keys
-
-        # We also allow specific keys for specific methods
-        func_kw = dict()
-        func_kw["ascend"] = True
-        func_kw["atol"] = 1e-9
-
-        def update_flag(kw, arg, val):
-            if arg in ["ascending", "ascend"]:
-                kw["ascend"] = val
-                return True
-            elif arg in ["descending", "descend"]:
-                kw["ascend"] = not val
-                return True
-            elif arg == "atol":
-                kw["atol"] = val
-                return True
-            return False
-
-        # Default to all atoms
-        atoms = NestedList(self._sanitize_atoms(kwargs.pop("atoms", None)))
-        ret_atoms = kwargs.pop("ret_atoms", False)
-
-        # In case the user just did geometry.sort, it will default to sort x, y, z
-        if len(kwargs) == 0:
-            kwargs["axis"] = (0, 1, 2)
-
-        for key_int, method in kwargs.items():
-            key = stripint(key_int)
-            if update_flag(func_kw, key, method):
-                continue
-            if not key in funcs:
-                raise ValueError(
-                    f"{self.__class__.__name__}.sort unrecognized keyword '{key}' ('{key_int}')"
-                )
-            # call sorting algorithm and retrieve new grouped sorting
-            atoms = funcs[key](method, atoms, **func_kw)
-
-        # convert to direct list
-        atoms_flat = atoms.ravel()
-
-        # Ensure that all atoms are present
-        if len(atoms_flat) != len(self):
-            all_atoms = _a.arangei(len(self))
-            all_atoms[np.sort(atoms_flat)] = atoms_flat[:]
-            atoms_flat = all_atoms
-
-        if ret_atoms:
-            return self.sub(atoms_flat), atoms.tolist()
-        return self.sub(atoms_flat)
 
     def optimize_nsc(
         self,
@@ -1911,28 +1353,6 @@ class Geometry(
         self.set_nsc(nsc)
 
         return nsc
-
-    def sub(self, atoms: AtomsArgument) -> Geometry:
-        """Create a new `Geometry` with a subset of this `Geometry`
-
-        Indices passed *MUST* be unique.
-
-        Negative indices are wrapped and thus works.
-
-        Parameters
-        ----------
-        atoms : int or array_like
-            indices/boolean of all atoms to be removed
-
-        See Also
-        --------
-        Lattice.fit : update the supercell according to a reference supercell
-        remove : the negative of this routine, i.e. remove a subset of atoms
-        """
-        atoms = self.sc2uc(atoms)
-        return self.__class__(
-            self.xyz[atoms, :], atoms=self.atoms.sub(atoms), lattice=self.lattice.copy()
-        )
 
     def sub_orbital(self, atoms: AtomsArgument, orbitals: OrbitalsArgument) -> Geometry:
         r"""Retain only a subset of the orbitals on `atoms` according to `orbitals`
@@ -2055,28 +1475,6 @@ class Geometry(
 
         return geom
 
-    def remove(self, atoms: AtomsArgument) -> Geometry:
-        """Remove atoms from the geometry.
-
-        Indices passed *MUST* be unique.
-
-        Negative indices are wrapped and thus works.
-
-        Parameters
-        ----------
-        atoms : int or array_like
-            indices/boolean of all atoms to be removed
-
-        See Also
-        --------
-        sub : the negative of this routine, i.e. retain a subset of atoms
-        """
-        atoms = self.sc2uc(atoms)
-        if atoms.size == 0:
-            return self.copy()
-        atoms = np.delete(_a.arangei(self.na), atoms)
-        return self.sub(atoms)
-
     def remove_orbital(
         self, atoms: AtomsArgument, orbitals: OrbitalsArgument
     ) -> Geometry:
@@ -2126,222 +1524,6 @@ class Geometry(
 
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
-
-    def unrepeat(self, reps: int, axis: int, *args, **kwargs) -> Geometry:
-        """Unrepeats the geometry similarly as `untile`
-
-        Please see `untile` for argument details, the algorithm and arguments are the same however,
-        this is the opposite of `repeat`.
-        """
-        atoms = np.arange(self.na).reshape(-1, reps).T.ravel()
-        return self.sub(atoms).untile(reps, axis, *args, **kwargs)
-
-    def untile(
-        self,
-        reps: int,
-        axis: int,
-        segment: int = 0,
-        rtol: float = 1e-4,
-        atol: float = 1e-4,
-    ) -> Geometry:
-        """A subset of atoms from the geometry by cutting the geometry into `reps` parts along the direction `axis`.
-
-        This will effectively change the unit-cell in the `axis` as-well
-        as removing ``self.na/reps`` atoms.
-        It requires that ``self.na % reps == 0``.
-
-        REMARK: You need to ensure that all atoms within the first
-        cut out region are within the primary unit-cell.
-
-        Doing ``geom.untile(2, 1).tile(2, 1)``, could for symmetric setups,
-        be equivalent to a no-op operation. A ``UserWarning`` will be issued
-        if this is not the case.
-
-        This method may be regarded as the opposite of `tile`.
-
-        Parameters
-        ----------
-        reps :
-            number of times the structure will be cut (untiled)
-        axis :
-            the axis that will be cut
-        segment :
-            returns the i'th segment of the untiled structure
-            Currently the atomic coordinates are not translated,
-            this may change in the future.
-        rtol :
-            directly passed to `numpy.allclose`
-        atol :
-            directly passed to `numpy.allclose`
-
-        Examples
-        --------
-        >>> g = sisl.geom.graphene()
-        >>> gxyz = g.tile(4, 0).tile(3, 1).tile(2, 2)
-        >>> G = gxyz.untile(2, 2).untile(3, 1).untile(4, 0)
-        >>> np.allclose(g.xyz, G.xyz)
-        True
-
-        See Also
-        --------
-        tile : opposite method of this
-        """
-        if self.na % reps != 0:
-            raise ValueError(
-                f"{self.__class__.__name__}.untile "
-                f"cannot be cut into {reps} different "
-                "pieces. Please check your geometry and input."
-            )
-        # Truncate to the correct segments
-        lseg = segment % reps
-        # Cut down cell
-        lattice = self.lattice.untile(reps, axis)
-        # List of atoms
-        n = self.na // reps
-        off = n * lseg
-        new = self.sub(_a.arangei(off, off + n))
-        new.set_lattice(lattice)
-        if not np.allclose(new.tile(reps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
-            warn(
-                "The cut structure cannot be re-created by tiling\n"
-                "The tolerance between the coordinates can be altered using rtol, atol"
-            )
-        return new
-
-    def tile(self, reps: int, axis: int) -> Geometry:
-        """Tile the geometry to create a bigger one
-
-        The atomic indices are retained for the base structure.
-
-        Tiling and repeating a geometry will result in the same geometry.
-        The *only* difference between the two is the final ordering of the atoms.
-
-        Parameters
-        ----------
-        reps :
-           number of tiles (repetitions)
-        axis :
-           direction of tiling, 0, 1, 2 according to the cell-direction
-
-        Examples
-        --------
-        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1.)
-        >>> g = geom.tile(2,axis=0)
-        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
-        [[0.   0.   0. ]
-         [0.5  0.   0. ]
-         [1.   0.   0. ]
-         [1.5  0.   0. ]]
-        >>> g = geom.tile(2,0).tile(2,axis=1)
-        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
-        [[0.   0.   0. ]
-         [0.5  0.   0. ]
-         [1.   0.   0. ]
-         [1.5  0.   0. ]
-         [0.   1.   0. ]
-         [0.5  1.   0. ]
-         [1.   1.   0. ]
-         [1.5  1.   0. ]]
-
-        See Also
-        --------
-        repeat : equivalent but different ordering of final structure
-        untile : opposite method of this
-        """
-        if reps < 1:
-            raise ValueError(
-                f"{self.__class__.__name__}.tile requires a repetition above 0"
-            )
-
-        lattice = self.lattice.tile(reps, axis)
-
-        # Our first repetition *must* be with
-        # the former coordinate
-        xyz = np.tile(self.xyz, (reps, 1))
-        # We may use broadcasting rules instead of repeating stuff
-        xyz.shape = (reps, self.na, 3)
-        nr = _a.arangei(reps)
-        nr.shape = (reps, 1, 1)
-        # Correct the unit-cell offsets
-        xyz += nr * self.cell[axis, :]
-        xyz.shape = (-1, 3)
-
-        # Create the geometry and return it (note the smaller atoms array
-        # will also expand via tiling)
-        return self.__class__(xyz, atoms=self.atoms.tile(reps), lattice=lattice)
-
-    def repeat(self, reps: int, axis: int) -> Geometry:
-        """Create a repeated geometry
-
-        The atomic indices are *NOT* retained from the base structure.
-
-        The expansion of the atoms are basically performed using this
-        algorithm:
-
-        >>> ja = 0
-        >>> for ia in range(self.na):
-        ...     for id,r in args:
-        ...        for i in range(r):
-        ...           ja = ia + cell[id,:] * i
-
-        For geometries with a single atom this routine returns the same as
-        `tile`.
-
-        Tiling and repeating a geometry will result in the same geometry.
-        The *only* difference between the two is the final ordering of the atoms.
-
-        Parameters
-        ----------
-        reps :
-           number of repetitions
-        axis :
-           direction of repetition, 0, 1, 2 according to the cell-direction
-
-        Examples
-        --------
-        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1)
-        >>> g = geom.repeat(2,axis=0)
-        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
-        [[0.   0.   0. ]
-         [1.   0.   0. ]
-         [0.5  0.   0. ]
-         [1.5  0.   0. ]]
-        >>> g = geom.repeat(2,0).repeat(2,1)
-        >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
-        [[0.   0.   0. ]
-         [0.   1.   0. ]
-         [1.   0.   0. ]
-         [1.   1.   0. ]
-         [0.5  0.   0. ]
-         [0.5  1.   0. ]
-         [1.5  0.   0. ]
-         [1.5  1.   0. ]]
-
-        See Also
-        --------
-        tile : equivalent but different ordering of final structure
-        """
-        if reps < 1:
-            raise ValueError(
-                f"{self.__class__.__name__}.repeat requires a repetition above 0"
-            )
-
-        lattice = self.lattice.repeat(reps, axis)
-
-        # Our first repetition *must* be with
-        # the former coordinate
-        xyz = np.repeat(self.xyz, reps, axis=0)
-        # We may use broadcasting rules instead of repeating stuff
-        xyz.shape = (self.na, reps, 3)
-        nr = _a.arangei(reps)
-        nr.shape = (1, reps)
-        for i in range(3):
-            # Correct the unit-cell offsets along `i`
-            xyz[:, :, i] += nr * self.cell[axis, i]
-        xyz.shape = (-1, 3)
-
-        # Create the geometry and return it
-        return self.__class__(xyz, atoms=self.atoms.repeat(reps), lattice=lattice)
 
     def __mul__(self, m, method="tile") -> Geometry:
         """Implement easy tile/repeat function
@@ -2478,122 +1660,6 @@ class Geometry(
             return ang
         return np.degrees(ang)
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
-    )
-    def rotate(
-        self,
-        angle: float,
-        v,
-        origin=None,
-        atoms: Optional[AtomsArgument] = None,
-        rad: bool = False,
-        what: Optional[str] = None,
-    ) -> Geometry:
-        r"""Rotate geometry around vector and return a new geometry
-
-        Per default will the entire geometry be rotated, such that everything
-        is aligned as before rotation.
-
-        However, by supplying ``what = 'abc|xyz'`` one can designate which
-        part of the geometry that will be rotated.
-
-        Parameters
-        ----------
-        angle : float
-             the angle in degrees to rotate the geometry. Set the ``rad``
-             argument to use radians.
-        v     : int or str or array_like
-             the normal vector to the rotated plane, i.e.
-             v = [1,0,0] will rotate around the :math:`yz` plane.
-             If a str it refers to the Cartesian direction (xyz), or the
-             lattice vectors (abc). Providing several is the combined direction.
-        origin : int or array_like, optional
-             the origin of rotation. Anything but [0, 0, 0] is equivalent
-             to a `self.move(-origin).rotate(...).move(origin)`.
-             If this is an `int` it corresponds to the atomic index.
-        atoms : int or array_like, optional
-             only rotate the given atomic indices, if not specified, all
-             atoms will be rotated.
-        rad : bool, optional
-             if ``True`` the angle is provided in radians (rather than degrees)
-        what : {'xyz', 'abc', 'abc+xyz', <or combinations of "xyzabc">}
-            which coordinate subject should be rotated,
-            if any of ``abc`` is in this string the corresponding cell vector will be rotated
-            if any of ``xyz`` is in this string the corresponding coordinates will be rotated
-            If `atoms` is None, this defaults to "abc+xyz", otherwise it defaults
-            to "xyz". See Examples.
-
-        Examples
-        --------
-        rotate coordinates around the :math:`x`-axis
-        >>> geom_x45 = geom.rotate(45, [1, 0, 0])
-
-        rotate around the ``(1, 1, 0)`` direction but project the rotation onto the :math:`x`
-        axis
-        >>> geom_xy_x = geom.rotate(45, "xy", what='x')
-
-        See Also
-        --------
-        Quaternion : class to rotate
-        Lattice.rotate : rotation passed to the contained supercell
-        """
-        if origin is None:
-            origin = [0.0, 0.0, 0.0]
-        elif isinstance(origin, Integral):
-            origin = self.axyz(origin)
-        origin = _a.asarray(origin)
-
-        if atoms is None:
-            if what is None:
-                what = "abc+xyz"
-            # important to not add a new dimension to xyz
-            atoms = slice(None)
-        else:
-            if what is None:
-                what = "xyz"
-            # Only rotate the unique values
-            atoms = self.sc2uc(atoms, unique=True)
-
-        if isinstance(v, Integral):
-            v = direction(v, abc=self.cell, xyz=np.diag([1, 1, 1]))
-        elif isinstance(v, str):
-            v = reduce(
-                lambda a, b: a + direction(b, abc=self.cell, xyz=np.diag([1, 1, 1])),
-                v,
-                0,
-            )
-
-        # Ensure the normal vector is normalized... (flatten == copy)
-        vn = _a.asarrayd(v).flatten()
-        vn /= fnorm(vn)
-
-        # Rotate by direct call
-        lattice = self.lattice.rotate(angle, vn, rad=rad, what=what)
-
-        # Copy
-        xyz = np.copy(self.xyz)
-
-        idx = []
-        for i, d in enumerate("xyz"):
-            if d in what:
-                idx.append(i)
-
-        if idx:
-            # Prepare quaternion...
-            q = Quaternion(angle, vn, rad=rad)
-            q /= q.norm()
-            # subtract and add origin, before and after rotation
-            rotated = q.rotate(xyz[atoms] - origin) + origin
-            # get which coordinates to rotate
-            for i in idx:
-                xyz[atoms, i] = rotated[:, i]
-
-        return self.__class__(xyz, atoms=self.atoms.copy(), lattice=lattice)
-
     def rotate_miller(self, m, v) -> Geometry:
         """Align Miller direction along ``v``
 
@@ -2620,37 +1686,6 @@ class Geometry(
         a = acos(np.sum(lm * lv))
         return self.rotate(a, cp, rad=True)
 
-    def translate(
-        self, v, atoms: Optional[AtomsArgument] = None, cell: bool = False
-    ) -> Geometry:
-        """Translates the geometry by `v`
-
-        One can translate a subset of the atoms by supplying `atoms`.
-
-        Returns a copy of the structure translated by `v`.
-
-        Parameters
-        ----------
-        v : float or array_like
-             the value or vector to displace all atomic coordinates
-             It should just be broad-castable with the geometry's coordinates.
-        atoms : int or array_like, optional
-             only displace the given atomic indices, if not specified, all
-             atoms will be displaced
-        cell : bool, optional
-             If True the supercell also gets enlarged by the vector
-        """
-        g = self.copy()
-        if atoms is None:
-            g.xyz += np.asarray(v, g.xyz.dtype)
-        else:
-            g.xyz[self._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)
-        if cell:
-            g.set_lattice(g.lattice.translate(v))
-        return g
-
-    move = translate
-
     def translate2uc(
         self,
         atoms: Optional[AtomsArgument] = None,
@@ -2668,7 +1703,7 @@ class Geometry(
         amount to remove numerical errors, in the following case we have atomic
         coordinates lying close to the lower side of each lattice vector.
 
-        >>> geometry.move(1e-8).translate2uc().move(-1e-8)
+        >>> geometry.translate(1e-8).translate2uc().translate(-1e-8)
 
         Notes
         -----
@@ -2707,373 +1742,6 @@ class Geometry(
             g.xyz[idx] = fxyz[idx] @ self.cell
         return g
 
-    def swap(self, atoms_a: AtomsArgument, atoms_b: AtomsArgument) -> Geometry:
-        """Swap a set of atoms in the geometry and return a new one
-
-        This can be used to reorder elements of a geometry.
-
-        Parameters
-        ----------
-        atoms_a : array_like
-             the first list of atomic coordinates
-        atoms_b : array_like
-             the second list of atomic coordinates
-        """
-        atoms_a = self._sanitize_atoms(atoms_a)
-        atoms_b = self._sanitize_atoms(atoms_b)
-        xyz = np.copy(self.xyz)
-        xyz[atoms_a, :] = self.xyz[atoms_b, :]
-        xyz[atoms_b, :] = self.xyz[atoms_a, :]
-        return self.__class__(
-            xyz, atoms=self.atoms.swap(atoms_a, atoms_b), lattice=self.lattice.copy()
-        )
-
-    def swapaxes(
-        self, axes_a: Union[int, str], axes_b: Union[int, str], what: str = "abc"
-    ) -> Geometry:
-        """Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
-
-        See `Lattice.swapaxes` for details.
-
-        Parameters
-        ----------
-        axes_a :
-           the old axis indices (or labels if `str`)
-           A string will translate each character as a specific
-           axis index.
-           Lattice vectors are denoted by ``abc`` while the
-           Cartesian coordinates are denote by ``xyz``.
-           If `str`, then `what` is not used.
-        axes_b :
-           the new axis indices, same as `axes_a`
-           old axis indices (or labels)
-        what : {'abc', 'xyz', 'abc+xyz'}
-           what to swap, lattice vectors (abc) or Cartesian components (xyz),
-           or both.
-           Neglected for integer axes arguments.
-
-        See Also
-        --------
-        Lattice.swapaxes
-
-        Examples
-        --------
-
-        Only swap lattice vectors
-
-        >>> g_ba = g.swapaxes(0, 1)
-        >>> assert np.allclose(g.xyz, g_ba.xyz)
-
-        Only swap Cartesian coordinates
-
-        >>> g_ba = g.swapaxes(0, 1, "xyz")
-        >>> assert np.allclose(g.xyz[:, [1, 0, 2]], g_ba.xyz)
-
-        Consecutive swappings (what will be neglected if provided):
-
-        1. abc, xyz -> bac, xyz
-        2. bac, xyz -> bca, xyz
-        3. bac, xyz -> bca, zyx
-
-        >>> g_s = g.swapaxes("abx", "bcz")
-        >>> assert np.allclose(g.xyz[:, [2, 1, 0]], g_s.xyz)
-        >>> assert np.allclose(g.cell[[1, 2, 0]][:, [2, 1, 0]], g_s.cell)
-        """
-        # swap supercell
-        # We do not need to check argument types etc,
-        # Lattice.swapaxes will do this for us
-        lattice = self.lattice.swapaxes(axes_a, axes_b, what)
-
-        if isinstance(axes_a, int) and isinstance(axes_b, int):
-            if "xyz" in what:
-                axes_a = "xyz"[axes_a]
-                axes_b = "xyz"[axes_b]
-            else:
-                axes_a = ""
-                axes_b = ""
-
-        # only thing we are going to swap is the coordinates
-        idx = [0, 1, 2]
-        for a, b in zip(axes_a, axes_b):
-            aidx = "xyzabc".index(a)
-            bidx = "xyzabc".index(b)
-            if aidx < 3:
-                idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
-
-        return self.__class__(
-            self.xyz[:, idx].copy(), atoms=self.atoms.copy(), lattice=lattice
-        )
-
-    def center(
-        self, atoms: Optional[AtomsArgument] = None, what: str = "xyz"
-    ) -> ndarray:
-        """Returns the center of the geometry
-
-        By specifying `what` one can control whether it should be:
-
-        * ``cop|xyz|position``: Center of coordinates (default)
-        * ``mm:xyz`` or ``mm(xyz)``: Center of minimum/maximum of coordinates
-        * ``com|mass``: Center of mass
-        * ``com:pbc|mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it
-            may likely be because of a completely periodic system with no true center of mass
-        * ``cou|cell``: Center of cell
-
-        Parameters
-        ----------
-        atoms :
-            list of atomic indices to find center of
-        what : {'xyz', 'mm:xyz', 'mass', 'mass:pbc', 'cell'}
-            determine which center to calculate
-        """
-        what = what.lower()
-        if what in ("cou", "cell", "lattice"):
-            return self.lattice.center()
-
-        if atoms is None:
-            g = self
-        else:
-            g = self.sub(atoms)
-
-        if what in ("com:pbc", "mass:pbc"):
-            mass = g.mass
-            sum_mass = mass.sum()
-            # the periodic center of mass is determined by transfering all
-            # coordinates onto a circle -> fxyz * 2pi
-            # Then we mass average the circle angles for each of the fractional
-            # coordinates, and transform back into the cartesian coordinate system
-            theta = g.fxyz * (2 * np.pi)
-            # construct angles
-            avg_cos = (mass @ np.cos(theta)) / sum_mass
-            avg_sin = (mass @ np.sin(theta)) / sum_mass
-            avg_theta = np.arctan2(-avg_sin, -avg_cos) / (2 * np.pi) + 0.5
-            return avg_theta @ g.lattice.cell
-
-        if what in ("com", "mass"):
-            mass = g.mass
-            return mass @ g.xyz / mass.sum()
-
-        if what in ("mm:xyz", "mm(xyz)"):
-            return (g.xyz.min(0) + g.xyz.max(0)) / 2
-
-        if what in ("cop", "xyz", "position"):
-            return np.mean(g.xyz, axis=0)
-
-        raise ValueError(
-            f"{self.__class__.__name__}.center could not understand option 'what' got {what}"
-        )
-
-    def append(
-        self, other: LatticeOrGeometryLike, axis: int, offset="none"
-    ) -> Geometry:
-        """Appends two structures along `axis`
-
-        This will automatically add the ``self.cell[axis,:]`` to all atomic
-        coordiates in the `other` structure before appending.
-
-        The basic algorithm is this:
-
-        >>> oxa = other.xyz + self.cell[axis,:][None,:]
-        >>> self.xyz = np.append(self.xyz,oxa)
-        >>> self.cell[axis,:] += other.cell[axis,:]
-
-        NOTE: The cell appended is only in the axis that
-        is appended, which means that the other cell directions
-        need not conform.
-
-        Parameters
-        ----------
-        other :
-            Other geometry class which needs to be appended
-            If a `Lattice` only the super cell will be extended
-        axis :
-            Cell direction to which the `other` geometry should be
-            appended.
-        offset : {'none', 'min', (3,)}
-            By default appending two structures will simply use the coordinates,
-            as is.
-            With 'min', the routine will shift both the structures along the cell
-            axis of `self` such that they coincide at the first atom, lastly one
-            may use a specified offset to manually select how `other` is displaced.
-            NOTE: That `self.cell[axis, :]` will be added to `offset` if `other` is
-            a geometry.
-
-        See Also
-        --------
-        add : add geometries
-        prepend : prending geometries
-        attach : attach a geometry
-        insert : insert a geometry
-        """
-        if isinstance(other, Lattice):
-            # Only extend the supercell.
-            xyz = np.copy(self.xyz)
-            atoms = self.atoms.copy()
-            lattice = self.lattice.append(other, axis)
-            names = self._names.copy()
-            if isinstance(offset, str):
-                if offset == "none":
-                    offset = [0, 0, 0]
-                else:
-                    raise ValueError(
-                        f"{self.__class__.__name__}.append requires offset to be (3,) for supercell input"
-                    )
-            xyz += _a.asarray(offset)
-
-        else:
-            # sanitize output
-            other = self.new(other)
-            if isinstance(offset, str):
-                offset = offset.lower()
-                if offset == "none":
-                    offset = self.cell[axis, :]
-                elif offset == "min":
-                    # We want to align at the minimum position along the `axis`
-                    min_f = self.fxyz[:, axis].min()
-                    min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
-                    offset = self.cell[axis, :] * (1 + min_f - min_other_f)
-                else:
-                    raise ValueError(
-                        f"{self.__class__.__name__}.append requires align keyword to be one of [none, min, (3,)]"
-                    )
-            else:
-                offset = self.cell[axis, :] + _a.asarray(offset)
-
-            xyz = np.append(self.xyz, offset + other.xyz, axis=0)
-            atoms = self.atoms.append(other.atoms)
-            lattice = self.lattice.append(other.lattice, axis)
-            names = self._names.merge(other._names, offset=len(self))
-
-        return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
-
-    def prepend(
-        self, other: LatticeOrGeometryLike, axis: int, offset="none"
-    ) -> Geometry:
-        """Prepend two structures along `axis`
-
-        This will automatically add the ``self.cell[axis,:]`` to all atomic
-        coordiates in the `other` structure before appending.
-
-        The basic algorithm is this:
-
-        >>> oxa = other.xyz
-        >>> self.xyz = np.append(oxa, self.xyz + other.cell[axis,:][None,:])
-        >>> self.cell[axis,:] += other.cell[axis,:]
-
-        NOTE: The cell prepended is only in the axis that
-        is prependend, which means that the other cell directions
-        need not conform.
-
-        Parameters
-        ----------
-        other :
-            Other geometry class which needs to be prepended
-            If a `Lattice` only the super cell will be extended
-        axis :
-            Cell direction to which the `other` geometry should be
-            prepended
-        offset : {'none', 'min', (3,)}
-            By default appending two structures will simply use the coordinates,
-            as is.
-            With 'min', the routine will shift both the structures along the cell
-            axis of `other` such that they coincide at the first atom, lastly one
-            may use a specified offset to manually select how `self` is displaced.
-            NOTE: That `other.cell[axis, :]` will be added to `offset` if `other` is
-            a geometry.
-
-        See Also
-        --------
-        add : add geometries
-        append : appending geometries
-        attach : attach a geometry
-        insert : insert a geometry
-        """
-        if isinstance(other, Lattice):
-            # Only extend the supercell.
-            xyz = np.copy(self.xyz)
-            atoms = self.atoms.copy()
-            lattice = self.lattice.prepend(other, axis)
-            names = self._names.copy()
-            if isinstance(offset, str):
-                if offset == "none":
-                    offset = [0, 0, 0]
-                else:
-                    raise ValueError(
-                        f"{self.__class__.__name__}.prepend requires offset to be (3,) for supercell input"
-                    )
-            xyz += _a.arrayd(offset)
-
-        else:
-            # sanitize output
-            other = self.new(other)
-            if isinstance(offset, str):
-                offset = offset.lower()
-                if offset == "none":
-                    offset = other.cell[axis, :]
-                elif offset == "min":
-                    # We want to align at the minimum position along the `axis`
-                    min_f = other.fxyz[:, axis].min()
-                    min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
-                    offset = other.cell[axis, :] * (1 + min_f - min_other_f)
-                else:
-                    raise ValueError(
-                        f"{self.__class__.__name__}.prepend requires align keyword to be one of [none, min, (3,)]"
-                    )
-            else:
-                offset = other.cell[axis, :] + _a.asarray(offset)
-
-            xyz = np.append(other.xyz, offset + self.xyz, axis=0)
-            atoms = self.atoms.prepend(other.atoms)
-            lattice = self.lattice.prepend(other.lattice, axis)
-            names = other._names.merge(self._names, offset=len(other))
-
-        return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
-
-    def add(
-        self, other: LatticeOrGeometryLike, offset: Sequence[float] = (0, 0, 0)
-    ) -> Geometry:
-        """Merge two geometries (or a Geometry and Lattice) by adding the two atoms together
-
-        If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
-        simply do ``geom.add(other).add(other.lattice)``.
-
-        Parameters
-        ----------
-        other :
-            Other geometry class which is added
-        offset :
-            offset in geometry of `other` when adding the atoms.
-            Otherwise it is the offset of the `self` atoms.
-
-        See Also
-        --------
-        append : appending geometries
-        prepend : prending geometries
-        attach : attach a geometry
-        insert : insert a geometry
-
-        Examples
-        --------
-        >>> first = Geometry(...)
-        >>> second = Geometry(...)
-        >>> lattice = Lattice(...)
-        >>> added = first.add(second, offset=(0, 0, 2))
-        >>> assert np.allclose(added.xyz[:len(first)], first.xyz)
-        >>> assert np.allclose(added.xyz[len(first):] - [0, 0, 2], second.xyz)
-
-        """
-        if isinstance(other, Lattice):
-            xyz = self.xyz.copy() + _a.arrayd(offset)
-            lattice = self.lattice + other
-            atoms = self.atoms.copy()
-            names = self._names.copy()
-        else:
-            other = self.new(other)
-            xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset), axis=0)
-            lattice = self.lattice.copy()
-            atoms = self.atoms.add(other.atoms)
-            names = self._names.merge(other._names, offset=len(self))
-        return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
-
     def add_vacuum(
         self, vacuum: float, axis: int, offset: Sequence[float] = (0, 0, 0)
     ) -> Geometry:
@@ -3105,36 +1773,6 @@ class Geometry(
             nsc[axis] = 1
             new.lattice.set_nsc(nsc)
         return new
-
-    def insert(self, atom: int, other: GeometryLike) -> Geometry:
-        """Inserts other atoms right before index
-
-        We insert the `geometry` `Geometry` before `atom`.
-        Note that this will not change the unit cell.
-
-        Parameters
-        ----------
-        atom :
-           the atomic index at which the other geometry is inserted
-        other :
-           the other geometry to be inserted
-
-        See Also
-        --------
-        add : add geometries
-        append : appending geometries
-        prepend : prending geometries
-        attach : attach a geometry
-        """
-        atom = self._sanitize_atoms(atom)
-        if atom.size > 1:
-            raise ValueError(
-                f"{self.__class__.__name__}.insert requires only 1 atomic index for insertion."
-            )
-        other = self.new(other)
-        xyz = np.insert(self.xyz, atom, other.xyz, axis=0)
-        atoms = self.atoms.insert(atom, other.atoms)
-        return self.__class__(xyz, atoms, lattice=self.lattice.copy())
 
     def __add__(self, b) -> Geometry:
         """Merge two geometries (or geometry and supercell)
@@ -3445,66 +2083,6 @@ class Geometry(
 
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.lattice.offset(isc)
-
-    def scale(
-        self,
-        scale: Union[float, Sequence[float]],
-        what: str = "abc",
-        scale_atoms: bool = True,
-    ) -> Geometry:
-        """Scale coordinates and unit-cell to get a new geometry with proper scaling
-
-        Parameters
-        ----------
-        scale :
-           the scale factor for the new geometry (lattice vectors, coordinates
-           and the atomic radii are scaled).
-        what: {"abc", "xyz"}
-           ``abc``
-             Is applied on the corresponding lattice vector and the fractional coordinates.
-           ``xyz``
-             Is applied only to the atomic coordinates.
-           If three different scale factors are provided, each will correspond to the
-           Cartesian direction/lattice vector.
-        scale_atoms :
-           whether atoms (basis) should be scaled as well.
-        """
-        # Ensure we are dealing with a numpy array
-        scale = np.asarray(scale)
-
-        # Scale the supercell
-        lattice = self.lattice.scale(scale, what=what)
-
-        if what == "xyz":
-            # It is faster to rescale coordinates by simply multiplying them by the scale
-            xyz = self.xyz * scale
-            max_scale = scale.max()
-
-        elif what == "abc":
-            # Scale the coordinates by keeping fractional coordinates the same
-            xyz = self.fxyz @ lattice.cell
-
-            if scale_atoms:
-                # To rescale atoms, we need to know the span of each cartesian coordinate before and
-                # after the scaling, and scale the atoms according to the coordinate that has
-                # been scaled by the largest factor.
-                prev_verts = self.lattice.vertices().reshape(8, 3)
-                prev_span = prev_verts.max(axis=0) - prev_verts.min(axis=0)
-                scaled_verts = lattice.vertices().reshape(8, 3)
-                scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
-                max_scale = (scaled_span / prev_span).max()
-        else:
-            raise ValueError(
-                f"{self.__class__.__name__}.scale got wrong what argument, must be one of abc|xyz"
-            )
-
-        if scale_atoms:
-            # Atoms are rescaled to the maximum scale factor
-            atoms = self.atoms.scale(max_scale)
-        else:
-            atoms = self.atoms.copy()
-
-        return self.__class__(xyz, atoms=atoms, lattice=lattice)
 
     def within_sc(
         self,
@@ -5699,7 +4277,7 @@ class GeometryTopymatgenDispatch(GeometryToDispatch):
     def dispatch(self, **kwargs):
         from pymatgen.core import Lattice, Molecule, Structure
 
-        from sisl.atom import PeriodicTable
+        from sisl._core.atom import PeriodicTable
 
         # ensure we have an object
         geom = self._get_object()
@@ -5851,8 +4429,6 @@ lattice vector.
             if isfile(i_file):
                 geometry = get_sile(input_file).read_geometry()
             else:
-                from .messages import info
-
                 info(f"Cannot find file '{input_file}'!")
                 geometry = Geometry
                 stdout_geom = False

@@ -5,7 +5,7 @@ import math as m
 
 import numpy as np
 
-from ._internal import set_module
+from sisl._internal import set_module
 
 __all__ = ["Quaternion"]
 

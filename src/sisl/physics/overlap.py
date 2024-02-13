@@ -101,13 +101,3 @@ class Overlap(SparseOrbitalBZ):
         else:
             with get_sile(sile, mode="r") as fh:
                 return fh.read_overlap(*args, **kwargs)
-
-    def write(self, sile, *args, **kwargs) -> None:
-        """Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method"""
-        from sisl.io import BaseSile, get_sile
-
-        if isinstance(sile, BaseSile):
-            sile.write_overlap(self, *args, **kwargs)
-        else:
-            with get_sile(sile, mode="w") as fh:
-                fh.write_overlap(self, *args, **kwargs)

@@ -70,6 +70,7 @@ from scipy.sparse import csr_matrix, hstack, identity, issparse
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
 from sisl import Geometry, Grid, Lattice, constant, units
+from sisl._core.oplist import oplist
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from sisl._indices import indices_le
 from sisl._internal import set_module
@@ -78,7 +79,6 @@ from sisl.linalg import det
 from sisl.linalg import eigvals as la_eigvals
 from sisl.linalg import sqrth, svd_destroy
 from sisl.messages import SislError, info, progressbar, warn
-from sisl.oplist import oplist
 
 from .distribution import get_distribution
 from .sparse import SparseOrbitalBZSpin

@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 import pytest
 
-from sisl.quaternion import Quaternion
+from sisl._core.quaternion import Quaternion
 from sisl.shape.ellipsoid import *
 from sisl.utils.mathematics import fnorm
 

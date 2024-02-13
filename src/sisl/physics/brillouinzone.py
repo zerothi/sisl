@@ -144,13 +144,13 @@ import numpy as np
 from numpy import argsort, dot, pi, sum
 
 import sisl._array as _a
+from sisl._core.grid import Grid
+from sisl._core.lattice import Lattice
+from sisl._core.oplist import oplist
+from sisl._core.quaternion import Quaternion
 from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
-from sisl.grid import Grid
-from sisl.lattice import Lattice
 from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
-from sisl.oplist import oplist
-from sisl.quaternion import Quaternion
 from sisl.unit import units
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm
@@ -582,21 +582,6 @@ class BrillouinZone:
 
         return BrillouinZone(parent, k, w)
 
-    def copy(self, parent=None):
-        """Create a copy of this object, optionally changing the parent
-
-        Parameters
-        ----------
-        parent : optional
-           change the parent
-        """
-        if parent is None:
-            parent = self.parent
-        bz = self.__class__(parent, self._k, self.weight)
-        bz._k = self._k.copy()
-        bz._w = self._w.copy()
-        return bz
-
     @property
     def k(self):
         """A list of all k-points (if available)"""
@@ -689,20 +674,6 @@ class BrillouinZone:
 
     def __len__(self):
         return len(self._k)
-
-    def write(self, sile, *args, **kwargs):
-        """Writes k-points to a `~sisl.io.tableSile`.
-
-        This allows one to pass a `tableSile` or a file-name.
-        """
-        from sisl.io import tableSile
-
-        kw = np.concatenate((self.k, self.weight.reshape(-1, 1)), axis=1)
-        if isinstance(sile, tableSile):
-            sile.write_data(kw.T, *args, **kwargs)
-        else:
-            with tableSile(sile, "w") as fh:
-                fh.write_data(kw.T, *args, **kwargs)
 
 
 @set_module("sisl.physics")
@@ -918,24 +889,6 @@ class MonkhorstPack(BrillouinZone):
         self._size = state["size"]
         self._centered = state["centered"]
         self._trs = state["trs"]
-
-    def copy(self, parent=None):
-        """Create a copy of this object, optionally changing the parent
-
-        Parameters
-        ----------
-        parent : optional
-           change the parent
-        """
-        if parent is None:
-            parent = self.parent
-        bz = self.__class__(
-            parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0
-        )
-        # this is required due to replace calls
-        bz._k = self._k.copy()
-        bz._w = self._w.copy()
-        return bz
 
     @classmethod
     def grid(cls, n, displ=0.0, size=1.0, centered=True, trs=False):
@@ -1417,21 +1370,6 @@ class BandStructure(BrillouinZone):
 
         self._k = k
         self._w = _a.fulld(len(self.k), 1 / len(self.k))
-
-    def copy(self, parent=None):
-        """Create a copy of this object, optionally changing the parent
-
-        Parameters
-        ----------
-        parent : optional
-           change the parent
-        """
-        if parent is None:
-            parent = self.parent
-        bz = self.__class__(
-            parent, self.points, self.divisions, self.names, jump_dk=self._jump_dk
-        )
-        return bz
 
     def __getstate__(self):
         """Return dictionary with the current state"""

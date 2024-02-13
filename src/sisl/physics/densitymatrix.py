@@ -13,12 +13,12 @@ from scipy.sparse import tril, triu
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
 from sisl import Geometry, Lattice
+from sisl._core.sparse import SparseCSR, _ncol_to_indptr
+from sisl._core.sparse_geometry import SparseOrbital
 from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import progressbar, warn
-from sisl.sparse import SparseCSR, _ncol_to_indptr
-from sisl.sparse_geometry import SparseOrbital
 
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
@@ -1332,15 +1332,3 @@ class DensityMatrix(_densitymatrix):
         else:
             with get_sile(sile, mode="r") as fh:
                 return fh.read_density_matrix(*args, **kwargs)
-
-    def write(self, sile, *args, **kwargs) -> None:
-        """Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_density_matrix` method"""
-        # This only works because, they *must*
-        # have been imported previously
-        from sisl.io import BaseSile, get_sile
-
-        if isinstance(sile, BaseSile):
-            sile.write_density_matrix(self, *args, **kwargs)
-        else:
-            with get_sile(sile, mode="w") as fh:
-                fh.write_density_matrix(self, *args, **kwargs)

@@ -21,12 +21,12 @@ from scipy.sparse import SparseEfficiencyWarning, csr_matrix, issparse
 
 import sisl._array as _a
 from sisl import Atoms, Geometry, constant
+from sisl._core.sparse import _ncol_to_indptr
 from sisl._help import wrap_filterwarnings
 from sisl._internal import set_module
 from sisl.messages import SislError, deprecate, deprecate_argument, info, warn
 from sisl.physics.densitymatrix import DensityMatrix
 from sisl.physics.distribution import fermi_dirac
-from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 
 # Import sile objects
@@ -1236,7 +1236,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned data are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
         sum_dup : bool, optional
            duplicates will be summed if this is true, in this case, no duplicates are
            present in the returned sparse matrix. If false, duplicates may exist for
@@ -1366,7 +1366,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned data are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
         sum_dup : bool, optional
            duplicates will be summed if this is true, in this case, no duplicates are
            present in the returned sparse matrix. If false, duplicates may exist for
@@ -1700,7 +1700,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned transmissions are only in the unit-cell (supercell bonds will be folded to their unit-cell equivalents).
            If `True` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
 
         Examples
         --------
@@ -1777,7 +1777,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            will be folded to their unit-cell equivalents).
            If `True` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
 
         Examples
         --------
@@ -2401,7 +2401,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -2449,7 +2449,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COOP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -2587,7 +2587,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
 
         See Also
         --------
@@ -2628,7 +2628,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            whether the returned COHP are only in the unit-cell.
            If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
-           One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
+           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.
 
         See Also
         --------

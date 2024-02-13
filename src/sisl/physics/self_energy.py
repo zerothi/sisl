@@ -17,6 +17,7 @@ from numpy import (
 )
 
 import sisl._array as _a
+from sisl._core.sparse_geometry import _SparseGeometry
 from sisl._help import array_replace
 from sisl._internal import set_module
 from sisl.linalg import inv, linalg_info, solve
@@ -24,7 +25,6 @@ from sisl.linalg.base import _compute_lwork
 from sisl.messages import deprecation, info, warn
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
-from sisl.sparse_geometry import _SparseGeometry
 from sisl.utils.mathematics import fnorm
 
 __all__ = ["SelfEnergy"]

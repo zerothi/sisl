@@ -6,11 +6,11 @@ from scipy.sparse import SparseEfficiencyWarning, lil_matrix, triu
 
 from sisl import Atom, Geometry, Lattice
 from sisl import _array as _a
+from sisl._core.sparse import ispmatrix, ispmatrixd
 from sisl._help import wrap_filterwarnings
 from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.physics import Hamiltonian
-from sisl.sparse import ispmatrix, ispmatrixd
 
 # Import sile objects
 from .sile import *
