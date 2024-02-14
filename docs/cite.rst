@@ -23,10 +23,10 @@ you should cite this (Zenodo DOI):
 
 .. code-block:: bash
 
-    @misc{zerothi_sisl,
+    @software{zerothi_sisl,
       author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
-      year         = {2023},
+      year         = {2024},
       doi          = {10.5281/zenodo.597181},
       url          = {https://doi.org/10.5281/zenodo.597181}
     }
@@ -44,7 +44,7 @@ which fill in the version for you, all yield the same output.
 
 
 .. _citing-transport:
-    
+
 Citing transport backend
 ------------------------
 
@@ -54,10 +54,10 @@ When using sisl as tight-binding setup for Hamiltonians and/or dynamical matrice
 
 .. code-block:: bash
 
-    @misc{zerothi_sisl,
+    @software{zerothi_sisl,
       author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
-      year         = {2023},
+      year         = {2024},
       doi          = {10.5281/zenodo.597181},
       url          = {https://doi.org/10.5281/zenodo.597181}
     }

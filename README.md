@@ -11,7 +11,7 @@
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
 [![Python versions](https://img.shields.io/pypi/pyversions/sisl.svg)](https://pypi.org/project/sisl/)
 
-Copyright Nick R. Papior 2023
+Copyright Nick R. Papior 2024
 
 sisl is an *open-source easy-to-use density functional theory API framework* to post-analyse density functional theory codes output
 as well as providing tight-binding calculation capabilities.
@@ -60,7 +60,7 @@ We recommend to specify the version of sisl in combination of this citation:
     @software{zerothi_sisl,
       author = {Papior, Nick},
       title  = {sisl: v<fill-version>},
-      year   = {2023},
+      year   = {2024},
       doi    = {10.5281/zenodo.597181},
       url    = {https://doi.org/10.5281/zenodo.597181}
     }
@@ -81,7 +81,7 @@ Kindly read our [Contributing Guide](CONTRIBUTING.md) to learn and understand ab
 </a>
 
 ## License
-sisl © 2023, Released under the Mozilla Public License v2.0.
+sisl © 2024, Released under the Mozilla Public License v2.0.
 
 
 <!---
@@ -108,4 +108,3 @@ Local variables for emacs to turn on flyspell-mode
 %   indent-tabs-mode: nil
 % End:
 -->
-
