@@ -29,7 +29,7 @@ Then, whenever you commit changes, `pre-commit` will check that everything is fi
 style inconsistencies, it will modify your code accordingly. You can add those modifications and commit again.
 
 However, don't feel intimidated by this! If you are confused with how it works, you can just submit
-contributions without it. Our bots will notice and we kindly solve it.
+contributions without it. Our bots will notice and we will kindly solve it.
 
 ## First-time contributors
 Add a comment on the issue and wait for the issue to be assigned before you start working on it. This helps to avoid multiple people working on similar issues.
