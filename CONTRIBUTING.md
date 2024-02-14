@@ -15,7 +15,21 @@ you should add this change to your `.git/config`, or in your global `.gitconfig`
     [filter "strip-notebook-output"]
         clean = "jupyter nbconvert --ClearOutputPreprocessor.enabled=True --to=notebook --stdin --stdout --log-level=ERROR"
 
-We also enforce the black style, please run black before committing.
+We run some tools such as `isort` and `black` to keep our code style consistent throughout the package.
+These are ran by `pre-commit`, which you can set up with:
+
+```python
+# Install pre-commit with pip
+python -m pip install pre-commit
+# And then run install on sisl's root directory
+pre-commit install
+```
+
+Then, whenever you commit changes, `pre-commit` will check that everything is fine. If there are some
+style inconsistencies, it will modify your code accordingly. You can add those modifications and commit again.
+
+However, don't feel intimidated by this! If you are confused with how it works, you can just submit
+contributions without it. Our bots will notice and we will kindly solve it.
 
 ## First-time contributors
 Add a comment on the issue and wait for the issue to be assigned before you start working on it. This helps to avoid multiple people working on similar issues.
