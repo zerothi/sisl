@@ -47,6 +47,7 @@ AtomsLike = Union[
     "Atoms",
 ]
 
+# Pure integer axis specification
 Axis = int
 Axes = Sequence[int]
 Axies = Union[Axis, Axes]

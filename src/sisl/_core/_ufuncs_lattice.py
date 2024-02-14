@@ -85,11 +85,11 @@ def write(lattice: Lattice, sile: SileLike, *args, **kwargs) -> None:
 @register_sisl_dispatch(Lattice, module="sisl")
 def swapaxes(
     lattice: Lattice,
-    axes_a: Union[int, str],
-    axes_b: Union[int, str],
+    axes1: Union[int, str],
+    axes2: Union[int, str],
     what: str = "abc",
 ) -> Lattice:
-    r"""Swaps axes `axes_a` and `axes_b`
+    r"""Swaps axes `axes1` and `axes2`
 
     Swapaxes is a versatile method for changing the order
     of axes elements, either lattice vector order, or Cartesian
@@ -97,15 +97,15 @@ def swapaxes(
 
     Parameters
     ----------
-    axes_a :
+    axes1 :
        the old axis indices (or labels if `str`)
        A string will translate each character as a specific
        axis index.
        Lattice vectors are denoted by ``abc`` while the
        Cartesian coordinates are denote by ``xyz``.
        If `str`, then `what` is not used.
-    axes_b :
-       the new axis indices, same as `axes_a`
+    axes2 :
+       the new axis indices, same as `axes1`
     what : {"abc", "xyz", "abc+xyz"}
        which elements to swap, lattice vectors (``abc``), or
        Cartesian coordinates (``xyz``), or both.
@@ -132,26 +132,26 @@ def swapaxes(
     >>> sc_bca = sc.swapaxes("ab", "bc")
     >>> assert np.allclose(sc_ba.cell[:, (1, 0, 2)], sc.cell)
     """
-    if isinstance(axes_a, int) and isinstance(axes_b, int):
+    if isinstance(axes1, int) and isinstance(axes2, int):
         idx = [0, 1, 2]
-        idx[axes_a], idx[axes_b] = idx[axes_b], idx[axes_a]
+        idx[axes1], idx[axes2] = idx[axes2], idx[axes1]
 
         if "abc" in what or "cell" in what:
             if "xyz" in what:
-                axes_a = "abc"[axes_a] + "xyz"[axes_a]
-                axes_b = "abc"[axes_b] + "xyz"[axes_b]
+                axes1 = "abc"[axes1] + "xyz"[axes1]
+                axes2 = "abc"[axes2] + "xyz"[axes2]
             else:
-                axes_a = "abc"[axes_a]
-                axes_b = "abc"[axes_b]
+                axes1 = "abc"[axes1]
+                axes2 = "abc"[axes2]
         elif "xyz" in what:
-            axes_a = "xyz"[axes_a]
-            axes_b = "xyz"[axes_b]
+            axes1 = "xyz"[axes1]
+            axes2 = "xyz"[axes2]
         else:
             raise ValueError(
                 f"{lattice.__class__.__name__}.swapaxes could not understand 'what' "
                 "must contain abc and/or xyz."
             )
-    elif (not isinstance(axes_a, str)) or (not isinstance(axes_b, str)):
+    elif (not isinstance(axes1, str)) or (not isinstance(axes2, str)):
         raise ValueError(
             f"{lattice.__class__.__name__}.swapaxes axes arguments must be either all int or all str, not a mix."
         )
@@ -161,12 +161,12 @@ def swapaxes(
     origin = lattice.origin
     bc = lattice.boundary_condition
 
-    if len(axes_a) != len(axes_b):
+    if len(axes1) != len(axes2):
         raise ValueError(
-            f"{lattice.__class__.__name__}.swapaxes expects axes_a and axes_b to have the same lengeth {len(axes_a)}, {len(axes_b)}."
+            f"{lattice.__class__.__name__}.swapaxes expects axes1 and axes2 to have the same lengeth {len(axes1)}, {len(axes2)}."
         )
 
-    for a, b in zip(axes_a, axes_b):
+    for a, b in zip(axes1, axes2):
         idx = [0, 1, 2]
 
         aidx = "abcxyz".index(a)
@@ -174,7 +174,7 @@ def swapaxes(
 
         if aidx // 3 != bidx // 3:
             raise ValueError(
-                f"{lattice.__class__.__name__}.swapaxes expects axes_a and axes_b to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates."
+                f"{lattice.__class__.__name__}.swapaxes expects axes1 and axes2 to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates."
             )
 
         if aidx < 3:

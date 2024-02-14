@@ -10,7 +10,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import SislError
-from sisl.typing import GridLike, SileLike
+from sisl.typing import Axis, GridLike, SileLike
 
 from .grid import Grid
 
@@ -61,32 +61,32 @@ def write(grid: Grid, sile: SileLike, *args, **kwargs) -> None:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def swapaxes(grid: Grid, axis_a: int, axis_b: int) -> Grid:
+def swapaxes(grid: Grid, axis1: Axis, axis2: Axis) -> Grid:
     """Swap two axes in the grid (also swaps axes in the lattice)
 
     If ``swapaxes(0, 1)`` it returns the 0 in the 1 values.
 
     Parameters
     ----------
-    axis_a, axis_b :
+    axis1, axis2 :
         axes indices to be swapped
     """
     # Create index vector
     idx = _a.arangei(3)
-    idx[axis_b] = axis_a
-    idx[axis_a] = axis_b
+    idx[axis2] = axis1
+    idx[axis1] = axis2
     s = np.copy(grid.shape)
     d = grid._sc_geometry_dict()
-    d["lattice"] = d["lattice"].swapaxes(axis_a, axis_b)
+    d["lattice"] = d["lattice"].swapaxes(axis1, axis2)
     d["dtype"] = grid.dtype
     out = grid.__class__(s[idx], **d)
     # We need to force the C-order or we loose the contiguity
-    out.grid = np.copy(np.swapaxes(grid.grid, axis_a, axis_b), order="C")
+    out.grid = np.copy(np.swapaxes(grid.grid, axis1, axis2), order="C")
     return out
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: int) -> Grid:
+def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: Axis) -> Grid:
     """Retains certain indices from a specified axis.
 
     Works exactly opposite to `remove`.
@@ -127,7 +127,7 @@ def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: int) -> Grid:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: int) -> Grid:
+def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: Axis) -> Grid:
     """Removes certain indices from a specified axis.
 
     Works exactly opposite to `sub`.
@@ -144,7 +144,7 @@ def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: int) -> Grid:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def append(grid: Grid, other: GridLike, axis: int) -> Grid:
+def append(grid: Grid, other: GridLike, axis: Axis) -> Grid:
     """Appends other `Grid` to this grid along axis"""
     shape = list(grid.shape)
     other = grid.new(other)
@@ -161,7 +161,7 @@ def append(grid: Grid, other: GridLike, axis: int) -> Grid:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def tile(grid: Grid, reps: int, axis: int) -> Grid:
+def tile(grid: Grid, reps: int, axis: Axis) -> Grid:
     """Tile grid to create a bigger one
 
     The atomic indices for the base Geometry will be retained.

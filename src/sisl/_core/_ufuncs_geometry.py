@@ -14,6 +14,7 @@ from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument, warn
 from sisl.typing import (
     AtomsArgument,
+    Axis,
     Coord,
     CoordOrScalar,
     GeometryLike,
@@ -593,28 +594,26 @@ def sort(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def swap(
-    geometry: Geometry, atoms_a: AtomsArgument, atoms_b: AtomsArgument
-) -> Geometry:
+def swap(geometry: Geometry, atoms1: AtomsArgument, atoms2: AtomsArgument) -> Geometry:
     """Swap a set of atoms in the geometry and return a new one
 
     This can be used to reorder elements of a geometry.
 
     Parameters
     ----------
-    atoms_a :
+    atoms1 :
          the first list of atomic coordinates
-    atoms_b :
+    atoms2 :
          the second list of atomic coordinates
     """
-    atoms_a = geometry._sanitize_atoms(atoms_a)
-    atoms_b = geometry._sanitize_atoms(atoms_b)
+    atoms1 = geometry._sanitize_atoms(atoms1)
+    atoms2 = geometry._sanitize_atoms(atoms2)
     xyz = np.copy(geometry.xyz)
-    xyz[atoms_a, :] = geometry.xyz[atoms_b, :]
-    xyz[atoms_b, :] = geometry.xyz[atoms_a, :]
+    xyz[atoms1, :] = geometry.xyz[atoms2, :]
+    xyz[atoms2, :] = geometry.xyz[atoms1, :]
     return geometry.__class__(
         xyz,
-        atoms=geometry.atoms.swap(atoms_a, atoms_b),
+        atoms=geometry.atoms.swap(atoms1, atoms2),
         lattice=geometry.lattice.copy(),
     )
 
@@ -652,7 +651,7 @@ def insert(geometry: Geometry, atom: AtomsArgument, other: GeometryLike) -> Geom
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
+def tile(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
     """Tile the geometry to create a bigger one
 
     The atomic indices are retained for the base structure.
@@ -722,7 +721,7 @@ def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
 def untile(
     geometry: Geometry,
     reps: int,
-    axis: int,
+    axis: Axis,
     segment: int = 0,
     rtol: float = 1e-4,
     atol: float = 1e-4,
@@ -797,7 +796,7 @@ def untile(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def repeat(geometry: Geometry, reps: int, axis: int) -> Geometry:
+def repeat(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
     """Create a repeated geometry
 
     The atomic indices are *NOT* retained from the base structure.
@@ -876,12 +875,12 @@ def repeat(geometry: Geometry, reps: int, axis: int) -> Geometry:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def unrepeat(geometry: Geometry, reps: int, axis: int, *args, **kwargs) -> Geometry:
+def unrepeat(geometry: Geometry, reps: int, axis: Axis, *args, **kwargs) -> Geometry:
     """Unrepeats the geometry similarly as `untile`
 
-    This is the opposite of `repeat`.
+    This is the opposite of `Geometry.repeat`.
 
-    Please see `untile` for argument details.
+    Please see `Geometry.untile` for argument details.
     This algorithm first re-arranges atoms as though they had been tiled,
     then subsequently calls `untile`.
 
@@ -1102,8 +1101,8 @@ def rotate(
 @register_sisl_dispatch(Geometry, module="sisl")
 def swapaxes(
     geometry: Geometry,
-    axes_a: Union[int, str],
-    axes_b: Union[int, str],
+    axes1: Union[Axis, str],
+    axes2: Union[Axis, str],
     what: str = "abc",
 ) -> Geometry:
     """Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
@@ -1112,15 +1111,15 @@ def swapaxes(
 
     Parameters
     ----------
-    axes_a :
+    axes1 :
        the old axis indices (or labels if `str`)
        A string will translate each character as a specific
        axis index.
        Lattice vectors are denoted by ``abc`` while the
        Cartesian coordinates are denote by ``xyz``.
        If `str`, then `what` is not used.
-    axes_b :
-       the new axis indices, same as `axes_a`
+    axes2 :
+       the new axis indices, same as `axes1`
        old axis indices (or labels)
     what : {'abc', 'xyz', 'abc+xyz'}
        what to swap, lattice vectors (abc) or Cartesian components (xyz),
@@ -1157,19 +1156,19 @@ def swapaxes(
     # swap supercell
     # We do not need to check argument types etc,
     # Lattice.swapaxes will do this for us
-    lattice = geometry.lattice.swapaxes(axes_a, axes_b, what)
+    lattice = geometry.lattice.swapaxes(axes1, axes2, what)
 
-    if isinstance(axes_a, int) and isinstance(axes_b, int):
+    if isinstance(axes1, int) and isinstance(axes2, int):
         if "xyz" in what:
-            axes_a = "xyz"[axes_a]
-            axes_b = "xyz"[axes_b]
+            axes1 = "xyz"[axes1]
+            axes2 = "xyz"[axes2]
         else:
-            axes_a = ""
-            axes_b = ""
+            axes1 = ""
+            axes2 = ""
 
     # only thing we are going to swap is the coordinates
     idx = [0, 1, 2]
-    for a, b in zip(axes_a, axes_b):
+    for a, b in zip(axes1, axes2):
         aidx = "xyzabc".index(a)
         bidx = "xyzabc".index(b)
         if aidx < 3:
@@ -1244,7 +1243,7 @@ def center(
 def append(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
-    axis: int,
+    axis: Axis,
     offset: Union[str, Coord] = "none",
 ) -> Geometry:
     """Appends two structures along `axis`
@@ -1332,7 +1331,7 @@ def append(
 def prepend(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
-    axis: int,
+    axis: Axis,
     offset: Union[str, Coord] = "none",
 ) -> Geometry:
     """Prepend two structures along `axis`

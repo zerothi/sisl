@@ -55,10 +55,10 @@ def repeat(atom: Atoms, reps: int) -> Atoms:
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def swap(atom: Atoms, atoms_a: IndexArgument, atoms_b: IndexArgument) -> Atoms:
+def swap(atom: Atoms, atoms1: IndexArgument, atoms2: IndexArgument) -> Atoms:
     """Swaps atoms by index"""
-    a = _a.asarray(atoms_a)
-    b = _a.asarray(atoms_b)
+    a = _a.asarray(atoms1)
+    b = _a.asarray(atoms2)
     atoms = atom.copy()
     spec = np.copy(atoms._specie)
     atoms._specie[a] = spec[b]
