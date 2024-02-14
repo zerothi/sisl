@@ -49,6 +49,6 @@ from .category import *
 from .flat import *
 from .nanoribbon import *
 from .nanotube import *
-from .neighs import *
+from ._neighbors import *
 from .special import *
 from .surfaces import *
