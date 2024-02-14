@@ -15,6 +15,9 @@ The typing types is shown below:
 
    AtomsArgument
    AtomsLike
+   Axis
+   Axies
+   Axes
    Coord
    CoordOrScalar
    FuncType

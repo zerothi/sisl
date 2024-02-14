@@ -69,7 +69,7 @@ def write(lattice: Lattice, sile: SileLike, *args, **kwargs) -> None:
 
     See Also
     --------
-    read : reads a `Lattice` from a given `Sile`/file
+    Lattice.read : reads a `Lattice` from a given `Sile`/file
     """
     # This only works because, they *must*
     # have been imported previously
@@ -327,7 +327,7 @@ def untile(lattice: Lattice, reps: int, axis: int) -> Lattice:
 
     See Also
     --------
-    tile : opposite of this method
+    Lattice.tile : opposite of this method
     """
     cell = np.copy(lattice.cell)
     cell[axis] /= reps

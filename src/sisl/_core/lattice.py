@@ -25,6 +25,7 @@ from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate, deprecation, info, warn
 from sisl.shape.prism4 import Cuboid
+from sisl.typing import Axes, Axies, Axis
 from sisl.utils.mathematics import fnorm
 
 from ._lattice import cell_invert, cell_reciprocal
@@ -157,7 +158,7 @@ class Lattice(
         """Volume of cell"""
         return abs(dot3(self.cell[0], cross3(self.cell[1], self.cell[2])))
 
-    def area(self, ax0, ax1) -> float:
+    def area(self, ax0: Axis, ax1: Axis) -> float:
         """Calculate the area spanned by the two axis `ax0` and `ax1`"""
         return (cross3(self.cell[ax0], self.cell[ax1]) ** 2).sum() ** 0.5
 
@@ -362,18 +363,24 @@ class Lattice(
         """Return a filled supercell index by filling in zeros where needed"""
         return self._fill(supercell_index, dtype=np.int32)
 
-    def set_nsc(self, nsc=None, a=None, b=None, c=None) -> None:
+    def set_nsc(
+        self,
+        nsc=None,
+        a: Optional[int] = None,
+        b: Optional[int] = None,
+        c: Optional[int] = None,
+    ) -> None:
         """Sets the number of supercells in the 3 different cell directions
 
         Parameters
         ----------
         nsc : list of int, optional
            number of supercells in each direction
-        a : integer, optional
+        a : int, optional
            number of supercells in the first unit-cell vector direction
-        b : integer, optional
+        b : int, optional
            number of supercells in the second unit-cell vector direction
-        c : integer, optional
+        c : int, optional
            number of supercells in the third unit-cell vector direction
         """
         if not nsc is None:
@@ -453,7 +460,7 @@ class Lattice(
         """Iterate the supercells and the indices of the supercells"""
         yield from enumerate(self.sc_off)
 
-    def fit(self, xyz, axis=None, tol=0.05) -> Lattice:
+    def fit(self, xyz, axis: Optional[Axies] = None, tol: float = 0.05) -> Lattice:
         """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
 
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
@@ -469,7 +476,7 @@ class Lattice(
         ----------
         xyz : array_like ``shape(*, 3)``
            the coordinates that we will wish to encompass and analyze.
-        axis : None or array_like
+        axis :
            if ``None`` equivalent to ``[0, 1, 2]``, else only the cell-vectors
            along the provided axis will be used
         tol : float
@@ -480,9 +487,9 @@ class Lattice(
         from .geometry import Geometry
 
         if isinstance(xyz, Geometry):
-            xyz = xyz.xyz[:, :]
+            xyz = xyz.xyz
 
-        cell = np.copy(self.cell[:, :])
+        cell = np.copy(self.cell)
 
         # Get fractional coordinates to get the divisions in the current cell
         x = dot(xyz, self.icell.T)
@@ -525,14 +532,16 @@ class Lattice(
 
         return self.copy(cell)
 
-    def plane(self, ax1, ax2, origin=True) -> Tuple[ndarray, ndarray]:
+    def plane(
+        self, axis1: Axis, axis2: Axis, origin: bool = True
+    ) -> Tuple[ndarray, ndarray]:
         """Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
         ----------
-        ax1 : int
+        axis1 : int
            the first axis vector
-        ax2 : int
+        axis2 : int
            the second axis vector
         origin : bool, optional
            whether the plane intersects the origin or the opposite corner of the
@@ -578,7 +587,7 @@ class Lattice(
         Hence this may be used to further reduce certain computations.
         """
         cell = self.cell
-        n = cross3(cell[ax1], cell[ax2])
+        n = cross3(cell[axis1], cell[axis2])
         # Normalize
         n /= dot3(n, n) ** 0.5
         # Now we need to figure out if the normal vector
@@ -638,7 +647,7 @@ class Lattice(
         """
         return cell_reciprocal(self.cell)
 
-    def cell2length(self, length, axes=(0, 1, 2)) -> ndarray:
+    def cell2length(self, length, axes: Axies = (0, 1, 2)) -> ndarray:
         """Calculate cell vectors such that they each have length `length`
 
         Parameters
@@ -682,7 +691,9 @@ class Lattice(
 
     __radd__ = __add__
 
-    def add_vacuum(self, vacuum, axis, orthogonal_to_plane=False) -> Lattice:
+    def add_vacuum(
+        self, vacuum: float, axis: Axis, orthogonal_to_plane: bool = False
+    ) -> Lattice:
         """Returns a new object with vacuum along the `axis` lattice vector
 
         Parameters
@@ -868,7 +879,7 @@ class Lattice(
             "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct."
         )
 
-    def is_orthogonal(self, tol=0.001) -> bool:
+    def is_orthogonal(self, tol: float = 0.001) -> bool:
         """
         Returns true if the cell vectors are orthogonal.
 
@@ -888,7 +899,7 @@ class Lattice(
         i_s = dot3(cell[1], cell[2]) < tol and i_s
         return i_s
 
-    def is_cartesian(self, tol=0.001) -> bool:
+    def is_cartesian(self, tol: float = 0.001) -> bool:
         """
         Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)
 
@@ -902,7 +913,7 @@ class Lattice(
         # Check if any of them are above the threshold tolerance
         return ~np.any(np.abs(off_diagonal) > tol)
 
-    def parallel(self, other, axis=(0, 1, 2)) -> bool:
+    def parallel(self, other, axis: Axies = (0, 1, 2)) -> bool:
         """Returns true if the cell vectors are parallel to `other`
 
         Parameters
@@ -921,20 +932,20 @@ class Lattice(
                 return False
         return True
 
-    def angle(self, i, j, rad=False) -> float:
+    def angle(self, axis1: Axis, axis2: Axis, rad: bool = False) -> float:
         """The angle between two of the cell vectors
 
         Parameters
         ----------
-        i : int
+        axis1 : int
            the first cell vector
-        j : int
+        axis2 : int
            the second cell vector
         rad : bool, optional
            whether the returned value is in radians
         """
-        n = fnorm(self.cell[[i, j]])
-        ang = math.acos(dot3(self.cell[i], self.cell[j]) / (n[0] * n[1]))
+        n = fnorm(self.cell[[axis1, axis2]])
+        ang = math.acos(dot3(self.cell[axis1], self.cell[axis2]) / (n[0] * n[1]))
         if rad:
             return ang
         return math.degrees(ang)
@@ -959,11 +970,13 @@ class Lattice(
             with get_sile(sile, mode="r") as fh:
                 return fh.read_lattice(*args, **kwargs)
 
-    def equal(self, other, tol=1e-4) -> bool:
+    def equal(self, other, tol: float = 1e-4) -> bool:
         """Check whether two lattices are equivalent
 
         Parameters
         ----------
+        other : Lattice
+           the other object to check whether the lattice is equivalent
         tol : float, optional
             tolerance value for the cell vectors and origin
         """

@@ -22,6 +22,9 @@ if TYPE_CHECKING:
 __all__ = [
     "AtomsArgument",
     "AtomsLike",
+    "Axes",
+    "Axies",
+    "Axis",
     "Coord",
     "CoordOrScalar",
     "FuncType",
@@ -43,6 +46,10 @@ AtomsLike = Union[
     "Atom",
     "Atoms",
 ]
+
+Axis = int
+Axes = Sequence[int]
+Axies = Union[Axis, Axes]
 
 Coord = Sequence[float]
 CoordOrScalar = Union[float, Coord]

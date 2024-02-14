@@ -84,8 +84,8 @@ def tile(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
 
     See Also
     --------
-    repeat: a different ordering of the final geometry
-    untile : opposite of this method
+    SparseAtom.repeat: a different ordering of the final geometry
+    SparseAtom.untile : opposite of this method
     Geometry.tile: the same ordering as the final geometry
     Geometry.repeat: a different ordering of the final geometry
     """
@@ -171,7 +171,7 @@ def repeat(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     --------
     Geometry.repeat: the same ordering as the final geometry
     Geometry.tile: a different ordering of the final geometry
-    tile: a different ordering of the final geometry
+    SparseAtom.tile: a different ordering of the final geometry
     """
     # Create the new sparse object
     g = SA.geometry.repeat(reps, axis)
@@ -260,8 +260,8 @@ def tile(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
 
     See Also
     --------
-    repeat: a different ordering of the final geometry
-    untile : opposite of this method
+    SparseOrbital.repeat: a different ordering of the final geometry
+    SparseOrbital.untile : opposite of this method
     Geometry.tile: the same ordering as the final geometry
     Geometry.repeat: a different ordering of the final geometry
     """
@@ -346,7 +346,7 @@ def repeat(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     --------
     Geometry.repeat: the same ordering as the final geometry
     Geometry.tile: a different ordering of the final geometry
-    tile: a different ordering of the final geometry
+    SparseOrbital.tile: a different ordering of the final geometry
     """
     # Create the new sparse object
     g = SO.geometry.repeat(reps, axis)
@@ -460,7 +460,7 @@ def sub(SA: SparseAtom, atoms: AtomsArgument) -> SparseAtom:
     --------
     Geometry.remove : the negative of `Geometry.sub`
     Geometry.sub : equivalent to the resulting `Geometry` from this routine
-    remove : the negative of `sub`, i.e. remove a subset of atoms
+    SparseAtom.remove : the negative of `sub`, i.e. remove a subset of atoms
     """
     atoms = SA.sc2uc(atoms)
     geom = SA.geometry.sub(atoms)
@@ -501,7 +501,7 @@ def sub(SO: SparseOrbital, atoms: AtomsArgument) -> SparseOrbital:
     --------
     Geometry.remove : the negative of `Geometry.sub`
     Geometry.sub : equivalent to the resulting `Geometry` from this routine
-    remove : the negative of `sub`, i.e. remove a subset of atoms
+    SparseOrbital.remove : the negative of `sub`, i.e. remove a subset of atoms
     """
     atoms = SO.sc2uc(atoms)
     orbs = SO.a2o(atoms, all=True)

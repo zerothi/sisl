@@ -58,7 +58,8 @@ def write(geometry: Geometry, sile: SileLike, *args, **kwargs) -> None:
 
     See Also
     --------
-    read : reads a `Geometry` from a given `Sile`/file
+    Geometry.read : reads a `Geometry` from a given `Sile`/file
+    write : generic sisl function dispatcher
     """
     # This only works because, they *must*
     # have been imported previously
@@ -634,10 +635,10 @@ def insert(geometry: Geometry, atom: AtomsArgument, other: GeometryLike) -> Geom
 
     See Also
     --------
-    add : add geometries
-    append : appending geometries
-    prepend : prending geometries
-    attach : attach a geometry
+    Geometry.add : add geometries
+    Geometry.append : appending geometries
+    Geometry.prepend : prending geometries
+    Geometry.attach : attach a geometry
     """
     atom = geometry._sanitize_atoms(atom)
     if atom.size > 1:
@@ -691,8 +692,8 @@ def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
 
     See Also
     --------
-    repeat : equivalent but different ordering of final structure
-    untile : opposite method of this
+    Geometry.repeat : equivalent but different ordering of final structure
+    Geometry.untile : opposite method of this
     """
     if reps < 1:
         raise ValueError(
@@ -769,8 +770,8 @@ def untile(
 
     See Also
     --------
-    tile : opposite method of this
-    repeat : equivalent geometry as `tile` but different ordering of final structure
+    Geometry.tile : opposite method of this
+    Geometry.repeat : equivalent geometry as `tile` but different ordering of final structure
     """
     if geometry.na % reps != 0:
         raise ValueError(
@@ -848,8 +849,8 @@ def repeat(geometry: Geometry, reps: int, axis: int) -> Geometry:
 
     See Also
     --------
-    tile : equivalent geometry as `repeat` but different ordering of final structure
-    unrepeat : opposite method of this
+    Geometry.tile : equivalent geometry as `repeat` but different ordering of final structure
+    Geometry.unrepeat : opposite method of this
     """
     if reps < 1:
         raise ValueError(
@@ -886,7 +887,7 @@ def unrepeat(geometry: Geometry, reps: int, axis: int, *args, **kwargs) -> Geome
 
     See Also
     --------
-    repeat : opposite method of this
+    Geometry.repeat : opposite method of this
     """
     atoms = np.arange(geometry.na).reshape(-1, reps).T.ravel()
     return geometry.sub(atoms).untile(reps, axis, *args, **kwargs)
@@ -946,7 +947,7 @@ def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     See Also
     --------
     Lattice.fit : update the supercell according to a reference supercell
-    remove : the negative of this routine, i.e. remove a subset of atoms
+    Geometry.remove : the negative of this routine, i.e. remove a subset of atoms
     """
     atoms = geometry.sc2uc(atoms)
     return geometry.__class__(
@@ -971,7 +972,7 @@ def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
 
     See Also
     --------
-    sub : the negative of this routine, i.e. retain a subset of atoms
+    Geometry.sub : the negative of this routine, i.e. retain a subset of atoms
     """
     atoms = geometry.sc2uc(atoms)
     if atoms.size == 0:
@@ -1042,7 +1043,7 @@ def rotate(
     See Also
     --------
     Quaternion : class to rotate
-    Lattice.rotate : rotation passed to the contained supercell
+    Lattice.rotate : rotation for a Lattice object
     """
     if origin is None:
         origin = [0.0, 0.0, 0.0]
@@ -1280,10 +1281,10 @@ def append(
 
     See Also
     --------
-    add : add geometries
-    prepend : prending geometries
-    attach : attach a geometry
-    insert : insert a geometry
+    Geometry.add : add geometries
+    Geometry.prepend : prending geometries
+    Geometry.attach : attach a geometry
+    Geometry.insert : insert a geometry
     """
     if isinstance(other, Lattice):
         # Only extend the supercell.
@@ -1368,10 +1369,10 @@ def prepend(
 
     See Also
     --------
-    add : add geometries
-    append : appending geometries
-    attach : attach a geometry
-    insert : insert a geometry
+    Geometry.add : add geometries
+    Geometry.append : appending geometries
+    Geometry.attach : attach a geometry
+    Geometry.insert : insert a geometry
     """
     if isinstance(other, Lattice):
         # Only extend the supercell.
@@ -1436,10 +1437,10 @@ def add(
 
     See Also
     --------
-    append : appending geometries
-    prepend : prending geometries
-    attach : attach a geometry
-    insert : insert a geometry
+    Geometry.append : appending geometries
+    Geometry.prepend : prending geometries
+    Geometry.attach : attach a geometry
+    Geometry.insert : insert a geometry
 
     Examples
     --------

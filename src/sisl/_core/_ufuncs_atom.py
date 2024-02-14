@@ -208,7 +208,7 @@ def remove(atom: Atom, orbitals: IndexArgument) -> Atom:
 
     See Also
     --------
-    sub : retain a selected set of orbitals
+    Atom.sub : retain a selected set of orbitals
     """
     orbs = np.delete(_a.arangei(atom.no), orbitals)
     return atom.sub(orbs)

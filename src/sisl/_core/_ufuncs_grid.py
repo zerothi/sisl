@@ -47,7 +47,7 @@ def write(grid: Grid, sile: SileLike, *args, **kwargs) -> None:
 
     See Also
     --------
-    read : reads a `Grid` from a given `Sile`/file
+    Grid.read : reads a `Grid` from a given `Sile`/file
     """
     # this only works because, they *must*
     # have been imported previously

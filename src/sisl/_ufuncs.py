@@ -64,9 +64,7 @@ def _append_doc_dispatch(method: FuncType, cls: type):
     method_registry = _registry[name]
 
     # Append to doc string
-    doc = (
-        f"\n{cls.__name__}.{name}: equivalent to '{name}({cls.__name__.lower()}, ...)'."
-    )
+    doc = f"\n{cls.__name__}.{name}: equivalent to ``{name}({cls.__name__.lower()}, ...)``."
     method_registry.__doc__ += doc
 
 
@@ -92,9 +90,9 @@ def register_sisl_dispatch(
             # create a new method that will be stored
             # as a place-holder for the dispatch methods.
 
-            def method_registry(*args, **kwargs):
+            def method_registry(obj, *args, **kwargs):
                 raise SislError(
-                    f"Calling '{name}' with a non-registered type, {type(args[0])} has not been registered."
+                    f"Calling '{name}' with a non-registered type, {type(obj)} has not been registered."
                 )
 
             doc = dedent(
