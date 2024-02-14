@@ -1,0 +1,27 @@
+# This config is used by pre-commit to run hooks on files before committing them to git
+# To use it install pre-commit with:
+#     `pip install pre-commit`
+# and run
+#     `pre-commit install`
+# in the root of the repository
+# From that point onwards, pre-commit will run the hooks on every commit.
+# If pre-commit does some modification, the commit will fail. Add the
+# changes done by pre-commit and commit again.
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+# Black to format code with a consistent style
+- repo: https://github.com/psf/black-pre-commit-mirror
+  rev: 24.2.0
+  hooks:
+    - id: black-jupyter
+# isort to automatically sort imports
+- repo: https://github.com/pycqa/isort
+  rev: 5.12.0
+  hooks:
+    - id: isort
+      name: isort (python)
