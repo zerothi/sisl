@@ -1,4 +1,5 @@
 """File meant to be compiled with Cython so that operations are much faster."""
+
 from __future__ import annotations
 
 import cython
@@ -405,7 +406,7 @@ def get_all_unique_pairs(
                 neigh_at = list_array[neigh_at]
 
     # Return the array of neighbours, but only the filled part
-    return np.array(neighs[: i_pair])
+    return np.array(neighs[:i_pair])
 
 
 @cython.boundscheck(False)
