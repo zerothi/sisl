@@ -7,5 +7,5 @@ foreach(source _operations)
     OUTPUT ${source}_C
     )
   install(TARGETS ${source} LIBRARY
-    DESTINATION ${SKBUILD_PROJECT_NAME}/geom/neighs)
+    DESTINATION ${SKBUILD_PROJECT_NAME}/geom/_neighbors)
 endforeach()

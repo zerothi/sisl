@@ -1,1 +1,1 @@
-add_subdirectory("neighs")
+add_subdirectory("_neighbors")
