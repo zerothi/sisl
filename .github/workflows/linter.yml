@@ -10,5 +10,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: psf/black@stable
         with:
+          version: "~= 24.0"
           jupyter: true
       - uses: isort/isort-action@master
