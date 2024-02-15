@@ -77,7 +77,7 @@ def get_pairs(
     cell: cnp.float64_t[:, :],
     pbc: cnp.npy_bool[:],
     thresholds: cnp.float64_t[:],
-    sphere_overlap: cython.bint,
+    overlap: cython.bint,
 ):
     """Gets (possibly duplicated) pairs of neighbour atoms.
 
@@ -119,7 +119,7 @@ def get_pairs(
         be considered.
     thresholds:
         the threshold radius for each atom in the geometry.
-    sphere_overlap:
+    overlap:
         If true, two atoms are considered neighbours if their spheres
         overlap.
         If false, two atoms are considered neighbours if the second atom
@@ -210,7 +210,7 @@ def get_pairs(
 
                 # Get the threshold for this pair of atoms
                 threshold: float = thresholds[at]
-                if sphere_overlap:
+                if overlap:
                     # If the user wants to check for sphere overlaps, we have
                     # to sum the radius of the neighbor to the threshold
                     threshold = threshold + thresholds[neigh_at]
@@ -248,7 +248,7 @@ def get_all_unique_pairs(
     cell: cnp.float64_t[:, :],
     pbc: cnp.npy_bool[:],
     thresholds: cnp.float64_t[:],
-    sphere_overlap: cython.bint,
+    overlap: cython.bint,
 ):
     """Gets all unique pairs of atoms that are neighbours.
 
@@ -287,7 +287,7 @@ def get_all_unique_pairs(
         be considered.
     thresholds:
         the threshold radius for each atom in the geometry.
-    sphere_overlap:
+    overlap:
         If true, two atoms are considered neighbours if their spheres
         overlap.
         If false, two atoms are considered neighbours if the second atom
@@ -302,20 +302,16 @@ def get_all_unique_pairs(
         Columns 3 to 5 contain the supercell indices of the neighbour
         atom (the one in column 2, column 1 atoms are always in the
         unit cell).
-      npairs:
-        The number of unique pairs that have been found, which
-        will be less than `max_npairs`. This should presumably
-        be used to slice the `neighs` array once in python.
     """
 
     N_ats = list_array.shape[0]
-
-    i_pair: cython.size_t = 0
 
     ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
     neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
 
     neighs: cnp.int64_t[:, :] = np.zeros([max_npairs, 5], dtype=np.int64)
+    # Counter for filling neighs
+    i_pair: cython.size_t = 0
 
     for at in range(N_ats):
         if self_interaction:
@@ -325,7 +321,7 @@ def get_all_unique_pairs(
             neighs[i_pair, 2:] = 0
 
             # Increment the pair index
-            i_pair = i_pair + 1
+            i_pair += 1
 
         for j in range(8):
             # Find the bin index.
@@ -389,7 +385,7 @@ def get_all_unique_pairs(
 
                 # Get the threshold for this pair of atoms
                 threshold: float = thresholds[at]
-                if sphere_overlap:
+                if overlap:
                     # If the user wants to check for sphere overlaps, we have
                     # to sum the radius of the neighbor to the threshold
                     threshold = threshold + thresholds[neigh_at]
@@ -403,13 +399,13 @@ def get_all_unique_pairs(
                     neighs[i_pair, 4] = neigh_isc[2]
 
                     # Increment the pair index
-                    i_pair = i_pair + 1
+                    i_pair += 1
 
                 # Get the next atom in this bin. Sum 1 to get fortran index.
                 neigh_at = list_array[neigh_at]
 
     # Return the array of neighbours, but only the filled part
-    return np.asarray(neighs[: i_pair + 1]), i_pair
+    return np.array(neighs[: i_pair])
 
 
 @cython.boundscheck(False)
@@ -454,8 +450,6 @@ def get_close(
         It is used to allocate the `neighs` array. This is computed
         in python with the help of the `counts` array constructed
         by `build_table`.
-    self_interaction: bool, optional
-        whether to consider an atom a neighbour of itself.
     xyz:
         the cartesian coordinates of all atoms in the geometry.
     cell:
@@ -466,12 +460,6 @@ def get_close(
         be considered.
     thresholds:
         the threshold radius for each atom in the geometry.
-    sphere_overlap:
-        If true, two atoms are considered neighbours if their spheres
-        overlap.
-        If false, two atoms are considered neighbours if the second atom
-        is within the sphere of the first atom. Note that this implies that
-        atom `i` might be atom `j`'s neighbour while the opposite is not true.
 
     Returns
     --------

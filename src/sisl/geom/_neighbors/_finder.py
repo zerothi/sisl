@@ -539,7 +539,7 @@ class NeighborFinder:
             max_pairs -= search_indices.shape[0]
 
         # Find all unique neighbor pairs
-        neighbor_pairs, n_pairs = _operations.get_all_unique_pairs(
+        neighbor_pairs = _operations.get_all_unique_pairs(
             search_indices,
             isc,
             self._heads,
@@ -553,7 +553,7 @@ class NeighborFinder:
             self._overlap,
         )
 
-        return neighbor_pairs[:n_pairs]
+        return neighbor_pairs
 
     def find_close(
         self,
