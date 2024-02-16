@@ -6,14 +6,17 @@ import functools
 import importlib
 import inspect
 import operator as op
+import re
 import sys
 from math import pi
 from numbers import Integral
+from typing import Union
 
 __all__ = ["merge_instances", "str_spec", "direction", "angle"]
 __all__ += ["iter_shape", "math_eval", "allow_kwargs"]
 __all__ += ["import_attr", "lazy_import"]
 __all__ += ["PropertyDict", "NotNonePropertyDict"]
+__all__ += ["size_to_num", "size_to_elements"]
 
 
 # supported operators
@@ -79,6 +82,69 @@ def merge_instances(*args, **kwargs):
     for arg in args:
         m.__dict__.update(arg.__dict__)
     return m
+
+
+def size_to_num(size: Union[int, float, str], unit: str = "MB") -> float:
+    """Convert a size-specification to a size in a specific `unit`
+
+    Converts the input value (`size`) into a number corresponding to
+    the `size` converted to the specified `unit`.
+
+    If `size` is passed as an integer (or float), it will be interpreted
+    as a size in MB. Otherwise the string may contain the size specification.
+    """
+    if isinstance(size, (float, int)):
+        return size
+
+    # Now parse the size from a string
+    match = re.match(r"(\d+[.\d]*)(\D*)", size)
+    size = float(match[1].strip())
+    unit_in = match[2].strip()
+
+    # Now parse things
+    # We expect data to be in MB (default unit)
+    # Then we can always convert
+    conv = {
+        "b": 1 / (1024 * 1024),
+        "B": 1 / (1024 * 1024),
+        "k": 1 / 1024,
+        "kB": 1 / 1024,
+        "kb": 1 / 1024,
+        "kB": 1 / 1024,
+        "mb": 1,
+        "M": 1,
+        "MB": 1,
+        "G": 1024,
+        "GB": 1024,
+        "T": 1024 * 1024,
+        "TB": 1024 * 1024,
+    }
+
+    if unit_in:
+        unit_in = conv[unit_in]
+    else:
+        unit_in = 1
+
+    # Convert the requested unit
+    unit = conv[unit]
+
+    return size * unit_in / unit
+
+
+def size_to_elements(size: Union[int, str], byte_per_elem: int = 8) -> int:
+    """Calculate the number of elements such that they occupy `size` memory
+
+    Parameters
+    ----------
+    size :
+        a size specification, either by an integer, or a str. If an integer it is
+        assumed to be in MB, otherwise the str can hold a unit specification.
+    byte_per_elem
+        number of bytes per element when doing the conversion
+    """
+    size = size_to_num(size, unit="B")
+
+    return int(size // byte_per_elem)
 
 
 def iter_shape(shape):

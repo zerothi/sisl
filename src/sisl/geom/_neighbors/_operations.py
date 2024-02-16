@@ -41,8 +41,10 @@ def build_table(nbins: cnp.int64_t, bin_indices: cnp.int64_t[:]):
 
     list_array_obj = np.zeros(n_atoms, dtype=np.int64)
     list_array: cnp.int64_t[:] = list_array_obj
+
     counts_obj = np.zeros(nbins, dtype=np.int64)
     counts: cnp.int64_t[:] = counts_obj
+
     heads_obj = np.full(nbins, -1, dtype=np.int64)
     heads: cnp.int64_t[:] = heads_obj
 
@@ -72,13 +74,14 @@ def get_pairs(
     iscs: cnp.int64_t[:, :, :],
     heads: cnp.int64_t[:],
     list_array: cnp.int64_t[:],
-    max_npairs: cnp.int64_t,
     self_interaction: cython.bint,
     xyz: cnp.float64_t[:, :],
     cell: cnp.float64_t[:, :],
     pbc: cnp.npy_bool[:],
     thresholds: cnp.float64_t[:],
     overlap: cython.bint,
+    init_npairs: cython.size_t,
+    grow_factor: cnp.float64_t,
 ):
     """Gets (possibly duplicated) pairs of neighbour atoms.
 
@@ -103,11 +106,6 @@ def get_pairs(
         If an item is -1, it means that there are no more
         atoms in the same bin.
         This array is constructed by `build_table`.
-    max_npairs:
-        The number of maximum pairs that can be found.
-        It is used to allocate the `neighs` array. This is computed
-        in python with the help of the `counts` array constructed
-        by `build_table`.
     self_interaction: bool, optional
         whether to consider an atom a neighbour of itself.
     xyz:
@@ -126,6 +124,16 @@ def get_pairs(
         If false, two atoms are considered neighbours if the second atom
         is within the sphere of the first atom. Note that this implies that
         atom `i` might be atom `j`'s neighbour while the opposite is not true.
+    init_npairs:
+        The initial number of pairs that can be found.
+        It is used to allocate the `neighs` array. This is computed
+        in python with the help of the `counts` array constructed
+        by `build_table`.
+        This is not limiting the final size, but is used to pre-allocate
+        a growing array.
+    grow_factor:
+        the grow factor of the size when the neighbor list needs
+        to grow.
 
     Returns
     --------
@@ -139,15 +147,26 @@ def get_pairs(
     """
     N_ind = at_indices.shape[0]
 
-    i_pair: cython.size_t = 0
+    ref_xyz: cnp.float64_t[:] = np.empty(3, dtype=np.float64)
+    neigh_isc: cnp.int64_t[:] = np.empty(3, dtype=np.int64)
 
-    ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
-    neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
+    def grow():
+        nonlocal neighs_obj, neighs, grow_factor
 
-    neighs_obj: cnp.ndarray = np.zeros([max_npairs, 5], dtype=np.int64)
+        n: cython.size_t = neighs.shape[0]
+        new_neighs_obj = np.empty([int(n * grow_factor), 5], dtype=np.int64)
+        new_neighs_obj[:n, :] = neighs_obj[:, :]
+        neighs_obj = new_neighs_obj
+        neighs = neighs_obj
+
+    neighs_obj: cnp.ndarray = np.empty([init_npairs, 5], dtype=np.int64)
     neighs: cnp.int64_t[:, :] = neighs_obj
+
     split_indices_obj: cnp.ndarray = np.zeros(N_ind, dtype=np.int64)
     split_indices: cnp.int64_t[:] = split_indices_obj
+
+    # Counter for filling neighs
+    i_pair: cython.size_t = 0
 
     for search_index in range(N_ind):
         at = at_indices[search_index]
@@ -217,6 +236,10 @@ def get_pairs(
                     threshold = threshold + thresholds[neigh_at]
 
                 if dist < threshold:
+
+                    if i_pair >= neighs.shape[0]:
+                        grow()
+
                     # Store the pair of neighbours.
                     neighs[i_pair, 0] = at
                     neighs[i_pair, 1] = neigh_at
@@ -233,7 +256,8 @@ def get_pairs(
         # We have finished this search, store the breakpoint.
         split_indices[search_index] = i_pair
 
-    return neighs_obj, split_indices_obj
+    # We copy to allow GC to remove the full array
+    return neighs_obj[:i_pair, :].copy(), split_indices_obj
 
 
 @cython.boundscheck(False)
@@ -243,13 +267,14 @@ def get_all_unique_pairs(
     iscs: cnp.int64_t[:, :, :],
     heads: cnp.int64_t[:],
     list_array: cnp.int64_t[:],
-    max_npairs: cnp.int64_t,
     self_interaction: cython.bint,
     xyz: cnp.float64_t[:, :],
     cell: cnp.float64_t[:, :],
     pbc: cnp.npy_bool[:],
     thresholds: cnp.float64_t[:],
     overlap: cython.bint,
+    init_npairs: cython.size_t,
+    grow_factor: cnp.float64_t,
 ):
     """Gets all unique pairs of atoms that are neighbours.
 
@@ -271,11 +296,6 @@ def get_all_unique_pairs(
         If an item is -1, it means that there are no more
         atoms in the same bin.
         This array is constructed by `build_table`.
-    max_npairs:
-        The number of maximum pairs that can be found.
-        It is used to allocate the `neighs` array. This is computed
-        in python with the help of the `counts` array constructed
-        by `build_table`.
     self_interaction: bool, optional
         whether to consider an atom a neighbour of itself.
     xyz:
@@ -294,6 +314,16 @@ def get_all_unique_pairs(
         If false, two atoms are considered neighbours if the second atom
         is within the sphere of the first atom. Note that this implies that
         atom `i` might be atom `j`'s neighbour while the opposite is not true.
+    init_npairs:
+        The initial number of pairs that can be found.
+        It is used to allocate the `neighs` array. This is computed
+        in python with the help of the `counts` array constructed
+        by `build_table`.
+        This is not limiting the final size, but is used to pre-allocate
+        a growing array.
+    grow_factor:
+        the grow factor of the size when the neighbor list needs
+        to grow.
 
     Returns
     --------
@@ -307,15 +337,29 @@ def get_all_unique_pairs(
 
     N_ats = list_array.shape[0]
 
-    ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
-    neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
+    ref_xyz: cnp.float64_t[:] = np.empty(3, dtype=np.float64)
+    neigh_isc: cnp.int64_t[:] = np.empty(3, dtype=np.int64)
 
-    neighs: cnp.int64_t[:, :] = np.zeros([max_npairs, 5], dtype=np.int64)
+    def grow():
+        nonlocal neighs_obj, neighs, grow_factor
+
+        n: cython.size_t = neighs.shape[0]
+        new_neighs_obj = np.empty([int(n * grow_factor), 5], dtype=np.int64)
+        new_neighs_obj[:n, :] = neighs_obj[:, :]
+        neighs_obj = new_neighs_obj
+        neighs = neighs_obj
+
+    neighs_obj: cnp.ndarray = np.empty([init_npairs, 5], dtype=np.int64)
+    neighs: cnp.int64_t[:, :] = neighs_obj
+
     # Counter for filling neighs
     i_pair: cython.size_t = 0
 
     for at in range(N_ats):
         if self_interaction:
+            if i_pair >= neighs.shape[0]:
+                grow()
+
             # Add the self interaction
             neighs[i_pair, 0] = at
             neighs[i_pair, 1] = at
@@ -392,6 +436,9 @@ def get_all_unique_pairs(
                     threshold = threshold + thresholds[neigh_at]
 
                 if dist < threshold:
+                    if i_pair >= neighs.shape[0]:
+                        grow()
+
                     # Store the pair of neighbours.
                     neighs[i_pair, 0] = at
                     neighs[i_pair, 1] = neigh_at
@@ -406,7 +453,8 @@ def get_all_unique_pairs(
                 neigh_at = list_array[neigh_at]
 
     # Return the array of neighbours, but only the filled part
-    return np.array(neighs[:i_pair])
+    # We copy to remove the unneeded data-sizes
+    return neighs_obj[:i_pair].copy()
 
 
 @cython.boundscheck(False)
@@ -417,11 +465,12 @@ def get_close(
     iscs: cnp.int64_t[:, :, :],
     heads: cnp.int64_t[:],
     list_array: cnp.int64_t[:],
-    max_npairs: cnp.int64_t,
     xyz: cnp.float64_t[:, :],
     cell: cnp.float64_t[:, :],
     pbc: cnp.npy_bool[:],
     thresholds: cnp.float64_t[:],
+    init_npairs: cython.size_t,
+    grow_factor: cnp.float64_t,
 ):
     """Gets the atoms that are close to given positions
 
@@ -446,11 +495,6 @@ def get_close(
         If an item is -1, it means that there are no more
         atoms in the same bin.
         This array is constructed by `build_table`.
-    max_npairs:
-        The number of maximum pairs that can be found.
-        It is used to allocate the `neighs` array. This is computed
-        in python with the help of the `counts` array constructed
-        by `build_table`.
     xyz:
         the cartesian coordinates of all atoms in the geometry.
     cell:
@@ -461,6 +505,16 @@ def get_close(
         be considered.
     thresholds:
         the threshold radius for each atom in the geometry.
+    init_npairs:
+        The initial number of pairs that can be found.
+        It is used to allocate the `neighs` array. This is computed
+        in python with the help of the `counts` array constructed
+        by `build_table`.
+        This is not limiting the final size, but is used to pre-allocate
+        a growing array.
+    grow_factor:
+        the grow factor of the size when the neighbor list needs
+        to grow.
 
     Returns
     --------
@@ -475,13 +529,25 @@ def get_close(
 
     N_ind = search_xyz.shape[0]
 
+    ref_xyz: cnp.float64_t[:] = np.empty(3, dtype=np.float64)
+    neigh_isc: cnp.int64_t[:] = np.empty(3, dtype=np.int64)
+
+    def grow():
+        nonlocal neighs_obj, neighs, grow_factor
+
+        n: cython.size_t = neighs.shape[0]
+        new_neighs_obj = np.empty([int(n * grow_factor), 5], dtype=np.int64)
+        new_neighs_obj[:n, :] = neighs_obj[:, :]
+        neighs_obj = new_neighs_obj
+        neighs = neighs_obj
+
+    neighs_obj: cnp.ndarray = np.empty([init_npairs, 5], dtype=np.int64)
+    neighs: cnp.int64_t[:, :] = neighs_obj
+
+    split_indices_obj: cnp.ndarray = np.zeros(N_ind, dtype=np.int64)
+    split_indices: cnp.int64_t[:] = split_indices_obj
+
     i_pair: cython.size_t = 0
-
-    ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
-    neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
-
-    neighs: cnp.int64_t[:, :] = np.zeros((max_npairs, 5), dtype=np.int64)
-    split_indices: cnp.int64_t[:] = np.zeros(N_ind, dtype=np.int64)
 
     for search_index in range(N_ind):
         for j in range(8):
@@ -539,6 +605,10 @@ def get_close(
                 threshold: float = thresholds[neigh_at]
 
                 if dist < threshold:
+
+                    if i_pair >= neighs.shape[0]:
+                        grow()
+
                     # Store the pair of neighbours.
                     neighs[i_pair, 0] = search_index
                     neighs[i_pair, 1] = neigh_at
@@ -555,4 +625,4 @@ def get_close(
         # We have finished this search, store the breakpoint.
         split_indices[search_index] = i_pair
 
-    return np.asarray(neighs), np.asarray(split_indices)
+    return neighs_obj[:i_pair, :].copy(), split_indices_obj

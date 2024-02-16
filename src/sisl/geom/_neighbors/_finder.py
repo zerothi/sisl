@@ -4,6 +4,7 @@ import numpy as np
 
 from sisl import Geometry
 from sisl.typing import AtomsArgument
+from sisl.utils import size_to_elements
 
 from . import _operations
 
@@ -35,11 +36,22 @@ class NeighborFinder:
         overlap.
         If `False`, two atoms are considered neighbors if the second atom
         is within the sphere of the first atom. Note that this implies that
-        atom `i` might be atom `j`'s neighbor while the opposite is not true.
+        atom ``i`` might be atom ``j``'s neighbor while the opposite is not true.
 
         If not provided, it will be `True` if `R` is an array and `False` if
         it is a single float.
+    bin_size : float, optional
+        the factor for the radius to determine how large the bins are.
+        It can minimally be 2, meaning that the maximum radius to consider
+        is twice the radius considered. For larger values, more atoms will be in
+        each bin (and thus fewer bins).
+        Hence, this value can be used to fine-tune the memory requirement by
+        decreasing number of bins, at the cost of a bit more run-time searching
+        bins.
     """
+
+    #: Memory control of the finder
+    memory: Tuple[str, float] = ("200MB", 1.5)
 
     geometry: Geometry
     # Geometry actually used for binning. Can be the provided geometry
@@ -63,14 +75,16 @@ class NeighborFinder:
         geometry: Geometry,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = False,
+        bin_size: float = 2,
     ):
-        self.setup(geometry, R=R, overlap=overlap)
+        self.setup(geometry, R=R, overlap=overlap, bin_size=bin_size)
 
     def setup(
         self,
         geometry: Optional[Geometry] = None,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = None,
+        bin_size: float = 2,
     ):
         """Prepares everything for neighbor finding.
 
@@ -94,7 +108,15 @@ class NeighborFinder:
             overlap.
             If `False`, two atoms are considered neighbors if the second atom
             is within the sphere of the first atom. Note that this implies that
-            atom `i` might be atom `j`'s neighbor while the opposite is not true.
+            atom ``i`` might be atom ``j``'s neighbor while the opposite is not true.
+        bin_size :
+            the factor for the radius to determine how large the bins are.
+            It can minimally be 2, meaning that the maximum radius to consider
+            is twice the radius considered. For larger values, more atoms will be in
+            each bin (and thus fewer bins).
+            Hence, this value can be used to fine-tune the memory requirement by
+            decreasing number of bins, at the cost of a bit more run-time searching
+            bins.
         """
         # Set the geometry. Copy it because we may need to modify the supercell size.
         if geometry is not None:
@@ -116,16 +138,24 @@ class NeighborFinder:
 
         # Determine the bin_size as the maximum DIAMETER to ensure that we ALWAYS
         # only need to look one bin away for neighbors.
-        bin_size = np.max(self.R) * 2
+        max_R = np.max(self.R)
+        if overlap:
+            # In the case when we want to check for sphere overlap, the size should
+            # be twice as big.
+            max_R *= 2
+
+        if bin_size < 2:
+            raise ValueError(
+                "The bin_size must be larger than 2 to only search in the "
+                "neighboring bins. Please increase to a value >=2"
+            )
+
+        bin_size = max_R * bin_size
         # Check that the bin size is positive.
         if bin_size <= 0:
             raise ValueError(
                 "All R values are 0 or less. Please provide some positive values"
             )
-        if overlap:
-            # In the case when we want to check for sphere overlap, the size should
-            # be twice as big.
-            bin_size *= 2
 
         # We add a small amount to bin_size to avoid ambiguities when
         # a position is exactly at the center of a bin.
@@ -427,6 +457,12 @@ class NeighborFinder:
         max_pairs = at_counts.sum()
         if not self_interaction:
             max_pairs -= search_indices.shape[0]
+        init_pairs = min(
+            max_pairs,
+            # 8 bytes per element (int64)
+            # While this might be wrong on Win, it shouldn't matter
+            size_to_elements(self.memory[0], 8),
+        )
 
         # Find the neighbor pairs
         neighbor_pairs, split_ind = _operations.get_pairs(
@@ -435,13 +471,14 @@ class NeighborFinder:
             isc,
             self._heads,
             self._list,
-            max_pairs,
             self_interaction,
             self._bins_geometry.xyz,
             self._bins_geometry.cell,
             pbc,
             thresholds,
             self._overlap,
+            init_pairs,
+            self.memory[1],
         )
 
         # Correct neighbor indices for the case where R was too big and
@@ -454,9 +491,9 @@ class NeighborFinder:
         if as_pairs:
             # Just return the neighbor pairs
             return neighbor_pairs[: split_ind[-1]]
-        else:
-            # Split to get the neighbors of each atom
-            return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
+
+        # Split to get the neighbors of each atom
+        return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
 
     def find_all_unique_pairs(
         self,
@@ -537,6 +574,12 @@ class NeighborFinder:
         max_pairs = at_counts.sum()
         if not self_interaction:
             max_pairs -= search_indices.shape[0]
+        init_pairs = min(
+            max_pairs,
+            # 8 bytes per element (int64)
+            # While this might be wrong on Win, it shouldn't matter
+            size_to_elements(self.memory[0], 8),
+        )
 
         # Find all unique neighbor pairs
         neighbor_pairs = _operations.get_all_unique_pairs(
@@ -544,13 +587,14 @@ class NeighborFinder:
             isc,
             self._heads,
             self._list,
-            max_pairs,
             self_interaction,
             self.geometry.xyz,
             self.geometry.cell,
             pbc,
             thresholds,
             self._overlap,
+            init_pairs,
+            self.memory[1],
         )
 
         return neighbor_pairs
@@ -603,6 +647,12 @@ class NeighborFinder:
         at_counts = self._get_search_atom_counts(search_indices)
 
         max_pairs = at_counts.sum()
+        init_pairs = min(
+            max_pairs,
+            # 8 bytes per element (int64)
+            # While this might be wrong on Win, it shouldn't matter
+            size_to_elements(self.memory[0], 8),
+        )
 
         # Find the neighbor pairs
         neighbor_pairs, split_ind = _operations.get_close(
@@ -611,11 +661,12 @@ class NeighborFinder:
             isc,
             self._heads,
             self._list,
-            max_pairs,
             self._bins_geometry.xyz,
             self._bins_geometry.cell,
             pbc,
             thresholds,
+            init_pairs,
+            self.memory[1],
         )
 
         # Correct neighbor indices for the case where R was too big and
@@ -628,6 +679,5 @@ class NeighborFinder:
         if as_pairs:
             # Just return the neighbor pairs
             return neighbor_pairs[: split_ind[-1]]
-        else:
-            # Split to get the neighbors of each position
-            return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
+
+        return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
