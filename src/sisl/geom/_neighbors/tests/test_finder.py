@@ -260,3 +260,26 @@ def test_R_too_big(pbc):
 
     assert neighs.shape == (len(expected_neighs), 5)
     assert np.all(neighs == expected_neighs)
+
+
+def test_bin_sizes():
+    geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=[2, 10, 10])
+
+    # We should have fewer bins along the first lattice vector
+    n1 = NeighborFinder(geom, R=1.5, bin_size=2)
+    n2 = NeighborFinder(geom, R=1.5, bin_size=4)
+
+    assert n1.total_nbins > n2.total_nbins
+    # When the bin is bigger than the unit cell, this situation
+    # occurs
+    assert n1.nbins[0] == n2.nbins[0]
+    assert n1.nbins[1] > n2.nbins[1]
+    assert n1.nbins[2] > n2.nbins[2]
+
+    # We should have the same number of bins the 2nd and 3rd lattice vectors
+    n3 = NeighborFinder(geom, R=1.5, bin_size=2)
+    n4 = NeighborFinder(geom, R=1.5, bin_size=(2, 4, 4))
+
+    assert n3.nbins[0] == n4.nbins[0]
+    assert n3.nbins[1] > n4.nbins[1]
+    assert n3.nbins[2] > n4.nbins[2]

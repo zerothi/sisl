@@ -40,8 +40,9 @@ class NeighborFinder:
 
         If not provided, it will be `True` if `R` is an array and `False` if
         it is a single float.
-    bin_size : float, optional
-        the factor for the radius to determine how large the bins are.
+    bin_size : float or tuple of float, optional
+        the factor for the radius to determine how large the bins are,
+        optionally along each lattice vector.
         It can minimally be 2, meaning that the maximum radius to consider
         is twice the radius considered. For larger values, more atoms will be in
         each bin (and thus fewer bins).
@@ -75,7 +76,7 @@ class NeighborFinder:
         geometry: Geometry,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = False,
-        bin_size: float = 2,
+        bin_size: Union[float, Tuple[float, float, float]] = 2,
     ):
         self.setup(geometry, R=R, overlap=overlap, bin_size=bin_size)
 
@@ -84,7 +85,7 @@ class NeighborFinder:
         geometry: Optional[Geometry] = None,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = None,
-        bin_size: float = 2,
+        bin_size: Union[float, Tuple[float, float, float]] = 2,
     ):
         """Prepares everything for neighbor finding.
 
@@ -110,7 +111,8 @@ class NeighborFinder:
             is within the sphere of the first atom. Note that this implies that
             atom ``i`` might be atom ``j``'s neighbor while the opposite is not true.
         bin_size :
-            the factor for the radius to determine how large the bins are.
+            the factor for the radius to determine how large the bins are,
+            optionally along each lattice vector.
             It can minimally be 2, meaning that the maximum radius to consider
             is twice the radius considered. For larger values, more atoms will be in
             each bin (and thus fewer bins).
@@ -144,27 +146,28 @@ class NeighborFinder:
             # be twice as big.
             max_R *= 2
 
-        if bin_size < 2:
+        if max_R <= 0:
+            raise ValueError(
+                "All R values are 0 or less. Please provide some positive values"
+            )
+
+        bin_size = np.asarray(bin_size)
+        if np.any(bin_size < 2):
             raise ValueError(
                 "The bin_size must be larger than 2 to only search in the "
                 "neighboring bins. Please increase to a value >=2"
             )
 
         bin_size = max_R * bin_size
-        # Check that the bin size is positive.
-        if bin_size <= 0:
-            raise ValueError(
-                "All R values are 0 or less. Please provide some positive values"
-            )
 
         # We add a small amount to bin_size to avoid ambiguities when
         # a position is exactly at the center of a bin.
-        bin_size += 0.01
+        bin_size += 0.001
 
         lattice_sizes = self.geometry.length
 
-        if bin_size > np.min(lattice_sizes):
-            self._R_too_big = True
+        self._R_too_big = np.any(bin_size > lattice_sizes)
+        if self._R_too_big:
             # This means that nsc must be at least 5.
 
             # We round the amount of cells needed in each direction
@@ -188,8 +191,6 @@ class NeighborFinder:
             lattice_sizes = self._bins_geometry.length
 
         else:
-            # Nothing to modify, we can use the geometry and bin it as it is.
-            self._R_too_big = False
             self._bins_geometry = self.geometry
 
         # Get the number of bins along each cell direction.

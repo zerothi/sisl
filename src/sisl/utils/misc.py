@@ -108,7 +108,6 @@ def size_to_num(size: Union[int, float, str], unit: str = "MB") -> float:
         "b": 1 / (1024 * 1024),
         "B": 1 / (1024 * 1024),
         "k": 1 / 1024,
-        "kB": 1 / 1024,
         "kb": 1 / 1024,
         "kB": 1 / 1024,
         "mb": 1,
