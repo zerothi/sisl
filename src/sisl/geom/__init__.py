@@ -43,6 +43,7 @@ Surfaces
 
 """
 from ._composite import *
+from ._neighbors import *
 from .basic import *
 from .bilayer import *
 from .category import *

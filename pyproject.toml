@@ -12,7 +12,7 @@
 requires = [
     "setuptools_scm[toml]>=6.2",
     "scikit-build-core[pyproject]",
-    "Cython>=0.29.28",
+    "Cython>=3",
     # see https://github.com/scipy/oldest-supported-numpy/
     # should fix #310
     "oldest-supported-numpy; sys_platform != 'win32'",
@@ -49,7 +49,8 @@ dependencies = [
 ]
 
 authors = [
-    {name = "Nick Papior", email = "nickpapior@gmail.com"}
+    {name = "Nick Papior", email = "nickpapior@gmail.com"},
+    {name = "Pol Febrer"}
 ]
 maintainers = [{name="sisl developers"}]
 
@@ -136,9 +137,9 @@ analysis = [
 ]
 
 viz = [
+    "netCDF4",
     "dill >= 0.3.2",
     "pathos",
-    "netCDF4",
     "scikit-image",
 
     "plotly",
@@ -147,34 +148,34 @@ viz = [
 ]
 
 viz-plotly = [
+    "netCDF4",
     "dill >= 0.3.2",
     "pathos",
-    "netCDF4",
     "scikit-image",
 
     "plotly",
 ]
 
 viz-matplotlib = [
+    "netCDF4",
     "dill >= 0.3.2",
     "pathos",
-    "netCDF4",
     "scikit-image",
 
     "matplotlib",
 ]
 
 viz-blender = [
+    "netCDF4",
     "dill >= 0.3.2",
     "pathos",
-    "netCDF4",
     "scikit-image",
 ]
 
 viz-ase = [
+    "netCDF4",
     "dill >= 0.3.2",
     "pathos",
-    "netCDF4",
     "scikit-image",
 
     "ase",
@@ -186,10 +187,10 @@ test = [
     "pytest-env",
     "pytest-faulthandler",
     "coveralls",
+    "netCDF4",
     "tqdm",
     "dill >= 0.3.2",
     "pathos",
-    "netCDF4",
     "scikit-image",
     "matplotlib",
     "plotly",

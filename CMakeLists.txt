@@ -26,7 +26,19 @@ find_package(Python COMPONENTS
   REQUIRED)
 
 # Retrive the cython executable
+message(STATUS "Locating Cython executable")
 find_program(CYTHON_EXECUTABLE "cython" REQUIRED)
+execute_process(COMMAND
+  "${CYTHON_EXECUTABLE}" --version
+  OUTPUT_QUIET
+  OUTPUT_VARIABLE CYTHON_VERSION
+  RESULT_VARIABLE CYTHON_VERSION_ERR
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+# Print it out
+message(STATUS "Cython version information [${CYTHON_EXECUTABLE} --version]: ${CYTHON_VERSION}")
+if(CYTHON_VERSION_ERR)
+  message(SEND_ERROR "ERROR: Cython version detection failed, this might be problematic")
+endif()
 
 
 # Define global definitions
@@ -287,7 +299,7 @@ function(add_cython_library)
   if(NOT DEFINED _c_SOURCE)
     list(GET _c_UNPARSED_ARGUMENTS 0 _c_SOURCE)
   endif()
-  
+
   # Parse simple flags
   if(NOT DEFINED _c_CYTHON_EXECUTABLE)
     set(_c_CYTHON_EXECUTABLE "${CYTHON_EXECUTABLE}")
@@ -617,7 +629,7 @@ function(add_f2py_library)
     VERBATIM
     COMMENT "Generating module file from signature ${_f_SIGNATURE}"
   )
-    
+
   python_add_library(${_f_LIBRARY} WITH_SOABI
     MODULE "${_module_file}" ${_f_SOURCES} ${_wrappers}
     )

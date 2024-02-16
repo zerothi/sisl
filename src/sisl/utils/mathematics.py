@@ -130,8 +130,6 @@ def spher2cart(r, theta, phi):
     theta = asarray(theta)
     phi = asarray(phi)
     shape = _a.broadcast_shapes(r.shape, theta.shape, phi.shape)
-    print(r.shape, theta.shape, phi.shape)
-    print(shape)
     R = _a.empty(shape + (3,), dtype=r.dtype)
     sphi = sin(phi)
     R[..., 0] = r * cos(theta) * sphi

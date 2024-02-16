@@ -227,6 +227,7 @@ def pytest_configure(config):
         "hamiltonian",
         "geometry",
         "geom",
+        "neighbor",
         "shape",
         "state",
         "electron",

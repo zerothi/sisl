@@ -66,6 +66,6 @@ In particular `oplist` is useful when calculating averages in Brillouin zones (s
 .. autosummary::
    :toctree: generated/
 
+   NeighborFinder
    oplist
    ~sisl.utils.PropertyDict
-
