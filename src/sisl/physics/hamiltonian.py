@@ -5,10 +5,10 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._internal import set_module
-from .distribution import get_distribution
-from .electron import EigenvalueElectron, EigenstateElectron
-from .sparse import SparseOrbitalBZSpin
 
+from .distribution import get_distribution
+from .electron import EigenstateElectron, EigenvalueElectron
+from .sparse import SparseOrbitalBZSpin
 
 __all__ = ["Hamiltonian"]
 
