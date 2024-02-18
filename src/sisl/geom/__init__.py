@@ -42,11 +42,11 @@ Surfaces
    graphene
 
 """
+from ._category import *
 from ._composite import *
 from ._neighbors import *
 from .basic import *
 from .bilayer import *
-from .category import *
 from .flat import *
 from .nanoribbon import *
 from .nanotube import *

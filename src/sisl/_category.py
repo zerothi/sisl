@@ -410,12 +410,6 @@ class CompositeCategory(GenericCategory):
         super().__init_subclass__(**kwargs)
         cls.name = _composite_name(composite_name)
 
-    def categorizeAB(self, *args, **kwargs):
-        r"""Base method for queriyng whether an object is a certain category"""
-        catA = self.A.categorize(*args, **kwargs)
-        catB = self.B.categorize(*args, **kwargs)
-        return catA, catB
-
 
 @set_module("sisl.category")
 class OrCategory(CompositeCategory, composite_name="|"):
@@ -436,7 +430,15 @@ class OrCategory(CompositeCategory, composite_name="|"):
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
-        catA, catB = self.categorizeAB(*args, **kwargs)
+        catA = self.A.categorize(*args, **kwargs)
+
+        if isinstance(catA, Iterable):
+            if all(map(lambda a: not isinstance(a, NullCategory), catA)):
+                return catA
+        elif not isinstance(catA, NullCategory):
+            return catA
+
+        catB = self.B.categorize(*args, **kwargs)
 
         def cmp(a, b):
             if isinstance(a, NullCategory):
@@ -467,7 +469,16 @@ class AndCategory(CompositeCategory, composite_name="&"):
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
-        catA, catB = self.categorizeAB(*args, **kwargs)
+        catA = self.A.categorize(*args, **kwargs)
+
+        if isinstance(catA, Iterable):
+            if all(map(lambda a: isinstance(a, NullCategory), catA)):
+                return catA
+        elif isinstance(catA, NullCategory):
+            return catA
+
+        # We can now get B and categorize
+        catB = self.B.categorize(*args, **kwargs)
 
         def cmp(a, b):
             if isinstance(a, NullCategory):
@@ -500,7 +511,8 @@ class XOrCategory(CompositeCategory, composite_name="⊕"):
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
-        catA, catB = self.categorizeAB(*args, **kwargs)
+        catA = self.A.categorize(*args, **kwargs)
+        catB = self.B.categorize(*args, **kwargs)
 
         def cmp(a, b):
             if isinstance(a, NullCategory):
