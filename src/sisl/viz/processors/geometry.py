@@ -14,7 +14,7 @@ from sisl.typing import AtomsArgument
 from sisl.utils.mathematics import fnorm
 from sisl.viz.types import AtomArrowSpec
 
-from ..data_sources.atom_data import AtomDefaultColors, AtomIsGhost, AtomPeriodicTable
+from ..data_sources.atom_data import AtomIsGhost, AtomPeriodicTable, JMolAtomColors
 from .coords import CoordsDataset, projected_1Dcoords, projected_2Dcoords
 
 # from ...types import AtomsArgument, GeometryLike, PathLike
@@ -213,7 +213,7 @@ def parse_atoms_style(
     # Add the default styles first
     atoms_style = [
         {
-            "color": AtomDefaultColors(),
+            "color": JMolAtomColors(),
             "size": AtomPeriodicTable(what="radius"),
             "opacity": AtomIsGhost(fill_true=0.4, fill_false=1.0),
             "vertices": 15,
