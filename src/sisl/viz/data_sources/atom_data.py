@@ -1,3 +1,5 @@
+from typing import Dict
+
 import numpy as np
 
 from sisl._core.atom import AtomGhost, PeriodicTable
@@ -65,10 +67,23 @@ def AtomNOrbitals(geometry, atoms=None):
     return geometry.sub(atoms).orbitals
 
 
-class AtomDefaultColors(AtomData):
-    # Taken from Jmol (https://jmol.sourceforge.net/jscolors/)
+class AtomColors(AtomData):
+    _fallback_color: str = "pink"
+    _atoms_colors: Dict[str, str] = {}
+
+    def function(self, geometry, atoms=None):
+        return np.array(
+            [
+                self._atoms_colors.get(atom.symbol, self._fallback_color)
+                for atom in geometry.sub(atoms).atoms
+            ]
+        )
+
+
+class JMolAtomColors(AtomColors):
+
     _atoms_colors = {
-        "H": "#FFFFFF",
+        "H": "#EDEADE",
         "He": "#D9FFFF",
         "Li": "#CC80FF",
         "Be": "#C2FF00",
@@ -177,16 +192,7 @@ class AtomDefaultColors(AtomData):
         "Bh": "#E00038",
         "Hs": "#E6002E",
         "Mt": "#EB0026",
-        "else": "pink",
     }
-
-    def function(self, geometry, atoms=None):
-        return np.array(
-            [
-                self._atoms_colors.get(atom.symbol, self._atoms_colors["else"])
-                for atom in geometry.sub(atoms).atoms
-            ]
-        )
 
 
 @AtomData.from_func
