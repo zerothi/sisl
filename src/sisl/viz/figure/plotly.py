@@ -428,14 +428,21 @@ class PlotlyFigure(Figure):
     #  METHODS TO STANDARIZE BACKENDS
     # --------------------------------
     def init_coloraxis(
-        self, name, cmin=None, cmax=None, cmid=None, colorscale=None, **kwargs
+        self,
+        name,
+        cmin=None,
+        cmax=None,
+        cmid=None,
+        colorscale=None,
+        showscale=True,
+        **kwargs,
     ):
         if len(self._coloraxes) == 0:
             kwargs["ax_name"] = "coloraxis"
         else:
             kwargs["ax_name"] = f"coloraxis{len(self._coloraxes) + 1}"
 
-        super().init_coloraxis(name, cmin, cmax, cmid, colorscale, **kwargs)
+        super().init_coloraxis(name, cmin, cmax, cmid, colorscale, showscale, **kwargs)
 
         ax_name = kwargs["ax_name"]
         self.update_layout(
@@ -445,6 +452,7 @@ class PlotlyFigure(Figure):
                     "cmin": cmin,
                     "cmax": cmax,
                     "cmid": cmid,
+                    "showscale": showscale,
                 }
             }
         )
@@ -758,10 +766,31 @@ class PlotlyFigure(Figure):
         name=None,
         zsmooth=False,
         coloraxis=None,
+        textformat=None,
         row=None,
         col=None,
         **kwargs,
     ):
+        if textformat is not None:
+            # If the user wants a custom color, we must define the text strings to be empty
+            # for NaN values. If there is not custom color, plotly handles this for us by setting
+            # the text color to the same as the background for those values so that they are not
+            # visible.
+            if "color" in kwargs.get("textfont", {}) and np.any(np.isnan(values)):
+                to_string = np.vectorize(
+                    lambda x: "" if np.isnan(x) else f"{x:{textformat}}"
+                )
+                kwargs = {
+                    "text": to_string(values),
+                    "texttemplate": "%{text}",
+                    **kwargs,
+                }
+            else:
+                kwargs = {
+                    "texttemplate": "%{z:" + textformat + "}",
+                    **kwargs,
+                }
+
         self.add_trace(
             {
                 "type": "heatmap",
@@ -772,6 +801,7 @@ class PlotlyFigure(Figure):
                 "zsmooth": zsmooth,
                 "coloraxis": self._get_coloraxis_name(coloraxis),
                 "meta": kwargs.pop("meta", {}),
+                **kwargs,
             },
             row=row,
             col=col,
@@ -819,7 +849,9 @@ class PlotlyFigure(Figure):
 
         updates = {}
         if ax_name.endswith("axis"):
-            updates = {f"scene_{ax_name}": kwargs}
+            scene_updates = {**kwargs}
+            scene_updates.pop("constrain", None)
+            updates = {f"scene_{ax_name}": scene_updates}
         if axis != "z":
             updates.update({ax_name: kwargs})
 

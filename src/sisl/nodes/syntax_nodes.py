@@ -123,6 +123,9 @@ class CompareSyntaxNode(SyntaxNode):
         "lt": "<",
         "ge": ">=",
         "le": "<=",
+        "is_": "is",
+        "is_not": "is not",
+        "contains": "in",
         None: "compare",
     }
 

@@ -258,7 +258,14 @@ class Figure:
         return
 
     def init_coloraxis(
-        self, name, cmin=None, cmax=None, cmid=None, colorscale=None, **kwargs
+        self,
+        name,
+        cmin=None,
+        cmax=None,
+        cmid=None,
+        colorscale=None,
+        showscale=True,
+        **kwargs,
     ):
         """Initializes a color axis to be used by the drawing functions"""
         self._coloraxes[name] = {
@@ -266,6 +273,7 @@ class Figure:
             "cmax": cmax,
             "cmid": cmid,
             "colorscale": colorscale,
+            "showscale": showscale,
             **kwargs,
         }
 
@@ -880,6 +888,9 @@ class Figure:
         name=None,
         zsmooth=False,
         coloraxis=None,
+        opacity=None,
+        textformat=None,
+        textfont={},
         row=None,
         col=None,
         **kwargs,

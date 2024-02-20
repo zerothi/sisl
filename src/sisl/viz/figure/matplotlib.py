@@ -1,5 +1,7 @@
 import itertools
+import math
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.collections import LineCollection
@@ -417,6 +419,9 @@ class MatplotlibFigure(Figure):
         name=None,
         zsmooth=False,
         coloraxis=None,
+        opacity=None,
+        textformat=None,
+        textfont={},
         row=None,
         col=None,
         _axes=None,
@@ -433,7 +438,7 @@ class MatplotlibFigure(Figure):
         vmin = coloraxis.get("cmin")
         vmax = coloraxis.get("cmax")
 
-        axes.imshow(
+        im = axes.imshow(
             values,
             cmap=colorscale,
             vmin=vmin,
@@ -441,7 +446,94 @@ class MatplotlibFigure(Figure):
             label=name,
             extent=extent,
             origin="lower",
+            alpha=opacity,
         )
+
+        if textformat is not None:
+            self._annotate_heatmap(
+                im,
+                data=values,
+                valfmt="{x:" + textformat + "}",
+                cmap=matplotlib.colormaps.get_cmap(colorscale),
+                **textfont,
+            )
+
+    def _annotate_heatmap(
+        self,
+        im,
+        cmap,
+        data=None,
+        valfmt="{x:.2f}",
+        textcolors=("black", "white"),
+        **textkw,
+    ):
+        """A function to annotate a heatmap.
+
+        Parameters
+        ----------
+        im
+            The AxesImage to be labeled.
+        data
+            Data used to annotate.  If None, the image's data is used.  Optional.
+        valfmt
+            The format of the annotations inside the heatmap.  This should either
+            use the string format method, e.g. "$ {x:.2f}", or be a
+            `matplotlib.ticker.Formatter`.  Optional.
+        textcolors
+            A pair of colors.  The first is used for values below a threshold,
+            the second for those above.  Optional.
+        threshold
+            Value in data units according to which the colors from textcolors are
+            applied.  If None (the default) uses the middle of the colormap as
+            separation.  Optional.
+        **kwargs
+            All other arguments are forwarded to each call to `text` used to create
+            the text labels.
+        """
+
+        if not isinstance(data, (list, np.ndarray)):
+            data = im.get_array()
+
+        # Set default alignment to center, but allow it to be
+        # overwritten by textkw.
+        kw = dict(
+            horizontalalignment="center",
+            verticalalignment="center",
+        )
+        kw.update(textkw)
+
+        # Get the formatter in case a string is supplied
+        if isinstance(valfmt, str):
+            valfmt = matplotlib.ticker.StrMethodFormatter(valfmt)
+
+        def color_to_textcolor(rgb):
+            r, g, b = rgb
+            r *= 255
+            g *= 255
+            b *= 255
+
+            hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
+            if hsp > 127.5:
+                return textcolors[0]
+            else:
+                return textcolors[1]
+
+        # Loop over the data and create a `Text` for each "pixel".
+        # Change the text's color depending on the data.
+        texts = []
+        for i in range(data.shape[0]):
+            for j in range(data.shape[1]):
+                if np.isnan(data[i, j]):
+                    continue
+
+                if "color" not in textkw:
+                    rgb = cmap(im.norm(data[i, j]))[:-1]
+                    kw.update(color=color_to_textcolor(rgb))
+
+                text = im.axes.text(j, i, valfmt(data[i, j], None), **kw)
+                texts.append(text)
+
+        return texts
 
     def set_axis(
         self,

@@ -1,44 +1,77 @@
+from typing import List, Optional, Tuple
+
+import numpy as np
+import xarray as xr
+
 import sisl.viz.plotters.plot_actions as plot_actions
 from sisl.viz.processors.grid import get_isos
 
 
-def draw_grid(data, isos=[], colorscale=None, crange=None, cmid=None, smooth=False):
+def draw_grid(
+    data,
+    isos: List[dict] = [],
+    colorscale: Optional[str] = None,
+    crange: Optional[Tuple[float, float]] = None,
+    cmid: Optional[float] = None,
+    smooth: bool = False,
+    color_pixels_2d: bool = True,
+    textformat: Optional[str] = None,
+    textfont: dict = {},
+    name: Optional[str] = None,
+    coloraxis_name: Optional[str] = "grid_color",
+    set_equal_axes: bool = True,
+):
     to_plot = []
+
+    # If it is a numpy array, convert it to a DataArray
+    if not isinstance(data, xr.DataArray):
+        # If it's 2D, here we assume that the array is a matrix.
+        # Therefore, rows are y and columns are x. Otherwise, we
+        # assume that dimensions are cartesian coordinates.
+        if data.ndim == 2:
+            dims = ["y", "x"]
+        else:
+            dims = ["x", "y", "z"][: data.ndim]
+        data = xr.DataArray(data, dims=dims)
 
     ndim = data.ndim
 
     if ndim == 1:
-        to_plot.append(plot_actions.draw_line(x=data.x, y=data.values))
+        to_plot.append(plot_actions.draw_line(x=data.x, y=data.values, name=name))
     elif ndim == 2:
-        transposed = data.transpose("y", "x")
+        data = data.transpose("y", "x")
 
         cmin, cmax = crange if crange is not None else (None, None)
 
         to_plot.append(
             plot_actions.init_coloraxis(
-                name="grid_color",
+                name=coloraxis_name,
                 cmin=cmin,
                 cmax=cmax,
                 cmid=cmid,
                 colorscale=colorscale,
+                showscale=color_pixels_2d,
             )
         )
+
+        if not color_pixels_2d:
+            textfont = {"color": "black", **textfont}
 
         to_plot.append(
             plot_actions.draw_heatmap(
-                values=transposed.values,
-                x=data.x,
-                y=data.y,
-                name="HEAT",
+                values=data.values,
+                x=data.x if "x" in data.coords else None,
+                y=data.y if "y" in data.coords else None,
+                name=name,
+                opacity=1 if color_pixels_2d else 0,
                 zsmooth="best" if smooth else False,
-                coloraxis="grid_color",
+                coloraxis=coloraxis_name,
+                textformat=textformat,
+                textfont=textfont,
             )
         )
 
-        dx = data.x[1] - data.x[0]
-        dy = data.y[1] - data.y[0]
-
-        iso_lines = get_isos(transposed, isos)
+        iso_lines = get_isos(data, isos)
         for iso_line in iso_lines:
             iso_line["line"] = {
                 "color": iso_line.pop("color", None),
@@ -53,7 +86,84 @@ def draw_grid(data, isos=[], colorscale=None, crange=None, cmid=None, smooth=Fal
         for isosurface in isosurfaces:
             to_plot.append(plot_actions.draw_mesh_3D(**isosurface))
 
-    if ndim > 1:
+    if set_equal_axes and ndim > 1:
         to_plot.append(plot_actions.set_axes_equal())
+
+    return to_plot
+
+
+def draw_grid_arrows(data, arrows: List[dict]):
+    to_plot = []
+
+    # If it is a numpy array, convert it to a DataArray
+    if not isinstance(data, xr.DataArray):
+        # If it's 2D, here we assume that the array is a matrix.
+        # Therefore, rows are y and columns are x. Otherwise, we
+        # assume that dimensions are cartesian coordinates.
+        if data.ndim == 2:
+            dims = ["y", "x"]
+        else:
+            dims = ["x", "y", "z"][: data.ndim]
+        data = xr.DataArray(data, dims=dims)
+
+    ndim = data.ndim
+
+    if ndim == 1:
+        return []
+    elif ndim == 2:
+        coords = np.array(np.meshgrid(data.x, data.y))
+        coords = coords.transpose(1, 2, 0)
+        flat_coords = coords.reshape(-1, coords.shape[-1])
+
+        for arrow_data in arrows:
+            center = arrow_data.get("center", "middle")
+
+            values = (
+                arrow_data["data"]
+                if "data" in arrow_data
+                else np.stack([np.zeros_like(data.values), -data.values], axis=-1)
+            )
+            arrows_array = xr.DataArray(values, dims=["y", "x", "arrow_coords"])
+
+            arrow_norms = arrows_array.reduce(np.linalg.norm, "arrow_coords")
+            arrow_max = np.nanmax(arrow_norms)
+            normed_arrows = (
+                arrows_array / arrow_max * (1 if center == "middle" else 0.5)
+            )
+
+            flat_normed_arrows = normed_arrows.values.reshape(-1, coords.shape[-1])
+
+            x = flat_coords[:, 0]
+            y = flat_coords[:, 1]
+            if center == "middle":
+                x = x - flat_normed_arrows[:, 0] / 2
+                y = y - flat_normed_arrows[:, 1] / 2
+            elif center == "end":
+                x = x - flat_normed_arrows[:, 0]
+                y = y - flat_normed_arrows[:, 1]
+            elif center != "start":
+                raise ValueError(
+                    f"Invalid value for 'center' in arrow data: {center}. Must be 'start', 'middle' or 'end'."
+                )
+
+            to_plot.append(
+                plot_actions.draw_arrows(
+                    x=x,
+                    y=y,
+                    dxy=flat_normed_arrows,
+                    name=arrow_data.get("name", None),
+                    line=dict(
+                        width=arrow_data.get("width", None),
+                        color=arrow_data.get("color", None),
+                        opacity=arrow_data.get("opacity", None),
+                        dash=arrow_data.get("dash", None),
+                    ),
+                    arrowhead_scale=arrow_data.get("arrowhead_scale", 0.2),
+                    arrowhead_angle=arrow_data.get("arrowhead_angle", 20),
+                )
+            )
+
+    elif ndim == 3:
+        return []
 
     return to_plot
