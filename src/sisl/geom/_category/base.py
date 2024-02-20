@@ -1,19 +1,24 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from functools import wraps
+from typing import Optional
 
 from sisl._category import Category, NullCategory
-from sisl._core.geometry import AtomCategory
+from sisl._core import AtomCategory, Geometry
+from sisl.typing import AtomsArgument
 
 __all__ = ["NullCategory", "AtomCategory"]
 
 
 def _sanitize_loop(func):
     @wraps(func)
-    def loop_func(self, geometry, atoms=None):
+    def loop_func(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         if atoms is None:
             return [func(self, geometry, ia) for ia in geometry]
+
         # extract based on atoms selection
         atoms = geometry._sanitize_atoms(atoms)
         if atoms.ndim == 0:
@@ -21,8 +26,3 @@ def _sanitize_loop(func):
         return [func(self, geometry, ia) for ia in atoms]
 
     return loop_func
-
-
-# class AtomCategory(Category)
-# is defined in sisl._core.geometry.py since it is required in
-# that instance.

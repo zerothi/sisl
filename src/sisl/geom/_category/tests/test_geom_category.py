@@ -38,6 +38,10 @@ def test_geom_category():
     category = (B & B2) ^ (N & N2) ^ (B & B3) ^ (N & N3) ^ n2
 
     cat = category.categorize(hBN)
+    cat1 = category.categorize(hBN, atoms=[2, 3])
+    assert len(cat1) == 2
+    assert cat[2] == cat1[0]
+    assert cat[3] == cat1[1]
 
 
 def test_geom_category_no_r():

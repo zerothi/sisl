@@ -1,9 +1,15 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
+from typing import Optional
+
 from numpy import ndarray
 
+from sisl._core import Geometry
 from sisl._internal import set_module
+from sisl.typing import AtomsArgument
 
 from .base import AtomCategory, NullCategory, _sanitize_loop
 
@@ -82,10 +88,12 @@ class AtomNeighbours(AtomCategory):
 
         # Determine name. If there are requirements for the neighbours
         # then the name changes
+
         if self._in is None:
-            self.set_name(f"neighbours{name}")
+            name = f"neighbours{name}"
         else:
-            self.set_name(f"neighbours({self._in}){name}")
+            name = f"neighbours({self._in}){name}"
+        super().__init__(name)
 
     def R(self, atom):
         if self._R is None:
@@ -97,9 +105,9 @@ class AtomNeighbours(AtomCategory):
         return (0.01, self._R)
 
     @_sanitize_loop
-    def categorize(self, geometry, atoms=None):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         """Check if geometry and atoms matches the neighbour criteria"""
-        idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[1]
+        idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[-1]
         # quick escape the lower bound, in case we have more than max, they could
         # be limited by the self._in type
         n = len(idx)
@@ -112,6 +120,7 @@ class AtomNeighbours(AtomCategory):
             cat = self._in.categorize(geometry, geometry.asc2uc(idx))
             idx = [i for i, c in zip(idx, cat) if not isinstance(c, NullCategory)]
             n = len(idx)
+
         if self._min <= n <= self._max:
             return self
         return NullCategory()

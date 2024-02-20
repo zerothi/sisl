@@ -117,7 +117,8 @@ class Category(metaclass=CategoryMeta):
         r"""Name of category"""
         return self._name
 
-    def set_name(self, name):
+    @name.setter
+    def name(self, name):
         r"""Override the name of the categorization"""
         self._name = name
 
@@ -288,6 +289,8 @@ class GenericCategory(Category):
     a specific object in which they act.
     """
 
+    __slots__ = ()
+
     @classmethod
     def is_class(cls, name):
         # never allow one to match a generic class
@@ -299,10 +302,7 @@ class GenericCategory(Category):
 class NullCategory(GenericCategory):
     r"""Special Null class which always represents a classification not being *anything*"""
 
-    __slots__ = tuple()
-
-    def __init__(self):
-        pass
+    __slots__ = ()
 
     def categorize(self, *args, **kwargs):
         return self
@@ -321,6 +321,12 @@ class NullCategory(GenericCategory):
     def name(self):
         return "∅"
 
+    @name.setter
+    def name(self, name):
+        raise ValueError(
+            f"One cannot overwrite the name of a {self.__class__.__name__}"
+        )
+
 
 @set_module("sisl.category")
 class NotCategory(GenericCategory):
@@ -331,9 +337,9 @@ class NotCategory(GenericCategory):
     def __init__(self, cat):
         super().__init__()
         if isinstance(cat, CompositeCategory):
-            self.set_name(f"~({cat})")
+            self.name = f"~({cat})"
         else:
-            self.set_name(f"~{cat}")
+            self.name = f"~{cat}"
         self._cat = cat
 
     def categorize(self, *args, **kwargs):
@@ -364,7 +370,7 @@ class NotCategory(GenericCategory):
 
 
 def _composite_name(sep):
-    def name(self):
+    def getter(self):
         if not self._name is None:
             return self._name
 
@@ -380,7 +386,10 @@ def _composite_name(sep):
 
         return f"{nameA} {sep} {nameB}"
 
-    return property(name)
+    def setter(self, name):
+        self._name = name
+
+    return property(getter, setter)
 
 
 @set_module("sisl.category")
@@ -426,7 +435,7 @@ class OrCategory(CompositeCategory, composite_name="|"):
        the right hand side of the set operation
     """
 
-    __slots__ = tuple()
+    __slots__ = ()
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
@@ -465,7 +474,7 @@ class AndCategory(CompositeCategory, composite_name="&"):
        the right hand side of the set operation
     """
 
-    __slots__ = tuple()
+    __slots__ = ()
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
@@ -507,7 +516,7 @@ class XOrCategory(CompositeCategory, composite_name="⊕"):
        the right hand side of the set operation
     """
 
-    __slots__ = tuple()
+    __slots__ = ()
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""

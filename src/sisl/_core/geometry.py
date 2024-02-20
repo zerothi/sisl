@@ -79,7 +79,7 @@ _log = logging.getLogger(__name__)
 # Note how we are overwriting the module
 @set_module("sisl.geom")
 class AtomCategory(Category):
-    __slots__ = tuple()
+    __slots__ = ()
 
     @classmethod
     def is_class(cls, name, case=True) -> bool:
@@ -397,9 +397,13 @@ class Geometry(
 
     @_sanitize_atoms.register(AtomCategory)
     @_sanitize_atoms.register(GenericCategory)
-    def _(self, atoms: Union[AtomCategory, GenericCategory]) -> ndarray:
+    def _(
+        self,
+        atoms_: Union[AtomCategory, GenericCategory],
+        atoms: Optional[AtomsArgument] = None,
+    ) -> ndarray:
         # First do categorization
-        cat = atoms.categorize(self)
+        cat = atoms_.categorize(self, atoms)
 
         def m(cat):
             for ia, c in enumerate(cat):
@@ -412,9 +416,9 @@ class Geometry(
         return _a.fromiterl(m(cat))
 
     @_sanitize_atoms.register
-    def _(self, atoms: dict) -> ndarray:
+    def _(self, atoms_: dict, atoms: Optional[AtomsArgument] = None) -> ndarray:
         # First do categorization
-        return self._sanitize_atoms(AtomCategory.kw(**atoms))
+        return self._sanitize_atoms(AtomCategory.kw(**atoms_), atoms)
 
     @_sanitize_atoms.register
     def _(self, atoms: Shape) -> ndarray:

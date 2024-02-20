@@ -1,15 +1,20 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import operator as op
 import re
 from functools import reduce, wraps
 from numbers import Integral
+from typing import Optional, Union
 
 import numpy as np
 
+from sisl._core import Geometry
 from sisl._help import isiterable
 from sisl._internal import set_module
+from sisl.typing import AtomsArgument
 from sisl.utils import lstranges, strmap
 
 from .base import AtomCategory, NullCategory, _sanitize_loop
@@ -29,7 +34,7 @@ class AtomZ(AtomCategory):
 
     __slots__ = ("_Z",)
 
-    def __init__(self, Z):
+    def __init__(self, Z: Union[int, Sequence[int]]):
         if isiterable(Z):
             self._Z = set(Z)
         else:
@@ -38,7 +43,7 @@ class AtomZ(AtomCategory):
         super().__init__(f"Z={self._Z}")
 
     @_sanitize_loop
-    def categorize(self, geometry, atoms=None):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if geometry.atoms.Z[atoms] in self._Z:
             return self
@@ -66,13 +71,13 @@ class AtomTag(AtomCategory):
 
     __slots__ = ("_compiled_re", "_re")
 
-    def __init__(self, tag):
+    def __init__(self, tag: str):
         self._re = tag
         self._compiled_re = re.compile(self._re)
         super().__init__(f"tag={self._re}")
 
     @_sanitize_loop
-    def categorize(self, geometry, atoms=None):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if self._compiled_re.match(geometry.atoms[atoms].tag):
             return self
@@ -125,8 +130,9 @@ class AtomIndex(AtomCategory):
                 idx.add(arg)
             else:
                 idx.update(arg)
-        for key_a in ["eq", "in", "contains"]:
-            for key in [key_a, f"__{key_a}__"]:
+
+        for key_a in ("eq", "in", "contains"):
+            for key in (key_a, f"__{key_a}__"):
                 arg = kwargs.pop(key, set())
                 if isinstance(arg, Integral):
                     idx.add(arg)
@@ -140,6 +146,7 @@ class AtomIndex(AtomCategory):
                 """Wrapper to make partial useful"""
                 if isinstance(b, Integral):
                     return op.truth(func(a, b))
+
                 is_true = True
                 for ib in b:
                     is_true = is_true and func(a, ib)
@@ -177,7 +184,7 @@ class AtomIndex(AtomCategory):
         )
 
     @_sanitize_loop
-    def categorize(self, geometry, atoms=None):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if reduce(op.and_, (f(atoms, b) for f, b in self._op_val), True):
             return self
@@ -224,9 +231,11 @@ class AtomSeq(AtomIndex):
         the functions used to parse the sequence string into indices.
     """
 
+    __slots__ = ("_seq",)
+
     def __init__(self, seq):
         self._seq = seq
-        self.set_name(self._seq)
+        self._name = seq
 
     @staticmethod
     def _sanitize_negs(indices_map, end):
@@ -255,7 +264,7 @@ class AtomSeq(AtomIndex):
 
         return [_sanitize(item) for item in indices_map]
 
-    def categorize(self, geometry, *args, **kwargs):
+    def categorize(self, geometry: Geometry, *args, **kwargs):
         # Now that we have the geometry, we know what is the end index
         # and we can finally safely convert the sequence to indices.
         indices_map = strmap(int, self._seq, start=0, end=geometry.na - 1)
@@ -263,7 +272,7 @@ class AtomSeq(AtomIndex):
 
         # Initialize the machinery of AtomIndex
         super().__init__(indices)
-        self.set_name(self._seq)
+        self.name = self._seq
         # Finally categorize
         return super().categorize(geometry, *args, **kwargs)
 
@@ -276,13 +285,13 @@ class AtomSeq(AtomIndex):
 class AtomEven(AtomCategory):
     r"""Classify atoms based on indices (even in this case)"""
 
-    __slots__ = []
+    __slots__ = ()
 
-    def __init__(self):
-        super().__init__("even")
+    def __init__(self, name="even"):
+        super().__init__(name)
 
     @_sanitize_loop
-    def categorize(self, geometry, atoms):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms % 2 == 0:
             return self
@@ -296,13 +305,13 @@ class AtomEven(AtomCategory):
 class AtomOdd(AtomCategory):
     r"""Classify atoms based on indices (odd in this case)"""
 
-    __slots__ = []
+    __slots__ = ()
 
-    def __init__(self):
-        super().__init__("odd")
+    def __init__(self, name="odd"):
+        super().__init__(name)
 
     @_sanitize_loop
-    def categorize(self, geometry, atoms):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms % 2 == 1:
             return self

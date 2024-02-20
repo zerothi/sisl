@@ -1,19 +1,23 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import operator
 from functools import wraps
 from numbers import Integral
+from typing import Optional
 
 import numpy as np
 
 import sisl._array as _a
 from sisl._category import CategoryMeta
+from sisl._core import Geometry, Lattice, LatticeChild
 from sisl._core._lattice import cell_invert
-from sisl._core.lattice import Lattice, LatticeChild
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
-from sisl.shape import *
+from sisl.shape import Shape
+from sisl.typing import AtomsArgument
 from sisl.utils.misc import direction
 
 from .base import AtomCategory, NullCategory
@@ -55,9 +59,7 @@ class AtomFracSite(AtomCategory):
     ...        assert c == B_site
     """
 
-    __slots__ = (
-        f"_{a}" for a in ("cell", "icell", "length", "atol", "offset", "foffset")
-    )
+    __slots__ = ("_cell", "_icell", "_length", "_atol", "_offset", "_foffset")
 
     @deprecate_argument(
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
@@ -87,11 +89,12 @@ class AtomFracSite(AtomCategory):
             f"fracsite(atol={self._atol}, offset={self._offset}, foffset={self._foffset})"
         )
 
-    def categorize(self, geometry, atoms=None):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms is None:
             fxyz = np.dot(geometry.xyz + self._offset, self._icell.T) + self._foffset
         else:
+            atoms = geometry._sanitize_atoms(atoms)
             fxyz = (
                 np.dot(geometry.xyz[atoms].reshape(-1, 3) + self._offset, self._icell.T)
                 + self._foffset
@@ -254,11 +257,12 @@ class AtomXYZ(AtomCategory):
         self._coord_check = coord_ops
         super().__init__("coord")
 
-    def categorize(self, geometry, atoms=None):
+    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
         if atoms is None:
             xyz = geometry.xyz
             fxyz = geometry.fxyz
         else:
+            atoms = geometry._sanitize_atoms(atoms)
             xyz = geometry.xyz[atoms]
             fxyz = geometry.fxyz[atoms]
 
@@ -360,7 +364,7 @@ for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
     # Create the class for this direction
     # note this is lower case since AtomZ should not interfere with Atomz
     new_cls = AtomXYZMeta(
-        f"Atom{name}", (AtomCategory,), {"__new__": _new_factory(key)}
+        f"Atom{name}", (AtomCategory,), {"__new__": _new_factory(key), "__slots__": ()}
     )
 
     new_cls = set_module("sisl.geom")(new_cls)
