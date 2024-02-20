@@ -22,6 +22,25 @@ from .plots import *
 
 __all__ = []
 
+register = register_plotable
+
+# # -----------------------------------------------------
+# #           Register plotable sisl objects
+# # -----------------------------------------------------
+
+# Matrices
+register(sisl.SparseCSR, AtomicMatrixPlot, "matrix", default=True)
+register(sisl.SparseOrbital, AtomicMatrixPlot, "matrix", default=True)
+register(sisl.SparseAtom, AtomicMatrixPlot, "matrix", default=True)
+
+# # Geometry
+register(sisl.Geometry, GeometryPlot, "geometry", default=True)
+
+# # Grid
+register(sisl.Grid, GridPlot, "grid", default=True)
+
+# Brilloiun zone
+register(sisl.BrillouinZone, SitesPlot, "sites_obj")
 
 # -----------------------------------------------------
 #               Register data sources
@@ -48,25 +67,12 @@ register_data_source(
 #               Register plotable siles
 # -----------------------------------------------------
 
-register = register_plotable
-
 for GeomSile in get_siles(attrs=["read_geometry"]):
     register_sile_method(GeomSile, "read_geometry", GeometryPlot, "geometry")
 
 for GridSile in get_siles(attrs=["read_grid"]):
     register_sile_method(GridSile, "read_grid", GridPlot, "grid", default=True)
 
-# # -----------------------------------------------------
-# #           Register plotable sisl objects
-# # -----------------------------------------------------
-
-# # Geometry
-register(sisl.Geometry, GeometryPlot, "geometry", default=True)
-
-# # Grid
-register(sisl.Grid, GridPlot, "grid", default=True)
-
-# Brilloiun zone
-register(sisl.BrillouinZone, SitesPlot, "sites_obj")
 
 sisl.BandStructure.plot.set_default("bands")
+sisl.Hamiltonian.plot.set_default("atomicmatrix")

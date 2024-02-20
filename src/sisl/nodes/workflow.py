@@ -1036,6 +1036,9 @@ class NodeConverter(ast.NodeTransformer):
         ast.LtE: "le",
         ast.Gt: "gt",
         ast.GtE: "ge",
+        ast.Is: "is_",
+        ast.IsNot: "is_not",
+        ast.In: "contains",
     }
 
     def __init__(
