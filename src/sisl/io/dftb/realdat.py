@@ -11,6 +11,7 @@ from scipy.sparse import lil_matrix
 
 import sisl._array as _a
 from sisl._core import Atom, AtomicOrbital, Atoms, Geometry, Lattice
+from sisl.messages import warn
 from sisl.physics import Hamiltonian, Overlap
 
 from ..sile import add_sile, sile_fh_open
@@ -145,6 +146,11 @@ class _realSileDFTB(SileDFTB):
 
         # Create the lattice vector
         if geometry is None:
+            if np.any(nsc > 1):
+                warn(
+                    f"{self.__class__.__name__}.read_* found a supercell matrix. The returned matrix cannot be used in k-point format since the true atomic coordinates are incorrect, please pass a 'geometry' argument."
+                )
+
             lattice = Lattice(na * 3 + 1, nsc=nsc)
             geometry = Geometry(
                 np.arange(na * 3).reshape(na, 3), self._get_atoms(na, nos), lattice

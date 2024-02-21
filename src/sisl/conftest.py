@@ -271,6 +271,7 @@ def pytest_configure(config):
         "energydensity_matrix",
         "siesta",
         "tbtrans",
+        "dftb",
         "vasp",
         "w90",
         "wannier90",
