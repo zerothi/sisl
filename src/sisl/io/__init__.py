@@ -51,6 +51,13 @@ BigDFT
 
    asciiSileBigDFT - the input for BigDFT
 
+DFTB+
+=====
+
+   overrealSileDFTB - the overlap matrix
+   hamrealSileDFTB - the Hamiltonian matrix
+
+
 FHIaims
 =======
 
@@ -171,22 +178,25 @@ from .sile import *
 
 # isort: split
 
-# Import the different Sile objects
-# enabling the actual print-out
-from .bigdft import *
+# Non-code specific files
 from .cube import *
+from .molden import *
+from .pdb import *
+from .table import *
+from .xsf import *
+from .xyz import *
+
+# isort: split
+
+from .bigdft import *
+from .dftb import *
 from .fhiaims import *
 from .gulp import *
 from .ham import *
-from .molden import *
 from .openmx import *
 from .orca import *
-from .pdb import *
 from .scaleup import *
 from .siesta import *
-from .table import *
 from .tbtrans import *
 from .vasp import *
 from .wannier90 import *
-from .xsf import *
-from .xyz import *
