@@ -16,7 +16,7 @@ import scipy
 from numpy import cos, sin, sqrt, square, take
 from scipy.special import eval_genlaguerre, factorial, lpmv
 
-if scipy.__version__ < "0.16.0":
+if scipy.__version__ < "0.16":
     from scipy.integrate import cumtrapz as cumulative_trapezoid
 else:
     from scipy.integrate import cumulative_trapezoid

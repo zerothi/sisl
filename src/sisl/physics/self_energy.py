@@ -875,7 +875,7 @@ class RealSpaceSE(SelfEnergy):
 
     @deprecation(
         "RealSpaceSE.initialize is deprecated in favor of RealSpaceSE.setup, please update code.",
-        "0.16.0",
+        "0.16",
     )
     def initialize(self):
         """See setup"""
@@ -1605,7 +1605,7 @@ class RealSpaceSI(SelfEnergy):
 
     @deprecation(
         "RealSpaceSI.initialize is deprecated in favor of RealSpaceSI.setup, please update code.",
-        "0.16.0",
+        "0.16",
     )
     def initialize(self):
         """See setup"""

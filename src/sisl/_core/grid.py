@@ -111,13 +111,13 @@ class Grid(
         "sc",
         "lattice",
         "argument sc has been deprecated in favor of lattice, please update your code.",
-        "0.15.0",
+        "0.15",
     )
     @deprecate_argument(
         "bc",
         None,
         "argument bc has been deprecated (removed) in favor of the boundary conditions in Lattice, please update your code.",
-        "0.15.0",
+        "0.15",
     )
     def __init__(
         self,
@@ -149,21 +149,21 @@ class Grid(
 
     @deprecation(
         "Grid.set_bc is deprecated since boundary conditions are moved to Lattice (see github issue #626",
-        "0.15.0",
+        "0.15",
     )
     def set_bc(self, bc):
         self.lattice.set_boundary_condition(bc)
 
     @deprecation(
         "Grid.set_boundary is deprecated since boundary conditions are moved to Lattice (see github issue #626",
-        "0.15.0",
+        "0.15",
     )
     def set_boundary(self, bc):
         self.lattice.set_boundary_condition(bc)
 
     @deprecation(
         "Grid.set_boundary_condition is deprecated since boundary conditions are moved to Lattice (see github issue #626",
-        "0.15.0",
+        "0.15",
     )
     def set_boundary_condition(self, bc):
         self.lattice.set_boundary_condition(bc)
@@ -1217,7 +1217,7 @@ class Grid(
 
     @deprecation(
         "Grid.topyamg is deprecated in favor of Grid.to.pyamg",
-        "0.16.0",
+        "0.16",
     )
     def topyamg(self, dtype=None):
         r"""Create a `pyamg` stencil matrix to be used in pyamg

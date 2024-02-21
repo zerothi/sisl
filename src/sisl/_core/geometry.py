@@ -178,7 +178,7 @@ class Geometry(
         "sc",
         "lattice",
         "argument sc has been deprecated in favor of lattice, please update your code.",
-        "0.15.0",
+        "0.15",
     )
     def __init__(self, xyz: ArrayLike, atoms=None, lattice=None, names=None):
         # Create the geometry coordinate, be aware that we do not copy!

@@ -34,7 +34,7 @@ and then you have all eigenvalues for all the k-points along the path.
 Sometimes one may want to post-process the data for each k-point.
 As an example lets post-process the DOS on a per k-point basis while
 calculating the average:
- 
+
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
 >>> E = np.linspace(-2, 2, 100)
@@ -1213,7 +1213,7 @@ class BandStructure(BrillouinZone):
         "name",
         "names",
         "argument 'name' has been deprecated in favor of 'names', please update your code.",
-        "0.15.0",
+        "0.15",
     )
     def __init__(self, parent, *args, **kwargs):
         # points, divisions, names=None):

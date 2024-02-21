@@ -38,7 +38,7 @@ class stdoutSileVASP(SileVASP):
 
     @deprecation(
         "stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed",
-        "0.16.0",
+        "0.16",
     )
     def completed(self):
         """True if the line "General timing and accounting" was found."""
@@ -46,7 +46,7 @@ class stdoutSileVASP(SileVASP):
 
     @deprecation(
         "stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached",
-        "0.16.0",
+        "0.16",
     )
     def accuracy_reached(self):
         """True if the line "reached required accuracy" was found."""

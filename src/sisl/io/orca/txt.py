@@ -42,17 +42,13 @@ class txtSileORCA(SileORCA):
     ]
 
     @property
-    @deprecation(
-        "txtSileORCA.na is deprecated in favor of txtSileORCA.info.na", "0.16.0"
-    )
+    @deprecation("txtSileORCA.na is deprecated in favor of txtSileORCA.info.na", "0.16")
     def na(self):
         """Number of atoms"""
         return self.info.na
 
     @property
-    @deprecation(
-        "txtSileORCA.no is deprecated in favor of txtSileORCA.info.no", "0.16.0"
-    )
+    @deprecation("txtSileORCA.no is deprecated in favor of txtSileORCA.info.no", "0.16")
     def no(self):
         """Number of orbitals (basis functions)"""
         return self.info.no

@@ -1440,7 +1440,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "only",
         "what",
         "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
+        "0.14",
     )
     @missing_input_fdf([("TBT.T.Orbital", "True"), ("TBT.Current.Orb", "True")])
     def orbital_transmission(
@@ -1546,7 +1546,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "only",
         "what",
         "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
+        "0.14",
     )
     @missing_input_fdf([("TBT.T.Orbital", "True"), ("TBT.Current.Orb", "True")])
     def orbital_current(
@@ -1660,7 +1660,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "only",
         "what",
         "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
+        "0.14",
     )
     def bond_transmission(
         self, E, elec=0, kavg=True, isc=None, what: str = "all", orbitals=None, uc=False
@@ -1730,7 +1730,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "only",
         "what",
         "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
+        "0.14",
     )
     def bond_current(
         self,
@@ -1815,7 +1815,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "only",
         "what",
         "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
+        "0.14",
     )
     def vector_transmission(
         self, E, elec=0, kavg=True, isc=None, what="all", orbitals=None
@@ -1888,7 +1888,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "only",
         "what",
         "argument only has been deprecated in favor of what, please update your code.",
-        "0.14.0",
+        "0.14",
     )
     def vector_current(
         self,

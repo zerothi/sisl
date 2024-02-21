@@ -191,7 +191,7 @@ class Lattice(
 
     @deprecation(
         "toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.",
-        "0.15.0",
+        "0.15",
     )
     def toCuboid(self, *args, **kwargs):
         """A cuboid with vectors as this unit-cell and center with respect to its origin

@@ -52,7 +52,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @deprecation(
         "stdoutSileSiesta.completed is deprecated in favor of stdoutSileSiesta.info.completed",
-        "0.16.0",
+        "0.16",
     )
     def completed(self):
         """True if the full file has been read and "Job completed" was found."""

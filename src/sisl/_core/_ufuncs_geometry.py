@@ -985,7 +985,7 @@ def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     "only",
     "what",
     "argument only has been deprecated in favor of what, please update your code.",
-    "0.14.0",
+    "0.14",
 )
 def rotate(
     geometry: Geometry,
