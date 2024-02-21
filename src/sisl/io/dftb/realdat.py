@@ -10,7 +10,7 @@ import scipy.sparse as sps
 from scipy.sparse import lil_matrix
 
 import sisl._array as _a
-from sisl._core import Atom, Atoms, Geometry, Lattice, Orbital
+from sisl._core import Atom, AtomicOrbital, Atoms, Geometry, Lattice
 from sisl.physics import Hamiltonian, Overlap
 
 from ..sile import add_sile, sile_fh_open
@@ -92,21 +92,41 @@ class _realSileDFTB(SileDFTB):
         return Hsc
 
     def _get_atoms(self, na, nos):
-        """Create a ficticious `Atoms` object containing orbitals using the default ordering
-
-        The default ordering is:
-
-        s, py, pz, px, dxy, dyz, dz2, dxz, dx2-y2
-            ... (f-shells)
-        """
+        """Create a ficticious `Atoms` object containing orbitals using the default ordering"""
 
         def get_orbital(io):
-            return Orbital(-1)
+            # This is taken directly from the documentation
+            # The documentation lists only these shells to be functional
+            name = [
+                "s",
+                "py",
+                "pz",
+                "px",
+                "dxy",
+                "dyz",
+                "dz2",
+                "dxz",
+                "dx2-y2",
+                "fy(3x2-y2)",
+                "fxyz",
+                "fz2y",
+                "fz3",
+                "fz2x",
+                "fz(x2-y2)",
+                "fx(x2-3y2)",
+            ][io]
 
-        def get_atom(ia, nos):
-            return Atom(1, orbitals=[get_orbital(io) for io in range(nos)])
+            return AtomicOrbital(name)
 
-        return Atoms([get_atom(ia, nos[ia]) for ia in range(na)])
+        nos_uniqs = np.unique(nos)
+
+        def get_atom(ia):
+            nonlocal nos, nos_uniqs
+            no = nos[ia]
+            Z = (nos_uniqs == no).nonzero()[0][0] + 1
+            return Atom(Z, orbitals=[get_orbital(io) for io in range(no)])
+
+        return Atoms([get_atom(ia) for ia in range(na)])
 
     @sile_fh_open(True)
     def _r_file(self, geometry: Optional[Geometry] = None):
