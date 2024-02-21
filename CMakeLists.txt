@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 # We will use cmake_path for file-name manipulation
 
+list(APPEND CMAKE_MESSAGE_CONTEXT "sisl")
+
 message(STATUS "Building with CMake version: ${CMAKE_VERSION}")
 if(SKBUILD)
   message(STATUS "Building with scikit-build-core: ${SKBUILD_CORE_VERSION}")
@@ -75,8 +77,8 @@ if( WITH_FORTRAN )
     "Report timings on routine exits" FALSE)
 endif()
 
-#option(WITH_COVERAGE
-#  "Add instructions for coverage in Cython files" FALSE)
+option(WITH_COVERAGE
+  "Add instructions for coverage in Cython files" FALSE)
 option(WITH_LINE_DIRECTIVES
   "Create line-directives in cythonized sources" FALSE)
 option(WITH_ANNOTATE
@@ -125,6 +127,9 @@ list(POP_BACK CMAKE_MESSAGE_INDENT)
 
 
 # Parse Cython global options
+if(WITH_COVERAGE)
+  add_compile_definitions(CYTHON_TRACE_NOGIL=1)
+endif()
 if(WITH_ANNOTATE)
   list(APPEND CYTHON_FLAGS --annotate)
 endif()
@@ -188,7 +193,7 @@ endif(WITH_FORTRAN)
 message(STATUS "sisl options")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-#cmake_print_variables(WITH_COVERAGE)
+cmake_print_variables(WITH_COVERAGE)
 cmake_print_variables(WITH_ANNOTATE)
 cmake_print_variables(WITH_LINE_DIRECTIVES)
 cmake_print_variables(WITH_GDB)
