@@ -121,6 +121,28 @@ def test_state_norm():
     assert state.norm()[0] == pytest.approx(1)
 
 
+def test_state_change_gauge():
+    g = geom.graphene(1.42)
+    state = State(ar(2, 2).astype(np.complex128), g, gauge="r", k=(0.1, 0.2, 0.4))
+    assert len(state) == 2
+    old = state.state.copy()
+    state.change_gauge("R")
+    assert not np.allclose(old, state.state)
+    state.change_gauge("r")
+    assert np.allclose(old, state.state)
+
+
+def test_state_change_gauge_nc():
+    g = geom.graphene(1.42)
+    state = State(ar(2, 4).astype(np.complex128), g, gauge="r", k=(0.1, 0.2, 0.4))
+    assert len(state) == 2
+    old = state.state.copy()
+    state.change_gauge("R")
+    assert not np.allclose(old, state.state)
+    state.change_gauge("r")
+    assert np.allclose(old, state.state)
+
+
 def test_state_sub():
     state = ar(10, 10)
     state = State(state)

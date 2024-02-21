@@ -84,9 +84,10 @@ class AtomCategory(Category):
     @classmethod
     def is_class(cls, name, case=True) -> bool:
         # Strip off `Atom`
+        cls_name = cls.__name__[4:]
         if case:
-            return cls.__name__[4:] == name
-        return cls.__name__[4:].lower() == name.lower()
+            return cls_name == name
+        return cls_name.lower() == name.lower()
 
 
 @set_module("sisl")

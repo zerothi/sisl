@@ -1166,7 +1166,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # Decipher v from State type
     if isinstance(v, State):
         if geometry is None:
-            geometry = v.parent.geometry
+            geometry = v._geometry()
         if k is None:
             k = v.info.get("k", k)
         elif not np.allclose(k, v.info.get("k", k)):

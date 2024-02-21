@@ -336,6 +336,6 @@ class EigenmodePhonon(ModeCPhonon):
         U.shape = (U.shape[0], -1, 3)
         U[idx] = (mode[idx, :] * factor).reshape(
             len(idx), -1, 3
-        ) / self.parent.mass.reshape(1, -1, 1) ** 0.5
+        ) / self._geometry().mass.reshape(1, -1, 1) ** 0.5
         U = np.swapaxes(U, 0, 2)
         return U

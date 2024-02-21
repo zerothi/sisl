@@ -8,6 +8,7 @@ import numpy as np
 from numpy import bool_, einsum, exp, ndarray
 
 import sisl._array as _a
+from sisl._core import Geometry
 from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
@@ -136,6 +137,12 @@ information regarding the creation of the object
         if step is None:
             step = 1
         return np.arange(start, stop, step)
+
+    def _geometry(self):
+        """Return the parent geometry if one is found"""
+        if isinstance(self.parent, Geometry):
+            return self.parent
+        return self.parent.geometry
 
 
 @set_module("sisl.physics")
@@ -806,7 +813,8 @@ state coefficients
         if k.dot(k) <= 0.000000001:
             return
 
-        g = self.parent.geometry
+        # Try and bypass whether the parent is a geometry, or not
+        g = self._geometry()
         xyz = g.xyz + offset
         phase = xyz[g.o2a(_a.arangei(g.no)), :] @ (k @ g.rcell)
 
@@ -815,7 +823,10 @@ state coefficients
                 # for NC/SOC we have a 2x2 spin-box per orbital
                 phase = np.repeat(phase, 2)
         except Exception:
-            pass
+            # This should enter in case where spin is not part of the parent
+            # So lets just check for sizes of the arrays
+            if self.shape[1] == g.no * 2:
+                phase = np.repeat(phase, 2)
 
         if gauge == "r":
             # R -> r gauge tranformation.
