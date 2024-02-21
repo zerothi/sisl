@@ -46,6 +46,7 @@ steps:
    basic
    generic
    bigdft
+   dftb
    fhiaims
    gulp
    openmx

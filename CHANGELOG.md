@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- enabled reading DFTB+ output Hamiltonian and overlap matrices, #579
 - better error messages when users request quantities not calculated by Siesta/TBtrans
 - functional programming of the basic sisl classes
   Now many of the `Geometry|Lattice|Grid.* manipulation routines which
