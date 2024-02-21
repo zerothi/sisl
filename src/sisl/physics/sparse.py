@@ -1149,7 +1149,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         Parameters
         ----------
         hermitian : bool, optional
-           if true, also emply a spin-box Hermitian operator to ensure TRS, otherwise
+           if true, also apply a spin-box Hermitian operator to ensure TRS, otherwise
            only return the transpose values.
         spin : bool, optional
            whether the spin-box is also transposed if this is false, and `hermitian` is true,
