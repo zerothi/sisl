@@ -183,10 +183,10 @@ viz-ase = [
 
 test = [
     "pytest",
+    "coverage >= 7",
     "pytest-cov",
     "pytest-env",
     "pytest-faulthandler",
-    "coveralls",
     "netCDF4",
     "tqdm",
     "dill >= 0.3.2",

@@ -124,7 +124,7 @@ jobs:
           ADD_TOOLS="$ADD_TOOLS sisl_toolbox.transiesta.$tool"
         done
         # Try to enable code-coverage in the tests
-        py.test -vv -rX --cov --cov-report term-missing --cov-report xml $ADD_FLAGS --pyargs sisl $ADD_TOOLS
+        coverage run -m pytest -rX $ADD_FLAGS --pyargs sisl $ADD_TOOLS
         ls -l
 
     - name: Upload code-coverage
