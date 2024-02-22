@@ -1,8 +1,13 @@
+# We use some functionality in 1.13 (np.unique)
+numpy>=1.13
+scipy>=1.5
+pyparsing>=1.5.7
+xarray>=0.10
 # netCDF4 is now not a dependency
 netCDF4
-xarray>=0.10.0
+coverage>=7
 pytest
+tqdm
 pytest-cov
 pytest-env
 pytest-faulthandler
-coveralls
