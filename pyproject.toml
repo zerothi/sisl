@@ -11,7 +11,7 @@
 [build-system]
 requires = [
     "setuptools_scm[toml]>=6.2",
-    "scikit-build-core[pyproject]",
+    "scikit-build-core[pyproject]>=0.8",
     "Cython>=3",
     # see https://github.com/scipy/oldest-supported-numpy/
     # should fix #310
@@ -100,7 +100,7 @@ build-dir = "build/{wheel_tag}"
 
 # cmake and ninja stuff
 cmake.verbose = true
-cmake.minimum-version = "3.20"
+cmake.version = "3.20"
 
 # source configuration
 sdist.reproducible = true
@@ -183,7 +183,7 @@ viz-ase = [
 
 test = [
     "pytest",
-    "coverage >= 7",
+    "coverage",
     "pytest-cov",
     "pytest-env",
     "pytest-faulthandler",

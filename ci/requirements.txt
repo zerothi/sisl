@@ -5,7 +5,7 @@ pyparsing>=1.5.7
 xarray>=0.10
 # netCDF4 is now not a dependency
 netCDF4
-coverage>=7
+coverage
 pytest
 tqdm
 pytest-cov
