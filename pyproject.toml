@@ -87,7 +87,8 @@ fallback_version = "0.15.0"
 
 
 [tool.scikit-build]
-
+# Consider adding
+# minimum-version to choose the fallback mechanism in scikit-build-core
 wheel.packages = ["src/sisl", "src/sisl_toolbox"]
 
 # required for dynamic metadata
@@ -100,7 +101,7 @@ build-dir = "build/{wheel_tag}"
 
 # cmake and ninja stuff
 cmake.verbose = true
-cmake.version = "3.20"
+cmake.version = ">=3.20"
 
 # source configuration
 sdist.reproducible = true
