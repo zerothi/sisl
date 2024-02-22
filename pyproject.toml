@@ -206,24 +206,19 @@ markers = [
     "slow: mark a test as slow",
 ]
 
-addopts = "-rXs --durations=20 --cov"
+addopts = "-rXs --durations=20"
 
 [tool.coverage.run]
-source = [
+source_pkgs = [
     "sisl",
-    "sisl_toolbox"
+    "sisl_toolbox",
 ]
 omit = [
-    "benchmarks",
-    "data",
-    "files",
-    "tools",
-    "examples",
     "*/conftest.py",
-    "*/tests/*",
 ]
 
 [tool.coverage.report]
+include_namespace_packages = true
 exclude_also = [
     "raise NotImplementedError",
 ]

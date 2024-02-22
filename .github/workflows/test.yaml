@@ -104,10 +104,7 @@ jobs:
       env:
         SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
       run: |
-        ls -l
-        # This needs to be done in a separate folder
-        # Otherwise the import will try to use the one in the current folder
-        mkdir sisl-test-dir ; cd sisl-test-dir
+        ls -al
         if [[ "${{ github.event.inputs.marks }}" == "" ]]; then
          ADD_FLAGS=""
         else
@@ -124,12 +121,11 @@ jobs:
           ADD_TOOLS="$ADD_TOOLS sisl_toolbox.transiesta.$tool"
         done
         # Try to enable code-coverage in the tests
-        coverage run -m pytest -rX $ADD_FLAGS --pyargs sisl $ADD_TOOLS
-        ls -l
+        coverage run -m pytest --pyargs sisl $ADD_FLAGS $ADD_TOOLS
+        ls -al
 
     - name: Upload code-coverage
       if: ${{ github.event.inputs.marks == '' }}
       uses: codecov/codecov-action@v4
       with:
-        directory: ./sisl-test-dir/
         verbose: true
