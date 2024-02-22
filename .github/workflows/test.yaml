@@ -92,6 +92,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Install sisl + dependencies
+      env:
+        SKBUILD_CMAKE_ARGS: -DWITH_COVERAGE:bool=true;-DWITH_LINE_DIRECTIVES:bool=true
       run: |
         python -m pip install --progress-bar=off --upgrade pip
         python -m pip install --progress-bar=off Cython "scikit-build-core[pyproject]"
@@ -110,7 +112,6 @@ jobs:
         else
          ADD_FLAGS="-m ${{ github.event.inputs.marks }}"
         fi
-        # --cov forces the reading of .coveragerc
         ADD_TOOLS=""
         for tool in btd models ; do
           ADD_TOOLS="$ADD_TOOLS sisl_toolbox.$tool"
@@ -121,7 +122,8 @@ jobs:
         for tool in poisson ; do
           ADD_TOOLS="$ADD_TOOLS sisl_toolbox.transiesta.$tool"
         done
-        py.test -vv -rX --cov --cov-report term-missing --cov-report xml --cov-config=../.coveragerc $ADD_FLAGS --pyargs sisl $ADD_TOOLS
+        # Try to enable code-coverage in the tests
+        py.test -vv -rX --cov --cov-report term-missing --cov-report xml $ADD_FLAGS --pyargs sisl $ADD_TOOLS
         #cp coverage.xml ../
 
     - name: Upload code-coverage
