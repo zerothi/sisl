@@ -209,7 +209,24 @@ markers = [
 addopts = "-rXs --durations=20 --cov"
 
 [tool.coverage.run]
-source = ["src"]
+source = [
+    "sisl",
+    "sisl_toolbox"
+]
+omit = [
+    "benchmarks",
+    "data",
+    "files",
+    "tools",
+    "examples",
+    "*/conftest.py",
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "raise NotImplementedError",
+]
 
 
 [tool.pylint]
