@@ -42,7 +42,7 @@ def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] element, np.ndarray[np
 @cython.initializedcheck(False)
 cdef Py_ssize_t _indices_only(const Py_ssize_t n_element, const int[::1] element,
                        const Py_ssize_t n_test_element, const int[::1] test_element,
-                       int[::1] idx) nogil:
+                       int[::1] idx) noexcept nogil:
     cdef Py_ssize_t i, j, n
 
     # Fast return
@@ -110,7 +110,7 @@ def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] element, np.ndarray[np.int3
 @cython.initializedcheck(False)
 cdef void _indices(const Py_ssize_t n_element, const int[::1] element,
                    const Py_ssize_t n_test_element, const int[::1] test_element,
-                   const int offset, int[::1] idx) nogil:
+                   const int offset, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t i, j
 
     # Fast return
@@ -145,7 +145,7 @@ cdef void _indices(const Py_ssize_t n_element, const int[::1] element,
 @cython.initializedcheck(False)
 cdef void _indices_sorted_arrays(const Py_ssize_t n_element, const int[::1] element,
                                  const Py_ssize_t n_test_element, const int[::1] test_element,
-                                 const int offset, int[::1] idx) nogil:
+                                 const int offset, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t i, j
     cdef int ctest_element, celement
 
@@ -207,7 +207,7 @@ def indices_in_cylinder(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const d
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_in_cylinder(const double[:, ::1] dxyz, const double R, const double h, int[::1] idx) nogil:
+cdef Py_ssize_t _indices_in_cylinder(const double[:, ::1] dxyz, const double R, const double h, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = dxyz.shape[0]
     cdef Py_ssize_t xyz = dxyz.shape[1]
     cdef double R2 = R * R
@@ -266,7 +266,7 @@ def indices_in_sphere(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const dou
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_in_sphere(const double[:, ::1] dxyz, const double R, int[::1] idx) nogil:
+cdef Py_ssize_t _indices_in_sphere(const double[:, ::1] dxyz, const double R, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = dxyz.shape[0]
     cdef Py_ssize_t xyz = dxyz.shape[1]
     cdef double R2 = R * R
@@ -320,7 +320,7 @@ def indices_in_sphere_with_dist(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 cdef Py_ssize_t _indices_in_sphere_with_dist(const double[:, ::1] dxyz, const double R,
-                                             double[::1] dist, int[::1] idx) nogil:
+                                             double[::1] dist, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = dxyz.shape[0]
     cdef double R2 = R * R
     cdef double d
@@ -383,7 +383,7 @@ def indices_le(np.ndarray a, const double V):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_le1(const double[::1] a, const double V, int[::1] idx) nogil:
+cdef Py_ssize_t _indices_le1(const double[::1] a, const double V, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = a.shape[0]
     cdef Py_ssize_t i, n
     n = 0
@@ -397,7 +397,7 @@ cdef Py_ssize_t _indices_le1(const double[::1] a, const double V, int[::1] idx) 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int all_le(const double[:, ::1] a, const Py_ssize_t i, const double V) nogil:
+cdef inline int all_le(const double[:, ::1] a, const Py_ssize_t i, const double V) noexcept nogil:
     cdef Py_ssize_t j
     for j in range(a.shape[1]):
         if a[i, j] > V:
@@ -408,7 +408,7 @@ cdef inline int all_le(const double[:, ::1] a, const Py_ssize_t i, const double 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:
+cdef Py_ssize_t _indices_le2(const double[:, ::1] a, const double V, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = a.shape[0]
     cdef Py_ssize_t i, n
     n = 0
@@ -463,7 +463,7 @@ def indices_fabs_le(np.ndarray a, const double V):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline double fabs2(const double[:, ::1] a, const Py_ssize_t i) nogil:
+cdef inline double fabs2(const double[:, ::1] a, const Py_ssize_t i) noexcept nogil:
     cdef Py_ssize_t j
     cdef double abs2
     abs2 = 0.
@@ -475,7 +475,7 @@ cdef inline double fabs2(const double[:, ::1] a, const Py_ssize_t i) nogil:
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_fabs_le1(const double[::1] a, const double V, int[::1] idx) nogil:
+cdef Py_ssize_t _indices_fabs_le1(const double[::1] a, const double V, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = a.shape[0]
     cdef Py_ssize_t i, n
     n = 0
@@ -489,7 +489,7 @@ cdef Py_ssize_t _indices_fabs_le1(const double[::1] a, const double V, int[::1] 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int all_fabs_le(const double[:, ::1] a, const Py_ssize_t i, const double V) nogil:
+cdef inline int all_fabs_le(const double[:, ::1] a, const Py_ssize_t i, const double V) noexcept nogil:
     cdef Py_ssize_t j
     for j in range(a.shape[1]):
         if fabs(a[i, j]) > V:
@@ -500,7 +500,7 @@ cdef inline int all_fabs_le(const double[:, ::1] a, const Py_ssize_t i, const do
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef int _indices_fabs_le2(const double[:, ::1] a, const double V, int[::1] idx) nogil:
+cdef int _indices_fabs_le2(const double[:, ::1] a, const double V, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = a.shape[0]
     cdef Py_ssize_t i, n
     n = 0
@@ -541,7 +541,7 @@ def indices_gt_le(np.ndarray a, const double V1, const double V2):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_gt_le1(const double[::1] a, const double V1, const double V2, int[::1] idx) nogil:
+cdef Py_ssize_t _indices_gt_le1(const double[::1] a, const double V1, const double V2, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = a.shape[0]
     cdef Py_ssize_t i, n
     n = 0
@@ -556,7 +556,7 @@ cdef Py_ssize_t _indices_gt_le1(const double[::1] a, const double V1, const doub
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int all_gt_le(const double[:, ::1] a, const Py_ssize_t i, const double V1, const double V2) nogil:
+cdef inline int all_gt_le(const double[:, ::1] a, const Py_ssize_t i, const double V1, const double V2) noexcept nogil:
     cdef Py_ssize_t j
     for j in range(a.shape[1]):
         if a[i, j] <= V1:
@@ -569,7 +569,7 @@ cdef inline int all_gt_le(const double[:, ::1] a, const Py_ssize_t i, const doub
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_gt_le2(const double[:, ::1] a, const double V1, const double V2, int[::1] idx) nogil:
+cdef Py_ssize_t _indices_gt_le2(const double[:, ::1] a, const double V1, const double V2, int[::1] idx) noexcept nogil:
     cdef Py_ssize_t N = a.shape[0]
     cdef Py_ssize_t i, n
     n = 0
@@ -583,7 +583,7 @@ cdef Py_ssize_t _indices_gt_le2(const double[:, ::1] a, const double V1, const d
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int in_1d(const int[::1] array, const int v) nogil:
+cdef inline int in_1d(const int[::1] array, const int v) noexcept nogil:
     cdef Py_ssize_t N = array.shape[0]
     cdef Py_ssize_t i
     for i in range(N):
@@ -616,7 +616,7 @@ def index_sorted(np.ndarray[np.int32_t, ndim=1, mode='c'] a, const int v):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _index_sorted(const int[::1] a, const int v) nogil:
+cdef Py_ssize_t _index_sorted(const int[::1] a, const int v) noexcept nogil:
     """ Return index for the value v in a sorted array, otherwise return -1
 
     This implements a binary search method
@@ -679,7 +679,7 @@ def sorted_unique(np.ndarray[np.int32_t, ndim=1, mode='c'] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef int _sorted_unique(const Py_ssize_t n_a, const int[::1] a) nogil:
+cdef int _sorted_unique(const Py_ssize_t n_a, const int[::1] a) noexcept nogil:
     cdef Py_ssize_t i
 
     # Fast return
@@ -726,7 +726,7 @@ def list_index_le(np.ndarray[np.int32_t, ndim=1, mode='c'] a, np.ndarray[np.int3
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline void _list_index_le(const int[::1] a, const int[::1] b, int[::1] c) nogil:
+cdef inline void _list_index_le(const int[::1] a, const int[::1] b, int[::1] c) noexcept nogil:
     cdef Py_ssize_t na = a.shape[0]
     cdef Py_ssize_t nb = b.shape[0]
     cdef Py_ssize_t ia, ib

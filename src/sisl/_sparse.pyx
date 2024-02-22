@@ -19,7 +19,7 @@ __all__ = ["fold_csr_matrix", "fold_csr_matrix_nc",
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline Py_ssize_t inline_sum(const int[::1] array) nogil:
+cdef inline Py_ssize_t inline_sum(const int[::1] array) noexcept nogil:
     cdef Py_ssize_t total, i
 
     total = 0

@@ -7,7 +7,7 @@ cimport cython
 __all__ = ["ncol2ptr_double", "ncol2ptr_single"]
 
 
-cdef void ncol2ptr_double(const int nr, const int[::1] ncol, int[::1] ptr) nogil:
+cdef void ncol2ptr_double(const int nr, const int[::1] ncol, int[::1] ptr) noexcept nogil:
     cdef Py_ssize_t r, rr
 
     # this is NC/SOC
@@ -22,7 +22,7 @@ cdef void ncol2ptr_double(const int nr, const int[::1] ncol, int[::1] ptr) nogil
     ptr[nr * 2] = ptr[nr * 2 - 1] + ncol[nr - 1] * 2
 
 
-cdef void ncol2ptr_single(const int nr, const int[::1] ncol, int[::1] ptr) nogil:
+cdef void ncol2ptr_single(const int nr, const int[::1] ncol, int[::1] ptr) noexcept nogil:
     cdef Py_ssize_t r, rr
 
     # this is NC/SOC

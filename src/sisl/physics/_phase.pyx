@@ -18,7 +18,7 @@ __all__ = ['phase_dtype', 'phase_rsc', 'phase_rij']
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int is_gamma(const double[::1] k) nogil:
+cdef inline int is_gamma(const double[::1] k) noexcept nogil:
     if fabs(k[0]) > 0.0000001:
         return 0
     if fabs(k[1]) > 0.0000001:

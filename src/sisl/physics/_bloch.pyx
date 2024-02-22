@@ -93,7 +93,7 @@ cdef void _unfold64_matrix(const double w,
                            const double k0, const double k1, const double k2,
                            const Py_ssize_t N1, const Py_ssize_t N2,
                            const float complex[:, ::1] m,
-                           float complex[:, ::1] M) nogil:
+                           float complex[:, ::1] M) noexcept nogil:
     """ Unfold matrix `m` into `M` """
 
     cdef Py_ssize_t j0, j1, j2 # looping the output rows
@@ -151,7 +151,7 @@ cdef void _unfold64_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t
                       const double[:, :, :, ::1] k2pi,
                       const Py_ssize_t N1, const Py_ssize_t N2,
                       const float complex[:, :, ::1] m,
-                      float complex[:, ::1] M) nogil:
+                      float complex[:, ::1] M) noexcept nogil:
 
     # N should now equal K.shape[0]
     cdef Py_ssize_t N = B0 * B1 * B2
@@ -174,7 +174,7 @@ cdef void _unfold64_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t
 cdef void _unfold64_1(const Py_ssize_t NA, const double[:] kA2pi,
                       const Py_ssize_t N1, const Py_ssize_t N2,
                       const float complex[:, :, ::1] m,
-                      float complex[:, :, :, ::1] M) nogil:
+                      float complex[:, :, :, ::1] M) noexcept nogil:
 
     cdef double k, w
     cdef Py_ssize_t TA, iA
@@ -400,7 +400,7 @@ cdef void _unfold128_matrix(const double w,
                             const double k0, const double k1, const double k2,
                             const Py_ssize_t N1, const Py_ssize_t N2,
                             const double complex[:, ::1] m,
-                            double complex[:, ::1] M) nogil:
+                            double complex[:, ::1] M) noexcept nogil:
     """ Unfold matrix `m` into `M` """
 
     cdef Py_ssize_t j0, j1, j2 # looping the output rows
@@ -481,7 +481,7 @@ cdef void _unfold128_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_
 cdef void _unfold128_1(const Py_ssize_t NA, const double[:] kA2pi,
                        const Py_ssize_t N1, const Py_ssize_t N2,
                        const double complex[:, :, ::1] m,
-                       double complex[:, :, :, ::1] M) nogil:
+                       double complex[:, :, :, ::1] M) noexcept nogil:
 
     cdef double k, w
     cdef Py_ssize_t TA, iA
