@@ -33,7 +33,10 @@ on:
         description: 'Which marks to test'
         required: false
         default: ''
-
+      verbose:
+        description: 'Run pytest with -vvv'
+        required: false
+        type: boolean
 
 jobs:
 
@@ -110,6 +113,9 @@ jobs:
         else
          ADD_FLAGS="-m ${{ github.event.inputs.marks }}"
         fi
+        if [[ "${{ github.event.inputs.verbose }}" == "true" ]]; then
+         ADD_FLAGS="$ADD_FLAGS -vvv"
+        fi
         ADD_TOOLS=""
         for tool in btd models ; do
           ADD_TOOLS="$ADD_TOOLS sisl_toolbox.$tool"
@@ -129,3 +135,4 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }}
