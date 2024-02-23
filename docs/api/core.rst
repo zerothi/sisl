@@ -1,8 +1,8 @@
 .. _core:
 
-**********
-Functional
-**********
+**********************
+Functional programming
+**********************
 
 .. currentmodule:: sisl
 

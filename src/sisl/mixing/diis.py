@@ -12,8 +12,8 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._internal import set_module
-from sisl._typing_ext.numpy import ArrayLike, NDArray
 from sisl.linalg import solve_destroy
+from sisl.typing import ArrayLike, NDArray
 
 from .base import (
     BaseHistoryWeightMixer,

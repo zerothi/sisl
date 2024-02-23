@@ -15,9 +15,9 @@ from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 from sisl._help import array_fill_repeat
 from sisl._indices import list_index_le
 from sisl._internal import set_module
-from sisl._typing_ext.numpy import NDArray
 from sisl.messages import deprecation, info
 from sisl.shape import Sphere
+from sisl.typing import NDArray
 
 from .orbital import Orbital
 
@@ -1066,7 +1066,7 @@ class Atom(
             mass_Z = self.Z
         else:
             self._Z = _ptbl.Z_int(Z)
-        if isinstance(self._Z, str):
+        if not isinstance(self._Z, Integral):
             raise ValueError(
                 f"{self.__class__.__name__} got an unparseable Z argument, needs to be an integer, got='{Z}'."
             )

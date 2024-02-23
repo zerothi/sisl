@@ -5,16 +5,23 @@ nbsphinx
 dill>=0.3.2
 pathos
 scikit-image
+tqdm
 plotly>=5.12.0
+# actual documentation requirements
 sphinx-rtd-theme
+sphinx-design
 sphinx-gallery
 sphinx-copybutton
+sphinx-togglebutton
 sphinx-inline-tabs
 sphinxcontrib-bibtex
-tqdm
+importlib-metadata
 ipywidgets
 jupyterlab-widgets
 kaleido
+pytz
 # Visualizing nodes
 networkx
 pyvis
+pybtex
+pandoc

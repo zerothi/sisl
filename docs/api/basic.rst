@@ -14,7 +14,7 @@ unit cells and grid functions.
 Simple objects
 ==============
 
-.. index:: basic, geometry, supercell, atom, atom, orbital
+.. index:: basic, geometry, lattice, supercell, atom, orbital
 
 .. autosummary::
    :toctree: generated/
@@ -66,6 +66,6 @@ In particular `oplist` is useful when calculating averages in Brillouin zones (s
 .. autosummary::
    :toctree: generated/
 
-   NeighborFinder
-   oplist
+   ~sisl.oplist
+   ~sisl.geom.NeighborFinder
    ~sisl.utils.PropertyDict

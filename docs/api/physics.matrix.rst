@@ -50,7 +50,7 @@ out semi-infinite regions.
 Bloch's theorem
 ---------------
 
-Bloch's theorem is a very powerful proceduce that enables one to utilize
+Bloch's theorem is a very powerful procedure that enables one to utilize
 the periodicity of a given direction to describe the complete system.
 
 .. autosummary::

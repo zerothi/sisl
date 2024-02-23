@@ -66,7 +66,7 @@ Added
      * "hello.xyz{contains=<name>}" equivalent to "hello.xyz{<name>}"
      * "hello.xyz{startswith=<name>}" class name should start with `<name>`
      * "hello.xyz{endswith=<name>}" class name should end with `<name>`
-        This is useful for defining a currently working code:
+       This is useful for defining a currently working code:
 
             SISL_IO_DEFAULT=siesta
 
@@ -85,10 +85,10 @@ Added
 * unified the index argument for reading Grids, `read_grid`, this influences
   Siesta and VASP grid reads.
 * `sisl.mixing`:
-  * `AndersonMixer` enables the popular and very simple linear-like mixer
-  * `StepMixer` allows switching between different mixers, for instance this
-    enabled restart capabilities among other things.
-  * Enabled composite mixers (simple math with mixers)
+   * `AndersonMixer` enables the popular and very simple linear-like mixer
+   * `StepMixer` allows switching between different mixers, for instance this
+      enabled restart capabilities among other things.
+   * Enabled composite mixers (simple math with mixers)
 * `BrillouinZone.merge` allows simple merging of several objects, #537
 
 Changed
@@ -156,7 +156,7 @@ Fixed
 
 
 toolbox.btd
-^^^^^^^^^^^^
-# Added
+-----------
+Added
 ^^^^^^^^
 * calculation of scattering matrices

@@ -112,6 +112,11 @@ class xyzSile(Sile):
             s = {"fa": "Ds"}.get(s, s)
             self._write(fmt_str.format(s, *geometry.xyz[ia, :]))
 
+    @SileBinder()
+    def read_lattice(self):
+        """Returns a Lattice object from the XYZ file"""
+        return self.read_geometry().lattice
+
     def _r_geometry_skip(self, *args, **kwargs):
         """Read the geometry for a generic xyz file (not sisl, nor ASE)"""
         line = self.readline()

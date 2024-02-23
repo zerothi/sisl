@@ -1,5 +1,9 @@
-The ``sisl.viz`` module
------------------------
+.. currentmodule:: sisl.viz
+
+.. _toc-sisl-viz:
+
+``sisl.viz``
+----------------------------
 
 This is a full visualization framework developed specifically for ``sisl`` to visualize
 all the processing that you can do with the package. The aim is to provide a **high-level API**

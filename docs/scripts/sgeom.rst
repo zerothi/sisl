@@ -1,16 +1,14 @@
-.. highlight:: bash
+.. highlight:: console
 
 .. _script_sgeom:
-	       
+
 `sgeom`
 =======
 
 The `sgeom` executable is a tool for reading and transforming general
 coordinate formats to other formats, or alter them.
 
-For a short help description of the possible uses do:
-
-::
+For a short help description of the possible uses do::
 
    sgeom --help
 
@@ -28,21 +26,19 @@ input file format, and the second (and any third + argumets) the output
 file formats
 
 ::
-   
+
    sgeom <in> <out> [<out2>] [[<out3>] ...]
 
 Hence to convert from an **fdf** Siesta input file to an **xyz** file
-for plotting in a GUI program one can do this:
+for plotting in a GUI program one can do this::
 
-::
-   
    sgeom RUN.fdf RUN.xyz
 
 and the ``RUN.xyz`` file will be created.
 
 Remark that the input file *must* be the first argument of `sgeom`.
 
-    
+
 Available formats
 ^^^^^^^^^^^^^^^^^
 
@@ -59,10 +55,8 @@ More advanced features are represented here.
 The `sgeom` utility enables highly advanced creation of several geometry
 structures by invocing the arguments *in order*.
 
-I.e. if one performs:
+I.e. if one performs::
 
-::
-   
    sgeom <in> --repeat 3 x repx3.xyz --repeat 3 y repx3_repy3.xyz
 
 will read ``<in>``, repeat the geometry 3 times along the first unit-cell
@@ -70,7 +64,7 @@ vector, store the resulting geometry in ``repx3.xyz``. Subsequently it will repe
 the already repeated structure 3 times along the second unit-cell vector and store
 the now ``3x3`` repeated structure as ``repx3_repy3.xyz``.
 
-    
+
 Repeating/Tiling structures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -79,7 +73,7 @@ This is useful for creating larger bulk structures.
 To repeat a structure do
 
 ::
-   
+
    sgeom <in> --repeat <int> [ax|yb|zc] <out>
 
 which repeats the structure one atom at a time, ``<int>`` times, in the corresponding direction.
@@ -88,7 +82,7 @@ Note that ``x`` and ``a`` correspond to the same cell direction (the first).
 To repeat the structure in *chunks* one can use the ``--tile`` option:
 
 ::
-   
+
    sgeom <in> --tile <int> [ax|yb|zc] <out>
 
 which results in the same structure as ``--repeat`` however with different atomic ordering.
@@ -96,7 +90,7 @@ which results in the same structure as ``--repeat`` however with different atomi
 Both tiling and repeating have the shorter variants:
 
 ::
-   
+
    sgeom <in> -t[xyz] <int> -r[xyz] <int>
 
 to ease the commands.
@@ -104,7 +98,7 @@ to ease the commands.
 To repeat a structure 4 times along the *x* cell direction:
 
 ::
-   
+
    sgeom RUN.fdf --repeat 4 x RUN4x.fdf
    sgeom RUN.fdf --repeat-x 4 RUN4x.fdf
    sgeom RUN.fdf --tile 4 x RUN4x.fdf
@@ -119,7 +113,7 @@ Rotating structure
 To rotate the structure around certain cell directions one can do:
 
 ::
-   
+
    sgeom <in> --rotate <angle> [ax|yb|zc] <out>
 
 which rotates the structure around the origin with a normal vector along the
@@ -134,7 +128,7 @@ Again there are shorthand commands:
 
 
 Combining command line arguments
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^    
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All command line options may be used together. However, one should be aware that
 the order of the command lines determine the order of operations.
@@ -146,7 +140,7 @@ Be also aware that outputting structures are done *at the time in the command li
 This means one can store the intermediate steps while performing the entire operation:
 
 ::
-   
+
    sgeom <in> --rotate <angle> --out <rotated> -tx 2 --out <rotate-tile-x> --ty 2 --out <rotate-tile-y>
 
 

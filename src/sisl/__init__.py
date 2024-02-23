@@ -39,7 +39,6 @@ Advanced classes
    SparseCSR
    SparseAtom
    SparseOrbital
-   Selector
 
 """
 import logging

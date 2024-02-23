@@ -1,7 +1,7 @@
 .. _other:
 
-Other resources
-===============
+Similar resources
+=================
 
 One of sisl's goals is an easy interaction between a variety of DFT simulations, much like `ASE`_ with
 a high emphasis on `Siesta`_, while simultaneously providing the tools necessary to perform tight-binding

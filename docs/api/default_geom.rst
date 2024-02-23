@@ -12,7 +12,7 @@ A selection of default geometries that `sisl` can construct on the fly.
 While this is far from complete we encourage users to contribute additional
 geometries via a `pull request <pr>`_.
 
-All methods return a `Geometry` object.
+All methods returns a `Geometry` object.
 
 Some of the geometries are created in section based geometries, such as `heteroribbon`.
 This functionality is provided through the `composite_geometry`
@@ -27,9 +27,9 @@ Bulk
    sc
    bcc
    fcc
-   rocksalt
    hcp
    diamond
+   rocksalt
 
 
 Surfaces (slabs)
@@ -88,4 +88,3 @@ Helpers
    AtomCategory
    composite_geometry
    CompositeGeometrySection
-

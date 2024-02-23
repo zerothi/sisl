@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from sisl._internal import set_module
-from sisl._typing_ext.numpy import NDArray
+from sisl.typing import NDArray
 
 from .base import BaseHistoryWeightMixer, T
 
@@ -52,7 +52,7 @@ class AndersonMixer(BaseHistoryWeightMixer):
     r""" Anderson mixing
 
     The Anderson mixing assumes that the mixed input/output are linearly
-    related. Hence 
+    related. Hence
 
     .. math::
 
