@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Lattice &mdash; sisl 0.1-69a1028</title>
+  <title>sisl.Lattice &mdash; sisl 0.1-c2e45ce</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -21,7 +21,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=f5b0fdd2"></script>
+        <script src="../../_static/documentation_options.js?v=a73326ef"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -49,7 +49,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-69a1028
+                0.1-c2e45ce
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -249,8 +249,8 @@ See <a class="reference internal" href="sisl.BoundaryCondition.html#sisl.Boundar
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.set_nsc" title="sisl.Lattice.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>([nsc, a, b, c])</p></td>
 <td><p>Sets the number of supercells in the 3 different cell directions</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.swapaxes" title="sisl.Lattice.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(axes_a, axes_b[, what])</p></td>
-<td><p>Swaps axes <em class="xref py py-obj">axes_a</em> and <em class="xref py py-obj">axes_b</em></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.swapaxes" title="sisl.Lattice.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(axes1, axes2[, what])</p></td>
+<td><p>Swaps axes <em class="xref py py-obj">axes1</em> and <em class="xref py py-obj">axes2</em></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.tile" title="sisl.Lattice.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
 <td><p>Extend the unit-cell <em class="xref py py-obj">reps</em> times along the <em class="xref py py-obj">axis</em> lattice vector</p></td>
@@ -775,21 +775,21 @@ corresponding cartesian coordinate (“xyz”).</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Lattice.swapaxes">
-<span class="sig-name descname"><span class="pre">swapaxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'abc'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><span class="pre">Lattice</span></a></span></span><a class="headerlink" href="#sisl.Lattice.swapaxes" title="Link to this definition"></a></dt>
-<dd><p>Swaps axes <em class="xref py py-obj">axes_a</em> and <em class="xref py py-obj">axes_b</em></p>
+<span class="sig-name descname"><span class="pre">swapaxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'abc'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><span class="pre">Lattice</span></a></span></span><a class="headerlink" href="#sisl.Lattice.swapaxes" title="Link to this definition"></a></dt>
+<dd><p>Swaps axes <em class="xref py py-obj">axes1</em> and <em class="xref py py-obj">axes2</em></p>
 <p>Swapaxes is a versatile method for changing the order
 of axes elements, either lattice vector order, or Cartesian
 coordinate orders.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>axes_a</strong> – the old axis indices (or labels if <em class="xref py py-obj">str</em>)
+<li><p><strong>axes1</strong> – the old axis indices (or labels if <em class="xref py py-obj">str</em>)
 A string will translate each character as a specific
 axis index.
 Lattice vectors are denoted by <code class="docutils literal notranslate"><span class="pre">abc</span></code> while the
 Cartesian coordinates are denote by <code class="docutils literal notranslate"><span class="pre">xyz</span></code>.
 If <em class="xref py py-obj">str</em>, then <em class="xref py py-obj">what</em> is not used.</p></li>
-<li><p><strong>axes_b</strong> – the new axis indices, same as <em class="xref py py-obj">axes_a</em></p></li>
+<li><p><strong>axes2</strong> – the new axis indices, same as <em class="xref py py-obj">axes1</em></p></li>
 <li><p><strong>what</strong> (<em>{&quot;abc&quot;</em><em>, </em><em>&quot;xyz&quot;</em><em>, </em><em>&quot;abc+xyz&quot;}</em>) – which elements to swap, lattice vectors (<code class="docutils literal notranslate"><span class="pre">abc</span></code>), or
 Cartesian coordinates (<code class="docutils literal notranslate"><span class="pre">xyz</span></code>), or both.
 This argument is only used if the axes arguments are

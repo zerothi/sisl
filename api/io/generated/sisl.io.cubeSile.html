@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.cubeSile &mdash; sisl 0.1-69a1028</title>
+  <title>sisl.io.cubeSile &mdash; sisl 0.1-c2e45ce</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -21,7 +21,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=f5b0fdd2"></script>
+        <script src="../../../_static/documentation_options.js?v=a73326ef"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -47,7 +47,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-69a1028
+                0.1-c2e45ce
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -106,6 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../bigdft.html">BigDFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dftb.html">DFTB+</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../fhiaims.html">FHIaims</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gulp.html">GULP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../openmx.html">OpenMX</a></li>
@@ -179,25 +180,25 @@ will be done for this data, only atomic coordinates and lattice vectors.</p>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_geometry" title="sisl.io.cubeSile.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>()</p></td>
-<td><p>Returns <em class="xref py py-obj">Geometry</em> object from the CUBE file</p></td>
+<td><p>Returns <code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code> object from the CUBE file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_grid" title="sisl.io.cubeSile.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>([imag])</p></td>
 <td><p>Returns <em class="xref py py-obj">Grid</em> object from the CUBE file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_lattice" title="sisl.io.cubeSile.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>([na])</p></td>
-<td><p>Returns <em class="xref py py-obj">Lattice</em> object from the CUBE file</p></td>
+<td><p>Returns <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code> object from the CUBE file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write" title="sisl.io.cubeSile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_geometry" title="sisl.io.cubeSile.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt, size, ...])</p></td>
-<td><p>Writes <em class="xref py py-obj">Geometry</em> object attached to this grid</p></td>
+<td><p>Writes <code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code> object attached to this grid</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_grid" title="sisl.io.cubeSile.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(grid[, fmt, imag, unit])</p></td>
 <td><p>Write <em class="xref py py-obj">Grid</em> to the contained file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_lattice" title="sisl.io.cubeSile.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(lattice[, fmt, size, origin, unit])</p></td>
-<td><p>Writes <em class="xref py py-obj">Lattice</em> object attached to this grid</p></td>
+<td><p>Writes <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code> object attached to this grid</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.base_file" title="sisl.io.cubeSile.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <a class="reference internal" href="sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a></p></td>
@@ -352,7 +353,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.cubeSile.read_geometry">
 <span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/cube.html#cubeSile.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.cubeSile.read_geometry" title="Link to this definition"></a></dt>
-<dd><p>Returns <em class="xref py py-obj">Geometry</em> object from the CUBE file</p>
+<dd><p>Returns <code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code> object from the CUBE file</p>
 </dd></dl>
 
 <dl class="py method">
@@ -370,7 +371,7 @@ an error will be raised.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.cubeSile.read_lattice">
 <span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/cube.html#cubeSile.read_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.cubeSile.read_lattice" title="Link to this definition"></a></dt>
-<dd><p>Returns <em class="xref py py-obj">Lattice</em> object from the CUBE file</p>
+<dd><p>Returns <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code> object from the CUBE file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>na</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to also return the number of atoms in the geometry</p>
@@ -393,7 +394,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.cubeSile.write_geometry">
 <span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'15.10e'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bohr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/cube.html#cubeSile.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.cubeSile.write_geometry" title="Link to this definition"></a></dt>
-<dd><p>Writes <em class="xref py py-obj">Geometry</em> object attached to this grid</p>
+<dd><p>Writes <code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code> object attached to this grid</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -430,7 +431,7 @@ to the lattice vectors and atomic coordinates.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.cubeSile.write_lattice">
 <span class="sig-name descname"><span class="pre">write_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'15.10e'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bohr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/cube.html#cubeSile.write_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.cubeSile.write_lattice" title="Link to this definition"></a></dt>
-<dd><p>Writes <em class="xref py py-obj">Lattice</em> object attached to this grid</p>
+<dd><p>Writes <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code> object attached to this grid</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

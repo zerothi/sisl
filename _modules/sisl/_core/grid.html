@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.grid &mdash; sisl 0.1-69a1028</title>
+  <title>sisl._core.grid &mdash; sisl 0.1-c2e45ce</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=f5b0fdd2"></script>
+        <script src="../../../_static/documentation_options.js?v=a73326ef"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-69a1028
+                0.1-c2e45ce
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -225,13 +225,13 @@
         <span class="s2">&quot;sc&quot;</span><span class="p">,</span>
         <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument sc has been deprecated in favor of lattice, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span>
         <span class="s2">&quot;bc&quot;</span><span class="p">,</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;argument bc has been deprecated (removed) in favor of the boundary conditions in Lattice, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -266,7 +266,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.set_bc">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;Grid.set_bc is deprecated since boundary conditions are moved to Lattice (see github issue #626&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_bc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span></div>
@@ -276,7 +276,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.set_boundary">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;Grid.set_boundary is deprecated since boundary conditions are moved to Lattice (see github issue #626&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span></div>
@@ -286,7 +286,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.set_boundary_condition">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;Grid.set_boundary_condition is deprecated since boundary conditions are moved to Lattice (see github issue #626&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_boundary_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span></div>
@@ -1409,7 +1409,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.topyamg">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;Grid.topyamg is deprecated in favor of Grid.to.pyamg&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">topyamg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a `pyamg` stencil matrix to be used in pyamg</span>

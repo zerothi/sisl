@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.utils.misc &mdash; sisl 0.1-69a1028</title>
+  <title>sisl.utils.misc &mdash; sisl 0.1-c2e45ce</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=f5b0fdd2"></script>
+        <script src="../../../_static/documentation_options.js?v=a73326ef"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-69a1028
+                0.1-c2e45ce
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -118,14 +118,17 @@
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">op</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;merge_instances&quot;</span><span class="p">,</span> <span class="s2">&quot;str_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;direction&quot;</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;iter_shape&quot;</span><span class="p">,</span> <span class="s2">&quot;math_eval&quot;</span><span class="p">,</span> <span class="s2">&quot;allow_kwargs&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;import_attr&quot;</span><span class="p">,</span> <span class="s2">&quot;lazy_import&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;PropertyDict&quot;</span><span class="p">,</span> <span class="s2">&quot;NotNonePropertyDict&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;size_to_num&quot;</span><span class="p">,</span> <span class="s2">&quot;size_to_elements&quot;</span><span class="p">]</span>
 
 
 <span class="c1"># supported operators</span>
@@ -194,6 +197,68 @@
     <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="n">m</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">m</span>
+
+
+<span class="k">def</span> <span class="nf">size_to_num</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MB&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a size-specification to a size in a specific `unit`</span>
+
+<span class="sd">    Converts the input value (`size`) into a number corresponding to</span>
+<span class="sd">    the `size` converted to the specified `unit`.</span>
+
+<span class="sd">    If `size` is passed as an integer (or float), it will be interpreted</span>
+<span class="sd">    as a size in MB. Otherwise the string may contain the size specification.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">size</span>
+
+    <span class="c1"># Now parse the size from a string</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+[.\d]*)(\D*)&quot;</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="n">unit_in</span> <span class="o">=</span> <span class="n">match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># Now parse things</span>
+    <span class="c1"># We expect data to be in MB (default unit)</span>
+    <span class="c1"># Then we can always convert</span>
+    <span class="n">conv</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">),</span>
+        <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">),</span>
+        <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="s2">&quot;kb&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="s2">&quot;kB&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="s2">&quot;mb&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;MB&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;G&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="s2">&quot;GB&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="s2">&quot;TB&quot;</span><span class="p">:</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">unit_in</span><span class="p">:</span>
+        <span class="n">unit_in</span> <span class="o">=</span> <span class="n">conv</span><span class="p">[</span><span class="n">unit_in</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">unit_in</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># Convert the requested unit</span>
+    <span class="n">unit</span> <span class="o">=</span> <span class="n">conv</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">size</span> <span class="o">*</span> <span class="n">unit_in</span> <span class="o">/</span> <span class="n">unit</span>
+
+
+<span class="k">def</span> <span class="nf">size_to_elements</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">byte_per_elem</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the number of elements such that they occupy `size` memory</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size :</span>
+<span class="sd">        a size specification, either by an integer, or a str. If an integer it is</span>
+<span class="sd">        assumed to be in MB, otherwise the str can hold a unit specification.</span>
+<span class="sd">    byte_per_elem</span>
+<span class="sd">        number of bytes per element when doing the conversion</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">size_to_num</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="n">byte_per_elem</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="iter_shape">
