@@ -1171,10 +1171,9 @@ class stdoutSileSiesta(SileSiesta):
                 if header is None:
                     header = (
                         line
-                        .replace("Orb", "")  # For now only total is parsed
                         .replace("Svec", "Sx Sy Sz")  # Qatom in 4.1
                         .split()
-                    )
+                    )[2:]
 
                 # Skip over the starting ---- line
                 self.readline()
