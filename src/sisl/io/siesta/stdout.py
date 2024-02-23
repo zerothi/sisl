@@ -1126,7 +1126,97 @@ class stdoutSileSiesta(SileSiesta):
         # define helper function for reading voronoi+hirshfeld charges
         def _mulliken_charges():
             """Read output from Mulliken charges"""
-            raise NotImplementedError("Mulliken charges are not implemented currently")
+            nonlocal pd
+
+            # Expecting something like this (NC/SOC)
+            # mulliken: Atomic and Orbital Populations:
+
+            # Species: Cl
+
+            # Atom      Orb        Charge      Spin       Svec
+            # ----------------------------------------------------------------
+            #     1  1 3s         1.75133   0.00566      0.004   0.004  -0.000
+            #     1  2 3s         0.09813   0.00658     -0.005  -0.005   0.000
+            #     1  3 3py        1.69790   0.21531     -0.161  -0.142   0.018
+            #     1  4 3pz        1.72632   0.15770     -0.086  -0.132  -0.008
+            #     1  5 3px        1.81369   0.01618     -0.004   0.015  -0.004
+            #     1  6 3py       -0.04663   0.02356     -0.017  -0.016  -0.000
+            #     1  7 3pz       -0.04167   0.01560     -0.011  -0.011   0.001
+            #     1  8 3px       -0.02977   0.00920     -0.006  -0.007   0.000
+            #     1  9 3Pdxy      0.00595   0.00054     -0.000  -0.000  -0.000
+            #     1 10 3Pdyz      0.00483   0.00073     -0.001  -0.001  -0.000
+            #     1 11 3Pdz2      0.00515   0.00098     -0.001  -0.001  -0.000
+            #     1 12 3Pdxz      0.00604   0.00039     -0.000  -0.000   0.000
+            #     1 13 3Pdx2-y2   0.00607   0.00099     -0.001  -0.001   0.000
+            #     1     Total     6.99733   0.41305     -0.288  -0.296   0.007
+
+            # Define the function that parses the charges
+            def _parse_charge_total(line):
+                atom_idx, _, *vals = line.split()
+                # assert that this is a proper line
+                # this should catch cases where the following line of charge output
+                # is still parseable
+                # atom_idx = int(atom_idx)
+                return int(atom_idx), list(map(float, vals))
+
+            # Define the function that parses a single species
+            def _parse_species():
+                nonlocal header, atom_idx, atom_charges
+
+                # The mulliken charges are organized per species where the charges
+                # for each species are enclosed by dashes (-----)
+
+                # Step to header
+                _, line = self.step_to('Atom', allow_reread=False)
+                if header is None:
+                    header = (
+                        line
+                        .replace("Orb", "")  # For now only total is parsed
+                        .replace("Svec", "Sx Sy Sz")  # Qatom in 4.1
+                        .split()
+                    )
+
+                # Skip over the starting ---- line
+                self.readline()
+
+                # Read until closing ---- line
+                line = ""
+                while "----" not in line:
+                    line = self.readline()
+                    if "Total" in line:
+                        ia, charge_vals = _parse_charge_total(line)
+                        atom_idx.append(ia)
+                        atom_charges.append(charge_vals)
+
+            # Parse as long as we find new species
+            atom_idx = []
+            atom_charges = []
+            header = None
+            found, _ = self.step_to("Species:", allow_reread=False)
+            while found:
+                _parse_species()
+                found, _ = self.step_to("Species:", allow_reread=False)
+
+            # Convert to array and sort in the order of the atoms
+            sort_idx = np.argsort(atom_idx)
+            atom_charges_array = _a.arrayf(atom_charges)[sort_idx]
+
+            if pd is None:
+                # not as_dataframe
+                return atom_charges_array
+
+            # determine how many columns we have
+            # this will remove atom indices and species, so only inside
+            ncols = len(atom_charges[0])
+            assert ncols == len(header)
+
+            # the precision is limited, so no need for double precision
+            return pd.DataFrame(
+                atom_charges_array,
+                columns=header,
+                dtype=np.float32,
+                index=pd.RangeIndex(stop=len(atom_charges), name="atom"),
+            )
 
         # Check that a known charge has been requested
         if namel == "voronoi":
