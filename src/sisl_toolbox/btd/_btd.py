@@ -1267,7 +1267,7 @@ class DeviceGreen:
         return G
 
     def _green_diag_block(self, idx):
-        """Calculate the Green function only on specific (neighbouring) diagonal block matrices.
+        """Calculate the Green function only on specific (neighboring) diagonal block matrices.
 
         Stored in a `np.array` class."""
         nb = len(self.btd)

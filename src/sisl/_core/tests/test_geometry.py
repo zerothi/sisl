@@ -1726,7 +1726,7 @@ def test_geometry_sanitize_atom_category():
     # that it accepts generic categories such as the AndCategory
     bi2 = bi.copy()
     bi2.atoms["C"] = Atom("C", R=1.9)
-    only_C = bi2.axyz({"Z": 6, "neighbours": 3})
+    only_C = bi2.axyz({"Z": 6, "neighbors": 3})
     assert np.allclose(only_C, check_C)
 
     tup_01 = (0, 2)

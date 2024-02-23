@@ -65,7 +65,7 @@ class MinimizeSiesta(BaseMinimize):  # no inheritance!
                     "Bounds for zeta must be the same due to normalization"
                 )
 
-        # get two lists of neighbouring zeta's
+        # get two lists of neighboring zeta's
         # Our constraint is that zeta cutoffs should be descending.
         zeta1, zeta2 = [], []
         # v now contains a dictionary with indices for the zeta orbitals

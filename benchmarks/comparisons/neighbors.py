@@ -82,7 +82,7 @@ for key, time in times.items():
 fig.update_layout(
     xaxis_title="Number of atoms",
     yaxis_title="Time (s)",
-    title=f"Finding neighbours on {what}",
+    title=f"Finding neighbors on {what}",
     yaxis_showgrid=True,
     xaxis_showgrid=True,
 )

@@ -855,12 +855,12 @@ class hsxSileSiesta(SileBinSiesta):
             while len(run_atoms) > 0:
                 atm = run_atoms.popleft()
                 xyz_atm = xyz[atm].reshape(1, 3)
-                neighbours = xij.edges(atm, exclude=atm)
-                neighbours = neighbours[neighbours < na]
+                neighbors = xij.edges(atm, exclude=atm)
+                neighbors = neighbors[neighbors < na]
 
                 # update those that haven't been calculated
-                idx = mark[neighbours] == 0
-                neigh_idx = neighbours[idx]
+                idx = mark[neighbors] == 0
+                neigh_idx = neighbors[idx]
                 if len(neigh_idx) == 0:
                     continue
                 xyz[neigh_idx, :] = xij[atm, neigh_idx] - xyz_atm
@@ -871,9 +871,9 @@ class hsxSileSiesta(SileBinSiesta):
 
                 # check that everything is correct
                 if (~idx).sum() > 0:
-                    neg_neighbours = neighbours[~idx]
+                    neg_neighbors = neighbors[~idx]
                     if not np.allclose(
-                        xyz[neg_neighbours, :], xij[atm, neg_neighbours] - xyz_atm
+                        xyz[neg_neighbors, :], xij[atm, neg_neighbors] - xyz_atm
                     ):
                         raise ValueError(
                             f"{self.__class__.__name__} xij(orb) -> xyz did not  "
@@ -898,15 +898,15 @@ class hsxSileSiesta(SileBinSiesta):
             mark = _a.zerosi(n_s)
             mark[0] = 1
             for atm in range(na):
-                neighbours = xij.edges(atm, exclude=atm)
-                uneighbours = neighbours % na
-                neighbour_isc = neighbours // na
+                neighbors = xij.edges(atm, exclude=atm)
+                uneighbors = neighbors % na
+                neighbor_isc = neighbors // na
 
                 # get offset in terms of unit-cell
-                off = xij[atm, neighbours] - (xyz[uneighbours] - xyz[atm].reshape(1, 3))
+                off = xij[atm, neighbors] - (xyz[uneighbors] - xyz[atm].reshape(1, 3))
 
-                idx = mark[neighbour_isc] == 0
-                if not np.allclose(off[~idx], sc_off[neighbour_isc[~idx]]):
+                idx = mark[neighbor_isc] == 0
+                if not np.allclose(off[~idx], sc_off[neighbor_isc[~idx]]):
                     raise ValueError(
                         f"{self.__class__.__name__} xij(orb) -> xyz did not  "
                         f"find same supercell offsets for different connections"
@@ -916,7 +916,7 @@ class hsxSileSiesta(SileBinSiesta):
                     continue
 
                 for idx in idx.nonzero()[0]:
-                    nidx = neighbour_isc[idx]
+                    nidx = neighbor_isc[idx]
                     if mark[nidx] == 0:
                         mark[nidx] = 1
                         sc_off[nidx] = off[idx]

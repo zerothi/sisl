@@ -114,7 +114,7 @@ def test_sancho_warning():
     func = H.create_construct([0.1, 1.01, 2.01], [0.0, -2.0, -1.0])
     H.construct(func)
 
-    with pytest.warns(sisl.SislWarning, match=r"first neighbouring cell.*\[1.\]"):
+    with pytest.warns(sisl.SislWarning, match=r"first neighboring cell.*\[1.\]"):
         RecursiveSI(H, "+A")
 
 

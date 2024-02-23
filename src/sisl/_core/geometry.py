@@ -2526,7 +2526,7 @@ class Geometry(
 
         This heavily relies on the `within_sc` method.
 
-        Note that if a connection is made in a neighbouring super-cell
+        Note that if a connection is made in a neighboring super-cell
         then the atomic index is shifted by the super-cell index times
         number of atoms.
         This allows one to decipher super-cell atoms from unit-cell atoms.
@@ -2655,7 +2655,7 @@ class Geometry(
 
         This heavily relies on the `close_sc` method.
 
-        Note that if a connection is made in a neighbouring super-cell
+        Note that if a connection is made in a neighboring super-cell
         then the atomic index is shifted by the super-cell index times
         number of atoms.
         This allows one to decipher super-cell atoms from unit-cell atoms.
@@ -3424,7 +3424,7 @@ class Geometry(
         periodic system (where ``self.nsc > 1`` or `periodic` is true).
 
         Atomic coordinates lying on the boundary of the supercell will be duplicated
-        on the neighbouring supercell images. Thus performing `geom.within_inf(geom.lattice)`
+        on the neighboring supercell images. Thus performing `geom.within_inf(geom.lattice)`
         may result in more atoms than in the structure.
 
         Notes

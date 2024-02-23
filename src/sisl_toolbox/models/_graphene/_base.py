@@ -10,19 +10,19 @@ class GrapheneModel(BaseModel):
     # copy the dispatcher method
     ref = BaseModel.ref.copy()
 
-    # A graphene model is generally made of 1-3 nearest neighbour
+    # A graphene model is generally made of 1-3 nearest neighbor
     # couplings
     # The distances are here kept
     @classmethod
     def distance(cls, n=1, a=1.42):
-        """Return the distance to the nearest neighbour according to the bond-length `a`
+        """Return the distance to the nearest neighbor according to the bond-length `a`
 
-        Currently only up to 3rd nearest neighbour is implemneted
+        Currently only up to 3rd nearest neighbor is implemneted
 
         Parameters
         ----------
         n : int, optional
-           the nearest neighbour, 1 means first nearest neighbour, and 0 means it self
+           the nearest neighbor, 1 means first nearest neighbor, and 0 means it self
         a : float, optional
            the bond length of the intrinsic graphene lattice
         """

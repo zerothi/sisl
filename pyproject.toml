@@ -300,7 +300,12 @@ multi_line_output = "VERTICAL_HANGING_INDENT"
 [tool.black]
 line-length = 88
 target-version = ["py38", "py39", "py310", "py311", "py312"]
-extend-exclude = "^/files/*"
+extend-exclude = """
+(
+ ^/files/*
+ | /\\..*
+)
+"""
 
 
 [tool.cibuildwheel]

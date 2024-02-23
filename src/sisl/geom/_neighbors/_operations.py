@@ -83,16 +83,16 @@ def get_pairs(
     init_npairs: cython.size_t,
     grow_factor: cnp.float64_t,
 ):
-    """Gets (possibly duplicated) pairs of neighbour atoms.
+    """Gets (possibly duplicated) pairs of neighbor atoms.
 
     Parameters
     ---------
     at_indices:
         The indices of the atoms that we want to get potential
-        neighbours for.
+        neighbors for.
     indices:
         For each atom index (first dimension), the indices of the
-        8 bins that contain potential neighbours.
+        8 bins that contain potential neighbors.
     iscs:
         For each bin, the supercell index.
     heads:
@@ -107,7 +107,7 @@ def get_pairs(
         atoms in the same bin.
         This array is constructed by `build_table`.
     self_interaction: bool, optional
-        whether to consider an atom a neighbour of itself.
+        whether to consider an atom a neighbor of itself.
     xyz:
         the cartesian coordinates of all atoms in the geometry.
     cell:
@@ -119,11 +119,11 @@ def get_pairs(
     thresholds:
         the threshold radius for each atom in the geometry.
     overlap:
-        If true, two atoms are considered neighbours if their spheres
+        If true, two atoms are considered neighbors if their spheres
         overlap.
-        If false, two atoms are considered neighbours if the second atom
+        If false, two atoms are considered neighbors if the second atom
         is within the sphere of the first atom. Note that this implies that
-        atom `i` might be atom `j`'s neighbour while the opposite is not true.
+        atom `i` might be atom `j`'s neighbor while the opposite is not true.
     init_npairs:
         The initial number of pairs that can be found.
         It is used to allocate the `neighs` array. This is computed
@@ -193,7 +193,7 @@ def get_pairs(
 
             ref_xyz[:] = xyz[at, :]
             if not_unit_cell:
-                # If we are looking at a neighbouring cell in a direction
+                # If we are looking at a neighboring cell in a direction
                 # where there are no periodic boundary conditions, go to
                 # next bin.
                 should_not_check = False
@@ -240,7 +240,7 @@ def get_pairs(
                     if i_pair >= neighs.shape[0]:
                         grow()
 
-                    # Store the pair of neighbours.
+                    # Store the pair of neighbors.
                     neighs[i_pair, 0] = at
                     neighs[i_pair, 1] = neigh_at
                     neighs[i_pair, 2] = neigh_isc[0]
@@ -276,13 +276,13 @@ def get_all_unique_pairs(
     init_npairs: cython.size_t,
     grow_factor: cnp.float64_t,
 ):
-    """Gets all unique pairs of atoms that are neighbours.
+    """Gets all unique pairs of atoms that are neighbors.
 
     Parameters
     ---------
     indices:
         For each atom index (first dimension), the indices of the
-        8 bins that contain potential neighbours.
+        8 bins that contain potential neighbors.
     iscs:
         For each bin, the supercell index.
     heads:
@@ -297,7 +297,7 @@ def get_all_unique_pairs(
         atoms in the same bin.
         This array is constructed by `build_table`.
     self_interaction: bool, optional
-        whether to consider an atom a neighbour of itself.
+        whether to consider an atom a neighbor of itself.
     xyz:
         the cartesian coordinates of all atoms in the geometry.
     cell:
@@ -309,11 +309,11 @@ def get_all_unique_pairs(
     thresholds:
         the threshold radius for each atom in the geometry.
     overlap:
-        If true, two atoms are considered neighbours if their spheres
+        If true, two atoms are considered neighbors if their spheres
         overlap.
-        If false, two atoms are considered neighbours if the second atom
+        If false, two atoms are considered neighbors if the second atom
         is within the sphere of the first atom. Note that this implies that
-        atom `i` might be atom `j`'s neighbour while the opposite is not true.
+        atom `i` might be atom `j`'s neighbor while the opposite is not true.
     init_npairs:
         The initial number of pairs that can be found.
         It is used to allocate the `neighs` array. This is computed
@@ -330,7 +330,7 @@ def get_all_unique_pairs(
     neighs:
         contains the atom indices of all unique neighbor pairs
         First column of atoms is sorted in increasing order.
-        Columns 3 to 5 contain the supercell indices of the neighbour
+        Columns 3 to 5 contain the supercell indices of the neighbor
         atom (the one in column 2, column 1 atoms are always in the
         unit cell).
     """
@@ -390,7 +390,7 @@ def get_all_unique_pairs(
 
             ref_xyz[:] = xyz[at, :]
             if not_unit_cell:
-                # If we are looking at a neighbouring cell in a direction
+                # If we are looking at a neighboring cell in a direction
                 # where there are no periodic boundary conditions, go to
                 # next bin.
                 should_not_check = False
@@ -439,7 +439,7 @@ def get_all_unique_pairs(
                     if i_pair >= neighs.shape[0]:
                         grow()
 
-                    # Store the pair of neighbours.
+                    # Store the pair of neighbors.
                     neighs[i_pair, 0] = at
                     neighs[i_pair, 1] = neigh_at
                     neighs[i_pair, 2] = neigh_isc[0]
@@ -452,7 +452,7 @@ def get_all_unique_pairs(
                 # Get the next atom in this bin. Sum 1 to get fortran index.
                 neigh_at = list_array[neigh_at]
 
-    # Return the array of neighbours, but only the filled part
+    # Return the array of neighbors, but only the filled part
     # We copy to remove the unneeded data-sizes
     return neighs_obj[:i_pair].copy()
 
@@ -481,7 +481,7 @@ def get_close(
         are close.
     indices:
         For each point (first dimension), the indices of the
-        8 bins that contain potential neighbours.
+        8 bins that contain potential neighbors.
     iscs:
         For each bin, the supercell index.
     heads:
@@ -572,7 +572,7 @@ def get_close(
 
             ref_xyz[:] = search_xyz[search_index, :]
             if not_unit_cell:
-                # If we are looking at a neighbouring cell in a direction
+                # If we are looking at a neighboring cell in a direction
                 # where there are no periodic boundary conditions, go to
                 # next bin.
                 should_not_check = False
@@ -601,7 +601,7 @@ def get_close(
                     dist += (xyz[neigh_at, i] - ref_xyz[i]) ** 2
                 dist = sqrt(dist)
 
-                # Get the threshold for the potential neighbour
+                # Get the threshold for the potential neighbor
                 threshold: float = thresholds[neigh_at]
 
                 if dist < threshold:
@@ -609,7 +609,7 @@ def get_close(
                     if i_pair >= neighs.shape[0]:
                         grow()
 
-                    # Store the pair of neighbours.
+                    # Store the pair of neighbors.
                     neighs[i_pair, 0] = search_index
                     neighs[i_pair, 1] = neigh_at
                     neighs[i_pair, 2] = neigh_isc[0]

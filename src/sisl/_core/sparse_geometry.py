@@ -105,7 +105,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         if dim is None:
             dim = self.dim
 
-        # We check the first atom and its neighbours, we then
+        # We check the first atom and its neighbors, we then
         # select max(5,len(nc) * 4)
         if nnzpr is None:
             nnzpr = self.geometry.close(0)
@@ -882,7 +882,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
                 #  [0 1 - 3]
                 # meaning that there is a gab in the couplings
 
-                # remove duplicate neighbouring values
+                # remove duplicate neighboring values
                 single_sel = np.ones(len(sub_lsc), dtype=bool)
                 single_sel[1:] = sub_lsc[1:] != sub_lsc[:-1]
 
@@ -1247,7 +1247,7 @@ class SparseAtom(_SparseGeometry):
         the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
         untile to the unit-cell, and subsequently tile 3 times.
 
-        Consider for example a system of 4 atoms, each atom connects to its 2 neighbours.
+        Consider for example a system of 4 atoms, each atom connects to its 2 neighbors.
         Due to the PBC atom 0 will connect to 1 and 3. Untiling this structure in 2 will
         group couplings of atoms 0 and 1. As it will only see one coupling to the right
         it will halve the coupling and use the same coupling to the left, which is clearly wrong.
@@ -1659,7 +1659,7 @@ class SparseOrbital(_SparseGeometry):
         the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
         untile to the unit-cell, and subsequently tile 3 times.
 
-        Consider for example a system of 4 atoms, each atom connects to its 2 neighbours.
+        Consider for example a system of 4 atoms, each atom connects to its 2 neighbors.
         Due to the PBC atom 0 will connect to 1 and 3. Untiling this structure in 2 will
         group couplings of atoms 0 and 1. As it will only see one coupling to the right
         it will halve the coupling and use the same coupling to the left, which is clearly wrong.

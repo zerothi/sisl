@@ -24,7 +24,7 @@ for ia in gr:
     idx_a = gr.close(ia, R)
     # On-site
     H[ia, idx_a[0]] = 0.0
-    # Nearest neighbour hopping
+    # Nearest neighbor hopping
     H[ia, idx_a[1]] = -2.7
 
 # Calculate eigenvalues at K-point

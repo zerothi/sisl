@@ -17,7 +17,7 @@ class GrapheneHamiltonian(GrapheneModel):
 
 
 class SimpleDispatch(ReferenceDispatch):
-    """This implements the simple nearest neighbour TB model"""
+    """This implements the simple nearest neighbor TB model"""
 
     def dispatch(self, t=-2.7, a=1.42, orthogonal=False):
         # Define the graphene lattice

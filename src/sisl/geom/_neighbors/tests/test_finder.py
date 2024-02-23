@@ -114,7 +114,7 @@ def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
     assert finder._counts.sum() == 2
 
 
-def test_neighbour_pairs(neighfinder, self_interaction, pbc, expected_neighs):
+def test_neighbor_pairs(neighfinder, self_interaction, pbc, expected_neighs):
     neighs = neighfinder.find_neighbors(
         as_pairs=True, self_interaction=self_interaction, pbc=pbc
     )

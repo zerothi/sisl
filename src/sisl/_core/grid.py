@@ -1149,7 +1149,7 @@ class Grid(
             # Set all boundary equations to 0
             s = _a.array_arange(A.indptr[idx_bc], A.indptr[idx_bc + 1])
             A.data[s] = 0
-            # force the boundary cells to equal the neighbouring cell
+            # force the boundary cells to equal the neighboring cell
             A[idx_bc, idx_bc] = 1
             A[idx_bc, idx_p1] = -1
             A.eliminate_zeros()

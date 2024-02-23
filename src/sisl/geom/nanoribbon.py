@@ -297,18 +297,18 @@ class _heteroribbon_section(CompositeGeometrySection):
     vacuum :
         minimum separation in transverse direction
     shift_quantum: bool, optional
-        Whether the implementation will assist avoiding lone atoms (< 2 neighbours).
+        Whether the implementation will assist avoiding lone atoms (< 2 neighbors).
 
         If ``False``, sections are just shifted (`shift`) number of atoms.
 
         If ``True``, shifts are quantized in the sense that shifts that produce
-        lone atoms (< 2 neighbours) are ignored. Then:
+        lone atoms (< 2 neighbors) are ignored. Then:
             - ``shift = 0`` means aligned.
             - ``shift = -1`` means first possible downwards shift (if available).
             - ``shift = 1`` means first possible upwards shift (if available).
         If this is set to `True`, `on_lone_atom` is overwritten to `"raise"`.
     on_lone_atom: {'ignore', 'warn', 'raise'}
-        What to do when a junction between sections produces lone atoms (< 2 neighbours)
+        What to do when a junction between sections produces lone atoms (< 2 neighbors)
 
         Messages contain hopefully useful explanations to understand what
         to do to fix it.

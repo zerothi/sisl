@@ -90,7 +90,7 @@ class Lattice(
 ):
     r"""A cell class to retain lattice vectors and a supercell structure
 
-    The supercell structure is comprising the *primary* unit-cell and neighbouring
+    The supercell structure is comprising the *primary* unit-cell and neighboring
     unit-cells. The number of supercells is given by the attribute `nsc` which
     is a vector with 3 elements, one per lattice vector. It describes *how many*
     times the primary unit-cell is extended along the i'th lattice vector.

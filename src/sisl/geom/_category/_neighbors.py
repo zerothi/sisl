@@ -13,21 +13,21 @@ from sisl.typing import AtomsArgument
 
 from .base import AtomCategory, NullCategory, _sanitize_loop
 
-__all__ = ["AtomNeighbours"]
+__all__ = ["AtomNeighbors"]
 
 
 @set_module("sisl.geom")
-class AtomNeighbours(AtomCategory):
-    r"""Classify atoms based on number of neighbours
+class AtomNeighbors(AtomCategory):
+    r"""Classify atoms based on number of neighbors
 
     Parameters
     ----------
     min : int, optional
-       minimum number of neighbours
+       minimum number of neighbors
     max : int
-       maximum number of neighbours
-    neighbour : Category, optional
-       a category the neighbour must be in to be counted
+       maximum number of neighbors
+    neighbor : Category, optional
+       a category the neighbor must be in to be counted
     R : tuple, float, callable or None, optional
        Value passed to `Geometry.close`.
        - ``tuple``, directly passed and thus only neigbours within
@@ -39,10 +39,10 @@ class AtomNeighbours(AtomCategory):
 
     Examples
     --------
-    >>> AtomNeighbours(4) # 4 neighbours within (0.01, Geometry.maxR())
-    >>> AtomNeighbours(4, R=1.44) # 4 neighbours within (0.01, 1.44)
-    >>> AtomNeighbours(4, R=(1, 1.44)) # 4 neighbours within (1, Geometry.maxR())
-    >>> AtomNeighbours(4, R=lambda atom: (0.01, PeriodicTable().radius(atom.Z))) # 4 neighbours within (0.01, <>)
+    >>> AtomNeighbors(4) # 4 neighbors within (0.01, Geometry.maxR())
+    >>> AtomNeighbors(4, R=1.44) # 4 neighbors within (0.01, 1.44)
+    >>> AtomNeighbors(4, R=(1, 1.44)) # 4 neighbors within (1, Geometry.maxR())
+    >>> AtomNeighbors(4, R=lambda atom: (0.01, PeriodicTable().radius(atom.Z))) # 4 neighbors within (0.01, <>)
     """
 
     __slots__ = ("_min", "_max", "_in", "_R")
@@ -50,7 +50,7 @@ class AtomNeighbours(AtomCategory):
     def __init__(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[-1], AtomCategory):
-                *args, kwargs["neighbour"] = args
+                *args, kwargs["neighbor"] = args
 
         _min = 0
         _max = 2**31
@@ -81,18 +81,18 @@ class AtomNeighbours(AtomCategory):
         else:
             name = f" ∈ [{self._min};{self._max}]"
 
-        self._in = kwargs.get("neighbour", None)
+        self._in = kwargs.get("neighbor", None)
         if isinstance(self._in, dict):
             self._in = AtomCategory(**self._in)
         self._R = kwargs.get("R", None)
 
-        # Determine name. If there are requirements for the neighbours
+        # Determine name. If there are requirements for the neighbors
         # then the name changes
 
         if self._in is None:
-            name = f"neighbours{name}"
+            name = f"neighbors{name}"
         else:
-            name = f"neighbours({self._in}){name}"
+            name = f"neighbors({self._in}){name}"
         super().__init__(name)
 
     def R(self, atom):
@@ -106,7 +106,7 @@ class AtomNeighbours(AtomCategory):
 
     @_sanitize_loop
     def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
-        """Check if geometry and atoms matches the neighbour criteria"""
+        """Check if geometry and atoms matches the neighbor criteria"""
         idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[-1]
         # quick escape the lower bound, in case we have more than max, they could
         # be limited by the self._in type
@@ -116,7 +116,7 @@ class AtomNeighbours(AtomCategory):
 
         # Check if we have a condition
         if not self._in is None:
-            # Get category of neighbours
+            # Get category of neighbors
             cat = self._in.categorize(geometry, geometry.asc2uc(idx))
             idx = [i for i, c in zip(idx, cat) if not isinstance(c, NullCategory)]
             n = len(idx)

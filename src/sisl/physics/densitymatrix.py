@@ -591,7 +591,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
         # Retrieve all atoms within the grid supercell
-        # (and the neighbours that connect into the cell)
+        # (and the neighbors that connect into the cell)
         IA, XYZ, ISC = geometry.within_inf(lattice, periodic=pbc)
         XYZ -= grid.lattice.origin.reshape(1, 3)
 

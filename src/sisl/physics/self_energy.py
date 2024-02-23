@@ -268,7 +268,7 @@ class RecursiveSI(SemiInfinite):
             rem_nnz = diff.nnz
             diff = np.amax(diff, axis=(0, 1))
             warn(
-                f"{self.__class__.__name__}: {spgeom.__class__.__name__} has connections across the first neighbouring cell. "
+                f"{self.__class__.__name__}: {spgeom.__class__.__name__} has connections across the first neighboring cell. "
                 f"{rem_nnz} non-zero values will be forced to 0 as the principal cell-interaction is a requirement. "
                 f"The maximum values of the removed connections are: {diff}"
             )

@@ -11,7 +11,7 @@ __all__ = ["yield_manifolds"]
 def yield_manifolds(values, atol: float = 0.1, axis: int = -1) -> Iterator[List]:
     r"""Yields indices for manifolds along the axis `axis`
 
-    A manifold is found under the criteria that all neighbouring
+    A manifold is found under the criteria that all neighboring
     values along `axis` are separated by at least `atol`.
 
     Parameters

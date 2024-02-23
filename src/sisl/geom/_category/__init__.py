@@ -8,4 +8,4 @@ from .base import *
 
 from ._coord import *
 from ._kind import *
-from ._neighbours import *
+from ._neighbors import *

@@ -318,7 +318,7 @@ class SparseOrbitalBZ(SparseOrbital):
             format = "csr"
             nc = self.n_s * nr
         # In the "rare" but could be found situation where
-        # the matrix only describes neighbouring couplings it is vital
+        # the matrix only describes neighboring couplings it is vital
         # to not return anything
         # TODO
         if format in ("array", "matrix", "dense"):

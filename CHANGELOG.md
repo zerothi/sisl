@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- added an efficient neighbor finder, #393
 - enabled reading DFTB+ output Hamiltonian and overlap matrices, #579
 - better error messages when users request quantities not calculated by Siesta/TBtrans
 - functional programming of the basic sisl classes
@@ -51,6 +52,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- `AtomNeighbours` changed name to `AtomNeighbor` to follow #393
 - removed `Lattice.translate|move`, they did not make sense, and so their
   usage should be deferred to `Lattice.add` instead.
 - `vacuum` is now an optional parameter for all ribbon structures
