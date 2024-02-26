@@ -156,8 +156,25 @@ Lattice.to.register("Sile", Lattice.to._dispatchs[str])
 # sisl.geom.graphene
 import sisl.geom as geom
 
-if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD"):
-    from . import viz
+# Set all the placeholders for the plot attribute
+# of sisl classes
+from ._lazy_viz import set_viz_placeholders
+
+set_viz_placeholders()
+
+# If someone tries to get the viz attribute, we will load the viz module
+_LOADED_VIZ = False
+
+
+def __getattr__(name):
+    global _LOADED_VIZ
+    if name == "viz" and not _LOADED_VIZ:
+        _LOADED_VIZ = True
+        import sisl.viz
+
+        return sisl.viz
+    raise AttributeError(f"module {__name__} has no attribute {name}")
+
 
 from ._ufuncs import expose_registered_methods
 

@@ -58,6 +58,8 @@ we hit release version 1.0.0.
 - `vacuum` is now an optional parameter for all ribbon structures
 - enabled `array_fill_repeat` with custom axis, to tile along specific
   dimensions
+- Importing `sisl.viz` explicitly is no longer needed, as it will be lazily
+  loaded whenever it is required.
 
 
 ## [0.14.3] - 2023-11-07
