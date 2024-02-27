@@ -1,10 +1,7 @@
 __pycache__
 ci
 .coverage
-.git
-.github
-.eggs
-.pytest_cache
+.*/
 dist
 build
 *.pyc
@@ -19,9 +16,6 @@ docs/sisl
 */sisl.egg-info
 src/sisl/**/*.html
 src/sisl/_version.py
-
-.ipynb_checkpoints/
-.vscode/
 
 # OS generated files
 .DS_Store

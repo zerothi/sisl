@@ -293,8 +293,8 @@ sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
 known_first_party = ["sisl_toolbox", "sisl"]
 line_length = 88
 overwrite_in_place = true
-skip_glob = ["files/*"]
-extend_skip = ["src/sisl/__init__.py"]
+extend_skip = ["src/sisl/__init__.py", "src/sisl/_version.py"]
+extend_skip_glob = ["files/*", "*/.*"]
 multi_line_output = "VERTICAL_HANGING_INDENT"
 
 [tool.black]
@@ -304,6 +304,7 @@ extend-exclude = """
 (
  ^/files/*
  | /\\..*
+ | .*/\\..*
 )
 """
 
