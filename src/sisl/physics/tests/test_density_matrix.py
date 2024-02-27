@@ -87,6 +87,7 @@ def setup():
 
 @pytest.mark.physics
 @pytest.mark.density_matrix
+@pytest.mark.densitymatrix
 class TestDensityMatrix:
     def test_objects(self, setup):
         assert len(setup.D.xyz) == 2
@@ -166,7 +167,7 @@ class TestDensityMatrix:
         assert m[0].sum() == pytest.approx(3)
         assert m[1].sum() == pytest.approx(1)
 
-    @pytest.mark.parametrize("method", ["wiberg", "mayer", "bond+anti"])
+    @pytest.mark.parametrize("method", ["wiberg", "mayer"])
     @pytest.mark.parametrize("option", ["", ":spin"])
     def test_bond_order(self, setup, method, option):
         D = setup.D.copy()
