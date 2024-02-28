@@ -431,12 +431,12 @@ class _densitymatrix(SparseOrbitalBZSpin):
         For ``method='wiberg'``, the bond-order is calculated as:
 
         .. math::
-            B_{\alpha\beta}^{\mathrm{Wiberg}} = \sum_{\nu\in \alpha}\sum_{\mu\in \beta} D_{\nu\mu}^2
+            B_{\alpha\beta}^{\mathrm{Wiberg}} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} D_{\nu\mu}^2
 
         For ``method='mayer'``, the bond-order is calculated as:
 
         .. math::
-            B_{\alpha\beta}^{\mathrm{Mayer}} = \sum_{\nu\in \alpha}\sum_{\mu\in \beta} D_{\nu\mu}S_{\nu\mu}D_{\mu\nu}S_{\mu\nu}
+            B_{\alpha\beta}^{\mathrm{Mayer}} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} (DS)_{\nu\mu}(DS)_{\mu\nu}
 
 
         For ``method='bond+anti'``, the bond-order is calculated as:
@@ -452,8 +452,6 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         Note
         ----
-        Wiberg and Mayer will be equivalent for orthogonal basis sets.
-
         It is unclear what the spin-density bond-order really means.
 
         Parameters
@@ -487,11 +485,19 @@ class _densitymatrix(SparseOrbitalBZSpin):
         geom = self.geometry
         rows, cols, DM = _to_coo(self._csr)
 
+        # Convert to requested matrix form
+        D = _get_density(DM, self.orthogonal, what)
+
         # Define a matrix-matrix multiplication
         def mm(A, B):
             n = A.shape[0]
             latt = self.geometry.lattice
             sc_off = latt.sc_off
+
+            # we will extract sub-matrices n_s ** 2 times.
+            # Extracting once should be fine (and ok)
+            Al = [A[:, i * n : (i + 1) * n] for i in range(latt.n_s)]
+            Bl = [B[:, i * n : (i + 1) * n] for i in range(latt.n_s)]
 
             # A matrix product in a supercell is a bit tricky
             # since the off-diagonal elements are formed with
@@ -534,55 +540,57 @@ class _densitymatrix(SparseOrbitalBZSpin):
                         # if the supercell index does not exist, it means
                         # the matrix is 0. Hence we just neglect that contribution.
                         j = latt.sc_index(sc)
-                        r = r + A[:, i * n : (i + 1) * n] @ B[:, j * n : (j + 1) * n]
+                        r = r + Al[i] @ Bl[j]
                     except:
                         continue
 
                 res.append(r)
 
+            # Clean-up...
+            del Al, Bl
+
             # Re-create a matrix where each block is joined into a
             # big matrix, hstack == columnwise stacking.
             return ss_hstack(res)
 
-        if m in ("wiberg", "mayer"):
+        def sparseorb2sparseatom(geom, M):
+            # Ensure we have in COO-rdinate format
+            M = M.tocoo()
+
+            # Now re-create the sparse-atom component.
+            rows = geom.o2a(M.row)
+            cols = geom.o2a(M.col)
+            shape = (geom.na, geom.na_s)
+            M = coo_matrix((M.data, (rows, cols)), shape=shape).tocsr()
+            M.sum_duplicates()
+            return M
+
+        if m == "wiberg":
+
+            def get_BO(geom, D, rows, cols):
+                # square of each element
+                BO = coo_matrix((D * D, (rows, cols)), shape=self.shape[:2])
+                return sparseorb2sparseatom(geom, BO)
+
+            if D.ndim == 2:
+                BO = [get_BO(geom, d, rows, cols) for d in D]
+            else:
+                BO = get_BO(geom, D, rows, cols)
+
+            return SparseAtom.fromsp(geom, BO)
+
+        elif m == "mayer":
             if self.orthogonal:
                 S = np.zeros(rows.size, dtype=DM.dtype)
                 S[rows == cols] = 1.0
             else:
                 S = DM[:, -1]
 
-            # Convert to requested matrix form
-            D = _get_density(DM, self.orthogonal, what)
-
             def get_BO(geom, D, S, rows, cols):
-                # TODO, for each spin-component, do this:
-                DM = self.fromsp(
-                    geom,
-                    coo_matrix((D, (rows, cols)), shape=self.shape[:2]),
-                    S=coo_matrix((S, (rows, cols)), shape=self.shape[:2]),
-                )
-
-                D = DM.Dk(format="sc:csr")
-                if m == "mayer":
-                    S = DM.Sk(format="sc:csr")
-                    BO = mm(D, S).multiply(mm(S, D))
-                else:
-                    # we should probably do something else
-                    # the Wiberg is sum_A sum_B D_ab
-                    # hence a double summation would be needed.
-                    # Currently we just multiply by 2
-                    # Probably wrong, since we need the off-diagonal
-                    BO = mm(D, D) * 2
-
-                BO = BO.tocoo()
-
-                # Now re-create the sparse-atom component.
-                rows = geom.o2a(BO.row)
-                cols = geom.o2a(BO.col)
-                shape = (geom.na, geom.na_s)
-                BO = coo_matrix((BO.data, (rows, cols)), shape=shape).tocsr()
-                BO.sum_duplicates()
-                return BO
+                D = coo_matrix((D, (rows, cols)), shape=self.shape[:2]).tocsr()
+                S = coo_matrix((S, (rows, cols)), shape=self.shape[:2]).tocsr()
+                BO = mm(D, S).multiply(mm(S, D))
+                return sparseorb2sparseatom(geom, BO)
 
             if D.ndim == 2:
                 BO = [get_BO(geom, d, S, rows, cols) for d in D]
