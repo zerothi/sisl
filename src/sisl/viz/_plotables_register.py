@@ -8,17 +8,18 @@ It does so by patching them accordingly
 """
 import sisl
 import sisl.io.siesta as siesta
-
-# import sisl.io.tbtrans as tbtrans
 from sisl.io.sile import BaseSile, get_siles
 
 from ._plotables import register_data_source, register_plotable, register_sile_method
 from .data import *
 from .plots import *
 
-# from .old_plot import Plot
-# from .plotutils import get_plot_classes
-
+# ======================
+#     IMPORTANT NOTE
+# ======================
+# If you register a new plotable class, make sure it is included in the
+# lazy_viz_classes list in sisl/_lazy_viz.py, so that a placeholder is set for
+# its plot attribute.
 
 __all__ = []
 

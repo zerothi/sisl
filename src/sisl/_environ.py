@@ -129,19 +129,6 @@ register_environ_variable(
 )
 
 register_environ_variable(
-    "SISL_VIZ_AUTOLOAD",
-    "false",
-    dedent(
-        """\
-                          Determines whether the visualization module is automatically loaded.
-                          It may be good to leave auto load off if you are doing performance critical
-                          calculations to avoid the overhead of loading the visualization module.
-                          """
-    ),
-    process=lambda val: val and val.lower().strip() in ["1", "t", "true"],
-)
-
-register_environ_variable(
     "SISL_SHOW_PROGRESS",
     "false",
     "Whether routines which can enable progress bars should show them by default or not.",
