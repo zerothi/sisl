@@ -426,7 +426,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         )
 
     def bond_order(self, method: str = "mayer"):
-        r"""Bond-order calculation using Mayer, Wiberg or other methods
+        r"""Bond-order calculation using various methods
 
         For ``method='wiberg'``, the bond-order is calculated as:
 
@@ -438,17 +438,16 @@ class _densitymatrix(SparseOrbitalBZSpin):
         .. math::
             B_{\alpha\beta}^{\mathrm{Mayer}} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} (DS)_{\nu\mu}(DS)_{\mu\nu}
 
-
-        For ``method='bond+anti'``, the bond-order is calculated as:
+        For ``method='mulliken'``, the bond-order is calculated as:
 
         .. math::
-            B_{\alpha\beta}^{\mathrm{b}+\mathrm{ab}} = \sum_{\nu\in \alpha}\sum_{\mu\in \beta} D_{\nu\mu}S_{\nu\mu} / 2
+            B_{\alpha\beta}^{\mathrm{Mulliken}} = 2\sum_{\nu\in\alpha}\sum_{\mu\in\beta} D_{\nu\mu}S_{\nu\mu}
 
         For all options one can do the bond-order calculation for the
         spin components. Albeit, their meaning may be more doubtful.
         Simply add ``':spin'`` to the `method` argument, and the returned
-        quantity will be spin-resolved.
-
+        quantity will be spin-resolved with :math:`x`, :math:`y` and :math:`z`
+        components.
 
         Note
         ----
@@ -456,7 +455,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        method : {mayer, wiberg, bond+anti}[:spin]
+        method : {mayer, wiberg, mulliken}[:spin]
             which method to calculate the bond-order with
 
         Returns
@@ -532,11 +531,10 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 r = csr_matrix((n, n), dtype=A.dtype)
 
                 # get current supercell information
-                for i in range(latt.n_s):
+                for i, sc in enumerate(sc_offj):
                     # i == LHS matrix
                     # j == RHS matrix
                     try:
-                        sc = sc_offj[i]
                         # if the supercell index does not exist, it means
                         # the matrix is 0. Hence we just neglect that contribution.
                         j = latt.sc_index(sc)
@@ -565,26 +563,18 @@ class _densitymatrix(SparseOrbitalBZSpin):
             M.sum_duplicates()
             return M
 
+        S = False
+
         if m == "wiberg":
 
-            def get_BO(geom, D, rows, cols):
+            def get_BO(geom, D, S, rows, cols):
                 # square of each element
                 BO = coo_matrix((D * D, (rows, cols)), shape=self.shape[:2])
                 return sparseorb2sparseatom(geom, BO)
 
-            if D.ndim == 2:
-                BO = [get_BO(geom, d, rows, cols) for d in D]
-            else:
-                BO = get_BO(geom, D, rows, cols)
-
-            return SparseAtom.fromsp(geom, BO)
-
         elif m == "mayer":
-            if self.orthogonal:
-                S = np.zeros(rows.size, dtype=DM.dtype)
-                S[rows == cols] = 1.0
-            else:
-                S = DM[:, -1]
+
+            S = True
 
             def get_BO(geom, D, S, rows, cols):
                 D = coo_matrix((D, (rows, cols)), shape=self.shape[:2]).tocsr()
@@ -592,19 +582,33 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 BO = mm(D, S).multiply(mm(S, D))
                 return sparseorb2sparseatom(geom, BO)
 
-            if D.ndim == 2:
-                BO = [get_BO(geom, d, S, rows, cols) for d in D]
-            else:
-                BO = get_BO(geom, D, S, rows, cols)
+        elif m == "mulliken":
 
-            return SparseAtom.fromsp(geom, BO)
+            S = True
 
-        elif m == "bond+anti":
-            raise NotImplementedError
+            def get_BO(geom, D, S, rows, cols):
+                # Got the factor 2 from Multiwfn
+                BO = coo_matrix((D * S * 2, (rows, cols)), shape=self.shape[:2]).tocsr()
+                return sparseorb2sparseatom(geom, BO)
+
         else:
             raise ValueError(
                 f"{self.__class__.__name__}.bond_order got non-valid method {method}"
             )
+
+        if S:
+            if self.orthogonal:
+                S = np.zeros(rows.size, dtype=DM.dtype)
+                S[rows == cols] = 1.0
+            else:
+                S = DM[:, -1]
+
+        if D.ndim == 2:
+            BO = [get_BO(geom, d, S, rows, cols) for d in D]
+        else:
+            BO = get_BO(geom, D, S, rows, cols)
+
+        return SparseAtom.fromsp(geom, BO)
 
     def density(self, grid, spinor=None, tol=1e-7, eta=None):
         r"""Expand the density matrix to the charge density on a grid
