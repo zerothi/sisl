@@ -78,6 +78,8 @@ class Spin:
             "unpolarized": Spin.UNPOLARIZED,
             "": Spin.UNPOLARIZED,
             Spin.UNPOLARIZED: Spin.UNPOLARIZED,
+            "colinear": Spin.POLARIZED,
+            "collinear": Spin.POLARIZED,
             "polarized": Spin.POLARIZED,
             "p": Spin.POLARIZED,
             "pol": Spin.POLARIZED,

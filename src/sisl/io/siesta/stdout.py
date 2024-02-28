@@ -11,6 +11,7 @@ from sisl import Atom, Geometry, Lattice
 from sisl._common import Opt
 from sisl._internal import set_module
 from sisl.messages import deprecation, warn
+from sisl.physics import Spin
 from sisl.unit.siesta import unit_convert
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
@@ -34,6 +35,19 @@ def _ensure_atoms(atoms):
     return atoms
 
 
+def _parse_spin(attr, match):
+    """Parse 'redata: Spin configuration *= <value>'"""
+    opt = match.string.split("=")[-1]
+
+    if opt.startswith("spin-orbit"):
+        return Spin("spin-orbit")
+    if opt.startswith("collinear") or opt.startswith("colinear"):
+        return Spin("polarized")
+    if opt.startswith("non-col"):
+        return Spin("non-colinear")
+    return Spin()
+
+
 @set_module("sisl.io.siesta")
 class stdoutSileSiesta(SileSiesta):
     """Output file from Siesta
@@ -47,6 +61,11 @@ class stdoutSileSiesta(SileSiesta):
             r".*Job completed",
             lambda attr, match: lambda: True,
             default=lambda: False,
+        ),
+        _A(
+            "spin",
+            r"^redata: Spin configuration",
+            _parse_spin,
         ),
     ]
 

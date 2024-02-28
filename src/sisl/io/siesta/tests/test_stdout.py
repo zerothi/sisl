@@ -102,7 +102,8 @@ def test_md_nose_out_data(sisl_files):
 def test_md_nose_out_completed(sisl_files):
     f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
-    out.completed()
+    out.info.completed
+    out.info.spin
 
 
 def test_md_nose_out_dataframe(sisl_files):
