@@ -14,6 +14,7 @@ from sisl import (
     Grid,
     Lattice,
     SparseAtom,
+    SparseOrbital,
     SphericalOrbital,
     Spin,
 )
@@ -169,11 +170,17 @@ class TestDensityMatrix:
 
     @pytest.mark.parametrize("method", ["wiberg", "mayer"])
     @pytest.mark.parametrize("option", ["", ":spin"])
-    def test_bond_order(self, setup, method, option):
+    @pytest.mark.parametrize("projection", ["atom", "orbitals"])
+    def test_bond_order(self, setup, method, option, projection):
         D = setup.D.copy()
         D.construct(setup.func)
-        BO = D.bond_order(method + option)
-        assert isinstance(BO, SparseAtom)
+        BO = D.bond_order(method + option, projection)
+        if projection == "atom":
+            assert isinstance(BO, SparseAtom)
+            assert BO.shape[:2] == (D.geometry.na, D.geometry.na_s)
+        elif projection == "orbitals":
+            assert isinstance(BO, SparseOrbital)
+            assert BO.shape[:2] == (D.geometry.no, D.geometry.no_s)
 
     def test_rho1(self, setup):
         D = setup.D.copy()

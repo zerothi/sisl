@@ -425,23 +425,28 @@ class _densitymatrix(SparseOrbitalBZSpin):
             f"{self.__class__.__name__}.mulliken only allows projection [orbital, atom]"
         )
 
-    def bond_order(self, method: str = "mayer"):
+    def bond_order(self, method: str = "mayer", projection: str = "atom"):
         r"""Bond-order calculation using various methods
 
         For ``method='wiberg'``, the bond-order is calculated as:
 
         .. math::
-            B_{\alpha\beta}^{\mathrm{Wiberg}} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} D_{\nu\mu}^2
+            B_{\nu\mu}^{\mathrm{Wiberg}} &= D_{\nu\mu}^2
+            \\
+            B_{\alpha\beta}^{\mathrm{Wiberg}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
 
         For ``method='mayer'``, the bond-order is calculated as:
 
         .. math::
-            B_{\alpha\beta}^{\mathrm{Mayer}} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} (DS)_{\nu\mu}(DS)_{\mu\nu}
-
-        For ``method='mulliken'``, the bond-order is calculated as:
-
+            B_{\nu\mu}^{\mathrm{Mayer}} &= (DS)_{\nu\mu}(DS)_{\mu\nu}
+            \\
+            B_{\alpha\beta}^{\mathrm{Mayer}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
         .. math::
-            B_{\alpha\beta}^{\mathrm{Mulliken}} = 2\sum_{\nu\in\alpha}\sum_{\mu\in\beta} D_{\nu\mu}S_{\nu\mu}
+            B_{\nu\mu}^{\mathrm{Mulliken}} &= 2D_{\nu\mu}S{\nu\mu}
+            \\
+            B_{\alpha\beta}^{\mathrm{Mulliken}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B__{\nu\mu}
+
+        The Mulliken bond-order is closely related to the COOP interpretation.
 
         For all options one can do the bond-order calculation for the
         spin components. Albeit, their meaning may be more doubtful.
@@ -458,9 +463,17 @@ class _densitymatrix(SparseOrbitalBZSpin):
         method : {mayer, wiberg, mulliken}[:spin]
             which method to calculate the bond-order with
 
+        projection : {atom, orbital}
+            whether the returned matrix is in orbital form, or in atom form.
+            If orbital is used, then the above formulas will be changed
+
+
         Returns
         -------
         SparseAtom : with the bond-order between any two atoms, in a supercell matrix.
+            Returned only if projection is atom.
+        SparseOrbital : with the bond-order between any two orbitals, in a supercell matrix.
+            Returned only if projection is orbital.
         """
         method = method.lower()
 
@@ -551,17 +564,38 @@ class _densitymatrix(SparseOrbitalBZSpin):
             # big matrix, hstack == columnwise stacking.
             return ss_hstack(res)
 
-        def sparseorb2sparseatom(geom, M):
-            # Ensure we have in COO-rdinate format
-            M = M.tocoo()
+        projection = projection.lower()
 
-            # Now re-create the sparse-atom component.
-            rows = geom.o2a(M.row)
-            cols = geom.o2a(M.col)
-            shape = (geom.na, geom.na_s)
-            M = coo_matrix((M.data, (rows, cols)), shape=shape).tocsr()
-            M.sum_duplicates()
-            return M
+        if projection.startswith("atom"):  # allows atoms
+
+            out_cls = SparseAtom
+
+            def sparse2sparse(geom, M):
+
+                # Ensure we have in COO-rdinate format
+                M = M.tocoo()
+
+                # Now re-create the sparse-atom component.
+                rows = geom.o2a(M.row)
+                cols = geom.o2a(M.col)
+                shape = (geom.na, geom.na_s)
+                M = coo_matrix((M.data, (rows, cols)), shape=shape).tocsr()
+                M.sum_duplicates()
+                return M
+
+        elif projection.startswith("orbital"):  # allows orbitals
+
+            out_cls = SparseOrbital
+
+            def sparse2sparse(geom, M):
+                M = M.tocsr()
+                M.sum_duplicates()
+                return M
+
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got unexpected keyword projection"
+            )
 
         S = False
 
@@ -570,7 +604,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             def get_BO(geom, D, S, rows, cols):
                 # square of each element
                 BO = coo_matrix((D * D, (rows, cols)), shape=self.shape[:2])
-                return sparseorb2sparseatom(geom, BO)
+                return sparse2sparse(geom, BO)
 
         elif m == "mayer":
 
@@ -580,7 +614,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 D = coo_matrix((D, (rows, cols)), shape=self.shape[:2]).tocsr()
                 S = coo_matrix((S, (rows, cols)), shape=self.shape[:2]).tocsr()
                 BO = mm(D, S).multiply(mm(S, D))
-                return sparseorb2sparseatom(geom, BO)
+                return sparse2sparse(geom, BO)
 
         elif m == "mulliken":
 
@@ -589,7 +623,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             def get_BO(geom, D, S, rows, cols):
                 # Got the factor 2 from Multiwfn
                 BO = coo_matrix((D * S * 2, (rows, cols)), shape=self.shape[:2]).tocsr()
-                return sparseorb2sparseatom(geom, BO)
+                return sparse2sparse(geom, BO)
 
         else:
             raise ValueError(
@@ -608,7 +642,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         else:
             BO = get_BO(geom, D, S, rows, cols)
 
-        return SparseAtom.fromsp(geom, BO)
+        return out_cls.fromsp(geom, BO)
 
     def density(self, grid, spinor=None, tol=1e-7, eta=None):
         r"""Expand the density matrix to the charge density on a grid
