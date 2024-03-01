@@ -56,6 +56,7 @@ class SileSlicer:
         func: Func,
         key: Type[Any],
         *,
+        check_empty: Optional[Func] = None,
         skip_func: Optional[Func] = None,
         postprocess: Optional[Callable[..., Any]] = None,
     ):
@@ -69,6 +70,16 @@ class SileSlicer:
             self.skip_func = func
         else:
             self.skip_func = skip_func
+
+        if check_empty is None:
+
+            def check_empty(r):
+                if isinstance(r, tuple):
+                    return reduce(lambda x, y: x and y is None, r, True)
+                return r is None
+
+        self.check_empty = check_empty
+
         if postprocess is None:
 
             def postprocess(ret):
@@ -89,11 +100,6 @@ class SileSlicer:
             return func(obj, *args, **kwargs)
 
         inf = 100000000000000
-
-        def check_none(r):
-            if isinstance(r, tuple):
-                return reduce(lambda x, y: x and y is None, r, True)
-            return r is None
 
         # Determine whether we can reduce the call overheads
         start = 0
@@ -130,7 +136,7 @@ class SileSlicer:
 
             # now do actual parsing
             retval = func(obj, *args, **kwargs)
-            while not check_none(retval):
+            while not self.check_empty(retval):
                 append(retval)
                 if len(retvals) >= stop:
                     # quick exit
@@ -142,11 +148,10 @@ class SileSlicer:
                 return None
 
         # ensure the next call won't use this key
-        # This will prohibit the use
+        # This will enable the use
         # tmp = sile.read_geometry[:10]
-        # tmp() # will return the first 10
-        # tmp() # will return the default (single) item
-        self.key = None
+        # tmp() # will returns the first 10
+        # tmp() # will returns the next 10
         if isinstance(key, Integral):
             return retvals[key]
 

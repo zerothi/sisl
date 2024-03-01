@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
 from functools import lru_cache
+from typing import Optional
 
 import numpy as np
 
@@ -48,6 +49,56 @@ def _parse_spin(attr, match):
     if opt.startswith("non-col"):
         return Spin("non-colinear")
     return Spin()
+
+
+def _read_scf_empty(scf):
+    if isinstance(scf, tuple):
+        return len(scf[0]) == 0
+    return len(scf) == 0
+
+
+def _read_scf_md_process(scfs):
+
+    if len(scfs) == 0:
+        return None
+
+    if not isinstance(scfs, list):
+        # single MD request either as:
+        #  - np.ndarray
+        #  - np.ndarray, tuple
+        #  - pd.DataFrame
+        return scfs
+
+    has_props = isinstance(scfs[0], tuple)
+    if has_props:
+        my_len = lambda scf: len(scf[0])
+    else:
+        my_len = len
+
+    scf_len1 = np.all(_a.fromiterd(map(my_len, scfs)) == 1)
+    if isinstance(scfs[0], (np.ndarray, tuple)):
+
+        if has_props:
+            props = scfs[0][1]
+            scfs = [scf[0] for scf in scfs]
+
+        if scf_len1:
+            scfs = np.array(scfs)
+        if has_props:
+            return scfs, props
+        return scfs
+
+    # We are dealing with a dataframe
+    import pandas as pd
+
+    df = pd.concat(
+        scfs,
+        keys=_a.arangei(1, len(scfs) + 1),
+        names=["imd"],
+    )
+    if scf_len1:
+        df.reset_index("iscf", inplace=True)
+    return df
 
 
 @set_module("sisl.io.siesta")
@@ -663,9 +714,16 @@ class stdoutSileSiesta(SileSiesta):
             val = val[0]
         return val
 
-    @sile_fh_open(True)
+    @SileBinder(
+        default_slice=-1, check_empty=_read_scf_empty, postprocess=_read_scf_md_process
+    )
+    @sile_fh_open()
     def read_scf(
-        self, key="scf", iscf=-1, imd=None, as_dataframe=False, ret_header=False
+        self,
+        key: str = "scf",
+        iscf: Optional[int] = -1,
+        as_dataframe: bool = False,
+        ret_header: bool = False,
     ):
         r"""Parse SCF information and return a table of SCF information depending on what is requested
 
@@ -673,18 +731,15 @@ class stdoutSileSiesta(SileSiesta):
         ----------
         key : {'scf', 'ts-scf'}
             parse SCF information from Siesta SCF or TranSiesta SCF
-        iscf : int, optional
+        iscf :
             which SCF cycle should be stored. If ``-1`` only the final SCF step is stored,
             for None *all* SCF cycles are returned. When `iscf` values queried are not found they
             will be truncated to the nearest SCF step.
-        imd: int or None, optional
-            whether only a particular MD step is queried, if None, all MD steps are
-            parsed and returned. A negative number wraps for the last MD steps.
-        as_dataframe: boolean, optional
+        as_dataframe:
             whether the information should be returned as a `pandas.DataFrame`. The advantage of this
             format is that everything is indexed and therefore you know what each value means.You can also
             perform operations very easily on a dataframe.
-        ret_header: bool, optional
+        ret_header:
             whether to also return the headers that define each value in the returned array,
             will have no effect if `as_dataframe` is true.
         """
@@ -696,11 +751,6 @@ class stdoutSileSiesta(SileSiesta):
             if iscf == 0:
                 raise ValueError(
                     f"{self.__class__.__name__}.read_scf requires iscf argument to *not* be 0!"
-                )
-        if not imd is None:
-            if imd == 0:
-                raise ValueError(
-                    f"{self.__class__.__name__}.read_scf requires imd argument to *not* be 0!"
                 )
 
         def reset_d(d, line):
@@ -857,7 +907,6 @@ class stdoutSileSiesta(SileSiesta):
                 data.extend(d[key])
             d["data"] = data
 
-        md = []
         scf = []
         for line in self:
             parse_next(line, d)
@@ -869,6 +918,7 @@ class stdoutSileSiesta(SileSiesta):
 
                 if iscf is None or iscf < 0:
                     scf.append(data)
+
                 elif data[0] <= iscf:
                     # this ensures we will retain the latest iscf in
                     # case the requested iscf is too big
@@ -900,80 +950,25 @@ class stdoutSileSiesta(SileSiesta):
                     # truncate to 0
                     scf = scf[max(len(scf) + iscf, 0)]
 
-                # Populate md
-                md.append(np.array(scf))
-                # Reset SCF data
-                scf = []
-
-                # In case we wanted a given MD step and it's this one, just stop reading
-                # We are going to return the last MD (see below)
-                if imd == len(md):
-                    break
+                # found a full MD
+                break
 
         # Define the function that is going to convert the information of a MDstep to a Dataset
         if as_dataframe:
             import pandas as pd
 
-            def MDstep_dataframe(scf):
-                scf = np.atleast_2d(scf)
-                return pd.DataFrame(
-                    scf[..., 1:],
-                    index=pd.Index(scf[..., 0].ravel().astype(np.int32), name="iscf"),
-                    columns=props[1:],
-                )
-
-        # Now we know how many MD steps there are
-
-        # We will return stuff based on what the user requested
-        # For pandas DataFrame this will be dependent
-        #  1. all MD steps requested => imd == index, iscf == column (regardless of iscf==none|int)
-        #  2. 1 MD step requested => iscf == index
-
-        if imd is None:
-            if as_dataframe:
-                if len(md) == 0:
-                    # return an empty dataframe (with imd as index)
-                    return pd.DataFrame(index=pd.Index([], name="imd"), columns=props)
-                # Regardless of what the user requests we will always have imd == index
-                # and iscf a column, a user may easily change this.
-                df = pd.concat(
-                    map(MDstep_dataframe, md),
-                    keys=_a.arangei(1, len(md) + 1),
-                    names=["imd"],
-                )
-                if iscf is not None:
-                    df.reset_index("iscf", inplace=True)
-                return df
-
-            if iscf is not None:
-                # since each MD step may be a different number of SCF steps
-                # we can only convert for a specific entry
-                md = np.array(md)
-            if ret_header:
-                return md, props
-            return md
-
-        # correct imd to ensure we check against the final size
-        imd = min(len(md) - 1, max(len(md) + imd, 0))
-        if len(md) == 0:
-            # no data collected
-            if as_dataframe:
+            if len(scf) == 0:
                 return pd.DataFrame(index=pd.Index([], name="iscf"), columns=props[1:])
-            md = np.array(md[imd])
-            if ret_header:
-                return md, props
-            return md
 
-        if imd > len(md):
-            raise ValueError(
-                f"{self.__class__.__name__}.read_scf could not find requested MD step ({imd})."
+            scf = np.atleast_2d(scf)
+            return pd.DataFrame(
+                scf[..., 1:],
+                index=pd.Index(scf[..., 0].ravel().astype(np.int32), name="iscf"),
+                columns=props[1:],
             )
 
-        # If a certain imd was requested, get it
-        # Remember that if imd is positive, we stopped reading at the moment we reached it
-        scf = np.array(md[imd])
-        if as_dataframe:
-            return MDstep_dataframe(scf)
+        # Convert to numpy array
+        scf = np.array(scf)
         if ret_header:
             return scf, props
         return scf
