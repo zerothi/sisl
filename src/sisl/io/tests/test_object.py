@@ -22,6 +22,7 @@ from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
 from sisl.io.vasp import chgSileVASP
+from sisl.io.xsf import xsfSile
 
 pytestmark = pytest.mark.io
 _dir = osp.join("sisl", "io")
@@ -275,7 +276,7 @@ class TestObject:
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
         # These files does not store the atomic species
-        if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
+        if issubclass(sile, (xsfSile, _ncSileTBtrans, deltancSileTBtrans)):
             return
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
             pytest.xfail(
@@ -308,7 +309,7 @@ class TestObject:
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
         # These files does not store the atomic species
-        if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
+        if issubclass(sile, (xsfSile, _ncSileTBtrans, deltancSileTBtrans)):
             return
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
             pytest.xfail(

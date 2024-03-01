@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from typing import Optional
+
 import numpy as np
 
 from sisl._internal import set_module
@@ -18,7 +20,9 @@ class fcSileSiesta(SileSiesta):
     """Force constant file"""
 
     @sile_fh_open()
-    def read_force(self, displacement=None, na=None):
+    def read_force(
+        self, displacement: Optional[float] = None, na: Optional[int] = None
+    ):
         """Reads all displacement forces by multiplying with the displacement value
 
         Since the force constant file does not contain the non-displaced configuration
@@ -33,12 +37,12 @@ class fcSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        displacement : float, optional
+        displacement :
            the used displacement in the calculation, since Siesta 4.1-b4 this value
            is written in the FC file and hence not required.
            If prior Siesta versions are used and this is not supplied the 0.04 Bohr displacement
            will be assumed.
-        na : int, optional
+        na :
            number of atoms in geometry (for returning correct number of atoms), since Siesta 4.1-b4
            this value is written in the FC file and hence not required.
            If prior Siesta versions are used then the file is expected to only contain 1-atom displacement.
@@ -67,12 +71,12 @@ class fcSileSiesta(SileSiesta):
         return self.read_force_constant(na) * displacement.reshape(1, 3, 2, 1, 1)
 
     @sile_fh_open()
-    def read_force_constant(self, na=None):
+    def read_force_constant(self, na: Optional[int] = None):
         """Reads the force-constant stored in the FC file
 
         Parameters
         ----------
-        na : int, optional
+        na :
            number of atoms in the unit-cell, if not specified it will guess on only
            one atom displacement.
 

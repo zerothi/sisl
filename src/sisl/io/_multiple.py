@@ -2,11 +2,41 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import reduce, update_wrapper
+from itertools import zip_longest
 from numbers import Integral
 from textwrap import dedent
 from typing import Any, Callable, Optional, Type
 
 Func = Callable[..., Optional[Any]]
+
+
+def postprocess_tuple(*funcs):
+    """Post-processes the returned value according to the funcs for multiple data
+
+    The internal algorithm will use zip_longest to apply the *last* `funcs[-1]` to
+    the remaining return functions. Useful if there are many tuples that can
+    be handled equivalently:
+
+    Examples
+    --------
+    >>> postprocess_tuple(np.array) == postprocess_tuple(np.array, np.array)
+    """
+
+    def post(ret):
+        nonlocal funcs
+        if isinstance(ret[0], tuple):
+            return tuple(
+                func(r)
+                for r, func in zip_longest(zip(*ret), funcs, fillvalue=funcs[-1])
+            )
+        return funcs[0](ret)
+
+    return post
+
+
+def is_sliceable(method: Func):
+    """Check whether a function is implemented with the `SileBinder` decorator"""
+    return isinstance(method, (SileBinder, SileBound))
 
 
 class SileSlicer:

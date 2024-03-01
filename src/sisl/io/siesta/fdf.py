@@ -7,6 +7,7 @@ import logging
 import warnings
 from datetime import datetime
 from os.path import isfile
+from typing import Any, Optional
 
 import numpy as np
 import scipy as sp
@@ -18,6 +19,7 @@ from sisl import (
     Atoms,
     DynamicalMatrix,
     Geometry,
+    Grid,
     Lattice,
     Orbital,
     SphericalOrbital,
@@ -25,8 +27,8 @@ from sisl import (
 )
 from sisl._indices import indices_only
 from sisl._internal import set_module
-from sisl.messages import SislError, info, warn
-from sisl.physics import BandStructure
+from sisl.messages import SislError, deprecate_argument, info, warn
+from sisl.physics import BandStructure, BrillouinZone
 from sisl.unit.siesta import unit_convert, unit_default, unit_group, units
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.mathematics import fnorm
@@ -232,7 +234,7 @@ class fdfSileSiesta(SileSiesta):
         return includes
 
     @sile_fh_open()
-    def _read_label(self, label):
+    def _read_label(self, label: str):
         """Try and read the first occurence of a key
 
         This will take care of blocks, labels and piped in labels
@@ -329,7 +331,7 @@ class fdfSileSiesta(SileSiesta):
         return l
 
     @classmethod
-    def _type(cls, value):
+    def _type(cls, value: Any):
         """Determine the type by the value
 
         Parameters
@@ -377,7 +379,7 @@ class fdfSileSiesta(SileSiesta):
         return "n"
 
     @sile_fh_open()
-    def type(self, label):
+    def type(self, label: str):
         """Return the type of the fdf-keyword
 
         Parameters
@@ -389,7 +391,13 @@ class fdfSileSiesta(SileSiesta):
         return self._type(self._read_label(label))
 
     @sile_fh_open()
-    def get(self, label, default=None, unit=None, with_unit=False):
+    def get(
+        self,
+        label: str,
+        default: Optional[Any] = None,
+        unit: Optional[str] = None,
+        with_unit: bool = False,
+    ):
         """Retrieve fdf-keyword from the file
 
         Parameters
@@ -475,7 +483,7 @@ class fdfSileSiesta(SileSiesta):
 
         return value
 
-    def set(self, key, value, keep=True):
+    def set(self, key: str, value: Any, keep: bool = True):
         """Add the key and value to the FDF file
 
         Parameters
@@ -543,7 +551,7 @@ class fdfSileSiesta(SileSiesta):
         self._open()
 
     @staticmethod
-    def print(key, value):
+    def print(key: str, value: Any):
         """Return a string which is pretty-printing the key+value"""
         if isinstance(value, list):
             s = f"%block {key}"
@@ -568,14 +576,17 @@ class fdfSileSiesta(SileSiesta):
         return s
 
     @sile_fh_open()
-    def write_lattice(self, sc, fmt=".8f", *args, **kwargs):
+    @deprecate_argument(
+        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
+    )
+    def write_lattice(self, lattice: Lattice, fmt: str = ".8f", *args, **kwargs):
         """Writes the supercell
 
         Parameters
         ----------
-        sc : Lattice
+        lattice:
            supercell object to write
-        fmt : str, optional
+        fmt :
            precision used to store the lattice vectors
         unit : {"Ang", "Bohr"}
            the unit used when writing the data.
@@ -594,20 +605,20 @@ class fdfSileSiesta(SileSiesta):
         # Write out the cell
         self._write(f"LatticeConstant 1.0 {unit}\n")
         self._write("%block LatticeVectors\n")
-        self._write(fmt_str.format(*sc.cell[0, :] * conv))
-        self._write(fmt_str.format(*sc.cell[1, :] * conv))
-        self._write(fmt_str.format(*sc.cell[2, :] * conv))
+        self._write(fmt_str.format(*lattice.cell[0, :] * conv))
+        self._write(fmt_str.format(*lattice.cell[1, :] * conv))
+        self._write(fmt_str.format(*lattice.cell[2, :] * conv))
         self._write("%endblock LatticeVectors\n")
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt=".8f", *args, **kwargs):
+    def write_geometry(self, geometry: Geometry, fmt: str = ".8f", *args, **kwargs):
         """Writes the geometry
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            geometry object to write
-        fmt : str, optional
+        fmt :
            precision used to store the atomic coordinates
         unit : {"Ang", "Bohr", "fractional", "frac"}
            the unit used when writing the data.
@@ -683,7 +694,7 @@ class fdfSileSiesta(SileSiesta):
             self._write("%endblock\n")
 
     @sile_fh_open()
-    def write_brillouinzone(self, bz):
+    def write_brillouinzone(self, bz: BrillouinZone):
         r"""Writes Brillouinzone information to the fdf input file
 
         The `bz` object will be written as options in the input file.
@@ -692,7 +703,7 @@ class fdfSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        bz : BrillouinZone
+        bz :
             which setting to write to the file
 
         Notes
@@ -754,7 +765,7 @@ class fdfSileSiesta(SileSiesta):
             return orbindxSileSiesta(f).read_lattice_nsc()
         return None
 
-    def read_lattice(self, output=False, *args, **kwargs):
+    def read_lattice(self, output: bool = False, *args, **kwargs) -> Lattice:
         """Returns Lattice object by reading fdf or Siesta output related files.
 
         One can limit the tried files to only one file by passing
@@ -762,7 +773,7 @@ class fdfSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        output: bool, optional
+        output:
             whether to read supercell from output files (default to read from
             the fdf file).
         order: list of str, optional
@@ -1401,7 +1412,7 @@ class fdfSileSiesta(SileSiesta):
 
         return D
 
-    def read_geometry(self, output=False, *args, **kwargs):
+    def read_geometry(self, output: bool = False, *args, **kwargs) -> Geometry:
         """Returns Geometry object by reading fdf or Siesta output related files.
 
         One can limit the tried files to only one file by passing
@@ -1409,7 +1420,7 @@ class fdfSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        output: bool, optional
+        output:
             whether to read geometry from output files (default to read from
             the fdf file).
         order: list of str, optional
@@ -1647,7 +1658,7 @@ class fdfSileSiesta(SileSiesta):
 
         return geom
 
-    def read_grid(self, name, *args, **kwargs):
+    def read_grid(self, name: str, *args, **kwargs) -> Grid:
         """Read grid related information from any of the output files
 
         The order of the readed data is shown below.

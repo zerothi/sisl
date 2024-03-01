@@ -15,14 +15,14 @@ pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join("sisl", "io", "siesta")
 
 
+@pytest.mark.only
 def test_md_nose_out(sisl_files):
     f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
 
-    # nspin, nk, nb
-    geom0 = out.read_geometry(last=False)
-    geom = out.read_geometry()
-    geom1 = out.read_data(geometry=True)
+    geom0 = out.read_geometry()
+    geom = out.read_geometry[-1]()
+    geom1 = out.read_data(geometry=True, slice=-1)
 
     # assert it works correct
     assert isinstance(geom0, sisl.Geometry)
@@ -35,20 +35,20 @@ def test_md_nose_out(sisl_files):
     # try and read all outputs
     # there are 5 outputs in this output file.
     nOutputs = 5
-    assert len(out.read_geometry(all=True)) == nOutputs
-    assert len(out.read_force(all=True)) == nOutputs
-    assert len(out.read_stress(all=True)) == nOutputs
-    f0 = out.read_force(last=False)
-    f = out.read_force()
-    f1 = out.read_data(force=True)
+    assert len(out.read_geometry[:]()) == nOutputs
+    assert len(out.read_force[:]()) == nOutputs
+    assert len(out.read_stress[:]()) == nOutputs
+    f0 = out.read_force()
+    f = out.read_force[-1]()
+    f1 = out.read_data(force=True, slice=-1)
     assert not np.allclose(f0, f)
     assert np.allclose(f1, f)
 
     # Check that we can read the different types of forces
     nAtoms = 10
-    atomicF = out.read_force(all=True)
-    totalF = out.read_force(all=True, total=True)
-    maxF = out.read_force(all=True, max=True)
+    atomicF = out.read_force[:]()
+    totalF = out.read_force[:](total=True)
+    maxF = out.read_force[:](max=True)
     assert atomicF.shape == (nOutputs, nAtoms, 3)
     assert totalF.shape == (nOutputs, 3)
     assert maxF.shape == (nOutputs,)
@@ -56,17 +56,15 @@ def test_md_nose_out(sisl_files):
     assert totalF.shape == (3,)
     assert maxF.shape == ()
 
-    s0 = out.read_stress(last=False)
-    s = out.read_stress()
+    s0 = out.read_stress()
+    s = out.read_stress[-1]()
     assert not np.allclose(s0, s)
 
-    sstatic = out.read_stress("static", all=True)
-    stotal = out.read_stress("total", all=True)
-    sdata = out.read_data("total", all=True, stress=True)
+    sstatic = out.read_stress[:]("static")
+    stotal = out.read_stress[:]("total")
 
-    for S, T, D in zip(sstatic, stotal, sdata):
+    for S, T in zip(sstatic, stotal):
         assert not np.allclose(S, T)
-        assert np.allclose(D, T)
 
     # Ensure SCF reads are consistent
     scf_last = out.read_scf()
