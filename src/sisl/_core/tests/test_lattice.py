@@ -563,7 +563,7 @@ def test_lattice_bc_fail():
 
 def test_lattice_info():
     lat = Lattice(1, nsc=[3, 3, 3])
-    with pytest.warns(sisl.SislInfo) as record:
+    with pytest.warns(sisl.SislWarning) as record:
         lat.set_boundary_condition(b=Lattice.BC.DIRICHLET)
         lat.set_boundary_condition(c=Lattice.BC.PERIODIC)
         assert len(record) == 1

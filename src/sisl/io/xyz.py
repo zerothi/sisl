@@ -4,6 +4,8 @@
 """
 Sile object for reading/writing XYZ files
 """
+from typing import Optional
+
 import numpy as np
 
 import sisl._array as _a
@@ -23,7 +25,7 @@ __all__ = ["xyzSile"]
 class xyzSile(Sile):
     """XYZ file object"""
 
-    def _parse_lattice(self, header, xyz, lattice):
+    def _parse_lattice(self, header: str, xyz, lattice: Optional[Lattice]):
         """Internal helper routine for extracting the lattice"""
         if lattice is not None:
             return lattice
@@ -42,6 +44,7 @@ class xyzSile(Sile):
                     bc.append(BoundaryCondition.PERIODIC)
                 else:
                     bc.append(BoundaryCondition.UNKNOWN)
+
         if "boundary_condition" in header:
             bc = []
             for b in header.pop("boundary_condition").split():
@@ -62,7 +65,9 @@ class xyzSile(Sile):
         return Lattice(cell, nsc=nsc, origin=origin, boundary_condition=bc)
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt=".8f", comment=None):
+    def write_geometry(
+        self, geometry: Geometry, fmt: str = ".8f", comment: Optional[str] = None
+    ):
         """Writes the geometry to the contained file
 
         Parameters
@@ -124,7 +129,7 @@ class xyzSile(Sile):
     @deprecate_argument(
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
-    def read_geometry(self, atoms=None, lattice=None):
+    def read_geometry(self, atoms=None, lattice: Optional[Lattice] = None):
         """Returns Geometry object from the XYZ file
 
         Parameters

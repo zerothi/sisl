@@ -3,12 +3,14 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
 from functools import lru_cache
+from typing import Optional
 
 import numpy as np
 
 import sisl._array as _a
 from sisl import Atom, Geometry, Lattice
 from sisl._common import Opt
+from sisl._help import voigt_matrix
 from sisl._internal import set_module
 from sisl.messages import deprecation, warn
 from sisl.physics import Spin
@@ -16,6 +18,7 @@ from sisl.unit.siesta import unit_convert
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
 
+from .._multiple import SileBinder, postprocess_tuple
 from ..sile import SileError, add_sile, sile_fh_open
 from .sile import SileSiesta
 
@@ -48,6 +51,56 @@ def _parse_spin(attr, match):
     return Spin()
 
 
+def _read_scf_empty(scf):
+    if isinstance(scf, tuple):
+        return len(scf[0]) == 0
+    return len(scf) == 0
+
+
+def _read_scf_md_process(scfs):
+
+    if len(scfs) == 0:
+        return None
+
+    if not isinstance(scfs, list):
+        # single MD request either as:
+        #  - np.ndarray
+        #  - np.ndarray, tuple
+        #  - pd.DataFrame
+        return scfs
+
+    has_props = isinstance(scfs[0], tuple)
+    if has_props:
+        my_len = lambda scf: len(scf[0])
+    else:
+        my_len = len
+
+    scf_len1 = np.all(_a.fromiterd(map(my_len, scfs)) == 1)
+    if isinstance(scfs[0], (np.ndarray, tuple)):
+
+        if has_props:
+            props = scfs[0][1]
+            scfs = [scf[0] for scf in scfs]
+
+        if scf_len1:
+            scfs = np.array(scfs)
+        if has_props:
+            return scfs, props
+        return scfs
+
+    # We are dealing with a dataframe
+    import pandas as pd
+
+    df = pd.concat(
+        scfs,
+        keys=_a.arangei(1, len(scfs) + 1),
+        names=["imd"],
+    )
+    if scf_len1:
+        df.reset_index("iscf", inplace=True)
+    return df
+
+
 @set_module("sisl.io.siesta")
 class stdoutSileSiesta(SileSiesta):
     """Output file from Siesta
@@ -66,6 +119,12 @@ class stdoutSileSiesta(SileSiesta):
             "spin",
             r"^redata: Spin configuration",
             _parse_spin,
+        ),
+        _A(
+            "_final_analysis",
+            r"^siesta: Final energy",
+            lambda attr, match: lambda: True,
+            default=lambda: False,
         ),
     ]
 
@@ -236,17 +295,17 @@ class stdoutSileSiesta(SileSiesta):
 
         return Geometry(xyz, atoms, lattice=cell)
 
+    @SileBinder()
     @sile_fh_open()
-    def read_geometry(self, last=True, all=False):
+    def read_geometry(self, skip_input: bool = True):
         """Reads the geometry from the Siesta output file
 
         Parameters
         ----------
-        last: bool, optional
-           only read the last geometry
-        all: bool, optional
-           return a list of all geometries (like an MD)
-           If `True` `last` is ignored
+        skip_input :
+            the input geometry may be contained as a print-out.
+            This is not part of an MD calculation, and hence is per
+            default not returned.
 
         Returns
         -------
@@ -255,62 +314,30 @@ class stdoutSileSiesta(SileSiesta):
              a list of geometries corresponding to the MD-runs.
         """
         atoms = self.read_basis()
-        if all:
-            # force last to be false
-            last = False
 
-        def func_none(*args, **kwargs):
+        def func(*args, **kwargs):
             """Wrapper to return None"""
             return None
 
-        def next_geom():
-            coord, func = 0, func_none
-            line = " "
-            while coord == 0 and line != "":
-                line = self.readline()
-                if "outcoor" in line and "coordinates" in line:
-                    coord, func = 1, self._r_geometry_outcoor
-                elif "siesta: Atomic coordinates" in line:
-                    coord, func = 2, self._r_geometry_atomic
-            return coord, func(line, atoms)
+        line = " "
+        while line != "":
+            line = self.readline()
+            if "outcoor" in line and "coordinates" in line:
+                func = self._r_geometry_outcoor
+                break
+            elif "siesta: Atomic coordinates" in line and not skip_input:
+                func = self._r_geometry_atomic
+                break
 
-        # Read until a coordinate block is found
-        geom0 = None
-        mds = []
+        return func(line, atoms)
 
-        if all or last:
-            # we need to read through all things!
-            while True:
-                coord, geom = next_geom()
-                if coord == 0:
-                    break
-                if coord == 2:
-                    geom0 = geom
-                else:
-                    mds.append(geom)
-
-            # Since the user requests only the MD geometries
-            # we only return those
-            if last:
-                if len(mds) > 0:
-                    return mds[-1]
-                return geom0
-            return mds
-
-        # just read the next geometry we hit
-        return next_geom()[1]
-
-    @sile_fh_open(True)
-    def read_force(self, last=True, all=False, total=False, max=False, key="siesta"):
+    @SileBinder(postprocess=postprocess_tuple(_a.arrayd))
+    @sile_fh_open()
+    def read_force(self, total: bool = False, max: bool = False, key: str = "siesta"):
         """Reads the forces from the Siesta output file
 
         Parameters
         ----------
-        last: bool, optional
-           only read the last force
-        all: bool, optional
-           return a list of all forces (like an MD)
-           If `True` `last` is ignored
         total: bool, optional
             return the total forces instead of the atomic forces.
         max: bool, optional
@@ -337,97 +364,68 @@ class stdoutSileSiesta(SileSiesta):
                 - total: (nMDsteps, 3)
                 - max: (nMDsteps, )
 
-            If `all` is `False`, the first dimension does not exist. In the case of max, the returned value
-            will therefore be just a float, not an array.
-
             If `total` and `max` are both `True`, they are returned separately as a tuple: ``(total, max)``
         """
-        if all:
-            last = False
-
         # Read until forces are found
-        def next_force():
-            found, line = self.step_to(f"{key}: Atomic forces", allow_reread=False)
-            if not found:
-                return None
+        found, line = self.step_to(f"{key}: Atomic forces", allow_reread=False)
+        if not found:
+            return None
 
-            # Now read data
-            F = []
+        # Now read data
+        line = self.readline()
+        if "siesta:" in line:
+            # This is the final summary, we don't need to read it as it does not contain new information
+            # and also it make break things since max forces are not written there
+            return None
+
+        F = []
+        # First, we encounter the atomic forces
+        while "---" not in line:
+            line = line.split()
+            if not (total or max):
+                F.append([float(x) for x in line[-3:]])
             line = self.readline()
-            if "siesta:" in line:
-                # This is the final summary, we don't need to read it as it does not contain new information
-                # and also it make break things since max forces are not written there
-                return None
+            if line == "":
+                break
 
-            # First, we encounter the atomic forces
-            while "---" not in line:
-                line = line.split()
-                if not (total or max):
-                    F.append([float(x) for x in line[-3:]])
-                line = self.readline()
-                if line == "":
-                    break
+        if not F:
+            F = None
 
-            line = self.readline()
-            # Then, the total forces
+        line = self.readline().split()
+        # Parse total forces if requested
+        if total and line:
+            F = _a.arrayd([float(x) for x in line[-3:]])
+
+        # And after that we can read the max force
+        line = self.readline()
+        if max and line:
+            line = self.readline().split()
+            maxF = _a.arrayd(float(line[1]))
+
+            # In case total is also requested, we are going to
+            # store it all in the same variable.
+            # It will be separated later
             if total:
-                F = [float(x) for x in line.split()[-3:]]
+                # create tuple
+                F = (F, maxF)
+            else:
+                F = maxF
 
-            line = self.readline()
-            # And after that we can read the max force
-            if max and len(line.split()) != 0:
-                line = self.readline()
-                maxF = float(line.split()[1])
+        return F
 
-                # In case total is also requested, we are going to store it all in the same variable
-                # It will be separated later
-                if total:
-                    F = (*F, maxF)
-                else:
-                    F = maxF
-
-            return _a.arrayd(F)
-
-        def return_forces(Fs):
-            # Handle cases where we can't now if they are found
-            if Fs is None:
-                return None
-            Fs = _a.arrayd(Fs)
-            if max and total:
-                return (Fs[..., :-1], Fs[..., -1])
-            elif max and not all:
-                return Fs.ravel()[0]
-            return Fs
-
-        if all or last:
-            # list of all forces
-            Fs = []
-            while True:
-                F = next_force()
-                if F is None:
-                    break
-                Fs.append(F)
-
-            if last:
-                return return_forces(Fs[-1])
-
-            return return_forces(Fs)
-
-        return return_forces(next_force())
-
-    @sile_fh_open(True)
-    def read_stress(self, key="static", last=True, all=False):
+    @SileBinder(postprocess=_a.arrayd)
+    @sile_fh_open()
+    def read_stress(self, key: str = "static", skip_final: bool = True):
         """Reads the stresses from the Siesta output file
 
         Parameters
         ----------
-        key : {'static', 'total'}
+        key : {static, total, Voigt}
            which stress to read from the output.
-        last: bool, optional
-           only read the last stress
-        all: bool, optional
-           return a list of all stresses (like an MD)
-           If `True` `last` is ignored
+        skip_final:
+            the static stress tensor is duplicated in the output when running
+            MD simulations. This flag is used in case one wish to get the final
+            one.
 
         Returns
         -------
@@ -435,46 +433,42 @@ class stdoutSileSiesta(SileSiesta):
             returns ``None`` if the stresses are not found in the
             output, otherwise stresses will be returned
         """
-        if all:
-            last = False
 
-        # Read until stress are found
-        def next_stress():
-            found, line = self.step_to(f"siesta: Stress tensor", allow_reread=False)
+        is_voigt = key.lower() == "voigt"
+        if is_voigt:
+            key = "Voigt"
+            search = "Stress tensor Voigt"
+        else:
+            search = "siesta: Stress tensor"
+
+        found = False
+        line = " "
+        while not found and line != "":
+            found, line = self.step_to(search, allow_reread=False)
             found = found and key in line
-            while not found and line != "":
-                found, line = self.step_to(f"siesta: Stress tensor", allow_reread=False)
-                found = found and key in line
-            if not found:
-                return None
 
-            # Now read data
+        if not found:
+            return None
+
+        # Now read data
+        if is_voigt:
+            Svoigt = _a.arrayd([float(x) for x in line.split()[-6:]])
+            S = voigt_matrix(Svoigt, False)
+        else:
             S = []
             for _ in range(3):
                 line = self.readline().split()
                 S.append([float(x) for x in line[-3:]])
+                if skip_final:
+                    if line[0].startswith("siesta:"):
+                        return None
+            S = _a.arrayd(S)
 
-            return _a.arrayd(S)
+        return S
 
-        if all or last:
-            # list of all stresses
-            Ss = []
-            while True:
-                S = next_stress()
-                if S is None:
-                    break
-                Ss.append(S)
-
-            if last:
-                return Ss[-1]
-            if self.completed() and key == "static":
-                return Ss[:-1]
-            return Ss
-
-        return next_stress()
-
-    @sile_fh_open(True)
-    def read_moment(self, orbitals=False, quantity="S", last=True, all=False):
+    @SileBinder(postprocess=_a.arrayd)
+    @sile_fh_open()
+    def read_moment(self, orbitals=False, quantity="S"):
         """Reads the moments from the Siesta output file
 
         These will only be present in case of spin-orbit coupling.
@@ -486,13 +480,7 @@ class stdoutSileSiesta(SileSiesta):
            moments.
         quantity: {'S', 'L'}, optional
            return the spin-moments or the L moments
-        last: bool, optional
-           only read the last force
-        all: bool, optional
-           return a list of all forces (like an MD)
-           If `True` `last` is ignored
         """
-
         # Read until outcoor is found
         if not self.step_to("moments: Atomic", allow_reread=False)[0]:
             return None
@@ -509,6 +497,7 @@ class stdoutSileSiesta(SileSiesta):
         while True:
             next(itt)  # ""
             next(itt)  # Atom    Orb ...
+
             # Loop atoms in this species list
             while True:
                 line = next(itt)
@@ -523,12 +512,14 @@ class stdoutSileSiesta(SileSiesta):
                         ia = int(line[0])
                     elif ia != int(line[0]):
                         raise ValueError("Error in moments formatting.")
+
                     # Track maximum number of atoms
                     na = max(ia, na)
                     if quantity == "S":
                         atom.append([float(x) for x in line[4:7]])
                     elif quantity == "L":
                         atom.append([float(x) for x in line[7:10]])
+
                 line = next(itt).split()  # Total ...
                 if not orbitals:
                     ia = int(line[0])
@@ -547,9 +538,7 @@ class stdoutSileSiesta(SileSiesta):
         for ia, atom in tbl:
             moments[ia - 1] = atom
 
-        if not all:
-            return _a.arrayd(moments)
-        return moments
+        return _a.arrayd(moments)
 
     @sile_fh_open(True)
     def read_energy(self):
@@ -709,9 +698,15 @@ class stdoutSileSiesta(SileSiesta):
         for name in run:
             kwargs.pop(name)
 
+        slice = kwargs.pop("slice", None)
         val = []
         for name in run:
-            val.append(getattr(self, f"read_{name.lower()}")(*args, **kwargs))
+            if slice is None:
+                val.append(getattr(self, f"read_{name.lower()}")(*args, **kwargs))
+            else:
+                val.append(
+                    getattr(self, f"read_{name.lower()}")[slice](*args, **kwargs)
+                )
 
         if len(val) == 0:
             return None
@@ -719,9 +714,16 @@ class stdoutSileSiesta(SileSiesta):
             val = val[0]
         return val
 
-    @sile_fh_open(True)
+    @SileBinder(
+        default_slice=-1, check_empty=_read_scf_empty, postprocess=_read_scf_md_process
+    )
+    @sile_fh_open()
     def read_scf(
-        self, key="scf", iscf=-1, imd=None, as_dataframe=False, ret_header=False
+        self,
+        key: str = "scf",
+        iscf: Optional[int] = -1,
+        as_dataframe: bool = False,
+        ret_header: bool = False,
     ):
         r"""Parse SCF information and return a table of SCF information depending on what is requested
 
@@ -729,18 +731,15 @@ class stdoutSileSiesta(SileSiesta):
         ----------
         key : {'scf', 'ts-scf'}
             parse SCF information from Siesta SCF or TranSiesta SCF
-        iscf : int, optional
+        iscf :
             which SCF cycle should be stored. If ``-1`` only the final SCF step is stored,
             for None *all* SCF cycles are returned. When `iscf` values queried are not found they
             will be truncated to the nearest SCF step.
-        imd: int or None, optional
-            whether only a particular MD step is queried, if None, all MD steps are
-            parsed and returned. A negative number wraps for the last MD steps.
-        as_dataframe: boolean, optional
+        as_dataframe:
             whether the information should be returned as a `pandas.DataFrame`. The advantage of this
             format is that everything is indexed and therefore you know what each value means.You can also
             perform operations very easily on a dataframe.
-        ret_header: bool, optional
+        ret_header:
             whether to also return the headers that define each value in the returned array,
             will have no effect if `as_dataframe` is true.
         """
@@ -752,11 +751,6 @@ class stdoutSileSiesta(SileSiesta):
             if iscf == 0:
                 raise ValueError(
                     f"{self.__class__.__name__}.read_scf requires iscf argument to *not* be 0!"
-                )
-        if not imd is None:
-            if imd == 0:
-                raise ValueError(
-                    f"{self.__class__.__name__}.read_scf requires imd argument to *not* be 0!"
                 )
 
         def reset_d(d, line):
@@ -913,7 +907,6 @@ class stdoutSileSiesta(SileSiesta):
                 data.extend(d[key])
             d["data"] = data
 
-        md = []
         scf = []
         for line in self:
             parse_next(line, d)
@@ -925,6 +918,7 @@ class stdoutSileSiesta(SileSiesta):
 
                 if iscf is None or iscf < 0:
                     scf.append(data)
+
                 elif data[0] <= iscf:
                     # this ensures we will retain the latest iscf in
                     # case the requested iscf is too big
@@ -956,80 +950,25 @@ class stdoutSileSiesta(SileSiesta):
                     # truncate to 0
                     scf = scf[max(len(scf) + iscf, 0)]
 
-                # Populate md
-                md.append(np.array(scf))
-                # Reset SCF data
-                scf = []
-
-                # In case we wanted a given MD step and it's this one, just stop reading
-                # We are going to return the last MD (see below)
-                if imd == len(md):
-                    break
+                # found a full MD
+                break
 
         # Define the function that is going to convert the information of a MDstep to a Dataset
         if as_dataframe:
             import pandas as pd
 
-            def MDstep_dataframe(scf):
-                scf = np.atleast_2d(scf)
-                return pd.DataFrame(
-                    scf[..., 1:],
-                    index=pd.Index(scf[..., 0].ravel().astype(np.int32), name="iscf"),
-                    columns=props[1:],
-                )
-
-        # Now we know how many MD steps there are
-
-        # We will return stuff based on what the user requested
-        # For pandas DataFrame this will be dependent
-        #  1. all MD steps requested => imd == index, iscf == column (regardless of iscf==none|int)
-        #  2. 1 MD step requested => iscf == index
-
-        if imd is None:
-            if as_dataframe:
-                if len(md) == 0:
-                    # return an empty dataframe (with imd as index)
-                    return pd.DataFrame(index=pd.Index([], name="imd"), columns=props)
-                # Regardless of what the user requests we will always have imd == index
-                # and iscf a column, a user may easily change this.
-                df = pd.concat(
-                    map(MDstep_dataframe, md),
-                    keys=_a.arangei(1, len(md) + 1),
-                    names=["imd"],
-                )
-                if iscf is not None:
-                    df.reset_index("iscf", inplace=True)
-                return df
-
-            if iscf is not None:
-                # since each MD step may be a different number of SCF steps
-                # we can only convert for a specific entry
-                md = np.array(md)
-            if ret_header:
-                return md, props
-            return md
-
-        # correct imd to ensure we check against the final size
-        imd = min(len(md) - 1, max(len(md) + imd, 0))
-        if len(md) == 0:
-            # no data collected
-            if as_dataframe:
+            if len(scf) == 0:
                 return pd.DataFrame(index=pd.Index([], name="iscf"), columns=props[1:])
-            md = np.array(md[imd])
-            if ret_header:
-                return md, props
-            return md
 
-        if imd > len(md):
-            raise ValueError(
-                f"{self.__class__.__name__}.read_scf could not find requested MD step ({imd})."
+            scf = np.atleast_2d(scf)
+            return pd.DataFrame(
+                scf[..., 1:],
+                index=pd.Index(scf[..., 0].ravel().astype(np.int32), name="iscf"),
+                columns=props[1:],
             )
 
-        # If a certain imd was requested, get it
-        # Remember that if imd is positive, we stopped reading at the moment we reached it
-        scf = np.array(md[imd])
-        if as_dataframe:
-            return MDstep_dataframe(scf)
+        # Convert to numpy array
+        scf = np.array(scf)
         if ret_header:
             return scf, props
         return scf

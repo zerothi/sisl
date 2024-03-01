@@ -2,11 +2,41 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import reduce, update_wrapper
+from itertools import zip_longest
 from numbers import Integral
 from textwrap import dedent
 from typing import Any, Callable, Optional, Type
 
 Func = Callable[..., Optional[Any]]
+
+
+def postprocess_tuple(*funcs):
+    """Post-processes the returned value according to the funcs for multiple data
+
+    The internal algorithm will use zip_longest to apply the *last* `funcs[-1]` to
+    the remaining return functions. Useful if there are many tuples that can
+    be handled equivalently:
+
+    Examples
+    --------
+    >>> postprocess_tuple(np.array) == postprocess_tuple(np.array, np.array)
+    """
+
+    def post(ret):
+        nonlocal funcs
+        if isinstance(ret[0], tuple):
+            return tuple(
+                func(r)
+                for r, func in zip_longest(zip(*ret), funcs, fillvalue=funcs[-1])
+            )
+        return funcs[0](ret)
+
+    return post
+
+
+def is_sliceable(method: Func):
+    """Check whether a function is implemented with the `SileBinder` decorator"""
+    return isinstance(method, (SileBinder, SileBound))
 
 
 class SileSlicer:
@@ -26,6 +56,7 @@ class SileSlicer:
         func: Func,
         key: Type[Any],
         *,
+        check_empty: Optional[Func] = None,
         skip_func: Optional[Func] = None,
         postprocess: Optional[Callable[..., Any]] = None,
     ):
@@ -39,6 +70,16 @@ class SileSlicer:
             self.skip_func = func
         else:
             self.skip_func = skip_func
+
+        if check_empty is None:
+
+            def check_empty(r):
+                if isinstance(r, tuple):
+                    return reduce(lambda x, y: x and y is None, r, True)
+                return r is None
+
+        self.check_empty = check_empty
+
         if postprocess is None:
 
             def postprocess(ret):
@@ -59,11 +100,6 @@ class SileSlicer:
             return func(obj, *args, **kwargs)
 
         inf = 100000000000000
-
-        def check_none(r):
-            if isinstance(r, tuple):
-                return reduce(lambda x, y: x and y is None, r, True)
-            return r is None
 
         # Determine whether we can reduce the call overheads
         start = 0
@@ -100,7 +136,7 @@ class SileSlicer:
 
             # now do actual parsing
             retval = func(obj, *args, **kwargs)
-            while not check_none(retval):
+            while not self.check_empty(retval):
                 append(retval)
                 if len(retvals) >= stop:
                     # quick exit
@@ -112,11 +148,10 @@ class SileSlicer:
                 return None
 
         # ensure the next call won't use this key
-        # This will prohibit the use
+        # This will enable the use
         # tmp = sile.read_geometry[:10]
-        # tmp() # will return the first 10
-        # tmp() # will return the default (single) item
-        self.key = None
+        # tmp() # will returns the first 10
+        # tmp() # will returns the next 10
         if isinstance(key, Integral):
             return retvals[key]
 

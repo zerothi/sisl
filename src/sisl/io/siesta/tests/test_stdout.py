@@ -19,10 +19,9 @@ def test_md_nose_out(sisl_files):
     f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
 
-    # nspin, nk, nb
-    geom0 = out.read_geometry(last=False)
-    geom = out.read_geometry()
-    geom1 = out.read_data(geometry=True)
+    geom0 = out.read_geometry()
+    geom = out.read_geometry[-1]()
+    geom1 = out.read_data(geometry=True, slice=-1)
 
     # assert it works correct
     assert isinstance(geom0, sisl.Geometry)
@@ -35,20 +34,20 @@ def test_md_nose_out(sisl_files):
     # try and read all outputs
     # there are 5 outputs in this output file.
     nOutputs = 5
-    assert len(out.read_geometry(all=True)) == nOutputs
-    assert len(out.read_force(all=True)) == nOutputs
-    assert len(out.read_stress(all=True)) == nOutputs
-    f0 = out.read_force(last=False)
-    f = out.read_force()
-    f1 = out.read_data(force=True)
+    assert len(out.read_geometry[:]()) == nOutputs
+    assert len(out.read_force[:]()) == nOutputs
+    assert len(out.read_stress[:]()) == nOutputs
+    f0 = out.read_force()
+    f = out.read_force[-1]()
+    f1 = out.read_data(force=True, slice=-1)
     assert not np.allclose(f0, f)
     assert np.allclose(f1, f)
 
     # Check that we can read the different types of forces
     nAtoms = 10
-    atomicF = out.read_force(all=True)
-    totalF = out.read_force(all=True, total=True)
-    maxF = out.read_force(all=True, max=True)
+    atomicF = out.read_force[:]()
+    totalF = out.read_force[:](total=True)
+    maxF = out.read_force[:](max=True)
     assert atomicF.shape == (nOutputs, nAtoms, 3)
     assert totalF.shape == (nOutputs, 3)
     assert maxF.shape == (nOutputs,)
@@ -56,31 +55,39 @@ def test_md_nose_out(sisl_files):
     assert totalF.shape == (3,)
     assert maxF.shape == ()
 
-    s0 = out.read_stress(last=False)
-    s = out.read_stress()
+    s0 = out.read_stress()
+    s = out.read_stress[-1]()
     assert not np.allclose(s0, s)
 
-    sstatic = out.read_stress("static", all=True)
-    stotal = out.read_stress("total", all=True)
-    sdata = out.read_data("total", all=True, stress=True)
+    sstatic = out.read_stress[:]("static")
+    stotal = out.read_stress[:]("total")
 
-    for S, T, D in zip(sstatic, stotal, sdata):
+    for S, T in zip(sstatic, stotal):
         assert not np.allclose(S, T)
-        assert np.allclose(D, T)
+
+
+def test_md_nose_out_scf(sisl_files):
+    f = sisl_files(_dir, "md_nose.out")
+    out = stdoutSileSiesta(f)
 
     # Ensure SCF reads are consistent
-    scf_last = out.read_scf()
-    scf = out.read_scf(imd=-1)
+    scf_last = out.read_scf[:]()
+    scf_last2, props = out.read_scf[:](ret_header=True)
+    scf = out.read_scf[-1]()
+    scf_props = out.read_scf[-1](ret_header=True)
+    assert scf_props[1] == props
+    assert np.allclose(scf, scf_props[0])
     assert np.allclose(scf_last[-1], scf)
     for i in range(len(scf_last)):
-        scf = out.read_scf(imd=i + 1)
+        scf = out.read_scf[i]()
         assert np.allclose(scf_last[i], scf)
+        assert np.allclose(scf_last[i], scf_last2[i])
 
-    scf_all = out.read_scf(iscf=None, imd=-1)
-    scf = out.read_scf(imd=-1)
+    scf_all = out.read_scf[-1](iscf=None)
+    scf = out.read_scf[-1]()
     assert np.allclose(scf_all[-1], scf)
     for i in range(len(scf_all)):
-        scf = out.read_scf(iscf=i + 1, imd=-1)
+        scf = out.read_scf[-1](iscf=i + 1)
         assert np.allclose(scf_all[i], scf)
 
 
@@ -111,15 +118,15 @@ def test_md_nose_out_dataframe(sisl_files):
     f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
 
-    data = out.read_scf()
-    df = out.read_scf(as_dataframe=True)
+    data = out.read_scf[:]()
+    df = out.read_scf[:](as_dataframe=True)
     # this will read all MD-steps and only latest iscf
     assert len(data) == len(df)
     assert df.index.names == ["imd"]
 
-    df = out.read_scf(iscf=None, as_dataframe=True)
+    df = out.read_scf[:](iscf=None, as_dataframe=True)
     assert df.index.names == ["imd", "iscf"]
-    df = out.read_scf(iscf=None, imd=-1, as_dataframe=True)
+    df = out.read_scf(iscf=None, as_dataframe=True)
     assert df.index.names == ["iscf"]
 
 

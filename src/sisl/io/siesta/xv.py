@@ -21,14 +21,14 @@ class xvSileSiesta(SileSiesta):
     """Geometry file"""
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt=".9f", velocity=None):
+    def write_geometry(self, geometry: Geometry, fmt: str = ".9f", velocity=None):
         """Writes the geometry to the contained file
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            geometry to write in the XV file
-        fmt : str, optional
+        fmt :
            the precision used for writing the XV file
         velocity : numpy.ndarray, optional
            velocities to write in the XV file (will be zero if not specified).
@@ -68,7 +68,7 @@ class xvSileSiesta(SileSiesta):
                 self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
     @sile_fh_open()
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Returns `Lattice` object from the XV file"""
 
         cell = np.empty([3, 3], np.float64)
@@ -79,15 +79,17 @@ class xvSileSiesta(SileSiesta):
         return Lattice(cell)
 
     @sile_fh_open()
-    def read_geometry(self, velocity=False, species_Z=False):
+    def read_geometry(
+        self, velocity: bool = False, species_Z: bool = False
+    ) -> Geometry:
         """Returns a `Geometry` object from the XV file
 
         Parameters
         ----------
-        species_Z : bool, optional
+        species_Z :
            if ``True`` the atomic numbers are the species indices (useful when
            reading the ChemicalSpeciesLabel block simultaneously).
-        velocity : bool, optional
+        velocity :
            also return the velocities in the file
 
         Returns

@@ -53,7 +53,7 @@ class pdosSileSiesta(SileSiesta):
         return Ef
 
     @sile_fh_open(True)
-    def read_data(self, as_dataarray=False):
+    def read_data(self, as_dataarray: bool = False):
         r"""Returns data associated with the PDOS file
 
         For spin-polarized calculations the returned values are up/down, orbitals, energy.
@@ -390,7 +390,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
             "-E",
             action=ERange,
             help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
-                       
+
                        This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""",
         )
 

@@ -21,15 +21,15 @@ class structSileSiesta(SileSiesta):
     """Geometry file"""
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt=".9f"):
+    def write_geometry(self, geometry: Geometry, fmt: str = ".9f"):
         """Writes the geometry to the contained file
 
         Parameters
         ----------
-        geometry : Geometry
-           geometry to write in the XV file
-        fmt : str, optional
-           the precision used for writing the XV file
+        geometry :
+           geometry to write in the STRUCT file
+        fmt :
+           the precision used for writing the coordinates in the file
         """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -51,7 +51,7 @@ class structSileSiesta(SileSiesta):
                 self._write(fmt_str.format(ips + 1, a.Z, *fxyz[ia]))
 
     @sile_fh_open()
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Returns `Lattice` object from the STRUCT file"""
 
         cell = np.empty([3, 3], np.float64)
@@ -61,7 +61,7 @@ class structSileSiesta(SileSiesta):
         return Lattice(cell)
 
     @sile_fh_open()
-    def read_geometry(self, species_Z=False):
+    def read_geometry(self, species_Z: bool = False) -> Geometry:
         """Returns a `Geometry` object from the STRUCT file
 
         Parameters

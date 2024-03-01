@@ -32,11 +32,11 @@ class cubeSile(Sile):
     )
     def write_lattice(
         self,
-        lattice,
-        fmt="15.10e",
+        lattice: Lattice,
+        fmt: str = "15.10e",
         size=None,
         origin=None,
-        unit="Bohr",
+        unit: str = "Bohr",
         *args,
         **kwargs,
     ):
@@ -44,15 +44,15 @@ class cubeSile(Sile):
 
         Parameters
         ----------
-        lattice : Lattice
+        lattice :
             lattice to be written
-        fmt : str, optional
+        fmt :
             floating point format for stored values
         size : (3, ), optional
             shape of the stored grid (``[1, 1, 1]``)
         origin : (3, ), optional
             origin of the cell (``[0, 0, 0]``)
-        unit: str, optional
+        unit:
             what length unit should the cube file data be written in
         """
         sile_raise_write(self)
@@ -83,11 +83,11 @@ class cubeSile(Sile):
     @sile_fh_open()
     def write_geometry(
         self,
-        geometry,
-        fmt="15.10e",
+        geometry: Geometry,
+        fmt: str = "15.10e",
         size=None,
         origin=None,
-        unit="Bohr",
+        unit: str = "Bohr",
         *args,
         **kwargs,
     ):
@@ -95,15 +95,15 @@ class cubeSile(Sile):
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
             geometry to be written
-        fmt : str, optional
+        fmt :
             floating point format for stored values
         size : (3, ), optional
             shape of the stored grid (``[1, 1, 1]``)
         origin : (3, ), optional
             origin of the cell (``[0, 0, 0]``)
-        unit: str, optional
+        unit:
             what length unit should the cube file data be written in
         """
         sile_raise_write(self)
@@ -140,24 +140,32 @@ class cubeSile(Sile):
             )
 
     @sile_fh_open()
-    def write_grid(self, grid, fmt=".5e", imag=False, unit="Bohr", *args, **kwargs):
+    def write_grid(
+        self,
+        grid: Grid,
+        fmt: str = ".5e",
+        imag: bool = False,
+        unit: str = "Bohr",
+        *args,
+        **kwargs,
+    ):
         """Write `Grid` to the contained file
 
         Parameters
         ----------
-        grid : Grid
+        grid :
            the grid to be written in the CUBE file
-        fmt : str, optional
+        fmt :
            format used for precision output
-        imag : bool, optional
+        imag :
            write only imaginary part of the grid, default to only writing the
            real part.
-        buffersize : int, optional
-           size of the buffer while writing the data, (6144)
-        unit: str, optional
+        unit:
             what length unit should the cube file data be written in.
             The grid data is assumed to be unit-less, this unit only refers
             to the lattice vectors and atomic coordinates.
+        buffersize : int, optional
+           size of the buffer while writing the data, (6144)
         """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -220,7 +228,7 @@ class cubeSile(Sile):
         return header
 
     @sile_fh_open()
-    def read_lattice(self, na=False):
+    def read_lattice(self, na: bool = False):
         """Returns `Lattice` object from the CUBE file
 
         Parameters

@@ -23,7 +23,7 @@ from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
-from sisl.messages import SislError, deprecate, deprecation, info, warn
+from sisl.messages import SislError, deprecate, deprecation, warn
 from sisl.shape.prism4 import Cuboid
 from sisl.typing import Axes, Axies, Axis
 from sisl.utils.mathematics import fnorm
@@ -274,7 +274,7 @@ class Lattice(
                     "must have that BC."
                 )
             if changed.any() and (~bc).all() and nsc > 1:
-                info(
+                warn(
                     f"{self.__class__.__name__}.set_boundary_condition is having image connections (nsc={nsc}>1) "
                     "while having a non-periodic boundary condition."
                 )

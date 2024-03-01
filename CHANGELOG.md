@@ -52,6 +52,8 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- `stdoutSileSiesta.read_*` now defaults to read the *next* entry, and not the last
+- `stdoutSileSiesta.read_*` changed MD output functionality, see #586 for details
 - `AtomNeighbours` changed name to `AtomNeighbor` to follow #393
 - removed `Lattice.translate|move`, they did not make sense, and so their
   usage should be deferred to `Lattice.add` instead.
@@ -66,7 +68,7 @@ we hit release version 1.0.0.
 
 ### Added
 - Creation of honeycomb flakes (`sisl.geom.honeycomb_flake`,
-  `sisl.geom.graphene_flake`). #636
+  `sisl.geom.graphene_flake`), #636
 - added `Geometry.as_supercell` to create the supercell structure,
   thanks to @pfebrer for the suggestion
 - added `Lattice.to` and `Lattice.new` to function the same

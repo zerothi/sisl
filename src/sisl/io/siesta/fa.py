@@ -28,7 +28,7 @@ class faSileSiesta(SileSiesta):
         return f
 
     @sile_fh_open()
-    def write_force(self, f, fmt=".9e"):
+    def write_force(self, f, fmt: str = ".9e"):
         """Write forces to file
 
         Parameters

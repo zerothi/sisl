@@ -23,7 +23,7 @@ class bandsSileSiesta(SileSiesta):
         return float(self.readline())
 
     @sile_fh_open()
-    def read_data(self, as_dataarray=False):
+    def read_data(self, as_dataarray: bool = False):
         """Returns data associated with the bands file
 
         The energy levels are shifted with respect to the Fermi-level.
