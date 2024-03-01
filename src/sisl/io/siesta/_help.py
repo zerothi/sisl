@@ -5,7 +5,6 @@ import numpy as np
 
 import sisl._array as _a
 from sisl import SislError
-from sisl._core.sparse import _rows_and_cols
 from sisl.messages import warn
 
 try:

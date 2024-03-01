@@ -6,15 +6,15 @@ from numbers import Integral
 
 import numpy as np
 from numpy import add, dot, logical_and, repeat, subtract, unique
-from scipy.sparse import csr_matrix
+from scipy.sparse import coo_matrix, csr_matrix
 from scipy.sparse import hstack as ss_hstack
 from scipy.sparse import tril, triu
 
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
 from sisl import Geometry, Lattice
-from sisl._core.sparse import SparseCSR, _ncol_to_indptr
-from sisl._core.sparse_geometry import SparseOrbital
+from sisl._core.sparse import SparseCSR, _ncol_to_indptr, _to_coo
+from sisl._core.sparse_geometry import SparseAtom, SparseOrbital
 from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
@@ -24,6 +24,34 @@ from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
 
 __all__ = ["DensityMatrix"]
+
+
+def _get_density(DM, orthogonal, what="sum"):
+    DM = DM.T
+    if orthogonal:
+        off = 0
+    else:
+        off = 1
+    if what == "sum":
+        if DM.shape[0] in (2 + off, 4 + off, 8 + off):
+            return DM[0] + DM[1]
+        return DM[0]
+    if what == "spin":
+        m = np.empty([3, DM.shape[1]], dtype=DM.dtype)
+        if DM.shape[0] == 8 + off:
+            m[0] = DM[2] + DM[6]
+            m[1] = -DM[3] + DM[7]
+            m[2] = DM[0] - DM[1]
+        elif DM.shape[0] == 4 + off:
+            m[0] = 2 * DM[2]
+            m[1] = -2 * DM[3]
+            m[2] = DM[0] - DM[1]
+        elif DM.shape[0] == 2 + off:
+            m[:2, :] = 0.0
+            m[2] = DM[0] - DM[1]
+        elif DM.shape[0] == 1 + off:
+            m[...] = 0.0
+        return m
 
 
 class _densitymatrix(SparseOrbitalBZSpin):
@@ -396,6 +424,225 @@ class _densitymatrix(SparseOrbitalBZSpin):
         raise NotImplementedError(
             f"{self.__class__.__name__}.mulliken only allows projection [orbital, atom]"
         )
+
+    def bond_order(self, method: str = "mayer", projection: str = "atom"):
+        r"""Bond-order calculation using various methods
+
+        For ``method='wiberg'``, the bond-order is calculated as:
+
+        .. math::
+            B_{\nu\mu}^{\mathrm{Wiberg}} &= D_{\nu\mu}^2
+            \\
+            B_{\alpha\beta}^{\mathrm{Wiberg}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
+
+        For ``method='mayer'``, the bond-order is calculated as:
+
+        .. math::
+            B_{\nu\mu}^{\mathrm{Mayer}} &= (DS)_{\nu\mu}(DS)_{\mu\nu}
+            \\
+            B_{\alpha\beta}^{\mathrm{Mayer}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
+        .. math::
+            B_{\nu\mu}^{\mathrm{Mulliken}} &= 2D_{\nu\mu}S{\nu\mu}
+            \\
+            B_{\alpha\beta}^{\mathrm{Mulliken}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B__{\nu\mu}
+
+        The Mulliken bond-order is closely related to the COOP interpretation.
+
+        For all options one can do the bond-order calculation for the
+        spin components. Albeit, their meaning may be more doubtful.
+        Simply add ``':spin'`` to the `method` argument, and the returned
+        quantity will be spin-resolved with :math:`x`, :math:`y` and :math:`z`
+        components.
+
+        Note
+        ----
+        It is unclear what the spin-density bond-order really means.
+
+        Parameters
+        ----------
+        method : {mayer, wiberg, mulliken}[:spin]
+            which method to calculate the bond-order with
+
+        projection : {atom, orbital}
+            whether the returned matrix is in orbital form, or in atom form.
+            If orbital is used, then the above formulas will be changed
+
+
+        Returns
+        -------
+        SparseAtom : with the bond-order between any two atoms, in a supercell matrix.
+            Returned only if projection is atom.
+        SparseOrbital : with the bond-order between any two orbitals, in a supercell matrix.
+            Returned only if projection is orbital.
+        """
+        method = method.lower()
+
+        # split method to retrieve options
+        m, *opts = method.split(":")
+
+        # only extract the summed density
+        what = "sum"
+        if "spin" in opts:
+            # do this for each spin x, y, z
+            what = "spin"
+            del opts[opts.index("spin")]
+
+        # Check that there are no un-used options
+        if opts:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got non-valid options {opts}"
+            )
+
+        # get all rows and columns
+        geom = self.geometry
+        rows, cols, DM = _to_coo(self._csr)
+
+        # Convert to requested matrix form
+        D = _get_density(DM, self.orthogonal, what)
+
+        # Define a matrix-matrix multiplication
+        def mm(A, B):
+            n = A.shape[0]
+            latt = self.geometry.lattice
+            sc_off = latt.sc_off
+
+            # we will extract sub-matrices n_s ** 2 times.
+            # Extracting once should be fine (and ok)
+            Al = [A[:, i * n : (i + 1) * n] for i in range(latt.n_s)]
+            Bl = [B[:, i * n : (i + 1) * n] for i in range(latt.n_s)]
+
+            # A matrix product in a supercell is a bit tricky
+            # since the off-diagonal elements are formed with
+            # respect to the supercell offsets from the diagonal
+            # compoent
+
+            # A = [[ sc1-sc1, sc2-sc1, sc3-sc1, ...
+            #        sc1-sc2, sc2-sc2, sc3-sc2, ...
+            #        sc1-sc3, sc2-sc3, sc3-sc3, ...
+
+            # so each column has a *principal* supercell
+            # which is used to calculate the offset of each
+            # other component.
+            # Now for the LHS in a MM, we have A[0, :]
+            # which is only wrt. the 0,0 component.
+            # In sisl this is forced to be the supercell 0,0.
+            # Hence everything in that row requires no special
+            # handling. Yet all others do.
+
+            res = []
+            for i_s in range(latt.n_s):
+
+                # Calculate the 0,i_s column of the MM
+                # This is equal to:
+                #  A[0, :] @ B[:, i_s]
+                # Calculate the offset for the B column
+                sc_offj = sc_off[i_s] - sc_off
+
+                # initialize the result array
+                # Not strictly needed, but enforces that the
+                # data always contains a csr_matrix
+                r = csr_matrix((n, n), dtype=A.dtype)
+
+                # get current supercell information
+                for i, sc in enumerate(sc_offj):
+                    # i == LHS matrix
+                    # j == RHS matrix
+                    try:
+                        # if the supercell index does not exist, it means
+                        # the matrix is 0. Hence we just neglect that contribution.
+                        j = latt.sc_index(sc)
+                        r = r + Al[i] @ Bl[j]
+                    except:
+                        continue
+
+                res.append(r)
+
+            # Clean-up...
+            del Al, Bl
+
+            # Re-create a matrix where each block is joined into a
+            # big matrix, hstack == columnwise stacking.
+            return ss_hstack(res)
+
+        projection = projection.lower()
+
+        if projection.startswith("atom"):  # allows atoms
+
+            out_cls = SparseAtom
+
+            def sparse2sparse(geom, M):
+
+                # Ensure we have in COO-rdinate format
+                M = M.tocoo()
+
+                # Now re-create the sparse-atom component.
+                rows = geom.o2a(M.row)
+                cols = geom.o2a(M.col)
+                shape = (geom.na, geom.na_s)
+                M = coo_matrix((M.data, (rows, cols)), shape=shape).tocsr()
+                M.sum_duplicates()
+                return M
+
+        elif projection.startswith("orbital"):  # allows orbitals
+
+            out_cls = SparseOrbital
+
+            def sparse2sparse(geom, M):
+                M = M.tocsr()
+                M.sum_duplicates()
+                return M
+
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got unexpected keyword projection"
+            )
+
+        S = False
+
+        if m == "wiberg":
+
+            def get_BO(geom, D, S, rows, cols):
+                # square of each element
+                BO = coo_matrix((D * D, (rows, cols)), shape=self.shape[:2])
+                return sparse2sparse(geom, BO)
+
+        elif m == "mayer":
+
+            S = True
+
+            def get_BO(geom, D, S, rows, cols):
+                D = coo_matrix((D, (rows, cols)), shape=self.shape[:2]).tocsr()
+                S = coo_matrix((S, (rows, cols)), shape=self.shape[:2]).tocsr()
+                BO = mm(D, S).multiply(mm(S, D))
+                return sparse2sparse(geom, BO)
+
+        elif m == "mulliken":
+
+            S = True
+
+            def get_BO(geom, D, S, rows, cols):
+                # Got the factor 2 from Multiwfn
+                BO = coo_matrix((D * S * 2, (rows, cols)), shape=self.shape[:2]).tocsr()
+                return sparse2sparse(geom, BO)
+
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got non-valid method {method}"
+            )
+
+        if S:
+            if self.orthogonal:
+                S = np.zeros(rows.size, dtype=DM.dtype)
+                S[rows == cols] = 1.0
+            else:
+                S = DM[:, -1]
+
+        if D.ndim == 2:
+            BO = [get_BO(geom, d, S, rows, cols) for d in D]
+        else:
+            BO = get_BO(geom, D, S, rows, cols)
+
+        return out_cls.fromsp(geom, BO)
 
     def density(self, grid, spinor=None, tol=1e-7, eta=None):
         r"""Expand the density matrix to the charge density on a grid

@@ -13,6 +13,8 @@ from sisl import (
     Geometry,
     Grid,
     Lattice,
+    SparseAtom,
+    SparseOrbital,
     SphericalOrbital,
     Spin,
 )
@@ -86,6 +88,7 @@ def setup():
 
 @pytest.mark.physics
 @pytest.mark.density_matrix
+@pytest.mark.densitymatrix
 class TestDensityMatrix:
     def test_objects(self, setup):
         assert len(setup.D.xyz) == 2
@@ -164,6 +167,20 @@ class TestDensityMatrix:
         m = D.mulliken("atom")
         assert m[0].sum() == pytest.approx(3)
         assert m[1].sum() == pytest.approx(1)
+
+    @pytest.mark.parametrize("method", ["wiberg", "mayer"])
+    @pytest.mark.parametrize("option", ["", ":spin"])
+    @pytest.mark.parametrize("projection", ["atom", "orbitals"])
+    def test_bond_order(self, setup, method, option, projection):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        BO = D.bond_order(method + option, projection)
+        if projection == "atom":
+            assert isinstance(BO, SparseAtom)
+            assert BO.shape[:2] == (D.geometry.na, D.geometry.na_s)
+        elif projection == "orbitals":
+            assert isinstance(BO, SparseOrbital)
+            assert BO.shape[:2] == (D.geometry.no, D.geometry.no_s)
 
     def test_rho1(self, setup):
         D = setup.D.copy()
