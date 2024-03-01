@@ -88,8 +88,8 @@ templates_path = ["_templates"]
 
 # Short-hand for :doi:
 extlinks = {
-    "issue": ("https://github.com/zerothi/sisl/issues/%s", "issue %s"),
-    "pull": ("https://github.com/zerothi/sisl/pull/%s", "pull request %s"),
+    "issue": ("https://github.com/zerothi/sisl/issues/%s", "issue #%s"),
+    "pull": ("https://github.com/zerothi/sisl/pull/%s", "pull request #%s"),
     "doi": ("https://doi.org/%s", "%s"),
 }
 

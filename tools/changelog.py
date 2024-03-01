@@ -51,7 +51,7 @@ if sys.version_info[:2] < (3, 6):
 this_repo = Repo(os.path.join(os.path.dirname(__file__), ".."))
 
 author_msg = """
-A total of %d people contributed to this release.  People with a "+" by their
+A total of %d people contributed to this release. People with a "+" by their
 names contributed a patch for the first time.
 """
 
@@ -122,6 +122,20 @@ def get_pull_requests(repo, revision_range):
     return prs
 
 
+def rst_change_links(line):
+
+    # find matches, and convert to links
+    reps = []
+    for m in re.finditer(r"#\d+", line):
+        s, e = m.span(0)
+        num = m.group(0)[1:]
+        reps.append((s, e, num))
+
+    for s, e, num in reps[::-1]:
+        line = line[:s] + f":pull:`#{num} <{num}>`" + line[e:]
+    return line
+
+
 def read_changelog(prior_rel, current_rel, format="md"):
     # rst search for item
     md_item = re.compile(r"^\s*-")
@@ -174,12 +188,12 @@ def read_changelog(prior_rel, current_rel, format="md"):
 
             if header > 0:
                 line = line[header:].lstrip()
-        out.append(line)
+                out.append(heading(line, header, format) + "\n")
+                continue
 
-        if header > 0:
-            # this will only happen for rst
-            n = len(line)
-            out.append((" =-^"[header]) * n + "\n")
+            line = rst_change_links(line)
+
+        out.append(line)
 
     # parse the date into an iso date
     if date is not None:
@@ -197,6 +211,15 @@ def date2format(date):
     if date[0] == "0":
         date = date[1:]
     return date
+
+
+def heading(heading, lvl, format):
+    """Convert to proper heading"""
+    if format == "rst":
+        heading = heading.strip()
+        n = len(heading)
+        return f"{heading}\n{' =-^'[lvl]*n}"
+    return f"{'#'*lvl} {heading}"
 
 
 def main(token, revision_range, format="md"):
@@ -235,9 +258,7 @@ def main(token, revision_range, format="md"):
 
     # document authors
     authors = get_authors(revision_range)
-    heading = "Contributors"
-    print(f"\n{heading}")
-    print("=" * len(heading))
+    print(heading("Contributors", 1, format))
     print(author_msg % len(authors))
 
     for s in authors:
@@ -245,11 +266,13 @@ def main(token, revision_range, format="md"):
 
     # document pull requests
     pull_requests = get_pull_requests(github_repo, revision_range)
-    heading = "Pull requests merged"
-    pull_msg = "* #{0}: {2}"
+    if format == "rst":
+        pull_msg = "* :pull:`#{0} <{0}>`: {2}"
+    else:
+        pull_msg = "* #{0}: {2}"
 
-    print(f"\n{heading}")
-    print("=" * len(heading))
+    print()
+    print(heading("Pull requests merged", 1, format))
     print(pull_request_msg % len(pull_requests))
 
     for pull in pull_requests:
