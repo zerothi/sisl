@@ -228,10 +228,11 @@ class Grid(
         self.grid.fill(val)
 
     def interp(self, shape, order=1, mode="wrap", **kwargs):
-        """Interpolate grid values to a new grid of a different shape
+        """Interpolate grid values to a new resolution (retaining lattice vectors)
 
         It uses the `scipy.ndimage.zoom`, which creates a finer or
         more spaced grid using spline interpolation.
+        The lattice vectors remains unchanged.
 
         Parameters
         ----------
@@ -267,7 +268,7 @@ class Grid(
         return self.apply(ndimage_zoom, zoom_factors, mode=mode, order=order, **kwargs)
 
     def isosurface(self, level, step_size=1, **kwargs):
-        """Calculates the isosurface for a given value.
+        """Calculates the isosurface for a given value
 
         It uses `skimage.measure.marching_cubes`, so you need to have scikit-image installed.
 
@@ -322,7 +323,7 @@ class Grid(
         return (verts, *returns)
 
     def smooth(self, r=0.7, method="gaussian", mode="wrap", **kwargs):
-        """Make a smoother grid by applying a filter.
+        """Make a smoother grid by applying a filter
 
         Parameters
         -----------
@@ -361,7 +362,7 @@ class Grid(
         return self.apply(func, mode=mode, **kwargs)
 
     def apply(self, function_, *args, **kwargs):
-        """Applies a function to the grid and returns a new grid.
+        """Applies a function to the grid and returns a new grid
 
         You can also apply a function that does not return a grid (maybe you want to do
         some measurement). In that case, you will get the result instead of a `Grid`.
