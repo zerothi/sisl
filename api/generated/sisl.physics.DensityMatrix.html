@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.DensityMatrix &mdash; sisl 0.1-5b78f6e</title>
+  <title>sisl.physics.DensityMatrix &mdash; sisl 0.1-d15ac79</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -21,7 +21,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=f3fa2823"></script>
+        <script src="../../_static/documentation_options.js?v=720dfdaf"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -49,7 +49,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-5b78f6e
+                0.1-d15ac79
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -690,10 +690,11 @@ B_{\alpha\beta}^{\mathrm{Wiberg}} &amp;= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B
 \[\begin{split}B_{\nu\mu}^{\mathrm{Mayer}} &amp;= (DS)_{\nu\mu}(DS)_{\mu\nu}
 \\
 B_{\alpha\beta}^{\mathrm{Mayer}} &amp;= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}\end{split}\]</div>
+<p>For <code class="docutils literal notranslate"><span class="pre">method='mulliken'</span></code>, the bond-order is calculated as:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}B_{\nu\mu}^{\mathrm{Mulliken}} &amp;= 2D_{\nu\mu}S{\nu\mu}
+\[\begin{split}B_{\nu\mu}^{\mathrm{Mulliken}} &amp;= 2D_{\nu\mu}S_{\nu\mu}
 \\
-B_{\alpha\beta}^{\mathrm{Mulliken}} &amp;= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B__{\nu\mu}\end{split}\]</div>
+B_{\alpha\beta}^{\mathrm{Mulliken}} &amp;= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}\end{split}\]</div>
 <p>The Mulliken bond-order is closely related to the COOP interpretation.</p>
 <p>For all options one can do the bond-order calculation for the
 spin components. Albeit, their meaning may be more doubtful.
