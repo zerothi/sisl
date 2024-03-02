@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1-c2e45ce</title>
+  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1-5b78f6e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -21,7 +21,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=a73326ef"></script>
+        <script src="../../../_static/documentation_options.js?v=f3fa2823"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -47,7 +47,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c2e45ce
+                0.1-5b78f6e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -270,7 +270,7 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="sisl.io.siesta.fdfSileSiesta.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt])</p></td>
 <td><p>Writes the geometry</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_lattice" title="sisl.io.siesta.fdfSileSiesta.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(sc[, fmt])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_lattice" title="sisl.io.siesta.fdfSileSiesta.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(lattice[, fmt])</p></td>
 <td><p>Writes the supercell</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.base_file" title="sisl.io.siesta.fdfSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
@@ -278,6 +278,9 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.file" title="sisl.io.siesta.fdfSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.plot" title="sisl.io.siesta.fdfSileSiesta.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a></p></td>
+<td><p>Handles all plotting possibilities for a class</p></td>
 </tr>
 </tbody>
 </table>
@@ -407,7 +410,7 @@ If false, only the first match will update the value</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.get" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.get" title="Link to this definition"></a></dt>
 <dd><p>Retrieve fdf-keyword from the file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -463,7 +466,7 @@ If false, only the first match will update the value</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.print">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.print" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.print" title="Link to this definition"></a></dt>
 <dd><p>Return a string which is pretty-printing the key+value</p>
 </dd></dl>
 
@@ -611,14 +614,14 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_geometry">
-<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_geometry" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_geometry" title="Link to this definition"></a></dt>
 <dd><p>Returns Geometry object by reading fdf or Siesta output related files.</p>
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read geometry from output files (default to read from
+<li><p><strong>output</strong> – whether to read geometry from output files (default to read from
 the fdf file).</p></li>
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the geometry.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;XV&quot;,</span> <span class="pre">&quot;nc&quot;,</span> <span class="pre">&quot;fdf&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;,</span> <span class="pre">&quot;STRUCT&quot;]</span></code> if <em class="xref py py-obj">output</em> is true
@@ -638,7 +641,7 @@ If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">o
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_grid">
-<span class="sig-name descname"><span class="pre">read_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_grid" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><span class="pre">Grid</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_grid" title="Link to this definition"></a></dt>
 <dd><p>Read grid related information from any of the output files</p>
 <p>The order of the readed data is shown below.</p>
 <p>One can limit the tried files to only one file by passing
@@ -672,14 +675,14 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_lattice">
-<span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_lattice" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><span class="pre">Lattice</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_lattice" title="Link to this definition"></a></dt>
 <dd><p>Returns Lattice object by reading fdf or Siesta output related files.</p>
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read supercell from output files (default to read from
+<li><p><strong>output</strong> – whether to read supercell from output files (default to read from
 the fdf file).</p></li>
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the supercell.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;XV&quot;,</span> <span class="pre">&quot;nc&quot;,</span> <span class="pre">&quot;fdf&quot;]</span></code> if <em class="xref py py-obj">output</em> is true.
@@ -724,7 +727,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.set" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.set" title="Link to this definition"></a></dt>
 <dd><p>Add the key and value to the FDF file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -741,7 +744,7 @@ a time-stamp will be written to show when the key was overwritten.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.type">
-<span class="sig-name descname"><span class="pre">type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.type" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.type" title="Link to this definition"></a></dt>
 <dd><p>Return the type of the fdf-keyword</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -764,14 +767,14 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.write_brillouinzone">
-<span class="sig-name descname"><span class="pre">write_brillouinzone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_brillouinzone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_brillouinzone" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_brillouinzone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><span class="pre">BrillouinZone</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_brillouinzone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_brillouinzone" title="Link to this definition"></a></dt>
 <dd><p>Writes Brillouinzone information to the fdf input file</p>
 <p>The <em class="xref py py-obj">bz</em> object will be written as options in the input file.
 The class of <em class="xref py py-obj">bz</em> decides which options gets written. For instance
 a <em class="xref py py-obj">BandStructure</em> class will write the corresponding <code class="docutils literal notranslate"><span class="pre">BandLines</span></code> block.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bz</strong> (<a class="reference internal" href="../../generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – which setting to write to the file</p>
+<dd class="field-odd"><p><strong>bz</strong> – which setting to write to the file</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -780,13 +783,13 @@ a <em class="xref py py-obj">BandStructure</em> class will write the correspondi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.write_geometry">
-<span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="Link to this definition"></a></dt>
 <dd><p>Writes the geometry</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – geometry object to write</p></li>
-<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – precision used to store the atomic coordinates</p></li>
+<li><p><strong>geometry</strong> – geometry object to write</p></li>
+<li><p><strong>fmt</strong> – precision used to store the atomic coordinates</p></li>
 <li><p><strong>unit</strong> (<em>{&quot;Ang&quot;</em><em>, </em><em>&quot;Bohr&quot;</em><em>, </em><em>&quot;fractional&quot;</em><em>, </em><em>&quot;frac&quot;}</em>) – the unit used when writing the data.
 fractional and frac are the same.</p></li>
 </ul>
@@ -796,13 +799,13 @@ fractional and frac are the same.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.write_lattice">
-<span class="sig-name descname"><span class="pre">write_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_lattice" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><span class="pre">Lattice</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_lattice" title="Link to this definition"></a></dt>
 <dd><p>Writes the supercell</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sc</strong> (<a class="reference internal" href="../../generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>) – supercell object to write</p></li>
-<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – precision used to store the lattice vectors</p></li>
+<li><p><strong>lattice</strong> – supercell object to write</p></li>
+<li><p><strong>fmt</strong> – precision used to store the lattice vectors</p></li>
 <li><p><strong>unit</strong> (<em>{&quot;Ang&quot;</em><em>, </em><em>&quot;Bohr&quot;}</em>) – the unit used when writing the data.</p></li>
 </ul>
 </dd>

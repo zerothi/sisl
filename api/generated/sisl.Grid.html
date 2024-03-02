@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Grid &mdash; sisl 0.1-c2e45ce</title>
+  <title>sisl.Grid &mdash; sisl 0.1-5b78f6e</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -21,7 +21,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=a73326ef"></script>
+        <script src="../../_static/documentation_options.js?v=f3fa2823"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -49,7 +49,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c2e45ce
+                0.1-5b78f6e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -198,7 +198,7 @@ this <code class="docutils literal notranslate"><span class="pre">geometry</span
 <td><p>Appends other <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> to this grid along axis</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.apply" title="sisl.Grid.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a>(function_, *args, **kwargs)</p></td>
-<td><p>Applies a function to the grid and returns a new grid.</p></td>
+<td><p>Applies a function to the grid and returns a new grid</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.area" title="sisl.Grid.area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">area</span></code></a>(ax0, ax1)</p></td>
 <td><p>Calculate the area spanned by the two axis <em class="xref py py-obj">ax0</em> and <em class="xref py py-obj">ax1</em></p></td>
@@ -228,10 +228,10 @@ this <code class="docutils literal notranslate"><span class="pre">geometry</span
 <td><p>Remove indices from <em>outside</em> the grid to only retain indices in the &quot;primary&quot; grid</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.interp" title="sisl.Grid.interp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interp</span></code></a>(shape[, order, mode])</p></td>
-<td><p>Interpolate grid values to a new grid of a different shape</p></td>
+<td><p>Interpolate grid values to a new resolution (retaining lattice vectors)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.isosurface" title="sisl.Grid.isosurface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isosurface</span></code></a>(level[, step_size])</p></td>
-<td><p>Calculates the isosurface for a given value.</p></td>
+<td><p>Calculates the isosurface for a given value</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.mean" title="sisl.Grid.mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean</span></code></a>(axis[, weights])</p></td>
 <td><p>Average grid values along direction <em class="xref py py-obj">axis</em>.</p></td>
@@ -291,7 +291,7 @@ this <code class="docutils literal notranslate"><span class="pre">geometry</span
 <td><p>Overwrites the local lattice.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.smooth" title="sisl.Grid.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a>([r, method, mode])</p></td>
-<td><p>Make a smoother grid by applying a filter.</p></td>
+<td><p>Make a smoother grid by applying a filter</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.sub" title="sisl.Grid.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(idx, axis)</p></td>
 <td><p>Retains certain indices from a specified axis.</p></td>
@@ -368,25 +368,28 @@ this <code class="docutils literal notranslate"><span class="pre">geometry</span
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.pbc" title="sisl.Grid.pbc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pbc</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.rcell" title="sisl.Grid.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.plot" title="sisl.Grid.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a></p></td>
+<td><p>Handles all plotting possibilities for a class</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.rcell" title="sisl.Grid.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
 <td><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.rcell" title="sisl.Lattice.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.rcell</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.sc" title="sisl.Grid.sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.sc" title="sisl.Grid.sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc</span></code></a></p></td>
 <td><p>[deprecated] Return the lattice object associated with the <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.sc_off" title="sisl.Grid.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.sc_off" title="sisl.Grid.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
 <td><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.sc_off" title="sisl.Lattice.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.sc_off</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.shape" title="sisl.Grid.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.shape" title="sisl.Grid.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
 <td><p>Grid shape in <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span> directions</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.size" title="sisl.Grid.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.size" title="sisl.Grid.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></a></p></td>
 <td><p>Total number of elements in the grid</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.to" title="sisl.Grid.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.to" title="sisl.Grid.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a></p></td>
 <td><p>A dispatcher for classes, using <em class="xref py py-obj">__get__</em> it converts into <em class="xref py py-obj">ObjectDispatcher</em> upon invocation from an object, or a <em class="xref py py-obj">TypeDispatcher</em> when invoked from a class</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.volume" title="sisl.Grid.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.volume" title="sisl.Grid.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a></p></td>
 <td><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.volume" title="sisl.Lattice.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volume</span></code></a></p></td>
 </tr>
 </tbody>
@@ -425,7 +428,7 @@ this <code class="docutils literal notranslate"><span class="pre">geometry</span
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Grid.apply">
 <span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/grid.html#Grid.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.apply" title="Link to this definition"></a></dt>
-<dd><p>Applies a function to the grid and returns a new grid.</p>
+<dd><p>Applies a function to the grid and returns a new grid</p>
 <p>You can also apply a function that does not return a grid (maybe you want to do
 some measurement). In that case, you will get the result instead of a <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>.</p>
 <dl class="field-list simple">
@@ -633,9 +636,10 @@ are returned (all internal points also).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Grid.interp">
 <span class="sig-name descname"><span class="pre">interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wrap'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/grid.html#Grid.interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.interp" title="Link to this definition"></a></dt>
-<dd><p>Interpolate grid values to a new grid of a different shape</p>
+<dd><p>Interpolate grid values to a new resolution (retaining lattice vectors)</p>
 <p>It uses the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.12.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a>, which creates a finer or
-more spaced grid using spline interpolation.</p>
+more spaced grid using spline interpolation.
+The lattice vectors remains unchanged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -667,7 +671,7 @@ The interpolation routine is <a class="reference external" href="https://docs.sc
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Grid.isosurface">
 <span class="sig-name descname"><span class="pre">isosurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/grid.html#Grid.isosurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.isosurface" title="Link to this definition"></a></dt>
-<dd><p>Calculates the isosurface for a given value.</p>
+<dd><p>Calculates the isosurface for a given value</p>
 <p>It uses <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.22.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>, so you need to have scikit-image installed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1029,7 +1033,7 @@ as it was.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Grid.smooth">
 <span class="sig-name descname"><span class="pre">smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wrap'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/grid.html#Grid.smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.smooth" title="Link to this definition"></a></dt>
-<dd><p>Make a smoother grid by applying a filter.</p>
+<dd><p>Make a smoother grid by applying a filter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

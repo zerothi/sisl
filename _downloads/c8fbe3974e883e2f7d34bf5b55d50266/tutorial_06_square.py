@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl import *
 
-# Generate square lattice with nearest neighbour couplings
+# Generate square lattice with nearest neighbor couplings
 Hydrogen = Atom(1, R=1.0)
 square = Geometry([[0.5, 0.5, 0]], Hydrogen, lattice=Lattice([1, 1, 10], [3, 3, 1]))
 
@@ -33,7 +33,7 @@ eigs = band.eigh()
 import matplotlib.pyplot as plt
 
 plt.figure()
-plt.title("Bandstructure of square, nearest neighbour")
+plt.title("Bandstructure of square, nearest neighbor")
 plt.xlabel("k")
 plt.ylabel("Eigenvalue")
 

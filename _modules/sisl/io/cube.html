@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.cube &mdash; sisl 0.1-c2e45ce</title>
+  <title>sisl.io.cube &mdash; sisl 0.1-5b78f6e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=a73326ef"></script>
+        <script src="../../../_static/documentation_options.js?v=f3fa2823"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c2e45ce
+                0.1-5b78f6e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -146,11 +146,11 @@
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">lattice</span><span class="p">,</span>
-        <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;15.10e&quot;</span><span class="p">,</span>
+        <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">,</span>
+        <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;15.10e&quot;</span><span class="p">,</span>
         <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Bohr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -158,15 +158,15 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        lattice : Lattice</span>
+<span class="sd">        lattice :</span>
 <span class="sd">            lattice to be written</span>
-<span class="sd">        fmt : str, optional</span>
+<span class="sd">        fmt :</span>
 <span class="sd">            floating point format for stored values</span>
 <span class="sd">        size : (3, ), optional</span>
 <span class="sd">            shape of the stored grid (``[1, 1, 1]``)</span>
 <span class="sd">        origin : (3, ), optional</span>
 <span class="sd">            origin of the cell (``[0, 0, 0]``)</span>
-<span class="sd">        unit: str, optional</span>
+<span class="sd">        unit:</span>
 <span class="sd">            what length unit should the cube file data be written in</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -200,11 +200,11 @@
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">geometry</span><span class="p">,</span>
-        <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;15.10e&quot;</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span>
+        <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;15.10e&quot;</span><span class="p">,</span>
         <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Bohr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -212,15 +212,15 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        geometry : Geometry</span>
+<span class="sd">        geometry :</span>
 <span class="sd">            geometry to be written</span>
-<span class="sd">        fmt : str, optional</span>
+<span class="sd">        fmt :</span>
 <span class="sd">            floating point format for stored values</span>
 <span class="sd">        size : (3, ), optional</span>
 <span class="sd">            shape of the stored grid (``[1, 1, 1]``)</span>
 <span class="sd">        origin : (3, ), optional</span>
 <span class="sd">            origin of the cell (``[0, 0, 0]``)</span>
-<span class="sd">        unit: str, optional</span>
+<span class="sd">        unit:</span>
 <span class="sd">            what length unit should the cube file data be written in</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -260,24 +260,32 @@
 <div class="viewcode-block" id="cubeSile.write_grid">
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.write_grid">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.5e&quot;</span><span class="p">,</span> <span class="n">imag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">grid</span><span class="p">:</span> <span class="n">Grid</span><span class="p">,</span>
+        <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.5e&quot;</span><span class="p">,</span>
+        <span class="n">imag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Bohr&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write `Grid` to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        grid : Grid</span>
+<span class="sd">        grid :</span>
 <span class="sd">           the grid to be written in the CUBE file</span>
-<span class="sd">        fmt : str, optional</span>
+<span class="sd">        fmt :</span>
 <span class="sd">           format used for precision output</span>
-<span class="sd">        imag : bool, optional</span>
+<span class="sd">        imag :</span>
 <span class="sd">           write only imaginary part of the grid, default to only writing the</span>
 <span class="sd">           real part.</span>
-<span class="sd">        buffersize : int, optional</span>
-<span class="sd">           size of the buffer while writing the data, (6144)</span>
-<span class="sd">        unit: str, optional</span>
+<span class="sd">        unit:</span>
 <span class="sd">            what length unit should the cube file data be written in.</span>
 <span class="sd">            The grid data is assumed to be unit-less, this unit only refers</span>
 <span class="sd">            to the lattice vectors and atomic coordinates.</span>
+<span class="sd">        buffersize : int, optional</span>
+<span class="sd">           size of the buffer while writing the data, (6144)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check that we can write to the file</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -343,7 +351,7 @@
 <div class="viewcode-block" id="cubeSile.read_lattice">
 <a class="viewcode-back" href="../../../api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.read_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns `Lattice` object from the CUBE file</span>
 
 <span class="sd">        Parameters</span>

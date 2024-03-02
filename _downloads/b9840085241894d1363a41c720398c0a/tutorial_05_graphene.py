@@ -31,7 +31,7 @@ eigs = band.eigh()
 import matplotlib.pyplot as plt
 
 plt.figure()
-plt.title("Bandstructure of graphene, nearest neighbour")
+plt.title("Bandstructure of graphene, nearest neighbor")
 plt.xlabel("k")
 plt.ylabel("Eigenvalue")
 

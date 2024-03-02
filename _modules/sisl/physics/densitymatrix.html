@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.densitymatrix &mdash; sisl 0.1-c2e45ce</title>
+  <title>sisl.physics.densitymatrix &mdash; sisl 0.1-5b78f6e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=a73326ef"></script>
+        <script src="../../../_static/documentation_options.js?v=f3fa2823"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c2e45ce
+                0.1-5b78f6e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -118,15 +118,15 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">logical_and</span><span class="p">,</span> <span class="n">repeat</span><span class="p">,</span> <span class="n">subtract</span><span class="p">,</span> <span class="n">unique</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span><span class="p">,</span> <span class="n">csr_matrix</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">hstack</span> <span class="k">as</span> <span class="n">ss_hstack</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">tril</span><span class="p">,</span> <span class="n">triu</span>
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">BoundaryCondition</span> <span class="k">as</span> <span class="n">BC</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
-<span class="kn">from</span> <span class="nn">sisl._core.sparse</span> <span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span>
-<span class="kn">from</span> <span class="nn">sisl._core.sparse_geometry</span> <span class="kn">import</span> <span class="n">SparseOrbital</span>
+<span class="kn">from</span> <span class="nn">sisl._core.sparse</span> <span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span><span class="p">,</span> <span class="n">_to_coo</span>
+<span class="kn">from</span> <span class="nn">sisl._core.sparse_geometry</span> <span class="kn">import</span> <span class="n">SparseAtom</span><span class="p">,</span> <span class="n">SparseOrbital</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_fabs_le</span><span class="p">,</span> <span class="n">indices_le</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
@@ -136,6 +136,34 @@
 <span class="kn">from</span> <span class="nn">.spin</span> <span class="kn">import</span> <span class="n">Spin</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DensityMatrix&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_density</span><span class="p">(</span><span class="n">DM</span><span class="p">,</span> <span class="n">orthogonal</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">):</span>
+    <span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">if</span> <span class="n">orthogonal</span><span class="p">:</span>
+        <span class="n">off</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">off</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">DM</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">off</span><span class="p">,</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">off</span><span class="p">,</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">off</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">DM</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">DM</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">DM</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;spin&quot;</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">DM</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">off</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">DM</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">DM</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">DM</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">DM</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+            <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DM</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">DM</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">DM</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">off</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">DM</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">DM</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DM</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">DM</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">DM</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">off</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DM</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">DM</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">DM</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">off</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="n">m</span>
 
 
 <span class="k">class</span> <span class="nc">_densitymatrix</span><span class="p">(</span><span class="n">SparseOrbitalBZSpin</span><span class="p">):</span>
@@ -509,6 +537,225 @@
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.mulliken only allows projection [orbital, atom]&quot;</span>
         <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">bond_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mayer&quot;</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bond-order calculation using various methods</span>
+
+<span class="sd">        For ``method=&#39;wiberg&#39;``, the bond-order is calculated as:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            B_{\nu\mu}^{\mathrm{Wiberg}} &amp;= D_{\nu\mu}^2</span>
+<span class="sd">            \\</span>
+<span class="sd">            B_{\alpha\beta}^{\mathrm{Wiberg}} &amp;= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}</span>
+
+<span class="sd">        For ``method=&#39;mayer&#39;``, the bond-order is calculated as:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            B_{\nu\mu}^{\mathrm{Mayer}} &amp;= (DS)_{\nu\mu}(DS)_{\mu\nu}</span>
+<span class="sd">            \\</span>
+<span class="sd">            B_{\alpha\beta}^{\mathrm{Mayer}} &amp;= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}</span>
+<span class="sd">        .. math::</span>
+<span class="sd">            B_{\nu\mu}^{\mathrm{Mulliken}} &amp;= 2D_{\nu\mu}S{\nu\mu}</span>
+<span class="sd">            \\</span>
+<span class="sd">            B_{\alpha\beta}^{\mathrm{Mulliken}} &amp;= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B__{\nu\mu}</span>
+
+<span class="sd">        The Mulliken bond-order is closely related to the COOP interpretation.</span>
+
+<span class="sd">        For all options one can do the bond-order calculation for the</span>
+<span class="sd">        spin components. Albeit, their meaning may be more doubtful.</span>
+<span class="sd">        Simply add ``&#39;:spin&#39;`` to the `method` argument, and the returned</span>
+<span class="sd">        quantity will be spin-resolved with :math:`x`, :math:`y` and :math:`z`</span>
+<span class="sd">        components.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        It is unclear what the spin-density bond-order really means.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : {mayer, wiberg, mulliken}[:spin]</span>
+<span class="sd">            which method to calculate the bond-order with</span>
+
+<span class="sd">        projection : {atom, orbital}</span>
+<span class="sd">            whether the returned matrix is in orbital form, or in atom form.</span>
+<span class="sd">            If orbital is used, then the above formulas will be changed</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        SparseAtom : with the bond-order between any two atoms, in a supercell matrix.</span>
+<span class="sd">            Returned only if projection is atom.</span>
+<span class="sd">        SparseOrbital : with the bond-order between any two orbitals, in a supercell matrix.</span>
+<span class="sd">            Returned only if projection is orbital.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># split method to retrieve options</span>
+        <span class="n">m</span><span class="p">,</span> <span class="o">*</span><span class="n">opts</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
+        <span class="c1"># only extract the summed density</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;spin&quot;</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+            <span class="c1"># do this for each spin x, y, z</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="s2">&quot;spin&quot;</span>
+            <span class="k">del</span> <span class="n">opts</span><span class="p">[</span><span class="n">opts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">)]</span>
+
+        <span class="c1"># Check that there are no un-used options</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.bond_order got non-valid options </span><span class="si">{</span><span class="n">opts</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># get all rows and columns</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">DM</span> <span class="o">=</span> <span class="n">_to_coo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
+
+        <span class="c1"># Convert to requested matrix form</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">_get_density</span><span class="p">(</span><span class="n">DM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span>
+
+        <span class="c1"># Define a matrix-matrix multiplication</span>
+        <span class="k">def</span> <span class="nf">mm</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">latt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span>
+            <span class="n">sc_off</span> <span class="o">=</span> <span class="n">latt</span><span class="o">.</span><span class="n">sc_off</span>
+
+            <span class="c1"># we will extract sub-matrices n_s ** 2 times.</span>
+            <span class="c1"># Extracting once should be fine (and ok)</span>
+            <span class="n">Al</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">latt</span><span class="o">.</span><span class="n">n_s</span><span class="p">)]</span>
+            <span class="n">Bl</span> <span class="o">=</span> <span class="p">[</span><span class="n">B</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">latt</span><span class="o">.</span><span class="n">n_s</span><span class="p">)]</span>
+
+            <span class="c1"># A matrix product in a supercell is a bit tricky</span>
+            <span class="c1"># since the off-diagonal elements are formed with</span>
+            <span class="c1"># respect to the supercell offsets from the diagonal</span>
+            <span class="c1"># compoent</span>
+
+            <span class="c1"># A = [[ sc1-sc1, sc2-sc1, sc3-sc1, ...</span>
+            <span class="c1">#        sc1-sc2, sc2-sc2, sc3-sc2, ...</span>
+            <span class="c1">#        sc1-sc3, sc2-sc3, sc3-sc3, ...</span>
+
+            <span class="c1"># so each column has a *principal* supercell</span>
+            <span class="c1"># which is used to calculate the offset of each</span>
+            <span class="c1"># other component.</span>
+            <span class="c1"># Now for the LHS in a MM, we have A[0, :]</span>
+            <span class="c1"># which is only wrt. the 0,0 component.</span>
+            <span class="c1"># In sisl this is forced to be the supercell 0,0.</span>
+            <span class="c1"># Hence everything in that row requires no special</span>
+            <span class="c1"># handling. Yet all others do.</span>
+
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i_s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">latt</span><span class="o">.</span><span class="n">n_s</span><span class="p">):</span>
+
+                <span class="c1"># Calculate the 0,i_s column of the MM</span>
+                <span class="c1"># This is equal to:</span>
+                <span class="c1">#  A[0, :] @ B[:, i_s]</span>
+                <span class="c1"># Calculate the offset for the B column</span>
+                <span class="n">sc_offj</span> <span class="o">=</span> <span class="n">sc_off</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span> <span class="o">-</span> <span class="n">sc_off</span>
+
+                <span class="c1"># initialize the result array</span>
+                <span class="c1"># Not strictly needed, but enforces that the</span>
+                <span class="c1"># data always contains a csr_matrix</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+                <span class="c1"># get current supercell information</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sc_offj</span><span class="p">):</span>
+                    <span class="c1"># i == LHS matrix</span>
+                    <span class="c1"># j == RHS matrix</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># if the supercell index does not exist, it means</span>
+                        <span class="c1"># the matrix is 0. Hence we just neglect that contribution.</span>
+                        <span class="n">j</span> <span class="o">=</span> <span class="n">latt</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+                        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">Al</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="n">Bl</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="c1"># Clean-up...</span>
+            <span class="k">del</span> <span class="n">Al</span><span class="p">,</span> <span class="n">Bl</span>
+
+            <span class="c1"># Re-create a matrix where each block is joined into a</span>
+            <span class="c1"># big matrix, hstack == columnwise stacking.</span>
+            <span class="k">return</span> <span class="n">ss_hstack</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+        <span class="n">projection</span> <span class="o">=</span> <span class="n">projection</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">projection</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">):</span>  <span class="c1"># allows atoms</span>
+
+            <span class="n">out_cls</span> <span class="o">=</span> <span class="n">SparseAtom</span>
+
+            <span class="k">def</span> <span class="nf">sparse2sparse</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+
+                <span class="c1"># Ensure we have in COO-rdinate format</span>
+                <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span>
+
+                <span class="c1"># Now re-create the sparse-atom component.</span>
+                <span class="n">rows</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">row</span><span class="p">)</span>
+                <span class="n">cols</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">col</span><span class="p">)</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">na_s</span><span class="p">)</span>
+                <span class="n">M</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">((</span><span class="n">M</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">sum_duplicates</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">M</span>
+
+        <span class="k">elif</span> <span class="n">projection</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;orbital&quot;</span><span class="p">):</span>  <span class="c1"># allows orbitals</span>
+
+            <span class="n">out_cls</span> <span class="o">=</span> <span class="n">SparseOrbital</span>
+
+            <span class="k">def</span> <span class="nf">sparse2sparse</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+                <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">sum_duplicates</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">M</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.bond_order got unexpected keyword projection&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">S</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;wiberg&quot;</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">get_BO</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
+                <span class="c1"># square of each element</span>
+                <span class="n">BO</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">((</span><span class="n">D</span> <span class="o">*</span> <span class="n">D</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">sparse2sparse</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">BO</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;mayer&quot;</span><span class="p">:</span>
+
+            <span class="n">S</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">def</span> <span class="nf">get_BO</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
+                <span class="n">D</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">((</span><span class="n">D</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+                <span class="n">BO</span> <span class="o">=</span> <span class="n">mm</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">mm</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">D</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">sparse2sparse</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">BO</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">:</span>
+
+            <span class="n">S</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">def</span> <span class="nf">get_BO</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
+                <span class="c1"># Got the factor 2 from Multiwfn</span>
+                <span class="n">BO</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">((</span><span class="n">D</span> <span class="o">*</span> <span class="n">S</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">sparse2sparse</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">BO</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.bond_order got non-valid method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">S</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">rows</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">S</span><span class="p">[</span><span class="n">rows</span> <span class="o">==</span> <span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="n">DM</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">D</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">BO</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_BO</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">D</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">BO</span> <span class="o">=</span> <span class="n">get_BO</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out_cls</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">BO</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand the density matrix to the charge density on a grid</span>
 
@@ -703,7 +950,7 @@
         <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">_v</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">add_R</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="n">add_R</span><span class="p">)</span>
 
         <span class="c1"># Retrieve all atoms within the grid supercell</span>
-        <span class="c1"># (and the neighbours that connect into the cell)</span>
+        <span class="c1"># (and the neighbors that connect into the cell)</span>
         <span class="n">IA</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">ISC</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">within_inf</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
         <span class="n">XYZ</span> <span class="o">-=</span> <span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.lattice &mdash; sisl 0.1-c2e45ce</title>
+  <title>sisl._core.lattice &mdash; sisl 0.1-5b78f6e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=a73326ef"></script>
+        <script src="../../../_static/documentation_options.js?v=f3fa2823"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c2e45ce
+                0.1-5b78f6e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -135,7 +135,7 @@
 <span class="kn">from</span> <span class="nn">sisl._dispatcher</span> <span class="kn">import</span> <span class="n">AbstractDispatch</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">,</span> <span class="n">TypeDispatcher</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">dot3</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.shape.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
 <span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">Axes</span><span class="p">,</span> <span class="n">Axies</span><span class="p">,</span> <span class="n">Axis</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
@@ -208,7 +208,7 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A cell class to retain lattice vectors and a supercell structure</span>
 
-<span class="sd">    The supercell structure is comprising the *primary* unit-cell and neighbouring</span>
+<span class="sd">    The supercell structure is comprising the *primary* unit-cell and neighboring</span>
 <span class="sd">    unit-cells. The number of supercells is given by the attribute `nsc` which</span>
 <span class="sd">    is a vector with 3 elements, one per lattice vector. It describes *how many*</span>
 <span class="sd">    times the primary unit-cell is extended along the i&#39;th lattice vector.</span>
@@ -403,7 +403,7 @@
                     <span class="s2">&quot;must have that BC.&quot;</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">changed</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="o">~</span><span class="n">bc</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">info</span><span class="p">(</span>
+                <span class="n">warn</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.set_boundary_condition is having image connections (nsc=</span><span class="si">{</span><span class="n">nsc</span><span class="si">}</span><span class="s2">&gt;1) &quot;</span>
                     <span class="s2">&quot;while having a non-periodic boundary condition.&quot;</span>
                 <span class="p">)</span></div>

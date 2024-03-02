@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-c2e45ce</title>
+  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-5b78f6e</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=a73326ef"></script>
+        <script src="../../../../_static/documentation_options.js?v=f3fa2823"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c2e45ce
+                0.1-5b78f6e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -119,6 +119,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
@@ -130,6 +131,7 @@
     <span class="n">Atoms</span><span class="p">,</span>
     <span class="n">DynamicalMatrix</span><span class="p">,</span>
     <span class="n">Geometry</span><span class="p">,</span>
+    <span class="n">Grid</span><span class="p">,</span>
     <span class="n">Lattice</span><span class="p">,</span>
     <span class="n">Orbital</span><span class="p">,</span>
     <span class="n">SphericalOrbital</span><span class="p">,</span>
@@ -137,8 +139,8 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_only</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">BandStructure</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">BandStructure</span><span class="p">,</span> <span class="n">BrillouinZone</span>
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span><span class="p">,</span> <span class="n">unit_default</span><span class="p">,</span> <span class="n">unit_group</span><span class="p">,</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.cmd</span> <span class="kn">import</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">default_namespace</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
@@ -347,7 +349,7 @@
 
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_read_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_read_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Try and read the first occurence of a key</span>
 
 <span class="sd">        This will take care of blocks, labels and piped in labels</span>
@@ -444,7 +446,7 @@
         <span class="k">return</span> <span class="n">l</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the type by the value</span>
 
 <span class="sd">        Parameters</span>
@@ -494,7 +496,7 @@
 <div class="viewcode-block" id="fdfSileSiesta.type">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.type">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type of the fdf-keyword</span>
 
 <span class="sd">        Parameters</span>
@@ -509,7 +511,13 @@
 <div class="viewcode-block" id="fdfSileSiesta.get">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.get">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_unit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">with_unit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve fdf-keyword from the file</span>
 
 <span class="sd">        Parameters</span>
@@ -598,7 +606,7 @@
 
 <div class="viewcode-block" id="fdfSileSiesta.set">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.set">[docs]</a>
-    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the key and value to the FDF file</span>
 
 <span class="sd">        Parameters</span>
@@ -669,7 +677,7 @@
 <div class="viewcode-block" id="fdfSileSiesta.print">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.print">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a string which is pretty-printing the key+value&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%block </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -697,14 +705,17 @@
 <div class="viewcode-block" id="fdfSileSiesta.write_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.write_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the supercell</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sc : Lattice</span>
+<span class="sd">        lattice:</span>
 <span class="sd">           supercell object to write</span>
-<span class="sd">        fmt : str, optional</span>
+<span class="sd">        fmt :</span>
 <span class="sd">           precision used to store the lattice vectors</span>
 <span class="sd">        unit : {&quot;Ang&quot;, &quot;Bohr&quot;}</span>
 <span class="sd">           the unit used when writing the data.</span>
@@ -723,23 +734,23 @@
         <span class="c1"># Write out the cell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LatticeConstant 1.0 </span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;%block LatticeVectors</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">conv</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">conv</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">conv</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">conv</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">conv</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">conv</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%e</span><span class="s2">ndblock LatticeVectors</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="fdfSileSiesta.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.write_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the geometry</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        geometry : Geometry</span>
+<span class="sd">        geometry :</span>
 <span class="sd">           geometry object to write</span>
-<span class="sd">        fmt : str, optional</span>
+<span class="sd">        fmt :</span>
 <span class="sd">           precision used to store the atomic coordinates</span>
 <span class="sd">        unit : {&quot;Ang&quot;, &quot;Bohr&quot;, &quot;fractional&quot;, &quot;frac&quot;}</span>
 <span class="sd">           the unit used when writing the data.</span>
@@ -818,7 +829,7 @@
 <div class="viewcode-block" id="fdfSileSiesta.write_brillouinzone">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.write_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Writes Brillouinzone information to the fdf input file</span>
 
 <span class="sd">        The `bz` object will be written as options in the input file.</span>
@@ -827,7 +838,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        bz : BrillouinZone</span>
+<span class="sd">        bz :</span>
 <span class="sd">            which setting to write to the file</span>
 
 <span class="sd">        Notes</span>
@@ -895,7 +906,7 @@
 
 <div class="viewcode-block" id="fdfSileSiesta.read_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_lattice">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns Lattice object by reading fdf or Siesta output related files.</span>
 
 <span class="sd">        One can limit the tried files to only one file by passing</span>
@@ -903,7 +914,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        output: bool, optional</span>
+<span class="sd">        output:</span>
 <span class="sd">            whether to read supercell from output files (default to read from</span>
 <span class="sd">            the fdf file).</span>
 <span class="sd">        order: list of str, optional</span>
@@ -1557,7 +1568,7 @@
 
 <div class="viewcode-block" id="fdfSileSiesta.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_geometry">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns Geometry object by reading fdf or Siesta output related files.</span>
 
 <span class="sd">        One can limit the tried files to only one file by passing</span>
@@ -1565,7 +1576,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        output: bool, optional</span>
+<span class="sd">        output:</span>
 <span class="sd">            whether to read geometry from output files (default to read from</span>
 <span class="sd">            the fdf file).</span>
 <span class="sd">        order: list of str, optional</span>
@@ -1806,7 +1817,7 @@
 
 <div class="viewcode-block" id="fdfSileSiesta.read_grid">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_grid">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Grid</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read grid related information from any of the output files</span>
 
 <span class="sd">        The order of the readed data is shown below.</span>
