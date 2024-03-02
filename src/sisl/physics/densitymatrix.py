@@ -450,6 +450,11 @@ class _densitymatrix(SparseOrbitalBZSpin):
             B_{\alpha\beta}^{\mathrm{Mulliken}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
 
         The Mulliken bond-order is closely related to the COOP interpretation.
+        The COOP is generally an energy resolved Mulliken bond-order. So if the
+        density matrix represents a particular eigen-state, it would yield the COOP
+        value for the energy of the eigenstate. Generally the density matrix is
+        the sum over all occupied eigen states, and hence represents the full
+        picture.
 
         For all options one can do the bond-order calculation for the
         spin components. Albeit, their meaning may be more doubtful.
