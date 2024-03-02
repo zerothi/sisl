@@ -441,10 +441,13 @@ class _densitymatrix(SparseOrbitalBZSpin):
             B_{\nu\mu}^{\mathrm{Mayer}} &= (DS)_{\nu\mu}(DS)_{\mu\nu}
             \\
             B_{\alpha\beta}^{\mathrm{Mayer}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
+
+        For ``method='mulliken'``, the bond-order is calculated as:
+
         .. math::
-            B_{\nu\mu}^{\mathrm{Mulliken}} &= 2D_{\nu\mu}S{\nu\mu}
+            B_{\nu\mu}^{\mathrm{Mulliken}} &= 2D_{\nu\mu}S_{\nu\mu}
             \\
-            B_{\alpha\beta}^{\mathrm{Mulliken}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B__{\nu\mu}
+            B_{\alpha\beta}^{\mathrm{Mulliken}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
 
         The Mulliken bond-order is closely related to the COOP interpretation.
 
