@@ -198,7 +198,7 @@ except ImportError:
     _skip_paths.append(os.path.join("sisl", "viz", "plotly"))
 
 
-def pytest_ignore_collect(path, config):
+def _wrapped_ignore_collect(path, config):
     # ensure we only compare against final *sisl* stuff
     global _skip_paths
     parts = list(Path(path).parts)
@@ -211,6 +211,17 @@ def pytest_ignore_collect(path, config):
         if skip_path in sisl_path:
             return True
     return False
+
+
+if pytest.version_tuple >= (7, 0):
+
+    def pytest_ignore_collect(collection_path, config):
+        return _wrapped_ignore_collect(collection_path, config)
+
+else:
+
+    def pytest_ignore_collect(path, config):
+        return _wrapped_ignore_collect(path, config)
 
 
 def pytest_configure(config):
