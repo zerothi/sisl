@@ -9,7 +9,7 @@ cimport numpy as np
 from scipy.sparse import csr_matrix
 
 from sisl._indices cimport _index_sorted
-from sisl._sparse import fold_csr_matrix_nc
+from sisl._core._sparse import fold_csr_matrix_nc
 
 __all__ = ['_phase_so_csr_c64', '_phase_so_csr_c128',
            '_phase_so_array_c64', '_phase_so_array_c128']

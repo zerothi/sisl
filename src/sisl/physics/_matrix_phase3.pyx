@@ -9,7 +9,7 @@ cimport numpy as np
 from scipy.sparse import csr_matrix
 
 from sisl._indices cimport _index_sorted
-from sisl._sparse import fold_csr_matrix
+from sisl._core._sparse import fold_csr_matrix
 
 __all__ = ['_phase3_csr_f32', '_phase3_csr_f64',
            '_phase3_csr_c64', '_phase3_csr_c128',
@@ -63,9 +63,9 @@ def _phase3_csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <float> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[ind, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[ind, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[ind, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[ind, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[ind, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -74,9 +74,9 @@ def _phase3_csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 s = col[ind] / nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <float> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[s, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[s, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[s, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[s, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[s, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[s, 2]
 
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
@@ -116,9 +116,9 @@ def _phase3_csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <double> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[ind, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[ind, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[ind, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[ind, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[ind, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -127,9 +127,9 @@ def _phase3_csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 s = col[ind] / nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <double> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[s, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[s, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[s, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[s, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[s, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[s, 2]
 
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
@@ -169,9 +169,9 @@ def _phase3_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <float complex> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[ind, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[ind, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[ind, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[ind, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[ind, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -180,9 +180,9 @@ def _phase3_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 s = col[ind] / nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <float complex> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[s, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[s, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[s, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[s, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[s, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[s, 2]
 
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
@@ -193,7 +193,7 @@ def _phase3_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                      numeric_complex[:, ::1] D, const int idx,
                      np.ndarray[np.complex128_t, ndim=2, mode='c'] PHASES, const int p_opt):
 
-    # Convert to memory views
+    # Convert to memory viewsz
     cdef int[::1] ptr = PTR
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
@@ -222,9 +222,9 @@ def _phase3_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <double complex> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[ind, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[ind, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[ind, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[ind, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[ind, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -233,9 +233,9 @@ def _phase3_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 s = col[ind] / nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                 d = <double complex> D[ind, idx]
-                vx[v_ptr[r] + s_idx] = vx[v_ptr[r] + s_idx] + d * phases[s, 0]
-                vy[v_ptr[r] + s_idx] = vy[v_ptr[r] + s_idx] + d * phases[s, 1]
-                vz[v_ptr[r] + s_idx] = vz[v_ptr[r] + s_idx] + d * phases[s, 2]
+                vx[v_ptr[r] + s_idx] += d * phases[s, 0]
+                vy[v_ptr[r] + s_idx] += d * phases[s, 1]
+                vz[v_ptr[r] + s_idx] += d * phases[s, 2]
 
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
@@ -267,9 +267,9 @@ def _phase3_array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 d = <float> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[ind, 0]
-                vy[r, c] = vy[r, c] + d * phases[ind, 1]
-                vz[r, c] = vz[r, c] + d * phases[ind, 2]
+                vx[r, c] += d * phases[ind, 0]
+                vy[r, c] += d * phases[ind, 1]
+                vz[r, c] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -277,9 +277,9 @@ def _phase3_array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s = col[ind] / nr
                 d = <float> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[s, 0]
-                vy[r, c] = vy[r, c] + d * phases[s, 1]
-                vz[r, c] = vz[r, c] + d * phases[s, 2]
+                vx[r, c] += d * phases[s, 0]
+                vy[r, c] += d * phases[s, 1]
+                vz[r, c] += d * phases[s, 2]
 
     return Vx, Vy, Vz
 
@@ -311,9 +311,9 @@ def _phase3_array_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 d = <double> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[ind, 0]
-                vy[r, c] = vy[r, c] + d * phases[ind, 1]
-                vz[r, c] = vz[r, c] + d * phases[ind, 2]
+                vx[r, c] += d * phases[ind, 0]
+                vy[r, c] += d * phases[ind, 1]
+                vz[r, c] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -321,9 +321,9 @@ def _phase3_array_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s = col[ind] / nr
                 d = <double> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[s, 0]
-                vy[r, c] = vy[r, c] + d * phases[s, 1]
-                vz[r, c] = vz[r, c] + d * phases[s, 2]
+                vx[r, c] += d * phases[s, 0]
+                vy[r, c] += d * phases[s, 1]
+                vz[r, c] += d * phases[s, 2]
 
     return Vx, Vy, Vz
 
@@ -334,7 +334,7 @@ def _phase3_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                       numeric_complex[:, ::1] D, const int idx,
                       np.ndarray[np.complex64_t, ndim=2, mode='c'] PHASES, const int p_opt):
 
-    # Convert to memory views
+    # Convert to memory viezws
     cdef int[::1] ptr = PTR
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
@@ -356,9 +356,9 @@ def _phase3_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 d = <float complex> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[ind, 0]
-                vy[r, c] = vy[r, c] + d * phases[ind, 1]
-                vz[r, c] = vz[r, c] + d * phases[ind, 2]
+                vx[r, c] += d * phases[ind, 0]
+                vy[r, c] += d * phases[ind, 1]
+                vz[r, c] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -366,9 +366,9 @@ def _phase3_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s = col[ind] / nr
                 d = <float complex> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[s, 0]
-                vy[r, c] = vy[r, c] + d * phases[s, 1]
-                vz[r, c] = vz[r, c] + d * phases[s, 2]
+                vx[r, c] += d * phases[s, 0]
+                vy[r, c] += d * phases[s, 1]
+                vz[r, c] += d * phases[s, 2]
 
     return Vx, Vy, Vz
 
@@ -400,9 +400,9 @@ def _phase3_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 d = <double complex> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[ind, 0]
-                vy[r, c] = vy[r, c] + d * phases[ind, 1]
-                vz[r, c] = vz[r, c] + d * phases[ind, 2]
+                vx[r, c] += d * phases[ind, 0]
+                vy[r, c] += d * phases[ind, 1]
+                vz[r, c] += d * phases[ind, 2]
 
     else:
         for r in range(nr):
@@ -410,8 +410,8 @@ def _phase3_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 c = col[ind] % nr
                 s = col[ind] / nr
                 d = <double complex> D[ind, idx]
-                vx[r, c] = vx[r, c] + d * phases[s, 0]
-                vy[r, c] = vy[r, c] + d * phases[s, 1]
-                vz[r, c] = vz[r, c] + d * phases[s, 2]
+                vx[r, c] += d * phases[s, 0]
+                vy[r, c] += d * phases[s, 1]
+                vz[r, c] += d * phases[s, 2]
 
     return Vx, Vy, Vz

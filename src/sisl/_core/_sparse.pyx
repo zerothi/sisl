@@ -49,6 +49,7 @@ def fold_csr_matrix(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] fold_col = FOLD_col
     # local variables
     cdef Py_ssize_t r, ind, nz, c
+    cdef int[::1] tmp
 
     nz = 0
     fold_ptr[0] = 0
@@ -106,6 +107,7 @@ def fold_csr_matrix_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] fold_col = FOLD_col
     # local variables
     cdef Py_ssize_t r, rr, ind, nz, c
+    cdef int[::1] tmp
 
     nz = 0
     fold_ptr[0] = 0
@@ -175,6 +177,7 @@ def fold_csr_diagonal_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] fold_col = FOLD_col
     # local variables
     cdef Py_ssize_t r, rr, ind, nz, c
+    cdef int[::1] tmp
 
     nz = 0
     fold_ptr[0] = 0

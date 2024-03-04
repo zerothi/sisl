@@ -9,7 +9,7 @@ cimport numpy as np
 from scipy.sparse import csr_matrix
 
 from sisl._indices cimport _index_sorted
-from sisl._sparse import fold_csr_matrix
+from sisl._core._sparse import fold_csr_matrix
 
 __all__ = ['_csr_f32', '_csr_f64', '_phase_csr_c64', '_phase_csr_c128',
            '_array_f32', '_array_f64', '_phase_array_c64', '_phase_array_c128']
@@ -52,7 +52,7 @@ def _csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = col[ind] % nr
             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-            v[v_ptr[r] + s_idx] += <float> D[ind, idx]
+            v[v_ptr[r] + s_idx] += D[ind, idx]
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
@@ -83,7 +83,7 @@ def _csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             c = col[ind] % nr
             s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-            v[v_ptr[r] + s_idx] += <double> D[ind, idx]
+            v[v_ptr[r] + s_idx] += D[ind, idx]
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
@@ -117,13 +117,13 @@ def _phase_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[ind] * D[ind, idx])
+                v[v_ptr[r] + s_idx] += D[ind, idx] * phases[ind]
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[v_ptr[r] + s_idx] += D[ind, idx] * phases[col[ind] / nr]
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
@@ -157,13 +157,13 @@ def _phase_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[ind] * D[ind, idx])
+                v[v_ptr[r] + s_idx] += D[ind, idx] * phases[ind]
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
                 s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
-                v[v_ptr[r] + s_idx] = v[v_ptr[r] + s_idx] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[v_ptr[r] + s_idx] += D[ind, idx] * phases[col[ind] / nr]
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
@@ -185,7 +185,7 @@ def _array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
-            v[r, col[ind] % nr] += <float> D[ind, idx]
+            v[r, col[ind] % nr] += D[ind, idx]
 
     return V
 
@@ -207,7 +207,7 @@ def _array_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
-            v[r, col[ind] % nr] += <double> D[ind, idx]
+            v[r, col[ind] % nr] += D[ind, idx]
 
     return V
 
@@ -233,13 +233,13 @@ def _phase_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
-                v[r, c] = v[r, c] + <float complex> (phases[ind] * D[ind, idx])
+                v[r, c] += D[ind, idx] * phases[ind]
 
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
-                v[r, c] = v[r, c] + <float complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[r, c] += D[ind, idx] * phases[col[ind] / nr]
 
     return V
 
@@ -265,12 +265,12 @@ def _phase_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
-                v[r, c] = v[r, c] + <double complex> (phases[ind] * D[ind, idx])
+                v[r, c] += D[ind, idx] * phases[ind]
 
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = col[ind] % nr
-                v[r, c] = v[r, c] + <double complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[r, c] += D[ind, idx] * phases[col[ind] / nr]
 
     return V

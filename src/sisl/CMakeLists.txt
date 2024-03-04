@@ -1,4 +1,4 @@
-foreach(source _indices _math_small _sparse)
+foreach(source _indices _math_small)
   add_cython_library(
     SOURCE ${source}.pyx
     LIBRARY ${source}

@@ -10,7 +10,7 @@ cimport numpy as np
 
 from scipy.sparse import csr_matrix
 
-from sisl._sparse cimport inline_sum
+from sisl._core._sparse cimport inline_sum
 from sisl.physics._matrix_utils cimport ncol2ptr_single
 
 __all__ = ['_sc_phase_nc_diag_csr_c64', '_sc_phase_nc_diag_csr_c128',

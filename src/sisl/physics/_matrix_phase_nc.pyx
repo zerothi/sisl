@@ -9,7 +9,7 @@ cimport numpy as np
 from scipy.sparse import csr_matrix
 
 from sisl._indices cimport _index_sorted
-from sisl._sparse import fold_csr_matrix_nc
+from sisl._core._sparse import fold_csr_matrix_nc
 
 __all__ = ['_phase_nc_csr_c64', '_phase_nc_csr_c128',
            '_phase_nc_array_c64', '_phase_nc_array_c128']
@@ -55,11 +55,11 @@ def _phase_nc_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind]
                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
-                v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
+                v[v_ptr[rr] + s_idx] += D[ind, 0] * ph
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12
-                v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
-                v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
+                v[v_ptr[rr] + s_idx+1] += v12 * ph
+                v[v_ptr[rr+1] + s_idx] += v12.conjugate() * ph
+                v[v_ptr[rr+1] + s_idx+1] += D[ind, 1] * ph
 
     else:
         for r in range(nr):
@@ -69,11 +69,11 @@ def _phase_nc_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[col[ind] / nr]
                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
-                v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
+                v[v_ptr[rr] + s_idx] += D[ind, 0] * ph
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12
-                v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
-                v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
+                v[v_ptr[rr] + s_idx+1] += v12 * ph
+                v[v_ptr[rr+1] + s_idx] += v12.conjugate() * ph
+                v[v_ptr[rr+1] + s_idx+1] += D[ind, 1] * ph
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
 
@@ -111,11 +111,11 @@ def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind]
                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
-                v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
+                v[v_ptr[rr] + s_idx] += D[ind, 0] * ph
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12
-                v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
-                v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
+                v[v_ptr[rr] + s_idx+1] += v12 * ph
+                v[v_ptr[rr+1] + s_idx] += v12.conjugate() * ph
+                v[v_ptr[rr+1] + s_idx+1] += D[ind, 1] * ph
 
     else:
         for r in range(nr):
@@ -125,11 +125,11 @@ def _phase_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[col[ind] / nr]
                 s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
-                v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
+                v[v_ptr[rr] + s_idx] += D[ind, 0] * ph
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * v12
-                v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
-                v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
+                v[v_ptr[rr] + s_idx+1] += v12 * ph
+                v[v_ptr[rr+1] + s_idx] += v12.conjugate() * ph
+                v[v_ptr[rr+1] + s_idx+1] += D[ind, 1] * ph
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
 
@@ -158,11 +158,11 @@ def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = (col[ind] % nr) * 2
                 ph = phases[ind]
-                v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
+                v[rr, c] += D[ind, 0] * ph
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[rr, c+1] = v[rr, c+1] + ph * v12
-                v[rr+1, c] = v[rr+1, c] + ph * v12.conjugate()
-                v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
+                v[rr, c+1] += v12 * ph
+                v[rr+1, c] += v12.conjugate() * ph
+                v[rr+1, c+1] += D[ind, 1] * ph
 
     else:
         for r in range(nr):
@@ -170,11 +170,11 @@ def _phase_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = (col[ind] % nr) * 2
                 ph = phases[col[ind] / nr]
-                v[rr, c] = v[rr, c] + <float complex> (ph * D[ind, 0])
+                v[rr, c] += D[ind, 0] * ph
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[rr, c+1] = v[rr, c+1] + ph * v12
-                v[rr+1, c] = v[rr+1, c] + ph * v12.conjugate()
-                v[rr+1, c+1] = v[rr+1, c+1] + <float complex> (ph * D[ind, 1])
+                v[rr, c+1] += v12 * ph
+                v[rr+1, c] += v12.conjugate() * ph
+                v[rr+1, c+1] += D[ind, 1] * ph
 
     return V
 
@@ -203,11 +203,11 @@ def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = (col[ind] % nr) * 2
                 ph = phases[ind]
-                v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
+                v[rr, c] += D[ind, 0] * ph
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[rr, c+1] = v[rr, c+1] + ph * v12
-                v[rr+1, c] = v[rr+1, c] + ph * v12.conjugate()
-                v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
+                v[rr, c+1] += v12 * ph
+                v[rr+1, c] += v12.conjugate() * ph
+                v[rr+1, c+1] += D[ind, 1] * ph
 
     else:
         for r in range(nr):
@@ -215,10 +215,10 @@ def _phase_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
             for ind in range(ptr[r], ptr[r] + ncol[r]):
                 c = (col[ind] % nr) * 2
                 ph = phases[col[ind] / nr]
-                v[rr, c] = v[rr, c] + <double complex> (ph * D[ind, 0])
+                v[rr, c] += D[ind, 0] * ph
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                v[rr, c+1] = v[rr, c+1] + ph * v12
-                v[rr+1, c] = v[rr+1, c] + ph * v12.conjugate()
-                v[rr+1, c+1] = v[rr+1, c+1] + <double complex> (ph * D[ind, 1])
+                v[rr, c+1] += v12 * ph
+                v[rr+1, c] += v12.conjugate() * ph
+                v[rr+1, c+1] += D[ind, 1] * ph
 
     return V

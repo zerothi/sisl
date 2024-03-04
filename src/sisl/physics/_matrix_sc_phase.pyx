@@ -8,7 +8,7 @@ import numpy as np
 cimport numpy as np
 from scipy.sparse import csr_matrix
 
-from sisl._sparse cimport inline_sum
+from sisl._core._sparse cimport inline_sum
 
 __all__ = ['_sc_phase_csr_c64', '_sc_phase_csr_c128',
            '_sc_phase_array_c64', '_sc_phase_array_c128']
@@ -36,7 +36,7 @@ def _sc_phase_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ptr = PTR
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
-    cdef float complex[::1] phases = PHASES
+    cdef float complex[::1] ph = PHASES
 
     # Now copy the sparse matrix form
     cdef Py_ssize_t nr = ncol.shape[0]
@@ -59,14 +59,14 @@ def _sc_phase_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for r in range(nr):
             v_ptr[r] = cind
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[cind] = <float complex> (phases[ind] * D[ind, idx])
+                v[cind] = D[ind, idx] * ph[ind]
                 v_col[cind] = col[ind]
                 cind = cind + 1
     else:
         for r in range(nr):
             v_ptr[r] = cind
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[cind] = <float complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[cind] = D[ind, idx] * ph[col[ind] / nr]
                 v_col[cind] = col[ind]
                 cind = cind + 1
     v_ptr[nr] = cind
@@ -85,7 +85,7 @@ def _sc_phase_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ptr = PTR
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
-    cdef double complex[::1] phases = PHASES
+    cdef double complex[::1] ph = PHASES
 
     # Now copy the sparse matrix form
     cdef Py_ssize_t nr = ncol.shape[0]
@@ -108,14 +108,14 @@ def _sc_phase_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
         for r in range(nr):
             v_ptr[r] = cind
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[cind] = <double complex> (phases[ind] * D[ind, idx])
+                v[cind] = D[ind, idx] * ph[ind]
                 v_col[cind] = col[ind]
                 cind = cind + 1
     else:
         for r in range(nr):
             v_ptr[r] = cind
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[cind] = <double complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[cind] = D[ind, idx] * ph[col[ind] / nr]
                 v_col[cind] = col[ind]
                 cind = cind + 1
     v_ptr[nr] = cind
@@ -134,7 +134,7 @@ def _sc_phase_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ptr = PTR
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
-    cdef float complex[::1] phases = PHASES
+    cdef float complex[::1] ph = PHASES
 
     cdef Py_ssize_t nr = ncol.shape[0]
     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr, nc], dtype=np.complex64)
@@ -144,12 +144,12 @@ def _sc_phase_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     if p_opt == 0:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[r, col[ind]] = <float complex> (phases[ind] * D[ind, idx])
+                v[r, col[ind]] = D[ind, idx] * ph[ind]
 
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[r, col[ind]] = <float complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[r, col[ind]] = D[ind, idx] * ph[col[ind] / nr]
 
     return V
 
@@ -165,7 +165,7 @@ def _sc_phase_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ptr = PTR
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
-    cdef double complex[::1] phases = PHASES
+    cdef double complex[::1] ph = PHASES
 
     cdef Py_ssize_t nr = ncol.shape[0]
     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr, nc], dtype=np.complex128)
@@ -175,11 +175,11 @@ def _sc_phase_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     if p_opt == 0:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[r, col[ind]] = <double complex> (phases[ind] * D[ind, idx])
+                v[r, col[ind]] = D[ind, idx] * ph[ind]
 
     else:
         for r in range(nr):
             for ind in range(ptr[r], ptr[r] + ncol[r]):
-                v[r, col[ind]] = <double complex> (phases[col[ind] / nr] * D[ind, idx])
+                v[r, col[ind]] = D[ind, idx] * ph[col[ind] / nr]
 
     return V
