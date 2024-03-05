@@ -134,7 +134,7 @@ Chat = "https://discord.gg/5XnFXFdkv2"
 
 analysis = [
     "netCDF4",
-    "tqdm"
+    "tqdm>=4.36.0",
 ]
 
 viz = [
@@ -189,7 +189,7 @@ test = [
     "pytest-env",
     "pytest-faulthandler",
     "netCDF4",
-    "tqdm",
+    "tqdm>=4.36.0",
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",

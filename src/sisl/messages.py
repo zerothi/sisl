@@ -203,7 +203,7 @@ def is_jupyter_notebook():
 # Otherwise, create a fake one.
 try:
     if is_jupyter_notebook():
-        from tqdm import tqdm_notebook as _tqdm
+        from tqdm.notebook import tqdm as _tqdm
     else:
         from tqdm import tqdm as _tqdm
 except ImportError:
