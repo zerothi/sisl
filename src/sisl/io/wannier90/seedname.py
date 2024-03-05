@@ -362,7 +362,15 @@ class winSileWannier90(SileWannier90):
             Hi = Hi.tocsr()
             Hr = Hr + 1j * Hi
 
-        return Hamiltonian.fromsp(geom, Hr)
+        H = Hamiltonian.fromsp(geom, Hr)
+        
+        # Optimize nsc by searching for the maximum interaction range
+        sc_orbs = list(j for i,j in H.iter_nnz())
+        iscs = H.o2isc(np.unique(sc_orbs))
+        nsc = 2 * np.max(np.abs(iscs), 0) + 1
+        H.set_nsc(nsc)
+
+        return H
 
     def read_hamiltonian(self, *args, **kwargs):
         """Read the electronic structure of the Wannier90 output
