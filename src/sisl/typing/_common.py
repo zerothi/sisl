@@ -36,6 +36,8 @@ __all__ = [
     "LatticeOrGeometry",
     "LatticeOrGeometryLike",
     "OrbitalsArgument",
+    "SeqFloat",
+    "SeqOrScalarFloat",
     "SileLike",
     "SparseMatrix",
     "SparseMatrixExt",
@@ -52,7 +54,10 @@ Axis = int
 Axes = Sequence[int]
 Axies = Union[Axis, Axes]
 
-Coord = Sequence[float]
+SeqFloat = Sequence[float]
+SeqOrScalarFloat = Union[float, SeqFloat]
+
+Coord = SeqFloat
 CoordOrScalar = Union[float, Coord]
 
 KPoint = Sequence[float]

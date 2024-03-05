@@ -33,7 +33,7 @@ from sisl._array import array_arange
 from sisl._core import Atom, Geometry, Orbital
 from sisl._internal import set_module
 from sisl.messages import SislError, SislWarning, progressbar, warn
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsArgument, Axies, Coord, SeqOrScalarFloat
 from sisl.utils.ranges import list2str
 
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
@@ -56,7 +56,14 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
     """
 
-    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+    def __init__(
+        self,
+        geometry: Geometry,
+        dim: int = 1,
+        dtype=None,
+        nnzpr: Optional[int] = None,
+        **kwargs,
+    ):
         """Create sparse object with element between orbitals"""
         self._geometry = geometry
 
@@ -81,7 +88,9 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Custom keyword arguments when creating a new instance"""
         return {}
 
-    def reset(self, dim=None, dtype=np.float64, nnzpr=None):
+    def reset(
+        self, dim: Optional[int] = None, dtype=np.float64, nnzpr: Optional[int] = None
+    ):
         """The sparsity pattern has all elements removed and everything is reset.
 
         The object will be the same as if it had been
@@ -90,12 +99,12 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        dim : int, optional
+        dim :
            number of dimensions per element, default to the current number of
            elements per matrix element.
         dtype : numpy.dtype, optional
            the datatype of the sparse elements
-        nnzpr : int, optional
+        nnzpr :
            number of non-zero elements per row
         """
         # I know that this is not the most efficient way to
@@ -121,7 +130,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
 
-    def empty(self, keep_nnz=False):
+    def empty(self, keep_nnz: bool = False):
         """See :meth:`~sparse.SparseCSR.empty` for details"""
         self._csr.empty(keep_nnz)
 
@@ -150,7 +159,9 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Number of non-zero elements"""
         return self._csr.nnz
 
-    def translate2uc(self, atoms: Optional[AtomsArgument] = None, axes=None):
+    def translate2uc(
+        self, atoms: Optional[AtomsArgument] = None, axes: Optional[Axies] = None
+    ):
         """Translates all primary atoms to the unit cell.
 
         With this, the coordinates of the geometry are translated to the unit cell
@@ -158,10 +169,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        atoms : AtomsArgument, optional
+        atoms :
             only translate the specified atoms. If not specified, all
             atoms will be translated.
-        axes : int or array_like or None, optional
+        axes :
             only translate certain lattice directions, `None` species
             only the periodic directions
 
@@ -322,7 +333,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new = array_arange(new * no, n=n)
         self._csr.translate_columns(old, new)
 
-    def edges(self, atoms, exclude=None):
+    def edges(self, atoms: AtomsArgument, exclude: Optional[AtomsArgument] = None):
         """Retrieve edges (connections) for all `atoms`
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
@@ -330,15 +341,18 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        atoms : int or list of int
+        atoms :
             the edges are returned only for the given atom
-        exclude : int or list of int or None, optional
+        exclude :
            remove edges which are in the `exclude` list.
 
         See Also
         --------
         SparseCSR.edges: the underlying routine used for extracting the edges
         """
+        atoms = self.geometry._sanitize_atoms(atoms)
+        if exclude is not None:
+            exclude = self.geometry._sanitize_atoms(exclude)
         return self._csr.edges(atoms, exclude)
 
     def __str__(self):
@@ -458,7 +472,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         self.geometry.set_nsc(*args, **kwargs)
 
-    def transpose(self, sort=True):
+    def transpose(self, sort: bool = True):
         """Create the transposed sparse geometry by interchanging supercell indices
 
         Sparse geometries are (typically) relying on symmetry in the supercell picture.
@@ -471,7 +485,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        sort : bool, optional
+        sort :
            the returned columns for the transposed structure will be sorted
            if this is true, default
 
@@ -650,7 +664,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         return func
 
-    def construct(self, func, na_iR=1000, method="rand", eta=None):
+    def construct(self, func, na_iR: int = 1000, method: str = "rand", eta=None):
         """Automatically construct the sparse model based on a function that does the setting up of the elements
 
         This may be called in two variants.
@@ -746,22 +760,31 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Whether the contained data is finalized and non-used elements have been removed"""
         return self._csr.finalized
 
-    def untile(self, prefix, reps, axis, segment=0, *args, sym=True, **kwargs):
+    def untile(
+        self,
+        prefix: str,
+        reps: int,
+        axis: int,
+        segment: int = 0,
+        *args,
+        sym: bool = True,
+        **kwargs,
+    ):
         """Untiles a sparse model into a minimum segment, reverse of `tile`
 
         Parameters
         ----------
         prefix : {a, o}
            which quantity to request for the size of the matrix
-        reps : int
+        reps :
            number of untiles that needs to be performed
-        axis : int
+        axis :
            which axis we need to untile (length with be ``1/reps`` along this axis)
-        segment : int, optional
+        segment :
            which segment to return, default to the first segment. For a fully symmetric
            system there should not be a difference, requesting different segments can
            be used to assert this is the case.
-        sym : bool, optional
+        sym :
            whether to symmetrize before returning
         """
         # Create new geometry
@@ -968,7 +991,9 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         return S
 
-    def unrepeat(self, reps, axis, segment=0, *args, sym=True, **kwargs):
+    def unrepeat(
+        self, reps: int, axis: int, segment: int = 0, *args, sym: bool = True, **kwargs
+    ):
         """Unrepeats the sparse model into different parts (retaining couplings)
 
         Please see `untile` for details, the algorithm and arguments are the same however,
@@ -987,12 +1012,12 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """
         self._csr.finalize()
 
-    def tocsr(self, dim=0, isc=None, **kwargs):
+    def tocsr(self, dim: int = 0, isc=None, **kwargs):
         """Return a :class:`~scipy.sparse.csr_matrix` for the specified dimension
 
         Parameters
         ----------
-        dim : int, optional
+        dim :
            the dimension in the sparse matrix (for non-orthogonal cases the last
            dimension is the overlap matrix)
         isc : int, optional
@@ -1012,7 +1037,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         return self._csr.spsame(other._csr)
 
     @classmethod
-    def fromsp(cls, geometry, P, **kwargs):
+    def fromsp(cls, geometry: Geometry, P, **kwargs):
         r"""Create a sparse model from a preset `Geometry` and a list of sparse matrices
 
         The passed sparse matrices are in one of `scipy.sparse` formats.
@@ -1161,23 +1186,24 @@ class SparseAtom(_SparseGeometry):
     def _size(self):
         return self.geometry.na
 
-    def nonzero(self, atoms=None, only_cols=False):
+    def nonzero(self, atoms: Optional[AtomsArgument] = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
         ----------
-        atoms : int or array_like of int, optional
+        atoms :
            only return the tuples for the requested atoms, default is all atoms
-        only_cols : bool, optional
+        only_cols :
            only return then non-zero columns
 
         See Also
         --------
         SparseCSR.nonzero : the equivalent function call
         """
+        atoms = self.geometry._sanitize_atoms(atoms)
         return self._csr.nonzero(rows=atoms, only_cols=only_cols)
 
-    def iter_nnz(self, atoms=None):
+    def iter_nnz(self, atoms: Optional[AtomsArgument] = None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1189,7 +1215,7 @@ class SparseAtom(_SparseGeometry):
 
         Parameters
         ----------
-        atoms : int or array_like
+        atoms :
             only loop on the non-zero elements coinciding with the atoms
         """
         if atoms is None:
@@ -1212,7 +1238,9 @@ class SparseAtom(_SparseGeometry):
         """
         super().set_nsc(self.na, *args, **kwargs)
 
-    def untile(self, reps, axis, segment=0, *args, sym=True, **kwargs):
+    def untile(
+        self, reps: int, axis: int, segment: int = 0, *args, sym: bool = True, **kwargs
+    ):
         """Untiles the sparse model into different parts (retaining couplings)
 
         Recreates a new sparse object with only the cutted
@@ -1220,16 +1248,16 @@ class SparseAtom(_SparseGeometry):
 
         Parameters
         ----------
-        reps : int
+        reps :
            number of repetitions the tiling function created (opposite meaning as in `untile`)
-        axis : int
+        axis :
            which axis to untile along
-        segment : int, optional
+        segment :
            which segment to retain. Generally each segment should be equivalent, however
            requesting individiual segments can help uncover inconsistencies in the sparse matrix
         *args :
            arguments passed directly to `Geometry.untile`
-        sym : bool, optional
+        sym :
            if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
            return ``(M + M.transpose())/2``, else return data as is.
            False should generally only be used for debugging precision of the matrix elements,
@@ -1375,7 +1403,12 @@ class SparseOrbital(_SparseGeometry):
     def _size(self):
         return self.geometry.no
 
-    def edges(self, atoms=None, exclude=None, orbitals=None):
+    def edges(
+        self,
+        atoms: Optional[AtomsArgument] = None,
+        exclude: Optional[AtomsArgument] = None,
+        orbitals=None,
+    ):
         """Retrieve edges (connections) for all `atoms`
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
@@ -1383,10 +1416,10 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atoms : int or list of int
+        atoms :
             the edges are returned only for the given atom (but by using  all orbitals of the
             requested atom). The returned edges are also atoms.
-        exclude : int or list of int or None, optional
+        exclude :
            remove edges which are in the `exclude` list, this list refers to orbitals.
         orbitals : int or list of int
             the edges are returned only for the given orbital. The returned edges are orbitals.
@@ -1395,6 +1428,8 @@ class SparseOrbital(_SparseGeometry):
         --------
         SparseCSR.edges: the underlying routine used for extracting the edges
         """
+        if exclude is not None:
+            exclude = self.geometry._sanitize_atoms(exclude)
         if atoms is None and orbitals is None:
             raise ValueError(
                 f"{self.__class__.__name__}.edges must have either 'atoms' or 'orbitals' keyword defined."
@@ -1405,17 +1440,18 @@ class SparseOrbital(_SparseGeometry):
                     self._csr.edges(self.geometry.a2o(atoms, True), exclude)
                 )
             )
+        orbitals = self.geometry._sanitize_orbs(orbitals)
         return self._csr.edges(orbitals, exclude)
 
-    def nonzero(self, atoms=None, only_cols=False):
+    def nonzero(self, atoms: Optional[AtomsArgument] = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
         ----------
-        atoms : int or array_like of int, optional
+        atoms :
            only return the tuples for the requested atoms, default is all atoms
            But for *all* orbitals.
-        only_cols : bool, optional
+        only_cols :
            only return then non-zero columns
 
         See Also
@@ -1427,7 +1463,7 @@ class SparseOrbital(_SparseGeometry):
         rows = self.geometry.a2o(atoms, all=True)
         return self._csr.nonzero(rows=rows, only_cols=only_cols)
 
-    def iter_nnz(self, atoms=None, orbitals=None):
+    def iter_nnz(self, atoms: Optional[AtomsArgument] = None, orbitals=None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1439,14 +1475,14 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atoms : int or array_like
+        atoms :
             only loop on the non-zero elements coinciding with the orbitals
             on these atoms (not compatible with the `orbitals` keyword)
         orbitals : int or array_like
             only loop on the non-zero elements coinciding with the orbital
             (not compatible with the `atoms` keyword)
         """
-        if not atoms is None:
+        if atoms is not None:
             orbitals = self.geometry.a2o(atoms, True)
         elif not orbitals is None:
             orbitals = _a.asarrayi(orbitals)
@@ -1469,7 +1505,7 @@ class SparseOrbital(_SparseGeometry):
         """
         super().set_nsc(self.no, *args, **kwargs)
 
-    def remove_orbital(self, atoms, orbitals):
+    def remove_orbital(self, atoms: AtomsArgument, orbitals):
         """Remove a subset of orbitals on `atoms` according to `orbitals`
 
         For more detailed examples, please see the equivalent (but opposite) method
@@ -1477,7 +1513,7 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atoms : array_like of int or Atom
+        atoms :
             indices of atoms or `Atom` that will be reduced in size according to `orbitals`
         orbitals : array_like of int or Orbital
             indices of the orbitals on `atoms` that are removed from the sparse matrix.
@@ -1516,14 +1552,14 @@ class SparseOrbital(_SparseGeometry):
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
-    def sub_orbital(self, atoms, orbitals):
+    def sub_orbital(self, atoms: AtomsArgument, orbitals):
         r"""Retain only a subset of the orbitals on `atoms` according to `orbitals`
 
         This allows one to retain only a given subset of the sparse matrix elements.
 
         Parameters
         ----------
-        atoms : array_like of int or Atom
+        atoms :
             indices of atoms or `Atom` that will be reduced in size according to `orbitals`
         orbitals : array_like of int or Orbital
             indices of the orbitals on `atoms` that are retained in the sparse matrix, the list of
@@ -1624,7 +1660,9 @@ class SparseOrbital(_SparseGeometry):
 
         return SG
 
-    def untile(self, reps, axis, segment=0, *args, sym=True, **kwargs):
+    def untile(
+        self, reps: int, axis: int, segment: int = 0, *args, sym: bool = True, **kwargs
+    ):
         """Untiles the sparse model into different parts (retaining couplings)
 
         Recreates a new sparse object with only the cutted
@@ -1632,16 +1670,16 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        reps : int
+        reps :
            number of repetitions the tiling function created (opposite meaning as in `untile`)
-        axis : int
+        axis :
            which axis to untile along
-        segment : int, optional
+        segment :
            which segment to retain. Generally each segment should be equivalent, however
            requesting individiual segments can help uncover inconsistencies in the sparse matrix
         *args :
            arguments passed directly to `Geometry.untile`
-        sym : bool, optional
+        sym :
            if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
            return ``(M + M.transpose())/2``, else return data as is.
            False should generally only be used for debugging precision of the matrix elements,
@@ -1682,7 +1720,7 @@ class SparseOrbital(_SparseGeometry):
         """
         return super().untile("o", reps, axis, segment, *args, sym=sym, **kwargs)
 
-    def rij(self, what="orbital", dtype=np.float64):
+    def rij(self, what: str = "orbital", dtype=np.float64):
         r"""Create a sparse matrix with the distance between atoms/orbitals
 
         Parameters
@@ -1706,7 +1744,7 @@ class SparseOrbital(_SparseGeometry):
         R._csr = np.sum(R._csr**2, axis=-1) ** 0.5
         return R
 
-    def Rij(self, what="orbital", dtype=np.float64):
+    def Rij(self, what: str = "orbital", dtype=np.float64):
         r"""Create a sparse matrix with the vectors between atoms/orbitals
 
         Parameters
@@ -1769,7 +1807,7 @@ class SparseOrbital(_SparseGeometry):
 
         return R
 
-    def add(self, other, axis=None, offset=(0, 0, 0)):
+    def add(self, other, axis: Optional[int] = None, offset: Coord = (0, 0, 0)):
         r"""Add two sparse matrices by adding the parameters to one set. The final matrix will have no couplings between `self` and `other`
 
         The final sparse matrix will not have any couplings between `self` and `other`. Not even if they
@@ -1780,11 +1818,11 @@ class SparseOrbital(_SparseGeometry):
         ----------
         other : SparseGeometry
             the other sparse matrix to be added, all atoms will be appended
-        axis : int or None, optional
+        axis :
             whether a specific axis of the cell will be added to the final geometry.
             For ``None`` the final cell will be that of `self`, otherwise the lattice
             vector corresponding to `axis` will be appended.
-        offset : (3,), optional
+        offset :
             offset in geometry of `other` when adding the atoms.
 
         See Also
@@ -1905,7 +1943,9 @@ class SparseOrbital(_SparseGeometry):
 
         return full
 
-    def prepend(self, other, axis, eps=0.005, scale=1):
+    def prepend(
+        self, other, axis: int, eps: float = 0.005, scale: SeqOrScalarFloat = 1
+    ):
         r"""See `append` for details
 
         This is currently equivalent to:
@@ -1914,7 +1954,7 @@ class SparseOrbital(_SparseGeometry):
         """
         return other.append(self, axis, eps, scale)
 
-    def append(self, other, axis, eps=0.005, scale=1):
+    def append(self, other, axis: int, eps: float = 0.005, scale: SeqOrScalarFloat = 1):
         r"""Append `other` along `axis` to construct a new connected sparse matrix
 
         This method tries to append two sparse geometry objects together by
@@ -1961,9 +2001,9 @@ class SparseOrbital(_SparseGeometry):
         ----------
         other : object
             must be an object of the same type as `self`
-        axis : int
+        axis :
             axis to append the two sparse geometries along
-        eps : float, optional
+        eps :
             tolerance that all coordinates *must* be within to allow an append.
             It is important that this value is smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
@@ -2252,7 +2292,14 @@ class SparseOrbital(_SparseGeometry):
         full._csr.translate_columns(col_from, col_to)
         return full
 
-    def replace(self, atoms, other, other_atoms=None, eps=0.005, scale=1.0):
+    def replace(
+        self,
+        atoms: AtomsArgument,
+        other,
+        other_atoms: Optional[AtomsArgument] = None,
+        eps: float = 0.005,
+        scale: SeqOrScalarFloat = 1.0,
+    ):
         r"""Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them
 
         This method replaces a subset of atoms in `self` with
@@ -2314,20 +2361,20 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atoms : array_like
+        atoms :
             which atoms in `self` that are removed and replaced with ``other.sub(other_atoms)``
         other : object
             must be an object of the same type as `self`, a subset is taken from this
             sparse matrix and combined with `self` to create a new sparse matrix
-        other_atoms : array_like, optional
+        other_atoms :
             to select a subset of atoms in `other` that are taken out.
             Defaults to all atoms in `other`.
-        eps : float, optional
+        eps :
             coordinate tolerance for allowing replacement.
             It is important that this value is at least smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
             equivalent atoms.
-        scale : float or array_like, optional
+        scale :
             the scale used for the overlapping region. For scalar values it corresponds
             to passing: ``(scale, scale)``.
             For array-like input ``scale[0]`` refers to the scale of the matrix elements
@@ -2773,14 +2820,14 @@ depending on your use case. Note indices in the following are supercell indices.
         out._geometry = geom
         return out
 
-    def toSparseAtom(self, dim=None, dtype=None):
+    def toSparseAtom(self, dim: int = None, dtype=None):
         """Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
 
         This converts the orbital sparse pattern to an atomic sparse pattern.
 
         Parameters
         ----------
-        dim : int, optional
+        dim :
            number of dimensions allocated in the SparseAtom object, default to the same
         dtype : numpy.dtype, optional
            used data-type for the sparse object. Defaults to the same.
