@@ -1170,9 +1170,12 @@ class stdoutSileSiesta(SileSiesta):
                 _, line = self.step_to("Atom", allow_reread=False)
                 if header is None:
                     header = (
-                        line.replace(
+                        line.replace("Charge", "e")
+                        .replace("Spin", "S")
+                        .replace(
                             "Svec", "Sx Sy Sz"
-                        ).split()  # Split Svec into Cartesian components
+                        )  # Split Svec into Cartesian components
+                        .split()
                     )[2:]
 
                 # Skip over the starting ---- line
