@@ -985,7 +985,7 @@ class stdoutSileSiesta(SileSiesta):
 
         Siesta enables many different modes of writing out charges.
 
-        NOTE: currently Mulliken charges are not implemented.
+        NOTE: currently only Mulliken total atomic charges are implemented.
 
         The below table shows a list of different cases that
         may be encountered, the letters are referred to in the
@@ -1010,12 +1010,12 @@ class stdoutSileSiesta(SileSiesta):
         the SCF charges are not present. For `Opt.ANY` it will return
         the most information, effectively SCF will be returned if present.
 
-        Currently Mulliken is not implemented, any help in reading this would be
-        very welcome.
+        Currently orbitally-resolved Mulliken is not implemented, any help in
+        reading this would be very welcome.
 
         Parameters
         ----------
-        name: {"voronoi", "hirshfeld"}
+        name: {"voronoi", "hirshfeld", "mulliken"}
             the name of the charges that you want to read
         iscf: int or Opt, optional
             index (0-based) of the scf iteration you want the charges for.
@@ -1167,12 +1167,12 @@ class stdoutSileSiesta(SileSiesta):
                 # for each species are enclosed by dashes (-----)
 
                 # Step to header
-                _, line = self.step_to('Atom', allow_reread=False)
+                _, line = self.step_to("Atom", allow_reread=False)
                 if header is None:
                     header = (
-                        line
-                        .replace("Svec", "Sx Sy Sz")  # Split Svec into Cartesian components
-                        .split()
+                        line.replace(
+                            "Svec", "Sx Sy Sz"
+                        ).split()  # Split Svec into Cartesian components
                     )[2:]
 
                 # Skip over the starting ---- line
