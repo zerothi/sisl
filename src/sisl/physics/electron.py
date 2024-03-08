@@ -20,7 +20,7 @@ One may also plot real-space wavefunctions.
    conductivity
    wavefunction
    spin_moment
-   spin_squared
+   spin_contamination
 
 
 Supporting classes
@@ -86,7 +86,7 @@ from .spin import Spin
 from .state import Coefficient, State, StateC, _FakeMatrix, degenerate_decouple
 
 __all__ = ["DOS", "PDOS", "COP"]
-__all__ += ["spin_moment", "spin_squared"]
+__all__ += ["spin_moment", "spin_contamination"]
 __all__ += ["berry_phase", "berry_curvature"]
 __all__ += ["conductivity"]
 __all__ += ["wavefunction"]
@@ -526,12 +526,12 @@ def spin_moment(state, S=None, project=False):
 
 
 @set_module("sisl.physics.electron")
-def spin_squared(state_alpha, state_beta, S=None):
-    r""" Calculate the spin squared expectation value between two spin states
+def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
+    r""" Calculate the spin contamination value between two spin states
 
     This calculation only makes sense for spin-polarized calculations.
 
-    The expectation value is calculated using the following formula:
+    The contamination value is calculated using the following formula:
 
     .. math::
        S^2_{\alpha,i} &= \sum_j |\langle \psi_j^\beta | \mathbf S | \psi_i^\alpha \rangle|^2
@@ -552,6 +552,9 @@ def spin_squared(state_alpha, state_beta, S=None):
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
        have been evaluated at.
+    sum:
+        whether the spin-contamination should be summed for all states (a single number returned).
+        If false, a spin-contamination per state per spin-channel will be returned.
 
     Notes
     -----
@@ -559,62 +562,57 @@ def spin_squared(state_alpha, state_beta, S=None):
 
     Returns
     -------
-    ~sisl.oplist.oplist
-         list of spin squared expectation value per state for spin state :math:`\alpha` and :math:`\beta`
+    ~sisl._core.oplist
+         spin squared expectation value per spin channel :math:`\alpha` and :math:`\beta`.
+         If `sum` is true, only a single number is returned (not an `~sisl._core.oplist`, otherwise a list for each
+         state.
     """
     if state_alpha.ndim == 1:
         if state_beta.ndim == 1:
-            Sa, Sb = spin_squared(
-                state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S
+            ret = spin_contamination(
+                state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S, sum
             )
-            return oplist((Sa[0], Sb[0]))
-        return spin_squared(state_alpha.reshape(1, -1), state_beta, S)
+            if sum:
+                return ret
+            return oplist((ret[0][0], ret[1][0]))
+        return spin_contamination(state_alpha.reshape(1, -1), state_beta, S, sum)
     elif state_beta.ndim == 1:
-        return spin_squared(state_alpha, state_beta.reshape(1, -1), S)
+        return spin_contamination(state_alpha, state_beta.reshape(1, -1), S, sum)
 
     if state_alpha.shape[1] != state_beta.shape[1]:
         raise ValueError(
-            "spin_squared requires alpha and beta states to have same number of orbitals"
+            "spin_contamination requires alpha and beta states to have same number of orbitals"
         )
-
-    if S is None:
-
-        class S:
-            __slots__ = []
-            shape = (state_alpha.shape[1], state_alpha.shape[1])
-
-            @staticmethod
-            def dot(v):
-                return v
 
     n_alpha = state_alpha.shape[0]
     n_beta = state_beta.shape[0]
+    if S is None:
+        S_state_beta = state_beta.T
+    else:
+        S_state_beta = S.dot(state_beta.T)
 
-    if n_alpha > n_beta:
-        # Loop beta...
-        Sa = zeros([n_alpha], dtype=dtype_complex_to_real(state_alpha.dtype))
-        Sb = empty([n_beta], dtype=Sa.dtype)
+    if sum:
 
-        S_state_alpha = S.dot(state_alpha.T)
-        for i in range(n_beta):
-            D = dot(conj(state_beta[i]), S_state_alpha)
-            D *= conj(D)
-            Sa += D.real
-            Sb[i] = D.sum().real
+        Ss = 0
+        for s in state_alpha:
+            D = conj(s) @ S_state_beta
+            Ss += (D @ D.conj()).real
+
+        return Ss
 
     else:
-        # Loop alpha...
+
         Sa = empty([n_alpha], dtype=dtype_complex_to_real(state_alpha.dtype))
         Sb = zeros([n_beta], dtype=Sa.dtype)
 
-        S_state_beta = S.dot(state_beta.T)
-        for i in range(n_alpha):
-            D = dot(conj(state_alpha[i]), S_state_beta)
-            D *= conj(D)
-            Sb += D.real
-            Sa[i] = D.sum().real
+        # Loop alpha...
+        for i, s in enumerate(state_alpha):
+            D = conj(s) @ S_state_beta
+            D = (D * conj(D)).real
+            Sb += D
+            Sa[i] = D.sum()
 
-    return oplist((Sa, Sb))
+        return oplist((Sa, Sb))
 
 
 # dHk is in [Ang eV]

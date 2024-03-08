@@ -57,6 +57,7 @@ we hit release version 1.0.0.
 - `stdoutSileSiesta.read_*` now defaults to read the *next* entry, and not the last
 - `stdoutSileSiesta.read_*` changed MD output functionality, see #586 for details
 - `AtomNeighbours` changed name to `AtomNeighbor` to follow #393
+- changed method name `spin_squared` to `spin_contamination`
 - removed `Lattice.translate|move`, they did not make sense, and so their
   usage should be deferred to `Lattice.add` instead.
 - `vacuum` is now an optional parameter for all ribbon structures
