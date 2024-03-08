@@ -1036,10 +1036,9 @@ def test_op3():
         j = range(i * 4, i * 4 + 3)
         S[0, j] = i
 
-    for op in ["add", "sub", "mul", "pow"]:
+    for op in ("add", "sub", "mul", "pow"):
         func = getattr(S, f"__{op}__")
         s = func(1)
-        # 1 will promote to whatever numpy will cast it to
         assert s.dtype == np.int32
         s = func(1.0)
         assert s.dtype == np.float64
@@ -1048,7 +1047,7 @@ def test_op3():
             assert s.dtype == np.complex128
 
     S = S.copy(dtype=np.float64)
-    for op in ["add", "sub", "mul", "pow"]:
+    for op in ("add", "sub", "mul", "pow"):
         func = getattr(S, f"__{op}__")
         s = func(1)
         assert s.dtype == np.float64
@@ -1059,7 +1058,7 @@ def test_op3():
             assert s.dtype == np.complex128
 
     S = S.copy(dtype=np.complex128)
-    for op in ["add", "sub", "mul", "pow"]:
+    for op in ("add", "sub", "mul", "pow"):
         func = getattr(S, f"__{op}__")
         s = func(1)
         assert s.dtype == np.complex128

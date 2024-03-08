@@ -1119,8 +1119,6 @@ coefficients assigned to each state
                 if matrix:
                     ret = (v,)
                 else:
-                    # numpy >= 1.9 returns a read-only view of the data,
-                    # so take a copy to ensure editable state
                     ret = (np.diagonal(v, axis1=1, axis2=2).copy(),)
 
             else:

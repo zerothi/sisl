@@ -42,7 +42,7 @@ dependencies = [
     # TODO work-arounds for windows installations
     "numpy>=1.19.5 ; sys_platform == 'win32' and python_version <= '3.9'",
     "numpy>=1.21.5 ; sys_platform == 'win32' and python_version >= '3.10'",
-    "numpy>=1.13 ; sys_platform != 'win32'",
+    "numpy>=1.19.5 ; sys_platform != 'win32'",
     "scipy>=1.5",
     "pyparsing>=1.5.7",
     "xarray>=0.10",

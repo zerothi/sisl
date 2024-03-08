@@ -12,7 +12,7 @@ Required dependencies
 Running sisl requires these versions:
 
 - `Python`_ 3.8 or above
-- `numpy`_ (1.13 or later)
+- `numpy`_ (1.19.5 or later)
 - `scipy`_ (1.5 or later)
 - `pyparsing`_ (1.5.7 or later)
 - `xarray`_ (0.10.0 or later)
@@ -213,4 +213,3 @@ A basic procedure would be:
 
    git clone https://github.com/zerothi/sisl-files.git
    SISL_FILES_TESTS=$(pwd)/sisl-files/tests pytest --pyargs sisl
-
