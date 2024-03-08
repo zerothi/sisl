@@ -44,8 +44,10 @@ dependencies = [
     "numpy>=1.21.5 ; sys_platform == 'win32' and python_version >= '3.10'",
     "numpy>=1.19.5 ; sys_platform != 'win32'",
     "scipy>=1.5",
-    "pyparsing>=1.5.7",
-    "xarray>=0.10",
+    # I can't get it to work on py311 with older versions
+    "pyparsing>=2.2.1",
+    # xarray fixes get_loc in 0.20
+    "xarray>=0.20",
 ]
 
 authors = [

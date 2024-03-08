@@ -10,12 +10,12 @@ dependencies:
   - setuptools_scm>=6.2
   - pathspec
   - pyproject-metadata
-  - pyparsing>=1.5.7
-  - numpy>=1.13
+  - pyparsing>=2.2.1
+  - numpy>=1.19.5
   - cython>=3.0.0
   - scipy>=1.5.0
   - netcdf4
-  - xarray>=0.10.0
+  - xarray>=0.20.0
   - tqdm
   - matplotlib-base
   - pathos

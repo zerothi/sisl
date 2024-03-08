@@ -9,18 +9,18 @@ sisl is easy to install using any of your preferred methods.
 Required dependencies
 ---------------------
 
-Running sisl requires these versions:
+Running sisl requires these dependencies:
 
 - `Python`_ 3.8 or above
-- `numpy`_ (1.19.5 or later)
-- `scipy`_ (1.5 or later)
-- `pyparsing`_ (1.5.7 or later)
-- `xarray`_ (0.10.0 or later)
+- `numpy`_
+- `scipy`_
+- `xarray`_
+- `pyparsing`_
 
 Optional dependencies:
 
 - `pytest`_ (for running the test suite)
-- `pathos`_ (for parallel BrillouinZone calculations)
+- `pathos`_ (for parallel `BrillouinZone` calculations)
 - `netCDF4-python <netcdf4-py_>`_
 - `tqdm`_ (for displaying progress-bars)
 - `matplotlib`_
