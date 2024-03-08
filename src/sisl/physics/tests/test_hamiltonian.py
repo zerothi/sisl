@@ -1451,25 +1451,29 @@ class TestHamiltonian:
         es_alpha = H.eigenstate(k, spin=0)
         es_beta = H.eigenstate(k, spin=1)
 
-        sup, sdn = spin_contamination(es_alpha.state, es_beta.state)
+        sup, sdn = spin_contamination(es_alpha.state, es_beta.state, sum=False)
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == es_alpha.shape[0]
         assert len(sdn) == es_beta.shape[0]
+        s = spin_contamination(es_alpha.state, es_beta.state)
+        assert sup.sum() == pytest.approx(s)
 
-        sup, sdn = spin_contamination(es_alpha.sub(range(2)).state, es_beta.state)
+        sup, sdn = spin_contamination(
+            es_alpha.sub(range(2)).state, es_beta.state, sum=False
+        )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 2
         assert len(sdn) == es_beta.shape[0]
 
         sup, sdn = spin_contamination(
-            es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state
+            es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state, sum=False
         )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 3
         assert len(sdn) == 2
 
         sup, sdn = spin_contamination(
-            es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state
+            es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state, sum=False
         )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert sup.ndim == 1
@@ -1477,14 +1481,14 @@ class TestHamiltonian:
         assert len(sdn) == 2
 
         sup, sdn = spin_contamination(
-            es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel()
+            es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel(), sum=False
         )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert sup.ndim == 0
         assert sdn.ndim == 0
 
         sup, sdn = spin_contamination(
-            es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel()
+            es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel(), sum=False
         )
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 2
