@@ -80,29 +80,40 @@ class TestObject:
     def test_siesta_sources(self):
         pytest.importorskip("sisl.io.siesta._siesta")
 
-    def test_direct_path_instantiation(self, sisl_tmp):
-        fp = Path(sisl_tmp("shouldnotexist.1234567", _dir))
-        if fp.exists():
-            os.remove(str(fp))
-        for Sile in get_siles():
-            if issubclass(Sile, SileCDF):
-                sile = Sile(fp, _open=False)
-            else:
-                sile = Sile(fp)
-            assert isinstance(sile, Sile)
-            assert not fp.exists()
+    @pytest.mark.parametrize("Sile", get_siles())
+    def test_direct_string_instantiation(
+        self,
+        sisl_tmp,
+        Sile,
+    ):
+        if issubclass(Sile, SileCDF):
+            pytest.importorskip("netCDF4")
 
-    def test_direct_string_instantiation(self, sisl_tmp):
+        # branch with string arguments
         fp = sisl_tmp("shouldnotexist.1234567", _dir)
         if os.path.exists(fp):
             os.remove(fp)
-        for Sile in get_siles():
-            if issubclass(Sile, SileCDF):
-                sile = Sile(fp, _open=False)
-            else:
-                sile = Sile(fp)
-            assert isinstance(sile, Sile)
-            assert not os.path.exists(fp)
+
+        if issubclass(Sile, SileCDF):
+            sile = Sile(fp, _open=False)
+        else:
+            sile = Sile(fp)
+
+        assert isinstance(sile, Sile)
+        assert not os.path.exists(fp)
+
+        # branch with Path arguments
+        fp = Path(sisl_tmp("shouldnotexist.1234567", _dir))
+        if fp.exists():
+            os.remove(str(fp))
+
+        if issubclass(Sile, SileCDF):
+            sile = Sile(fp, _open=False)
+        else:
+            sile = Sile(fp)
+
+        assert isinstance(sile, Sile)
+        assert not fp.exists()
 
     @pytest.mark.parametrize(
         "sile", _fnames("test", ["cube", "CUBE", "cube.gz", "CUBE.gz"])
@@ -256,16 +267,16 @@ class TestObject:
         for obj in [BaseSile, Sile, SileWannier90, winSileWannier90]:
             assert isinstance(sile, obj)
 
-    def test_write(self, sisl_tmp, sisl_system):
+    @pytest.mark.parametrize("sile", get_siles("write_geometry"))
+    def test_write(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_write", _dir)
-        for sile in get_siles(["write_geometry"]):
-            # It is not yet an instance, hence issubclass
-            if issubclass(sile, (hamiltonianSile, _ncSileTBtrans, deltancSileTBtrans)):
-                continue
-            # Write
-            sile(f, mode="w").write_geometry(G)
+
+        sile(f, mode="w").write_geometry(G)
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_lattice"], ["write_lattice"]))
     def test_read_write_lattice(self, sisl_tmp, sisl_system, sile):
@@ -275,9 +286,8 @@ class TestObject:
         L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
+
         # These files does not store the atomic species
-        if issubclass(sile, (xsfSile, _ncSileTBtrans, deltancSileTBtrans)):
-            return
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
             pytest.xfail(
                 "Windows reading/writing supercell fails for some unknown reason"
@@ -308,13 +318,14 @@ class TestObject:
         L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
-        # These files does not store the atomic species
-        if issubclass(sile, (xsfSile, _ncSileTBtrans, deltancSileTBtrans)):
-            return
+
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
             pytest.xfail(
                 "Windows reading/writing supercell fails for some unknown reason"
             )
+
+        if issubclass(sile, xsfSile):
+            pytest.xfail("Reading xsfSile fails for some unknown reason")
 
         # Write
         sile(f, mode="w").write_lattice(L)
@@ -336,9 +347,12 @@ class TestObject:
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
-        # These files does not store the atomic species
+
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
-            return
+            pytest.skip(
+                "does not have a proper writing of the atomic species (no direct comparison available)"
+            )
+
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
             pytest.xfail(
                 "Windows reading/writing supercell fails for some unknown reason"
@@ -375,7 +389,7 @@ class TestObject:
             pytest.importorskip("netCDF4")
 
         if issubclass(sile, _gfSileSiesta):
-            return
+            pytest.skip("gfSileSiesta handles writing Hamiltonians in a special way")
 
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         H = Hamiltonian(G)
@@ -409,6 +423,7 @@ class TestObject:
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         DM = DensityMatrix(G, orthogonal=True)
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
+
         f = sisl_tmp("test_read_write_density_matrix.win", _dir)
         # Write
         with sile(f, mode="w") as s:
@@ -439,6 +454,7 @@ class TestObject:
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         EDM = EnergyDensityMatrix(G, orthogonal=True)
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
+
         f = sisl_tmp("test_read_write_energy_density_matrix.win", _dir)
         # Write
         with sile(f, mode="w") as s:
@@ -466,11 +482,12 @@ class TestObject:
             pytest.importorskip("netCDF4")
 
         if issubclass(sile, _gfSileSiesta):
-            return
+            pytest.skip("gfSileSiesta handles writing Hamiltonians in a special way")
 
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         H = Hamiltonian(G, orthogonal=False)
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
+
         f = sisl_tmp("test_read_write_hamiltonian_overlap.win", _dir)
         # Write
         with sile(f, mode="w") as s:

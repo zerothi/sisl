@@ -36,7 +36,15 @@ from sisl.utils.misc import merge_instances
 from sisl.utils.ranges import list2str
 
 from .._help import *
-from ..sile import SileError, add_sile, get_sile_class, sile_fh_open, sile_raise_write
+from ..sile import (
+    SileCDF,
+    SileError,
+    _import_netCDF4,
+    add_sile,
+    get_sile_class,
+    sile_fh_open,
+    sile_raise_write,
+)
 from .bands import bandsSileSiesta
 from .basis import ionncSileSiesta, ionxmlSileSiesta
 from .binaries import (
@@ -67,6 +75,24 @@ Bohr2Ang = unit_convert("Bohr", "Ang")
 _log = logging.getLogger(__name__)
 
 
+def _order_remove_netcdf(order):
+    """Removes the order elements that refer to siles based on NetCDF"""
+    try:
+        _import_netCDF4()
+    except SileError:
+        # We got an import error
+        def accept(suffix):
+            try:
+                sile = get_sile_class(f"{suffix}{{contains=siesta}}")
+            except NotImplementedError:
+                # we just let it slip
+                return True
+            return not issubclass(sile, SileCDF)
+
+        order = list(filter(accept, order))
+    return order
+
+
 def _parse_output_order(order, output, order_True, order_False):
     """Parses the correct order of files by examining the kwargs["order"].
 
@@ -83,8 +109,8 @@ def _parse_output_order(order, output, order_True, order_False):
     order_False = _listify_str(order_False)
     if order is None:
         if output:
-            return order_True
-        return order_False
+            return _order_remove_netcdf(order_True)
+        return _order_remove_netcdf(order_False)
 
     # now handle the cases where the users wants to not use something
     order = _listify_str(order)
@@ -108,7 +134,7 @@ def _parse_output_order(order, output, order_True, order_False):
 
     order = [el for el in order if el not in rem]
 
-    return order
+    return _order_remove_netcdf(order)
 
 
 def _listify_str(arg):
@@ -1822,6 +1848,12 @@ class fdfSileSiesta(SileSiesta):
             # so return nothing
             return None
 
+        exts = _order_remove_netcdf(["ion.nc", "ion.xml"])
+        ion_files = {
+            "ion.nc": ionncSileSiesta,
+            "ion.xml": ionxmlSileSiesta,
+        }
+
         # Now spcs contains the block of the chemicalspecieslabel
         atoms = [None] * len(spcs)
         found_one = False
@@ -1834,12 +1866,11 @@ class fdfSileSiesta(SileSiesta):
             f = self.dir_file(lbl + ".ext")
 
             # now try and read the basis
-            if f.with_suffix(".ion.nc").is_file():
-                atoms[idx] = ionncSileSiesta(f.with_suffix(".ion.nc")).read_basis()
-                found_one = True
-            elif f.with_suffix(".ion.xml").is_file():
-                atoms[idx] = ionxmlSileSiesta(f.with_suffix(".ion.xml")).read_basis()
-                found_one = True
+            for ext in exts:
+                if f.with_suffix(f".{ext}").is_file():
+                    atoms[idx] = ion_files[ext](f.with_suffix(f".{ext}")).read_basis()
+                    found_one = True
+                    break
             else:
                 # default the atom to not have a range, and no associated orbitals
                 atoms[idx] = Atom(Z=Z, tag=lbl)
