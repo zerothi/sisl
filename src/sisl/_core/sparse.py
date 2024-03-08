@@ -1859,41 +1859,12 @@ column indices of the sparse elements
             # The signature is not a scalar operation
             return NotImplemented
 
-        dtypes = []
         if out is not None:
             (out,) = out
-            kwargs["dtype"] = out.dtype
-        else:
-            for arg in inputs:
-                # this exercise is required to ensure that we don't
-                # prematurely promote dtypes.
-                # For instance,
-                #    SparseCSR(dtype=np.complex64) * 1j
-                # should remain np.complex64.
-                # Yet, if one does np.asarray(1j) you'll get
-                # np.complex128.
-                # This means that we should let the ufunc do any
-                # promotions necessary.
-                if isscalar(arg):
-                    pass
-                elif isinstance(arg, (tuple, list, ndarray)):
-                    arg = arg[0]
-                try:
-                    dtypes.append(arg.dtype)
-                except AttributeError:
-                    dtypes.append(type(arg))
 
         if method == "__call__":
-            if dtypes:
-                dtypes.append(None)
-                kwargs["dtype"] = ufunc.resolve_dtypes(tuple(dtypes))[-1]
             result = _ufunc_call(ufunc, *inputs, **kwargs)
         elif method == "reduce":
-            if dtypes:
-                dtypes = [None] + dtypes + [None]
-                kwargs["dtype"] = ufunc.resolve_dtypes(tuple(dtypes), reduction=True)[
-                    -1
-                ]
             result = _ufunc_reduce(ufunc, *inputs, **kwargs)
         elif method == "outer":
             # Currently I don't know what to do here
@@ -1974,6 +1945,14 @@ def _ufunc(ufunc, a, b, **kwargs):
     return ufunc(a, b, **kwargs)
 
 
+def _sp_data_cast(sp, result, dtype=None):
+    """Converts the data in `sp` to the result data-type"""
+    if dtype is None:
+        dtype = result.dtype
+    if sp.dtype != dtype:
+        sp._D = sp._D.astype(dtype)
+
+
 def _ufunc_sp_ndarray(ufunc, a, b, **kwargs):
     if len(_get_reduced_shape(b)) > 1:
         # there are shapes for individiual
@@ -1981,7 +1960,7 @@ def _ufunc_sp_ndarray(ufunc, a, b, **kwargs):
         return ufunc(a.toarray(), b, **kwargs)
 
     # create a copy
-    out = a.copy(dtype=kwargs["dtype"])
+    out = a.copy(dtype=kwargs.get("dtype", None))
     if out.ptr[-1] == out.nnz:
         out._D = ufunc(a._D, b, **kwargs)
     else:
@@ -1990,7 +1969,9 @@ def _ufunc_sp_ndarray(ufunc, a, b, **kwargs):
         # a view, we can't use
         #   ufunc(..., out=out._D[idx, :])
         idx = array_arange(a.ptr[:-1], n=a.ncol)
-        out._D[idx] = ufunc(a._D[idx, :], b, **kwargs)
+        D = ufunc(a._D[idx, :], b, **kwargs)
+        _sp_data_cast(out, D)
+        out._D[idx] = D
         del idx
     return out
 
@@ -2002,7 +1983,7 @@ def _ufunc_ndarray_sp(ufunc, a, b, **kwargs):
         return ufunc(a, b.toarray(), **kwargs)
 
     # create a copy
-    out = b.copy(dtype=kwargs["dtype"])
+    out = b.copy(dtype=kwargs.get("dtype", None))
     if out.ptr[-1] == out.nnz:
         out._D = ufunc(a, b._D, **kwargs)
     else:
@@ -2011,7 +1992,9 @@ def _ufunc_ndarray_sp(ufunc, a, b, **kwargs):
         # a view, we can't use
         #   ufunc(..., out=out._D[idx, :])
         idx = array_arange(b.ptr[:-1], n=b.ncol)
-        out._D[idx] = ufunc(a, b._D[idx, :], **kwargs)
+        D = ufunc(a, b._D[idx, :], **kwargs)
+        _sp_data_cast(out, D)
+        out._D[idx] = D
         del idx
     return out
 
@@ -2065,7 +2048,12 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
         raise ValueError(f"could not broadcast sparse matrices {a.shape} and {b.shape}")
 
     # create union of the sparsity pattern
-    out = SparseCSR.sparsity_union(a, b, dim=max(adim, bdim), dtype=kwargs["dtype"])
+    # create a fake *out* to grap the dtype
+    dtype = kwargs.get("dtype")
+    if dtype is None:
+        out = ufunc(adata[:1, :], bdata[:1, :], **kwargs)
+        dtype = out.dtype
+    out = SparseCSR.sparsity_union(a, b, dim=max(adim, bdim), dtype=dtype)
 
     for r in range(out.shape[0]):
         offset = out.ptr[r]
@@ -2118,13 +2106,15 @@ def _ufunc_call(ufunc, *in_args, **kwargs):
     if len(args) == 1:
         a = args[0]
         # create a copy
-        out = a.copy(dtype=kwargs["dtype"])
+        out = a.copy(dtype=kwargs.get("dtype", None))
         if out.ptr[-1] == out.nnz:
             out._D = ufunc(a._D, **kwargs)
         else:
             # limit the values
             idx = array_arange(a.ptr[:-1], n=a.ncol)
-            out._D[idx] = ufunc(a._D[idx, :], **kwargs)
+            D = ufunc(a._D[idx, :], **kwargs)
+            _sp_data_cast(out, D)
+            out._D[idx] = D
             del idx
         return out
 
@@ -2171,15 +2161,18 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
     elif axis == 1:
         pass
     elif axis == 2:
-        out = array.copy(dims=range(array.shape[2] - 1), dtype=kwargs["dtype"])
-        out._D[:, 0] = ufunc.reduce(array._D, axis=1, *args, **kwargs)
+        out = array.copy(dims=0, dtype=kwargs.get("dtype", None))
+        D = ufunc.reduce(array._D, axis=1, *args, **kwargs)
+        _sp_data_cast(out, D, kwargs.get("dtype"))
+        out._D[:, 0] = D
         return out
     else:
         raise ValueError(
             f"Unknown axis argument in ufunc.reduce call on {array.__class__.__name__}"
         )
 
-    ret = empty([array.shape[0], array.shape[2]], dtype=kwargs["dtype"])
+    ret = ufunc.reduce(array._D[0:1, :], axis=0, *args, **kwargs)
+    ret = empty([array.shape[0], array.shape[2]], dtype=kwargs.get("dtype", ret.dtype))
 
     # Now do ufunc calculations, note that initial gets passed directly
     ptr = array.ptr

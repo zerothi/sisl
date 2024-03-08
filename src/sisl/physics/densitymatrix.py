@@ -692,17 +692,6 @@ class _densitymatrix(SparseOrbitalBZSpin):
         eta : bool, optional
            show a progressbar on stdout
         """
-        try:
-            # Once unique has the axis keyword, we know we can safely
-            # use it in this routine
-            # Otherwise we raise an ImportError
-            unique([[0, 1], [2, 3]], axis=0)
-        except Exception:
-            raise NotImplementedError(
-                f"{self.__class__.__name__}.density requires numpy >= 1.13, either update "
-                "numpy or do not use this function!"
-            )
-
         geometry = self.geometry
         # Check that the atomic coordinates, really are all within the intrinsic supercell.
         # If not, it may mean that the DM does not conform to the primary unit-cell paradigm
@@ -953,7 +942,6 @@ class _densitymatrix(SparseOrbitalBZSpin):
             idx[idx[:, 2] < 0, 2] = 0
             idx[shape[2] <= idx[:, 2], 2] = shape[2] - 1
 
-            # Remove duplicates, requires numpy >= 1.13
             idx = unique(idx, axis=0)
             if len(idx) == 0:
                 eta.update()
