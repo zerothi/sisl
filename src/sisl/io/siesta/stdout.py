@@ -1151,7 +1151,7 @@ class stdoutSileSiesta(SileSiesta):
             #     1     Total     6.99733   0.41305     -0.288  -0.296   0.007
 
             # Define the function that parses the charges
-            def _parse_charge_total(line):
+            def _parse_charge_total_nc(line):  # non-colinear and soc
                 atom_idx, _, *vals = line.split()
                 # assert that this is a proper line
                 # this should catch cases where the following line of charge output
@@ -1159,8 +1159,12 @@ class stdoutSileSiesta(SileSiesta):
                 # atom_idx = int(atom_idx)
                 return int(atom_idx), list(map(float, vals))
 
+            def _parse_charge_total(line):  # unpolarized and colinear spin
+                atom_idx, val, *_ = line.split()
+                return int(atom_idx), float(val)
+
             # Define the function that parses a single species
-            def _parse_species():
+            def _parse_species_nc():  # non-colinear and soc
                 nonlocal header, atom_idx, atom_charges
 
                 # The mulliken charges are organized per species where the charges
@@ -1186,18 +1190,83 @@ class stdoutSileSiesta(SileSiesta):
                 while "----" not in line:
                     line = self.readline()
                     if "Total" in line:
-                        ia, charge_vals = _parse_charge_total(line)
+                        ia, charge_vals = _parse_charge_total_nc(line)
                         atom_idx.append(ia)
                         atom_charges.append(charge_vals)
 
-            # Parse as long as we find new species
-            atom_idx = []
-            atom_charges = []
-            header = None
-            found, _ = self.step_to("Species:", allow_reread=False)
-            while found:
-                _parse_species()
+            def _parse_spin_pol():  # unpolarized and colinear spin
+                nonlocal atom_idx, atom_charges
+
+                # The mulliken charges are organized per spin
+                # polarization (UP/DOWN). The end of a spin
+                # block is marked by a Qtot
+
+                # Read until we encounter "mulliken: Qtot"
+                def try_parse_int(s):
+                    try:
+                        int(s)
+                    except ValueError:
+                        return False
+                    else:
+                        return True
+
+                line = ""
+                while "mulliken: Qtot" not in line:
+                    line = self.readline()
+                    words = line.split()
+                    if len(words) > 0 and try_parse_int(words[0]):
+                        # This should be a line containing the total charge for an atom
+                        ia, charge = _parse_charge_total(line)
+                        atom_idx.append(ia)
+                        atom_charges.append(charge)
+
+            # Determine with which spin type we are dealing
+            IDX_NON_POL = 0
+            IDX_POL = 1
+            IDX_NC = 2
+            search_keys_spin = [
+                "Qatom",  # if we find Qatom and no "mulliken: Spin UP" we are dealing with spin unpolarized
+                "mulliken: Spin UP",
+                "Svec",
+            ]
+            loc = self.fh.tell()
+            ret = self.step_to(
+                search_keys_spin, case=True, ret_index=True, allow_reread=False
+            )
+            self.fh.seek(loc)
+            if ret[2] == IDX_NON_POL:
+                # No spin components so just parse charge
+                atom_charges = []
+                atom_idx = []
+                header = ["e"]
+                _parse_spin_pol()
+            elif ret[2] == IDX_POL:
+                # Parse both spin polarizations
+                atom_charges_pol = []
+                header = ["e", "Sz"]
+                for s in ["UP", "DOWN"]:
+                    atom_charges = []
+                    atom_idx = []
+                    self.step_to(f"mulliken: Spin {s}", allow_reread=False)
+                    _parse_spin_pol()
+                    atom_charges_pol.append(atom_charges)
+
+                # Compute the charge and spin of each atom
+                atom_charges_pol_array = _a.arrayf(atom_charges_pol)
+                atom_q = atom_charges_pol_array[0, :] + atom_charges_pol_array[1, :]
+                atom_s = atom_charges_pol_array[0, :] - atom_charges_pol_array[1, :]
+                atom_charges[:] = np.stack((atom_q, atom_s), axis=-1)
+            elif ret[2] == IDX_NC:
+                # Parse as long as we find new species
+                atom_charges = []
+                atom_idx = []
+                header = None
                 found, _ = self.step_to("Species:", allow_reread=False)
+                while found:
+                    _parse_species_nc()
+                    found, _ = self.step_to("Species:", allow_reread=False)
+            else:
+                assert False  # It should never reach here
 
             # Convert to array and sort in the order of the atoms
             sort_idx = np.argsort(atom_idx)
