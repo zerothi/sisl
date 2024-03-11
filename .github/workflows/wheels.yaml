@@ -109,7 +109,7 @@ jobs:
           merge-multiple: True
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.8.12
+      - uses: pypa/gh-action-pypi-publish@v1.8.14
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN }}
@@ -164,7 +164,7 @@ jobs:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.8.12
+      - uses: pypa/gh-action-pypi-publish@v1.8.14
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
