@@ -2066,12 +2066,12 @@ class Geometry(
         Examples
         --------
         >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1.)
-        >>> print(geom.axyz(isc=[1,0,0])) # doctest: +NORMALIZE_WHITESPACE
+        >>> print(geom.axyz(isc=[1,0,0]))
         [[1.   0.   0. ]
          [1.5  0.   0. ]]
 
         >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1.)
-        >>> print(geom.axyz(0)) # doctest: +NORMALIZE_WHITESPACE
+        >>> print(geom.axyz(0))
         [0.  0.  0.]
 
         """
@@ -3287,16 +3287,21 @@ class Geometry(
            will only be passed a list of unsorted distances that needs to be
            processed.
 
+        Notes
+        -----
+        Using ``method='mode'`` requires ``scipy>=1.9``.
+
+
         Examples
         --------
         >>> geom = Geometry([0]*3, Atom(1, R=1.), lattice=Lattice(1., nsc=[5, 5, 1]))
-        >>> geom.distance() # use geom.maxR() # doctest: +NORMALIZE_WHITESPACE
+        >>> geom.distance()
         array([1.])
         >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
         array([1.])
-        >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2]) # doctest: +NORMALIZE_WHITESPACE
+        >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2])
         array([1.        ,  1.41421356,  2.        ])
-        >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged # doctest: +NORMALIZE_WHITESPACE
+        >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged
         array([1.20710678,  2.        ])
 
         Returns
@@ -3389,10 +3394,10 @@ class Geometry(
             else:
                 try:
                     func = getattr(np, method)
-                except Exception:
+                except AttributeError as e:
                     raise ValueError(
                         f"{self.__class__.__name__}.distance `method` got wrong input value."
-                    )
+                    ) from e
         else:
             func = method
 
