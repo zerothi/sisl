@@ -3,10 +3,10 @@ from functools import partial
 import numpy as np
 import pytest
 
-from sisl import Geometry
+from sisl import Geometry, Lattice
 from sisl.geom import NeighborFinder
 
-pytestmark = [pytest.mark.neighbor]
+pytestmark = [pytest.mark.geometry, pytest.mark.geom, pytest.mark.neighbor]
 
 
 tr_fixture = partial(pytest.fixture, scope="module", params=[True, False])
@@ -23,9 +23,17 @@ post_setup = tr_fixture()(request_param)
 pbc = tr_fixture()(request_param)
 
 
+def set_pbc(geom, _pbc):
+    if _pbc:
+        geom.lattice.set_boundary_condition(Lattice.BC.PERIODIC)
+    else:
+        geom.lattice.set_boundary_condition(Lattice.BC.UNKNOWN)
+
+
 @pytest.fixture(scope="module")
-def neighfinder(sphere_overlap, multiR):
+def neighfinder(sphere_overlap, multiR, pbc):
     geom = Geometry([[0, 0, 0], [1.2, 0, 0], [9, 0, 0]], lattice=[10, 10, 7])
+    set_pbc(geom, pbc)
 
     R = np.array([1.1, 1.5, 1.2]) if multiR else 1.5
 
@@ -114,9 +122,9 @@ def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
     assert finder._counts.sum() == 2
 
 
-def test_neighbor_pairs(neighfinder, self_interaction, pbc, expected_neighs):
+def test_neighbor_pairs(neighfinder, self_interaction, expected_neighs):
     neighs = neighfinder.find_neighbors(
-        as_pairs=True, self_interaction=self_interaction, pbc=pbc
+        as_pairs=True, self_interaction=self_interaction
     )
 
     assert isinstance(neighs, np.ndarray)
@@ -130,9 +138,9 @@ def test_neighbor_pairs(neighfinder, self_interaction, pbc, expected_neighs):
     assert np.all(neighs == [*first_at_neighs, *second_at_neighs, *third_at_neighs])
 
 
-def test_neighbors_lists(neighfinder, self_interaction, pbc, expected_neighs):
+def test_neighbors_lists(neighfinder, self_interaction, expected_neighs):
     neighs = neighfinder.find_neighbors(
-        as_pairs=False, self_interaction=self_interaction, pbc=pbc
+        as_pairs=False, self_interaction=self_interaction
     )
 
     assert isinstance(neighs, list)
@@ -163,17 +171,13 @@ def test_neighbors_lists(neighfinder, self_interaction, pbc, expected_neighs):
         ), f"Wrong values for neighbors of atom {i}"
 
 
-def test_all_unique_pairs(neighfinder, self_interaction, pbc, expected_neighs):
+def test_all_unique_pairs(neighfinder, self_interaction, expected_neighs):
     if neighfinder.R.ndim == 1 and not neighfinder._overlap:
         with pytest.raises(ValueError):
-            neighfinder.find_all_unique_pairs(
-                self_interaction=self_interaction, pbc=pbc
-            )
+            neighfinder.find_unique_pairs(self_interaction=self_interaction)
         return
 
-    neighs = neighfinder.find_all_unique_pairs(
-        self_interaction=self_interaction, pbc=pbc
-    )
+    neighs = neighfinder.find_unique_pairs(self_interaction=self_interaction)
 
     first_at_neighs, second_at_neighs, third_at_neighs = expected_neighs
 
@@ -196,7 +200,7 @@ def test_all_unique_pairs(neighfinder, self_interaction, pbc, expected_neighs):
 
 
 def test_close(neighfinder, pbc):
-    neighs = neighfinder.find_close([0.3, 0, 0], as_pairs=True, pbc=pbc)
+    neighs = neighfinder.find_close([0.3, 0, 0], as_pairs=True)
 
     expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
     if pbc and neighfinder.R.ndim == 0:
@@ -210,15 +214,16 @@ def test_no_neighbors(pbc):
     """Test the case where there are no neighbors, to see that it doesn't crash."""
 
     geom = Geometry([[0, 0, 0]])
+    set_pbc(geom, pbc)
 
     finder = NeighborFinder(geom, R=1.5)
 
-    neighs = finder.find_neighbors(as_pairs=True, pbc=pbc)
+    neighs = finder.find_neighbors(as_pairs=True)
 
     assert isinstance(neighs, np.ndarray)
     assert neighs.shape == (0, 5)
 
-    neighs = finder.find_neighbors(as_pairs=False, pbc=pbc)
+    neighs = finder.find_neighbors(as_pairs=False)
 
     assert isinstance(neighs, list)
     assert len(neighs) == 1
@@ -226,7 +231,7 @@ def test_no_neighbors(pbc):
     assert isinstance(neighs[0], np.ndarray)
     assert neighs[0].shape == (0, 4)
 
-    neighs = finder.find_all_unique_pairs(pbc=pbc)
+    neighs = finder.find_unique_pairs()
 
     assert isinstance(neighs, np.ndarray)
     assert neighs.shape == (0, 5)
@@ -237,10 +242,11 @@ def test_R_too_big(pbc):
     than the unit cell."""
 
     geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=[2, 10, 10])
+    set_pbc(geom, pbc)
 
     neighfinder = NeighborFinder(geom, R=1.5)
 
-    neighs = neighfinder.find_all_unique_pairs(pbc=pbc)
+    neighs = neighfinder.find_unique_pairs()
 
     expected_neighs = [[0, 1, 0, 0, 0]]
     if pbc:
@@ -252,7 +258,7 @@ def test_R_too_big(pbc):
 
     neighfinder = NeighborFinder(geom, R=[0.6, 2.2], overlap=True)
 
-    neighs = neighfinder.find_close([[0.5, 0, 0]], as_pairs=True, pbc=pbc)
+    neighs = neighfinder.find_close([[0.5, 0, 0]], as_pairs=True)
 
     expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
     if pbc:
@@ -283,3 +289,19 @@ def test_bin_sizes():
     assert n3.nbins[0] == n4.nbins[0]
     assert n3.nbins[1] > n4.nbins[1]
     assert n3.nbins[2] > n4.nbins[2]
+
+
+@pytest.mark.xfail(reason="Neighborfinder should locate the correct position")
+def test_outside_box():
+    # This should be at [0, 0, 0] and [1, 0, 0]
+    geom = Geometry([[0, 0, 0], [3, 0, 0]], lattice=[2, 10, 10])
+
+    # We should have fewer bins along the first lattice vector
+    n = NeighborFinder(geom, R=1.1)
+
+    # Figure out if the neighbor of the first atom, will locate the
+    # other one, and in which isc
+    neighs = finder.find_neighbors()
+
+    assert neighs[0] == [1, 0, 0, 0]
+    assert neighs[1] == [0, 0, 0, 0]
