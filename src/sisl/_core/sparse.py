@@ -24,10 +24,10 @@ from numpy import (
     diff,
     empty,
     full,
-    in1d,
     insert,
     int32,
     intersect1d,
+    isin,
     isnan,
     isscalar,
     lexsort,
@@ -655,7 +655,7 @@ column indices of the sparse elements
         # Get indices of deleted columns
         idx = array_arange(ptr[:-1], n=ncol)
         # Convert to boolean array where we have columns to be deleted
-        lidx = in1d(col[idx], columns)
+        lidx = isin(col[idx], columns)
         # Count number of deleted entries per row
         ndel = _a.fromiteri(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
@@ -1028,7 +1028,7 @@ column indices of the sparse elements
             # already in the sparse pattern
             # If so we remove those from the j
             new_j = j[
-                in1d(j, col[ptr_i : ptr_i + ncol_i], invert=True, assume_unique=True)
+                isin(j, col[ptr_i : ptr_i + ncol_i], invert=True, assume_unique=True)
             ]
         else:
             new_j = j
@@ -1225,7 +1225,7 @@ column indices of the sparse elements
 
         # Now create the compressed data...
         index -= ptr[i]
-        keep = in1d(_a.arangei(ncol[i]), index, invert=True)
+        keep = isin(_a.arangei(ncol[i]), index, invert=True)
 
         # Update new count of the number of
         # non-zero elements

@@ -28,6 +28,7 @@ from functools import reduce
 from pathlib import Path
 
 import numpy as np
+from scipy.integrate import trapezoid
 from scipy.interpolate import interp1d
 
 import sisl as si
@@ -675,10 +676,10 @@ class AtomInput:
                 # dr = ae_r[1] - ae_r[0]
 
                 # Integrate number of core-electrons and valence electrons
-                core_c = np.trapz(ae_cc, ae_r)
-                valence_c = np.trapz(ps_vc, ps_r)
+                core_c = trapezoid(ae_cc, ae_r)
+                valence_c = trapezoid(ps_vc, ps_r)
                 print(f"Total charge in atom: {core_c + valence_c:.5f}")
-                overlap_c = np.trapz(np.minimum(ae_cc, ps_vc), ae_r)
+                overlap_c = trapezoid(np.minimum(ae_cc, ps_vc), ae_r)
                 ax.set_title(f"Charge: int(min(AE_cc, PS_vc)) = {overlap_c:.3f} e")
 
                 # We will try and *guess-stimate* a good position for rc for core-corrections

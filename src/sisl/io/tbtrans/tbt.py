@@ -1021,7 +1021,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         .. math::
            F(E) &= \frac{\sum_{k,n} T_{k,n}(E)[1 - T_{k,n}(E)] w_k}{\sum_{k,n} T_{k,n}(E) w_k}
            \\
-                &= S(E, V) / S_P(E, V)
+                   &= S(E, V) / S_P(E, V)
 
         Notes
         -----
@@ -1035,7 +1035,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         For a spin-polarized calculation one should calculate the Fano factor as:
 
-        >>> up = get_sile('siesta.TBT_UP.nc')
+            >>> up = get_sile('siesta.TBT_UP.nc')
         >>> down = get_sile('siesta.TBT_DN.nc')
         >>> fano = up.fano() * up.transmission() + down.fano() * down.transmission()
         >>> fano /= up.transmission() + down.transmission()
@@ -1128,7 +1128,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             # now figure out all places where we
             # have the corresponding values
-            all_col = np.logical_and(np.in1d(row, all_col), np.in1d(col, all_col))
+            all_col = np.logical_and(np.isin(row, all_col), np.isin(col, all_col))
 
             # reduce space
             col = col[all_col]
@@ -1194,7 +1194,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             row = np.repeat(row_nonzero, ncol[row_nonzero])
 
             # Create a logical array for sub-indexing
-            all_col = np.in1d(col, all_col)
+            all_col = np.isin(col, all_col)
             row = row[all_col]
             col = col[all_col]
 

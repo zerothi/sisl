@@ -614,7 +614,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         # We need ravel(), otherwise taking len of an int will fail
         orbitals = self.geometry._sanitize_orbs(orbitals).ravel()
-        porb = np.in1d(self.pivot(elec), orbitals).nonzero()[0]
+        porb = np.isin(self.pivot(elec), orbitals).nonzero()[0]
         d = len(orbitals) - len(porb)
         if d != 0:
             warn(
