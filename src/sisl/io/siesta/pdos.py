@@ -477,7 +477,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                     else:
                         # the stuff must be a range of directions
                         # so simply put it in
-                        idx = list(map(direction, value))
+                        idx = list(map(lambda x: direction(x) + 1, value))
                         name = value
 
                         def _filter(PDOS):

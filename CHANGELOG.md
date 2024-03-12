@@ -34,6 +34,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- `pdosSileSiesta` plotting produced wrong spin components for NC/SOC
 - `tqdm` changed API in 2019, `eta=True` in Notebooks should now work
 - `SparseCSR` ufunc handling, in some corner cases could the dtype casting do things
   wrongly.
