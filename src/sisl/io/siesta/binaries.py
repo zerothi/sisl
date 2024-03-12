@@ -1910,7 +1910,7 @@ class _gridSileSiesta(SileBinSiesta):
 
         Parameters
         ----------
-        index : int or array_like, optional
+        index : int or str or array_like, optional
            the spin-index for retrieving one of the components. If a vector
            is passed it refers to the fraction per indexed component. I.e.
            ``[0.5, 0.5]`` will return sum of half the first two components.
@@ -1927,10 +1927,28 @@ class _gridSileSiesta(SileBinSiesta):
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
         self._fortran_check("read_grid", "could not read grid.")
 
+        if isinstance(index, str):
+            index = index.lower()
+            # convert to factors
+            if index == "z":
+                index = [1, -1]
+            elif index == "x":
+                index = [0, 0, 2]
+            elif index == "y":
+                index = [0, 0, 0, 2]
+            elif index == "total":
+                index = [1]
+                if nspin > 1:
+                    index.append(1)
+            if len(index) > nspin:
+                raise ValueError(
+                    f"{self.__class__.__name__}.read_grid got a wrong spin request for the grid values."
+                )
+
         if isinstance(index, Integral):
             grid = grid[:, :, :, index]
         else:
-            grid = grid_reduce_indices(grid, index, axis=len(grid.shape) - 1)
+            grid = grid_reduce_indices(grid, index, axis=-1)
 
         # Simply create the grid (with no information)
         # We will overwrite the actual grid

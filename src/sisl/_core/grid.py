@@ -98,13 +98,13 @@ class Grid(
     >>> grid = Grid(0.1, lattice=lattice, geometry=geometry)
     """
 
-    #: Constant for defining a periodic boundary condition
+    #: Constant for defining a periodic boundary condition (deprecated, use Lattice.BC.PERIODIC)
     PERIODIC = BoundaryCondition.PERIODIC
-    #: Constant for defining a Neumann boundary condition
+    #: Constant for defining a Neumann boundary condition (deprecated, use Lattice.BC.NEUMANN)
     NEUMANN = BoundaryCondition.NEUMANN
-    #: Constant for defining a Dirichlet boundary condition
+    #: Constant for defining a Dirichlet boundary condition (deprecated, use Lattice.BC.DIRICHLET)
     DIRICHLET = BoundaryCondition.DIRICHLET
-    #: Constant for defining an open boundary condition
+    #: Constant for defining an open boundary condition (deprecated, use Lattice.BC.OPEN)
     OPEN = BoundaryCondition.OPEN
 
     @deprecate_argument(
@@ -1131,7 +1131,7 @@ class Grid(
         self.pyamg_source(b, pyamg_indices, value)
 
     @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
-    def pyamg_boundary_condition(self, A, b, bc=None):
+    def pyamg_boundary_condition(self, A, b):
         r"""Attach boundary conditions to the `pyamg` grid-matrix `A` with default boundary conditions as specified for this `Grid`
 
         Parameters
@@ -1140,10 +1140,6 @@ class Grid(
            sparse matrix describing the grid
         b : numpy.ndarray
            a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
-        bc : list of BC, optional
-           the specified boundary conditions.
-           Default to the grid's boundary conditions, else `bc` *must* be a list of elements
-           with elements corresponding to `Grid.PERIODIC`/`Grid.NEUMANN`...
         """
 
         def Neumann(idx_bc, idx_p1):
@@ -1167,34 +1163,29 @@ class Grid(
         def sl2idx(sl):
             return self.pyamg_index(self.mgrid(sl))
 
-        # Create slices
-        sl = [slice(0, g) for g in self.shape]
-
         for i in range(3):
             # We have a periodic direction
-            new_sl = sl[:]
+            # Create slices
+            sl = [slice(0, g) for g in self.shape]
 
             # LOWER BOUNDARY
-            bci = self.boundary_condition[i]
-            new_sl[i] = slice(0, 1)
-            idx1 = sl2idx(new_sl)  # lower
+            bci = self.lattice.boundary_condition[i]
+            sl[i] = slice(0, 1)
+            idx1 = sl2idx(sl)  # lower
 
             bc = bci[0]
-            if bci[0] == self.PERIODIC or bci[1] == self.PERIODIC:
-                if bci[0] != bci[1]:
-                    raise ValueError(
-                        f"{self.__class__.__name__}.pyamg_boundary_condition found a periodic and non-periodic direction in the same direction!"
-                    )
-                new_sl[i] = slice(self.shape[i] - 1, self.shape[i])
-                idx2 = sl2idx(new_sl)  # upper
+            if bci[0] == self.PERIODIC:
+                sl[i] = slice(self.shape[i] - 1, self.shape[i])
+                idx2 = sl2idx(sl)  # upper
                 Periodic(idx1, idx2)
                 del idx2
+                # rest has been parsed as well
                 continue
 
             if bc == self.NEUMANN:
                 # Retrieve next index
-                new_sl[i] = slice(1, 2)
-                idx2 = sl2idx(new_sl)  # lower + 1
+                sl[i] = slice(1, 2)
+                idx2 = sl2idx(sl)  # lower + 1
                 Neumann(idx1, idx2)
                 del idx2
             elif bc == self.DIRICHLET:
@@ -1202,13 +1193,13 @@ class Grid(
 
             # UPPER BOUNDARY
             bc = bci[1]
-            new_sl[i] = slice(self.shape[i] - 1, self.shape[i])
-            idx1 = sl2idx(new_sl)  # upper
+            sl[i] = slice(self.shape[i] - 1, self.shape[i])
+            idx1 = sl2idx(sl)  # upper
 
             if bc == self.NEUMANN:
                 # Retrieve next index
-                new_sl[i] = slice(self.shape[i] - 2, self.shape[i] - 1)
-                idx2 = sl2idx(new_sl)  # upper - 1
+                sl[i] = slice(self.shape[i] - 2, self.shape[i] - 1)
+                idx2 = sl2idx(sl)  # upper - 1
                 Neumann(idx1, idx2)
                 del idx2
             elif bc == self.DIRICHLET:
