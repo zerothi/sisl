@@ -27,7 +27,7 @@ from sisl import (
 )
 from sisl._indices import indices_only
 from sisl._internal import set_module
-from sisl.messages import SislError, deprecate_argument, info, warn
+from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
 from sisl.physics import BandStructure, BrillouinZone
 from sisl.unit.siesta import unit_convert, unit_default, unit_group, units
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
@@ -962,39 +962,43 @@ class fdfSileSiesta(SileSiesta):
             return ncSileSiesta(f).read_force()
         return None
 
-    def read_force_constant(self, *args, **kwargs):
-        """Read force constant from the output of the calculation
+    def read_hessian(self, *args, **kwargs):
+        """Read Hessian/force constant from the output of the calculation
 
         Returns
         -------
-        force_constant : numpy.ndarray
-            vector ``[*, 3, 2, *, 3]``  with force constant element for each of the atomic displacements
+        M : numpy.ndarray
+            vector ``[*, 3, 2, *, 3]``  with Hessian/force constant element for each of the atomic displacements
         """
         order = _parse_output_order(kwargs.pop("order", None), True, ["nc", "FC"], [])
         for f in order:
-            v = getattr(self, f"_r_force_constant_{f.lower()}")(*args, **kwargs)
+            v = getattr(self, f"_r_hessian_{f.lower()}")(*args, **kwargs)
             if v is not None:
                 if self.track:
-                    info(f"{self.file}(read_force_constant) found in file={f}")
+                    info(f"{self.file}(read_hessian) found in file={f}")
                 return v
         return None
 
-    def _r_force_constant_nc(self, *args, **kwargs):
+    read_force_constant = deprecation(
+        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+    )(read_hessian)
+
+    def _r_hessian_nc(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".nc")
-        _track_file(self._r_force_constant_nc, f, inputs=[("CDF.Save", "True")])
+        _track_file(self._r_hessian_nc, f, inputs=[("CDF.Save", "True")])
         if f.is_file():
             if not "FC" in ncSileSiesta(f).groups:
                 return None
-            fc = ncSileSiesta(f).read_force_constant()
+            fc = ncSileSiesta(f).read_hessian()
             return fc
         return None
 
-    def _r_force_constant_fc(self, *args, **kwargs):
+    def _r_hessian_fc(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".FC")
-        _track_file(self._r_force_constant_fc, f)
+        _track_file(self._r_hessian_fc, f)
         if f.is_file():
             na = self.get("NumberOfAtoms", default=None)
-            return fcSileSiesta(f).read_force_constant(na=na)
+            return fcSileSiesta(f).read_hessian(na=na)
         return None
 
     def read_fermi_level(self, *args, **kwargs):
@@ -1106,7 +1110,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_dynamical_matrix_fc(self, *args, **kwargs):
-        FC = self.read_force_constant(*args, order="FC", **kwargs)
+        FC = self.read_hessian(*args, order="FC", **kwargs)
         if FC is None:
             return None
         # here we forcefully read the initial geometry.
@@ -1128,7 +1132,7 @@ class fdfSileSiesta(SileSiesta):
         return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
 
     def _r_dynamical_matrix_nc(self, *args, **kwargs):
-        FC = self.read_force_constant(*args, order=["nc"], **kwargs)
+        FC = self.read_hessian(*args, order=["nc"], **kwargs)
         if FC is None:
             return None
         geom = self.read_geometry(order=["nc"])
