@@ -10,6 +10,7 @@ from sisl import Atom, AtomGhost, Atoms, Geometry, Grid, Lattice, SphericalOrbit
 from sisl._array import aranged, array_arange
 from sisl._core.sparse import _ncol_to_indptr
 from sisl._internal import set_module
+from sisl.messages import deprecation
 from sisl.physics import (
     DensityMatrix,
     DynamicalMatrix,
@@ -316,7 +317,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
 
-    def read_force_constant(self):
+    def read_hessian(self):
         """Reads the force-constant stored in the nc file
 
         Returns
@@ -325,7 +326,7 @@ class ncSileSiesta(SileCDFSiesta):
                  contains the directions, and 3rd dimensions contains -/+ displacements.
         """
         if not "FC" in self.groups:
-            raise SislError(f"{self}.read_force_constant cannot find the FC group.")
+            raise SislError(f"{self}.read_hessian cannot find the FC group.")
         fc = self.groups["FC"]
 
         disp = fc.variables["disp"][0] * Bohr2Ang
@@ -333,6 +334,10 @@ class ncSileSiesta(SileCDFSiesta):
         fc = (fc.variables["fa"][:, :, :, :, :] - f0.reshape(1, 1, 1, -1, 3)) / disp
         fc[:, :, 1, :, :] *= -1
         return fc * Ry2eV / Bohr2Ang
+
+    read_force_constant = deprecation(
+        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+    )(read_hessian)
 
     @property
     @lru_cache(maxsize=1)

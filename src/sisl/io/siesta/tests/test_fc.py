@@ -53,14 +53,14 @@ def test_read_fc_old(sisl_tmp):
     assert fc.shape == fc2.shape
     assert np.allclose(fc, fc2)
 
-    fc2 = fcSileSiesta(f).read_force_constant()
+    fc2 = fcSileSiesta(f).read_hessian()
     assert fc.shape != fc2.shape
     fc2.shape = (-1, 3, 2, 2, 3)
     assert fc.shape == fc2.shape
     assert np.allclose(fc, fc2)
 
     # Specify number of atoms
-    fc2 = fcSileSiesta(f).read_force_constant(2)
+    fc2 = fcSileSiesta(f).read_hessian(2)
     assert fc.shape == fc2.shape
     assert np.allclose(fc, fc2)
 

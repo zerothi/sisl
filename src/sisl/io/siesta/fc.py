@@ -6,7 +6,7 @@ from typing import Optional
 import numpy as np
 
 from sisl._internal import set_module
-from sisl.messages import warn
+from sisl.messages import deprecation, warn
 from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile, sile_fh_open
@@ -71,8 +71,8 @@ class fcSileSiesta(SileSiesta):
         return self.read_force_constant(na) * displacement.reshape(1, 3, 2, 1, 1)
 
     @sile_fh_open()
-    def read_force_constant(self, na: Optional[int] = None):
-        """Reads the force-constant stored in the FC file
+    def read_hessian(self, na: Optional[int] = None):
+        """Reads the Hessian/force constant stored in the FC file
 
         Parameters
         ----------
@@ -113,6 +113,10 @@ class fcSileSiesta(SileSiesta):
         fc.shape = (-1, 3, 2, na, 3)
 
         return fc
+
+    read_force_constant = deprecation(
+        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+    )(read_hessian)
 
 
 add_sile("FC", fcSileSiesta, gzip=True)

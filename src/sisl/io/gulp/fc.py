@@ -9,6 +9,7 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
+from sisl.messages import deprecation
 
 from ..sile import add_sile, sile_fh_open
 from .sile import SileGULP
@@ -21,8 +22,8 @@ class fcSileGULP(SileGULP):
     """GULP output file object"""
 
     @sile_fh_open()
-    def read_force_constant(self, **kwargs):
-        """Returns a sparse matrix in coo format which contains the GULP force constant matrix.
+    def read_hessian(self, **kwargs):
+        """Returns a sparse matrix in coo format which contains the GULP Hessian (force constant) matrix.
 
         This routine expects the units to be in eV/Ang**2.
 
@@ -35,7 +36,7 @@ class fcSileGULP(SileGULP):
 
         Returns
         -------
-        FC : force constant in `scipy.sparse.coo_matrix` format
+        M : Hessian/force constant in `scipy.sparse.coo_matrix` format
         """
         # Default cutoff
         cutoff = kwargs.get("cutoff", 0.0)
@@ -76,6 +77,10 @@ class fcSileGULP(SileGULP):
         fc.eliminate_zeros()
 
         return fc
+
+    read_force_constant = deprecation(
+        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+    )(read_hessian)
 
 
 add_sile("FORCE_CONSTANTS_2ND", fcSileGULP, gzip=True)
