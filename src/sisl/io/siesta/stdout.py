@@ -653,7 +653,10 @@ class stdoutSileSiesta(SileSiesta):
             line = next(itt)
 
         # now skip to the pressure
-        found, line = self.step_to("(Free)E+ p_basis*V_orbitals", allow_reread=False)
+        found, line = self.step_to(
+            ["(Free)E + p_basis*V_orbitals", "(Free)E+ p_basis*V_orbitals"],
+            allow_reread=False,
+        )
         if found:
             key, val = line.split("=")
             assign(out, key.strip(), val)

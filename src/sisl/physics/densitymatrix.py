@@ -70,7 +70,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
         Parameters
         ----------
         angles : (3,)
-           angle to rotate spin boxes, :math:`x`, :math:`y` and :math:`z`, respectively
+           angle to rotate spin boxes around the Cartesian directions
+           :math:`x`, :math:`y` and :math:`z`, respectively
         rad : bool, optional
            Determines the unit of `angles`, for true it is in radians
 
@@ -97,8 +98,11 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         # define rotation matrix
         R = (
+            # Rz
             np.array([[cgamma, -sgamma, 0], [sgamma, cgamma, 0], [0, 0, 1]])
+            # Ry
             .dot([[cbeta, 0, sbeta], [0, 1, 0], [-sbeta, 0, cbeta]])
+            # Rx
             .dot([[1, 0, 0], [0, calpha, -salpha], [0, salpha, calpha]])
         )
 
@@ -129,9 +133,10 @@ class _densitymatrix(SparseOrbitalBZSpin):
             A = np.empty([len(self._csr._D), 2, 3], dtype=self.dtype)
 
             D = self._csr._D
+            Q = (D[:, 0] + D[:, 1]) * 0.5
+
             # we align each part individually
             # this *should* give us the same magnitude...
-            Q = (D[:, 0] + D[:, 1]) * 0.5
             A[:, :, 2] = (D[:, 0] - D[:, 1]).reshape(-1, 1)
             A[:, 0, 0] = 2 * D[:, 2]
             A[:, 1, 0] = 2 * D[:, 6]
@@ -140,8 +145,10 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             A = R.dot(A.reshape(-1, 3).T).T.reshape(-1, 2, 3) * 0.5
 
+            # create output matrix
             out = self.copy()
             D = out._csr._D
+
             D[:, 0] = Q + A[:, :, 2].sum(1) * 0.5
             D[:, 1] = Q - A[:, :, 2].sum(1) * 0.5
             D[:, 2] = A[:, 0, 0]
@@ -159,11 +166,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 return abs(abs(a) - v) < np.pi / 1080
 
             # figure out if this is only rotating 180 for x or y
-            if (
-                close(angles[0], np.pi)
-                and close(angles[1], 0)
-                or close(angles[0], 0)
-                and close(angles[1], np.pi)
+            if (close(angles[0], np.pi) and close(angles[1], 0)) or (
+                close(angles[0], 0) and close(angles[1], np.pi)
             ):
                 # flip spin
                 out = self.copy()
@@ -389,7 +393,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 return M
             return m
 
-        if "orbital" == projection:
+        projection = projection.lower()
+        if projection.startswith("orbital"):  # allows orbitals
             # Orbital Mulliken population
             if self.orthogonal:
                 D = np.array(
@@ -402,7 +407,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             return _convert(D)
 
-        elif "atom" == projection:
+        elif projection.startswith("atom"):  # allows atoms
             # Atomic Mulliken population
             if self.orthogonal:
                 D = np.array(
@@ -421,7 +426,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             return _convert(M)
 
-        raise NotImplementedError(
+        raise ValueError(
             f"{self.__class__.__name__}.mulliken only allows projection [orbital, atom]"
         )
 
@@ -1377,15 +1382,18 @@ class DensityMatrix(_densitymatrix):
         sub = logical_and(i_m, jdx_m == 2).nonzero()[0]
         subtract.at(L1, *Lc(idx, idx_l, DM, sub))
 
-        if "orbital" == projection:
+        projection = projection.lower()
+        if projection.startswith("orbital"):  # allows orbitals
             return L
-        if "atom" == projection:
+
+        if projection.startswith("atom"):  # allows atoms
             # Now perform summation per atom
             l = np.zeros([3, geom.na], dtype=L.dtype)
             add.at(l.T, geom.o2a(np.arange(geom.no)), L.T)
             return l
+
         raise ValueError(
-            f"{self.__class__.__name__}.orbital_momentum must define projection to be 'orbital' or 'atom'."
+            f"{self.__class__.__name__}.orbital_momentum only allows projection [orbital, atom]"
         )
 
     def Dk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
