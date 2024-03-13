@@ -26,8 +26,8 @@ _log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 
 def _siesta_out_accept(out):
-    if not isinstance(out, io_siesta.outSileSiesta):
-        out = io_siesta.outSileSiesta(out)
+    if not isinstance(out, io_siesta.stdoutSileSiesta):
+        out = io_siesta.stdoutSileSiesta(out)
     accept = out.completed()
     if accept:
         with out:
@@ -118,7 +118,7 @@ class EigenvalueMetric(SiestaMetric):
 
 
 class EnergyMetric(SiestaMetric):
-    """Metric is the energy (default total), read from the output file
+    """Metric is the energy (default basis.enthalpy), read from the output file
 
     Alternatively the metric could be any operation of the energies that is returned.
 
@@ -129,13 +129,13 @@ class EnergyMetric(SiestaMetric):
     energy : callable, str, optional
        an operation to post-process the energy.
        If a `str` it will use the given energy, otherwise the function should accept a single
-       dictionary (output from: `sisl.io.siesta.outSileSiesta.read_energy`) and convert that
+       dictionary (output from: `sisl.io.siesta.stdoutSileSiesta.read_energy`) and convert that
        to a single energy metric
     failure : float, optional
        in case the output does not contain anything runner fails, then we should return a "fake" metric.
     """
 
-    def __init__(self, out, energy="total", failure=0.0):
+    def __init__(self, out, energy="basis.enthalpy", failure=0.0):
         super().__init__(failure)
         self.out = path_rel_or_abs(out)
         if isinstance(energy, str):
@@ -157,7 +157,7 @@ class EnergyMetric(SiestaMetric):
 
     def metric(self, variables):
         """Read the energy from the out file in `path`"""
-        out = io_siesta.outSileSiesta(self.out)
+        out = io_siesta.stdoutSileSiesta(self.out)
         if _siesta_out_accept(out):
             metric = self.failure(self.energy(out.read_energy()), False)
             _log.debug(f"metric.energy [{self.out}] success {metric}")
@@ -253,9 +253,9 @@ class StressMetric(SiestaMetric):
 
     def metric(self, variables):
         """Convert the stress-tensor to a single metric that should be minimized"""
-        out = io_siesta.outSileSiesta(self.out)
+        out = io_siesta.stdoutSileSiesta(self.out)
         if _siesta_out_accept(out):
-            stress = self.stress(out.read_stress())
+            stress = self.stress(out.read_stress[-1]())
             metric = self.failure(stress, False)
             _log.debug(f"metric.stress [{self.out}] success {metric}")
         else:
