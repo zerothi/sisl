@@ -9,6 +9,8 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- `atoms` argument to `DensityMatrix.spin_align` to align a subset of atoms
+  (only diagonal elements between the atoms orbitals)
 - added an efficient neighbor finder, #393
 - enabled reading DFTB+ output Hamiltonian and overlap matrices, #579
 - `bond_order` for `DensityMatrix` objects, #507

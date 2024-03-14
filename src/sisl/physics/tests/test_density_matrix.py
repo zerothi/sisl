@@ -371,7 +371,7 @@ class TestDensityMatrix:
         )
         D_mull = D.mulliken()
         v = np.array([1, 2, 3])
-        d = D.spin_align(v)
+        d = D.spin_align(v, atoms=0)
         d_mull = d.mulliken()
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])

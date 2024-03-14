@@ -1409,7 +1409,7 @@ column indices of the sparse elements
         # Get indices of sparse data (-1 if non-existing)
         return np_all(self._get(key[0], key[1]) >= 0)
 
-    def nonzero(self, rows=None, only_cols=False):
+    def nonzero(self, rows=None, only_cols: bool = False):
         """Row and column indices where non-zero elements exists
 
         Parameters
@@ -1441,7 +1441,7 @@ column indices of the sparse elements
             return cols
         return rows, cols
 
-    def eliminate_zeros(self, atol=0.0):
+    def eliminate_zeros(self, atol: float = 0.0):
         """Remove all zero elememts from the sparse matrix
 
         This is an *in-place* operation

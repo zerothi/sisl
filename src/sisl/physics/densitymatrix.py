@@ -20,6 +20,7 @@ from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import progressbar, warn
+from sisl.typing import AtomsArgument, SeqFloat
 
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
@@ -56,7 +57,7 @@ def _get_density(DM, orthogonal, what="sum"):
 
 
 class _densitymatrix(SparseOrbitalBZSpin):
-    def spin_rotate(self, angles, rad=False):
+    def spin_rotate(self, angles: SeqFloat, rad: bool = False):
         r"""Rotates spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axis, respectively.
 
         The angles are with respect to each spin-boxes initial angle.
@@ -202,7 +203,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out
 
-    def spin_align(self, vec):
+    def spin_align(self, vec: SeqFloat, atoms: Optional[AtomsArgument] = None):
         r"""Aligns *all* spin along the vector `vec`
 
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned
@@ -212,6 +213,11 @@ class _densitymatrix(SparseOrbitalBZSpin):
         ----------
         vec : (3,)
            vector to align the spin boxes against
+        atoms : AtomsArgument, optional
+           only perform alignment for matrix elements on atoms.
+           If multiple atoms are specified, the off-diagonal elements between the
+           atoms will also be aligned.
+           To only align atomic on-site values, one would have to do a loop.
 
         See Also
         --------
@@ -224,29 +230,46 @@ class _densitymatrix(SparseOrbitalBZSpin):
         """
         vec = _a.asarrayd(vec)
         # normalize vector
-        vec = vec / (vec**2).sum() ** 0.5
+        vec = vec / (vec @ vec) ** 0.5
+
+        # Calculate indices that corresponds to the `atoms` argument
+        if atoms is None:
+            idx = slice(None)
+        else:
+            g = self.geometry
+            atoms = g._sanitize_atoms(atoms)
+            orbs = g.a2o(atoms, all=True)
+            csr = self._csr
+            idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
+            rows, cols = self.nonzero()
+            # Now check for existance in rows, cols
+            idx = idx[
+                np.logical_and(np.isin(rows, orbs), np.isin(cols % self.no, orbs))
+            ]
 
         if self.spin.is_noncolinear:
             A = np.empty([len(self._csr._D), 3], dtype=self.dtype)
 
             D = self._csr._D
-            Q = (D[:, 0] + D[:, 1]) * 0.5
-            A[:, 0] = 2 * D[:, 2]
-            A[:, 1] = -2 * D[:, 3]
-            A[:, 2] = D[:, 0] - D[:, 1]
+            Q = (D[idx, 0] + D[idx, 1]) * 0.5
+            A[idx, 0] = 2 * D[idx, 2]
+            A[idx, 1] = -2 * D[idx, 3]
+            A[idx, 2] = D[idx, 0] - D[idx, 1]
 
             # align with vector
             # add factor 1/2 here (instead when unwrapping)
-            A[:, :] = (
-                0.5 * vec.reshape(1, 3) * (np.sum(A**2, axis=1).reshape(-1, 1)) ** 0.5
+            A[idx] = (
+                0.5
+                * vec.reshape(1, 3)
+                * (np.sum(A[idx] ** 2, axis=1).reshape(-1, 1)) ** 0.5
             )
 
             out = self.copy()
             D = out._csr._D
-            D[:, 0] = Q + A[:, 2]
-            D[:, 1] = Q - A[:, 2]
-            D[:, 2] = A[:, 0]
-            D[:, 3] = -A[:, 1]
+            D[idx, 0] = Q + A[idx, 2]
+            D[idx, 1] = Q - A[idx, 2]
+            D[idx, 2] = A[idx, 0]
+            D[idx, 3] = -A[idx, 1]
 
         elif self.spin.is_spinorbit:
             # Since this spin-matrix has all 8 components we will take
@@ -259,36 +282,36 @@ class _densitymatrix(SparseOrbitalBZSpin):
             D = self._csr._D
             # we align each part individually
             # this *should* give us the same magnitude...
-            Q = (D[:, 0] + D[:, 1]) * 0.5
-            A[:, :, 2] = (D[:, 0] - D[:, 1]).reshape(-1, 1)
-            A[:, 0, 0] = 2 * D[:, 2]
-            A[:, 0, 1] = -2 * D[:, 3]
-            A[:, 1, 0] = 2 * D[:, 6]
-            A[:, 1, 1] = 2 * D[:, 7]
+            Q = (D[idx, 0] + D[idx, 1]) * 0.5
+            A[idx, :, 2] = (D[idx, 0] - D[idx, 1]).reshape(-1, 1)
+            A[idx, 0, 0] = 2 * D[idx, 2]
+            A[idx, 0, 1] = -2 * D[idx, 3]
+            A[idx, 1, 0] = 2 * D[idx, 6]
+            A[idx, 1, 1] = 2 * D[idx, 7]
 
             # align with vector
             # add factor 1/2 here (instead when unwrapping)
-            A[:, :, :] = (
+            A[idx, :, :] = (
                 0.5
                 * vec.reshape(1, 1, 3)
-                * (np.sum(A**2, axis=2).reshape(-1, 2, 1)) ** 0.5
+                * (np.sum(A[idx] ** 2, axis=2).reshape(-1, 2, 1)) ** 0.5
             )
 
             out = self.copy()
             D = out._csr._D
-            D[:, 0] = Q + A[:, :, 2].sum(1) * 0.5
-            D[:, 1] = Q - A[:, :, 2].sum(1) * 0.5
-            D[:, 2] = A[:, 0, 0]
-            D[:, 3] = -A[:, 0, 1]
+            D[idx, 0] = Q + A[idx, :, 2].sum(1) * 0.5
+            D[idx, 1] = Q - A[idx, :, 2].sum(1) * 0.5
+            D[idx, 2] = A[idx, 0, 0]
+            D[idx, 3] = -A[idx, 0, 1]
             # 4 and 5 are diagonal imaginary part (un-changed)
             # Since we copy, we don't need to do anything
-            # D[:, 4] =
-            # D[:, 5] =
-            D[:, 6] = A[:, 1, 0]
-            D[:, 7] = A[:, 1, 1]
+            # D[idx, 4] =
+            # D[idx, 5] =
+            D[idx, 6] = A[idx, 1, 0]
+            D[idx, 7] = A[idx, 1, 1]
 
         elif self.spin.is_polarized:
-            if abs(vec.sum() - vec[2]) > 1e-6:
+            if vec[:2] @ vec[:2] > 1e-6:
                 spin = Spin("nc", dtype=self.dtype)
                 out = self.__class__(
                     self.geometry,
@@ -307,12 +330,12 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 else:
                     out._csr._D = np.zeros([len(self._csr._D), 5], dtype=self.dtype)
                     out._csr._D[:, [0, 1, 4]] = self._csr._D[:, :]
-                out = out.spin_align(vec)
+                out = out.spin_align(vec, atoms)
 
             elif vec[2] < 0:
                 # flip spin
                 out = self.copy()
-                out._csr._D[:, [0, 1]] = out._csr._D[:, [1, 0]]
+                out._csr._D[idx, [0, 1]] = out._csr._D[idx, [1, 0]]
             else:
                 out = self.copy()
 
@@ -658,7 +681,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out_cls.fromsp(geom, BO)
 
-    def density(self, grid, spinor=None, tol=1e-7, eta=None):
+    def density(self, grid, spinor=None, tol: float = 1e-7, eta=None):
         r"""Expand the density matrix to the charge density on a grid
 
         This routine calculates the real-space density components on a specified grid.
