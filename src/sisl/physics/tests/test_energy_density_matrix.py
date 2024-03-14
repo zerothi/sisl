@@ -72,8 +72,8 @@ def setup():
 
 
 @pytest.mark.physics
-@pytest.mark.density_matrix
-@pytest.mark.energydensity_matrix
+@pytest.mark.densitymatrix
+@pytest.mark.energydensitymatrix
 class TestEnergyDensityMatrix:
     def test_objects(self, setup):
         assert len(setup.E.xyz) == 2

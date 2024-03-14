@@ -87,7 +87,6 @@ def setup():
 
 
 @pytest.mark.physics
-@pytest.mark.density_matrix
 @pytest.mark.densitymatrix
 class TestDensityMatrix:
     def test_objects(self, setup):
