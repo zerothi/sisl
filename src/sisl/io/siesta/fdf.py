@@ -1942,7 +1942,7 @@ class fdfSileSiesta(SileSiesta):
                 # And the we just don't do anything...
                 # We don't even warn the user...
                 atoms[idx]["orbitals"] = self._parse_pao_basis(pao_basis, lbl)
-            except Exception as e:
+            except Exception:
                 pass
 
         # Now check if we can find the orbitals
@@ -2089,7 +2089,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_add_overlap(self, parent_call, M):
         """Internal routine to ensure that the overlap matrix is read and added to the matrix `M`"""
         try:
-            S = self.read_overlap()
+            S = self.read_overlap(geometry=M.geometry)
             # Check for the same sparsity pattern
             if np.all(M._csr.col == S._csr.col):
                 M._csr._D[:, -1] = S._csr._D[:, 0]

@@ -798,7 +798,8 @@ class Grid(
                     "been specified."
                 )
 
-            c = (self.dcell[axis, :] ** 2).sum() ** 0.5
+            c = self.dcell[axis]
+            c = (c @ c) ** 0.5
             return int(floor(coord / c))
 
         icell = self.icell

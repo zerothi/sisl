@@ -1296,9 +1296,6 @@ class LatticeChild:
             # The supercell is given as a cell
             self.lattice = Lattice(lattice)
 
-    set_sc = deprecation(
-        "set_sc is deprecated; please use set_lattice instead", "0.14"
-    )(set_lattice)
     set_supercell = deprecation(
         "set_sc is deprecated; please use set_lattice instead", "0.15"
     )(set_lattice)

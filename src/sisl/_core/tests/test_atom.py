@@ -23,8 +23,14 @@ def setup():
     return t()
 
 
-def test1(setup):
+def strings(atom):
+    assert isinstance(str(atom), str)
+    assert isinstance(repr(atom), str)
+
+
+def test_atom_simple(setup):
     assert setup.C == Atom["C"]
+    assert setup.C == Atom["6"]
     assert setup.C == Atom[setup.C]
     assert setup.C == Atom[Atom["C"]]
     assert setup.C == Atom(Atom["C"])
@@ -44,10 +50,38 @@ def test_atom_ghost():
     assert Atom(-1).Z == 1
 
 
+def test_atom_weird():
+    for el in (6, "C", "Carbon"):
+        atom = Atom(el)
+        assert atom.Z == 6
+        assert atom.symbol == "C"
+        strings(atom)
+
+        atom = Atom[el]
+        assert atom.Z == 6
+        assert atom.symbol == "C"
+        strings(atom)
+
+
 def test_atom_unknown():
-    assert isinstance(Atom[1000], AtomUnknown)
+    for el in (1000, "1000"):
+        atom = Atom(el)
+        assert isinstance(atom, AtomUnknown)
+        strings(atom)
+
+        atom = Atom[el]
+        assert isinstance(atom, AtomUnknown)
+        strings(atom)
+
     # negative ones are still considered ghosts!
-    assert isinstance(Atom[-1000], AtomGhost)
+    for el in (-1000, "-1000"):
+        atom = Atom(el)
+        assert isinstance(atom, AtomGhost)
+        strings(atom)
+
+        atom = Atom[el]
+        assert isinstance(atom, AtomGhost)
+        strings(atom)
 
 
 def test2(setup):

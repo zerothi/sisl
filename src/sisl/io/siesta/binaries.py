@@ -15,7 +15,16 @@ except ImportError:
     has_fortran_module = False
 
 import sisl._array as _a
-from sisl import Atom, AtomicOrbital, Atoms, Geometry, Grid, Lattice, SparseCSR
+from sisl import (
+    Atom,
+    AtomicOrbital,
+    Atoms,
+    AtomUnknown,
+    Geometry,
+    Grid,
+    Lattice,
+    SparseCSR,
+)
 from sisl._core.sparse import _ncol_to_indptr
 from sisl._internal import set_module
 from sisl.messages import SislError, info, warn
@@ -945,8 +954,8 @@ class hsxSileSiesta(SileBinSiesta):
 
                 # always select the 2nd one since that contains the offset
                 # for the first isc [1, 0, 0] or [0, 1, 0] or [0, 0, 1]
-                sc_dir = sc_off[(1,) + np.index_exp[0] * (ndim - 2)].reshape(1, 3)
-                norm2_sc_dir = (sc_dir**2).sum()
+                sc_dir = sc_off[(1,) + np.index_exp[0] * (ndim - 2)]
+                norm2_sc_dir = sc_dir @ sc_dir
                 # figure out the maximum integer part
                 # we select 0 indices for all already determined lattice
                 # vectors since we know the first one is [0, 0, 0]
@@ -1071,27 +1080,29 @@ class hsxSileSiesta(SileBinSiesta):
         # 3. label[:1] -> symbol
         symbols = []
         lbls = []
-        for label in labels:
+        for i, label in enumerate(labels):
             lbls.append(label)
-            try:
-                symbol = _ptbl.Z_label(label)
+
+            # 1.
+            symbol = _ptbl.Z_label(label)
+            if symbol != "fa":
                 symbols.append(symbol)
                 continue
-            except Exception:
-                pass
-            try:
-                symbol = _ptbl.Z_label(label[:2])
+
+            # 2.
+            symbol = _ptbl.Z_label(label[:2])
+            if symbol != "fa":
                 symbols.append(symbol)
                 continue
-            except Exception:
-                pass
-            try:
-                symbol = _ptbl.Z_label(label[:1])
+
+            # 3.
+            symbol = _ptbl.Z_label(label[:1])
+            if symbol != "fa":
                 symbols.append(symbol)
                 continue
-            except Exception:
-                # we have no clue, assign -1
-                symbols.append(-1)
+
+            # 4. we have no clue, assign -1
+            symbols.append(-200 - i)
 
         # Read in orbital information
         atoms = []
@@ -1127,8 +1138,9 @@ class hsxSileSiesta(SileBinSiesta):
                 # the file has the correct number of orbitals
                 return aF
 
-            if aF.Z != aI.Z:
-                return aF
+            if not isinstance(aF, AtomUnknown):
+                if aF.Z != aI.Z:
+                    return aF
 
             # check for orbitals being atomicorbital
             for orb in aI:
@@ -1145,7 +1157,7 @@ class hsxSileSiesta(SileBinSiesta):
             # and the charge
             return aI
 
-        atoms = Atoms(map(get_best, atoms, base))
+        atoms = Atoms(map(get_best, atoms, base.atoms))
         return atoms
 
     def _r_geometry_v0(self, **kwargs):

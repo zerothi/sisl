@@ -1378,15 +1378,6 @@ class TestGeometry:
         if len(kwargs) == 0:
             self.test_argumentparser2(setup, **setup.g._ArgumentParser_args_single())
 
-    def test_set_sc(self, setup):
-        # check for deprecation
-        s1 = Lattice([2, 2, 2])
-        g1 = Geometry([[0, 0, 0], [1, 1, 1]], lattice=[2, 2, 1])
-        with pytest.warns(SislDeprecation) as deps:
-            g1.set_sc(s1)
-        assert g1.lattice == s1
-        assert len(deps) == 1
-
     def test_set_supercell(self, setup):
         # check for deprecation
         s1 = Lattice([2, 2, 2])

@@ -34,6 +34,9 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- reading matrices from HSX files with *weird* labels, should now work (*fingers-crossed*)
+- `Atom(Z="1000")` will now correctly work, #708
+- `AtomUnknown` now also has a default mass of 1e40
 - changed `read_force_constant` to `read_hessian`, the old methods are retained with
   deprecation warnings.
 - `pdosSileSiesta` plotting produced wrong spin components for NC/SOC

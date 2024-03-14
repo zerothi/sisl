@@ -1194,7 +1194,7 @@ class SparseAtom(_SparseGeometry):
         atoms :
            only return the tuples for the requested atoms, default is all atoms
         only_cols :
-           only return then non-zero columns
+           only return the non-zero columns
 
         See Also
         --------

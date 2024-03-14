@@ -986,24 +986,47 @@ class Atom(
         # direct call
         if len(args) > 0:
             Z = args[0]
+            if "Z" in kwargs:
+                raise ValueError(
+                    f"{cls.__name__} got both Z as argument and keyword argument. Please only use one."
+                )
         else:
             Z = None
         Z = kwargs.get("Z", Z)
         if isinstance(Z, Atom):
             return super().__new__(Z.__class__)
-        elif isinstance(Z, Integral) and not issubclass(cls, AtomGhost) and Z < 0:
+
+        try:
+            # Try and convert to an integer
+            Z = int(Z)
+        except Exception:
+            pass
+
+        if isinstance(Z, Integral) and not issubclass(cls, AtomGhost) and Z < 0:
             cls = AtomGhost
         elif Z not in _ptbl._Z_int and not issubclass(cls, AtomUnknown):
             cls = AtomUnknown
+
         return super().__new__(cls)
 
-    def __init__(self, Z, orbitals=None, mass=None, tag=None, **kwargs):
+    def __init__(self, Z, orbitals=None, mass: float = None, tag: str = None, **kwargs):
+        # try and cast to integer, it might be cast differently later
+        # but this is to try and see if we can easily get it
+        try:
+            Z = int(Z)
+        except Exception:
+            pass
+
         if isinstance(Z, Atom):
             self._Z = Z.Z
         elif isinstance(Z, Integral):
             self._Z = Z
         else:
             self._Z = _ptbl.Z_int(Z)
+        if isinstance(self._Z, str):
+            raise ValueError(
+                f"{self.__class__.__name__} got an unparseable Z argument, needs to be an integer, got='{Z}'."
+            )
 
         self._orbitals = None
         if isinstance(orbitals, (tuple, list, np.ndarray)):
@@ -1021,8 +1044,10 @@ class Atom(
                 self._orbitals = [Orbital(-1, tag=tag) for tag in orbitals]
             elif all(orb is None for orb in orbitals):
                 orbitals = None
+
         elif isinstance(orbitals, Orbital):
             self._orbitals = [orbitals]
+
         elif isinstance(orbitals, Real):
             self._orbitals = [Orbital(orbitals)]
 
@@ -1302,6 +1327,8 @@ class AtomUnknown(Atom):
         """Instantiate with overridden tag"""
         if len(args) < 3 and "tag" not in kwargs:
             kwargs["tag"] = "unknown"
+        if len(args) < 2 and "mass" not in kwargs:
+            kwargs["mass"] = 1e40
         super().__init__(Z, *args, **kwargs)
 
 
@@ -1309,13 +1336,15 @@ class AtomUnknown(Atom):
 class AtomGhost(AtomUnknown):
     def __init__(self, Z, *args, **kwargs):
         """Instantiate with overridden tag and taking the absolute value of Z"""
-        if Z < 0:
-            Z = -Z
+        try:
+            # here we also need to do the conversion as we want
+            # to remove the negative sign
+            Z = abs(int(Z))
+        except Execption:
+            pass
+
         if len(args) < 3 and "tag" not in kwargs:
             kwargs["tag"] = "ghost"
-        if len(args) < 2 and "mass" not in kwargs:
-            # A very high default mass (unless specified)
-            kwargs["mass"] = 1e40
         super().__init__(Z, *args, **kwargs)
 
 

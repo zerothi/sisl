@@ -1078,7 +1078,7 @@ coefficients assigned to each state
         if degenerate is not None:
             # normalize direction
             degenerate_dir = _a.asarrayd(degenerate_dir)
-            degenerate_dir /= (degenerate_dir**2).sum() ** 0.5
+            degenerate_dir /= (degenerate_dir @ degenerate_dir) ** 0.5
 
             # de-coupling is only done for the 1st derivative
 

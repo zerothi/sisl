@@ -1885,7 +1885,7 @@ class Geometry(
             # Now calculate the vector that we should have
             # between the atoms
             v = self.cell[axis, :]
-            v = v / (v**2).sum() ** 0.5 * dist
+            v = v / (v @ v) ** 0.5 * dist
 
         elif isinstance(dist, str):
             # We have a single rational number
@@ -1901,7 +1901,7 @@ class Geometry(
             else:
                 v = np.array(axis)
 
-            v = v / (v**2).sum() ** 0.5 * d
+            v = v / (v @ v) ** 0.5 * d
 
         else:
             # The user *must* have supplied a vector

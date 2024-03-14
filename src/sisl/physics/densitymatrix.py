@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import math as m
 from numbers import Integral
+from typing import Optional
 
 import numpy as np
 from numpy import add, dot, logical_and, repeat, subtract, unique
