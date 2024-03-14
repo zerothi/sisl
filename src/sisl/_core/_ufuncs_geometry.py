@@ -1187,22 +1187,23 @@ def center(
 
     By specifying `what` one can control whether it should be:
 
-    * ``cop|xyz|position``: Center of coordinates (default)
-    * ``mm:xyz`` or ``mm(xyz)``: Center of minimum/maximum of coordinates
-    * ``com|mass``: Center of mass
-    * ``com:pbc|mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it
+    * ``COP|xyz|position``: Center of coordinates (default)
+    * ``mm:xyz``: Center of minimum+maximum of Cartesian coordinates
+    * ``mm:lattice|mm:cell``: Center of minimum+maximum of lattice vectors Cartesian coordinates
+    * ``COM|mass``: Center of mass
+    * ``COM:pbc|mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it
         may likely be because of a completely periodic system with no true center of mass
-    * ``cou|cell``: Center of cell
+    * ``COU|lattice|cell``: Center of lattice vectors
 
     Parameters
     ----------
     atoms :
         list of atomic indices to find center of
-    what : {'xyz', 'mm:xyz', 'mass', 'mass:pbc', 'cell'}
+    what :
         determine which center to calculate
     """
     what = what.lower()
-    if what in ("cou", "cell", "lattice"):
+    if what in ("cou", "lattice", "cell"):
         return geometry.lattice.center()
 
     if atoms is None:
@@ -1224,12 +1225,15 @@ def center(
         avg_theta = np.arctan2(-avg_sin, -avg_cos) / (2 * np.pi) + 0.5
         return avg_theta @ g.lattice.cell
 
-    if what in ("com", "mass"):
+    if what in ("com", "mass", "cop:mass"):
         mass = g.mass
         return mass @ g.xyz / mass.sum()
 
     if what in ("mm:xyz", "mm(xyz)"):
-        return (g.xyz.min(0) + g.xyz.max(0)) / 2
+        return (g.xyz.max(0) + g.xyz.min(0)) / 2
+
+    if what in ("mm:lattice", "mm:cell"):
+        return (g.cell.max(0) + g.cell.min(0)) / 2
 
     if what in ("cop", "xyz", "position"):
         return np.mean(g.xyz, axis=0)
