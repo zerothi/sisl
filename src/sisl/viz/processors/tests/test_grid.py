@@ -355,6 +355,10 @@ def test_get_isos(grid, skewed):
     if skewed:
         return
 
+    # we cast to the real value, to bypass scikit-images problems
+    # scikit-image only allows float data-types
+    grid.grid = grid.grid.real
+
     # Test isocontours (2D)
     arr = grid_to_dataarray(grid.average(2), ["x", "y"], [0, 1, 2], nsc=(1, 1, 1))
 

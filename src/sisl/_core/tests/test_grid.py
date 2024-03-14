@@ -15,6 +15,7 @@ from sisl import (
     Grid,
     Lattice,
     SislError,
+    SislWarning,
     SphericalOrbital,
     geom,
 )
@@ -422,7 +423,8 @@ class TestGrid:
         # the correctness of the values are not.
         g = setup.g.copy()
         bc = [[g.PERIODIC] * 2, [g.NEUMANN, g.DIRICHLET], [g.DIRICHLET, g.NEUMANN]]
-        g.lattice.set_boundary_condition(bc)
+        with pytest.warns(SislWarning, match=r"is having image connections"):
+            g.lattice.set_boundary_condition(bc)
         n = np.prod(g.shape)
         A = csr_matrix((n, n))
         b = np.zeros(A.shape[0])

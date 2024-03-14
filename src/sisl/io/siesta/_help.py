@@ -28,10 +28,9 @@ def _ensure_diagonal(csr):
     """
     old_nnz = csr.nnz
     csr += csr.diags(0, dim=1)
-    if csr.nnz != old_nnz:
-        warn(
-            "ensuring the sparse matrix having diagonal elements changed the sparsity pattern."
-        )
+    n_added = csr.nnz - old_nnz
+    if n_added > 0:
+        warn(f"added {n_added} diagonal elements. This changes the sparsity pattern.")
 
 
 def _csr_from_siesta(geom, csr):

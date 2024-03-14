@@ -203,7 +203,8 @@ def test_tshs_missing_diagonal(sisl_tmp):
     del H1[0, 0]
 
     f1 = sisl_tmp("tmp1.TSHS", _dir)
-    H1.write(f1)
+    with pytest.warns(sisl.SislWarning, match=r"changes the sparsity pattern"):
+        H1.write(f1)
 
     f2 = sisl_tmp("tmp2.TSHS", _dir)
     H2 = sisl.get_sile(f1).read_hamiltonian()

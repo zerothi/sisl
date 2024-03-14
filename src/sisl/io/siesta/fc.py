@@ -68,7 +68,7 @@ class fcSileSiesta(SileSiesta):
         # we can convert using this scheme
         displacement = np.repeat(displacement, 6).ravel()
         displacement[1::2] *= -1
-        return self.read_force_constant(na) * displacement.reshape(1, 3, 2, 1, 1)
+        return self.read_hessian(na) * displacement.reshape(1, 3, 2, 1, 1)
 
     @sile_fh_open()
     def read_hessian(self, na: Optional[int] = None):

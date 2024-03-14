@@ -488,8 +488,8 @@ class BrillouinZone:
                 k[i] = func(parent, N, indices, *args, **kwargs)
         return BrillouinZone(parent, k)
 
-    @staticmethod
-    def param_circle(parent, N_or_dk, kR, normal, origin, loop=False):
+    @classmethod
+    def param_circle(cls, parent, N_or_dk, kR, normal, origin, loop=False):
         r"""Create a parameterized k-point list where the k-points are generated on a circle around an origin
 
         The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
@@ -504,8 +504,8 @@ class BrillouinZone:
         N_or_dk : int
            number of k-points generated using the parameterization (if an integer),
            otherwise it specifies the discretization length on the circle (in 1/Ang),
-           If the latter case will use less than 4 points a warning will be raised and
-           the number of points increased to 4.
+           If the latter case will use less than 2 points a warning will be raised and
+           the number of points increased to 2.
         kR : float
            radius of the k-point. In 1/Ang
         normal : array_like of float
@@ -541,7 +541,7 @@ class BrillouinZone:
             if N < 2:
                 N = 2
                 info(
-                    "BrillouinZone.param_circle increased the number of circle points to 2."
+                    f"{cls.__name__}.param_circle increased the number of circle points to 2."
                 )
 
         # Conversion object
@@ -569,7 +569,7 @@ class BrillouinZone:
             pv /= fnorm(pv)
             q = Quaternion(phi, pv, rad=True) * Quaternion(theta, [0, 0, 1], rad=True)
         else:
-            q = Quaternion(0.0, [0, 0, k_n[2] / abs(k_n[2])], rad=True)
+            q = Quaternion(0.0, [0, 0, np.sign(k_n[2])], rad=True)
 
         # Calculate k-points
         k = q.rotate(k)

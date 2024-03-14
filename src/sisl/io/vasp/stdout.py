@@ -27,12 +27,14 @@ class stdoutSileVASP(SileVASP):
             r".*General timing and accounting",
             lambda attr, match: lambda: True,
             default=lambda: False,
+            not_found="warn",
         ),
         _A(
             "accuracy_reached",
             r".*reached required accuracy",
             lambda attr, match: lambda: True,
             default=lambda: False,
+            not_found="warn",
         ),
     ]
 

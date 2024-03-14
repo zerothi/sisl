@@ -38,12 +38,14 @@ class stdoutSileORCA(SileORCA):
             r".*DFT DISPERSION CORRECTION",
             lambda attr, match: True,
             default=False,
+            not_found="ignore",
         ),
         _A(
             "completed",
             r".*ORCA TERMINATED NORMALLY",
             lambda attr, match: True,
             default=False,
+            not_found="warn",
         ),
     ]
 

@@ -6,6 +6,7 @@ import os.path as osp
 import numpy as np
 import pytest
 
+import sisl
 from sisl.io.vasp.stdout import stdoutSileVASP
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
@@ -16,9 +17,11 @@ def test_diamond_outcar_energies(sisl_files):
     f = sisl_files(_dir, "diamond", "OUTCAR")
     f = stdoutSileVASP(f)
 
-    E0 = f.read_energy()
-    E = f.read_energy[-1]()
-    Eall = f.read_energy[:]()
+    with pytest.warns(sisl.SislDeprecation, match=r"no longer returns the last entry"):
+        E0 = f.read_energy()
+
+        E = f.read_energy[-1]()
+        Eall = f.read_energy[:]()
 
     assert E0.sigma0 == 0.8569373  # first block
     assert E.sigma0 == -18.18677613  # last block

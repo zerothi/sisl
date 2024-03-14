@@ -9,12 +9,14 @@ from numpy import (
     concatenate,
     cos,
     delete,
+    divide,
     dot,
     empty,
     sin,
     sqrt,
     square,
     take,
+    zeros_like,
 )
 from scipy.special import sph_harm
 
@@ -139,16 +141,16 @@ def spher2cart(r, theta, phi):
     return R
 
 
-def cart2spher(r, theta=True, cos_phi=False, maxR=None):
+def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
     r"""Transfer a vector to spherical coordinates with some possible differences
 
     Parameters
     ----------
     r : array_like
        the cartesian vectors
-    theta : bool, optional
+    theta :
        if ``True`` also calculate the theta angle and return it
-    cos_phi : bool, optional
+    cos_phi :
        if ``True`` return :math:`\cos(\phi)` rather than :math:`\phi` which may
        be useful in some subsequent mathematical calculations
     maxR : float, optional
@@ -178,11 +180,11 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
             theta = arctan2(r[:, 1], r[:, 0])
         else:
             theta = None
-        if cos_phi:
-            phi = r[:, 2] / rr
-        else:
-            phi = arccos(r[:, 2] / rr)
-        phi[rr == 0.0] = 0.0
+        phi = zeros_like(rr)
+        idx = rr != 0.0
+        divide(r[:, 2], rr, out=phi, where=idx)
+        if not cos_phi:
+            arccos(phi, out=phi, where=idx)
         return rr, theta, phi
 
     rr = square(r).sum(-1)
@@ -193,13 +195,12 @@ def cart2spher(r, theta=True, cos_phi=False, maxR=None):
         theta = arctan2(r[:, 1], r[:, 0])
     else:
         theta = None
-    if cos_phi:
-        phi = r[:, 2] / rr
-    else:
-        phi = arccos(r[:, 2] / rr)
-    # Typically there will be few rr==0. values, so no need to
-    # create indices
-    phi[rr == 0.0] = 0.0
+
+    phi = zeros_like(rr)
+    idx0 = rr != 0.0
+    divide(r[:, 2], rr, out=phi, where=idx0)
+    if not cos_phi:
+        arccos(phi, out=phi, where=idx0)
     return n, idx, rr, theta, phi
 
 
@@ -254,7 +255,7 @@ def curl(m, axis=-2, axisv=-1):
 
     Returns
     -------
-    curl : the curl of the matrix shape of `m` without axis `axis` 
+    curl : the curl of the matrix shape of `m` without axis `axis`
     """
     if m.shape[axis] != 3:
         raise ValueError("curl requires 3 vectors to calculate the curl of!")

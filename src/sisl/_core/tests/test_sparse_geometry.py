@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 import scipy as sc
 
-from sisl import Atom, Geometry, Lattice
+from sisl import Atom, Geometry, Lattice, SislWarning
 from sisl._core.sparse_geometry import *
 from sisl.geom import fcc, graphene
 
@@ -141,7 +141,10 @@ class TestSparseAtom:
         s[3, 0] = 2
 
         # check that untiling twice is not the same as untiling 4 times and coupling it
-        s2 = s.untile(2, 0)
+        with pytest.warns(
+            SislWarning, match=r"may have connections crossing the entire"
+        ):
+            s2 = s.untile(2, 0)
         s4 = s.untile(4, 0).tile(2, 0)
         ds = s2 - s4
         ds.finalize()
@@ -665,7 +668,8 @@ def test_sparse_orbital_add_axis(setup):
     s = SparseOrbital(g)
     s.construct([[0.1, 1.5], [1, 2]])
     s1 = s.add(s, axis=2)
-    s2 = SparseOrbital(g.append(Lattice([0, 0, 10]), 2).add(g, offset=[0, 0, 5]))
+    with pytest.warns(SislWarning, match=r"with 0 length"):
+        s2 = SparseOrbital(g.append(Lattice([0, 0, 10]), 2).add(g, offset=[0, 0, 5]))
     s2.construct([[0.1, 1.5], [1, 2]])
     assert s1.spsame(s2)
 
@@ -673,7 +677,8 @@ def test_sparse_orbital_add_axis(setup):
 def test_sparse_orbital_add_no_axis():
     from sisl.geom import sc
 
-    g = (sc(1.0, Atom(1, R=1.5)) * 2).add(Lattice([0, 0, 5]))
+    with pytest.warns(SislWarning, match=r"with 0 length"):
+        g = (sc(1.0, Atom(1, R=1.5)) * 2).add(Lattice([0, 0, 5]))
     s = SparseOrbital(g)
     s.construct([[0.1, 1.5], [1, 2]])
     s1 = s.add(s, offset=[0, 0, 3])

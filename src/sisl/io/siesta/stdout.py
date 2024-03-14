@@ -114,6 +114,7 @@ class stdoutSileSiesta(SileSiesta):
             r".*Job completed",
             lambda attr, match: lambda: True,
             default=lambda: False,
+            not_found="warn",
         ),
         _A(
             "spin",

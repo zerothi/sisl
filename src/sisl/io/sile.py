@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import gzip
 import re
 from functools import reduce, wraps
@@ -10,7 +12,7 @@ from operator import and_, contains
 from os.path import basename, splitext
 from pathlib import Path
 from textwrap import dedent, indent
-from typing import Any, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import sisl.io._exceptions as _exceptions
 from sisl._environ import get_environ_variable
@@ -836,9 +838,7 @@ class Info:
                 inst.fh.seek(loc)
 
             if not prop.found:
-                # TODO see if this should just be a warning? Perhaps it would be ok that it can't be
-                # found.
-                info(f"Attribute {attr} could not be found in {inst}")
+                prop.not_found(inst, prop)
 
             return prop.value
 
@@ -870,9 +870,23 @@ class Info:
             the default value of the attribute
         found:
             whether the value has been found in the file.
+        not_found: callable or str or Exception
+            what to do when the attribute is not found, defaults to raise a SislInfo.
+            It should accept 2 arguments, the object calling it, and the attribute.
+
+                def not_found(obj, attr): # do something
         """
 
-        __slots__ = ("attr", "regex", "parser", "updatable", "value", "found", "doc")
+        __slots__ = (
+            "attr",
+            "regex",
+            "parser",
+            "updatable",
+            "value",
+            "found",
+            "doc",
+            "not_found",
+        )
 
         def __init__(
             self,
@@ -883,6 +897,7 @@ class Info:
             updatable: bool = False,
             default: Optional[Any] = None,
             found: bool = False,
+            not_found: Optional[Callable[[Any, InfoAttr], None]] = None,
         ):
             self.attr = attr
             if isinstance(regex, str):
@@ -893,6 +908,45 @@ class Info:
             self.value = default
             self.found = found
             self.doc = doc
+
+            def not_found_factory(method):
+                # first check for a class, then check whether it is a specific class
+                # otherwise a TypeError would be raised...
+                if isinstance(method, type) and issubclass(method, BaseException):
+
+                    def not_found(obj, attr):
+                        raise method(
+                            f"Attribute {attr.attr} could not be found in {obj}."
+                        )
+
+                else:
+
+                    def not_found(obj, attr):
+                        method(f"Attribute {attr.attr} could not be found in {obj}.")
+
+                return not_found
+
+            if not_found is None:
+                not_found = not_found_factory(info)
+
+            elif isinstance(not_found, str):
+                if not_found == "info":
+                    not_found = not_found_factory(info)
+                elif not_found == "warn":
+                    not_found = not_found_factory(warn)
+                elif not_found == "error":
+                    not_found = not_found_factory(KeyError)
+                elif not_found == "ignore":
+                    not_found = lambda obj, attr: None
+                else:
+                    raise ValueError(
+                        f"{self.__class__.__name__} instantiated with unrecognized value in 'not_found' argument, got {not_found}."
+                    )
+
+            elif isinstance(not_found, type) and issubclass(not_found, BaseException):
+                not_found = not_found_factory(not_found)
+
+            self.not_found = not_found
 
         def process(self, line):
             if self.found and not self.updatable:
@@ -916,6 +970,7 @@ class Info:
                 updatable=self.updatable,
                 default=self.value,
                 found=self.found,
+                not_found=self.not_found,
             )
 
         def documentation(self):

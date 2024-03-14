@@ -38,6 +38,7 @@ class txtSileORCA(SileORCA):
             r".*\$ VdW_Correction",
             lambda attr, match: True,
             default=False,
+            not_found="ignore",
         ),
     ]
 

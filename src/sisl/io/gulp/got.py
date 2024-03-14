@@ -295,7 +295,7 @@ class gotSileGULP(SileGULP):
         if not f.is_file():
             return None
 
-        fc = fcSileGULP(f, "r").read_force_constant(**kwargs)
+        fc = fcSileGULP(f, "r").read_hessian(**kwargs)
 
         if fc.shape[0] // 3 != geometry.na:
             warn(
