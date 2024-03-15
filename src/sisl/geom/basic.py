@@ -35,7 +35,7 @@ def sc(alat: float, atoms: AtomsLike) -> Geometry:
         the atom in the SC lattice
     """
     lattice = Lattice(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], np.float64) * alat)
-    g = Geometry([0, 0, 0], atom, lattice=lattice)
+    g = Geometry([0, 0, 0], atoms, lattice=lattice)
     geometry_define_nsc(g)
     return g
 
