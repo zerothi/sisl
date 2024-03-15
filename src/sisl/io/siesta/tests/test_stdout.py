@@ -106,11 +106,14 @@ def test_md_nose_out_data(sisl_files):
     assert e["kinetic"] == pytest.approx(2293.584862)
 
 
-def test_md_nose_out_completed(sisl_files):
+def test_md_nose_out_info(sisl_files):
     f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
-    out.info.completed
-    out.info.spin
+    assert out.info.completed
+    assert out.info.spin.is_unpolarized
+    geom = out.read_geometry()
+    assert out.info.na == geom.na
+    assert out.info.no == geom.no
 
 
 def test_md_nose_out_dataframe(sisl_files):

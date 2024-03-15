@@ -110,6 +110,18 @@ class stdoutSileSiesta(SileSiesta):
 
     _info_attributes_ = [
         _A(
+            "na",
+            r"^initatomlists: Number of atoms",
+            lambda attr, match: int(match.string.split()[-3]),
+            not_found="warn",
+        ),
+        _A(
+            "no",
+            r"^initatomlists: Number of atoms",
+            lambda attr, match: int(match.string.split()[-2]),
+            not_found="warn",
+        ),
+        _A(
             "completed",
             r".*Job completed",
             lambda attr, match: lambda: True,

@@ -258,7 +258,7 @@ class Geometry(
 
     @property
     def atoms(self) -> Atoms:
-        """Atoms for the geometry (`Atoms` object)"""
+        """Atoms associated with the geometry"""
         return self._atoms
 
     @property
@@ -268,7 +268,7 @@ class Geometry(
 
     @property
     def q0(self) -> float:
-        """Total initial charge in this geometry (sum of q0 in all atoms)"""
+        """Total initial charge in this geometry (sum of q0 off all atoms)"""
         return self.atoms.q0.sum()
 
     @property
