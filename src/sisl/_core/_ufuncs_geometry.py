@@ -636,7 +636,7 @@ def insert(geometry: Geometry, atom: AtomsArgument, other: GeometryLike) -> Geom
     --------
     Geometry.add : add geometries
     Geometry.append : appending geometries
-    Geometry.prepend : prending geometries
+    Geometry.prepend : prepending geometries
     Geometry.attach : attach a geometry
     """
     atom = geometry._sanitize_atoms(atom)
@@ -1252,14 +1252,14 @@ def append(
 ) -> Geometry:
     """Appends two structures along `axis`
 
-    This will automatically add the ``geometry.cell[axis,:]`` to all atomic
+    This will automatically add the ``geometry.cell[axis]`` to all atomic
     coordiates in the `other` structure before appending.
 
     The basic algorithm is this:
 
-    >>> oxa = other.xyz + geometry.cell[axis,:][None,:]
+    >>> oxa = other.xyz + geometry.cell[axis][None,:]
     >>> geometry.xyz = np.append(geometry.xyz,oxa)
-    >>> geometry.cell[axis,:] += other.cell[axis,:]
+    >>> geometry.cell[axis] += other.cell[axis]
 
     NOTE: The cell appended is only in the axis that
     is appended, which means that the other cell directions
@@ -1279,13 +1279,13 @@ def append(
         With 'min', the routine will shift both the structures along the cell
         axis of `geometry` such that they coincide at the first atom, lastly one
         may use a specified offset to manually select how `other` is displaced.
-        NOTE: That `geometry.cell[axis, :]` will be added to `offset` if `other` is
+        NOTE: That ``geometry.cell[axis]`` will be added to `offset` if `other` is
         a geometry.
 
     See Also
     --------
     Geometry.add : add geometries
-    Geometry.prepend : prending geometries
+    Geometry.prepend : prepending geometries
     Geometry.attach : attach a geometry
     Geometry.insert : insert a geometry
     """
@@ -1441,7 +1441,7 @@ def add(
     See Also
     --------
     Geometry.append : appending geometries
-    Geometry.prepend : prending geometries
+    Geometry.prepend : prepending geometries
     Geometry.attach : attach a geometry
     Geometry.insert : insert a geometry
 
