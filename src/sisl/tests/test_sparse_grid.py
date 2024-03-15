@@ -163,7 +163,7 @@ def test_orbital_products(geometry):
     DM = sisl.DensityMatrix(geometry, dim=1, dtype=np.float64)
     DM[0, 0] = 1.0
 
-    dens = psi_values.reduce_orbital_products(DM.tocsr(), geometry.sc)
+    dens = psi_values.reduce_orbital_products(DM.tocsr(), geometry.lattice)
     assert isinstance(dens, Grid)
     assert dens.shape == psi_values.grid_shape
     assert np.any(dens.grid != 0)
@@ -177,7 +177,7 @@ def test_orbital_products(geometry):
     DM[0, 0] = 1.0
     DM[1, 1] = 2.0
 
-    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.sc)
+    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.lattice)
     predicted = (orb_0**2) * 1.0 + (orb_1**2) * 2.0
 
     assert np.allclose(dens.grid.ravel(), predicted)
@@ -187,7 +187,7 @@ def test_orbital_products(geometry):
     DM[0, 0] = 1.0
     DM[0, 1] = 2.0
 
-    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.sc)
+    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.lattice)
     predicted = (orb_0**2) * 1.0 + (orb_0 * orb_1) * 2.0
 
     assert np.allclose(dens.grid.ravel(), predicted)
@@ -198,7 +198,7 @@ def test_orbital_products(geometry):
     DM[0, 1] = 1.0
     DM[1, 0] = 0.5
 
-    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.sc)
+    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.lattice)
     predicted = (orb_0**2) * 1.0 + (orb_0 * orb_1) * 1.5
 
     assert np.allclose(dens.grid.ravel(), predicted)
@@ -224,7 +224,7 @@ def test_orbital_products_periodic(geometry):
     DM = sisl.DensityMatrix(geometry, dim=1, dtype=np.float64)
     DM[0, 0] = 1.0
 
-    dens = psi_values.reduce_orbital_products(DM.tocsr(), geometry.sc)
+    dens = psi_values.reduce_orbital_products(DM.tocsr(), geometry.lattice)
 
     predicted = (orb_0**2).sum(axis=1)
 
@@ -235,7 +235,7 @@ def test_orbital_products_periodic(geometry):
     DM[0, 0] = 1.0
     DM[1, 1] = 2.0
 
-    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.sc)
+    dens = psi_values.reduce_orbital_products(DM.tocsr(), DM.lattice)
     predicted = (orb_0**2).sum(axis=1) + (orb_1**2).sum(axis=1) * 2.0
 
     assert np.allclose(dens.grid.ravel(), predicted)
@@ -266,10 +266,10 @@ def test_orbital_products_onthefly_reduction(geometry, psi_values, ncoeffs):
         csr.data[:, :] = csr.data[:, 0].reshape(-1, 1)
 
     # Compute the values on the full grid
-    not_reduced = psi_values.reduce_orbital_products(csr, DM.sc)
+    not_reduced = psi_values.reduce_orbital_products(csr, DM.lattice)
 
     # Reducing the last axis
-    reduced = psi_values.reduce_orbital_products(csr, DM.sc, reduce_grid=(2,))
+    reduced = psi_values.reduce_orbital_products(csr, DM.lattice, reduce_grid=(2,))
 
     post_reduced = not_reduced.sum(2)
     assert reduced.size == post_reduced.size
@@ -279,7 +279,7 @@ def test_orbital_products_onthefly_reduction(geometry, psi_values, ncoeffs):
         assert np.allclose(reduced.reshape(post_reduced.shape), post_reduced)
 
     # Reducing the two last axes
-    reduced = psi_values.reduce_orbital_products(csr, DM.sc, reduce_grid=(2, 1))
+    reduced = psi_values.reduce_orbital_products(csr, DM.lattice, reduce_grid=(2, 1))
 
     post_reduced = not_reduced.sum(2).sum(1)
     assert reduced.size == post_reduced.size
@@ -292,7 +292,7 @@ def test_orbital_products_onthefly_reduction(geometry, psi_values, ncoeffs):
     # it is more likely to fail.
 
     # Reducing the first axis
-    reduced = psi_values.reduce_orbital_products(csr, DM.sc, reduce_grid=(0,))
+    reduced = psi_values.reduce_orbital_products(csr, DM.lattice, reduce_grid=(0,))
 
     post_reduced = not_reduced.sum(0)
     assert reduced.size == post_reduced.size
@@ -302,7 +302,7 @@ def test_orbital_products_onthefly_reduction(geometry, psi_values, ncoeffs):
         assert np.allclose(reduced.reshape(post_reduced.shape), post_reduced)
 
     # Reducing the first and second axis
-    reduced = psi_values.reduce_orbital_products(csr, DM.sc, reduce_grid=(0, 1))
+    reduced = psi_values.reduce_orbital_products(csr, DM.lattice, reduce_grid=(0, 1))
 
     post_reduced = not_reduced.sum(1).sum(0)
     assert reduced.size == post_reduced.size

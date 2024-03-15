@@ -412,7 +412,6 @@ class SparseGridOrbitalBZ(Sparse4DGrid):
         if sparse_coeffs:
             if multi_coeffs:
                 reduce_func = reduce_sc_products_multicoeffs_sparse_denseindex
-                weights.astype = weights.copy
             else:
                 reduce_func = reduce_sc_products
                 weights = weights.tocsr().toarray(order="C")
@@ -438,11 +437,16 @@ class SparseGridOrbitalBZ(Sparse4DGrid):
 
             out = out.ravel()
 
+        if isinstance(weights, SparseCSR):
+            weights = weights.copy(dtype=dtype)
+        else:
+            weights = weights.astype(dtype)
+
         reduce_func(
             csr.data[:, 0].astype(dtype),
             csr.ptr,
             csr.col,
-            weights.astype(dtype=dtype),
+            weights,
             self.geometry.no,
             self.lattice.sc_off,
             weights_lattice.isc_off,
