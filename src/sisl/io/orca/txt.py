@@ -27,11 +27,13 @@ class txtSileORCA(SileORCA):
             "na",
             r".*Number of atoms:",
             lambda attr, match: int(match.string.split()[-1]),
+            not_found="error",
         ),
         _A(
             "no",
-            r".*Number of basis functions:",
+            r".*number of basis functions:",
             lambda attr, match: int(match.string.split()[-1]),
+            not_found="error",
         ),
         _A(
             "vdw_correction",
