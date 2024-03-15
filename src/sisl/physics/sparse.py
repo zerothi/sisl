@@ -633,7 +633,7 @@ class SparseOrbitalBZ(SparseOrbital):
         eigvals_only: bool = True,
         **kwargs,
     ):
-        r"""Calculates a subset of eigenvalues of the physical quantity  (default 10)
+        r"""Calculates a subset of eigenvalues of the physical quantity
 
         Setup the quantity and overlap matrix with respect to
         the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.
@@ -1265,7 +1265,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         eigvals_only: bool = True,
         **kwargs,
     ):
-        r"""Calculates a subset of eigenvalues of the physical quantity  (default 10)
+        r"""Calculates a subset of eigenvalues of the physical quantity
 
         Setup the quantity and overlap matrix with respect to
         the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.
