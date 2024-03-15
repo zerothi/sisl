@@ -77,8 +77,8 @@ class xsfSile(Sile):
         else:
             self._geometry_max = kwargs.get("steps", -1)
         self._geometry_write = 0
-        self._read_type = None
-        self._read_cell = None
+        self._r_type = None
+        self._r_cell = None
 
     def _write_key(self, key: str):
         self._write(f"{key}\n")
@@ -195,7 +195,7 @@ class xsfSile(Sile):
     ):
         if lattice is None:
             # fetch the prior read cell value
-            lattice = self._read_cell
+            lattice = self._r_cell
 
         # initialize all things
         cell = None
@@ -271,15 +271,15 @@ class xsfSile(Sile):
                 )
 
             elif line.startswith("CRYSTAL"):
-                self._read_type = "CRYSTAL"
+                self._r_type = "CRYSTAL"
             elif line.startswith("SLAB"):
-                self._read_type = "SLAB"
+                self._r_type = "SLAB"
             elif line.startswith("POLYMER"):
-                self._read_type = "POLYMER"
+                self._r_type = "POLYMER"
             elif line.startswith("MOLECULE"):
-                self._read_type = "MOLECULE"
+                self._r_type = "MOLECULE"
 
-        typ = self._read_type
+        typ = self._r_type
         if typ == "CRYSTAL":
             bc = ["periodic", "periodic", "periodic"]
         elif typ == "SLAB":
@@ -309,7 +309,7 @@ class xsfSile(Sile):
             )
 
         # overwrite the currently read cell
-        self._read_cell = cell
+        self._r_cell = cell
 
         if atoms is None:
             # this ensures that we will not parse atoms unless required

@@ -260,7 +260,7 @@ class fdfSileSiesta(SileSiesta):
         return includes
 
     @sile_fh_open()
-    def _read_label(self, label: str):
+    def _r_label(self, label: str):
         """Try and read the first occurence of a key
 
         This will take care of blocks, labels and piped in labels
@@ -312,7 +312,7 @@ class fdfSileSiesta(SileSiesta):
                     # Valid line, read key from other.fdf
                     return fdfSileSiesta(
                         self.dir_file(ls[idx + 1]), base=self._directory
-                    )._read_label(label)
+                    )._r_label(label)
 
                 # It is not in this line, either key is
                 # on the RHS of <, or the key could be "block". Say.
@@ -414,7 +414,7 @@ class fdfSileSiesta(SileSiesta):
             the label to look-up
         """
         self._seek()
-        return self._type(self._read_label(label))
+        return self._type(self._r_label(label))
 
     @sile_fh_open()
     def get(
@@ -465,7 +465,7 @@ class fdfSileSiesta(SileSiesta):
         >>> fdf.get("Hello") == ["line 1", "line2"]
         """
         # Try and read a line
-        value = self._read_label(label)
+        value = self._r_label(label)
 
         # Simply return the default value if not found
         if value is None:

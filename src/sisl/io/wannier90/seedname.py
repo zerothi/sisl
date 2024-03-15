@@ -72,7 +72,7 @@ class winSileWannier90(SileWannier90):
             self._file = Path(self._seed + suffix)
 
     @sile_fh_open()
-    def _read_lattice(self):
+    def _r_lattice(self):
         """Deferred routine"""
 
         f, l = self.step_to("unit_cell_cart", case=False)
@@ -108,10 +108,10 @@ class winSileWannier90(SileWannier90):
         # Reset
         self._set_file()
 
-        return self._read_lattice()
+        return self._r_lattice()
 
     @sile_fh_open()
-    def _read_geometry_centres(self, *args, **kwargs):
+    def _r_geometry_centres(self, *args, **kwargs):
         """Defered routine"""
 
         nc = int(self.readline())
@@ -132,7 +132,7 @@ class winSileWannier90(SileWannier90):
         return Geometry(xyz[:na, :], atoms="H")
 
     @sile_fh_open()
-    def _read_geometry(self, lattice, *args, **kwargs):
+    def _r_geometry(self, lattice, *args, **kwargs):
         """Defered routine"""
 
         is_frac = True
@@ -191,10 +191,10 @@ class winSileWannier90(SileWannier90):
 
         self._set_file("_centres.xyz")
         if self.file.is_file():
-            geom = self._read_geometry_centres()
+            geom = self._r_geometry_centres()
         else:
             self._set_file()
-            geom = self._read_geometry(lattice, *args, **kwargs)
+            geom = self._r_geometry(lattice, *args, **kwargs)
 
         # Reset file
         self._set_file()
@@ -260,7 +260,7 @@ class winSileWannier90(SileWannier90):
         self._write_geometry(geom, fmt, *args, **kwargs)
 
     @sile_fh_open()
-    def _read_hamiltonian(self, geom, dtype=np.float64, **kwargs):
+    def _r_hamiltonian(self, geom, dtype=np.float64, **kwargs):
         """Reads a Hamiltonian
 
         Reads the Hamiltonian model
@@ -379,7 +379,7 @@ class winSileWannier90(SileWannier90):
         # Set file
         self._set_file("_hr.dat")
 
-        H = self._read_hamiltonian(geom, *args, **kwargs)
+        H = self._r_hamiltonian(geom, *args, **kwargs)
         self._set_file()
         return H
 

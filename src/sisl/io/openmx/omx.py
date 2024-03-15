@@ -89,7 +89,7 @@ class omxSileOpenMX(SileOpenMX):
             pass
 
     @sile_fh_open()
-    def _read_key(self, key):
+    def _r_key(self, key):
         """Try and read the first occurence of a key
 
         This will take care of blocks, labels and piped in labels
@@ -204,7 +204,7 @@ class omxSileOpenMX(SileOpenMX):
             the label to look-up
         """
         self._seek()
-        return self._type(self._read_label(label))
+        return self._type(self._r_key(label))
 
     @sile_fh_open()
     def get(self, key, default=None):
@@ -224,7 +224,7 @@ class omxSileOpenMX(SileOpenMX):
                 `int` is returned.
         """
         # Try and read a line
-        value = self._read_key(key)
+        value = self._r_key(key)
 
         # Simply return the default value if not found
         if value is None:

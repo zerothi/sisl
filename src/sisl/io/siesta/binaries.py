@@ -764,7 +764,7 @@ class hsxSileSiesta(SileBinSiesta):
         """
 
         def get_geom_handle(xij):
-            atoms = self._read_atoms()
+            atoms = self.read_basis()
             if not atoms is None:
                 return Geometry(np.zeros([len(atoms), 3]), atoms)
 
@@ -1052,11 +1052,11 @@ class hsxSileSiesta(SileBinSiesta):
 
         return geometry
 
-    def _read_atoms(self, **kwargs):
+    def read_basis(self, **kwargs):
         """Reads basis set and geometry information from the HSX file"""
         # Now read the sizes used...
         no, na, nspecies = _siesta.read_hsx_specie_sizes(self.file)
-        self._fortran_check("read_geometry", "could not read specie sizes.")
+        self._fortran_check("read_basis", "could not read specie sizes.")
         # Read specie information
         labels, val_q, norbs, isa = _siesta.read_hsx_species(
             self.file, nspecies, no, na
@@ -1067,7 +1067,7 @@ class hsxSileSiesta(SileBinSiesta):
         labels = list(
             map(lambda s: b"".join(s).decode("utf-8").strip(), labels.tolist())
         )
-        self._fortran_check("read_geometry", "could not read species.")
+        self._fortran_check("read_basis", "could not read species.")
         # to python index
         isa -= 1
 
@@ -1108,7 +1108,7 @@ class hsxSileSiesta(SileBinSiesta):
         atoms = []
         for ispecie in range(nspecies):
             n_l_zeta = _siesta.read_hsx_specie(self.file, ispecie + 1, norbs[ispecie])
-            self._fortran_check("read_geometry", f"could not read specie {ispecie}.")
+            self._fortran_check("read_basis", f"could not read specie {ispecie}.")
             # create orbital
             # since the n, l, zeta is unique per atomic orbital (before expanding to
             # m shells), we will figure this out manually.
@@ -1175,7 +1175,7 @@ class hsxSileSiesta(SileBinSiesta):
 
     def _r_geometry_v1(self, **kwargs):
         # first read the atoms object
-        atoms = self._read_atoms(**kwargs)
+        atoms = self.read_basis(**kwargs)
 
         # now read coordinates and cell sizes
         _, na, _, _, _ = _siesta.read_hsx_sizes(self.file)
@@ -1398,7 +1398,7 @@ class wfsxSileSiesta(SileBinSiesta):
     def _setup(self, *args, **kwargs):
         """Simple setup that needs to be overwritten
 
-        All _read_next_* methods expect the fortran file unit to be handled
+        All _r_next_* methods expect the fortran file unit to be handled
         and that the position in the file is correct.
         """
         super()._setup(*args, **kwargs)
@@ -1510,9 +1510,9 @@ class wfsxSileSiesta(SileBinSiesta):
         self._open_wfsx("r")
         # Read the sizes relevant to the file.
         # We also read whether there's only gamma point information or there are multiple points
-        self._sizes = self._read_next_sizes(skip_basis=skip_basis)
+        self._sizes = self._r_next_sizes(skip_basis=skip_basis)
         if not skip_basis:
-            self._basis = self._read_next_basis()
+            self._basis = self._r_next_basis()
 
         # Get the functions that should be used to parse state values.
         if self._sizes.nspin in (4, 8):
@@ -1534,7 +1534,7 @@ class wfsxSileSiesta(SileBinSiesta):
         if close:
             self._close_wfsx()
 
-    def _read_next_sizes(self, skip_basis=False):
+    def _r_next_sizes(self, skip_basis=False):
         """Reads the sizes if they are the next thing to be read.
 
         Parameters
@@ -1561,11 +1561,11 @@ class wfsxSileSiesta(SileBinSiesta):
         # Inform that we are now in front of k point information
         self._state = 1 if skip_basis else 0
         # Check that everything went fine
-        self._fortran_check("_read_sizes", "could not read sizes")
+        self._fortran_check("_r_next_sizes", "could not read sizes")
 
         return Sizes(*sizes)
 
-    def _read_next_basis(self):
+    def _r_next_basis(self):
         """Reads the basis if it is the next thing to be read.
 
         Returns
@@ -1583,7 +1583,7 @@ class wfsxSileSiesta(SileBinSiesta):
         # Inform that we are now in front of k point information
         self._state = 1
         # Check that everything went fine
-        self._fortran_check("_read_basis", "could not read basis information")
+        self._fortran_check("_r_next_basis", "could not read basis information")
 
         # Convert the information to a dict so that code is easier to follow.
         basis_info = dict(
@@ -1626,7 +1626,7 @@ class wfsxSileSiesta(SileBinSiesta):
         # Generate the Atoms oject.
         return Atoms([_get_atom_object(at) for at in unique_ats])
 
-    def _read_next_info(self, ispin, ik):
+    def _r_next_info(self, ispin, ik):
         """Reads the next eigenstate information.
 
         This function should only be called after reading the sizes
@@ -1664,7 +1664,7 @@ class wfsxSileSiesta(SileBinSiesta):
         self._state = 2
         # Check that the read went fine
         self._fortran_check(
-            "_read_next_info",
+            "_r_next_info",
             f"could not read next eigenstate info [{ispin + 1}, {ik + 1}]",
         )
 
@@ -1678,7 +1678,7 @@ class wfsxSileSiesta(SileBinSiesta):
 
         return k, weight, nwf
 
-    def _read_next_values(self, ispin, ik, nwf):
+    def _r_next_values(self, ispin, ik, nwf):
         """Reads the next eigenstate values.
 
         This function should only be called after reading the states information
@@ -1691,7 +1691,7 @@ class wfsxSileSiesta(SileBinSiesta):
             the (python) k index of the next eigenstate.
         nwf: integer
             The number of wavefunctions that the next eigenstate contains.
-            Should have been obtained by reading the states info with `_read_next_info`.
+            Should have been obtained by reading the states info with `_r_next_info`.
 
         Returns
         -------
@@ -1714,13 +1714,13 @@ class wfsxSileSiesta(SileBinSiesta):
         self._state = 1
         # Check that everything went fine
         self._fortran_check(
-            "_read_next_values",
+            "_r_next_values",
             f"could not read next eigenstate values [{ispin + 1}, {ik + 1}]",
         )
 
         return idx, eig, state
 
-    def _read_next_eigenstate(self, ispin, ik):
+    def _r_next_eigenstate(self, ispin, ik):
         """Reads the next eigenstate in the WFSX file.
 
         Parameters
@@ -1736,10 +1736,10 @@ class wfsxSileSiesta(SileBinSiesta):
             The next eigenstate.
         """
         # Get the information of this eigenstate
-        k, weight, nwf = self._read_next_info(ispin, ik)
+        k, weight, nwf = self._r_next_info(ispin, ik)
         # Now that we have the information, we can read the values because
         # we know the number of wavefunctions stored in the k point (`nwf`)
-        idx, eig, state = self._read_next_values(ispin, ik, nwf)
+        idx, eig, state = self._r_next_values(ispin, ik, nwf)
 
         # Build the info dictionary for the eigenstate to know how it was calculated
         # We include the spin index if needed.
@@ -1762,7 +1762,7 @@ class wfsxSileSiesta(SileBinSiesta):
         bool : True if the file only contains the Gamma-point
         """
         self._open_wfsx("r")
-        sizes = self._read_next_sizes()
+        sizes = self._r_next_sizes()
         self._close_wfsx()
         return sizes
 
@@ -1779,8 +1779,8 @@ class wfsxSileSiesta(SileBinSiesta):
             the basis read.
         """
         self._open_wfsx("r")
-        self._sizes = self._read_next_sizes(skip_basis=False)
-        basis = self._read_next_basis()
+        self._sizes = self._r_next_sizes(skip_basis=False)
+        basis = self._r_next_basis()
         self._close_wfsx()
         return basis
 
@@ -1803,7 +1803,7 @@ class wfsxSileSiesta(SileBinSiesta):
             # Iterate over all eigenstates in the WFSX file, yielding control to the caller at
             # each iteration.
             for ik, ispin in product(range(self._sizes.nk), itt_spin):
-                yield self._read_next_eigenstate(ispin, ik)
+                yield self._r_next_eigenstate(ispin, ik)
             # We ran out of eigenstates
             self._close_wfsx()
         except GeneratorExit:

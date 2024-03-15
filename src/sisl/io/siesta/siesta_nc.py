@@ -171,7 +171,7 @@ class ncSileSiesta(SileCDFSiesta):
         """Returns the fermi-level"""
         return self._value("Ef")[:] * Ry2eV
 
-    def _read_class(self, cls, dim=1, **kwargs):
+    def _r_class(self, cls, dim=1, **kwargs):
         # Get the default spin channel
         # First read the geometry
         geom = self.read_geometry()
@@ -197,7 +197,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return C
 
-    def _read_class_spin(self, cls, **kwargs):
+    def _r_class_spin(self, cls, **kwargs):
         # Get the default spin channel
         spin = len(self._dimension("spin"))
 
@@ -237,7 +237,7 @@ class ncSileSiesta(SileCDFSiesta):
 
     def read_overlap(self, **kwargs):
         """Returns a overlap matrix from the underlying NetCDF file"""
-        S = self._read_class(Overlap, **kwargs)
+        S = self._r_class(Overlap, **kwargs)
 
         sp = self.groups["SPARSE"]
         S._csr._D[:, 0] = sp.variables["S"][:]
@@ -246,7 +246,7 @@ class ncSileSiesta(SileCDFSiesta):
 
     def read_hamiltonian(self, **kwargs):
         """Returns a Hamiltonian from the underlying NetCDF file"""
-        H = self._read_class_spin(Hamiltonian, **kwargs)
+        H = self._r_class_spin(Hamiltonian, **kwargs)
 
         sp = self.groups["SPARSE"]
         if sp.variables["H"].unit != "Ry":
@@ -272,7 +272,7 @@ class ncSileSiesta(SileCDFSiesta):
         This assumes that the dynamical matrix is stored in the field "H" as would the
         Hamiltonian. This is counter-intuitive but is required when using PHtrans.
         """
-        D = self._read_class_spin(DynamicalMatrix, **kwargs)
+        D = self._r_class_spin(DynamicalMatrix, **kwargs)
 
         sp = self.groups["SPARSE"]
         if sp.variables["H"].unit != "Ry**2":
@@ -286,7 +286,7 @@ class ncSileSiesta(SileCDFSiesta):
     def read_density_matrix(self, **kwargs):
         """Returns a density matrix from the underlying NetCDF file"""
         # This also adds the spin matrix
-        DM = self._read_class_spin(DensityMatrix, **kwargs)
+        DM = self._r_class_spin(DensityMatrix, **kwargs)
 
         sp = self.groups["SPARSE"]
         for i in range(len(DM.spin)):
@@ -299,7 +299,7 @@ class ncSileSiesta(SileCDFSiesta):
 
     def read_energy_density_matrix(self, **kwargs):
         """Returns energy density matrix from the underlying NetCDF file"""
-        EDM = self._read_class_spin(EnergyDensityMatrix, **kwargs)
+        EDM = self._r_class_spin(EnergyDensityMatrix, **kwargs)
 
         # Shift to the Fermi-level
         Ef = self._value("Ef")[:] * Ry2eV

@@ -599,7 +599,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 sl[-2] = i
                 v[sl] = csr._D[:, i] * eV2Ry
 
-    def _read_class(self, cls, **kwargs):
+    def _r_class(self, cls, **kwargs):
         """Reads a class model from a file"""
 
         # Ensure that the geometry is written
@@ -672,7 +672,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
     def read_delta(self, **kwargs):
         """Reads a delta model from the file"""
-        return self._read_class(SparseOrbitalBZSpin, **kwargs)
+        return self._r_class(SparseOrbitalBZSpin, **kwargs)
 
 
 add_sile("delta.nc", deltancSileTBtrans)
