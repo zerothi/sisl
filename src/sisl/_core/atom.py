@@ -949,32 +949,65 @@ class Atom(
     when_subclassing="keep",
     metaclass=AtomMeta,
 ):
-    """Atomic information, mass, name number of orbitals and ranges
+    """Atomic information for a single atomic specie
 
-    Object to handle atomic mass, name, number of orbitals and
-    orbital range.
-
-    The `Atom` object handles the atomic species with information
-    such as
-
-    * atomic number
-    * mass
-    * number of orbitals
-    * radius of each orbital
-
-    The `Atom` object is `pickle`-able.
+    An atomic object retaining information about a single atomic specie.
+    It describes the atomic number (integer), the mass of the atom, and
+    holds a list of atomic centered orbitals. It also allows one
+    to tag the atom to distinguish it from other atoms of the same specie.
 
     Parameters
     ----------
     Z : int or str
-        key lookup for the atomic specie, `Atom[key]`
+        determine specie for the atomic specie.
     orbitals : list of Orbital or float, optional
-        all orbitals associated with this atom. Default to one orbital.
+        orbitals associated with this atom. See `Orbital` for details on
+        how to define orbitals.
+        Defaults to one orbital.
     mass : float, optional
-        the atomic mass, if not specified uses the mass from `PeriodicTable`
+        the atomic mass, defaults to the mass found in `PeriodicTable`.
     tag : str, optional
         arbitrary designation for user handling similar atoms with
         different settings (defaults to the label of the atom)
+
+
+    Examples
+    --------
+    >>> Carbon = Atom(6)
+    >>> Carbon = Atom("C")
+    >>> Carbon = Atom("Carbon")
+
+    Add a tag to be able to distinguish it from other atoms
+    >>> tagged_Carbon = Atom("Carbon", tag="siteA")
+
+    Create deuterium
+    >>> D = Atom("H", mass=2.014)
+
+    Define an atom with 3 orbitals, each with a range of 2 Angstroem
+    >>> C3 = Atom("C", orbitals=[2, 2, 2])
+
+    Define an atom outside of the periodic table (negative will yield an
+    AtomGhost object)
+    >>> ghost_C = Atom(-6)
+
+    Define an unknown atom (basically anything can do)
+    >>> unknown_atom = Atom(1000)
+
+    Notes
+    -----
+    One can define atoms outside of the periodic table. They will generally
+    be handled in this order:
+    - negative numbers will be converted into positive ones, and the returned
+      object will be an AtomGhost
+    - any other number (or name) not found in the periodic table will be returned
+      in an AtomUnknown object
+
+    The mass for atoms outside the periodic table will default to 1e40 amu.
+
+    See Also
+    --------
+    Orbital : define an orbital
+    Atoms : an efficient collection of Atom objects
     """
 
     def __new__(cls, *args, **kwargs):
@@ -1009,9 +1042,17 @@ class Atom(
 
         return super().__new__(cls)
 
-    def __init__(self, Z, orbitals=None, mass: float = None, tag: str = None, **kwargs):
+    def __init__(
+        self,
+        Z,
+        orbitals=None,
+        mass: Optional[float] = None,
+        tag: Optional[str] = None,
+        **kwargs,
+    ):
         # try and cast to integer, it might be cast differently later
         # but this is to try and see if we can easily get it
+        mass_Z = Z
         try:
             Z = int(Z)
         except Exception:
@@ -1019,8 +1060,10 @@ class Atom(
 
         if isinstance(Z, Atom):
             self._Z = Z.Z
+            mass_Z = self.Z
         elif isinstance(Z, Integral):
             self._Z = Z
+            mass_Z = self.Z
         else:
             self._Z = _ptbl.Z_int(Z)
         if isinstance(self._Z, str):
@@ -1064,7 +1107,7 @@ class Atom(
                 self._orbitals = [Orbital(-1.0)]
 
         if mass is None:
-            self._mass = _ptbl.atomic_mass(self.Z)
+            self._mass = _ptbl.atomic_mass(mass_Z)
         else:
             self._mass = mass
 
@@ -1077,7 +1120,7 @@ class Atom(
         return hash((self._tag, self._mass, self._Z, *self._orbitals))
 
     @property
-    def Z(self) -> NDArray[np.int32]:
+    def Z(self) -> int:
         """Atomic number"""
         return self._Z
 
@@ -1087,7 +1130,7 @@ class Atom(
         return self._orbitals
 
     @property
-    def mass(self) -> NDArray[np.float64]:
+    def mass(self) -> float:
         """Atomic mass"""
         return self._mass
 
@@ -1100,6 +1143,10 @@ class Atom(
     def no(self) -> int:
         """Number of orbitals on this atom"""
         return len(self.orbitals)
+
+    def __len__(self):
+        """Return number of orbitals in this atom"""
+        return self.no
 
     def index(self, orbital):
         """Return the index of the orbital in the atom object"""
@@ -1191,10 +1238,6 @@ class Atom(
 
     def __repr__(self):
         return f"<{self.__module__}.{self.__class__.__name__} {self.tag}, Z={self.Z}, M={self.mass}, maxR={self.maxR()}, no={len(self.orbitals)}>"
-
-    def __len__(self):
-        """Return number of orbitals in this atom"""
-        return self.no
 
     def __getattr__(self, attr):
         """Pass attribute calls to the orbital classes and return lists/array
@@ -1365,17 +1408,17 @@ to_dispatch.register("Sphere", ToSphereDispatch)
 
 @set_module("sisl")
 class Atoms:
-    """A list-like object to contain a list of different atoms with minimum
-    data duplication.
+    """Efficient collection of `Atom` objects
 
-    This holds multiple `Atom` objects which are indexed via a species
-    index.
+    A container object for `Atom` objects in a specific order.
+    No two `Atom` objects will be duplicated and indices will be used
+    to determine which `Atom` any indexable atom corresponds to.
     This is convenient when having geometries with millions of atoms
     because it will not duplicate the `Atom` object, only a list index.
 
     Parameters
     ----------
-    atoms : str, Atom or list-like
+    atoms : str, Atom, dict or list-like
        atoms to be contained in this list of atoms
        If a str, or a single `Atom` it will be the only atom in the resulting
        class repeated `na` times.
@@ -1383,11 +1426,12 @@ class Atoms:
        the list may a single argument passed to the `Atom` or a dictionary
        that is passed to `Atom`, see examples.
     na : int or None
-       total number of atoms, if ``len(atom)`` is smaller than `na` it will
+       total number of atoms, if ``len(atoms)`` is smaller than `na` it will
        be repeated to match `na`.
 
     Examples
     --------
+
     Creating an atoms object consisting of 5 atoms, all the same.
 
     >>> atoms = Atoms("H", na=5)
@@ -1397,6 +1441,7 @@ class Atoms:
 
     >>> Z = [1, 2, 1, 2]
     >>> atoms = Atoms(Z)
+    >>> atoms = Atoms([1, 2], na=4) # equivalent
 
     Creating individual atoms using dictionary entries, two
     Hydrogen atoms, one with a tag H_ghost.
@@ -1407,7 +1452,7 @@ class Atoms:
     # Using the slots should make this class slightly faster.
     __slots__ = ("_atom", "_specie", "_firsto")
 
-    def __init__(self, atoms="H", na=None):
+    def __init__(self, atoms: AtomsLike = "H", na: Optional[int] = None):
         # Default value of the atom object
         if atoms is None:
             atoms = Atom("H")
@@ -1449,7 +1494,7 @@ class Atoms:
                 specie.append(s)
 
         else:
-            raise TypeError(f"atoms keyword type is not acceptable {type(atoms)}")
+            raise ValueError(f"atoms keyword type is not acceptable {type(atoms)}")
 
         # Default for number of atoms
         if na is None:

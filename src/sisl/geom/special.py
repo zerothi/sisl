@@ -1,10 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from typing import Optional
+
 import numpy as np
 
 from sisl import Atom, Geometry, Lattice
 from sisl._internal import set_module
+from sisl.typing import AtomsLike
 
 from ._common import geometry_define_nsc
 
@@ -12,7 +15,7 @@ __all__ = ["diamond"]
 
 
 @set_module("sisl.geom")
-def diamond(alat: float = 3.57, atoms=None):
+def diamond(alat: float = 3.57, atoms: Optional[AtomsLike] = None) -> Geometry:
     """Diamond lattice with 2 atoms in the unitcell
 
     Parameters

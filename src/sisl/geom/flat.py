@@ -1,10 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from typing import Optional
+
 import numpy as np
 
 from sisl import Atom, Geometry, Lattice
 from sisl._internal import set_module
+from sisl.typing import AtomsLike
 
 from ._common import geometry_define_nsc
 
@@ -12,7 +15,7 @@ __all__ = ["honeycomb", "graphene", "honeycomb_flake", "graphene_flake", "triang
 
 
 @set_module("sisl.geom")
-def honeycomb(bond: float, atoms, orthogonal: bool = False) -> Geometry:
+def honeycomb(bond: float, atoms: AtomsLike, orthogonal: bool = False) -> Geometry:
     """Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     This enables creating BN lattices with ease, or graphene lattices.
@@ -21,7 +24,7 @@ def honeycomb(bond: float, atoms, orthogonal: bool = False) -> Geometry:
     ----------
     bond :
         bond length between atoms (*not* lattice constant)
-    atoms : Atom
+    atoms :
         the atom (or atoms) that the honeycomb lattice consists of
     orthogonal :
         if True returns an orthogonal lattice
@@ -65,7 +68,9 @@ def honeycomb(bond: float, atoms, orthogonal: bool = False) -> Geometry:
 
 
 @set_module("sisl.geom")
-def graphene(bond: float = 1.42, atoms=None, orthogonal: bool = False) -> Geometry:
+def graphene(
+    bond: float = 1.42, atoms: AtomsLike = None, orthogonal: bool = False
+) -> Geometry:
     """Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     Parameters
@@ -89,7 +94,9 @@ def graphene(bond: float = 1.42, atoms=None, orthogonal: bool = False) -> Geomet
 
 
 @set_module("sisl.geom")
-def honeycomb_flake(shells: int, bond: float, atoms, vacuum: float = 20.0) -> Geometry:
+def honeycomb_flake(
+    shells: int, bond: float, atoms: AtomsLike, vacuum: float = 20.0
+) -> Geometry:
     """Hexagonal flake of a honeycomb lattice, with zig-zag edges.
 
     Parameters
@@ -180,7 +187,7 @@ def honeycomb_flake(shells: int, bond: float, atoms, vacuum: float = 20.0) -> Ge
 
 @set_module("sisl.geom")
 def graphene_flake(
-    shells: int, bond: float = 1.42, atoms=None, vacuum: float = 20.0
+    shells: int, bond: float = 1.42, atoms: AtomsLike = None, vacuum: float = 20.0
 ) -> Geometry:
     """Hexagonal flake of graphene, with zig-zag edges.
 
@@ -208,7 +215,7 @@ def graphene_flake(
 
 @set_module("sisl.geom")
 def triangulene(
-    n: int, bond: float = 1.42, atoms=None, vacuum: float = 20.0
+    n: int, bond: float = 1.42, atoms: Optional[AtomsLike] = None, vacuum: float = 20.0
 ) -> Geometry:
     """Construction of an [n]-triangulene geometry
 

@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 __all__ = [
     "AtomsArgument",
     "AtomsLike",
+    "AtomType",
+    "AtomsType",
     "Axes",
     "Axies",
     "Axis",
@@ -44,10 +46,15 @@ __all__ = [
 ]
 
 
-AtomsLike = Union[
+AtomType = Union["Atom", int, str]
+AtomsType = Union[
     "Atom",
     "Atoms",
+    Sequence[AtomType],
+    int,
+    str,
 ]
+AtomsLike = Union[AtomType, AtomsType]
 
 # Pure integer axis specification
 Axis = int

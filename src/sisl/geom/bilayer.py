@@ -7,10 +7,12 @@ from typing import Optional
 
 import numpy as np
 
-from sisl import Atom, Cuboid, geom
+from sisl import Atom, Cuboid, Geometry
 from sisl._internal import set_module
+from sisl.typing import AtomsLike
 
 from ._common import geometry_define_nsc
+from .flat import honeycomb
 
 __all__ = ["bilayer"]
 
@@ -18,14 +20,14 @@ __all__ = ["bilayer"]
 @set_module("sisl.geom")
 def bilayer(
     bond: float = 1.42,
-    bottom_atoms: Optional = None,
-    top_atoms: Optional = None,
+    bottom_atoms: Optional[AtomsLike] = None,
+    top_atoms: Optional[AtomsLike] = None,
     stacking: str = "AB",
     twist=(0, 0),
     separation: float = 3.35,
     ret_angle: bool = False,
     layer: str = "both",
-):
+) -> Geometry:
     r"""Commensurate unit cell of a hexagonal bilayer structure, possibly with a twist angle.
 
     This routine follows the prescription of twisted bilayer graphene found in :cite:`Trambly2010`.
@@ -36,19 +38,19 @@ def bilayer(
 
     Parameters
     ----------
-    bond : float, optional
+    bond :
        bond length between atoms in the honeycomb lattice
-    bottom_atoms : Atom, optional
+    bottom_atoms :
        atom (or atoms) in the bottom layer. Defaults to ``Atom(6)``
-    top_atoms : Atom, optional
+    top_atoms :
        atom (or atoms) in the top layer, defaults to `bottom_atom`
     stacking : {'AB', 'AA', 'BA'}
        stacking sequence of the bilayer, where XY means that site X in bottom layer coincides with site Y in top layer
     twist : tuple of int, optional
        integer coordinates (m, n) defining a commensurate twist angle
-    separation : float, optional
+    separation :
        distance between the two layers
-    ret_angle : bool, optional
+    ret_angle :
        return the twist angle (in degrees) in addition to the geometry instance
     layer : {'both', 'bottom', 'top'}
        control which layer(s) to return
@@ -66,8 +68,8 @@ def bilayer(
         top_atoms = bottom_atoms
 
     # Construct two layers
-    bottom = geom.honeycomb(bond, bottom_atoms)
-    top = geom.honeycomb(bond, top_atoms)
+    bottom = honeycomb(bond, bottom_atoms)
+    top = honeycomb(bond, top_atoms)
     ref_cell = bottom.cell.copy()
 
     stacking = stacking.lower()
@@ -167,5 +169,5 @@ def bilayer(
 
     if ret_angle:
         return bilayer, theta
-    else:
-        return bilayer
+
+    return bilayer
