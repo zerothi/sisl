@@ -61,6 +61,7 @@ we hit release version 1.0.0.
   be done for assigning matrix elements (it fills with 0's).
 
 ### Removed
+- removed `txtSileOrca.info.no` since it was not present in any txt files
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed

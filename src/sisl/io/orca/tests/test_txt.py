@@ -1,5 +1,4 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os.path as osp
 import sys
@@ -18,7 +17,6 @@ def test_tags(sisl_files):
     f = sisl_files(_dir, "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.info.na == 2
-    assert out.info.no == None
 
 
 def test_read_electrons(sisl_files):
