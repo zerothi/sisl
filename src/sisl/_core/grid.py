@@ -267,17 +267,17 @@ class Grid(
         # Apply the scipy.ndimage.zoom function and return a new grid
         return self.apply(ndimage_zoom, zoom_factors, mode=mode, order=order, **kwargs)
 
-    def isosurface(self, level, step_size=1, **kwargs):
+    def isosurface(self, level: float, step_size: int = 1, **kwargs):
         """Calculates the isosurface for a given value
 
         It uses `skimage.measure.marching_cubes`, so you need to have scikit-image installed.
 
         Parameters
         ----------
-        level: float
+        level:
             contour value to search for isosurfaces in the grid.
             If not given or None, the average of the min and max of the grid is used.
-        step_size: int, optional
+        step_size:
             step size in voxels. Larger steps yield faster but coarser results.
             The result will always be topologically correct though.
         **kwargs:
@@ -309,6 +309,11 @@ class Grid(
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
                 f"{self.__class__.__name__}.isosurface requires scikit-image to be installed"
+            )
+
+        if np.iscomplexobj(self.grid):
+            raise NotImplementedError(
+                f"{self.__class__.__name__}.isosurface requires real grid values."
             )
 
         # Run the marching cubes algorithm to calculate the vertices and faces
