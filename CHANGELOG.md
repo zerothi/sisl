@@ -36,6 +36,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- `txtSileOrca.info.no` used a wrong regex, added a test
 - raises error when requesting isosurface for complex valued grids, #709
 - some attributes associated with `Sile.info.*` will now warn instead of raising information
 - reading matrices from HSX files with *weird* labels, should now work (*fingers-crossed*)
@@ -61,7 +62,6 @@ we hit release version 1.0.0.
   be done for assigning matrix elements (it fills with 0's).
 
 ### Removed
-- removed `txtSileOrca.info.no` since it was not present in any txt files
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
