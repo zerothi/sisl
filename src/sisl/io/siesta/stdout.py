@@ -1221,26 +1221,13 @@ class stdoutSileSiesta(SileSiesta):
                         atom_charges.append(charge)
 
             # Determine with which spin type we are dealing
-            IDX_NON_POL = 0
-            IDX_POL = 1
-            IDX_NC = 2
-            search_keys_spin = [
-                "Qatom",  # if we find Qatom and no "mulliken: Spin UP" we are dealing with spin unpolarized
-                "mulliken: Spin UP",
-                "Svec",
-            ]
-            loc = self.fh.tell()
-            ret = self.step_to(
-                search_keys_spin, case=True, ret_index=True, allow_reread=False
-            )
-            self.fh.seek(loc)
-            if ret[2] == IDX_NON_POL:
+            if self.info.spin == Spin.UNPOLARIZED:
                 # No spin components so just parse charge
                 atom_charges = []
                 atom_idx = []
                 header = ["e"]
                 _parse_spin_pol()
-            elif ret[2] == IDX_POL:
+            elif self.info.spin == Spin.POLARIZED:
                 # Parse both spin polarizations
                 atom_charges_pol = []
                 header = ["e", "Sz"]
@@ -1256,7 +1243,7 @@ class stdoutSileSiesta(SileSiesta):
                 atom_q = atom_charges_pol_array[0, :] + atom_charges_pol_array[1, :]
                 atom_s = atom_charges_pol_array[0, :] - atom_charges_pol_array[1, :]
                 atom_charges[:] = np.stack((atom_q, atom_s), axis=-1)
-            elif ret[2] == IDX_NC:
+            elif self.info.spin == Spin.NONCOLINEAR or self.info.spin == Spin.SPINORBIT:
                 # Parse as long as we find new species
                 atom_charges = []
                 atom_idx = []
