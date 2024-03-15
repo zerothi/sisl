@@ -72,7 +72,8 @@ def test_nc_multiple_fail(sisl_tmp, sisl_system):
 
         DM[0, 0] = 1.0
         with pytest.raises(ValueError):
-            DM.write(sile)
+            with pytest.warns(sisl.SislWarning, match=r"changes the sparsity pattern"):
+                DM.write(sile)
 
 
 @pytest.mark.parametrize(

@@ -66,7 +66,7 @@ def test_eigsh_orthogonal():
     sp[1, 1] = 0.5
     # Fails due to too many requested eigenvalues
     with pytest.raises(TypeError):
-        sp.eigsh()
+        sp.eigsh(k=3)
 
 
 def test_eigsh_non_orthogonal():

@@ -64,6 +64,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- changed default number of eigenvalues calculated in sparse `eigsh`, from 10 to 1
 - `stdoutSileSiesta.read_*` now defaults to read the *next* entry, and not the last
 - `stdoutSileSiesta.read_*` changed MD output functionality, see #586 for details
 - `AtomNeighbours` changed name to `AtomNeighbor` to follow #393

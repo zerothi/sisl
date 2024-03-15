@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import warnings
 
 import numpy as np
@@ -8,10 +10,12 @@ from scipy.sparse import SparseEfficiencyWarning, csr_matrix
 
 import sisl._array as _a
 import sisl.linalg as lin
+from sisl import Geometry
 from sisl._core.sparse import issparse
 from sisl._core.sparse_geometry import SparseOrbital
 from sisl._internal import set_module
 from sisl.messages import warn
+from sisl.typing import AtomsArgument, KPoint
 
 from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_nc_diag, matrix_ddk_so
 from ._matrix_dk import matrix_dk, matrix_dk_nc, matrix_dk_nc_diag, matrix_dk_so
@@ -59,7 +63,14 @@ class SparseOrbitalBZ(SparseOrbital):
       This is a keyword-only argument.
     """
 
-    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+    def __init__(
+        self,
+        geometry: Geometry,
+        dim: int = 1,
+        dtype=None,
+        nnzpr: Optional[int] = None,
+        **kwargs,
+    ):
         self._geometry = geometry
         self._orthogonal = kwargs.get("orthogonal", True)
 
@@ -123,7 +134,7 @@ class SparseOrbitalBZ(SparseOrbital):
         return self
 
     @classmethod
-    def fromsp(cls, geometry, P, S=None, **kwargs):
+    def fromsp(cls, geometry: Geometry, P, S=None, **kwargs):
         r"""Create a sparse model from a preset `Geometry` and a list of sparse matrices
 
         The passed sparse matrices are in one of `scipy.sparse` formats.
@@ -170,7 +181,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         return p
 
-    def iter_orbitals(self, atoms=None, local=False):
+    def iter_orbitals(self, atoms: Optional[AtomsArgument] = None, local: bool = False):
         r"""Iterations of the orbital space in the geometry, two indices from loop
 
         An iterator returning the current atomic index and the corresponding
@@ -203,7 +214,14 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         yield from self.geometry.iter_orbitals(atoms=atoms, local=local)
 
-    def _Pk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", _dim=0):
+    def _Pk(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+        _dim=0,
+    ):
         r"""Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
 
         Parameters
@@ -218,7 +236,14 @@ class SparseOrbitalBZ(SparseOrbital):
         k = _a.asarrayd(k).ravel()
         return matrix_k(gauge, self, _dim, self.lattice, k, dtype, format)
 
-    def _dPk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", _dim=0):
+    def _dPk(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+        _dim=0,
+    ):
         r"""Sparse matrix (``scipy.sparse.csr_matrix``) at `k` differentiated with respect to `k` for a polarized system
 
         Parameters
@@ -233,7 +258,14 @@ class SparseOrbitalBZ(SparseOrbital):
         k = _a.asarrayd(k).ravel()
         return matrix_dk(gauge, self, _dim, self.lattice, k, dtype, format)
 
-    def _ddPk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", _dim=0):
+    def _ddPk(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+        _dim=0,
+    ):
         r"""Sparse matrix (``scipy.sparse.csr_matrix``) at `k` double differentiated with respect to `k` for a polarized system
 
         Parameters
@@ -249,7 +281,13 @@ class SparseOrbitalBZ(SparseOrbital):
         return matrix_ddk(gauge, self, _dim, self.lattice, k, dtype, format)
 
     def Sk(
-        self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+        *args,
+        **kwargs,
     ):  # pylint: disable=E0202
         r"""Setup the overlap matrix for a given k-point
 
@@ -304,7 +342,13 @@ class SparseOrbitalBZ(SparseOrbital):
         pass
 
     def _Sk_diagonal(
-        self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+        *args,
+        **kwargs,
     ):
         r"""For an orthogonal case we always return the identity matrix"""
         if dtype is None:
@@ -329,7 +373,9 @@ class SparseOrbitalBZ(SparseOrbital):
         S.setdiag(1.0)
         return S.asformat(format)
 
-    def _Sk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _Sk(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
@@ -343,7 +389,15 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def dSk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dSk(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the :math:`k`-derivatie of the overlap matrix for a given k-point
 
         Creation and return of the derivative of the overlap matrix for a given k-point (default to Gamma).
@@ -394,7 +448,9 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         pass
 
-    def _dSk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _dSk(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` differentiated with respect to `k`
 
         Parameters
@@ -408,7 +464,9 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         return self._dPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def _dSk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _dSk_non_colinear(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` for non-collinear spin, differentiated with respect to `k`
 
         Parameters
@@ -426,8 +484,14 @@ class SparseOrbitalBZ(SparseOrbital):
         )
 
     def ddSk(
-        self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs
-    ):  # pylint: disable=E0202
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the double :math:`k`-derivatie of the overlap matrix for a given k-point
 
         Creation and return of the double derivative of the overlap matrix for a given k-point (default to Gamma).
@@ -478,7 +542,9 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         pass
 
-    def _ddSk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _ddSk(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` double differentiated with respect to `k`
 
         Parameters
@@ -492,7 +558,9 @@ class SparseOrbitalBZ(SparseOrbital):
         """
         return self._ddPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def _ddSk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _ddSk_non_colinear(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` for non-collinear spin, differentiated with respect to `k`
 
         Parameters
@@ -509,7 +577,13 @@ class SparseOrbitalBZ(SparseOrbital):
             gauge, self, self.S_idx, self.lattice, k, dtype, format
         )
 
-    def eig(self, k=(0, 0, 0), gauge="R", eigvals_only=True, **kwargs):
+    def eig(
+        self,
+        k: KPoint = (0, 0, 0),
+        gauge: str = "R",
+        eigvals_only: bool = True,
+        **kwargs,
+    ):
         r"""Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)
 
         Setup the system and overlap matrix with respect to
@@ -529,7 +603,13 @@ class SparseOrbitalBZ(SparseOrbital):
             return lin.eigvals_destroy(P, S, **kwargs)
         return lin.eig_destroy(P, S, **kwargs)
 
-    def eigh(self, k=(0, 0, 0), gauge="R", eigvals_only=True, **kwargs):
+    def eigh(
+        self,
+        k: KPoint = (0, 0, 0),
+        gauge: str = "R",
+        eigvals_only: bool = True,
+        **kwargs,
+    ):
         r"""Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
@@ -545,7 +625,14 @@ class SparseOrbitalBZ(SparseOrbital):
         S = self.Sk(k=k, dtype=dtype, gauge=gauge, format="array")
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10, gauge="R", eigvals_only=True, **kwargs):
+    def eigsh(
+        self,
+        k: KPoint = (0, 0, 0),
+        n: int = 1,
+        gauge: str = "R",
+        eigvals_only: bool = True,
+        **kwargs,
+    ):
         r"""Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
         Setup the quantity and overlap matrix with respect to
@@ -612,7 +699,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
       This is a keyword-only argument.
     """
 
-    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+    def __init__(
+        self,
+        geometry: Geometry,
+        dim: int = 1,
+        dtype=None,
+        nnzpr: Optional[int] = None,
+        **kwargs,
+    ):
         # Check that the passed parameters are correct
         if "spin" not in kwargs:
             if isinstance(dim, Spin):
@@ -859,7 +953,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         }.get(self.spin._kind, f"unkown({self.spin._kind})")
         return f"<{self.__module__}.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}, spin={spin}>"
 
-    def _Pk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _Pk_unpolarized(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Sparse matrix (``scipy.sparse.csr_matrix``) at `k`
 
         Parameters
@@ -873,7 +969,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format)
 
-    def _Pk_polarized(self, k=(0, 0, 0), spin=0, dtype=None, gauge="R", format="csr"):
+    def _Pk_polarized(
+        self,
+        k: KPoint = (0, 0, 0),
+        spin=0,
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+    ):
         r"""Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
 
         Parameters
@@ -889,7 +992,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
 
-    def _Pk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _Pk_non_colinear(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
@@ -904,7 +1009,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_k_nc(gauge, self, self.lattice, k, dtype, format)
 
-    def _Pk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _Pk_spin_orbit(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system
 
         Parameters
@@ -919,7 +1026,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_k_so(gauge, self, self.lattice, k, dtype, format)
 
-    def _dPk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _dPk_unpolarized(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`
 
         Parameters
@@ -933,7 +1042,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         return self._dPk(k, dtype=dtype, gauge=gauge, format=format)
 
-    def _dPk_polarized(self, k=(0, 0, 0), spin=0, dtype=None, gauge="R", format="csr"):
+    def _dPk_polarized(
+        self,
+        k: KPoint = (0, 0, 0),
+        spin=0,
+        dtype=None,
+        gauge: str = "R",
+        format: str = "csr",
+    ):
         r"""Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`
 
         Parameters
@@ -949,7 +1065,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         return self._dPk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
 
-    def _dPk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _dPk_non_colinear(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`
 
         Parameters
@@ -964,7 +1082,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_dk_nc(gauge, self, self.lattice, k, dtype, format)
 
-    def _dPk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _dPk_spin_orbit(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`
 
         Parameters
@@ -979,7 +1099,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_dk_so(gauge, self, self.lattice, k, dtype, format)
 
-    def _ddPk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _ddPk_non_colinear(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k` twice
 
         Parameters
@@ -994,7 +1116,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_ddk_nc(gauge, self, self.lattice, k, dtype, format)
 
-    def _ddPk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _ddPk_spin_orbit(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`
 
         Parameters
@@ -1009,7 +1133,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_ddk_so(gauge, self, self.lattice, k, dtype, format)
 
-    def _Sk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _Sk(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
 
         Parameters
@@ -1023,7 +1149,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
 
-    def _Sk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _Sk_non_colinear(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
@@ -1038,7 +1166,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_k_nc_diag(gauge, self, self.S_idx, self.lattice, k, dtype, format)
 
-    def _dSk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
+    def _dSk_non_colinear(
+        self, k: KPoint = (0, 0, 0), dtype=None, gauge: str = "R", format: str = "csr"
+    ):
         r"""Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
 
         Parameters
@@ -1055,7 +1185,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             gauge, self, self.S_idx, self.lattice, k, dtype, format
         )
 
-    def eig(self, k=(0, 0, 0), gauge="R", eigvals_only=True, **kwargs):
+    def eig(
+        self,
+        k: KPoint = (0, 0, 0),
+        gauge: str = "R",
+        eigvals_only: bool = True,
+        **kwargs,
+    ):
         r"""Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)
 
         Setup the system and overlap matrix with respect to
@@ -1087,7 +1223,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             return lin.eigvals_destroy(P, S, **kwargs)
         return lin.eig_destroy(P, S, **kwargs)
 
-    def eigh(self, k=(0, 0, 0), gauge="R", eigvals_only=True, **kwargs):
+    def eigh(
+        self,
+        k: KPoint = (0, 0, 0),
+        gauge: str = "R",
+        eigvals_only: bool = True,
+        **kwargs,
+    ):
         r"""Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
@@ -1115,7 +1257,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         S = self.Sk(k=k, dtype=dtype, gauge=gauge, format="array")
         return lin.eigh_destroy(P, S, eigvals_only=eigvals_only, **kwargs)
 
-    def eigsh(self, k=(0, 0, 0), n=10, gauge="R", eigvals_only=True, **kwargs):
+    def eigsh(
+        self,
+        k: KPoint = (0, 0, 0),
+        n=1,
+        gauge: str = "R",
+        eigvals_only: bool = True,
+        **kwargs,
+    ):
         r"""Calculates a subset of eigenvalues of the physical quantity  (default 10)
 
         Setup the quantity and overlap matrix with respect to
@@ -1143,18 +1292,18 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         S = self.Sk(k=k, dtype=dtype, gauge=gauge)
         return lin.eigsh(P, M=S, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
-    def transpose(self, hermitian=False, spin=True, sort=True):
+    def transpose(self, hermitian: bool = False, spin: bool = True, sort: bool = True):
         r"""A transpose copy of this object, possibly apply the Hermitian conjugate as well
 
         Parameters
         ----------
-        hermitian : bool, optional
+        hermitian :
            if true, also apply a spin-box Hermitian operator to ensure TRS, otherwise
            only return the transpose values.
-        spin : bool, optional
+        spin :
            whether the spin-box is also transposed if this is false, and `hermitian` is true,
            then only imaginary values will change sign.
-        sort : bool, optional
+        sort :
            the returned columns for the transposed structure will be sorted
            if this is true, default
         """

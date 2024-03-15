@@ -7,6 +7,7 @@ r"""Bloch's theorem
 Bloch's theorem is a very powerful proceduce that enables one to utilize
 the periodicity of a given direction to describe the complete system.
 """
+from typing import Sequence
 
 import numpy as np
 from numpy import add, empty, exp, multiply, zeros
@@ -14,6 +15,7 @@ from numpy import add, empty, exp, multiply, zeros
 import sisl._array as _a
 from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
+from sisl.typing import KPoint
 
 from ._bloch import bloch_unfold
 
@@ -90,7 +92,7 @@ class Bloch:
         """Number of Bloch expansions along each lattice vector"""
         return self._bloch
 
-    def unfold_points(self, k):
+    def unfold_points(self, k: KPoint):
         r"""Return a list of k-points to be evaluated for this objects unfolding
 
         The k-point `k` is with respect to the unfolded geometry.
@@ -119,7 +121,7 @@ class Bloch:
         # Back-transform shape
         return unfold.reshape(-1, 3)
 
-    def __call__(self, func, k, *args, **kwargs):
+    def __call__(self, func, k: KPoint, *args, **kwargs):
         """Return a functions return values as the Bloch unfolded equivalent according to this object
 
         Calling the `Bloch` object is a shorthand for the manual use of the `Bloch.unfold_points` and `Bloch.unfold`
@@ -162,7 +164,7 @@ class Bloch:
             M[i] = func(*args, k=K_unfold[i, :], **kwargs)
         return bloch_unfold(self._bloch, K_unfold, M)
 
-    def unfold(self, M, k_unfold):
+    def unfold(self, M, k_unfold: Sequence[KPoint]):
         r"""Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)
 
         Parameters

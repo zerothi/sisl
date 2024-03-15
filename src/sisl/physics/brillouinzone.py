@@ -135,10 +135,12 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
    BandStructure
 
 """
+from __future__ import annotations
 
 import itertools
 from functools import reduce
 from numbers import Integral, Real
+from typing import Sequence, Union
 
 import numpy as np
 from numpy import argsort, dot, pi, sum
@@ -192,7 +194,7 @@ class BrillouinZoneDispatcher(ClassDispatcher):
 
 
 @set_module("sisl.physics")
-def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
+def linspace_bz(bz, stop=None, jumps=None, jump_dk: float = 0.05):
     r"""Convert points from a BZ object into a linear spacing of maximum value `stop`
 
     Parameters
@@ -340,7 +342,7 @@ class BrillouinZone:
         self.set_parent(parent)
 
     @staticmethod
-    def merge(bzs, weight_scale=1.0, parent=None):
+    def merge(bzs, weight_scale: Union[Sequence[float], float] = 1.0, parent=None):
         """Merge several BrillouinZone objects into one
 
         The merging strategy only stores the new list of k-points and weights.
@@ -387,7 +389,7 @@ class BrillouinZone:
 
         return BrillouinZone(parent, np.concatenate(k), np.concatenate(w))
 
-    def volume(self, ret_dim=False, periodic=None):
+    def volume(self, ret_dim: bool = False, periodic=None):
         """Calculate the volume of the full Brillouin zone of the parent
 
         This will return the volume depending on the dimensions of the system.
@@ -398,7 +400,7 @@ class BrillouinZone:
 
         Parameters
         ----------
-        ret_dim: bool, optional
+        ret_dim:
            also return the dimensionality of the system
         periodic : array_like of int, optional
            estimate the volume using only the directions indexed by this array.
@@ -430,7 +432,7 @@ class BrillouinZone:
         return vol
 
     @staticmethod
-    def parametrize(parent, func, N, *args, **kwargs):
+    def parametrize(parent, func, N: Union[Sequence[int], int], *args, **kwargs):
         """Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
@@ -489,7 +491,9 @@ class BrillouinZone:
         return BrillouinZone(parent, k)
 
     @classmethod
-    def param_circle(cls, parent, N_or_dk, kR, normal, origin, loop=False):
+    def param_circle(
+        cls, parent, N_or_dk: Union[int, float], kR: float, normal, origin, loop=False
+    ):
         r"""Create a parameterized k-point list where the k-points are generated on a circle around an origin
 
         The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
@@ -583,12 +587,12 @@ class BrillouinZone:
         return BrillouinZone(parent, k, w)
 
     @property
-    def k(self):
+    def k(self) -> np.ndarray:
         """A list of all k-points (if available)"""
         return self._k
 
     @property
-    def weight(self):
+    def weight(self) -> np.ndarray:
         """Weight of the k-points in the `BrillouinZone` object"""
         return self._w
 
@@ -651,7 +655,7 @@ class BrillouinZone:
 
         return k
 
-    def iter(self, ret_weight=False):
+    def iter(self, ret_weight: bool = False):
         """An iterator for the k-points and (possibly) the weights
 
         Parameters
@@ -711,7 +715,13 @@ class MonkhorstPack(BrillouinZone):
     """
 
     def __init__(
-        self, parent, nkpt, displacement=None, size=None, centered=True, trs=True
+        self,
+        parent,
+        nkpt: Union[Sequence[int], int],
+        displacement=None,
+        size=None,
+        centered: bool = True,
+        trs: bool = True,
     ):
         super().__init__(parent)
 
@@ -891,7 +901,14 @@ class MonkhorstPack(BrillouinZone):
         self._trs = state["trs"]
 
     @classmethod
-    def grid(cls, n, displ=0.0, size=1.0, centered=True, trs=False):
+    def grid(
+        cls,
+        n,
+        displ: float = 0.0,
+        size: float = 1.0,
+        centered: bool = True,
+        trs: bool = False,
+    ):
         r"""Create a grid of `n` points with an offset of `displ` and sampling `size` around `displ`
 
         The :math:`k`-points are :math:`\Gamma` centered.
@@ -978,7 +995,9 @@ class MonkhorstPack(BrillouinZone):
         # Return values
         return k, w
 
-    def replace(self, k, mp, displacement=False, as_index=False, check_vol=True):
+    def replace(
+        self, k, mp, displacement=False, as_index: bool = False, check_vol: bool = True
+    ):
         r"""Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
 
         This method tries to replace an area corresponding to `mp.size` around the k-point `k`
@@ -1461,7 +1480,7 @@ class BandStructure(BrillouinZone):
         """
         return self.lineark(True)[1:3]
 
-    def tolinear(self, k, ret_index=False, tol=1e-4):
+    def tolinear(self, k, ret_index: bool = False, atol: float = 1e-4):
         """Convert a k-point into the equivalent linear k-point via the distance
 
         Finds the index of the k-point in `self.k` that is closests to `k`.
@@ -1473,15 +1492,15 @@ class BandStructure(BrillouinZone):
         ----------
         k : array_like
            the k-point(s) to locate in the linear values
-        ret_index : bool, optional
+        ret_index :
            whether the indices are also returned
-        tol : float, optional
+        atol :
            when the found k-point has a distance (in Cartesian coordinates)
            is differing by more than `tol` a warning will be issued.
            The tolerance is in units 1/Ang.
         """
         # Faster than to do sqrt all the time
-        tol = tol**2
+        atol = atol**2
         # first convert to the cartesian coordinates (for proper distances)
         ks = self.tocartesian(np.atleast_2d(k))
         kk = self.tocartesian(self.k)
@@ -1490,7 +1509,7 @@ class BandStructure(BrillouinZone):
         def find(k):
             dist = ((kk - k) ** 2).sum(-1)
             idx = np.argmin(dist)
-            if dist[idx] > tol:
+            if dist[idx] > atol:
                 warn(
                     f"{self.__class__.__name__}.tolinear could not find a k-point within given tolerance ({self.toreduced(k)})"
                 )
@@ -1501,7 +1520,7 @@ class BandStructure(BrillouinZone):
             return self.lineark()[idxs], idxs
         return self.lineark()[idxs]
 
-    def lineark(self, ticks=False):
+    def lineark(self, ticks: bool = False):
         """A 1D array which corresponds to the delta-k values of the path
 
         This is mainly meant for plotting but may be useful for finding out
@@ -1524,7 +1543,7 @@ class BandStructure(BrillouinZone):
 
         Parameters
         ----------
-        ticks : bool, optional
+        ticks :
            if `True` the ticks for the points are also returned
 
         See Also
