@@ -27,6 +27,13 @@ class txtSileORCA(SileORCA):
             "na",
             r".*Number of atoms:",
             lambda attr, match: int(match.string.split()[-1]),
+            not_found="error",
+        ),
+        _A(
+            "no",
+            r".*number of basis functions:",
+            lambda attr, match: int(match.string.split()[-1]),
+            not_found="error",
         ),
         _A(
             "vdw_correction",
@@ -42,6 +49,12 @@ class txtSileORCA(SileORCA):
     def na(self):
         """Number of atoms"""
         return self.info.na
+
+    @property
+    @deprecation("txtSileORCA.no is deprecated in favor of txtSileORCA.info.no", "0.16")
+    def no(self):
+        """Number of orbitals (basis functions)"""
+        return self.info.no
 
     @SileBinder(postprocess=np.array)
     @sile_fh_open()

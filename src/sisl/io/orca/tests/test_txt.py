@@ -80,3 +80,9 @@ def test_multiple_calls(sisl_files):
     assert len(G) == 2
     N = out.read_electrons[:]()
     assert len(N) == 2
+
+
+def test_info_no(sisl_files):
+    f = sisl_files(_dir, "molecule3_property.txt")
+    out = txtSileORCA(f)
+    assert out.info.no == 284
