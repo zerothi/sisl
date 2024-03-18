@@ -422,7 +422,6 @@ class winSileWannier90(SileWannier90):
         Hsc_r = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
         Hsc_i = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
 
-        isc = [0, 0, 0]
         # Parse hamiltonian matrix elements
         for iws in np.arange(nrpts):
             l = self.readline() # Skip empty line
