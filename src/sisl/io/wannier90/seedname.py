@@ -363,9 +363,9 @@ class winSileWannier90(SileWannier90):
             Hr = Hr + 1j * Hi
 
         H = Hamiltonian.fromsp(geom, Hr)
-
+        
         # Optimize nsc by searching for the maximum interaction range
-        sc_orbs = list(j for i, j in H.iter_nnz())
+        sc_orbs = list(j for i,j in H.iter_nnz())
         iscs = H.o2isc(np.unique(sc_orbs))
         nsc = 2 * np.max(np.abs(iscs), 0) + 1
         H.set_nsc(nsc)
