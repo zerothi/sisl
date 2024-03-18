@@ -450,6 +450,8 @@ class winSileWannier90(SileWannier90):
             if H is not None:
                 return H
 
+        return None
+
     def ArgumentParser(self, p=None, *args, **kwargs):
         """Returns the arguments that is available for this Sile"""
         newkw = Geometry._ArgumentParser_args_single()
