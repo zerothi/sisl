@@ -25,6 +25,27 @@ from .sile import SileWannier90
 __all__ = ["winSileWannier90"]
 
 
+def _construct_hamiltonian(geometry: Geometry, Hsc):
+    # Get supercell size
+    nsc = _a.zerosi(3)
+    for isc in Hsc.keys():
+        for i in (0, 1, 2):
+            nsc[i] = max(abs(isc[i]), nsc[i])
+
+    # Create the full supercell
+    nsc = nsc * 2 + 1
+    geometry.set_nsc(nsc)
+
+    # Create the big matrix
+    H = []
+    for isc in geometry.lattice.sc_off:
+        H.append(Hsc[tuple(isc)].tocsr())
+
+    H = sps.hstack(H)
+
+    return Hamiltonian.fromsp(geometry, H)
+
+
 class winSileWannier90(SileWannier90):
     """Wannier seedname input file object
 
@@ -262,12 +283,23 @@ class winSileWannier90(SileWannier90):
         self._set_file()
         self._write_geometry(geom, fmt, *args, **kwargs)
 
-    @sile_fh_open()
-    def _r_hamiltonian_hr(self, geom, dtype=np.float64, **kwargs):
-        """Reads a Hamiltonian
+    def _r_wigner_seitz_weights(self):
+        # Number of Wigner-Seitz degeneracy points
+        npts = int(self.readline())
 
-        Reads the Hamiltonian model
-        """
+        ws = []
+        while len(ws) < npts:
+            # both formats uses 15 points per line,
+            # however, this should be usable if they decide to change
+            # the number of counts per line.
+            ws.extend(list(map(int, self.readline().split())))
+
+        ws = 1.0 / _a.arrayd(ws)
+        return ws
+
+    @sile_fh_open()
+    def _r_hamiltonian_hr(self, geometry, dtype=np.float64, **kwargs):
+        """Reads a Hamiltonian model from the _hr.dat file"""
         cutoff = kwargs.get("cutoff", 0.00001)
 
         # Rewind to ensure we can read the entire matrix structure
@@ -278,37 +310,18 @@ class winSileWannier90(SileWannier90):
 
         # Number of orbitals
         no = int(self.readline())
-        if no != geom.no:
+        if no != geometry.no:
             raise ValueError(
-                self.__class__.__name__
-                + ".read_hamiltonian has found inconsistent number "
+                f"{self.__class__.__name__}"
+                ".read_hamiltonian has found inconsistent number "
                 "of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?"
             )
 
-        # Number of Wigner-Seitz degeneracy points
-        nrpts = int(self.readline())
-
-        # First read across the Wigner-Seitz degeneracy
-        # This is formatted with 15 per-line.
-        if nrpts % 15 == 0:
-            nlines = nrpts
-        else:
-            nlines = nrpts + 15 - nrpts % 15
-
-        ws = []
-        for _ in range(nlines // 15):
-            ws.extend(list(map(int, self.readline().split())))
-
-        # Convert to numpy array and invert (for weights)
-        ws = 1.0 / np.array(ws, np.float64).flatten()
-
-        # Figure out the number of supercells
-        # and maintain the Hamiltonian in the ham list
-        nsc = [0, 0, 0]
+        ws = self._r_wigner_seitz_weights()
 
         # List for holding the Hamiltonian
-        Hsc_r = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
-        Hsc_i = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
+        Hsc = defaultdict(lambda: lil_matrix((geometry.no, geometry.no), dtype=dtype))
+        is_complex = np.iscomplexobj(dtype(1))
 
         iws = -1
         isc = [0, 0, 0]
@@ -328,52 +341,23 @@ class winSileWannier90(SileWannier90):
                 iws += 1
 
             # Get degeneracy of this element
-            f = ws[iws]
+            w = ws[iws]
 
             # Scale matrix elements
-            hr = float(l[5]) * f
-            hi = float(l[6]) * f
-
-            # Check it matrix elements are above the given cutoff
-            if np.dtype(dtype).kind == "c":
-                if abs(hr) > cutoff or abs(hi) > cutoff:
-                    Hsc_r[tuple(isc)][r-1,c-1] = hr
-                    Hsc_i[tuple(isc)][r-1,c-1] = hi
+            hr = float(l[5]) * w
+            if is_complex:
+                h = hr + 1j * float(l[6]) * w
             else:
-                if abs(hr) > cutoff:
-                    Hsc_r[tuple(isc)][r-1,c-1] = hr
+                h = hr
 
-        # TODO consider moving the following things one level uop
+            if abs(h) > cutoff:
+                Hsc[tuple(isc)][r - 1, c - 1] = h
 
-        # Get supercell size
-        nsc = _a.zerosi(3)
-        for isc in Hsc_r.keys():
-            for i in (0, 1, 2):
-                nsc[i] = max(abs(isc[i]), nsc[i])
-
-        # Create the full supercell
-        nsc = nsc * 2 + 1
-        geom.set_nsc(nsc)
-
-        # Create the big matrix
-        H = []
-        if np.dtype(dtype).kind == "c":
-            for isc in geom.lattice.sc_off:
-                H.append(Hsc_r[tuple(isc)].tocsr())
-        else:
-            for isc in geom.lattice.sc_off:
-                H.append(Hsc_r[tuple(isc)].tocsr() + 1j * Hsc_i[tuple(isc)].tocsr())
-
-        H = sps.hstack(H)
-
-        return Hamiltonian.fromsp(geom, H)
+        return _construct_hamiltonian(geometry, Hsc)
 
     @sile_fh_open()
-    def _r_hamiltonian_tb(self, geom, dtype=np.float64, **kwargs):
-        """Reads a Hamiltonian
-
-        Reads the Hamiltonian model
-        """
+    def _r_hamiltonian_tb(self, geometry, dtype=np.float64, **kwargs):
+        """Reads a Hamiltonian model from the _tb.dat file"""
         cutoff = kwargs.get("cutoff", 0.00001)
 
         # Rewind to ensure we can read the entire matrix structure
@@ -383,123 +367,87 @@ class winSileWannier90(SileWannier90):
         self.readline()
 
         #  Lattice vectors [Ang]
-        a = map(float, self.readline())
-        b = map(float, self.readline())
-        c = map(float, self.readline())
+        for _ in range(3):
+            self.readline()
         # TODO check against self.lattice?!
-       
+
         # Number of orbitals
         no = int(self.readline())
-        if no != geom.no:
+        if no != geometry.no:
             raise ValueError(
-                self.__class__.__name__
-                + ".read_hamiltonian has found inconsistent number "
+                f"{self.__class__.__name__}"
+                ".read_hamiltonian has found inconsistent number "
                 "of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?"
             )
 
-        # Number of Wigner-Seitz degeneracy points
-        nrpts = int(self.readline())
-
-        # First read across the Wigner-Seitz degeneracy
-        # This is formatted with 15 per-line.
-        if nrpts % 15 == 0:
-            nlines = nrpts
-        else:
-            nlines = nrpts + 15 - nrpts % 15
-
-        ws = []
-        for _ in range(nlines // 15):
-            ws.extend(list(map(int, self.readline().split())))
-
-        # Convert to numpy array and invert (for weights)
-        ws = 1.0 / np.array(ws, np.float64).flatten()
-
-        # Figure out the number of supercells
-        # and maintain the Hamiltonian in the ham list
-        nsc = [0, 0, 0]
+        ws = self._r_wigner_seitz_weights()
 
         # List for holding the Hamiltonian
-        Hsc_r = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
-        Hsc_i = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
+        Hsc = defaultdict(lambda: lil_matrix((geometry.no, geometry.no), dtype=dtype))
+        is_complex = np.iscomplexobj(dtype(1))
 
         # Parse hamiltonian matrix elements
-        for iws in np.arange(nrpts):
-            l = self.readline() # Skip empty line
+        for w in ws:
+            l = self.readline()  # Skip empty line
             if not l.strip() == "":
                 raise ValueError(
-                    self.__class__.__name__
-                    + ".read_hamiltonian unable to parse <>_tb.dat file, due to "
-                    + "error in file format."
+                    f"{self.__class__.__name__}"
+                    ".read_hamiltonian unable to parse <>_tb.dat file, due to "
+                    "error in file format."
                 )
-            
+
             # Get super-cell
             isc = map(int, self.readline().split())
 
             # Get Hamiltonian matrix elements
-            Hr = Hsc_r[tuple(isc)]
-            Hi = Hsc_i[tuple(isc)]
-            for j in np.arange(no**2):
+            Hr = Hsc[tuple(isc)]
+            for j in range(no**2):
                 l = self.readline().split()
+
                 # Get row and column):
                 r, c = map(int, l[:2])
 
                 # Scale matrix elements
-                hr = float(l[2]) * ws[iws]
-                hi = float(l[3]) * ws[iws]
-
-                # Check it matrix elements are above the given cutoff
-                if np.dtype(dtype).kind == "c":
-                    if abs(hr) > cutoff or abs(hi) > cutoff:
-                        Hr[r-1,c-1] = hr
-                        Hi[r-1,c-1] = hi
+                hr = float(l[2]) * w
+                if is_complex:
+                    h = hr + 1j * float(l[3]) * w
                 else:
-                    if abs(hr) > cutoff:
-                        Hr[r-1,c-1] = hr
+                    h = hr
 
-        # Get supercell size
-        nsc = _a.zerosi(3)
-        for isc in Hsc_r.keys():
-            for i in (0, 1, 2):
-                nsc[i] = max(abs(isc[i]), nsc[i])
+                if abs(h) > cutoff:
+                    Hsc[tuple(isc)][r - 1, c - 1] = h
 
-        # Create the full supercell
-        nsc = nsc * 2 + 1
-        geom.set_nsc(nsc)
+        return _construct_hamiltonian(geometry, Hsc)
 
-        # Create the big matrix
-        H = []
-        if np.dtype(dtype).kind == "c":
-            for isc in geom.lattice.sc_off:
-                H.append(Hsc_r[tuple(isc)].tocsr())
-        else:
-            for isc in geom.lattice.sc_off:
-                H.append(Hsc_r[tuple(isc)].tocsr() + 1j * Hsc_i[tuple(isc)].tocsr())
-
-        H = sps.hstack(H)
-
-        return Hamiltonian.fromsp(geom, H)
-
-    def read_hamiltonian(self, *args, **kwargs):
+    def read_hamiltonian(self, cutoff: float = 1e-5, *args, **kwargs):
         """Read the electronic structure of the Wannier90 output by reading the <>_tb.dat, <>_hr.dat
 
         Parameters
         ----------
-        cutoff: float, optional
+        cutoff:
            the cutoff value for the zero Hamiltonian elements, default
            to 0.00001 eV.
+
+        dtype: np.float64, optional
+            the default data-type used for the matrix.
+            Is mainly useful to check whether the TB model has imaginary
+            components (it should not since it is a Wannier model).
         """
         # Retrieve the geometry...
         geom = self.read_geometry()
 
-        order = kwargs.pop("order", ["hr", "tb"])
-
+        order = kwargs.pop("order", ["tb", "hr"])
         for f in order:
             # Set file
             self._set_file(f"_{f.lower()}.dat")
-            H = getattr(self, f"_r_hamiltonian_{f.lower()}")(geom, *args, **kwargs)
+
+            # only parse if the file exists
+            if self._file.exists():
+                H = getattr(self, f"_r_hamiltonian_{f.lower()}")(
+                    geom, *args, cutoff=cutoff, **kwargs
+                )
+            self._set_file()
             if H is not None:
-                self._set_file()
-                
                 return H
 
     def ArgumentParser(self, p=None, *args, **kwargs):
