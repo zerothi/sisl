@@ -401,7 +401,7 @@ class winSileWannier90(SileWannier90):
 
             # Get Hamiltonian matrix elements
             Hr = Hsc[tuple(isc)]
-            for j in range(no**2):
+            for _ in range(no**2):
                 l = self.readline().split()
 
                 # Get row and column):
@@ -415,7 +415,7 @@ class winSileWannier90(SileWannier90):
                     h = hr
 
                 if abs(h) > cutoff:
-                    Hsc[tuple(isc)][r - 1, c - 1] = h
+                    Hr[r - 1, c - 1] = h
 
         return _construct_hamiltonian(geometry, Hsc)
 
