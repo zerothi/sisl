@@ -4,11 +4,14 @@
 """
 Sile object for reading/writing Wannier90 in/output
 """
+from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+import scipy.sparse as sps
 from scipy.sparse import lil_matrix
 
+import sisl._array as _a
 from sisl import Geometry, Lattice
 from sisl.messages import deprecate_argument
 from sisl.physics import Hamiltonian
@@ -260,7 +263,7 @@ class winSileWannier90(SileWannier90):
         self._write_geometry(geom, fmt, *args, **kwargs)
 
     @sile_fh_open()
-    def _r_hamiltonian(self, geom, dtype=np.float64, **kwargs):
+    def _r_hamiltonian_hr(self, geom, dtype=np.float64, **kwargs):
         """Reads a Hamiltonian
 
         Reads the Hamiltonian model
@@ -304,9 +307,11 @@ class winSileWannier90(SileWannier90):
         nsc = [0, 0, 0]
 
         # List for holding the Hamiltonian
-        ham = []
-        iws = -1
+        Hsc_r = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
+        Hsc_i = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
 
+        iws = -1
+        isc = [0, 0, 0]
         while True:
             l = self.readline()
             if l == "":
@@ -316,11 +321,7 @@ class winSileWannier90(SileWannier90):
             l = l.split()
 
             # Get super-cell, row and column
-            iA, iB, iC, r, c = map(int, l[:5])
-
-            nsc[0] = max(nsc[0], abs(iA))
-            nsc[1] = max(nsc[1], abs(iB))
-            nsc[2] = max(nsc[2], abs(iC))
+            isc[0], isc[1], isc[2], r, c = map(int, l[:5])
 
             # Update index for degeneracy, if required
             if r + c == 2:
@@ -329,43 +330,158 @@ class winSileWannier90(SileWannier90):
             # Get degeneracy of this element
             f = ws[iws]
 
-            # Store in the Hamiltonian array:
-            #   isc
-            #   row
-            #   column
-            #   Hr
-            #   Hi
-            ham.append(([iA, iB, iC], r - 1, c - 1, float(l[5]) * f, float(l[6]) * f))
+            # Scale matrix elements
+            hr = float(l[5]) * f
+            hi = float(l[6]) * f
 
-        # Update number of super-cells
-        geom.set_nsc([i * 2 + 1 for i in nsc])
+            # Check it matrix elements are above the given cutoff
+            if np.dtype(dtype).kind == "c":
+                if abs(hr) > cutoff or abs(hi) > cutoff:
+                    Hsc_r[tuple(isc)][r-1,c-1] = hr
+                    Hsc_i[tuple(isc)][r-1,c-1] = hi
+            else:
+                if abs(hr) > cutoff:
+                    Hsc_r[tuple(isc)][r-1,c-1] = hr
 
-        # With the geometry in place we can read in the entire matrix
-        # Create a new sparse matrix
-        Hr = lil_matrix((geom.no, geom.no_s), dtype=dtype)
-        Hi = lil_matrix((geom.no, geom.no_s), dtype=dtype)
+        # TODO consider moving the following things one level uop
 
-        # populate the Hamiltonian by examining the cutoff value
-        for isc, r, c, hr, hi in ham:
-            # Calculate the column corresponding to the
-            # correct super-cell
-            c = c + geom.sc_index(isc) * geom.no
+        # Get supercell size
+        nsc = _a.zerosi(3)
+        for isc in Hsc_r.keys():
+            for i in (0, 1, 2):
+                nsc[i] = max(abs(isc[i]), nsc[i])
 
-            if abs(hr) > cutoff:
-                Hr[r, c] = hr
-            if abs(hi) > cutoff:
-                Hi[r, c] = hi
-        del ham
+        # Create the full supercell
+        nsc = nsc * 2 + 1
+        geom.set_nsc(nsc)
 
+        # Create the big matrix
+        H = []
         if np.dtype(dtype).kind == "c":
-            Hr = Hr.tocsr()
-            Hi = Hi.tocsr()
-            Hr = Hr + 1j * Hi
+            for isc in geom.lattice.sc_off:
+                H.append(Hsc_r[tuple(isc)].tocsr())
+        else:
+            for isc in geom.lattice.sc_off:
+                H.append(Hsc_r[tuple(isc)].tocsr() + 1j * Hsc_i[tuple(isc)].tocsr())
 
-        return Hamiltonian.fromsp(geom, Hr)
+        H = sps.hstack(H)
+
+        return Hamiltonian.fromsp(geom, H)
+
+    @sile_fh_open()
+    def _r_hamiltonian_tb(self, geom, dtype=np.float64, **kwargs):
+        """Reads a Hamiltonian
+
+        Reads the Hamiltonian model
+        """
+        cutoff = kwargs.get("cutoff", 0.00001)
+
+        # Rewind to ensure we can read the entire matrix structure
+        self.fh.seek(0)
+
+        # Time of creation
+        self.readline()
+
+        #  Lattice vectors [Ang]
+        a = map(float, self.readline())
+        b = map(float, self.readline())
+        c = map(float, self.readline())
+        # TODO check against self.lattice?!
+       
+        # Number of orbitals
+        no = int(self.readline())
+        if no != geom.no:
+            raise ValueError(
+                self.__class__.__name__
+                + ".read_hamiltonian has found inconsistent number "
+                "of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?"
+            )
+
+        # Number of Wigner-Seitz degeneracy points
+        nrpts = int(self.readline())
+
+        # First read across the Wigner-Seitz degeneracy
+        # This is formatted with 15 per-line.
+        if nrpts % 15 == 0:
+            nlines = nrpts
+        else:
+            nlines = nrpts + 15 - nrpts % 15
+
+        ws = []
+        for _ in range(nlines // 15):
+            ws.extend(list(map(int, self.readline().split())))
+
+        # Convert to numpy array and invert (for weights)
+        ws = 1.0 / np.array(ws, np.float64).flatten()
+
+        # Figure out the number of supercells
+        # and maintain the Hamiltonian in the ham list
+        nsc = [0, 0, 0]
+
+        # List for holding the Hamiltonian
+        Hsc_r = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
+        Hsc_i = defaultdict(lambda: lil_matrix((geom.no, geom.no), dtype=np.float64))
+
+        isc = [0, 0, 0]
+        # Parse hamiltonian matrix elements
+        for iws in np.arange(nrpts):
+            l = self.readline() # Skip empty line
+            if not l.strip() == "":
+                raise ValueError(
+                    self.__class__.__name__
+                    + ".read_hamiltonian unable to parse <>_tb.dat file, due to "
+                    + "error in file format."
+                )
+            
+            # Get super-cell
+            isc = map(int, self.readline().split())
+
+            # Get Hamiltonian matrix elements
+            Hr = Hsc_r[tuple(isc)]
+            Hi = Hsc_i[tuple(isc)]
+            for j in np.arange(no**2):
+                l = self.readline().split()
+                # Get row and column):
+                r, c = map(int, l[:2])
+
+                # Scale matrix elements
+                hr = float(l[2]) * ws[iws]
+                hi = float(l[3]) * ws[iws]
+
+                # Check it matrix elements are above the given cutoff
+                if np.dtype(dtype).kind == "c":
+                    if abs(hr) > cutoff or abs(hi) > cutoff:
+                        Hr[r-1,c-1] = hr
+                        Hi[r-1,c-1] = hi
+                else:
+                    if abs(hr) > cutoff:
+                        Hr[r-1,c-1] = hr
+
+        # Get supercell size
+        nsc = _a.zerosi(3)
+        for isc in Hsc_r.keys():
+            for i in (0, 1, 2):
+                nsc[i] = max(abs(isc[i]), nsc[i])
+
+        # Create the full supercell
+        nsc = nsc * 2 + 1
+        geom.set_nsc(nsc)
+
+        # Create the big matrix
+        H = []
+        if np.dtype(dtype).kind == "c":
+            for isc in geom.lattice.sc_off:
+                H.append(Hsc_r[tuple(isc)].tocsr())
+        else:
+            for isc in geom.lattice.sc_off:
+                H.append(Hsc_r[tuple(isc)].tocsr() + 1j * Hsc_i[tuple(isc)].tocsr())
+
+        H = sps.hstack(H)
+
+        return Hamiltonian.fromsp(geom, H)
 
     def read_hamiltonian(self, *args, **kwargs):
-        """Read the electronic structure of the Wannier90 output
+        """Read the electronic structure of the Wannier90 output by reading the <>_tb.dat, <>_hr.dat
 
         Parameters
         ----------
@@ -376,12 +492,16 @@ class winSileWannier90(SileWannier90):
         # Retrieve the geometry...
         geom = self.read_geometry()
 
-        # Set file
-        self._set_file("_hr.dat")
+        order = kwargs.pop("order", ["hr", "tb"])
 
-        H = self._r_hamiltonian(geom, *args, **kwargs)
-        self._set_file()
-        return H
+        for f in order:
+            # Set file
+            self._set_file(f"_{f.lower()}.dat")
+            H = getattr(self, f"_r_hamiltonian_{f.lower()}")(geom, *args, **kwargs)
+            if H is not None:
+                self._set_file()
+                
+                return H
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """Returns the arguments that is available for this Sile"""
