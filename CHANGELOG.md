@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- enabled `winSileWannier90.read_hamiltonian` to read the ``_tb.dat`` files
 - `atoms` argument to `DensityMatrix.spin_align` to align a subset of atoms
   (only diagonal elements between the atoms orbitals)
 - added an efficient neighbor finder, #393
