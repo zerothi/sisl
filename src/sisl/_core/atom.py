@@ -997,9 +997,10 @@ class Atom(
     -----
     One can define atoms outside of the periodic table. They will generally
     be handled in this order:
-    - negative numbers will be converted into positive ones, and the returned
-      object will be an AtomGhost
-    - any other number (or name) not found in the periodic table will be returned
+
+    * negative numbers will be converted into positive ones, and the returned
+      object will be an `AtomGhost`
+    * any other number (or name) not found in the periodic table will be returned
       in an AtomUnknown object
 
     The mass for atoms outside the periodic table will default to 1e40 amu.

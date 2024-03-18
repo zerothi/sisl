@@ -1,7 +1,7 @@
-.. highlight:: bash
+.. highlight:: console
 
 .. _script_sdata:
-	       
+
 `sdata`
 =======
 
@@ -12,10 +12,8 @@ Essentially it performs operations dependent on the file that is being
 processed. If for instance the file contains any kind of `Geometry`
 it allows the same operations as `sgeom`.
 
-For a short help description of the possible uses do:
+For a short help description of the possible uses do::
 
-::
-		
     sdata <in> --help
 
 which shows a help dependent on which kind of file ``<in>`` is.

@@ -51,7 +51,7 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
         :link: api/index
         :link-type: doc
 
-        Already familiar with sisl and how to use it? Look through
+        Already familiar with `sisl` and how to use it? Look through
         the API section to discover more functionality and details
         on the parameters and in-depth usage.
 
@@ -63,7 +63,7 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
         out.
 
 
-sisl is also part of the training material for a series of workshops hosted `here <workshop_>`_.
+`sisl` is also part of the training material for a series of workshops hosted `here <workshop_>`_.
 
 
 .. toctree::
@@ -81,13 +81,6 @@ sisl is also part of the training material for a series of workshops hosted `her
 .. toctree::
    :hidden:
    :maxdepth: 2
-   :caption: Toolboxes
-
-   toolbox/index
-
-.. toctree::
-   :hidden:
-   :maxdepth: 2
    :caption: Visualization
 
    visualization/viz_module/index
@@ -96,12 +89,19 @@ sisl is also part of the training material for a series of workshops hosted `her
 .. toctree::
    :hidden:
    :maxdepth: 2
+   :caption: Toolboxes
+
+   toolbox/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
    :caption: Development details
 
    contribute
    changelog/index
-   other
    cite
+   other
 
 .. toctree::
    :hidden:

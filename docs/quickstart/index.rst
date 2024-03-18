@@ -43,8 +43,8 @@ Installation
         Check out the advanced installation page.
 
 
-sisl introduction
------------------
+Quickstart tutorials
+--------------------
 
 .. nbgallery::
    :name: intro-tutorials-gallery

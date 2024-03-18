@@ -79,25 +79,19 @@ To repeat a structure do
 which repeats the structure one atom at a time, ``<int>`` times, in the corresponding direction.
 Note that ``x`` and ``a`` correspond to the same cell direction (the first).
 
-To repeat the structure in *chunks* one can use the ``--tile`` option:
-
-::
+To repeat the structure in *chunks* one can use the ``--tile`` option::
 
    sgeom <in> --tile <int> [ax|yb|zc] <out>
 
 which results in the same structure as ``--repeat`` however with different atomic ordering.
 
-Both tiling and repeating have the shorter variants:
-
-::
+Both tiling and repeating have the shorter variants::
 
    sgeom <in> -t[xyz] <int> -r[xyz] <int>
 
 to ease the commands.
 
-To repeat a structure 4 times along the *x* cell direction:
-
-::
+To repeat a structure 4 times along the *x* cell direction::
 
    sgeom RUN.fdf --repeat 4 x RUN4x.fdf
    sgeom RUN.fdf --repeat-x 4 RUN4x.fdf
@@ -110,9 +104,7 @@ where all the above yields the same structure, albeit with different orderings.
 Rotating structure
 ^^^^^^^^^^^^^^^^^^
 
-To rotate the structure around certain cell directions one can do:
-
-::
+To rotate the structure around certain cell directions one can do::
 
    sgeom <in> --rotate <angle> [ax|yb|zc] <out>
 
@@ -120,9 +112,7 @@ which rotates the structure around the origin with a normal vector along the
 specified cell direction. The input angle is in degrees and *not* in radians.
 If one wish to use radians append an ``r`` in the angle specification.
 
-Again there are shorthand commands:
-
-::
+Again there are shorthand commands::
 
    sgeom <in> -R[xyz] <angle>
 
@@ -137,9 +127,7 @@ If one starts by repeating the structure, then rotate it, then shift the structu
 it will be different from, shift the structure, then rotate, then repeat.
 
 Be also aware that outputting structures are done *at the time in the command line order*.
-This means one can store the intermediate steps while performing the entire operation:
-
-::
+This means one can store the intermediate steps while performing the entire operation::
 
    sgeom <in> --rotate <angle> --out <rotated> -tx 2 --out <rotate-tile-x> --ty 2 --out <rotate-tile-y>
 

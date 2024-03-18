@@ -8,8 +8,8 @@ scripts to the API changes.
 
 Generally this can be accommodated by using a code ``if`` block:
 
-.. code::
-   
+.. code-block::
+
     if sisl.__version_tuple__[:3] >= (0, 13, 0):
        pass
     else:
@@ -23,6 +23,9 @@ may superseede API changes and bring more performance overall.
 In any case the following list of release notes may be used to check changes
 between versions.
 
+
+Changelogs
+----------
 
 .. toctree::
    :maxdepth: 1
@@ -51,4 +54,3 @@ between versions.
    v0.8.2
    v0.8.1
    v0.8.0
-
