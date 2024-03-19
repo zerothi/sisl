@@ -11,15 +11,15 @@ from .._multiple import SileBinder
 from ..sile import add_sile, sile_fh_open
 from .sile import SileVASP
 
-__all__ = ["stdoutSileVASP", "outSileVASP"]
+__all__ = ["outcarSileVASP"]
 
 
 _A = SileVASP.InfoAttr
 
 
 @set_module("sisl.io.vasp")
-class stdoutSileVASP(SileVASP):
-    """Output file from VASP"""
+class outcarSileVASP(SileVASP):
+    """OUTCAR file from VASP"""
 
     _info_attributes_ = [
         _A(
@@ -39,7 +39,7 @@ class stdoutSileVASP(SileVASP):
     ]
 
     @deprecation(
-        "stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed",
+        "outcarSileVASP.completed is deprecated in favor of outcarSileVASP.info.completed",
         "0.16",
     )
     def completed(self):
@@ -47,7 +47,7 @@ class stdoutSileVASP(SileVASP):
         return self.info.completed()
 
     @deprecation(
-        "stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached",
+        "outcarSileVASP.accuracy_reached is deprecated in favor of outcarSileVASP.info.accuracy_reached",
         "0.16",
     )
     def accuracy_reached(self):
@@ -82,7 +82,7 @@ class stdoutSileVASP(SileVASP):
         from_version="0.14",
     )
     @deprecation(
-        "WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.",
+        "WARNING: direct calls to outcarSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.",
         from_version="0.14",
     )
     def read_energy(self):
@@ -199,9 +199,7 @@ class stdoutSileVASP(SileVASP):
 
 
 outSileVASP = deprecation(
-    "outSileVASP has been deprecated in favor of stdoutSileVASP.", "0.15"
-)(stdoutSileVASP)
+    "outSileVASP has been deprecated in favor of outcarSileVASP.", "0.15"
+)(outcarSileVASP)
 
-add_sile("OUTCAR", stdoutSileVASP, gzip=True)
-add_sile("vasp.out", stdoutSileVASP, case=False, gzip=True)
-add_sile("out", stdoutSileVASP, case=False, gzip=True)
+add_sile("OUTCAR", outcarSileVASP, gzip=True)

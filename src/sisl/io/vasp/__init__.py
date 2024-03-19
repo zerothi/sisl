@@ -10,7 +10,7 @@ VASP
    eigenvalSileVASP
    chgSileVASP
    locpotSileVASP
-   stdoutSileVASP
+   outcarSileVASP
 
 """
 from .sile import *  # isort: split
@@ -19,4 +19,4 @@ from .chg import *
 from .doscar import *
 from .eigenval import *
 from .locpot import *
-from .stdout import *
+from .outcar import *
