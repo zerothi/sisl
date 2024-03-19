@@ -362,16 +362,16 @@ class NeighborFinder:
 
         third, index = np.divmod(index, self.nbins[0] * self.nbins[1])
         second, first = np.divmod(index, self.nbins[0])
-        return np.array([first, second, third]).T
+        return np.column_stack([first, second, third])
 
     def _correct_pairs_R_too_big(
         self,
         neighbor_pairs: np.ndarray,  # (n_pairs, 5)
         split_ind: Union[int, np.ndarray],  # (n_queried_atoms, )
-        pbc: np.ndarray,  # (3, )
     ):
         """Correction to atom and supercell indices when the binning has been done on a tiled geometry"""
         is_sc_neigh = neighbor_pairs[:, 1] >= self.geometry.na
+        pbc = self.geometry.lattice.pbc
 
         invalid = None
         if not np.any(pbc):
@@ -406,7 +406,6 @@ class NeighborFinder:
         atoms: AtomsArgument = None,
         as_pairs: bool = False,
         self_interaction: bool = False,
-        pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True),
     ):
         """Find neighbors as specified in the finder.
 
@@ -426,9 +425,6 @@ class NeighborFinder:
             the neighbors for each atom is returned.
         self_interaction: bool, optional
             whether to consider an atom a neighbor of itself.
-        pbc: bool or array-like of shape (3, )
-            whether periodic conditions should be considered.
-            If a single bool is passed, all directions use that value.
 
         Returns
         ----------
@@ -443,9 +439,8 @@ class NeighborFinder:
         # Sanitize atoms
         atoms = self.geometry._sanitize_atoms(atoms)
 
-        # Cast R and pbc into arrays of appropiate shape and type.
+        # Cast R into array of appropiate shape and type.
         thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)
-        pbc = np.full(3, pbc, dtype=bool)
 
         # Get search indices
         search_indices, isc = self._get_search_indices(
@@ -475,7 +470,7 @@ class NeighborFinder:
             self_interaction,
             self._bins_geometry.xyz,
             self._bins_geometry.cell,
-            pbc,
+            self.geometry.lattice.pbc,
             thresholds,
             self._overlap,
             init_pairs,
@@ -486,7 +481,7 @@ class NeighborFinder:
         # we needed to create an auxiliary supercell.
         if self._R_too_big:
             neighbor_pairs, split_ind = self._correct_pairs_R_too_big(
-                neighbor_pairs, split_ind, pbc
+                neighbor_pairs, split_ind
             )
 
         if as_pairs:
@@ -496,12 +491,11 @@ class NeighborFinder:
         # Split to get the neighbors of each atom
         return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
 
-    def find_all_unique_pairs(
+    def find_unique_pairs(
         self,
         self_interaction: bool = False,
-        pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True),
     ):
-        """Find all unique neighbor pairs within the geometry.
+        """Find unique neighbor pairs within the geometry.
 
         A pair of atoms is considered unique if atoms have the same index
         and correspond to the same unit cell. As an example, the connection
@@ -525,9 +519,6 @@ class NeighborFinder:
             the neighbors for each atom is returned.
         self_interaction: bool, optional
             whether to consider an atom a neighbor of itself.
-        pbc: bool or array-like of shape (3, )
-            whether periodic conditions should be considered.
-            If a single bool is passed, all directions use that value.
 
         Returns
         ----------
@@ -546,7 +537,7 @@ class NeighborFinder:
         if self._R_too_big:
             # Find all neighbors
             all_neighbors = self.find_neighbors(
-                as_pairs=True, self_interaction=self_interaction, pbc=pbc
+                as_pairs=True, self_interaction=self_interaction
             )
 
             # Find out which of the pairs are uc connections
@@ -560,9 +551,8 @@ class NeighborFinder:
             # Concatenate the uc connections with the rest of the connections.
             return np.concatenate((uc_neighbors, all_neighbors[~is_uc_neigh]))
 
-        # Cast R and pbc into arrays of appropiate shape and type.
+        # Cast R into array of appropiate shape and type.
         thresholds = np.full(self.geometry.na, self.R, dtype=np.float64)
-        pbc = np.full(3, pbc, dtype=bool)
 
         # Get search indices
         search_indices, isc = self._get_search_indices(
@@ -591,7 +581,7 @@ class NeighborFinder:
             self_interaction,
             self.geometry.xyz,
             self.geometry.cell,
-            pbc,
+            self.geometry.lattice.pbc,
             thresholds,
             self._overlap,
             init_pairs,
@@ -604,7 +594,6 @@ class NeighborFinder:
         self,
         xyz: Sequence,
         as_pairs: bool = False,
-        pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True),
     ):
         """Find all atoms that are close to some coordinates in space.
 
@@ -620,9 +609,6 @@ class NeighborFinder:
             If `True` pairs are returned, where the first item is the index
             of the point and the second one is the atom index.
             Otherwise a list containing the neighbors for each point is returned.
-        pbc: bool or array-like of shape (3, )
-            whether periodic conditions should be considered.
-            If a single bool is passed, all directions use that value.
 
         Returns
         ----------
@@ -634,9 +620,8 @@ class NeighborFinder:
             If `as_pairs=False`:
                 A list containing a numpy array of shape (n_neighs, 4) for each atom.
         """
-        # Cast R and pbc into arrays of appropiate shape and type.
+        # Cast R into array of appropiate shape and type.
         thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)
-        pbc = np.full(3, pbc, dtype=bool)
 
         xyz = np.atleast_2d(xyz)
         # Get search indices
@@ -664,7 +649,7 @@ class NeighborFinder:
             self._list,
             self._bins_geometry.xyz,
             self._bins_geometry.cell,
-            pbc,
+            self.geometry.lattice.pbc,
             thresholds,
             init_pairs,
             self.memory[1],
@@ -674,7 +659,7 @@ class NeighborFinder:
         # we needed to create an auxiliary supercell.
         if self._R_too_big:
             neighbor_pairs, split_ind = self._correct_pairs_R_too_big(
-                neighbor_pairs, split_ind, pbc
+                neighbor_pairs, split_ind
             )
 
         if as_pairs:
