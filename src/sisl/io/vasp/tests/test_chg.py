@@ -42,51 +42,46 @@ def test_graphene_chgcar_index_float(sisl_files):
     assert grid.grid.sum() / 2 == pytest.approx(gridh.grid.sum())
 
 
-def test_nitric_oxide_chg(sisl_files):
-    for spin in "unpol", "pol", "soi":
-        f = sisl_files(_dir, f"nitric_oxide/{spin}", "CHG.gz")
-        grid = chgSileVASP(f).read_grid()
-        gridf32 = chgSileVASP(f).read_grid(dtype=np.float32)
-        geom = chgSileVASP(f).read_geometry()
-
-        assert grid.grid.sum() * grid.dvolume == pytest.approx(11)
-        assert gridf32.grid.sum() * gridf32.dvolume == pytest.approx(11)
-        assert geom == grid.geometry
+@pytest.fixture(scope="module", params=["unpol", "pol", "soi"])
+def spin_conf(request):
+    return request.param
 
 
-def test_nitric_oxide_chgcar(sisl_files):
-    for spin in "unpol", "pol", "soi":
-        f = sisl_files(_dir, f"nitric_oxide/{spin}", "CHGCAR.gz")
-        grid = chgSileVASP(f).read_grid()
-        gridf32 = chgSileVASP(f).read_grid(dtype=np.float32)
-        geom = chgSileVASP(f).read_geometry()
-
-        assert grid.grid.sum() * grid.dvolume == pytest.approx(11)
-        assert gridf32.grid.sum() * gridf32.dvolume == pytest.approx(11)
-        assert geom == grid.geometry
+@pytest.fixture(scope="module", params=["CHG", "CHGCAR"])
+def chg_type(request):
+    return request.param
 
 
-def test_nitric_oxide_pol(sisl_files):
-    for fn in "CHG.gz", "CHGCAR.gz":
-        f = sisl_files(_dir, f"nitric_oxide/pol", fn)
-        grid = chgSileVASP(f).read_grid(1)
-        gridf32 = chgSileVASP(f).read_grid(1, dtype=np.float32)
-        geom = chgSileVASP(f).read_geometry()
+def test_nitric_oxide_chg(sisl_files, spin_conf, chg_type):
+    f = sisl_files(_dir, f"nitric_oxide/{spin_conf}", chg_type + ".gz")
+    grid = chgSileVASP(f).read_grid()
+    gridf32 = chgSileVASP(f).read_grid(dtype=np.float32)
+    geom = chgSileVASP(f).read_geometry()
 
-        assert grid.grid.sum() * grid.dvolume == pytest.approx(1, rel=1e-3)
-        assert gridf32.grid.sum() * gridf32.dvolume == pytest.approx(1, rel=1e-3)
-        assert geom == grid.geometry
+    assert grid.grid.sum() * grid.dvolume == pytest.approx(11)
+    assert gridf32.grid.sum() * gridf32.dvolume == pytest.approx(11)
+    assert geom == grid.geometry
 
 
-def test_nitric_oxide_soi(sisl_files):
-    for fn in "CHG.gz", "CHGCAR.gz":
-        f = sisl_files(_dir, f"nitric_oxide/soi", fn)
-        s, sf32 = 0, 0
-        for i in range(1, 4):
-            grid = chgSileVASP(f).read_grid(i)
-            gridf32 = chgSileVASP(f).read_grid(i, dtype=np.float32)
-            s += (grid.grid.sum() * grid.dvolume) ** 2
-            sf32 += (gridf32.grid.sum() * gridf32.dvolume) ** 2
+def test_nitric_oxide_pol(sisl_files, chg_type):
+    f = sisl_files(_dir, "nitric_oxide/pol", chg_type + ".gz")
+    grid = chgSileVASP(f).read_grid(1)
+    gridf32 = chgSileVASP(f).read_grid(1, dtype=np.float32)
+    geom = chgSileVASP(f).read_geometry()
 
-        assert s == pytest.approx(1, rel=1e-3)
-        assert sf32 == pytest.approx(1, rel=1e-3)
+    assert grid.grid.sum() * grid.dvolume == pytest.approx(1, rel=1e-3)
+    assert gridf32.grid.sum() * gridf32.dvolume == pytest.approx(1, rel=1e-3)
+    assert geom == grid.geometry
+
+
+def test_nitric_oxide_soi(sisl_files, chg_type):
+    f = sisl_files(_dir, "nitric_oxide/soi", chg_type + ".gz")
+    s, sf32 = 0, 0
+    for i in range(1, 4):
+        grid = chgSileVASP(f).read_grid(i)
+        gridf32 = chgSileVASP(f).read_grid(i, dtype=np.float32)
+        s += (grid.grid.sum() * grid.dvolume) ** 2
+        sf32 += (gridf32.grid.sum() * gridf32.dvolume) ** 2
+
+    assert s == pytest.approx(1, rel=1e-3)
+    assert sf32 == pytest.approx(1, rel=1e-3)
