@@ -72,11 +72,15 @@ class chgSileVASP(carSileVASP):
             i = len(vals)
 
             if i % n == 0 and i < n * max_index:
-                # Each time a new spin-index is present, we need to read the coordinates
-                j = 0
-                while j < geom.na:
-                    j += len(rl().split())
-
+                if self.base_file.startswith("CHGCAR"):
+                    # Read over augmentation occupancies
+                    line = rl()
+                    while "augmentation" in line:
+                        occ = int(line.split()[-1])
+                        j = 0
+                        while j < occ:
+                            j += len(rl().split())
+                        line = rl()
                 # one line of nx, ny, nz
                 rl()
 
