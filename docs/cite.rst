@@ -22,7 +22,7 @@ Citing basic usage
 If you are *only* using sisl as a post-processing tool and/or tight-binding calculations
 you should cite this (Zenodo DOI):
 
-.. code-block:: bash
+.. code-block:: bibtex
 
     @software{zerothi_sisl,
       author       = {Papior, Nick},
@@ -35,7 +35,7 @@ you should cite this (Zenodo DOI):
 
 The `sgeom`, `sgrid` or `sdata` commands all print-out the above information in a suitable format:
 
-.. code-block:: bash
+.. code-block:: console
 
     sgeom --cite
     sgrid --cite
@@ -53,7 +53,7 @@ When using sisl as tight-binding setup for Hamiltonians and/or dynamical matrice
 `TBtrans`_ and/or ``PHtrans`` you should cite these two DOI's:
 
 
-.. code-block:: console
+.. code-block:: bibtex
 
     @software{zerothi_sisl,
       author       = {Papior, Nick},
@@ -79,21 +79,21 @@ When using sisl as tight-binding setup for Hamiltonians and/or dynamical matrice
 
 If using real-space self-energies one should additionally cite:
 
-.. code-block:: console
+.. code-block:: bibtex
 
     @article{papior2019,
-       author = {Papior, Nick and Calogero, Gaetano and Leitherer, Susanne and Brandbyge, Mads},
-       doi = {10.1103/physrevb.100.195417},
-       number = {19},
-       source = {Crossref},
-       url = {https://doi.org/10.1103/physrevb.100.195417},
-       volume = {100},
-       journal = {Phys. Rev. B},
-       publisher = {American Physical Society (APS)},
-       title = {Removing all periodic boundary conditions: {Efficient} nonequilibrium Green's function calculations},
-       issn = {2469-9950, 2469-9969},
-       year = {2019},
-       month = nov,
+      author = {Papior, Nick and Calogero, Gaetano and Leitherer, Susanne and Brandbyge, Mads},
+      doi = {10.1103/physrevb.100.195417},
+      number = {19},
+      source = {Crossref},
+      url = {https://doi.org/10.1103/physrevb.100.195417},
+      volume = {100},
+      journal = {Phys. Rev. B},
+      publisher = {American Physical Society (APS)},
+      title = {Removing all periodic boundary conditions: {Efficient} nonequilibrium Green's function calculations},
+      issn = {2469-9950, 2469-9969},
+      year = {2019},
+      month = nov,
     }
 
 
