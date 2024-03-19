@@ -45,8 +45,6 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
         .. The user guide provides a set of how-to's explaining
         .. more usages in greater details.
 
-        *To be filled*
-
     .. grid-item-card::  :fas:`book-open` -- API reference
         :link: api/index
         :link-type: doc
