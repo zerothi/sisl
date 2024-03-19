@@ -64,7 +64,7 @@ def test_nitric_oxide_pol(sisl_files, chg_type, np_dtype):
 
 def test_nitric_oxide_soi(sisl_files, chg_type, np_dtype):
     f = sisl_files(_dir, "nitric_oxide/soi", chg_type + ".gz")
-    s = 0,
+    s = 0
     for i in range(1, 4):
         grid = chgSileVASP(f).read_grid(i, dtype=np_dtype)
         s += (grid.grid.sum() * grid.dvolume) ** 2
