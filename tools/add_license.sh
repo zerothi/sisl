@@ -4,7 +4,7 @@
 # a header describing the license for all *.py files.
 shopt -s globstar
 
-declare -a extensions=(py)
+declare -a extensions=(py pyx)
 
 function add_header {
   local f=$1 ; shift
