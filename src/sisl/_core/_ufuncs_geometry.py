@@ -1470,11 +1470,17 @@ def add(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
+@deprecate_argument(
+    "scale_atoms",
+    "scale_basis",
+    "argument scale_atoms has been deprecated in favor of scale_basis, please update your code.",
+    "0.15",
+)
 def scale(
     geometry: Geometry,
     scale: CoordOrScalar,
     what: str = "abc",
-    scale_atoms: bool = True,
+    scale_basis: bool = True,
 ) -> Geometry:
     """Scale coordinates and unit-cell to get a new geometry with proper scaling
 
@@ -1489,12 +1495,14 @@ def scale(
          Is applied on the corresponding lattice vector and the fractional coordinates.
 
        ``xyz``
-         Is applied only to the atomic coordinates.
+         Is applied *only* to the atomic coordinates.
 
        If three different scale factors are provided, each will correspond to the
        Cartesian direction/lattice vector.
-    scale_atoms :
-       whether atoms (basis) should be scaled as well.
+    scale_basis :
+       if true, the atoms basis-sets will be also be scaled.
+       The scaling of the basis-sets will be done based on the largest
+       scaling factor.
     """
     # Ensure we are dealing with a numpy array
     scale = np.asarray(scale)
@@ -1511,7 +1519,7 @@ def scale(
         # Scale the coordinates by keeping fractional coordinates the same
         xyz = geometry.fxyz @ lattice.cell
 
-        if scale_atoms:
+        if scale_basis:
             # To rescale atoms, we need to know the span of each cartesian coordinate before and
             # after the scaling, and scale the atoms according to the coordinate that has
             # been scaled by the largest factor.
@@ -1525,7 +1533,7 @@ def scale(
             f"{geometry.__class__.__name__}.scale got wrong what argument, must be one of abc|xyz"
         )
 
-    if scale_atoms:
+    if scale_basis:
         # Atoms are rescaled to the maximum scale factor
         atoms = geometry.atoms.scale(max_scale)
     else:
