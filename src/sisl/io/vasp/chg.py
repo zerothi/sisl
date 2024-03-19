@@ -66,13 +66,19 @@ class chgSileVASP(carSileVASP):
         vals = []
         vext = vals.extend
 
+        is_chgcar = True
         i = 0
         while i < n * max_index:
-            vext(rl().split())
+            line = rl().split()
+            # CHG: 10 columns, CHGCAR: 5 columns
+            if is_chgcar and len(line) > 5:
+                # we have a data line with more than 5 columns, must be a CHG file
+                is_chgcar = False
+            vext(line)
             i = len(vals)
 
             if i % n == 0 and i < n * max_index:
-                if self.base_file.startswith("CHGCAR"):
+                if is_chgcar:
                     # Read over augmentation occupancies
                     line = rl()
                     while "augmentation" in line:
