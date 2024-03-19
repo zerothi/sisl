@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Citing sisl &mdash; sisl 0.1-10260c5</title>
+  <title>Citing sisl &mdash; sisl 0.1-97e3544</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=1e844bd0"></script>
+        <script src="_static/documentation_options.js?v=877175e3"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-10260c5
+                0.1-97e3544
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -139,19 +139,19 @@ released under the MPL-2 license.</p>
 <h2>Citing basic usage<a class="headerlink" href="#citing-basic-usage" title="Link to this heading"></a></h2>
 <p>If you are <em>only</em> using sisl as a post-processing tool and/or tight-binding calculations
 you should cite this (Zenodo DOI):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>@software<span class="o">{</span>zerothi_sisl,
-<span class="w">  </span><span class="nv">author</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>Papior,<span class="w"> </span>Nick<span class="o">}</span>,
-<span class="w">  </span><span class="nv">title</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>sisl:<span class="w"> </span>v&lt;fill-version&gt;<span class="o">}</span>,
-<span class="w">  </span><span class="nv">year</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="m">2024</span><span class="o">}</span>,
-<span class="w">  </span><span class="nv">doi</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="m">10</span>.5281/zenodo.597181<span class="o">}</span>,
-<span class="w">  </span><span class="nv">url</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>https://doi.org/10.5281/zenodo.597181<span class="o">}</span>
-<span class="o">}</span>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">zerothi_sisl</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">{Papior, Nick}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w">        </span><span class="p">=</span><span class="w"> </span><span class="s">{sisl: v&lt;fill-version&gt;}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w">         </span><span class="p">=</span><span class="w"> </span><span class="s">{2024}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">doi</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{10.5281/zenodo.597181}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{https://doi.org/10.5281/zenodo.597181}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>The <em class="xref py py-obj">sgeom</em>, <em class="xref py py-obj">sgrid</em> or <em class="xref py py-obj">sdata</em> commands all print-out the above information in a suitable format:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>--cite
-sgrid<span class="w"> </span>--cite
-sdata<span class="w"> </span>--cite
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgeom --cite</span>
+<span class="go">sgrid --cite</span>
+<span class="go">sdata --cite</span>
 </pre></div>
 </div>
 <p>which fill in the version for you, all yield the same output.</p>
@@ -160,43 +160,43 @@ sdata<span class="w"> </span>--cite
 <span id="citing-transport"></span><h2>Citing transport backend<a class="headerlink" href="#citing-transport-backend" title="Link to this heading"></a></h2>
 <p>When using sisl as tight-binding setup for Hamiltonians and/or dynamical matrices for
 <a class="reference external" href="https://siesta-project.org">TBtrans</a> and/or <code class="docutils literal notranslate"><span class="pre">PHtrans</span></code> you should cite these two DOI’s:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">@software{zerothi_sisl,</span>
-<span class="go">  author       = {Papior, Nick},</span>
-<span class="go">  title        = {sisl: v&lt;fill-version&gt;},</span>
-<span class="go">  year         = {2024},</span>
-<span class="go">  doi          = {10.5281/zenodo.597181},</span>
-<span class="go">  url          = {https://doi.org/10.5281/zenodo.597181}</span>
-<span class="go">}</span>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">zerothi_sisl</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">{Papior, Nick}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w">        </span><span class="p">=</span><span class="w"> </span><span class="s">{sisl: v&lt;fill-version&gt;}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w">         </span><span class="p">=</span><span class="w"> </span><span class="s">{2024}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">doi</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{10.5281/zenodo.597181}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{https://doi.org/10.5281/zenodo.597181}</span>
+<span class="p">}</span>
 
-<span class="go">@article{Papior2017,</span>
-<span class="go">  author = {Papior, Nick and Lorente, Nicol{\&#39;{a}}s and Frederiksen, Thomas and Garc{\&#39;{i}}a, Alberto and Brandbyge, Mads},</span>
-<span class="go">  doi = {10.1016/j.cpc.2016.09.022},</span>
-<span class="go">  issn = {00104655},</span>
-<span class="go">  journal = {Computer Physics Communications},</span>
-<span class="go">  month = {mar},</span>
-<span class="go">  number = {July},</span>
-<span class="go">  pages = {8--24},</span>
-<span class="go">  title = {{Improvements on non-equilibrium and transport Green function techniques: The next-generation transiesta}},</span>
-<span class="go">  volume = {212},</span>
-<span class="go">  year = {2017}</span>
-<span class="go">}</span>
+<span class="nc">@article</span><span class="p">{</span><span class="nl">Papior2017</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Papior, Nick and Lorente, Nicol{\&#39;{a}}s and Frederiksen, Thomas and Garc{\&#39;{i}}a, Alberto and Brandbyge, Mads}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">doi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{10.1016/j.cpc.2016.09.022}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">issn</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{00104655}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">journal</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Computer Physics Communications}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{mar}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">number</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{July}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">pages</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{8--24}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{{Improvements on non-equilibrium and transport Green function techniques: The next-generation transiesta}}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">volume</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{212}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2017}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>If using real-space self-energies one should additionally cite:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">@article{papior2019,</span>
-<span class="go">   author = {Papior, Nick and Calogero, Gaetano and Leitherer, Susanne and Brandbyge, Mads},</span>
-<span class="go">   doi = {10.1103/physrevb.100.195417},</span>
-<span class="go">   number = {19},</span>
-<span class="go">   source = {Crossref},</span>
-<span class="go">   url = {https://doi.org/10.1103/physrevb.100.195417},</span>
-<span class="go">   volume = {100},</span>
-<span class="go">   journal = {Phys. Rev. B},</span>
-<span class="go">   publisher = {American Physical Society (APS)},</span>
-<span class="go">   title = {Removing all periodic boundary conditions: {Efficient} nonequilibrium Green&#39;s function calculations},</span>
-<span class="go">   issn = {2469-9950, 2469-9969},</span>
-<span class="go">   year = {2019},</span>
-<span class="go">   month = nov,</span>
-<span class="go">}</span>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">papior2019</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Papior, Nick and Calogero, Gaetano and Leitherer, Susanne and Brandbyge, Mads}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">doi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{10.1103/physrevb.100.195417}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">number</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{19}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Crossref}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{https://doi.org/10.1103/physrevb.100.195417}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">volume</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{100}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">journal</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Phys. Rev. B}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">publisher</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{American Physical Society (APS)}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Removing all periodic boundary conditions: {Efficient} nonequilibrium Green&#39;s function calculations}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">issn</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2469-9950, 2469-9969}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2019}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">nov</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
