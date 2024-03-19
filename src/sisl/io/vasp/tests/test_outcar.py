@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 import sisl
-from sisl.io.vasp.stdout import stdoutSileVASP
+from sisl.io.vasp.outcar import outcarSileVASP
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
 _dir = osp.join("sisl", "io", "vasp")
@@ -15,7 +15,7 @@ _dir = osp.join("sisl", "io", "vasp")
 
 def test_diamond_outcar_energies(sisl_files):
     f = sisl_files(_dir, "diamond", "OUTCAR")
-    f = stdoutSileVASP(f)
+    f = outcarSileVASP(f)
 
     with pytest.warns(sisl.SislDeprecation, match=r"no longer returns the last entry"):
         E0 = f.read_energy()
@@ -34,7 +34,7 @@ def test_diamond_outcar_energies(sisl_files):
 
 def test_diamond_outcar_cputime(sisl_files):
     f = sisl_files(_dir, "diamond", "OUTCAR")
-    f = stdoutSileVASP(f)
+    f = outcarSileVASP(f)
 
     assert f.cpu_time() > 0.0
     assert f.info.completed()
@@ -42,14 +42,14 @@ def test_diamond_outcar_cputime(sisl_files):
 
 def test_diamond_outcar_completed(sisl_files):
     f = sisl_files(_dir, "diamond", "OUTCAR")
-    f = stdoutSileVASP(f)
+    f = outcarSileVASP(f)
 
     assert f.info.completed()
 
 
 def test_diamond_outcar_trajectory(sisl_files):
     f = sisl_files(_dir, "diamond", "OUTCAR")
-    f = stdoutSileVASP(f)
+    f = outcarSileVASP(f)
 
     step = f.read_trajectory()
 
@@ -64,7 +64,7 @@ def test_diamond_outcar_trajectory(sisl_files):
 
 def test_graphene_relax_outcar_trajectory(sisl_files):
     f = sisl_files(_dir, "graphene_relax", "OUTCAR")
-    f = stdoutSileVASP(f)
+    f = outcarSileVASP(f)
 
     step = f.read_trajectory[9]()
     assert step.cell[0, 0] == 2.462060590
@@ -88,7 +88,7 @@ def test_graphene_relax_outcar_trajectory(sisl_files):
 
 def test_graphene_md_outcar_trajectory(sisl_files):
     f = sisl_files(_dir, "graphene_md", "OUTCAR")
-    f = stdoutSileVASP(f)
+    f = outcarSileVASP(f)
 
     step = f.read_trajectory[99]()
     assert step.xyz[0, 0] == 0.09703
