@@ -248,7 +248,7 @@ def get_gap_coords(
         bands_data.E.sel(spin=spin) if "spin" in bands_data.coords else bands_data.E
     )
     Es = [
-        spin_bands.dropna("k", "all").sel(k=k, band=band, method="nearest")
+        spin_bands.dropna("k", how="all").sel(k=k, band=band, method="nearest")
         for k, band in zip(ks, (VB, CB))
     ]
     # Get the real values of ks that have been obtained

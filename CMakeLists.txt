@@ -36,6 +36,7 @@ execute_process(COMMAND
   OUTPUT_VARIABLE CYTHON_VERSION
   RESULT_VARIABLE CYTHON_VERSION_ERR
   OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 # Print it out
 message(STATUS "Cython version information [${CYTHON_EXECUTABLE} --version]: ${CYTHON_VERSION}")
 if(CYTHON_VERSION_ERR)
@@ -56,12 +57,12 @@ set(CMAKE_SHARED_MODULE_PREFIX "")
 # Determine whether we are in CIBUILDWHEEL
 # and whether we are building for the universal target
 set(_def_fortran TRUE)
-if( APPLE AND
-    "$ENV{CIBUILDWHEEL}" STREQUAL "1" AND
-    "$ENV{CIBW_ARCHS}" MATCHES "(universal2|arm64)")
-  # Disable fortran here, it shouldn't be needed
-  set(_def_fortran FALSE)
-endif()
+#if( APPLE AND
+#    "$ENV{CIBUILDWHEEL}" STREQUAL "1" AND
+#    "$ENV{CIBW_ARCHS}" MATCHES "(universal2|arm64)")
+#  # Disable fortran here, it shouldn't be needed
+#  set(_def_fortran FALSE)
+#endif()
 
 option(WITH_FORTRAN
   "Whether to compile and ship fortran sources (default True)" ${_def_fortran})
