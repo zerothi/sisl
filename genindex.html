@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; sisl 0.1-d15ac79</title>
+  <title>Index &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -20,13 +23,20 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="_static/documentation_options.js?v=1e844bd0"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="_static/copybutton.js?v=f281be69"></script>
         <script src="_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -44,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -54,35 +64,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
         </div>
@@ -202,6 +212,8 @@
 </li>
         <li><a href="api/generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection.__init__">(sisl.geom.CompositeGeometrySection method)</a>
 </li>
+        <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.__init__">(sisl.geom.NeighborFinder method)</a>
+</li>
         <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.__init__">(sisl.Geometry method)</a>
 </li>
         <li><a href="api/generated/sisl.Grid.html#sisl.Grid.__init__">(sisl.Grid method)</a>
@@ -214,67 +226,39 @@
 </li>
         <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.__init__">(sisl.io.bigdft.asciiSileBigDFT method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.__init__">(sisl.io.bigdft.asciiSileBigDFT.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.__init__">(sisl.io.bigdft.SileBigDFT method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.__init__">(sisl.io.bigdft.SileBigDFT.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.bigdft.SileBinBigDFT.html#sisl.io.bigdft.SileBinBigDFT.__init__">(sisl.io.bigdft.SileBinBigDFT method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.__init__">(sisl.io.cubeSile method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.__init__">(sisl.io.cubeSile.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.__init__">(sisl.io.dftb.hamrealSileDFTB method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.__init__">(sisl.io.dftb.hamrealSileDFTB.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.__init__">(sisl.io.dftb.overrealSileDFTB method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.__init__">(sisl.io.dftb.overrealSileDFTB.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.dftb.SileBinDFTB.html#sisl.io.dftb.SileBinDFTB.__init__">(sisl.io.dftb.SileBinDFTB method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.__init__">(sisl.io.dftb.SileDFTB method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.__init__">(sisl.io.dftb.SileDFTB.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.__init__">(sisl.io.fhiaims.inSileFHIaims method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.__init__">(sisl.io.fhiaims.inSileFHIaims.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.fhiaims.SileBinFHIaims.html#sisl.io.fhiaims.SileBinFHIaims.__init__">(sisl.io.fhiaims.SileBinFHIaims method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.__init__">(sisl.io.fhiaims.SileFHIaims method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.__init__">(sisl.io.fhiaims.SileFHIaims.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.__init__">(sisl.io.gulp.fcSileGULP method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.__init__">(sisl.io.gulp.fcSileGULP.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.__init__">(sisl.io.gulp.gotSileGULP method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.__init__">(sisl.io.gulp.gotSileGULP.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.gulp.SileBinGULP.html#sisl.io.gulp.SileBinGULP.__init__">(sisl.io.gulp.SileBinGULP method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.__init__">(sisl.io.gulp.SileGULP method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.__init__">(sisl.io.gulp.SileGULP.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.__init__">(sisl.io.moldenSile method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.__init__">(sisl.io.moldenSile.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.__init__">(sisl.io.openmx.mdSileOpenMX method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.__init__">(sisl.io.openmx.mdSileOpenMX.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.__init__">(sisl.io.openmx.omxSileOpenMX method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.__init__">(sisl.io.openmx.omxSileOpenMX.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.openmx.SileBinOpenMX.html#sisl.io.openmx.SileBinOpenMX.__init__">(sisl.io.openmx.SileBinOpenMX method)</a>
 </li>
@@ -282,69 +266,39 @@
 </li>
         <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.__init__">(sisl.io.openmx.SileOpenMX method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.__init__">(sisl.io.openmx.SileOpenMX.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.orca.SileBinORCA.html#sisl.io.orca.SileBinORCA.__init__">(sisl.io.orca.SileBinORCA method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.__init__">(sisl.io.orca.SileORCA method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.__init__">(sisl.io.orca.SileORCA.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.__init__">(sisl.io.orca.stdoutSileORCA method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.__init__">(sisl.io.orca.stdoutSileORCA.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.__init__">(sisl.io.orca.txtSileORCA method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.__init__">(sisl.io.orca.txtSileORCA.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.__init__">(sisl.io.pdbSile method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.__init__">(sisl.io.pdbSile.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.__init__">(sisl.io.scaleup.orboccSileScaleUp method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.__init__">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.__init__">(sisl.io.scaleup.refSileScaleUp method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.__init__">(sisl.io.scaleup.refSileScaleUp.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.__init__">(sisl.io.scaleup.rhamSileScaleUp method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.__init__">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.scaleup.SileBinScaleUp.html#sisl.io.scaleup.SileBinScaleUp.__init__">(sisl.io.scaleup.SileBinScaleUp method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.__init__">(sisl.io.scaleup.SileScaleUp method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.__init__">(sisl.io.scaleup.SileScaleUp.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.__init__">(sisl.io.siesta.aniSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.__init__">(sisl.io.siesta.aniSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.__init__">(sisl.io.siesta.bandsSileSiesta method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.__init__">(sisl.io.siesta.bandsSileSiesta.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.dmSileSiesta.html#sisl.io.siesta.dmSileSiesta.__init__">(sisl.io.siesta.dmSileSiesta method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.__init__">(sisl.io.siesta.eigSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.__init__">(sisl.io.siesta.eigSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.__init__">(sisl.io.siesta.faSileSiesta method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.__init__">(sisl.io.siesta.faSileSiesta.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.__init__">(sisl.io.siesta.fcSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.__init__">(sisl.io.siesta.fcSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.__init__">(sisl.io.siesta.fdfSileSiesta method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.__init__">(sisl.io.siesta.fdfSileSiesta.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.gridncSileSiesta.html#sisl.io.siesta.gridncSileSiesta.__init__">(sisl.io.siesta.gridncSileSiesta method)</a>
 </li>
@@ -356,11 +310,7 @@
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.__init__">(sisl.io.siesta.ionxmlSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.__init__">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.__init__">(sisl.io.siesta.kpSileSiesta method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.__init__">(sisl.io.siesta.kpSileSiesta.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.__init__">(sisl.io.siesta.ncSileSiesta method)</a>
 </li>
@@ -368,15 +318,9 @@
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.__init__">(sisl.io.siesta.orbindxSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.__init__">(sisl.io.siesta.orbindxSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.__init__">(sisl.io.siesta.pdosSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.__init__">(sisl.io.siesta.pdosSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.__init__">(sisl.io.siesta.rkpSileSiesta method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.__init__">(sisl.io.siesta.rkpSileSiesta.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.SileBinSiesta.html#sisl.io.siesta.SileBinSiesta.__init__">(sisl.io.siesta.SileBinSiesta method)</a>
 </li>
@@ -384,15 +328,9 @@
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.__init__">(sisl.io.siesta.SileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.__init__">(sisl.io.siesta.SileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.__init__">(sisl.io.siesta.stdoutSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.__init__">(sisl.io.siesta.stdoutSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.__init__">(sisl.io.siesta.structSileSiesta method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.__init__">(sisl.io.siesta.structSileSiesta.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.tsdeSileSiesta.html#sisl.io.siesta.tsdeSileSiesta.__init__">(sisl.io.siesta.tsdeSileSiesta method)</a>
 </li>
@@ -406,11 +344,7 @@
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.__init__">(sisl.io.siesta.xvSileSiesta method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.__init__">(sisl.io.siesta.xvSileSiesta.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.__init__">(sisl.io.Sile method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.__init__">(sisl.io.Sile.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.SileBin.html#sisl.io.SileBin.__init__">(sisl.io.SileBin method)</a>
 </li>
@@ -423,8 +357,6 @@
         <li><a href="api/io/generated/sisl.io.SileWarning.html#sisl.io.SileWarning.__init__">(sisl.io.SileWarning method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.__init__">(sisl.io.tableSile method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.__init__">(sisl.io.tableSile.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.tbtrans.deltancSileTBtrans.html#sisl.io.tbtrans.deltancSileTBtrans.__init__">(sisl.io.tbtrans.deltancSileTBtrans method)</a>
 </li>
@@ -442,8 +374,6 @@
 </li>
         <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.__init__">(sisl.io.tbtrans.SileTBtrans method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.__init__">(sisl.io.tbtrans.SileTBtrans.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtavncSileTBtrans.html#sisl.io.tbtrans.tbtavncSileTBtrans.__init__">(sisl.io.tbtrans.tbtavncSileTBtrans method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtgfSileTBtrans.html#sisl.io.tbtrans.tbtgfSileTBtrans.__init__">(sisl.io.tbtrans.tbtgfSileTBtrans method)</a>
@@ -456,51 +386,29 @@
 </li>
         <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.__init__">(sisl.io.vasp.carSileVASP method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.__init__">(sisl.io.vasp.carSileVASP.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.__init__">(sisl.io.vasp.chgSileVASP method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.__init__">(sisl.io.vasp.chgSileVASP.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.__init__">(sisl.io.vasp.doscarSileVASP method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.__init__">(sisl.io.vasp.doscarSileVASP.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.__init__">(sisl.io.vasp.eigenvalSileVASP method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.__init__">(sisl.io.vasp.eigenvalSileVASP.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.__init__">(sisl.io.vasp.locpotSileVASP method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.__init__">(sisl.io.vasp.locpotSileVASP.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.vasp.SileBinVASP.html#sisl.io.vasp.SileBinVASP.__init__">(sisl.io.vasp.SileBinVASP method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.__init__">(sisl.io.vasp.SileVASP method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.__init__">(sisl.io.vasp.SileVASP.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.__init__">(sisl.io.vasp.stdoutSileVASP method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.__init__">(sisl.io.vasp.stdoutSileVASP.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.wannier90.SileBinWannier90.html#sisl.io.wannier90.SileBinWannier90.__init__">(sisl.io.wannier90.SileBinWannier90 method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.__init__">(sisl.io.wannier90.SileWannier90 method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.__init__">(sisl.io.wannier90.SileWannier90.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.__init__">(sisl.io.wannier90.winSileWannier90 method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.__init__">(sisl.io.wannier90.winSileWannier90.InfoAttr method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.__init__">(sisl.io.xsfSile method)</a>
 </li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.__init__">(sisl.io.xsfSile.InfoAttr method)</a>
-</li>
         <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.__init__">(sisl.io.xyzSile method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.__init__">(sisl.io.xyzSile.InfoAttr method)</a>
 </li>
         <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.__init__">(sisl.Lattice method)</a>
 </li>
@@ -893,6 +801,8 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.align_phase">(sisl.physics.StateC method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.GTOrbital.html#sisl.GTOrbital.alpha">alpha (sisl.GTOrbital property)</a>
 
       <ul>
@@ -912,8 +822,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta">aniSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr">aniSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.append.html#sisl.append">append() (in module sisl)</a>
 
@@ -955,8 +863,6 @@
         <li><a href="api/generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack.apply">(sisl.physics.MonkhorstPack attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.apply">apply() (sisl.Geometry method)</a>
 
       <ul>
@@ -995,8 +901,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT">asciiSileBigDFT (class in sisl.io.bigdft)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr">asciiSileBigDFT.InfoAttr (class in sisl.io.bigdft)</a>
-</li>
       <li><a href="api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.asCoefficient">asCoefficient() (sisl.physics.electron.EigenstateElectron method)</a>
 
       <ul>
@@ -1009,6 +913,8 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.asCoefficient">(sisl.physics.StateC method)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.assert_consistency">assert_consistency() (sisl.geom.NeighborFinder method)</a>
+</li>
       <li><a href="api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.asState">asState() (sisl.physics.electron.EigenstateElectron method)</a>
 
       <ul>
@@ -1021,7 +927,7 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.asState">(sisl.physics.StateC method)</a>
 </li>
       </ul></li>
-      <li><a href="api/basic.html#index-0">atom</a>, <a href="api/basic.html#index-0">[1]</a>
+      <li><a href="api/basic.html#index-0">atom</a>
 </li>
       <li><a href="api/generated/sisl.Atom.html#sisl.Atom">Atom (class in sisl)</a>
 </li>
@@ -1133,112 +1039,6 @@
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.attach">attach() (sisl.Geometry method)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.attr">attr (sisl.io.bigdft.asciiSileBigDFT.InfoAttr attribute)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.attr">(sisl.io.bigdft.SileBigDFT.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.attr">(sisl.io.cubeSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.attr">(sisl.io.dftb.hamrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.attr">(sisl.io.dftb.overrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.attr">(sisl.io.dftb.SileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.attr">(sisl.io.fhiaims.inSileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.attr">(sisl.io.fhiaims.SileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.attr">(sisl.io.gulp.fcSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.attr">(sisl.io.gulp.gotSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.attr">(sisl.io.gulp.SileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.attr">(sisl.io.moldenSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.attr">(sisl.io.openmx.mdSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.attr">(sisl.io.openmx.omxSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.attr">(sisl.io.openmx.SileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.attr">(sisl.io.orca.SileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.attr">(sisl.io.orca.stdoutSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.attr">(sisl.io.orca.txtSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.attr">(sisl.io.pdbSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.attr">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.attr">(sisl.io.scaleup.refSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.attr">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.attr">(sisl.io.scaleup.SileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.attr">(sisl.io.siesta.aniSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.attr">(sisl.io.siesta.bandsSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.attr">(sisl.io.siesta.eigSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.attr">(sisl.io.siesta.faSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.attr">(sisl.io.siesta.fcSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.attr">(sisl.io.siesta.fdfSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.attr">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.attr">(sisl.io.siesta.kpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.attr">(sisl.io.siesta.orbindxSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.attr">(sisl.io.siesta.pdosSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.attr">(sisl.io.siesta.rkpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.attr">(sisl.io.siesta.SileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.attr">(sisl.io.siesta.stdoutSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.attr">(sisl.io.siesta.structSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.attr">(sisl.io.siesta.xvSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.attr">(sisl.io.Sile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.attr">(sisl.io.tableSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.attr">(sisl.io.tbtrans.SileTBtrans.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.attr">(sisl.io.vasp.carSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.attr">(sisl.io.vasp.chgSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.attr">(sisl.io.vasp.doscarSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.attr">(sisl.io.vasp.eigenvalSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.attr">(sisl.io.vasp.locpotSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.attr">(sisl.io.vasp.SileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.attr">(sisl.io.vasp.stdoutSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.attr">(sisl.io.wannier90.SileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.attr">(sisl.io.wannier90.winSileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.attr">(sisl.io.xsfSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.attr">(sisl.io.xyzSile.InfoAttr attribute)</a>
-</li>
-      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.auc2sc">auc2sc() (sisl.Geometry method)</a>
 </li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.average">average() (sisl.Grid method)</a>
@@ -1260,8 +1060,6 @@
       <li><a href="api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot">BandsPlot (class in sisl.viz)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta">bandsSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr">bandsSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure">BandStructure (class in sisl.physics)</a>
 </li>
@@ -1829,8 +1627,6 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP">carSileVASP (class in sisl.io.vasp)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr">carSileVASP.InfoAttr (class in sisl.io.vasp)</a>
-</li>
       <li><a href="api/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory.categorize">categorize() (sisl.geom.AtomCategory method)</a>
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.cell">cell (sisl.Geometry property)</a>
@@ -1936,8 +1732,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP">chgSileVASP (class in sisl.io.vasp)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr">chgSileVASP.InfoAttr (class in sisl.io.vasp)</a>
 </li>
       <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.clear">clear() (sisl.mixing.History method)</a>
 
@@ -2095,6 +1889,8 @@
         <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.close">(sisl.io.xyzSile method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.close_sc">close_sc() (sisl.Geometry method)</a>
 </li>
       <li><a href="api/generated/sisl.GTOrbital.html#sisl.GTOrbital.coeff">coeff (sisl.GTOrbital property)</a>
@@ -2139,8 +1935,6 @@
 </li>
       <li><a href="api/generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity">conductivity() (in module sisl.physics.electron)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Quaternion.html#sisl.Quaternion.conj">conj() (sisl.Quaternion method)</a>
 </li>
       <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.conjugate">conjugate() (sisl.BoundaryCondition method)</a>
@@ -2215,110 +2009,6 @@
         <li><a href="api/generated/sisl.GTOrbital.html#sisl.GTOrbital.copy">(sisl.GTOrbital method)</a>
 </li>
         <li><a href="api/generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital.copy">(sisl.HydrogenicOrbital method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.copy">(sisl.io.bigdft.asciiSileBigDFT.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.copy">(sisl.io.bigdft.SileBigDFT.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.copy">(sisl.io.cubeSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.copy">(sisl.io.dftb.hamrealSileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.copy">(sisl.io.dftb.overrealSileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.copy">(sisl.io.dftb.SileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.copy">(sisl.io.fhiaims.inSileFHIaims.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.copy">(sisl.io.fhiaims.SileFHIaims.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.copy">(sisl.io.gulp.fcSileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.copy">(sisl.io.gulp.gotSileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.copy">(sisl.io.gulp.SileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.copy">(sisl.io.moldenSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.copy">(sisl.io.openmx.mdSileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.copy">(sisl.io.openmx.omxSileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.copy">(sisl.io.openmx.SileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.copy">(sisl.io.orca.SileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.copy">(sisl.io.orca.stdoutSileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.copy">(sisl.io.orca.txtSileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.copy">(sisl.io.pdbSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.copy">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.copy">(sisl.io.scaleup.refSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.copy">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.copy">(sisl.io.scaleup.SileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.copy">(sisl.io.siesta.aniSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.copy">(sisl.io.siesta.bandsSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.copy">(sisl.io.siesta.eigSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.copy">(sisl.io.siesta.faSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.copy">(sisl.io.siesta.fcSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.copy">(sisl.io.siesta.fdfSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.copy">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.copy">(sisl.io.siesta.kpSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.copy">(sisl.io.siesta.orbindxSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.copy">(sisl.io.siesta.pdosSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.copy">(sisl.io.siesta.rkpSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.copy">(sisl.io.siesta.SileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.copy">(sisl.io.siesta.stdoutSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.copy">(sisl.io.siesta.structSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.copy">(sisl.io.siesta.xvSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.copy">(sisl.io.Sile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.copy">(sisl.io.tableSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.copy">(sisl.io.tbtrans.SileTBtrans.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.copy">(sisl.io.vasp.carSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.copy">(sisl.io.vasp.chgSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.copy">(sisl.io.vasp.doscarSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.copy">(sisl.io.vasp.eigenvalSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.copy">(sisl.io.vasp.locpotSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.copy">(sisl.io.vasp.SileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.copy">(sisl.io.vasp.stdoutSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.copy">(sisl.io.wannier90.SileWannier90.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.copy">(sisl.io.wannier90.winSileWannier90.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.copy">(sisl.io.xsfSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.copy">(sisl.io.xyzSile.InfoAttr method)</a>
 </li>
         <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.copy">(sisl.Lattice method)</a>
 </li>
@@ -2436,8 +2126,6 @@
       <li><a href="api/generated/sisl.shape.Cube.html#sisl.shape.Cube">Cube (class in sisl.shape)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile">cubeSile (class in sisl.io)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr">cubeSile.InfoAttr (class in sisl.io)</a>
 </li>
       <li><a href="api/generated/sisl.shape.Cuboid.html#sisl.shape.Cuboid">Cuboid (class in sisl.shape)</a>
 </li>
@@ -2847,6 +2535,8 @@
         <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.dir_file">(sisl.io.xyzSile method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.utils.direction.html#sisl.utils.direction">direction() (in module sisl.utils)</a>
 </li>
       <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.DIRICHLET">DIRICHLET (sisl.BoundaryCondition attribute)</a>
@@ -2929,222 +2619,8 @@
         <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.dkind">(sisl.SparseOrbital property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io/generated/sisl.io.siesta.dmSileSiesta.html#sisl.io.siesta.dmSileSiesta">dmSileSiesta (class in sisl.io.siesta)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.doc">doc (sisl.io.bigdft.asciiSileBigDFT.InfoAttr attribute)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.doc">(sisl.io.bigdft.SileBigDFT.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.doc">(sisl.io.cubeSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.doc">(sisl.io.dftb.hamrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.doc">(sisl.io.dftb.overrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.doc">(sisl.io.dftb.SileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.doc">(sisl.io.fhiaims.inSileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.doc">(sisl.io.fhiaims.SileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.doc">(sisl.io.gulp.fcSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.doc">(sisl.io.gulp.gotSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.doc">(sisl.io.gulp.SileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.doc">(sisl.io.moldenSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.doc">(sisl.io.openmx.mdSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.doc">(sisl.io.openmx.omxSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.doc">(sisl.io.openmx.SileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.doc">(sisl.io.orca.SileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.doc">(sisl.io.orca.stdoutSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.doc">(sisl.io.orca.txtSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.doc">(sisl.io.pdbSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.doc">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.doc">(sisl.io.scaleup.refSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.doc">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.doc">(sisl.io.scaleup.SileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.doc">(sisl.io.siesta.aniSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.doc">(sisl.io.siesta.bandsSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.doc">(sisl.io.siesta.eigSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.doc">(sisl.io.siesta.faSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.doc">(sisl.io.siesta.fcSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.doc">(sisl.io.siesta.fdfSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.doc">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.doc">(sisl.io.siesta.kpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.doc">(sisl.io.siesta.orbindxSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.doc">(sisl.io.siesta.pdosSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.doc">(sisl.io.siesta.rkpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.doc">(sisl.io.siesta.SileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.doc">(sisl.io.siesta.stdoutSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.doc">(sisl.io.siesta.structSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.doc">(sisl.io.siesta.xvSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.doc">(sisl.io.Sile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.doc">(sisl.io.tableSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.doc">(sisl.io.tbtrans.SileTBtrans.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.doc">(sisl.io.vasp.carSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.doc">(sisl.io.vasp.chgSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.doc">(sisl.io.vasp.doscarSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.doc">(sisl.io.vasp.eigenvalSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.doc">(sisl.io.vasp.locpotSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.doc">(sisl.io.vasp.SileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.doc">(sisl.io.vasp.stdoutSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.doc">(sisl.io.wannier90.SileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.doc">(sisl.io.wannier90.winSileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.doc">(sisl.io.xsfSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.doc">(sisl.io.xyzSile.InfoAttr attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.documentation">documentation() (sisl.io.bigdft.asciiSileBigDFT.InfoAttr method)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.documentation">(sisl.io.bigdft.SileBigDFT.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.documentation">(sisl.io.cubeSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.documentation">(sisl.io.dftb.hamrealSileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.documentation">(sisl.io.dftb.overrealSileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.documentation">(sisl.io.dftb.SileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.documentation">(sisl.io.fhiaims.inSileFHIaims.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.documentation">(sisl.io.fhiaims.SileFHIaims.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.documentation">(sisl.io.gulp.fcSileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.documentation">(sisl.io.gulp.gotSileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.documentation">(sisl.io.gulp.SileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.documentation">(sisl.io.moldenSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.documentation">(sisl.io.openmx.mdSileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.documentation">(sisl.io.openmx.omxSileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.documentation">(sisl.io.openmx.SileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.documentation">(sisl.io.orca.SileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.documentation">(sisl.io.orca.stdoutSileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.documentation">(sisl.io.orca.txtSileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.documentation">(sisl.io.pdbSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.documentation">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.documentation">(sisl.io.scaleup.refSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.documentation">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.documentation">(sisl.io.scaleup.SileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.documentation">(sisl.io.siesta.aniSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.documentation">(sisl.io.siesta.bandsSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.documentation">(sisl.io.siesta.eigSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.documentation">(sisl.io.siesta.faSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.documentation">(sisl.io.siesta.fcSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.documentation">(sisl.io.siesta.fdfSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.documentation">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.documentation">(sisl.io.siesta.kpSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.documentation">(sisl.io.siesta.orbindxSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.documentation">(sisl.io.siesta.pdosSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.documentation">(sisl.io.siesta.rkpSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.documentation">(sisl.io.siesta.SileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.documentation">(sisl.io.siesta.stdoutSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.documentation">(sisl.io.siesta.structSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.documentation">(sisl.io.siesta.xvSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.documentation">(sisl.io.Sile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.documentation">(sisl.io.tableSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.documentation">(sisl.io.tbtrans.SileTBtrans.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.documentation">(sisl.io.vasp.carSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.documentation">(sisl.io.vasp.chgSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.documentation">(sisl.io.vasp.doscarSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.documentation">(sisl.io.vasp.eigenvalSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.documentation">(sisl.io.vasp.locpotSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.documentation">(sisl.io.vasp.SileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.documentation">(sisl.io.vasp.stdoutSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.documentation">(sisl.io.wannier90.SileWannier90.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.documentation">(sisl.io.wannier90.winSileWannier90.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.documentation">(sisl.io.xsfSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.documentation">(sisl.io.xyzSile.InfoAttr method)</a>
-</li>
-      </ul></li>
       <li><a href="api/generated/sisl.physics.electron.DOS.html#sisl.physics.electron.DOS">DOS() (in module sisl.physics.electron)</a>
 
       <ul>
@@ -3172,8 +2648,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP">doscarSileVASP (class in sisl.io.vasp)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr">doscarSileVASP.InfoAttr (class in sisl.io.vasp)</a>
 </li>
       <li><a href="toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy">DownfoldSelfEnergy (class in sisl_toolbox.btd)</a>
 </li>
@@ -3415,8 +2889,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP">eigenvalSileVASP (class in sisl.io.vasp)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr">eigenvalSileVASP.InfoAttr (class in sisl.io.vasp)</a>
-</li>
       <li><a href="api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenvalue">eigenvalue() (sisl.physics.DynamicalMatrix method)</a>
 
       <ul>
@@ -3464,8 +2936,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta">eigSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr">eigSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.tsgfSileSiesta.html#sisl.io.siesta.tsgfSileSiesta.Eindex">Eindex() (sisl.io.siesta.tsgfSileSiesta method)</a>
 
@@ -3689,8 +3159,6 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta">faSileSiesta (class in sisl.io.siesta)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr">faSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
-</li>
       <li><a href="api/viz/generated/sisl.viz.FatbandsPlot.html#sisl.viz.FatbandsPlot">FatbandsPlot (class in sisl.viz)</a>
 </li>
       <li><a href="api/generated/sisl.geom.fcc.html#sisl.geom.fcc">fcc() (in module sisl.geom)</a>
@@ -3699,15 +3167,9 @@
 </li>
       <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP">fcSileGULP (class in sisl.io.gulp)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr">fcSileGULP.InfoAttr (class in sisl.io.gulp)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta">fcSileSiesta (class in sisl.io.siesta)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr">fcSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta">fdfSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr">fdfSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.physics.fermi_dirac.html#sisl.physics.fermi_dirac">fermi_dirac() (in module sisl.physics)</a>
 </li>
@@ -3899,6 +3361,8 @@
         <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.file">(sisl.io.xyzSile property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.utils.fileindex.html#sisl.utils.fileindex">fileindex() (in module sisl.utils)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.SileError.html#sisl.io.SileError.filename">filename (sisl.io.SileError attribute)</a>
@@ -3947,8 +3411,6 @@
         <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.finalize">(sisl.SparseOrbital method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.finalized">finalized (sisl.physics.DensityMatrix property)</a>
 
       <ul>
@@ -3971,6 +3433,12 @@
         <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.finalized">(sisl.SparseOrbital property)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_all_unique_pairs">find_all_unique_pairs() (sisl.geom.NeighborFinder method)</a>
+</li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_close">find_close() (sisl.geom.NeighborFinder method)</a>
+</li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_neighbors">find_neighbors() (sisl.geom.NeighborFinder method)</a>
+</li>
       <li><a href="api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot.find_node_key">find_node_key() (sisl.viz.BandsPlot class method)</a>
 
       <ul>
@@ -3999,112 +3467,6 @@
 </li>
       <li><a href="api/generated/sisl.Atoms.html#sisl.Atoms.formula">formula() (sisl.Atoms method)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.found">found (sisl.io.bigdft.asciiSileBigDFT.InfoAttr attribute)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.found">(sisl.io.bigdft.SileBigDFT.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.found">(sisl.io.cubeSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.found">(sisl.io.dftb.hamrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.found">(sisl.io.dftb.overrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.found">(sisl.io.dftb.SileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.found">(sisl.io.fhiaims.inSileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.found">(sisl.io.fhiaims.SileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.found">(sisl.io.gulp.fcSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.found">(sisl.io.gulp.gotSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.found">(sisl.io.gulp.SileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.found">(sisl.io.moldenSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.found">(sisl.io.openmx.mdSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.found">(sisl.io.openmx.omxSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.found">(sisl.io.openmx.SileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.found">(sisl.io.orca.SileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.found">(sisl.io.orca.stdoutSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.found">(sisl.io.orca.txtSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.found">(sisl.io.pdbSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.found">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.found">(sisl.io.scaleup.refSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.found">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.found">(sisl.io.scaleup.SileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.found">(sisl.io.siesta.aniSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.found">(sisl.io.siesta.bandsSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.found">(sisl.io.siesta.eigSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.found">(sisl.io.siesta.faSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.found">(sisl.io.siesta.fcSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.found">(sisl.io.siesta.fdfSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.found">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.found">(sisl.io.siesta.kpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.found">(sisl.io.siesta.orbindxSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.found">(sisl.io.siesta.pdosSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.found">(sisl.io.siesta.rkpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.found">(sisl.io.siesta.SileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.found">(sisl.io.siesta.stdoutSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.found">(sisl.io.siesta.structSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.found">(sisl.io.siesta.xvSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.found">(sisl.io.Sile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.found">(sisl.io.tableSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.found">(sisl.io.tbtrans.SileTBtrans.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.found">(sisl.io.vasp.carSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.found">(sisl.io.vasp.chgSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.found">(sisl.io.vasp.doscarSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.found">(sisl.io.vasp.eigenvalSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.found">(sisl.io.vasp.locpotSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.found">(sisl.io.vasp.SileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.found">(sisl.io.vasp.stdoutSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.found">(sisl.io.wannier90.SileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.found">(sisl.io.wannier90.winSileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.found">(sisl.io.xsfSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.found">(sisl.io.xyzSile.InfoAttr attribute)</a>
-</li>
-      </ul></li>
       <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.from_bytes">from_bytes() (sisl.BoundaryCondition method)</a>
 </li>
       <li><a href="toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.from_fdf">from_fdf() (sisl_toolbox.btd.DeviceGreen class method)</a>
@@ -4231,9 +3593,11 @@
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry">Geometry (class in sisl)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.geometry">geometry (sisl.io.tbtrans.phtavncSilePHtrans property)</a>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.geometry">geometry (sisl.geom.NeighborFinder attribute)</a>
 
       <ul>
+        <li><a href="api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.geometry">(sisl.io.tbtrans.phtavncSilePHtrans property)</a>
+</li>
         <li><a href="api/io/generated/sisl.io.tbtrans.phtncSilePHtrans.html#sisl.io.tbtrans.phtncSilePHtrans.geometry">(sisl.io.tbtrans.phtncSilePHtrans property)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.tbtrans.phtprojncSilePHtrans.html#sisl.io.tbtrans.phtprojncSilePHtrans.geometry">(sisl.io.tbtrans.phtprojncSilePHtrans property)</a>
@@ -4385,8 +3749,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP">gotSileGULP (class in sisl.io.gulp)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr">gotSileGULP.InfoAttr (class in sisl.io.gulp)</a>
-</li>
       <li><a href="api/generated/sisl.geom.graphene.html#sisl.geom.graphene">graphene() (in module sisl.geom)</a>
 </li>
       <li><a href="api/generated/sisl.geom.graphene_flake.html#sisl.geom.graphene_flake">graphene_flake() (in module sisl.geom)</a>
@@ -4444,8 +3806,6 @@
       <li><a href="api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian">Hamiltonian (class in sisl.physics)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB">hamrealSileDFTB (class in sisl.io.dftb)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr">hamrealSileDFTB.InfoAttr (class in sisl.io.dftb)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.tbtrans.deltancSileTBtrans.html#sisl.io.tbtrans.deltancSileTBtrans.has_level">has_level() (sisl.io.tbtrans.deltancSileTBtrans method)</a>
 </li>
@@ -4677,15 +4037,11 @@
 </li>
       <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims">inSileFHIaims (class in sisl.io.fhiaims)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr">inSileFHIaims.InfoAttr (class in sisl.io.fhiaims)</a>
-</li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.interp">interp() (sisl.Grid method)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.ionncSileSiesta.html#sisl.io.siesta.ionncSileSiesta">ionncSileSiesta (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta">ionxmlSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr">ionxmlSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.ipr">ipr() (sisl.physics.electron.EigenstateElectron method)</a>
 
@@ -4709,10 +4065,10 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.ipr">(sisl.physics.StateC method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.iR">iR() (sisl.Geometry method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.is_cartesian">is_cartesian() (sisl.Lattice method)</a>
 </li>
       <li><a href="api/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory.is_class">is_class() (sisl.geom.AtomCategory class method)</a>
@@ -4953,8 +4309,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta">kpSileSiesta (class in sisl.io.siesta)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr">kpSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.kpt">kpt (sisl.io.tbtrans.phtavncSilePHtrans property)</a>
 
       <ul>
@@ -5035,16 +4389,18 @@
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.lasto">(sisl.io.tbtrans.tbtsencSileTBtrans property)</a>
 </li>
       </ul></li>
+      <li><a href="api/basic.html#index-0">lattice</a>
+</li>
       <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice">Lattice (class in sisl)</a>
 </li>
       <li><a href="api/generated/sisl.typing.LatticeLike.html#sisl.typing.LatticeLike">LatticeLike (in module sisl.typing)</a>
 </li>
       <li><a href="api/generated/sisl.typing.LatticeOrGeometry.html#sisl.typing.LatticeOrGeometry">LatticeOrGeometry (in module sisl.typing)</a>
 </li>
-      <li><a href="api/generated/sisl.typing.LatticeOrGeometryLike.html#sisl.typing.LatticeOrGeometryLike">LatticeOrGeometryLike (in module sisl.typing)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/sisl.typing.LatticeOrGeometryLike.html#sisl.typing.LatticeOrGeometryLike">LatticeOrGeometryLike (in module sisl.typing)</a>
+</li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.length">length (sisl.Geometry property)</a>
 
       <ul>
@@ -5062,8 +4418,6 @@
       <li><a href="api/generated/sisl.utils.list2str.html#sisl.utils.list2str">list2str() (in module sisl.utils)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP">locpotSileVASP (class in sisl.io.vasp)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr">locpotSileVASP.InfoAttr (class in sisl.io.vasp)</a>
 </li>
       <li><a href="api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot.logs">logs (sisl.viz.BandsPlot attribute)</a>
 
@@ -5149,9 +4503,9 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX">mdSileOpenMX (class in sisl.io.openmx)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr">mdSileOpenMX.InfoAttr (class in sisl.io.openmx)</a>
-</li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.mean">mean() (sisl.Grid method)</a>
+</li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.memory">memory (sisl.geom.NeighborFinder attribute)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.tbtrans.deltancSileTBtrans.html#sisl.io.tbtrans.deltancSileTBtrans.merge">merge() (sisl.io.tbtrans.deltancSileTBtrans class method)</a>
 
@@ -5217,7 +4571,7 @@
     module
 
       <ul>
-        <li><a href="api/index.html#module-sisl">sisl</a>
+        <li><a href="index.html#module-sisl">sisl</a>
 </li>
         <li><a href="api/unit_constant.constant.html#module-sisl.constant">sisl.constant</a>
 </li>
@@ -5279,8 +4633,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile">moldenSile (class in sisl.io)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr">moldenSile.InfoAttr (class in sisl.io)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.tbtrans.phtprojncSilePHtrans.html#sisl.io.tbtrans.phtprojncSilePHtrans.molecules">molecules (sisl.io.tbtrans.phtprojncSilePHtrans property)</a>
 
@@ -5514,6 +4866,8 @@
 </li>
       <li><a href="api/generated/sisl.geom.nanotube.html#sisl.geom.nanotube">nanotube() (in module sisl.geom)</a>
 </li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.nbins">nbins (sisl.geom.NeighborFinder attribute)</a>
+</li>
       <li><a href="api/generated/sisl.SparseCSR.html#sisl.SparseCSR.ncol">ncol (sisl.SparseCSR attribute)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta">ncSileSiesta (class in sisl.io.siesta)</a>
@@ -5549,6 +4903,8 @@
       <li><a href="api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.nE">nE (sisl.io.tbtrans.tbtsencSileTBtrans property)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.ne">ne (sisl.io.tbtrans.tbtsencSileTBtrans property)</a>
+</li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder">NeighborFinder (class in sisl.geom)</a>
 </li>
       <li><a href="api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot.network">network (sisl.viz.BandsPlot attribute)</a>
 
@@ -5976,8 +5332,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX">omxSileOpenMX (class in sisl.io.openmx)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr">omxSileOpenMX.InfoAttr (class in sisl.io.openmx)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta">onlysSileSiesta (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.OPEN">OPEN (sisl.BoundaryCondition attribute)</a>
@@ -5997,8 +5351,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta">orbindxSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr">orbindxSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/basic.html#index-0">orbital</a>
 </li>
@@ -6112,8 +5464,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp">orboccSileScaleUp (class in sisl.io.scaleup)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr">orboccSileScaleUp.InfoAttr (class in sisl.io.scaleup)</a>
-</li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.origin">origin (sisl.Geometry property)</a>
 
       <ul>
@@ -6178,8 +5528,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB">overrealSileDFTB (class in sisl.io.dftb)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr">overrealSileDFTB.InfoAttr (class in sisl.io.dftb)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -6194,12 +5542,12 @@
       </ul></li>
       <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.parallel">parallel() (sisl.Lattice method)</a>
 </li>
-      <li><a href="api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.param_circle">param_circle() (sisl.physics.BandStructure static method)</a>
+      <li><a href="api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.param_circle">param_circle() (sisl.physics.BandStructure class method)</a>
 
       <ul>
-        <li><a href="api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.param_circle">(sisl.physics.BrillouinZone static method)</a>
+        <li><a href="api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.param_circle">(sisl.physics.BrillouinZone class method)</a>
 </li>
-        <li><a href="api/generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack.param_circle">(sisl.physics.MonkhorstPack static method)</a>
+        <li><a href="api/generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack.param_circle">(sisl.physics.MonkhorstPack class method)</a>
 </li>
       </ul></li>
       <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.parameters">parameters() (sisl.Lattice method)</a>
@@ -6244,112 +5592,6 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.parent">(sisl.physics.StateC attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.parser">parser (sisl.io.bigdft.asciiSileBigDFT.InfoAttr attribute)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.parser">(sisl.io.bigdft.SileBigDFT.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.parser">(sisl.io.cubeSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.parser">(sisl.io.dftb.hamrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.parser">(sisl.io.dftb.overrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.parser">(sisl.io.dftb.SileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.parser">(sisl.io.fhiaims.inSileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.parser">(sisl.io.fhiaims.SileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.parser">(sisl.io.gulp.fcSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.parser">(sisl.io.gulp.gotSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.parser">(sisl.io.gulp.SileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.parser">(sisl.io.moldenSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.parser">(sisl.io.openmx.mdSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.parser">(sisl.io.openmx.omxSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.parser">(sisl.io.openmx.SileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.parser">(sisl.io.orca.SileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.parser">(sisl.io.orca.stdoutSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.parser">(sisl.io.orca.txtSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.parser">(sisl.io.pdbSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.parser">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.parser">(sisl.io.scaleup.refSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.parser">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.parser">(sisl.io.scaleup.SileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.parser">(sisl.io.siesta.aniSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.parser">(sisl.io.siesta.bandsSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.parser">(sisl.io.siesta.eigSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.parser">(sisl.io.siesta.faSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.parser">(sisl.io.siesta.fcSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.parser">(sisl.io.siesta.fdfSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.parser">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.parser">(sisl.io.siesta.kpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.parser">(sisl.io.siesta.orbindxSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.parser">(sisl.io.siesta.pdosSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.parser">(sisl.io.siesta.rkpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.parser">(sisl.io.siesta.SileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.parser">(sisl.io.siesta.stdoutSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.parser">(sisl.io.siesta.structSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.parser">(sisl.io.siesta.xvSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.parser">(sisl.io.Sile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.parser">(sisl.io.tableSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.parser">(sisl.io.tbtrans.SileTBtrans.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.parser">(sisl.io.vasp.carSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.parser">(sisl.io.vasp.chgSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.parser">(sisl.io.vasp.doscarSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.parser">(sisl.io.vasp.eigenvalSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.parser">(sisl.io.vasp.locpotSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.parser">(sisl.io.vasp.SileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.parser">(sisl.io.vasp.stdoutSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.parser">(sisl.io.wannier90.SileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.parser">(sisl.io.wannier90.winSileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.parser">(sisl.io.xsfSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.parser">(sisl.io.xyzSile.InfoAttr attribute)</a>
-</li>
-      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.pbc">pbc (sisl.Geometry property)</a>
 
       <ul>
@@ -6359,8 +5601,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile">pdbSile (class in sisl.io)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr">pdbSile.InfoAttr (class in sisl.io)</a>
 </li>
       <li><a href="api/generated/sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS">PDOS() (in module sisl.physics.electron)</a>
 
@@ -6375,8 +5615,6 @@
       <li><a href="api/viz/generated/sisl.viz.PdosPlot.html#sisl.viz.PdosPlot">PdosPlot (class in sisl.viz)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta">pdosSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr">pdosSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.PERIODIC">PERIODIC (sisl.BoundaryCondition attribute)</a>
 
@@ -6638,112 +5876,6 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.print">print() (sisl.io.siesta.fdfSileSiesta static method)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.process">process() (sisl.io.bigdft.asciiSileBigDFT.InfoAttr method)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.process">(sisl.io.bigdft.SileBigDFT.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.process">(sisl.io.cubeSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.process">(sisl.io.dftb.hamrealSileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.process">(sisl.io.dftb.overrealSileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.process">(sisl.io.dftb.SileDFTB.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.process">(sisl.io.fhiaims.inSileFHIaims.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.process">(sisl.io.fhiaims.SileFHIaims.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.process">(sisl.io.gulp.fcSileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.process">(sisl.io.gulp.gotSileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.process">(sisl.io.gulp.SileGULP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.process">(sisl.io.moldenSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.process">(sisl.io.openmx.mdSileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.process">(sisl.io.openmx.omxSileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.process">(sisl.io.openmx.SileOpenMX.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.process">(sisl.io.orca.SileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.process">(sisl.io.orca.stdoutSileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.process">(sisl.io.orca.txtSileORCA.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.process">(sisl.io.pdbSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.process">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.process">(sisl.io.scaleup.refSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.process">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.process">(sisl.io.scaleup.SileScaleUp.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.process">(sisl.io.siesta.aniSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.process">(sisl.io.siesta.bandsSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.process">(sisl.io.siesta.eigSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.process">(sisl.io.siesta.faSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.process">(sisl.io.siesta.fcSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.process">(sisl.io.siesta.fdfSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.process">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.process">(sisl.io.siesta.kpSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.process">(sisl.io.siesta.orbindxSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.process">(sisl.io.siesta.pdosSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.process">(sisl.io.siesta.rkpSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.process">(sisl.io.siesta.SileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.process">(sisl.io.siesta.stdoutSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.process">(sisl.io.siesta.structSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.process">(sisl.io.siesta.xvSileSiesta.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.process">(sisl.io.Sile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.process">(sisl.io.tableSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.process">(sisl.io.tbtrans.SileTBtrans.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.process">(sisl.io.vasp.carSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.process">(sisl.io.vasp.chgSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.process">(sisl.io.vasp.doscarSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.process">(sisl.io.vasp.eigenvalSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.process">(sisl.io.vasp.locpotSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.process">(sisl.io.vasp.SileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.process">(sisl.io.vasp.stdoutSileVASP.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.process">(sisl.io.wannier90.SileWannier90.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.process">(sisl.io.wannier90.winSileWannier90.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.process">(sisl.io.xsfSile.InfoAttr method)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.process">(sisl.io.xyzSile.InfoAttr method)</a>
-</li>
-      </ul></li>
       <li><a href="api/io/generated/sisl.io.tbtrans.phtprojncSilePHtrans.html#sisl.io.tbtrans.phtprojncSilePHtrans.projections">projections() (sisl.io.tbtrans.phtprojncSilePHtrans method)</a>
 
       <ul>
@@ -6829,6 +5961,8 @@
       <li><a href="api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.R">R (sisl.AtomicOrbital property)</a>
 
       <ul>
+        <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.R">(sisl.geom.NeighborFinder attribute)</a>
+</li>
         <li><a href="api/generated/sisl.GTOrbital.html#sisl.GTOrbital.R">(sisl.GTOrbital property)</a>
 </li>
         <li><a href="api/generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital.R">(sisl.HydrogenicOrbital property)</a>
@@ -7099,6 +6233,8 @@
       <ul>
         <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_basis">(sisl.io.siesta.fdfSileSiesta method)</a>
 </li>
+        <li><a href="api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_basis">(sisl.io.siesta.hsxSileSiesta method)</a>
+</li>
         <li><a href="api/io/generated/sisl.io.siesta.ionncSileSiesta.html#sisl.io.siesta.ionncSileSiesta.read_basis">(sisl.io.siesta.ionncSileSiesta method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.read_basis">(sisl.io.siesta.ionxmlSileSiesta method)</a>
@@ -7322,6 +6458,8 @@
         <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.read_geometry">(sisl.io.wannier90.winSileWannier90 method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.read_grid">read_grid() (sisl.io.cubeSile method)</a>
 
       <ul>
@@ -7368,10 +6506,28 @@
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtgfSileTBtrans.html#sisl.io.tbtrans.tbtgfSileTBtrans.read_header">(sisl.io.tbtrans.tbtgfSileTBtrans method)</a>
 </li>
       </ul></li>
+      <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.read_hessian">read_hessian() (sisl.io.gulp.fcSileGULP method)</a>
+
+      <ul>
+        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.read_hessian">(sisl.io.siesta.fcSileSiesta method)</a>
+</li>
+        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_hessian">(sisl.io.siesta.fdfSileSiesta method)</a>
+</li>
+        <li><a href="api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_hessian">(sisl.io.siesta.ncSileSiesta method)</a>
+</li>
+      </ul></li>
       <li><a href="api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_info">read_info() (sisl.io.siesta.wfsxSileSiesta method)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.read_lattice">read_lattice (sisl.io.xsfSile attribute)</a>
+      <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.read_lattice">read_lattice (sisl.io.openmx.mdSileOpenMX attribute)</a>
+
+      <ul>
+        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.read_lattice">(sisl.io.siesta.aniSileSiesta attribute)</a>
 </li>
+        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.read_lattice">(sisl.io.xsfSile attribute)</a>
+</li>
+        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.read_lattice">(sisl.io.xyzSile attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.read_lattice">read_lattice() (sisl.io.cubeSile method)</a>
 
       <ul>
@@ -7430,8 +6586,6 @@
         <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.read_lattice">(sisl.io.wannier90.winSileWannier90 method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.read_lattice_nsc">read_lattice_nsc() (sisl.io.gulp.gotSileGULP method)</a>
 
       <ul>
@@ -7548,114 +6702,6 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp">refSileScaleUp (class in sisl.io.scaleup)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr">refSileScaleUp.InfoAttr (class in sisl.io.scaleup)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.regex">regex (sisl.io.bigdft.asciiSileBigDFT.InfoAttr attribute)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.regex">(sisl.io.bigdft.SileBigDFT.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.regex">(sisl.io.cubeSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.regex">(sisl.io.dftb.hamrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.regex">(sisl.io.dftb.overrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.regex">(sisl.io.dftb.SileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.regex">(sisl.io.fhiaims.inSileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.regex">(sisl.io.fhiaims.SileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.regex">(sisl.io.gulp.fcSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.regex">(sisl.io.gulp.gotSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.regex">(sisl.io.gulp.SileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.regex">(sisl.io.moldenSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.regex">(sisl.io.openmx.mdSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.regex">(sisl.io.openmx.omxSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.regex">(sisl.io.openmx.SileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.regex">(sisl.io.orca.SileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.regex">(sisl.io.orca.stdoutSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.regex">(sisl.io.orca.txtSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.regex">(sisl.io.pdbSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.regex">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.regex">(sisl.io.scaleup.refSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.regex">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.regex">(sisl.io.scaleup.SileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.regex">(sisl.io.siesta.aniSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.regex">(sisl.io.siesta.bandsSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.regex">(sisl.io.siesta.eigSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.regex">(sisl.io.siesta.faSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.regex">(sisl.io.siesta.fcSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.regex">(sisl.io.siesta.fdfSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.regex">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.regex">(sisl.io.siesta.kpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.regex">(sisl.io.siesta.orbindxSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.regex">(sisl.io.siesta.pdosSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.regex">(sisl.io.siesta.rkpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.regex">(sisl.io.siesta.SileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.regex">(sisl.io.siesta.stdoutSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.regex">(sisl.io.siesta.structSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.regex">(sisl.io.siesta.xvSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.regex">(sisl.io.Sile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.regex">(sisl.io.tableSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.regex">(sisl.io.tbtrans.SileTBtrans.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.regex">(sisl.io.vasp.carSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.regex">(sisl.io.vasp.chgSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.regex">(sisl.io.vasp.doscarSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.regex">(sisl.io.vasp.eigenvalSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.regex">(sisl.io.vasp.locpotSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.regex">(sisl.io.vasp.SileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.regex">(sisl.io.vasp.stdoutSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.regex">(sisl.io.wannier90.SileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.regex">(sisl.io.wannier90.winSileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.regex">(sisl.io.xsfSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.regex">(sisl.io.xyzSile.InfoAttr attribute)</a>
-</li>
-      </ul></li>
       <li><a href="api/generated/sisl.remove.html#sisl.remove">remove() (in module sisl)</a>
 
       <ul>
@@ -7840,8 +6886,6 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp">rhamSileScaleUp (class in sisl.io.scaleup)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr">rhamSileScaleUp.InfoAttr (class in sisl.io.scaleup)</a>
-</li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.Rij">Rij() (sisl.Geometry method)</a>
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.rij">rij() (sisl.Geometry method)</a>
@@ -7883,8 +6927,6 @@
       <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.rij">rij() (sisl.SparseOrbital method)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta">rkpSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr">rkpSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.geom.rocksalt.html#sisl.geom.rocksalt">rocksalt() (in module sisl.geom)</a>
 </li>
@@ -8170,12 +7212,6 @@
         <li><a href="api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.set_radial">(sisl.SphericalOrbital method)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.set_sc">set_sc() (sisl.Geometry method)</a>
-
-      <ul>
-        <li><a href="api/generated/sisl.Grid.html#sisl.Grid.set_sc">(sisl.Grid method)</a>
-</li>
-      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.set_supercell">set_supercell() (sisl.Geometry method)</a>
 
       <ul>
@@ -8204,9 +7240,11 @@
       </ul></li>
       <li><a href="api/generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict.setdefault">setdefault() (sisl.utils.PropertyDict method)</a>
 </li>
-      <li><a href="api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.setup">setup() (sisl.physics.RealSpaceSE method)</a>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.setup">setup() (sisl.geom.NeighborFinder method)</a>
 
       <ul>
+        <li><a href="api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.setup">(sisl.physics.RealSpaceSE method)</a>
+</li>
         <li><a href="api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.setup">(sisl.physics.RealSpaceSI method)</a>
 </li>
         <li><a href="api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot.setup">(sisl.viz.BandsPlot method)</a>
@@ -8306,11 +7344,7 @@
 </li>
       <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile">Sile (class in sisl.io)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr">Sile.InfoAttr (class in sisl.io)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT">SileBigDFT (class in sisl.io.bigdft)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr">SileBigDFT.InfoAttr (class in sisl.io.bigdft)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.SileBin.html#sisl.io.SileBin">SileBin (class in sisl.io)</a>
 </li>
@@ -8346,17 +7380,11 @@
 </li>
       <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB">SileDFTB (class in sisl.io.dftb)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr">SileDFTB.InfoAttr (class in sisl.io.dftb)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.SileError.html#sisl.io.SileError">SileError</a>
 </li>
       <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims">SileFHIaims (class in sisl.io.fhiaims)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr">SileFHIaims.InfoAttr (class in sisl.io.fhiaims)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP">SileGULP (class in sisl.io.gulp)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr">SileGULP.InfoAttr (class in sisl.io.gulp)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.SileInfo.html#sisl.io.SileInfo">SileInfo</a>
 </li>
@@ -8364,31 +7392,17 @@
 </li>
       <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX">SileOpenMX (class in sisl.io.openmx)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr">SileOpenMX.InfoAttr (class in sisl.io.openmx)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA">SileORCA (class in sisl.io.orca)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr">SileORCA.InfoAttr (class in sisl.io.orca)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp">SileScaleUp (class in sisl.io.scaleup)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr">SileScaleUp.InfoAttr (class in sisl.io.scaleup)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta">SileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr">SileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans">SileTBtrans (class in sisl.io.tbtrans)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr">SileTBtrans.InfoAttr (class in sisl.io.tbtrans)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP">SileVASP (class in sisl.io.vasp)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr">SileVASP.InfoAttr (class in sisl.io.vasp)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90">SileWannier90 (class in sisl.io.wannier90)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr">SileWannier90.InfoAttr (class in sisl.io.wannier90)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.SileWarning.html#sisl.io.SileWarning">SileWarning</a>
 </li>
@@ -8396,7 +7410,7 @@
     sisl
 
       <ul>
-        <li><a href="api/index.html#module-sisl">module</a>
+        <li><a href="index.html#module-sisl">module</a>
 </li>
       </ul></li>
       <li>
@@ -8483,8 +7497,6 @@
         <li><a href="api/io/tbtrans.html#module-sisl.io.tbtrans">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.io.vasp
 
@@ -8506,6 +7518,8 @@
         <li><a href="api/mixing.html#module-sisl.mixing">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.nodes
 
@@ -8806,6 +7820,8 @@
         <li><a href="api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.spin_align">(sisl.physics.EnergyDensityMatrix method)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.physics.electron.spin_contamination.html#sisl.physics.electron.spin_contamination">spin_contamination() (in module sisl.physics.electron)</a>
+</li>
       <li><a href="api/generated/sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment">spin_moment() (in module sisl.physics.electron)</a>
 
       <ul>
@@ -8824,8 +7840,6 @@
         <li><a href="api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.spin_rotate">(sisl.physics.EnergyDensityMatrix method)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.physics.electron.spin_squared.html#sisl.physics.electron.spin_squared">spin_squared() (in module sisl.physics.electron)</a>
-</li>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.spinor">spinor (sisl.physics.Spin property)</a>
 </li>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.SPINORBIT">SPINORBIT (sisl.physics.Spin attribute)</a>
@@ -8898,15 +7912,9 @@
 </li>
       <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA">stdoutSileORCA (class in sisl.io.orca)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr">stdoutSileORCA.InfoAttr (class in sisl.io.orca)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta">stdoutSileSiesta (class in sisl.io.siesta)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr">stdoutSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP">stdoutSileVASP (class in sisl.io.vasp)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr">stdoutSileVASP.InfoAttr (class in sisl.io.vasp)</a>
 </li>
       <li><a href="api/generated/sisl.physics.step_function.html#sisl.physics.step_function">step_function() (in module sisl.physics)</a>
 </li>
@@ -8923,8 +7931,6 @@
       <li><a href="api/generated/sisl.utils.strseq.html#sisl.utils.strseq">strseq() (in module sisl.utils)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta">structSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr">structSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/generated/sisl.sub.html#sisl.sub">sub() (in module sisl)</a>
 
@@ -9061,8 +8067,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile">tableSile (class in sisl.io)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr">tableSile.InfoAttr (class in sisl.io)</a>
 </li>
       <li><a href="api/generated/sisl.Atom.html#sisl.Atom.tag">tag (sisl.Atom property)</a>
 
@@ -9316,6 +8320,8 @@
         <li><a href="api/generated/sisl.STOrbital.html#sisl.STOrbital.toSphere">(sisl.STOrbital method)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.total_nbins">total_nbins (sisl.geom.NeighborFinder attribute)</a>
+</li>
       <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.transform">transform() (sisl.physics.DensityMatrix method)</a>
 
       <ul>
@@ -9478,8 +8484,6 @@
 </li>
       <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA">txtSileORCA (class in sisl.io.orca)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr">txtSileORCA.InfoAttr (class in sisl.io.orca)</a>
-</li>
       <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.type">type() (sisl.io.openmx.omxSileOpenMX method)</a>
 
       <ul>
@@ -9564,112 +8568,6 @@
         <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.untile">(sisl.SparseOrbital method)</a>
 </li>
       </ul></li>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.updatable">updatable (sisl.io.bigdft.asciiSileBigDFT.InfoAttr attribute)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.updatable">(sisl.io.bigdft.SileBigDFT.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.updatable">(sisl.io.cubeSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.updatable">(sisl.io.dftb.hamrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.updatable">(sisl.io.dftb.overrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.updatable">(sisl.io.dftb.SileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.updatable">(sisl.io.fhiaims.inSileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.updatable">(sisl.io.fhiaims.SileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.updatable">(sisl.io.gulp.fcSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.updatable">(sisl.io.gulp.gotSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.updatable">(sisl.io.gulp.SileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.updatable">(sisl.io.moldenSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.updatable">(sisl.io.openmx.mdSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.updatable">(sisl.io.openmx.omxSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.updatable">(sisl.io.openmx.SileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.updatable">(sisl.io.orca.SileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.updatable">(sisl.io.orca.stdoutSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.updatable">(sisl.io.orca.txtSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.updatable">(sisl.io.pdbSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.updatable">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.updatable">(sisl.io.scaleup.refSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.updatable">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.updatable">(sisl.io.scaleup.SileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.updatable">(sisl.io.siesta.aniSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.updatable">(sisl.io.siesta.bandsSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.updatable">(sisl.io.siesta.eigSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.updatable">(sisl.io.siesta.faSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.updatable">(sisl.io.siesta.fcSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.updatable">(sisl.io.siesta.fdfSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.updatable">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.updatable">(sisl.io.siesta.kpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.updatable">(sisl.io.siesta.orbindxSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.updatable">(sisl.io.siesta.pdosSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.updatable">(sisl.io.siesta.rkpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.updatable">(sisl.io.siesta.SileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.updatable">(sisl.io.siesta.stdoutSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.updatable">(sisl.io.siesta.structSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.updatable">(sisl.io.siesta.xvSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.updatable">(sisl.io.Sile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.updatable">(sisl.io.tableSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.updatable">(sisl.io.tbtrans.SileTBtrans.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.updatable">(sisl.io.vasp.carSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.updatable">(sisl.io.vasp.chgSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.updatable">(sisl.io.vasp.doscarSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.updatable">(sisl.io.vasp.eigenvalSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.updatable">(sisl.io.vasp.locpotSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.updatable">(sisl.io.vasp.SileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.updatable">(sisl.io.vasp.stdoutSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.updatable">(sisl.io.wannier90.SileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.updatable">(sisl.io.wannier90.winSileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.updatable">(sisl.io.xsfSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.updatable">(sisl.io.xyzSile.InfoAttr attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict.update">update() (sisl.utils.PropertyDict method)</a>
@@ -9722,114 +8620,6 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.InfoAttr.value">value (sisl.io.bigdft.asciiSileBigDFT.InfoAttr attribute)</a>
-
-      <ul>
-        <li><a href="api/io/generated/sisl.io.bigdft.SileBigDFT.html#sisl.io.bigdft.SileBigDFT.InfoAttr.value">(sisl.io.bigdft.SileBigDFT.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.InfoAttr.value">(sisl.io.cubeSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.InfoAttr.value">(sisl.io.dftb.hamrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.InfoAttr.value">(sisl.io.dftb.overrealSileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.dftb.SileDFTB.html#sisl.io.dftb.SileDFTB.InfoAttr.value">(sisl.io.dftb.SileDFTB.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.InfoAttr.value">(sisl.io.fhiaims.inSileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.fhiaims.SileFHIaims.html#sisl.io.fhiaims.SileFHIaims.InfoAttr.value">(sisl.io.fhiaims.SileFHIaims.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.fcSileGULP.html#sisl.io.gulp.fcSileGULP.InfoAttr.value">(sisl.io.gulp.fcSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.InfoAttr.value">(sisl.io.gulp.gotSileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.gulp.SileGULP.html#sisl.io.gulp.SileGULP.InfoAttr.value">(sisl.io.gulp.SileGULP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.moldenSile.html#sisl.io.moldenSile.InfoAttr.value">(sisl.io.moldenSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.mdSileOpenMX.html#sisl.io.openmx.mdSileOpenMX.InfoAttr.value">(sisl.io.openmx.mdSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.InfoAttr.value">(sisl.io.openmx.omxSileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.openmx.SileOpenMX.html#sisl.io.openmx.SileOpenMX.InfoAttr.value">(sisl.io.openmx.SileOpenMX.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.SileORCA.html#sisl.io.orca.SileORCA.InfoAttr.value">(sisl.io.orca.SileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.InfoAttr.value">(sisl.io.orca.stdoutSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.InfoAttr.value">(sisl.io.orca.txtSileORCA.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile.InfoAttr.value">(sisl.io.pdbSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.InfoAttr.value">(sisl.io.scaleup.orboccSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.refSileScaleUp.html#sisl.io.scaleup.refSileScaleUp.InfoAttr.value">(sisl.io.scaleup.refSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.rhamSileScaleUp.html#sisl.io.scaleup.rhamSileScaleUp.InfoAttr.value">(sisl.io.scaleup.rhamSileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.scaleup.SileScaleUp.html#sisl.io.scaleup.SileScaleUp.InfoAttr.value">(sisl.io.scaleup.SileScaleUp.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.aniSileSiesta.html#sisl.io.siesta.aniSileSiesta.InfoAttr.value">(sisl.io.siesta.aniSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.InfoAttr.value">(sisl.io.siesta.bandsSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.InfoAttr.value">(sisl.io.siesta.eigSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.faSileSiesta.html#sisl.io.siesta.faSileSiesta.InfoAttr.value">(sisl.io.siesta.faSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fcSileSiesta.html#sisl.io.siesta.fcSileSiesta.InfoAttr.value">(sisl.io.siesta.fcSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.InfoAttr.value">(sisl.io.siesta.fdfSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.InfoAttr.value">(sisl.io.siesta.ionxmlSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.InfoAttr.value">(sisl.io.siesta.kpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.InfoAttr.value">(sisl.io.siesta.orbindxSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.InfoAttr.value">(sisl.io.siesta.pdosSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.InfoAttr.value">(sisl.io.siesta.rkpSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta.InfoAttr.value">(sisl.io.siesta.SileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.InfoAttr.value">(sisl.io.siesta.stdoutSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.structSileSiesta.html#sisl.io.siesta.structSileSiesta.InfoAttr.value">(sisl.io.siesta.structSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr.value">(sisl.io.siesta.xvSileSiesta.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.Sile.html#sisl.io.Sile.InfoAttr.value">(sisl.io.Sile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.InfoAttr.value">(sisl.io.tableSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.tbtrans.SileTBtrans.html#sisl.io.tbtrans.SileTBtrans.InfoAttr.value">(sisl.io.tbtrans.SileTBtrans.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.InfoAttr.value">(sisl.io.vasp.carSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP.InfoAttr.value">(sisl.io.vasp.chgSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.InfoAttr.value">(sisl.io.vasp.doscarSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.eigenvalSileVASP.html#sisl.io.vasp.eigenvalSileVASP.InfoAttr.value">(sisl.io.vasp.eigenvalSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.InfoAttr.value">(sisl.io.vasp.locpotSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP.InfoAttr.value">(sisl.io.vasp.SileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.InfoAttr.value">(sisl.io.vasp.stdoutSileVASP.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90.InfoAttr.value">(sisl.io.wannier90.SileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr.value">(sisl.io.wannier90.winSileWannier90.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr.value">(sisl.io.xsfSile.InfoAttr attribute)</a>
-</li>
-        <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr.value">(sisl.io.xyzSile.InfoAttr attribute)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict.values">values() (sisl.utils.PropertyDict method)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.vector_current">vector_current (sisl.io.tbtrans.phtavncSilePHtrans attribute)</a>
@@ -9872,6 +8662,8 @@
         <li><a href="api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon.velocity">(sisl.physics.phonon.ModeCPhonon method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.version">version (sisl.io.siesta.hsxSileSiesta property)</a>
 
       <ul>
@@ -9959,8 +8751,6 @@
       <li><a href="api/generated/sisl.physics.WideBandSE.html#sisl.physics.WideBandSE">WideBandSE (class in sisl.physics)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90">winSileWannier90 (class in sisl.io.wannier90)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.InfoAttr">winSileWannier90.InfoAttr (class in sisl.io.wannier90)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.SileError.html#sisl.io.SileError.with_traceback">with_traceback() (sisl.io.SileError method)</a>
 
@@ -10438,13 +9228,9 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile">xsfSile (class in sisl.io)</a>
 </li>
-      <li><a href="api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.InfoAttr">xsfSile.InfoAttr (class in sisl.io)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta">xvSileSiesta (class in sisl.io.siesta)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.InfoAttr">xvSileSiesta.InfoAttr (class in sisl.io.siesta)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.xyz">xyz (sisl.io.tbtrans.phtavncSilePHtrans property)</a>
 
@@ -10465,8 +9251,6 @@
 </li>
       </ul></li>
       <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile">xyzSile (class in sisl.io)</a>
-</li>
-      <li><a href="api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.InfoAttr">xyzSile.InfoAttr (class in sisl.io)</a>
 </li>
   </ul></td>
 </tr></table>

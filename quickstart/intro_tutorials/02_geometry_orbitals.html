@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Defining orbitals &mdash; sisl 0.1-10260c5</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=1e844bd0"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../_static/design-tabs.js?v=36754332"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Reading/writing geometries" href="03_geometry_sile.html" />
+    <link rel="prev" title="Creating common geometries" href="01_geometry.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-10260c5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Quickstart</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#installation">Installation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#quickstart-tutorials">Quickstart tutorials</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01_geometry.html">Creating common geometries</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Defining orbitals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Orbitals-with-spherical-shapes">Orbitals with spherical shapes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Atoms-with-orbitals">Atoms with orbitals</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="03_geometry_sile.html">Reading/writing geometries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../overview.html">Package overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html">Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Similar solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Quickstart</a></li>
+      <li class="breadcrumb-item active">Defining orbitals</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/quickstart/intro_tutorials/02_geometry_orbitals.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div align="right">
+<a href="https://raw.githubusercontent.com/zerothi/sisl/main//home/runner/work/sisl/sisl/docs/quickstart/intro_tutorials/02_geometry_orbitals.ipynb"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>
+&nbsp;
+<a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath=/home/runner/work/sisl/sisl/docs/quickstart/intro_tutorials/02_geometry_orbitals.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
+</div><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+<section id="Defining-orbitals">
+<h1>Defining orbitals<a class="headerlink" href="#Defining-orbitals" title="Link to this heading"></a></h1>
+<p>Orbitals, and basis sets, is a complicated matter that requires a broader set of classes. sisl enables one to use orbitals without information, atomic orbitals, and Gaussian/Slater type orbitals.</p>
+<hr class="docutils" />
+<p>In this tutorial we will show how one can create different orbitals, and use them.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">orb</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Orbital</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">orb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Orbital{R: 1.20000, q0: 1.0}
+</pre></div></div>
+</div>
+<div class="line-block">
+<div class="line">All orbitals will have some idea of its <em>range</em>. I.e. the effective range at which it acts on something. The ranges are used in <code class="docutils literal notranslate"><span class="pre">Geometry</span></code> objects to estimate which atoms interacts with other atoms, and as such they are the back-bone of tight-binding models.</div>
+<div class="line">The above orbital has a range of 1.2 Ang, and an initial charge of 1 electron.</div>
+</div>
+<hr class="docutils" />
+<section id="Orbitals-with-spherical-shapes">
+<h2>Orbitals with spherical shapes<a class="headerlink" href="#Orbitals-with-spherical-shapes" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line">Many other orbitals has some shape in real space. Here we will explore two such orbitals in <code class="docutils literal notranslate"><span class="pre">sisl</span></code>.</div>
+<div class="line">In this case we will populate the orbital with an exponential decaying shape (non-physical, but instructive).</div>
+</div>
+<p>Here we define the orbital range as the maximum <code class="docutils literal notranslate"><span class="pre">R</span></code> such that integral:</p>
+<div class="math notranslate nohighlight">
+\[\int^R |f(r)| dr\]</div>
+<p>contains <span class="math notranslate nohighlight">\(99\%\)</span> of the function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">sorb</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">SphericalOrbital</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span> <span class="n">R</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;contains&quot;</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sorb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+SphericalOrbital{l: 1, R: 1.2879999999999991, q0: 0.0}
+</pre></div></div>
+</div>
+<p>Now we have a spherical orbital with <span class="math notranslate nohighlight">\(l=1\)</span> quantum number. Lets plot its spherical form and its wavefunction:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># Plotting for theta = phi = 45 angles</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">sorb</span><span class="o">.</span><span class="n">psi_spher</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;m=</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/quickstart_intro_tutorials_02_geometry_orbitals_6_0.png" src="../../_images/quickstart_intro_tutorials_02_geometry_orbitals_6_0.png" />
+</div>
+</div>
+<p>Note how the wavefunction gets truncated at the orbital radius, based on the truncation optimization.</p>
+<hr class="docutils" />
+<p>The <code class="docutils literal notranslate"><span class="pre">SphericalOrbital</span></code> is typically just a temporary orbital array used for creating proper atomic orbitals. Atomic orbitals contains relevant quantum numbers, but also a spherical function. The <code class="docutils literal notranslate"><span class="pre">AtomicOrbital</span></code> accepts many other possibilities of arguments, please refer to its documentation for detailed explanations.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aorb</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">AtomicOrbital</span><span class="p">(</span><span class="s2">&quot;pz&quot;</span><span class="p">,</span> <span class="n">spherical</span><span class="o">=</span><span class="n">sorb</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">aorb</span><span class="o">.</span><span class="n">psi_spher</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">45</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/quickstart_intro_tutorials_02_geometry_orbitals_8_0.png" src="../../_images/quickstart_intro_tutorials_02_geometry_orbitals_8_0.png" />
+</div>
+</div>
+</section>
+<section id="Atoms-with-orbitals">
+<h2>Atoms with orbitals<a class="headerlink" href="#Atoms-with-orbitals" title="Link to this heading"></a></h2>
+<p>Atoms are defined with 1 or more orbitals. To create an atom with a specific set of orbitals simply do:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="n">sorb</span><span class="p">,</span> <span class="n">aorb</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Atom{C, Z: 6, mass(au): 12.01070, maxR: 1.28800,
+ SphericalOrbital{l: 1, R: 1.2879999999999991, q0: 0.0},
+ AtomicOrbital{2pzZ1, q0: 0.0, SphericalOrbital{l: 1, R: 1.2879999999999991, q0: 0.0}}
+}
+</pre></div></div>
+</div>
+<p>This atom can then further be used in <code class="docutils literal notranslate"><span class="pre">Geometry</span></code> creations.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="01_geometry.html" class="btn btn-neutral float-left" title="Creating common geometries" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="03_geometry_sile.html" class="btn btn-neutral float-right" title="Reading/writing geometries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

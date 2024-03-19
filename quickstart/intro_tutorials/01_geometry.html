@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating common geometries &mdash; sisl 0.1-10260c5</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=1e844bd0"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../_static/design-tabs.js?v=36754332"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Defining orbitals" href="02_geometry_orbitals.html" />
+    <link rel="prev" title="Quickstart" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-10260c5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Quickstart</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#installation">Installation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#quickstart-tutorials">Quickstart tutorials</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Creating common geometries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Importing-sisl">Importing sisl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Creating-a-geometry">Creating a geometry</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="02_geometry_orbitals.html">Defining orbitals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03_geometry_sile.html">Reading/writing geometries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../overview.html">Package overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html">Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Similar solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Quickstart</a></li>
+      <li class="breadcrumb-item active">Creating common geometries</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/quickstart/intro_tutorials/01_geometry.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div align="right">
+<a href="https://raw.githubusercontent.com/zerothi/sisl/main//home/runner/work/sisl/sisl/docs/quickstart/intro_tutorials/01_geometry.ipynb"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>
+&nbsp;
+<a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath=/home/runner/work/sisl/sisl/docs/quickstart/intro_tutorials/01_geometry.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
+</div><section id="Creating-common-geometries">
+<h1>Creating common geometries<a class="headerlink" href="#Creating-common-geometries" title="Link to this heading"></a></h1>
+<section id="Importing-sisl">
+<h2>Importing sisl<a class="headerlink" href="#Importing-sisl" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line">Import the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> package and start working with it.</div>
+<div class="line">To ensure there is no clashes with other packages we encourage users to stick with the same short-hand name. The <code class="docutils literal notranslate"><span class="pre">sisl</span></code>-developers recommends using <code class="docutils literal notranslate"><span class="pre">si</span></code>. In all of <code class="docutils literal notranslate"><span class="pre">sisl</span></code> documentation it is assumed that <code class="docutils literal notranslate"><span class="pre">si</span></code> refers to <code class="docutils literal notranslate"><span class="pre">sisl</span></code>.</div>
+</div>
+<p>An important aspect of <code class="docutils literal notranslate"><span class="pre">sisl</span></code> is the units used: - Ångstrøm [Ang] - Electron volt [eV]</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Creating-a-geometry">
+<h2>Creating a geometry<a class="headerlink" href="#Creating-a-geometry" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">sisl</span></code> provides a broad set of methods to create default geometries. There are <code class="docutils literal notranslate"><span class="pre">fcc</span></code>, <code class="docutils literal notranslate"><span class="pre">bcc</span></code>, <code class="docutils literal notranslate"><span class="pre">sc</span></code>, <code class="docutils literal notranslate"><span class="pre">graphene</span></code> and many other default geometries available.</div>
+<div class="line">The default geometry creations are found in the <code class="docutils literal notranslate"><span class="pre">si.geom</span></code> module, (for additional details check out <code class="docutils literal notranslate"><span class="pre">help(si.geom)</span></code>).</div>
+</div>
+<hr class="docutils" />
+<p>Our focus here will be to create an FCC lattice of iron.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">iron</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">fcc</span><span class="p">(</span><span class="mf">2.4</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;Fe&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>There is lots of information one can retrieve from the geometry, such as: - lattice vectors - number of atoms and orbitals - atomic species</p>
+<p>Try and extract the above information:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All lattice vectors:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">iron</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">iron</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lattice vector c = </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;iron has </span><span class="si">{</span><span class="n">iron</span><span class="o">.</span><span class="n">na</span><span class="si">}</span><span class="s2"> atoms and </span><span class="si">{</span><span class="n">iron</span><span class="o">.</span><span class="n">no</span><span class="si">}</span><span class="s2"> orbitals&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;iron&#39;s only atom has the atomic number </span><span class="si">{</span><span class="n">iron</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Z</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+All lattice vectors:
+[[0.  1.2 1.2]
+ [1.2 0.  1.2]
+ [1.2 1.2 0. ]]
+lattice vector c = [1.2 1.2 0. ]
+iron has 1 atoms and 1 orbitals
+iron&#39;s only atom has the atomic number 26
+</pre></div></div>
+</div>
+<p>Let us print out the geometry and see for additional information:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">iron</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Geometry{na: 1, no: 1,
+ Atoms{species: 1,
+  Atom{Fe, Z: 26, mass(au): 55.84500, maxR: -1.00000,
+   Orbital{R: -1.00000, q0: 0.0}
+  }: 1,
+ },
+ maxR: -1.00000,
+ Lattice{nsc: [3 3 3],
+  origin=[0.0000, 0.0000, 0.0000],
+  A=[0.0000, 1.2000, 1.2000],
+  B=[1.2000, 0.0000, 1.2000],
+  C=[1.2000, 1.2000, 0.0000],
+  bc=[Periodic,
+      Periodic,
+      Periodic]
+ }
+}
+</pre></div></div>
+</div>
+<p>This shows a greater detail of the geometry. - it shows there is 1 atom (<code class="docutils literal notranslate"><span class="pre">na:</span> <span class="pre">1</span></code>), and 1 orbital (<code class="docutils literal notranslate"><span class="pre">no:</span> <span class="pre">1</span></code>) - a complete list of atoms (<code class="docutils literal notranslate"><span class="pre">Atoms{...}</span></code>), their atomic number, mass and associated orbitals - the associated <code class="docutils literal notranslate"><span class="pre">Lattice</span></code> object describes the lattice vectors, and which lattice vectors uses periodicity</p>
+<hr class="docutils" />
+<p>The geometry also has associated coordinates of the atomic structure, these can be accessed through the <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> attribute:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">iron</span><span class="o">.</span><span class="n">xyz</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[0., 0., 0.]])
+</pre></div></div>
+</div>
+<p>In this case there is only 1 atom, and its position is at the origin.</p>
+<p>Let us try and do a little more complicated structure, say graphene.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graphene</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">graphene</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Geometry{na: 2, no: 2,
+ Atoms{species: 1,
+  Atom{C, Z: 6, mass(au): 12.01070, maxR: 1.43420,
+   Orbital{R: 1.43420, q0: 0.0}
+  }: 2,
+ },
+ maxR: 1.43420,
+ Lattice{nsc: [3 3 1],
+  origin=[0.0000, 0.0000, 0.0000],
+  A=[2.1300, -1.2298, 0.0000],
+  B=[2.1300, 1.2298, 0.0000],
+  C=[0.0000, 0.0000, 14.2000],
+  bc=[Periodic,
+      Periodic,
+      Unknown]
+ }
+}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graphene</span><span class="o">.</span><span class="n">xyz</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[0.  , 0.  , 0.  ],
+       [1.42, 0.  , 0.  ]])
+</pre></div></div>
+</div>
+<p>Note how the changed output looks, we now have 2 atoms, but the atom is not duplicated, instead we share a reference (to minimize memory requirement).</p>
+<p>The atomic coordinates here signals the two positions, and it is obvious that the default bond-length for graphene is defined to be <span class="math notranslate nohighlight">\(1.42\)</span>.</p>
+<section id="Other-default-geometries">
+<h3>Other default geometries<a class="headerlink" href="#Other-default-geometries" title="Link to this heading"></a></h3>
+<p>There are many other implicit geometries available in <code class="docutils literal notranslate"><span class="pre">sisl</span></code>: - <code class="docutils literal notranslate"><span class="pre">sc</span></code> - <code class="docutils literal notranslate"><span class="pre">bcc</span></code> - <code class="docutils literal notranslate"><span class="pre">fcc</span></code> - <code class="docutils literal notranslate"><span class="pre">hcp</span></code> - <code class="docutils literal notranslate"><span class="pre">rocksalt</span></code> - <code class="docutils literal notranslate"><span class="pre">bilayer</span></code> - <code class="docutils literal notranslate"><span class="pre">honeycomb</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene</span></code> - <code class="docutils literal notranslate"><span class="pre">honeycomb_flake</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene_flake</span></code> - <code class="docutils literal notranslate"><span class="pre">triangulene</span></code> - <code class="docutils literal notranslate"><span class="pre">nanoribbon</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene_nanoribbon</span></code> - <code class="docutils literal notranslate"><span class="pre">agnr</span></code> - <code class="docutils literal notranslate"><span class="pre">cgnr</span></code> - <code class="docutils literal notranslate"><span class="pre">zgnr</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene_heteroribbon</span></code> - <code class="docutils literal notranslate"><span class="pre">nanotube</span></code> - <code class="docutils literal notranslate"><span class="pre">fcc_slab</span></code> - <code class="docutils literal notranslate"><span class="pre">bcc_slab</span></code> - and more will come</p>
+<p>These can be used to generalize and construct geometries on the fly, in a simply and efficient manner.</p>
+<section id="Defining-atoms">
+<h4>Defining atoms<a class="headerlink" href="#Defining-atoms" title="Link to this heading"></a></h4>
+<div class="line-block">
+<div class="line">The geometries will accept an argument <code class="docutils literal notranslate"><span class="pre">atoms=</span></code> where you can define the atoms in the geometry. We already did this in the <code class="docutils literal notranslate"><span class="pre">fcc</span></code> system where we defined the atom <code class="docutils literal notranslate"><span class="pre">si.Atom(&quot;Fe&quot;)</span></code>.</div>
+<div class="line">Lets delve into the <code class="docutils literal notranslate"><span class="pre">Atom</span></code> object.</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on class Atom in module sisl:
+
+class Atom(sisl._dispatch_class._Dispatchs)
+ |  Atom(*args, **kwargs)
+ |
+ |  Atomic information for a single atomic specie
+ |
+ |  An atomic object retaining information about a single atomic specie.
+ |  It describes the atomic number (integer), the mass of the atom, and
+ |  holds a list of atomic centered orbitals. It also allows one
+ |  to tag the atom to distinguish it from other atoms of the same specie.
+ |
+ |  Parameters
+ |  ----------
+ |  Z : int or str
+ |      determine specie for the atomic specie.
+ |  orbitals : list of Orbital or float, optional
+ |      orbitals associated with this atom. See `Orbital` for details on
+ |      how to define orbitals.
+ |      Defaults to one orbital.
+ |  mass : float, optional
+ |      the atomic mass, defaults to the mass found in `PeriodicTable`.
+ |  tag : str, optional
+ |      arbitrary designation for user handling similar atoms with
+ |      different settings (defaults to the label of the atom)
+ |
+ |
+ |  Examples
+ |  --------
+ |  &gt;&gt;&gt; Carbon = Atom(6)
+ |  &gt;&gt;&gt; Carbon = Atom(&#34;C&#34;)
+ |  &gt;&gt;&gt; Carbon = Atom(&#34;Carbon&#34;)
+ |
+ |  Add a tag to be able to distinguish it from other atoms
+ |  &gt;&gt;&gt; tagged_Carbon = Atom(&#34;Carbon&#34;, tag=&#34;siteA&#34;)
+ |
+ |  Create deuterium
+ |  &gt;&gt;&gt; D = Atom(&#34;H&#34;, mass=2.014)
+ |
+ |  Define an atom with 3 orbitals, each with a range of 2 Angstroem
+ |  &gt;&gt;&gt; C3 = Atom(&#34;C&#34;, orbitals=[2, 2, 2])
+ |
+ |  Define an atom outside of the periodic table (negative will yield an
+ |  AtomGhost object)
+ |  &gt;&gt;&gt; ghost_C = Atom(-6)
+ |
+ |  Define an unknown atom (basically anything can do)
+ |  &gt;&gt;&gt; unknown_atom = Atom(1000)
+ |
+ |  Notes
+ |  -----
+ |  One can define atoms outside of the periodic table. They will generally
+ |  be handled in this order:
+ |
+ |  * negative numbers will be converted into positive ones, and the returned
+ |    object will be an `AtomGhost`
+ |  * any other number (or name) not found in the periodic table will be returned
+ |    in an AtomUnknown object
+ |
+ |  The mass for atoms outside the periodic table will default to 1e40 amu.
+ |
+ |  See Also
+ |  --------
+ |  Orbital : define an orbital
+ |  Atoms : an efficient collection of Atom objects
+ |
+ |  Method resolution order:
+ |      Atom
+ |      sisl._dispatch_class._Dispatchs
+ |      builtins.object
+ |
+ |  Methods defined here:
+ |
+ |  __eq__(self, b)
+ |      Return true if the saved quantities are the same
+ |
+ |  __getattr__(self, attr)
+ |      Pass attribute calls to the orbital classes and return lists/array
+ |
+ |      Parameters
+ |      ----------
+ |      attr : str
+ |
+ |  __getitem__(self, key)
+ |      The orbital corresponding to index `key`
+ |
+ |  __getstate__(self)
+ |      Return the state of this object
+ |
+ |  __hash__(self)
+ |      Return hash(self).
+ |
+ |  __init__(self, Z, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None, **kwargs)
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  __iter__(self)
+ |      Loop on all orbitals in this atom
+ |
+ |  __len__(self)
+ |      Return number of orbitals in this atom
+ |
+ |  __ne__(self, b)
+ |      Return self!=value.
+ |
+ |  __repr__(self)
+ |      Return repr(self).
+ |
+ |  __setstate__(self, d)
+ |      Re-create the state of this object
+ |
+ |  __str__(self)
+ |      Return str(self).
+ |
+ |  copy(atom: &#39;Atom&#39;, Z: &#39;Optional[Union[int, str]]&#39; = None, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None) -&gt; &#39;Atom&#39;
+ |      Return copy of this object
+ |
+ |  equal(self, other, R=True, psi=False)
+ |      True if `other` is the same as this atomic specie
+ |
+ |      Parameters
+ |      ----------
+ |      other : Atom
+ |         the other object to check againts
+ |      R : bool, optional
+ |         if True the equality check also checks the orbital radii, else they are not compared
+ |      psi : bool, optional
+ |         if True, also check the wave-function component of the orbitals, see `Orbital.psi`
+ |
+ |  index(self, orbital)
+ |      Return the index of the orbital in the atom object
+ |
+ |  iter(self, group=False)
+ |      Loop on all orbitals in this atom
+ |
+ |      Parameters
+ |      ----------
+ |      group : bool, optional
+ |         if two orbitals share the same radius
+ |         one may be able to group two orbitals together
+ |
+ |      Returns
+ |      -------
+ |      Orbital
+ |          current orbital, if `group` is ``True`` this is a list of orbitals,
+ |          otherwise a single orbital is returned
+ |
+ |  maxR(self)
+ |      Return the maximum range of orbitals.
+ |
+ |  radius(self, method=&#39;calc&#39;)
+ |      Return the atomic radii of the atom (in Ang)
+ |
+ |      See `PeriodicTable.radius` for details on the argument.
+ |
+ |  remove(atom: &#39;Atom&#39;, orbitals: &#39;IndexArgument&#39;) -&gt; &#39;Atom&#39;
+ |      Return the same atom without a specific set of orbitals
+ |
+ |      Parameters
+ |      ----------
+ |      orbitals :
+ |         indices of the orbitals to remove
+ |
+ |      Returns
+ |      -------
+ |      Atom
+ |          without the specified orbitals
+ |
+ |      See Also
+ |      --------
+ |      Atom.sub : retain a selected set of orbitals
+ |
+ |  scale(atom: &#39;Atom&#39;, scale: &#39;float&#39;) -&gt; &#39;Atom&#39;
+ |      Scale the atomic radii and return an equivalent atom.
+ |
+ |      Parameters
+ |      ----------
+ |      scale :
+ |         the scale factor for the atomic radii
+ |
+ |  sub(atom: &#39;Atom&#39;, orbitals: &#39;IndexArgument&#39;) -&gt; &#39;Atom&#39;
+ |      Return the same atom with only a subset of the orbitals present
+ |
+ |      Parameters
+ |      ----------
+ |      orbitals :
+ |         indices of the orbitals to retain
+ |
+ |      Returns
+ |      -------
+ |      Atom
+ |          with only the subset of orbitals
+ |
+ |      Raises
+ |      ------
+ |      ValueError
+ |         if the number of orbitals removed is too large or some indices are outside the allowed range
+ |
+ |  to = ClassDispatcher(...)
+ |
+ |  toSphere(self, center=None)
+ |      Return a sphere with the maximum orbital radius equal
+ |
+ |      Returns
+ |      -------
+ |      ~sisl.shape.Sphere
+ |           a sphere with radius equal to the maximum radius of the orbitals
+ |
+ |  ----------------------------------------------------------------------
+ |  Static methods defined here:
+ |
+ |  __new__(cls, *args, **kwargs)
+ |      Figure out which class to actually use
+ |
+ |  ----------------------------------------------------------------------
+ |  Readonly properties defined here:
+ |
+ |  Z
+ |      Atomic number
+ |
+ |  mass
+ |      Atomic mass
+ |
+ |  no
+ |      Number of orbitals on this atom
+ |
+ |  orbitals
+ |      List of orbitals
+ |
+ |  symbol
+ |      Return short atomic name (Au==79).
+ |
+ |  tag
+ |      Tag for atom
+ |
+ |  ----------------------------------------------------------------------
+ |  Class methods inherited from sisl._dispatch_class._Dispatchs:
+ |
+ |  __init_subclass__(dispatchs: Union[str, Sequence[Any], NoneType] = None, when_subclassing: Optional[str] = None, **kwargs) from sisl._core.atom.AtomMeta
+ |      This method is called when a class is subclassed.
+ |
+ |      The default implementation does nothing. It may be
+ |      overridden to extend subclasses.
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors inherited from sisl._dispatch_class._Dispatchs:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+
+</pre></div></div>
+</div>
+<p>Here we create an <code class="docutils literal notranslate"><span class="pre">fcc</span></code> lattice made up of Deuterium atoms</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="mf">2.014</span><span class="p">)</span>
+<span class="n">fcc_D</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">fcc</span><span class="p">(</span><span class="mf">1.42</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">D</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fcc_D</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Geometry{na: 1, no: 1,
+ Atoms{species: 1,
+  Atom{H, Z: 1, mass(au): 2.01400, maxR: -1.00000,
+   Orbital{R: -1.00000, q0: 0.0}
+  }: 1,
+ },
+ maxR: -1.00000,
+ Lattice{nsc: [3 3 3],
+  origin=[0.0000, 0.0000, 0.0000],
+  A=[0.0000, 0.7100, 0.7100],
+  B=[0.7100, 0.0000, 0.7100],
+  C=[0.7100, 0.7100, 0.0000],
+  bc=[Periodic,
+      Periodic,
+      Periodic]
+ }
+}
+</pre></div></div>
+</div>
+<p>Another example would be to create a bilayer structure with 2 different atoms (say graphene below hBN)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">)</span>
+<span class="n">hBN</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">bilayer</span><span class="p">(</span><span class="mf">1.45</span><span class="p">,</span> <span class="n">bottom_atoms</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">top_atoms</span><span class="o">=</span><span class="p">[</span><span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hBN</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Geometry{na: 4, no: 4,
+ Atoms{species: 3,
+  Atom{C, Z: 6, mass(au): 12.01070, maxR: -1.00000,
+   Orbital{R: -1.00000, q0: 0.0}
+  }: 2,
+  Atom{B, Z: 5, mass(au): 10.81100, maxR: -1.00000,
+   Orbital{R: -1.00000, q0: 0.0}
+  }: 1,
+  Atom{N, Z: 7, mass(au): 14.00670, maxR: -1.00000,
+   Orbital{R: -1.00000, q0: 0.0}
+  }: 1,
+ },
+ maxR: -1.00000,
+ Lattice{nsc: [3 3 1],
+  origin=[0.0000, 0.0000, 0.0000],
+  A=[2.1750, -1.2557, 0.0000],
+  B=[2.1750, 1.2557, 0.0000],
+  C=[0.0000, 0.0000, 14.5000],
+  bc=[Periodic,
+      Periodic,
+      Unknown]
+ }
+}
+</pre></div></div>
+</div>
+<p>This concludes a quick tutorial on how to create a predefined geometry and how to define the atoms in it.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="02_geometry_orbitals.html" class="btn btn-neutral float-right" title="Defining orbitals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

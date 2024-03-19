@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.atom &mdash; sisl 0.1-d15ac79</title>
+  <title>sisl._core.atom &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -20,13 +23,20 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="../../../_static/documentation_options.js?v=1e844bd0"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -44,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -54,35 +64,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 </ul>
 
         </div>
@@ -127,9 +137,9 @@
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">array_fill_repeat</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">list_index_le</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl._typing_ext.numpy</span> <span class="kn">import</span> <span class="n">NDArray</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">info</span>
 <span class="kn">from</span> <span class="nn">sisl.shape</span> <span class="kn">import</span> <span class="n">Sphere</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
 
 <span class="kn">from</span> <span class="nn">.orbital</span> <span class="kn">import</span> <span class="n">Orbital</span>
 
@@ -1073,32 +1083,66 @@
     <span class="n">when_subclassing</span><span class="o">=</span><span class="s2">&quot;keep&quot;</span><span class="p">,</span>
     <span class="n">metaclass</span><span class="o">=</span><span class="n">AtomMeta</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Atomic information, mass, name number of orbitals and ranges</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Atomic information for a single atomic specie</span>
 
-<span class="sd">    Object to handle atomic mass, name, number of orbitals and</span>
-<span class="sd">    orbital range.</span>
-
-<span class="sd">    The `Atom` object handles the atomic species with information</span>
-<span class="sd">    such as</span>
-
-<span class="sd">    * atomic number</span>
-<span class="sd">    * mass</span>
-<span class="sd">    * number of orbitals</span>
-<span class="sd">    * radius of each orbital</span>
-
-<span class="sd">    The `Atom` object is `pickle`-able.</span>
+<span class="sd">    An atomic object retaining information about a single atomic specie.</span>
+<span class="sd">    It describes the atomic number (integer), the mass of the atom, and</span>
+<span class="sd">    holds a list of atomic centered orbitals. It also allows one</span>
+<span class="sd">    to tag the atom to distinguish it from other atoms of the same specie.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    Z : int or str</span>
-<span class="sd">        key lookup for the atomic specie, `Atom[key]`</span>
+<span class="sd">        determine specie for the atomic specie.</span>
 <span class="sd">    orbitals : list of Orbital or float, optional</span>
-<span class="sd">        all orbitals associated with this atom. Default to one orbital.</span>
+<span class="sd">        orbitals associated with this atom. See `Orbital` for details on</span>
+<span class="sd">        how to define orbitals.</span>
+<span class="sd">        Defaults to one orbital.</span>
 <span class="sd">    mass : float, optional</span>
-<span class="sd">        the atomic mass, if not specified uses the mass from `PeriodicTable`</span>
+<span class="sd">        the atomic mass, defaults to the mass found in `PeriodicTable`.</span>
 <span class="sd">    tag : str, optional</span>
 <span class="sd">        arbitrary designation for user handling similar atoms with</span>
 <span class="sd">        different settings (defaults to the label of the atom)</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; Carbon = Atom(6)</span>
+<span class="sd">    &gt;&gt;&gt; Carbon = Atom(&quot;C&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; Carbon = Atom(&quot;Carbon&quot;)</span>
+
+<span class="sd">    Add a tag to be able to distinguish it from other atoms</span>
+<span class="sd">    &gt;&gt;&gt; tagged_Carbon = Atom(&quot;Carbon&quot;, tag=&quot;siteA&quot;)</span>
+
+<span class="sd">    Create deuterium</span>
+<span class="sd">    &gt;&gt;&gt; D = Atom(&quot;H&quot;, mass=2.014)</span>
+
+<span class="sd">    Define an atom with 3 orbitals, each with a range of 2 Angstroem</span>
+<span class="sd">    &gt;&gt;&gt; C3 = Atom(&quot;C&quot;, orbitals=[2, 2, 2])</span>
+
+<span class="sd">    Define an atom outside of the periodic table (negative will yield an</span>
+<span class="sd">    AtomGhost object)</span>
+<span class="sd">    &gt;&gt;&gt; ghost_C = Atom(-6)</span>
+
+<span class="sd">    Define an unknown atom (basically anything can do)</span>
+<span class="sd">    &gt;&gt;&gt; unknown_atom = Atom(1000)</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    One can define atoms outside of the periodic table. They will generally</span>
+<span class="sd">    be handled in this order:</span>
+
+<span class="sd">    * negative numbers will be converted into positive ones, and the returned</span>
+<span class="sd">      object will be an `AtomGhost`</span>
+<span class="sd">    * any other number (or name) not found in the periodic table will be returned</span>
+<span class="sd">      in an AtomUnknown object</span>
+
+<span class="sd">    The mass for atoms outside the periodic table will default to 1e40 amu.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Orbital : define an orbital</span>
+<span class="sd">    Atoms : an efficient collection of Atom objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1110,26 +1154,59 @@
         <span class="c1"># direct call</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">Z</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;Z&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> got both Z as argument and keyword argument. Please only use one.&quot;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">Z</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">Z</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Atom</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Z</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">AtomGhost</span><span class="p">)</span> <span class="ow">and</span> <span class="n">Z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Try and convert to an integer</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">AtomGhost</span><span class="p">)</span> <span class="ow">and</span> <span class="n">Z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">cls</span> <span class="o">=</span> <span class="n">AtomGhost</span>
         <span class="k">elif</span> <span class="n">Z</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ptbl</span><span class="o">.</span><span class="n">_Z_int</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">):</span>
             <span class="bp">cls</span> <span class="o">=</span> <span class="n">AtomUnknown</span>
+
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Atom.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atom.html#sisl.Atom.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">Z</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mass</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># try and cast to integer, it might be cast differently later</span>
+        <span class="c1"># but this is to try and see if we can easily get it</span>
+        <span class="n">mass_Z</span> <span class="o">=</span> <span class="n">Z</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Atom</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">Z</span>
+            <span class="n">mass_Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">Z</span>
+            <span class="n">mass_Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">_ptbl</span><span class="o">.</span><span class="n">Z_int</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> got an unparseable Z argument, needs to be an integer, got=&#39;</span><span class="si">{</span><span class="n">Z</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
@@ -1147,8 +1224,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span> <span class="o">=</span> <span class="p">[</span><span class="n">Orbital</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="n">orb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="p">):</span>
                 <span class="n">orbitals</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">Orbital</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span> <span class="o">=</span> <span class="p">[</span><span class="n">orbitals</span><span class="p">]</span>
+
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span> <span class="o">=</span> <span class="p">[</span><span class="n">Orbital</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)]</span>
 
@@ -1165,7 +1244,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span> <span class="o">=</span> <span class="p">[</span><span class="n">Orbital</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="n">mass</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span> <span class="o">=</span> <span class="n">_ptbl</span><span class="o">.</span><span class="n">atomic_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span> <span class="o">=</span> <span class="n">_ptbl</span><span class="o">.</span><span class="n">atomic_mass</span><span class="p">(</span><span class="n">mass_Z</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span> <span class="o">=</span> <span class="n">mass</span>
 
@@ -1179,7 +1258,7 @@
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Atomic number&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span>
 
@@ -1189,7 +1268,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Atomic mass&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span>
 
@@ -1202,6 +1281,10 @@
     <span class="k">def</span> <span class="nf">no</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of orbitals on this atom&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orbitals</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return number of orbitals in this atom&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
 
 <div class="viewcode-block" id="Atom.index">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atom.html#sisl.Atom.index">[docs]</a>
@@ -1305,10 +1388,6 @@
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">, Z=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="si">}</span><span class="s2">, M=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="si">}</span><span class="s2">, maxR=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">maxR</span><span class="p">()</span><span class="si">}</span><span class="s2">, no=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orbitals</span><span class="p">)</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return number of orbitals in this atom&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Pass attribute calls to the orbital classes and return lists/array</span>
@@ -1447,6 +1526,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate with overridden tag&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="s2">&quot;tag&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s2">&quot;mass&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e40</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
@@ -1454,13 +1535,15 @@
 <span class="k">class</span> <span class="nc">AtomGhost</span><span class="p">(</span><span class="n">AtomUnknown</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate with overridden tag and taking the absolute value of Z&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">Z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">Z</span> <span class="o">=</span> <span class="o">-</span><span class="n">Z</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># here we also need to do the conversion as we want</span>
+            <span class="c1"># to remove the negative sign</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">Z</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">Execption</span><span class="p">:</span>
+            <span class="k">pass</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="s2">&quot;tag&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ghost&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s2">&quot;mass&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="c1"># A very high default mass (unless specified)</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e40</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
@@ -1481,17 +1564,17 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Atoms</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A list-like object to contain a list of different atoms with minimum</span>
-<span class="sd">    data duplication.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Efficient collection of `Atom` objects</span>
 
-<span class="sd">    This holds multiple `Atom` objects which are indexed via a species</span>
-<span class="sd">    index.</span>
+<span class="sd">    A container object for `Atom` objects in a specific order.</span>
+<span class="sd">    No two `Atom` objects will be duplicated and indices will be used</span>
+<span class="sd">    to determine which `Atom` any indexable atom corresponds to.</span>
 <span class="sd">    This is convenient when having geometries with millions of atoms</span>
 <span class="sd">    because it will not duplicate the `Atom` object, only a list index.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    atoms : str, Atom or list-like</span>
+<span class="sd">    atoms : str, Atom, dict or list-like</span>
 <span class="sd">       atoms to be contained in this list of atoms</span>
 <span class="sd">       If a str, or a single `Atom` it will be the only atom in the resulting</span>
 <span class="sd">       class repeated `na` times.</span>
@@ -1499,11 +1582,12 @@
 <span class="sd">       the list may a single argument passed to the `Atom` or a dictionary</span>
 <span class="sd">       that is passed to `Atom`, see examples.</span>
 <span class="sd">    na : int or None</span>
-<span class="sd">       total number of atoms, if ``len(atom)`` is smaller than `na` it will</span>
+<span class="sd">       total number of atoms, if ``len(atoms)`` is smaller than `na` it will</span>
 <span class="sd">       be repeated to match `na`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+
 <span class="sd">    Creating an atoms object consisting of 5 atoms, all the same.</span>
 
 <span class="sd">    &gt;&gt;&gt; atoms = Atoms(&quot;H&quot;, na=5)</span>
@@ -1513,6 +1597,7 @@
 
 <span class="sd">    &gt;&gt;&gt; Z = [1, 2, 1, 2]</span>
 <span class="sd">    &gt;&gt;&gt; atoms = Atoms(Z)</span>
+<span class="sd">    &gt;&gt;&gt; atoms = Atoms([1, 2], na=4) # equivalent</span>
 
 <span class="sd">    Creating individual atoms using dictionary entries, two</span>
 <span class="sd">    Hydrogen atoms, one with a tag H_ghost.</span>
@@ -1525,7 +1610,7 @@
 
 <div class="viewcode-block" id="Atoms.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atoms.html#sisl.Atoms.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsLike</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">na</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Default value of the atom object</span>
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">)</span>
@@ -1567,7 +1652,7 @@
                 <span class="n">specie</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;atoms keyword type is not acceptable </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;atoms keyword type is not acceptable </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Default for number of atoms</span>
         <span class="k">if</span> <span class="n">na</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

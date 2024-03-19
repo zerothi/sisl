@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.grid &mdash; sisl 0.1-d15ac79</title>
+  <title>sisl._core.grid &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -20,13 +23,20 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="../../../_static/documentation_options.js?v=1e844bd0"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -44,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -54,35 +64,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 </ul>
 
         </div>
@@ -210,13 +220,13 @@
 <span class="sd">    &gt;&gt;&gt; grid = Grid(0.1, lattice=lattice, geometry=geometry)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: Constant for defining a periodic boundary condition</span>
+    <span class="c1">#: Constant for defining a periodic boundary condition (deprecated, use Lattice.BC.PERIODIC)</span>
     <span class="n">PERIODIC</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">PERIODIC</span>
-    <span class="c1">#: Constant for defining a Neumann boundary condition</span>
+    <span class="c1">#: Constant for defining a Neumann boundary condition (deprecated, use Lattice.BC.NEUMANN)</span>
     <span class="n">NEUMANN</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">NEUMANN</span>
-    <span class="c1">#: Constant for defining a Dirichlet boundary condition</span>
+    <span class="c1">#: Constant for defining a Dirichlet boundary condition (deprecated, use Lattice.BC.DIRICHLET)</span>
     <span class="n">DIRICHLET</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">DIRICHLET</span>
-    <span class="c1">#: Constant for defining an open boundary condition</span>
+    <span class="c1">#: Constant for defining an open boundary condition (deprecated, use Lattice.BC.OPEN)</span>
     <span class="n">OPEN</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">OPEN</span>
 
 <div class="viewcode-block" id="Grid.__init__">
@@ -402,17 +412,17 @@
 
 <div class="viewcode-block" id="Grid.isosurface">
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.isosurface">[docs]</a>
-    <span class="k">def</span> <span class="nf">isosurface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">isosurface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">step_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the isosurface for a given value</span>
 
 <span class="sd">        It uses `skimage.measure.marching_cubes`, so you need to have scikit-image installed.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        level: float</span>
+<span class="sd">        level:</span>
 <span class="sd">            contour value to search for isosurfaces in the grid.</span>
 <span class="sd">            If not given or None, the average of the min and max of the grid is used.</span>
-<span class="sd">        step_size: int, optional</span>
+<span class="sd">        step_size:</span>
 <span class="sd">            step size in voxels. Larger steps yield faster but coarser results.</span>
 <span class="sd">            The result will always be topologically correct though.</span>
 <span class="sd">        **kwargs:</span>
@@ -444,6 +454,11 @@
         <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.isosurface requires scikit-image to be installed&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.isosurface requires real grid values.&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># Run the marching cubes algorithm to calculate the vertices and faces</span>
@@ -969,7 +984,8 @@
                     <span class="s2">&quot;been specified.&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcell</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span> <span class="o">@</span> <span class="n">c</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">coord</span> <span class="o">/</span> <span class="n">c</span><span class="p">))</span>
 
         <span class="n">icell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span>
@@ -1320,7 +1336,7 @@
 <div class="viewcode-block" id="Grid.pyamg_boundary_condition">
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.pyamg_boundary_condition">[docs]</a>
     <span class="nd">@wrap_filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SparseEfficiencyWarning</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">pyamg_boundary_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">bc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">pyamg_boundary_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Attach boundary conditions to the `pyamg` grid-matrix `A` with default boundary conditions as specified for this `Grid`</span>
 
 <span class="sd">        Parameters</span>
@@ -1329,10 +1345,6 @@
 <span class="sd">           sparse matrix describing the grid</span>
 <span class="sd">        b : numpy.ndarray</span>
 <span class="sd">           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil</span>
-<span class="sd">        bc : list of BC, optional</span>
-<span class="sd">           the specified boundary conditions.</span>
-<span class="sd">           Default to the grid&#39;s boundary conditions, else `bc` *must* be a list of elements</span>
-<span class="sd">           with elements corresponding to `Grid.PERIODIC`/`Grid.NEUMANN`...</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">Neumann</span><span class="p">(</span><span class="n">idx_bc</span><span class="p">,</span> <span class="n">idx_p1</span><span class="p">):</span>
@@ -1356,34 +1368,29 @@
         <span class="k">def</span> <span class="nf">sl2idx</span><span class="p">(</span><span class="n">sl</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pyamg_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mgrid</span><span class="p">(</span><span class="n">sl</span><span class="p">))</span>
 
-        <span class="c1"># Create slices</span>
-        <span class="n">sl</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
-
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="c1"># We have a periodic direction</span>
-            <span class="n">new_sl</span> <span class="o">=</span> <span class="n">sl</span><span class="p">[:]</span>
+            <span class="c1"># Create slices</span>
+            <span class="n">sl</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
 
             <span class="c1"># LOWER BOUNDARY</span>
-            <span class="n">bci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_condition</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">new_sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">idx1</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">new_sl</span><span class="p">)</span>  <span class="c1"># lower</span>
+            <span class="n">bci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">boundary_condition</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">idx1</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>  <span class="c1"># lower</span>
 
             <span class="n">bc</span> <span class="o">=</span> <span class="n">bci</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">bci</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">PERIODIC</span> <span class="ow">or</span> <span class="n">bci</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">bci</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bci</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.pyamg_boundary_condition found a periodic and non-periodic direction in the same direction!&quot;</span>
-                    <span class="p">)</span>
-                <span class="n">new_sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">idx2</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">new_sl</span><span class="p">)</span>  <span class="c1"># upper</span>
+            <span class="k">if</span> <span class="n">bci</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">:</span>
+                <span class="n">sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">idx2</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>  <span class="c1"># upper</span>
                 <span class="n">Periodic</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">)</span>
                 <span class="k">del</span> <span class="n">idx2</span>
+                <span class="c1"># rest has been parsed as well</span>
                 <span class="k">continue</span>
 
             <span class="k">if</span> <span class="n">bc</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">NEUMANN</span><span class="p">:</span>
                 <span class="c1"># Retrieve next index</span>
-                <span class="n">new_sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="n">idx2</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">new_sl</span><span class="p">)</span>  <span class="c1"># lower + 1</span>
+                <span class="n">sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">idx2</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>  <span class="c1"># lower + 1</span>
                 <span class="n">Neumann</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">)</span>
                 <span class="k">del</span> <span class="n">idx2</span>
             <span class="k">elif</span> <span class="n">bc</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">:</span>
@@ -1391,13 +1398,13 @@
 
             <span class="c1"># UPPER BOUNDARY</span>
             <span class="n">bc</span> <span class="o">=</span> <span class="n">bci</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">new_sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="n">idx1</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">new_sl</span><span class="p">)</span>  <span class="c1"># upper</span>
+            <span class="n">sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">idx1</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>  <span class="c1"># upper</span>
 
             <span class="k">if</span> <span class="n">bc</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">NEUMANN</span><span class="p">:</span>
                 <span class="c1"># Retrieve next index</span>
-                <span class="n">new_sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">idx2</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">new_sl</span><span class="p">)</span>  <span class="c1"># upper - 1</span>
+                <span class="n">sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">idx2</span> <span class="o">=</span> <span class="n">sl2idx</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>  <span class="c1"># upper - 1</span>
                 <span class="n">Neumann</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">)</span>
                 <span class="k">del</span> <span class="n">idx2</span>
             <span class="k">elif</span> <span class="n">bc</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">:</span>

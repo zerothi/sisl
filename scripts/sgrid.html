@@ -4,15 +4,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sgrid &mdash; sisl 0.1-d15ac79</title>
+  <title>sgrid &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -21,13 +24,20 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="../_static/documentation_options.js?v=1e844bd0"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
         <script src="../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -49,7 +59,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -59,22 +69,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command line scripts</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="sdata.html"><em class="xref py py-obj">sdata</em></a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Command line scripts</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="sgeom.html"><em class="xref py py-obj">sgeom</em></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><em class="xref py py-obj">sgrid</em></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#creating-cube-files">Creating CUBE files</a></li>
@@ -85,22 +85,32 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="stoolbox.html"><em class="xref py py-obj">stoolbox</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdata.html"><em class="xref py py-obj">sdata</em></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 
         </div>
@@ -117,7 +127,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="scripts.html">Command line scripts</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Command line scripts</a></li>
       <li class="breadcrumb-item active"><em class="xref py py-obj">sgrid</em></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/scripts/sgrid.rst.txt" rel="nofollow"> View page source</a>
@@ -134,7 +144,7 @@
 it into CUBE format for plotting 3D data in, <em>e.g.</em> VMD or XCrySDen.</p>
 <p>Any <em class="xref py py-obj">Sile</em> which implements a <code class="docutils literal notranslate"><span class="pre">read_grid</span></code> method can be used to post-process data.</p>
 <p>For a short help description of the possible uses do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>--help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid --help</span>
 </pre></div>
 </div>
 <p>Here we list a few of the most frequent used commands.
@@ -142,15 +152,15 @@ Note that all commands are available via Python scripts and the <em class="xref 
 <section id="creating-cube-files">
 <h2>Creating CUBE files<a class="headerlink" href="#creating-cube-files" title="Link to this heading"></a></h2>
 <p>The simplest usage is converting a grid file to CUBE file using</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>Rho.cube
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid Rho.grid.nc Rho.cube</span>
 </pre></div>
 </div>
 <p>which converts a Siesta grid file of the electron density into a corresponding
 CUBE file. The CUBE file writeout is implemented in <em class="xref py py-obj">Cube</em>.</p>
 <p>Conveniently CUBE files can accomodate geometries and species for inclusion in the 3D
 plot and this can be added to the file via the <code class="docutils literal notranslate"><span class="pre">--geometry</span></code> flag, any geometry format
-implemented in <a class="reference internal" href="../api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> are also compatible with <em class="xref py py-obj">sgrid</em>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--geometry<span class="w"> </span>RUN.fdf<span class="w"> </span>Rho.cube
+implemented in <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> are also compatible with <em class="xref py py-obj">sgrid</em>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid Rho.grid.nc --geometry RUN.fdf Rho.cube</span>
 </pre></div>
 </div>
 <p>the shorthand flag for <code class="docutils literal notranslate"><span class="pre">-geometry</span></code> is <code class="docutils literal notranslate"><span class="pre">-G</span></code>.</p>
@@ -159,13 +169,13 @@ implemented in <a class="reference internal" href="../api/index.html#module-sisl
 <h2>Grid differences<a class="headerlink" href="#grid-differences" title="Link to this heading"></a></h2>
 <p>To easily obtain differences between two grids one may use the <code class="docutils literal notranslate"><span class="pre">--diff</span></code> flag which
 takes one additional grid file for the difference. I.e.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="o">{</span><span class="m">0</span><span class="o">}</span><span class="w"> </span>-G<span class="w"> </span>RUN.fdf<span class="w"> </span>--diff<span class="w"> </span>Rho.grid.nc<span class="o">{</span><span class="m">1</span><span class="o">}</span><span class="w"> </span>diff_up-down.cube
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid Rho.grid.nc{0} -G RUN.fdf --diff Rho.grid.nc{1} diff_up-down.cube</span>
 </pre></div>
 </div>
 <p>which takes the difference between the spin up and spin down in the same <code class="docutils literal notranslate"><span class="pre">Rho.grid.nc</span></code> file.
 The spin (index) specification takes either a single integer or a list of floating point values, as can be
 seen in the below and shorter equivalent syntax:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span><span class="s2">&quot;Rho.grid.nc{1.,-1.}&quot;</span><span class="w"> </span>-G<span class="w"> </span>RUN.fdf<span class="w"> </span>diff_up-down.cube
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid &quot;Rho.grid.nc{1.,-1.}&quot; -G RUN.fdf diff_up-down.cube</span>
 </pre></div>
 </div>
 <p>The bracketed specification is an array of the fractions for each spin-component, so here we take the
@@ -173,10 +183,10 @@ first spin-component and subtract the second spin-component.
 The quotation marks are typically required due to Python’s <a class="reference external" href="https://docs.python.org/3/library/argparse.html#module-argparse" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">argparse</span></code></a> module.</p>
 <p>Note that these spin specifications <em>only</em> work for files that contain <strong>all</strong> spin relevant quantities.</p>
 <p>The above is largely equivalent to this small snippet:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">geom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>sisl.get_sile<span class="o">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="o">)</span>.read_geometry<span class="o">()</span>
-<span class="nv">diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>sisl.get_sile<span class="o">(</span><span class="s1">&#39;Rho.grid.nc&#39;</span><span class="o">)</span>.read_grid<span class="o">(</span><span class="nv">index</span><span class="o">=[</span><span class="m">1</span>,<span class="w"> </span>-1<span class="o">])</span>
-diff.set_geometry<span class="o">(</span>geom<span class="o">)</span>
-diff.write<span class="o">(</span><span class="s1">&#39;diff_up-down.cube&#39;</span><span class="o">)</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">geom = sisl.get_sile(&#39;RUN.fdf&#39;).read_geometry()</span>
+<span class="go">diff = sisl.get_sile(&#39;Rho.grid.nc&#39;).read_grid(index=[1, -1])</span>
+<span class="go">diff.set_geometry(geom)</span>
+<span class="go">diff.write(&#39;diff_up-down.cube&#39;)</span>
 </pre></div>
 </div>
 </section>
@@ -186,13 +196,13 @@ diff.write<span class="o">(</span><span class="s1">&#39;diff_up-down.cube&#39;</
 One can remove certain parts of the grid after reading, before writing. This will greatly decrease
 the output file <em>and</em> greatly speed-up the process as writing huge ASCII files is <em>extremely</em> time
 consuming. There are two methods for reducing grids:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>&lt;file&gt;<span class="w"> </span>--sub<span class="w"> </span>&lt;pos<span class="p">|</span>&lt;frac&gt;f&gt;<span class="w"> </span>x
-sgrid<span class="w"> </span>&lt;file&gt;<span class="w"> </span>--remove<span class="w"> </span><span class="o">[</span>+-<span class="o">]</span>&lt;pos<span class="p">|</span>&lt;frac&gt;f&gt;<span class="w"> </span>x
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid &lt;file&gt; --sub &lt;pos|&lt;frac&gt;f&gt; x</span>
+<span class="go">sgrid &lt;file&gt; --remove [+-]&lt;pos|&lt;frac&gt;f&gt; x</span>
 </pre></div>
 </div>
 <p>This needs an example, say the unit cell is an orthogonal unit-cell with side lengths 10x10x20 Angstrom.
 To reduce the cell to a middle square of 5x5x5 Angstrom you can do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>x<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>y<span class="w"> </span>--sub<span class="w"> </span><span class="m">7</span>.5:12.5<span class="w"> </span>z<span class="w"> </span>5x5x5.cube
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid Rho.grid.nc --sub 2.5:7.5 x --sub 2.5:7.5 y --sub 7.5:12.5 z 5x5x5.cube</span>
 </pre></div>
 </div>
 <p>note that the order of the reductions are made in the order of appearence. So <em>two</em> subsequent sub/remove
@@ -210,8 +220,8 @@ The length unit for the position is <em>always</em> in Ångstrøm, unless an opt
 forces the unit to be in fractional position (must be between 0 and 1).</p>
 <p>When combining grid reductions with grid differences the order is also important, the following two
 commands are not equivalent:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>x<span class="w"> </span>--diff<span class="w"> </span>Other.Rho.grid.nc<span class="w"> </span>--out<span class="w"> </span>test.cube
-sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--diff<span class="w"> </span>Other.Rho.grid.nc<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>x<span class="w"> </span>--out<span class="w"> </span>test.cube
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid Rho.grid.nc --sub 2.5:7.5 x --diff Other.Rho.grid.nc --out test.cube</span>
+<span class="go">sgrid Rho.grid.nc --diff Other.Rho.grid.nc --sub 2.5:7.5 x --out test.cube</span>
 </pre></div>
 </div>
 <p>where the first command assumes <code class="docutils literal notranslate"><span class="pre">Other.Rho.grid.nc</span></code> matches the shape of <code class="docutils literal notranslate"><span class="pre">Rho.grid.nc</span></code> <em>after</em> it has
@@ -221,8 +231,8 @@ shape, then the reduction will be performed on the grid difference.</p>
 <section id="averaging-and-summing">
 <h2>Averaging and summing<a class="headerlink" href="#averaging-and-summing" title="Link to this heading"></a></h2>
 <p>Sometimes it is convenient to average or sum grids along cell directions:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--average<span class="w"> </span>x<span class="w"> </span>meanx.cube
-sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--sum<span class="w"> </span>x<span class="w"> </span>sumx.cube
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid Rho.grid.nc --average x meanx.cube</span>
+<span class="go">sgrid Rho.grid.nc --sum x sumx.cube</span>
 </pre></div>
 </div>
 <p>which takes the average or the sum along the first cell direction, respectively. Note that this results
@@ -230,14 +240,14 @@ in the number of partitions along that direction to be 1 (not all 3D software is
 CUBE file).</p>
 <p>If one averages along two directions the resulting grid will be a 1D array and one can save it in a table
 with the first column being the remaining dimensions position (in Ång).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--average<span class="w"> </span>x<span class="w"> </span>--average<span class="w"> </span>y<span class="w"> </span>z_charge.dat
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sgrid Rho.grid.nc --average x --average y z_charge.dat</span>
 </pre></div>
 </div>
 <p>will create a two-column data file with <span class="math notranslate nohighlight">\(z\)</span> coordinate and the plane-averaged charge-density.</p>
 </section>
 <section id="advanced-features">
 <h2>Advanced features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h2>
-<p>The above operations are not the limited use of the <a class="reference internal" href="../api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> library. However, to accomblish more complex
+<p>The above operations are not the limited use of the <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> library. However, to accomblish more complex
 things you need to manually script the actions using the <em class="xref py py-obj">Grid</em> class and the methods available for that method.
 For inspiration you can check the <em class="xref py py-obj">sgrid</em> executable to see how the commands are used in the script.</p>
 </section>

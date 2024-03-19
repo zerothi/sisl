@@ -3,18 +3,21 @@
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta content="sisl is a tool to manipulate density functional theory code input and/or output. It also implements tight-binding tools to create and manipulate multi-orbital (non)-orthogonal basis sets." name="description" />
-<meta content="LCAO, Siesta, TranSiesta, OpenMX, TBtrans, VASP, GULP, BigDFT, DFT, tight-binding, electron, electrons, phonon, phonons" name="keywords" />
+<meta content="LCAO, Siesta, TranSiesta, OpenMX, TBtrans, VASP, GULP, BigDFT, DFTB+, DFT, tight-binding, electron, electrons, phonon, phonons" name="keywords" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl: Toolbox for electronic structure calculations &mdash; sisl 0.1-d15ac79</title>
+  <title>sisl: Toolbox for electronic structure calculations &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -23,13 +26,20 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="_static/documentation_options.js?v=1e844bd0"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="_static/copybutton.js?v=f281be69"></script>
         <script src="_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,7 +58,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -58,35 +68,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
         </div>
@@ -113,236 +123,71 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p><a class="reference external" href="https://pypi.org/project/sisl"><img alt="pypi" src="https://badge.fury.io/py/sisl.svg" /></a> <a class="reference external" href="https://anaconda.org/conda-forge/sisl"><img alt="conda" src="https://anaconda.org/conda-forge/sisl/badges/version.svg" /></a> <a class="reference external" href="https://www.mozilla.org/en-US/MPL/2.0/"><img alt="license" src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.597181"><img alt="zenodo" src="https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg" /></a></p>
-<p><a class="reference external" href="https://discord.gg/5XnFXFdkv2"><img alt="discord" src="https://img.shields.io/discord/742636379871379577.svg?label=&amp;logo=discord&amp;logoColor=ffffff&amp;color=green&amp;labelColor=red" /></a> <a class="reference external" href="https://github.com/zerothi/sisl/actions/workflows/test.yaml"><img alt="buildstatus" src="https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main" /></a> <a class="reference external" href="https://codecov.io/gh/zerothi/sisl"><img alt="codecov" src="https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg" /></a> <a class="reference external" href="https://pypi.org/project/sisl/"><img alt="python-versions" src="https://img.shields.io/pypi/pyversions/sisl.svg" /></a></p>
-<section id="sisl-tight-binding-and-dft-interface-library">
-<h1>sisl: tight-binding and DFT interface library<a class="headerlink" href="#sisl-tight-binding-and-dft-interface-library" title="Link to this heading"></a></h1>
+  <div class="line-block">
+<div class="line"><a class="reference external" href="https://pypi.org/project/sisl"><img alt="pypi" src="https://badge.fury.io/py/sisl.svg" /></a> <a class="reference external" href="https://anaconda.org/conda-forge/sisl"><img alt="conda" src="https://anaconda.org/conda-forge/sisl/badges/version.svg" /></a> <a class="reference external" href="https://www.mozilla.org/en-US/MPL/2.0/"><img alt="license" src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.597181"><img alt="zenodo" src="https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg" /></a></div>
+<div class="line"><a class="reference external" href="https://discord.gg/5XnFXFdkv2"><img alt="discord" src="https://img.shields.io/discord/742636379871379577.svg?label=&amp;logo=discord&amp;logoColor=ffffff&amp;color=green&amp;labelColor=red" /></a> <a class="reference external" href="https://github.com/zerothi/sisl/actions/workflows/test.yaml"><img alt="buildstatus" src="https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main" /></a> <a class="reference external" href="https://codecov.io/gh/zerothi/sisl"><img alt="codecov" src="https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg" /></a> <a class="reference external" href="https://pypi.org/project/sisl/"><img alt="python-versions" src="https://img.shields.io/pypi/pyversions/sisl.svg" /></a></div>
+</div>
+<section id="sisl-toolbox-for-electronic-structure-calculations">
+<span id="module-sisl"></span><h1>sisl: Toolbox for electronic structure calculations<a class="headerlink" href="#sisl-toolbox-for-electronic-structure-calculations" title="Link to this heading"></a></h1>
 <p>The Python library <a class="reference external" href="https://github.com/zerothi/sisl">sisl</a> was born out of a need to handle (create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick Papior (co-developer of <a class="reference external" href="https://siesta-project.org">Siesta</a>) as a side-project to <a class="reference external" href="https://siesta-project.org">TranSiesta</a>
-and <a class="reference external" href="https://siesta-project.org">TBtrans</a> to efficiently analyse TBtrans output for N-electrode calculations.
-Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
-<a class="reference external" href="https://www.vasp.at">VASP</a>, <a class="reference external" href="http://www.openmx-square.org">OpenMX</a>, <a class="reference external" href="http://www.bigdft.org">BigDFT</a>, <a class="reference external" href="http://www.wannier.org">Wannier90</a>.</p>
-<p>A great deal of codes are implementing, roughly, the same thing.
-However, every code implements their own analysis and post-processing utilities which typically
-turns out to be equivalent utilities only having the interface differently.</p>
-<p>sisl tries to solve some of the analysis issues by creating a unified scripting approach
-in Python which does analysis using the same interface, regardless of the code being used.
-For instance, one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
-in a consistent manner so the post-processing is the same, regardless of the code being used.</p>
-<p>sisl is also part of the training material for a series of workshops hosted <a class="reference external" href="https://github.com/zerothi/ts-tbt-sisl-tutorial">here</a>.</p>
-<p>In some regards it has overlap with <a class="reference external" href="https://wiki.fysik.dtu.dk/ase">ASE</a> and sisl also interfaces with ASE.</p>
-<section id="first-time-use">
-<h2>First time use<a class="headerlink" href="#first-time-use" title="Link to this heading"></a></h2>
-<p>Here we show 2 examples of using sisl together with <a class="reference external" href="https://siesta-project.org">Siesta</a>.</p>
-<p>To read in a Hamiltonian from a Siesta calculation and calculate the DOS for a given Monkhorst-Pack grid
-one would do:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
-<span class="n">mp</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">])</span>
-<span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-<span class="n">DOS</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenvalue</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ev</span><span class="p">:</span> <span class="n">ev</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">DOS</span><span class="p">)</span>
-</pre></div>
+and <a class="reference external" href="https://siesta-project.org">TBtrans</a> to efficiently analyse TBtrans output for N-electrode calculations.</p>
+<p>Since then it has expanded to accommodate a rich set of DFT code input/outputs.</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-2 sd-g-xs-2 sd-g-sm-2 sd-g-md-2 sd-g-lg-2 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<span class="fas fa-person-running"></span> – Quick-start guides</div>
+<p class="sd-card-text">New to <a class="reference internal" href="#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>? Quickly get started with basic tutorials
+and getting used to the basic details of <a class="reference internal" href="#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>.</p>
 </div>
-<p>Which calculates the DOS for a 13x13x13 Monkhorst-Pack grid.</p>
-<p>Another common analysis is real-space charge analysis. The following command line subtracts two real-space
-charge grids and writes them to a CUBE file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>reference/Rho.grid.nc<span class="w"> </span>--diff<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--geometry<span class="w"> </span>RUN.fdf<span class="w"> </span>--out<span class="w"> </span>diff.cube
-</pre></div>
+<a class="sd-stretched-link reference internal" href="quickstart/index.html"><span class="doc"></span></a></div>
 </div>
-<p>which may be analysed using VMD, XCrySDen or other tools.</p>
-</section>
-<section id="every-use-of-sisl">
-<h2>Every use of sisl<a class="headerlink" href="#every-use-of-sisl" title="Link to this heading"></a></h2>
-<p>There are different places for getting information on using sisl. Here is a short list
-of places to search/ask for answers:</p>
-<ul class="simple">
-<li><p>This page for the documentation!</p></li>
-<li><p>Workshop examples showing different uses, see <a class="reference external" href="https://github.com/zerothi/ts-tbt-sisl-tutorial">workshop</a></p></li>
-<li><p>Ask questions on its use on the Github <a class="reference external" href="https://github.com/zerothi/sisl/issues">issue page</a></p></li>
-<li><p>Ask questions on <a class="reference external" href="https://discord.gg/5XnFXFdkv2">Discord</a></p></li>
-</ul>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<span class="fas fa-book-open"></span> – User guide</div>
+<p class="sd-card-text"><em>To be filled</em></p>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<span class="fas fa-book-open"></span> – API reference</div>
+<p class="sd-card-text">Already familiar with <a class="reference internal" href="#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> and how to use it? Look through
+the API section to discover more functionality and details
+on the parameters and in-depth usage.</p>
+</div>
+<a class="sd-stretched-link reference internal" href="api/index.html"><span class="doc"></span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<span class="fab fa-discord"></span> – Chat with us</div>
+<p class="sd-card-text">Join our Discord channel to share scripts, get help, or simply hang
+out.</p>
+</div>
+<a class="sd-stretched-link reference external" href="https://discord.gg/5XnFXFdkv2"></a></div>
+</div>
+</div>
+</div>
+<p><a class="reference internal" href="#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> is also part of the training material for a series of workshops hosted <a class="reference external" href="https://github.com/zerothi/ts-tbt-sisl-tutorial">here</a>.</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#required-dependencies">Required dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#testing-your-installation">Testing your installation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_es_1.html">Electronic structure calculation – a walk-through</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_es_2.html">Berry phase calculation for graphene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials.html#siesta-transiesta-support">Siesta/TranSiesta support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials.html#deprecated-tutorials">Deprecated tutorials</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="environment.html">Environment variables</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="environment.html#code-specific-environment-variables">Code specific environment variables</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="scripts/scripts.html">Command line scripts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scripts/sdata.html"><em class="xref py py-obj">sdata</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts/sgeom.html"><em class="xref py py-obj">sgeom</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts/sgrid.html"><em class="xref py py-obj">sgrid</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts/stoolbox.html"><em class="xref py py-obj">stoolbox</em></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nodes/nodes_intro.html">Nodes and workflows</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nodes/nodes_intro.html#Nodes">Nodes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nodes/nodes_intro.html#Workflows">Workflows</a></li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="toolbox/index.html">Toolboxes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="toolbox/transiesta/ts_fft.html">TranSiesta Hartree correction for FFT Poisson solver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toolbox/siesta/atom_plot.html">Plotting <em class="xref py py-obj">atom</em> output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="toolbox/btd/btd.html">Block-tri-diagonal inversion algorithms</a></li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="visualization/viz_module/index.html#basic-tutorials">Basic Tutorials</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualization/viz_module/index.html#showcase-of-plot-classes">Showcase of plot classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualization/viz_module/index.html#using-it-with-blender">Using it with blender</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualization/viz_module/index.html#combining-plots">Combining plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualization/viz_module/index.html#do-it-yourself">Do it yourself</a></li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/basic.html">Basic classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/basic.html#simple-objects">Simple objects</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/basic.html#advanced-classes">Advanced classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/basic.html#utility-classes">Utility classes</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/default_geom.html">Common geometries</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#bulk">Bulk</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#surfaces-slabs">Surfaces (slabs)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#d-materials">0D materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#id1">1D materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#id2">2D materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#helpers">Helpers</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/physics.html">Physical objects</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/physics.brillouinzone.html">Brillouin zone</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/physics.matrix.html">Physical quantites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/physics.electron.html">Electron related functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/physics.phonon.html">Phonon related functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/physics.distribution.html">Distribution functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/physics.html#low-level-objects">Low level objects</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/mixing.html">Mixing self-consistent quantities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/mixing.html#container-classes">Container classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/mixing.html#mixing-algorithms">Mixing algorithms</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/viz/index.html">Visualization</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/viz/index.html#plot-classes">Plot classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/viz/index.html#utilities">Utilities</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/unit_constant.html">Units and constants</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/unit_constant.unit.html">Unit conversion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/unit_constant.constant.html">Constants</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/utilities.html">Utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/utilities.shape.html">Shapes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/utilities.misc.html">Range routines</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/utilities.misc.html#miscellaneous-routines">Miscellaneous routines</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/core.html">Functional</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.add.html">add</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.append.html">append</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.center.html">center</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.copy.html">copy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.insert.html">insert</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.prepend.html">prepend</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.remove.html">remove</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.repeat.html">repeat</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.rotate.html">rotate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.scale.html">scale</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.sort.html">sort</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.sub.html">sub</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.swap.html">swap</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.swapaxes.html">swapaxes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.tile.html">tile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.translate.html">translate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.unrepeat.html">unrepeat</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.untile.html">untile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.write.html">write</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/io/index.html">Input/Output</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/io/basic.html">Basic IO methods/classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/generic.html">Generic files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/bigdft.html">BigDFT</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/dftb.html">DFTB+</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/fhiaims.html">FHIaims</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/gulp.html">GULP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/openmx.html">OpenMX</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/orca.html">ORCA</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/scaleup.html">ScaleUP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/siesta.html">Siesta</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/siesta.html#transiesta">TranSiesta</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/tbtrans.html">TBtrans</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/tbtrans.html#phtrans">PHtrans</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/vasp.html">VASP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/io/wannier90.html">Wannier90</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/nodes.html">Nodes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/typing.html">Typing</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.AtomsArgument.html">sisl.typing.AtomsArgument</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.AtomsLike.html">sisl.typing.AtomsLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.Axis.html">sisl.typing.Axis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.Axies.html">sisl.typing.Axies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.Axes.html">sisl.typing.Axes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.Coord.html">sisl.typing.Coord</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.CoordOrScalar.html">sisl.typing.CoordOrScalar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.FuncType.html">sisl.typing.FuncType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.GeometryLike.html">sisl.typing.GeometryLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.GridLike.html">sisl.typing.GridLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.IndexArgument.html">sisl.typing.IndexArgument</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.KPoint.html">sisl.typing.KPoint</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.LatticeLike.html">sisl.typing.LatticeLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.LatticeOrGeometry.html">sisl.typing.LatticeOrGeometry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.LatticeOrGeometryLike.html">sisl.typing.LatticeOrGeometryLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.OrbitalsArgument.html">sisl.typing.OrbitalsArgument</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.SileLike.html">sisl.typing.SileLike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.SparseMatrix.html">sisl.typing.SparseMatrix</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/generated/sisl.typing.SparseMatrixExt.html">sisl.typing.SparseMatrixExt</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 </div>
-<p>A table of contents for all methods may be found <a class="reference internal" href="genindex.html"><span class="std std-ref">here</span></a> while
-a table of contents for the sub-modules may be found <a class="reference internal" href="py-modindex.html"><span class="std std-ref">here</span></a>.</p>
-</section>
 </section>
 
 

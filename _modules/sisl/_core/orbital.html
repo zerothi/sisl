@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.orbital &mdash; sisl 0.1-d15ac79</title>
+  <title>sisl._core.orbital &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -20,13 +23,20 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="../../../_static/documentation_options.js?v=1e844bd0"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -44,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -54,35 +64,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 </ul>
 
         </div>
@@ -264,13 +274,21 @@
 <span class="sd">    ``dict(contains=0.9999, func=lambda radial, r: abs(radial(r)), maxR=100)``</span>
 <span class="sd">    The optimization problem depends heavily on the ``func`` since the tails are</span>
 <span class="sd">    important for real-space quantities.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    SphericalOrbital : orbitals with a spherical basis set</span>
+<span class="sd">    AtomicOrbital : specification of n, m, l quantum numbers + a spherical basis set</span>
+<span class="sd">    HydrogenicOrbital : simplistic orbital model of Hydrogenic-like basis sets</span>
+<span class="sd">    GTOrbital : Gaussian-type orbitals</span>
+<span class="sd">    STOrbital : Slater-type orbitals</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_R&quot;</span><span class="p">,</span> <span class="s2">&quot;_tag&quot;</span><span class="p">,</span> <span class="s2">&quot;_q0&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Orbital.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.Orbital.html#sisl.Orbital.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize orbital object&quot;&quot;&quot;</span>
         <span class="c1"># Determine if the orbital has a radial function</span>
         <span class="c1"># In which case we can apply the radial discovery</span>
@@ -317,7 +335,7 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A string representation of the object&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="s2">, tag: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
@@ -355,7 +373,7 @@
 
 <div class="viewcode-block" id="Orbital.equal">
 <a class="viewcode-back" href="../../../api/generated/sisl.Orbital.html#sisl.Orbital.equal">[docs]</a>
-    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">radial</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two orbitals by comparing their radius, and possibly the radial and psi functions</span>
 
 <span class="sd">        When comparing two orbital radius they are considered *equal* with a precision of 1e-4 Ang.</span>
@@ -364,9 +382,9 @@
 <span class="sd">        ----------</span>
 <span class="sd">        other : Orbital</span>
 <span class="sd">           comparison orbital</span>
-<span class="sd">        psi : bool, optional</span>
+<span class="sd">        psi :</span>
 <span class="sd">           also compare that the full psi are the same</span>
-<span class="sd">        radial : bool, optional</span>
+<span class="sd">        radial :</span>
 <span class="sd">           also compare that the radial parts are the same</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -396,7 +414,7 @@
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__plot__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harmonics</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__plot__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harmonics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the orbital radial/spherical harmonics</span>
 
 <span class="sd">        Parameters</span>
@@ -444,7 +462,9 @@
 
 <div class="viewcode-block" id="Orbital.toGrid">
 <a class="viewcode-back" href="../../../api/generated/sisl.Orbital.html#sisl.Orbital.toGrid">[docs]</a>
-    <span class="k">def</span> <span class="nf">toGrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">atom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">toGrid</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">atom</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Grid with *only* this orbital wavefunction on it</span>
 
 <span class="sd">        Parameters</span>
@@ -650,11 +670,11 @@
 <span class="sd">    &gt;&gt;&gt; r = np.linspace(0, 4, 300)</span>
 <span class="sd">    &gt;&gt;&gt; f = np.exp(-r)</span>
 <span class="sd">    &gt;&gt;&gt; def i_univariate(r, f):</span>
-<span class="sd">    ...    return interp.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)</span>
+<span class="sd">        ...    return interp.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)</span>
 <span class="sd">    &gt;&gt;&gt; def i_interp1d(r, f):</span>
-<span class="sd">    ...    return interp.interp1d(r, f, kind=&quot;cubic&quot;, fill_value=(f[0], 0.), bounds_error=False)</span>
+<span class="sd">        ...    return interp.interp1d(r, f, kind=&quot;cubic&quot;, fill_value=(f[0], 0.), bounds_error=False)</span>
 <span class="sd">    &gt;&gt;&gt; def i_spline(r, f):</span>
-<span class="sd">    ...    from functools import partial</span>
+<span class="sd">        ...    from functools import partial</span>
 <span class="sd">    ...    tck = interp.splrep(r, f, k=3, s=0)</span>
 <span class="sd">    ...    return partial(interp.splev, tck=tck, der=0, ext=1)</span>
 <span class="sd">    &gt;&gt;&gt; R = np.linspace(0, 4, 400)</span>
@@ -775,6 +795,8 @@
 <span class="sd">       initial charge</span>
 <span class="sd">    tag : str, optional</span>
 <span class="sd">       user defined tag</span>
+<span class="sd">    **kwargs:</span>
+<span class="sd">       arguments passed directly to ``set_radial(rf_or_func, **kwargs)``</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -795,7 +817,9 @@
 
 <div class="viewcode-block" id="SphericalOrbital.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">rf_or_func</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rf_or_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize spherical orbital object&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_l</span> <span class="o">=</span> <span class="n">l</span>
 
@@ -818,6 +842,11 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span></div>
 
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">l</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;:math:`l` quantum number&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span>
+
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">super</span><span class="p">(</span><span class="n">Orbital</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radial</span><span class="p">))</span>
 
@@ -826,7 +855,7 @@
 
 <div class="viewcode-block" id="SphericalOrbital.spher">
 <a class="viewcode-back" href="../../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.spher">[docs]</a>
-    <span class="k">def</span> <span class="nf">spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cos_phi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cos_phi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)</span>
 
 <span class="sd">        Parameters</span>
@@ -835,9 +864,9 @@
 <span class="sd">            azimuthal angle in the :math:`x-y` plane (from :math:`x`)</span>
 <span class="sd">        phi : array_like</span>
 <span class="sd">            polar angle from :math:`z` axis</span>
-<span class="sd">        m : int, optional</span>
+<span class="sd">        m :</span>
 <span class="sd">            magnetic quantum number, must be in range ``-self.l &lt;= m &lt;= self.l``</span>
-<span class="sd">        cos_phi : bool, optional</span>
+<span class="sd">        cos_phi :</span>
 <span class="sd">            whether `phi` is actually :math:`cos(\phi)` which will be faster because</span>
 <span class="sd">            `cos` is not necessary to call.</span>
 
@@ -853,7 +882,7 @@
 
 <div class="viewcode-block" id="SphericalOrbital.psi">
 <a class="viewcode-back" href="../../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.psi">[docs]</a>
-    <span class="k">def</span> <span class="nf">psi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">psi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate :math:`\phi(\mathbf R)` at a given point (or more points)</span>
 
 <span class="sd">        The position `r` is a vector from the origin of this orbital.</span>
@@ -862,7 +891,7 @@
 <span class="sd">        -----------</span>
 <span class="sd">        r : array_like of (:, 3)</span>
 <span class="sd">           vector from the orbital origin</span>
-<span class="sd">        m : int, optional</span>
+<span class="sd">        m :</span>
 <span class="sd">           magnetic quantum number, must be in range ``-self.l &lt;= m &lt;= self.l``</span>
 
 <span class="sd">        Returns</span>
@@ -885,7 +914,7 @@
 
 <div class="viewcode-block" id="SphericalOrbital.psi_spher">
 <a class="viewcode-back" href="../../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.psi_spher">[docs]</a>
-    <span class="k">def</span> <span class="nf">psi_spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cos_phi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">psi_spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cos_phi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)</span>
 
 <span class="sd">        This is equivalent to `psi` however, the input is given in spherical coordinates.</span>
@@ -898,9 +927,9 @@
 <span class="sd">           azimuthal angle in the :math:`x-y` plane (from :math:`x`)</span>
 <span class="sd">        phi : array_like</span>
 <span class="sd">           polar angle from :math:`z` axis</span>
-<span class="sd">        m : int, optional</span>
+<span class="sd">        m :</span>
 <span class="sd">           magnetic quantum number, must be in range ``-self.l &lt;= m &lt;= self.l``</span>
-<span class="sd">        cos_phi : bool, optional</span>
+<span class="sd">        cos_phi :</span>
 <span class="sd">           whether `phi` is actually :math:`cos(\phi)` which will be faster because</span>
 <span class="sd">           `cos` is not necessary to call.</span>
 
@@ -912,14 +941,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spher</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">cos_phi</span><span class="p">)</span></div>
 
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">l</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;:math:`l` quantum number&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span>
-
 <div class="viewcode-block" id="SphericalOrbital.equal">
 <a class="viewcode-back" href="../../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.equal">[docs]</a>
-    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">radial</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two orbitals by comparing their radius, and possibly the radial and psi functions</span>
 
 <span class="sd">        Parameters</span>
@@ -941,7 +965,7 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A string representation of the object&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">l: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="si">}</span><span class="s2">, R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="s2">, tag: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">l: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="si">}</span><span class="s2">, R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
@@ -952,7 +976,14 @@
 
 <div class="viewcode-block" id="SphericalOrbital.toAtomicOrbital">
 <a class="viewcode-back" href="../../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.toAtomicOrbital">[docs]</a>
-    <span class="k">def</span> <span class="nf">toAtomicOrbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zeta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">toAtomicOrbital</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">zeta</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">P</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">q0</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a list of `AtomicOrbital` objects</span>
 
 <span class="sd">        This defaults to create a list of `AtomicOrbital` objects for every `m` (for m in -l:l).</span>
@@ -962,13 +993,13 @@
 <span class="sd">        ----------</span>
 <span class="sd">        m : int or list or None</span>
 <span class="sd">           if ``None`` it defaults to ``-l:l``, else only for the requested `m`</span>
-<span class="sd">        zeta : int, optional</span>
+<span class="sd">        zeta :</span>
 <span class="sd">           the specified zeta-shell</span>
-<span class="sd">        n : int, optional</span>
+<span class="sd">        n :</span>
 <span class="sd">           specify the :math:`n` quantum number</span>
-<span class="sd">        P : bool, optional</span>
+<span class="sd">        P :</span>
 <span class="sd">           whether the orbitals are polarized.</span>
-<span class="sd">        q0 : float, optional</span>
+<span class="sd">        q0 :</span>
 <span class="sd">           the initial charge per orbital, initially :math:`q_0 / (2l+1)` with :math:`q_0` from this object</span>
 
 <span class="sd">        Returns</span>
@@ -1023,7 +1054,7 @@
 <span class="sd">        Y^m_l(\theta,\varphi) &amp;= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}</span>
 <span class="sd">             e^{i m \theta} P^m_l(\cos(\varphi))</span>
 <span class="sd">        \\</span>
-<span class="sd">        \phi_{lmn}(\mathbf r) &amp;= R(|\mathbf r|) Y^m_l(\theta, \varphi)</span>
+<span class="sd">                \phi_{lmn}(\mathbf r) &amp;= R(|\mathbf r|) Y^m_l(\theta, \varphi)</span>
 
 <span class="sd">    where the function :math:`R(|\mathbf r|)` is user-defined.</span>
 
@@ -1242,6 +1273,12 @@
             <span class="c1"># Determine the correct R if requested a sub-set</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="p">,</span> <span class="n">SphericalOrbital</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="o">.</span><span class="n">l</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> got a spherical argument with l=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="o">.</span><span class="n">l</span><span class="si">}</span><span class="s2"> which is different from this objects l=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span></div>
 
 
@@ -1290,16 +1327,16 @@
 
 <div class="viewcode-block" id="AtomicOrbital.equal">
 <a class="viewcode-back" href="../../../api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.equal">[docs]</a>
-    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">radial</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two orbitals by comparing their radius, and possibly the radial and psi functions</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        other : Orbital</span>
 <span class="sd">           comparison orbital</span>
-<span class="sd">        psi : bool, optional</span>
+<span class="sd">        psi :</span>
 <span class="sd">           also compare that the full psi are the same</span>
-<span class="sd">        radial : bool, optional</span>
+<span class="sd">        radial :</span>
 <span class="sd">           also compare that the radial parts are the same</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">AtomicOrbital</span><span class="p">):</span>
@@ -1383,7 +1420,7 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A string representation of the object&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="s2">, tag: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">orb</span><span class="si">!s}</span><span class="se">}}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">orb</span><span class="si">!s}</span><span class="se">}}</span><span class="s2">&quot;</span>
@@ -1448,7 +1485,7 @@
 
 <div class="viewcode-block" id="AtomicOrbital.spher">
 <a class="viewcode-back" href="../../../api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.spher">[docs]</a>
-    <span class="k">def</span> <span class="nf">spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)</span>
 
 <span class="sd">        Parameters</span>
@@ -1457,7 +1494,7 @@
 <span class="sd">           azimuthal angle in the :math:`x-y` plane (from :math:`x`)</span>
 <span class="sd">        phi : array_like</span>
 <span class="sd">           polar angle from :math:`z` axis</span>
-<span class="sd">        cos_phi : bool, optional</span>
+<span class="sd">        cos_phi :</span>
 <span class="sd">           whether `phi` is actually :math:`cos(\phi)` which will be faster because</span>
 <span class="sd">           `cos` is not necessary to call.</span>
 
@@ -1471,7 +1508,7 @@
 
 <div class="viewcode-block" id="AtomicOrbital.psi_spher">
 <a class="viewcode-back" href="../../../api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.psi_spher">[docs]</a>
-    <span class="k">def</span> <span class="nf">psi_spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">psi_spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)</span>
 
 <span class="sd">        This is equivalent to `psi` however, the input is given in spherical coordinates.</span>
@@ -1484,7 +1521,7 @@
 <span class="sd">           azimuthal angle in the :math:`x-y` plane (from :math:`x`)</span>
 <span class="sd">        phi : array_like</span>
 <span class="sd">           polar angle from :math:`z` axis</span>
-<span class="sd">        cos_phi : bool, optional</span>
+<span class="sd">        cos_phi :</span>
 <span class="sd">           whether `phi` is actually :math:`cos(\phi)` which will be faster because</span>
 <span class="sd">           `cos` is not necessary to call.</span>
 
@@ -1566,7 +1603,7 @@
 
 <div class="viewcode-block" id="HydrogenicOrbital.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">Z</span>
 
         <span class="n">Helper</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Helper&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;prefactor&quot;</span><span class="p">])</span>
@@ -1699,7 +1736,7 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A string representation of the object&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">n: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2">, l: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="si">}</span><span class="s2">, m: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="si">}</span><span class="s2">, R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="s2">, tag: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">n: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2">, l: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="si">}</span><span class="s2">, m: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="si">}</span><span class="s2">, R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="si">}</span><span class="s2">, q0: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1772,7 +1809,7 @@
         <span class="n">p</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">s</span>
         <span class="k">return</span> <span class="n">p</span>
 
-    <span class="k">def</span> <span class="nf">spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)</span>
 
 <span class="sd">        Parameters</span>
@@ -1781,7 +1818,7 @@
 <span class="sd">           azimuthal angle in the :math:`x-y` plane (from :math:`x`)</span>
 <span class="sd">        phi : array_like</span>
 <span class="sd">           polar angle from :math:`z` axis</span>
-<span class="sd">        cos_phi : bool, optional</span>
+<span class="sd">        cos_phi :</span>
 <span class="sd">           whether `phi` is actually :math:`cos(\phi)` which will be faster because</span>
 <span class="sd">           `cos` is not necessary to call.</span>
 
@@ -1794,7 +1831,7 @@
             <span class="k">return</span> <span class="n">_rspherical_harm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_rspherical_harm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">psi_spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">psi_spher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">cos_phi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)</span>
 
 <span class="sd">        This is equivalent to `psi` however, the input is given in spherical coordinates.</span>
@@ -1807,7 +1844,7 @@
 <span class="sd">           azimuthal angle in the :math:`x-y` plane (from :math:`x`)</span>
 <span class="sd">        phi : array_like</span>
 <span class="sd">           polar angle from :math:`z` axis</span>
-<span class="sd">        cos_phi : bool, optional</span>
+<span class="sd">        cos_phi :</span>
 <span class="sd">           whether `phi` is actually :math:`cos(\phi)` which will be faster because</span>
 <span class="sd">           `cos` is not necessary to call.</span>
 

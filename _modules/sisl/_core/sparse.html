@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.sparse &mdash; sisl 0.1-d15ac79</title>
+  <title>sisl._core.sparse &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -20,13 +23,20 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="../../../_static/documentation_options.js?v=1e844bd0"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -44,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -54,35 +64,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 </ul>
 
         </div>
@@ -136,10 +146,10 @@
     <span class="n">diff</span><span class="p">,</span>
     <span class="n">empty</span><span class="p">,</span>
     <span class="n">full</span><span class="p">,</span>
-    <span class="n">in1d</span><span class="p">,</span>
     <span class="n">insert</span><span class="p">,</span>
     <span class="n">int32</span><span class="p">,</span>
     <span class="n">intersect1d</span><span class="p">,</span>
+    <span class="n">isin</span><span class="p">,</span>
     <span class="n">isnan</span><span class="p">,</span>
     <span class="n">isscalar</span><span class="p">,</span>
     <span class="n">lexsort</span><span class="p">,</span>
@@ -159,9 +169,10 @@
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">array_fill_repeat</span><span class="p">,</span> <span class="n">isiterable</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_only</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl._sparse</span> <span class="kn">import</span> <span class="n">sparse_dense</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">intersect_and_diff_sets</span>
+
+<span class="kn">from</span> <span class="nn">._sparse</span> <span class="kn">import</span> <span class="n">sparse_dense</span>
 
 <span class="c1"># Although this re-implements the CSR in scipy.sparse.csr_matrix</span>
 <span class="c1"># we use it slightly differently and thus require this new sparse pattern.</span>
@@ -789,7 +800,7 @@
         <span class="c1"># Get indices of deleted columns</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">)</span>
         <span class="c1"># Convert to boolean array where we have columns to be deleted</span>
-        <span class="n">lidx</span> <span class="o">=</span> <span class="n">in1d</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">columns</span><span class="p">)</span>
+        <span class="n">lidx</span> <span class="o">=</span> <span class="n">isin</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">columns</span><span class="p">)</span>
         <span class="c1"># Count number of deleted entries per row</span>
         <span class="n">ndel</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fromiteri</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">count_nonzero</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">lidx</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">cumsumi</span><span class="p">(</span><span class="n">ncol</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))))</span>
         <span class="c1"># Backconvert lidx to deleted indices</span>
@@ -1184,7 +1195,7 @@
             <span class="c1"># already in the sparse pattern</span>
             <span class="c1"># If so we remove those from the j</span>
             <span class="n">new_j</span> <span class="o">=</span> <span class="n">j</span><span class="p">[</span>
-                <span class="n">in1d</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="n">ptr_i</span> <span class="p">:</span> <span class="n">ptr_i</span> <span class="o">+</span> <span class="n">ncol_i</span><span class="p">],</span> <span class="n">invert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">isin</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="n">ptr_i</span> <span class="p">:</span> <span class="n">ptr_i</span> <span class="o">+</span> <span class="n">ncol_i</span><span class="p">],</span> <span class="n">invert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_j</span> <span class="o">=</span> <span class="n">j</span>
@@ -1381,7 +1392,7 @@
 
         <span class="c1"># Now create the compressed data...</span>
         <span class="n">index</span> <span class="o">-=</span> <span class="n">ptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">keep</span> <span class="o">=</span> <span class="n">in1d</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">ncol</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="n">isin</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">ncol</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Update new count of the number of</span>
         <span class="c1"># non-zero elements</span>
@@ -1567,7 +1578,7 @@
 
 <div class="viewcode-block" id="SparseCSR.nonzero">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.nonzero">[docs]</a>
-    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Row and column indices where non-zero elements exists</span>
 
 <span class="sd">        Parameters</span>
@@ -1602,7 +1613,7 @@
 
 <div class="viewcode-block" id="SparseCSR.eliminate_zeros">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.eliminate_zeros">[docs]</a>
-    <span class="k">def</span> <span class="nf">eliminate_zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">eliminate_zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all zero elememts from the sparse matrix</span>
 
 <span class="sd">        This is an *in-place* operation</span>
@@ -2042,41 +2053,12 @@
             <span class="c1"># The signature is not a scalar operation</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="p">(</span><span class="n">out</span><span class="p">,)</span> <span class="o">=</span> <span class="n">out</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
-                <span class="c1"># this exercise is required to ensure that we don&#39;t</span>
-                <span class="c1"># prematurely promote dtypes.</span>
-                <span class="c1"># For instance,</span>
-                <span class="c1">#    SparseCSR(dtype=np.complex64) * 1j</span>
-                <span class="c1"># should remain np.complex64.</span>
-                <span class="c1"># Yet, if one does np.asarray(1j) you&#39;ll get</span>
-                <span class="c1"># np.complex128.</span>
-                <span class="c1"># This means that we should let the ufunc do any</span>
-                <span class="c1"># promotions necessary.</span>
-                <span class="k">if</span> <span class="n">isscalar</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-                    <span class="k">pass</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">)):</span>
-                    <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;__call__&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dtypes</span><span class="p">:</span>
-                <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="o">.</span><span class="n">resolve_dtypes</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">dtypes</span><span class="p">))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">_ufunc_call</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;reduce&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dtypes</span><span class="p">:</span>
-                <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtypes</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="o">.</span><span class="n">resolve_dtypes</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">dtypes</span><span class="p">),</span> <span class="n">reduction</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span>
-                    <span class="o">-</span><span class="mi">1</span>
-                <span class="p">]</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">_ufunc_reduce</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;outer&quot;</span><span class="p">:</span>
             <span class="c1"># Currently I don&#39;t know what to do here</span>
@@ -2157,6 +2139,14 @@
     <span class="k">return</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_sp_data_cast</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts the data in `sp` to the result data-type&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="n">sp</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">_D</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">_ufunc_sp_ndarray</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_get_reduced_shape</span><span class="p">(</span><span class="n">b</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># there are shapes for individiual</span>
@@ -2164,7 +2154,7 @@
         <span class="k">return</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># create a copy</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">out</span><span class="o">.</span><span class="n">nnz</span><span class="p">:</span>
         <span class="n">out</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_D</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2173,7 +2163,9 @@
         <span class="c1"># a view, we can&#39;t use</span>
         <span class="c1">#   ufunc(..., out=out._D[idx, :])</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">_sp_data_cast</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span>
         <span class="k">del</span> <span class="n">idx</span>
     <span class="k">return</span> <span class="n">out</span>
 
@@ -2185,7 +2177,7 @@
         <span class="k">return</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># create a copy</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">out</span><span class="o">.</span><span class="n">nnz</span><span class="p">:</span>
         <span class="n">out</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">_D</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2194,7 +2186,9 @@
         <span class="c1"># a view, we can&#39;t use</span>
         <span class="c1">#   ufunc(..., out=out._D[idx, :])</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">_sp_data_cast</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span>
         <span class="k">del</span> <span class="n">idx</span>
     <span class="k">return</span> <span class="n">out</span>
 
@@ -2248,7 +2242,12 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;could not broadcast sparse matrices </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># create union of the sparsity pattern</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="o">.</span><span class="n">sparsity_union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">adim</span><span class="p">,</span> <span class="n">bdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+    <span class="c1"># create a fake *out* to grap the dtype</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">adata</span><span class="p">[:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">bdata</span><span class="p">[:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="o">.</span><span class="n">sparsity_union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">adim</span><span class="p">,</span> <span class="n">bdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
@@ -2301,13 +2300,15 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1"># create a copy</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">out</span><span class="o">.</span><span class="n">nnz</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_D</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># limit the values</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">_sp_data_cast</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span>
             <span class="k">del</span> <span class="n">idx</span>
         <span class="k">return</span> <span class="n">out</span>
 
@@ -2354,15 +2355,18 @@
     <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">_D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">ufunc</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">_D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">_sp_data_cast</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span>
         <span class="k">return</span> <span class="n">out</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Unknown axis argument in ufunc.reduce call on </span><span class="si">{</span><span class="n">array</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ufunc</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="n">ret</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
     <span class="c1"># Now do ufunc calculations, note that initial gets passed directly</span>
     <span class="n">ptr</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">ptr</span>

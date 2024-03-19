@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-d15ac79</title>
+  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -20,13 +23,20 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="../../../../_static/documentation_options.js?v=1e844bd0"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -44,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -54,35 +64,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
 </ul>
 
         </div>
@@ -139,7 +149,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_only</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">BandStructure</span><span class="p">,</span> <span class="n">BrillouinZone</span>
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span><span class="p">,</span> <span class="n">unit_default</span><span class="p">,</span> <span class="n">unit_group</span><span class="p">,</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.cmd</span> <span class="kn">import</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">default_namespace</span>
@@ -148,7 +158,15 @@
 <span class="kn">from</span> <span class="nn">sisl.utils.ranges</span> <span class="kn">import</span> <span class="n">list2str</span>
 
 <span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">get_sile_class</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SileCDF</span><span class="p">,</span>
+    <span class="n">SileError</span><span class="p">,</span>
+    <span class="n">_import_netCDF4</span><span class="p">,</span>
+    <span class="n">add_sile</span><span class="p">,</span>
+    <span class="n">get_sile_class</span><span class="p">,</span>
+    <span class="n">sile_fh_open</span><span class="p">,</span>
+    <span class="n">sile_raise_write</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.bands</span> <span class="kn">import</span> <span class="n">bandsSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.basis</span> <span class="kn">import</span> <span class="n">ionncSileSiesta</span><span class="p">,</span> <span class="n">ionxmlSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.binaries</span> <span class="kn">import</span> <span class="p">(</span>
@@ -179,6 +197,24 @@
 <span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_order_remove_netcdf</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes the order elements that refer to siles based on NetCDF&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_import_netCDF4</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">SileError</span><span class="p">:</span>
+        <span class="c1"># We got an import error</span>
+        <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sile</span> <span class="o">=</span> <span class="n">get_sile_class</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="se">{{</span><span class="s2">contains=siesta</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                <span class="c1"># we just let it slip</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">SileCDF</span><span class="p">)</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">accept</span><span class="p">,</span> <span class="n">order</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">order</span>
+
+
 <span class="k">def</span> <span class="nf">_parse_output_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">order_True</span><span class="p">,</span> <span class="n">order_False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses the correct order of files by examining the kwargs[&quot;order&quot;].</span>
 
@@ -195,8 +231,8 @@
     <span class="n">order_False</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">order_False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">order_True</span>
-        <span class="k">return</span> <span class="n">order_False</span>
+            <span class="k">return</span> <span class="n">_order_remove_netcdf</span><span class="p">(</span><span class="n">order_True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_order_remove_netcdf</span><span class="p">(</span><span class="n">order_False</span><span class="p">)</span>
 
     <span class="c1"># now handle the cases where the users wants to not use something</span>
     <span class="n">order</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
@@ -220,7 +256,7 @@
 
     <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">order</span> <span class="k">if</span> <span class="n">el</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rem</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">order</span>
+    <span class="k">return</span> <span class="n">_order_remove_netcdf</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_listify_str</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
@@ -349,7 +385,7 @@
 
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_read_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Try and read the first occurence of a key</span>
 
 <span class="sd">        This will take care of blocks, labels and piped in labels</span>
@@ -401,7 +437,7 @@
                     <span class="c1"># Valid line, read key from other.fdf</span>
                     <span class="k">return</span> <span class="n">fdfSileSiesta</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_directory</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">_read_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">_r_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
 
                 <span class="c1"># It is not in this line, either key is</span>
                 <span class="c1"># on the RHS of &lt;, or the key could be &quot;block&quot;. Say.</span>
@@ -505,7 +541,7 @@
 <span class="sd">            the label to look-up</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_seek</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_read_label</span><span class="p">(</span><span class="n">label</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_label</span><span class="p">(</span><span class="n">label</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="fdfSileSiesta.get">
@@ -559,7 +595,7 @@
 <span class="sd">        &gt;&gt;&gt; fdf.get(&quot;Hello&quot;) == [&quot;line 1&quot;, &quot;line2&quot;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Try and read a line</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
 
         <span class="c1"># Simply return the default value if not found</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1081,42 +1117,46 @@
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_force</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="fdfSileSiesta.read_force_constant">
-<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_force_constant">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_force_constant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read force constant from the output of the calculation</span>
+<div class="viewcode-block" id="fdfSileSiesta.read_hessian">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_hessian">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read Hessian/force constant from the output of the calculation</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        force_constant : numpy.ndarray</span>
-<span class="sd">            vector ``[*, 3, 2, *, 3]``  with force constant element for each of the atomic displacements</span>
+<span class="sd">        M : numpy.ndarray</span>
+<span class="sd">            vector ``[*, 3, 2, *, 3]``  with Hessian/force constant element for each of the atomic displacements</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;FC&quot;</span><span class="p">],</span> <span class="p">[])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_force_constant_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hessian_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">(read_force_constant) found in file=</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">(read_hessian) found in file=</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_r_force_constant_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">read_force_constant</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;read_force_constant is deprecated in favor of read_hessian&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span>
+    <span class="p">)(</span><span class="n">read_hessian</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_r_hessian_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_force_constant_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hessian_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;FC&quot;</span> <span class="ow">in</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
-            <span class="n">fc</span> <span class="o">=</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_force_constant</span><span class="p">()</span>
+            <span class="n">fc</span> <span class="o">=</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_hessian</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">fc</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_r_force_constant_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_hessian_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.FC&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_force_constant_fc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hessian_fc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">na</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NumberOfAtoms&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">fcSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_force_constant</span><span class="p">(</span><span class="n">na</span><span class="o">=</span><span class="n">na</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">fcSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_hessian</span><span class="p">(</span><span class="n">na</span><span class="o">=</span><span class="n">na</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="fdfSileSiesta.read_fermi_level">
@@ -1234,7 +1274,7 @@
 
 
     <span class="k">def</span> <span class="nf">_r_dynamical_matrix_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">FC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_force_constant</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;FC&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">FC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_hessian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;FC&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">FC</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="c1"># here we forcefully read the initial geometry.</span>
@@ -1256,7 +1296,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dynamical_matrix_from_fc</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">FC</span><span class="p">,</span> <span class="n">FC_atoms</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_r_dynamical_matrix_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">FC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_force_constant</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">FC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_hessian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">FC</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">])</span>
@@ -1985,6 +2025,12 @@
             <span class="c1"># so return nothing</span>
             <span class="k">return</span> <span class="kc">None</span>
 
+        <span class="n">exts</span> <span class="o">=</span> <span class="n">_order_remove_netcdf</span><span class="p">([</span><span class="s2">&quot;ion.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;ion.xml&quot;</span><span class="p">])</span>
+        <span class="n">ion_files</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;ion.nc&quot;</span><span class="p">:</span> <span class="n">ionncSileSiesta</span><span class="p">,</span>
+            <span class="s2">&quot;ion.xml&quot;</span><span class="p">:</span> <span class="n">ionxmlSileSiesta</span><span class="p">,</span>
+        <span class="p">}</span>
+
         <span class="c1"># Now spcs contains the block of the chemicalspecieslabel</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">spcs</span><span class="p">)</span>
         <span class="n">found_one</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1997,12 +2043,11 @@
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="n">lbl</span> <span class="o">+</span> <span class="s2">&quot;.ext&quot;</span><span class="p">)</span>
 
             <span class="c1"># now try and read the basis</span>
-            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.ion.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                <span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ionncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.ion.nc&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read_basis</span><span class="p">()</span>
-                <span class="n">found_one</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">elif</span> <span class="n">f</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.ion.xml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                <span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ionxmlSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.ion.xml&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read_basis</span><span class="p">()</span>
-                <span class="n">found_one</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">exts</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                    <span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ion_files</span><span class="p">[</span><span class="n">ext</span><span class="p">](</span><span class="n">f</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read_basis</span><span class="p">()</span>
+                    <span class="n">found_one</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># default the atom to not have a range, and no associated orbitals</span>
                 <span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">Z</span><span class="o">=</span><span class="n">Z</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">lbl</span><span class="p">)</span>
@@ -2070,7 +2115,7 @@
                 <span class="c1"># And the we just don&#39;t do anything...</span>
                 <span class="c1"># We don&#39;t even warn the user...</span>
                 <span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s2">&quot;orbitals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_pao_basis</span><span class="p">(</span><span class="n">pao_basis</span><span class="p">,</span> <span class="n">lbl</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">pass</span>
 
         <span class="c1"># Now check if we can find the orbitals</span>
@@ -2217,7 +2262,7 @@
     <span class="k">def</span> <span class="nf">_r_add_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_call</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine to ensure that the overlap matrix is read and added to the matrix `M`&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_overlap</span><span class="p">()</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_overlap</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
             <span class="c1"># Check for the same sparsity pattern</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">==</span> <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">):</span>
                 <span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>

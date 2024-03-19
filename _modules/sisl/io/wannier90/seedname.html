@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.wannier90.seedname &mdash; sisl 0.1-d15ac79</title>
+  <title>sisl.io.wannier90.seedname &mdash; sisl 0.1-10260c5</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
   <!--[if lt IE 9]>
@@ -20,13 +23,20 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=720dfdaf"></script>
+        <script src="../../../../_static/documentation_options.js?v=1e844bd0"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../../_static/copybutton.js?v=f281be69"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -44,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-d15ac79
+                0.1-10260c5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -54,35 +64,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../publications.html">Publications using sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Similar solutions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
 </ul>
 
         </div>
@@ -116,11 +126,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Sile object for reading/writing Wannier90 in/output</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sps</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
 
+<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
@@ -132,6 +145,27 @@
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileWannier90</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;winSileWannier90&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_construct_hamiltonian</span><span class="p">(</span><span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Hsc</span><span class="p">):</span>
+    <span class="c1"># Get supercell size</span>
+    <span class="n">nsc</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">isc</span> <span class="ow">in</span> <span class="n">Hsc</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c1"># Create the full supercell</span>
+    <span class="n">nsc</span> <span class="o">=</span> <span class="n">nsc</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">geometry</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
+
+    <span class="c1"># Create the big matrix</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">isc</span> <span class="ow">in</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">:</span>
+        <span class="n">H</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Hsc</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">isc</span><span class="p">)]</span><span class="o">.</span><span class="n">tocsr</span><span class="p">())</span>
+
+    <span class="n">H</span> <span class="o">=</span> <span class="n">sps</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Hamiltonian</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="winSileWannier90">
@@ -186,7 +220,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deferred routine&quot;&quot;&quot;</span>
 
         <span class="n">f</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;unit_cell_cart&quot;</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -224,11 +258,11 @@
         <span class="c1"># Reset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_lattice</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice</span><span class="p">()</span></div>
 
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_read_geometry_centres</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_geometry_centres</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defered routine&quot;&quot;&quot;</span>
 
         <span class="n">nc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
@@ -249,7 +283,7 @@
         <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:</span><span class="n">na</span><span class="p">,</span> <span class="p">:],</span> <span class="n">atoms</span><span class="o">=</span><span class="s2">&quot;H&quot;</span><span class="p">)</span>
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defered routine&quot;&quot;&quot;</span>
 
         <span class="n">is_frac</span> <span class="o">=</span> <span class="kc">True</span>
@@ -310,10 +344,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">(</span><span class="s2">&quot;_centres.xyz&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_geometry_centres</span><span class="p">()</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_centres</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">()</span>
-            <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_geometry</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Reset file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">()</span>
@@ -385,12 +419,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_geometry</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Hamiltonian</span>
+    <span class="k">def</span> <span class="nf">_r_wigner_seitz_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Number of Wigner-Seitz degeneracy points</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
 
-<span class="sd">        Reads the Hamiltonian model</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">npts</span><span class="p">:</span>
+            <span class="c1"># both formats uses 15 points per line,</span>
+            <span class="c1"># however, this should be usable if they decide to change</span>
+            <span class="c1"># the number of counts per line.</span>
+            <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+
+        <span class="n">ws</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ws</span>
+
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_r_hamiltonian_hr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Hamiltonian model from the _hr.dat file&quot;&quot;&quot;</span>
         <span class="n">cutoff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cutoff&quot;</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">)</span>
 
         <span class="c1"># Rewind to ensure we can read the entire matrix structure</span>
@@ -401,38 +446,21 @@
 
         <span class="c1"># Number of orbitals</span>
         <span class="n">no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">no</span> <span class="o">!=</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">no</span> <span class="o">!=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-                <span class="o">+</span> <span class="s2">&quot;.read_hamiltonian has found inconsistent number &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;.read_hamiltonian has found inconsistent number &quot;</span>
                 <span class="s2">&quot;of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1"># Number of Wigner-Seitz degeneracy points</span>
-        <span class="n">nrpts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
-
-        <span class="c1"># First read across the Wigner-Seitz degeneracy</span>
-        <span class="c1"># This is formatted with 15 per-line.</span>
-        <span class="k">if</span> <span class="n">nrpts</span> <span class="o">%</span> <span class="mi">15</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">nlines</span> <span class="o">=</span> <span class="n">nrpts</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">nlines</span> <span class="o">=</span> <span class="n">nrpts</span> <span class="o">+</span> <span class="mi">15</span> <span class="o">-</span> <span class="n">nrpts</span> <span class="o">%</span> <span class="mi">15</span>
-
-        <span class="n">ws</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlines</span> <span class="o">//</span> <span class="mi">15</span><span class="p">):</span>
-            <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
-
-        <span class="c1"># Convert to numpy array and invert (for weights)</span>
-        <span class="n">ws</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-        <span class="c1"># Figure out the number of supercells</span>
-        <span class="c1"># and maintain the Hamiltonian in the ham list</span>
-        <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_wigner_seitz_weights</span><span class="p">()</span>
 
         <span class="c1"># List for holding the Hamiltonian</span>
-        <span class="n">ham</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">iws</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">Hsc</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">is_complex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">dtype</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
+        <span class="n">iws</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">isc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
@@ -442,74 +470,125 @@
             <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
             <span class="c1"># Get super-cell, row and column</span>
-            <span class="n">iA</span><span class="p">,</span> <span class="n">iB</span><span class="p">,</span> <span class="n">iC</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
-
-            <span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">abs</span><span class="p">(</span><span class="n">iA</span><span class="p">))</span>
-            <span class="n">nsc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nsc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">abs</span><span class="p">(</span><span class="n">iB</span><span class="p">))</span>
-            <span class="n">nsc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nsc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">abs</span><span class="p">(</span><span class="n">iC</span><span class="p">))</span>
+            <span class="n">isc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">isc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">isc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
 
             <span class="c1"># Update index for degeneracy, if required</span>
             <span class="k">if</span> <span class="n">r</span> <span class="o">+</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">iws</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="c1"># Get degeneracy of this element</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="n">iws</span><span class="p">]</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="n">iws</span><span class="p">]</span>
 
-            <span class="c1"># Store in the Hamiltonian array:</span>
-            <span class="c1">#   isc</span>
-            <span class="c1">#   row</span>
-            <span class="c1">#   column</span>
-            <span class="c1">#   Hr</span>
-            <span class="c1">#   Hi</span>
-            <span class="n">ham</span><span class="o">.</span><span class="n">append</span><span class="p">(([</span><span class="n">iA</span><span class="p">,</span> <span class="n">iB</span><span class="p">,</span> <span class="n">iC</span><span class="p">],</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">*</span> <span class="n">f</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="o">*</span> <span class="n">f</span><span class="p">))</span>
+            <span class="c1"># Scale matrix elements</span>
+            <span class="n">hr</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">*</span> <span class="n">w</span>
+            <span class="k">if</span> <span class="n">is_complex</span><span class="p">:</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">hr</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="o">*</span> <span class="n">w</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">hr</span>
 
-        <span class="c1"># Update number of super-cells</span>
-        <span class="n">geom</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">([</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nsc</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+                <span class="n">Hsc</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">isc</span><span class="p">)][</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">h</span>
 
-        <span class="c1"># With the geometry in place we can read in the entire matrix</span>
-        <span class="c1"># Create a new sparse matrix</span>
-        <span class="n">Hr</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="n">Hi</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_construct_hamiltonian</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">Hsc</span><span class="p">)</span>
 
-        <span class="c1"># populate the Hamiltonian by examining the cutoff value</span>
-        <span class="k">for</span> <span class="n">isc</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">hi</span> <span class="ow">in</span> <span class="n">ham</span><span class="p">:</span>
-            <span class="c1"># Calculate the column corresponding to the</span>
-            <span class="c1"># correct super-cell</span>
-            <span class="n">c</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">geom</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span> <span class="o">*</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_r_hamiltonian_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Hamiltonian model from the _tb.dat file&quot;&quot;&quot;</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cutoff&quot;</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">hr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
-                <span class="n">Hr</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">hr</span>
-            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">hi</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
-                <span class="n">Hi</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">hi</span>
-        <span class="k">del</span> <span class="n">ham</span>
+        <span class="c1"># Rewind to ensure we can read the entire matrix structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
-            <span class="n">Hr</span> <span class="o">=</span> <span class="n">Hr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
-            <span class="n">Hi</span> <span class="o">=</span> <span class="n">Hi</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
-            <span class="n">Hr</span> <span class="o">=</span> <span class="n">Hr</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Hi</span>
+        <span class="c1"># Time of creation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">Hamiltonian</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Hr</span><span class="p">)</span>
+        <span class="c1">#  Lattice vectors [Ang]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="c1"># TODO check against self.lattice?!</span>
+
+        <span class="c1"># Number of orbitals</span>
+        <span class="n">no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">no</span> <span class="o">!=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;.read_hamiltonian has found inconsistent number &quot;</span>
+                <span class="s2">&quot;of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_wigner_seitz_weights</span><span class="p">()</span>
+
+        <span class="c1"># List for holding the Hamiltonian</span>
+        <span class="n">Hsc</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">is_complex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">dtype</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># Parse hamiltonian matrix elements</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ws</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># Skip empty line</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;.read_hamiltonian unable to parse &lt;&gt;_tb.dat file, due to &quot;</span>
+                    <span class="s2">&quot;error in file format.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Get super-cell</span>
+            <span class="n">isc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+            <span class="c1"># Get Hamiltonian matrix elements</span>
+            <span class="n">Hr</span> <span class="o">=</span> <span class="n">Hsc</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">isc</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no</span><span class="o">**</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+                <span class="c1"># Get row and column):</span>
+                <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+
+                <span class="c1"># Scale matrix elements</span>
+                <span class="n">hr</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">w</span>
+                <span class="k">if</span> <span class="n">is_complex</span><span class="p">:</span>
+                    <span class="n">h</span> <span class="o">=</span> <span class="n">hr</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">w</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">h</span> <span class="o">=</span> <span class="n">hr</span>
+
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+                    <span class="n">Hr</span><span class="p">[</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">h</span>
+
+        <span class="k">return</span> <span class="n">_construct_hamiltonian</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">Hsc</span><span class="p">)</span>
 
 <div class="viewcode-block" id="winSileWannier90.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.read_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the electronic structure of the Wannier90 output</span>
+    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the electronic structure of the Wannier90 output by reading the &lt;&gt;_tb.dat, &lt;&gt;_hr.dat</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cutoff: float, optional</span>
+<span class="sd">        cutoff:</span>
 <span class="sd">           the cutoff value for the zero Hamiltonian elements, default</span>
 <span class="sd">           to 0.00001 eV.</span>
+
+<span class="sd">        dtype: np.float64, optional</span>
+<span class="sd">            the default data-type used for the matrix.</span>
+<span class="sd">            Is mainly useful to check whether the TB model has imaginary</span>
+<span class="sd">            components (it should not since it is a Wannier model).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Retrieve the geometry...</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
 
-        <span class="c1"># Set file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">(</span><span class="s2">&quot;_hr.dat&quot;</span><span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;tb&quot;</span><span class="p">,</span> <span class="s2">&quot;hr&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="c1"># Set file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">.dat&quot;</span><span class="p">)</span>
 
-        <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_hamiltonian</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">H</span></div>
+            <span class="c1"># only parse if the file exists</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">H</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hamiltonian_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span>
+                    <span class="n">geom</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_file</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">H</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">H</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

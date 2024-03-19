@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.geom._neighbors._finder &mdash; sisl 0.1-10260c5</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=1e844bd0"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../../_static/design-tabs.js?v=36754332"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-10260c5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Similar solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.geom._neighbors._finder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.geom._neighbors._finder</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">AtomsArgument</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">size_to_elements</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_operations</span>
+
+
+<div class="viewcode-block" id="NeighborFinder">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder">[docs]</a>
+<span class="k">class</span> <span class="nc">NeighborFinder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Efficient linear scaling finding of neighbors.</span>
+
+<span class="sd">    Once this class is instantiated, a table is build. Then,</span>
+<span class="sd">    the neighbor finder can be queried as many times as wished</span>
+<span class="sd">    as long as the geometry doesn&#39;t change.</span>
+
+<span class="sd">    Note that the radius (`R`) is used to build the table.</span>
+<span class="sd">    Therefore, if one wants to look for neighbors using a different</span>
+<span class="sd">    R, one needs to create another finder or call `setup`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geometry: sisl.Geometry</span>
+<span class="sd">        the geometry to find neighbors in</span>
+<span class="sd">    R: float or array-like of shape (geometry.na), optional</span>
+<span class="sd">        The radius to consider two atoms neighbors.</span>
+<span class="sd">        If it is a single float, the same radius is used for all atoms.</span>
+<span class="sd">        If it is an array, it should contain the radius for each atom.</span>
+
+<span class="sd">        If not provided, an array is constructed, where the radius for</span>
+<span class="sd">        each atom is its maxR.</span>
+<span class="sd">    overlap: bool, optional</span>
+<span class="sd">        If `True`, two atoms are considered neighbors if their spheres</span>
+<span class="sd">        overlap.</span>
+<span class="sd">        If `False`, two atoms are considered neighbors if the second atom</span>
+<span class="sd">        is within the sphere of the first atom. Note that this implies that</span>
+<span class="sd">        atom ``i`` might be atom ``j``&#39;s neighbor while the opposite is not true.</span>
+
+<span class="sd">        If not provided, it will be `True` if `R` is an array and `False` if</span>
+<span class="sd">        it is a single float.</span>
+<span class="sd">    bin_size : float or tuple of float, optional</span>
+<span class="sd">        the factor for the radius to determine how large the bins are,</span>
+<span class="sd">        optionally along each lattice vector.</span>
+<span class="sd">        It can minimally be 2, meaning that the maximum radius to consider</span>
+<span class="sd">        is twice the radius considered. For larger values, more atoms will be in</span>
+<span class="sd">        each bin (and thus fewer bins).</span>
+<span class="sd">        Hence, this value can be used to fine-tune the memory requirement by</span>
+<span class="sd">        decreasing number of bins, at the cost of a bit more run-time searching</span>
+<span class="sd">        bins.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Memory control of the finder</span>
+    <span class="n">memory</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;200MB&quot;</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span>
+    <span class="c1"># Geometry actually used for binning. Can be the provided geometry</span>
+    <span class="c1"># or a tiled geometry if the search radius is too big (compared to the lattice size).</span>
+    <span class="n">_bins_geometry</span><span class="p">:</span> <span class="n">Geometry</span>
+
+    <span class="n">nbins</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+    <span class="n">total_nbins</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="n">R</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">_aux_R</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">_overlap</span><span class="p">:</span> <span class="nb">bool</span>
+
+    <span class="c1"># Data structure</span>
+    <span class="n">_list</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (natoms, )</span>
+    <span class="n">_heads</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (total_nbins, )</span>
+    <span class="n">_counts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (total_nbins, )</span>
+
+<div class="viewcode-block" id="NeighborFinder.__init__">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span>
+        <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">overlap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">bin_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="n">overlap</span><span class="p">,</span> <span class="n">bin_size</span><span class="o">=</span><span class="n">bin_size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NeighborFinder.setup">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.setup">[docs]</a>
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">overlap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bin_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepares everything for neighbor finding.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        geometry: sisl.Geometry, optional</span>
+<span class="sd">            the geometry to find neighbors in.</span>
+
+<span class="sd">            If not provided, the current geometry is kept.</span>
+<span class="sd">        R: float or array-like of shape (geometry.na), optional</span>
+<span class="sd">            The radius to consider two atoms neighbors.</span>
+<span class="sd">            If it is a single float, the same radius is used for all atoms.</span>
+<span class="sd">            If it is an array, it should contain the radius for each atom.</span>
+
+<span class="sd">            If not provided, an array is constructed, where the radius for</span>
+<span class="sd">            each atom is its maxR.</span>
+
+<span class="sd">            Note that negative R values are allowed</span>
+<span class="sd">        overlap: bool</span>
+<span class="sd">            If `True`, two atoms are considered neighbors if their spheres</span>
+<span class="sd">            overlap.</span>
+<span class="sd">            If `False`, two atoms are considered neighbors if the second atom</span>
+<span class="sd">            is within the sphere of the first atom. Note that this implies that</span>
+<span class="sd">            atom ``i`` might be atom ``j``&#39;s neighbor while the opposite is not true.</span>
+<span class="sd">        bin_size :</span>
+<span class="sd">            the factor for the radius to determine how large the bins are,</span>
+<span class="sd">            optionally along each lattice vector.</span>
+<span class="sd">            It can minimally be 2, meaning that the maximum radius to consider</span>
+<span class="sd">            is twice the radius considered. For larger values, more atoms will be in</span>
+<span class="sd">            each bin (and thus fewer bins).</span>
+<span class="sd">            Hence, this value can be used to fine-tune the memory requirement by</span>
+<span class="sd">            decreasing number of bins, at the cost of a bit more run-time searching</span>
+<span class="sd">            bins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set the geometry. Copy it because we may need to modify the supercell size.</span>
+        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># If R was not provided, build an array of Rs</span>
+        <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">maxR</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+
+        <span class="c1"># Set the radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span> <span class="o">=</span> <span class="n">R</span>
+
+        <span class="c1"># If sphere overlap was not provided, set it to False if R is a single float</span>
+        <span class="c1"># and True otherwise.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overlap</span> <span class="o">=</span> <span class="n">overlap</span>
+
+        <span class="c1"># Determine the bin_size as the maximum DIAMETER to ensure that we ALWAYS</span>
+        <span class="c1"># only need to look one bin away for neighbors.</span>
+        <span class="n">max_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overlap</span><span class="p">:</span>
+            <span class="c1"># In the case when we want to check for sphere overlap, the size should</span>
+            <span class="c1"># be twice as big.</span>
+            <span class="n">max_R</span> <span class="o">*=</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">max_R</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;All R values are 0 or less. Please provide some positive values&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">bin_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bin_size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">bin_size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The bin_size must be larger than 2 to only search in the &quot;</span>
+                <span class="s2">&quot;neighboring bins. Please increase to a value &gt;=2&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">bin_size</span> <span class="o">=</span> <span class="n">max_R</span> <span class="o">*</span> <span class="n">bin_size</span>
+
+        <span class="c1"># We add a small amount to bin_size to avoid ambiguities when</span>
+        <span class="c1"># a position is exactly at the center of a bin.</span>
+        <span class="n">bin_size</span> <span class="o">+=</span> <span class="mf">0.001</span>
+
+        <span class="n">lattice_sizes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">length</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">bin_size</span> <span class="o">&gt;</span> <span class="n">lattice_sizes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span><span class="p">:</span>
+            <span class="c1"># This means that nsc must be at least 5.</span>
+
+            <span class="c1"># We round the amount of cells needed in each direction</span>
+            <span class="c1"># to the closest next odd number.</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">bin_size</span> <span class="o">/</span> <span class="n">lattice_sizes</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="c1"># And then set it as the number of supercells.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span>
+
+            <span class="n">all_xyz</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">isc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc_off</span><span class="p">:</span>
+                <span class="n">ats_xyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">)</span>
+                <span class="n">all_xyz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ats_xyz</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_xyz</span><span class="p">),</span> <span class="n">atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Recompute lattice sizes</span>
+            <span class="n">lattice_sizes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">length</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
+
+        <span class="c1"># Get the number of bins along each cell direction.</span>
+        <span class="n">nbins_float</span> <span class="o">=</span> <span class="n">lattice_sizes</span> <span class="o">/</span> <span class="n">bin_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">nbins_float</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_nbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
+
+        <span class="c1"># Get the scalar bin indices of all atoms</span>
+        <span class="n">scalar_bin_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bin_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">fxyz</span><span class="p">)</span>
+
+        <span class="c1"># Build the tables that will allow us to look for neighbors in an efficient</span>
+        <span class="c1"># and linear scaling manner.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_table</span><span class="p">(</span><span class="n">scalar_bin_indices</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_build_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bin_indices</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Builds the tables that will allow efficient linear scaling neighbor search.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bin_indices: array-like of shape (self.total_nbins, )</span>
+<span class="sd">            Array containing the scalar bin index for each atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call the fortran routine that builds the table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="n">_operations</span><span class="o">.</span><span class="n">build_table</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_nbins</span><span class="p">,</span> <span class="n">bin_indices</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="NeighborFinder.assert_consistency">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.assert_consistency">[docs]</a>
+    <span class="k">def</span> <span class="nf">assert_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Asserts that the data structure (self._list, self._heads, self._counts) is consistent.</span>
+
+<span class="sd">        It also stores that the shape is consistent with the stored geometry and the store total_nbins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check shapes</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heads</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_nbins</span><span class="p">,)</span>
+
+        <span class="c1"># Check values</span>
+        <span class="k">for</span> <span class="n">i_bin</span><span class="p">,</span> <span class="n">bin_count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="p">):</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heads</span><span class="p">[</span><span class="n">i_bin</span><span class="p">]</span>
+            <span class="k">while</span> <span class="n">head</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">[</span><span class="n">head</span><span class="p">]</span>
+
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">count</span> <span class="o">==</span> <span class="n">bin_count</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Bin </span><span class="si">{</span><span class="n">i_bin</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">bin_count</span><span class="si">}</span><span class="s2"> atoms but we found </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> atoms&quot;</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_search_atom_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar_bin_indices</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the number of atoms that will be explored for each search</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        scalar_bin_indices: np.ndarray of shape ([n_searches], 8)</span>
+<span class="sd">            Array containing the bin indices for each search.</span>
+<span class="sd">            Bin indices should be within the unit cell!</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -----------</span>
+<span class="sd">        np.ndarray of shape (n_searches, ):</span>
+<span class="sd">            For each search, the number of atoms that will be involved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="p">[</span><span class="n">scalar_bin_indices</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_bin_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fxyz</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">floor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the bin indices for a given fractional coordinate.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        fxyz: np.ndarray of shape (N, 3)</span>
+<span class="sd">            the fractional coordinates for which we want to get the bin indices.</span>
+<span class="sd">        cartesian: bool, optional</span>
+<span class="sd">            whether the indices should be returned as cartesian.</span>
+<span class="sd">            If `False`, scalar indices are returned.</span>
+<span class="sd">        floor: bool, optional</span>
+<span class="sd">            whether to floor the indices or not.</span>
+
+<span class="sd">            If asking for scalar indices (i.e. `cartesian=False`), the indices will</span>
+<span class="sd">            ALWAYS be floored regardless of this argument.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        np.ndarray:</span>
+<span class="sd">            The bin indices. If `cartesian=True`, the shape of the array is (N, 3),</span>
+<span class="sd">            otherwise it is (N,).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bin_indices</span> <span class="o">=</span> <span class="p">((</span><span class="n">fxyz</span><span class="p">)</span> <span class="o">%</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span>
+        <span class="c1"># Atoms that are exactly at the limit of the cell might have fxyz = 1</span>
+        <span class="c1"># which would result in a bin index outside of range.</span>
+        <span class="c1"># We just bring it back to the unit cell.</span>
+        <span class="n">bin_indices</span> <span class="o">=</span> <span class="n">bin_indices</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span>
+
+        <span class="k">if</span> <span class="n">floor</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">cartesian</span><span class="p">:</span>
+            <span class="n">bin_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">bin_indices</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cartesian</span><span class="p">:</span>
+            <span class="n">bin_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_to_scalar_index</span><span class="p">(</span><span class="n">bin_indices</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bin_indices</span>
+
+    <span class="k">def</span> <span class="nf">_get_search_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fxyz</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the bin indices to explore for a given fractional coordinate.</span>
+
+<span class="sd">        Given a fractional coordinate, we will need to look for neighbors</span>
+<span class="sd">        in its own bin, and one bin away in each direction. That is, $2^3=8$ bins.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        fxyz: np.ndarray of shape (N, 3)</span>
+<span class="sd">            the fractional coordinates for which we want to get the search indices.</span>
+<span class="sd">        cartesian: bool, optional</span>
+<span class="sd">            whether the indices should be returned as cartesian.</span>
+<span class="sd">            If `False`, scalar indices are returned.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        np.ndarray:</span>
+<span class="sd">            The bin indices where we need to perform the search for each</span>
+<span class="sd">            fractional coordinate. These indices are all inside the unit cell.</span>
+<span class="sd">            If `cartesian=True`, cartesian indices are returned and the array</span>
+<span class="sd">            has shape (N, 8, 3).</span>
+<span class="sd">            If `cartesian=False`, scalar indices are returned and the array</span>
+<span class="sd">            has shape (N, 8).</span>
+<span class="sd">        np.ndarray of shape (N, 8, 3):</span>
+<span class="sd">            The supercell indices of each bin index in the search.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the bin indices for the positions that are requested.</span>
+        <span class="c1"># Note that we don&#39;t floor the indices so that we can know to which</span>
+        <span class="c1"># border of the bin are we closer in each direction.</span>
+        <span class="n">bin_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bin_indices</span><span class="p">(</span><span class="n">fxyz</span><span class="p">,</span> <span class="n">floor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">bin_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">bin_indices</span><span class="p">)</span>
+
+        <span class="c1"># Determine which is the neighboring cell that we need to look for</span>
+        <span class="c1"># along each direction.</span>
+        <span class="n">signs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">bin_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">signs</span><span class="p">[(</span><span class="n">bin_indices</span> <span class="o">%</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="c1"># Build and arrays with all the indices that we need to look for. Since</span>
+        <span class="c1"># we have to move one bin away in each direction, we have to look for</span>
+        <span class="c1"># neighbors along a total of 8 bins (2**3)</span>
+        <span class="n">search_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">bin_indices</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">search_indices</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">signs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">search_indices</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">signs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">search_indices</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">signs</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Convert search indices to unit cell indices, but keep the supercell indices.</span>
+        <span class="n">isc</span><span class="p">,</span> <span class="n">search_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">search_indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cartesian</span><span class="p">:</span>
+            <span class="n">search_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_to_scalar_index</span><span class="p">(</span><span class="n">search_indices</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">search_indices</span><span class="p">,</span> <span class="n">isc</span>
+
+    <span class="k">def</span> <span class="nf">_cartesian_to_scalar_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts cartesian indices to scalar indices&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Decimal scalar indices do not make sense, please floor your cartesian indices.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="k">def</span> <span class="nf">_scalar_to_cartesian_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts cartesian indices to scalar indices&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_nbins</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Some scalar indices are not within the unit cell. We cannot uniquely convert to cartesian&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">third</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">second</span><span class="p">,</span> <span class="n">first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">third</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">_correct_pairs_R_too_big</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">neighbor_pairs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># (n_pairs, 5)</span>
+        <span class="n">split_ind</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>  <span class="c1"># (n_queried_atoms, )</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># (3, )</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Correction to atom and supercell indices when the binning has been done on a tiled geometry&quot;&quot;&quot;</span>
+        <span class="n">is_sc_neigh</span> <span class="o">=</span> <span class="n">neighbor_pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
+
+        <span class="n">invalid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">pbc</span><span class="p">):</span>
+            <span class="n">invalid</span> <span class="o">=</span> <span class="n">is_sc_neigh</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pbc_neighs</span> <span class="o">=</span> <span class="n">neighbor_pairs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="n">sc_neigh</span><span class="p">,</span> <span class="n">uc_neigh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span>
+                <span class="n">neighbor_pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">][</span><span class="n">is_sc_neigh</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
+            <span class="p">)</span>
+            <span class="n">isc_neigh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">sc_neigh</span><span class="p">]</span>
+
+            <span class="n">pbc_neighs</span><span class="p">[</span><span class="n">is_sc_neigh</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">uc_neigh</span>
+            <span class="n">pbc_neighs</span><span class="p">[</span><span class="n">is_sc_neigh</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="n">isc_neigh</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pbc</span><span class="p">):</span>
+                <span class="n">invalid</span> <span class="o">=</span> <span class="n">pbc_neighs</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:][:,</span> <span class="o">~</span><span class="n">pbc</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">neighbor_pairs</span> <span class="o">=</span> <span class="n">pbc_neighs</span>
+
+        <span class="k">if</span> <span class="n">invalid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">neighbor_pairs</span> <span class="o">=</span> <span class="n">neighbor_pairs</span><span class="p">[</span><span class="o">~</span><span class="n">invalid</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">split_ind</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">split_ind</span> <span class="o">=</span> <span class="n">split_ind</span> <span class="o">-</span> <span class="n">invalid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">split_ind</span> <span class="o">=</span> <span class="n">split_ind</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">invalid</span><span class="p">)[</span><span class="n">split_ind</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span>
+
+<div class="viewcode-block" id="NeighborFinder.find_neighbors">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_neighbors">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_neighbors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">as_pairs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">self_interaction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find neighbors as specified in the finder.</span>
+
+<span class="sd">        This routine only executes the action of finding neighbors,</span>
+<span class="sd">        the parameters of the search (`geometry`, `R`, `overlap`...)</span>
+<span class="sd">        are defined when the finder is initialized or by calling `setup`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atoms: optional</span>
+<span class="sd">            the atoms for which neighbors are desired. Anything that can</span>
+<span class="sd">            be sanitized by `sisl.Geometry` is a valid value.</span>
+
+<span class="sd">            If not provided, neighbors for all atoms are searched.</span>
+<span class="sd">        as_pairs: bool, optional</span>
+<span class="sd">            If `True` pairs of atoms are returned. Otherwise a list containing</span>
+<span class="sd">            the neighbors for each atom is returned.</span>
+<span class="sd">        self_interaction: bool, optional</span>
+<span class="sd">            whether to consider an atom a neighbor of itself.</span>
+<span class="sd">        pbc: bool or array-like of shape (3, )</span>
+<span class="sd">            whether periodic conditions should be considered.</span>
+<span class="sd">            If a single bool is passed, all directions use that value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ----------</span>
+<span class="sd">        np.ndarray or list:</span>
+<span class="sd">            If `as_pairs=True`:</span>
+<span class="sd">                A `np.ndarray` of shape (n_pairs, 5) is returned.</span>
+<span class="sd">                Each pair `ij` means that `j` is a neighbor of `i`.</span>
+<span class="sd">                The three extra columns are the supercell indices of atom `j`.</span>
+<span class="sd">            If `as_pairs=False`:</span>
+<span class="sd">                A list containing a numpy array of shape (n_neighs, 4) for each atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Sanitize atoms</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+
+        <span class="c1"># Cast R and pbc into arrays of appropiate shape and type.</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="c1"># Get search indices</span>
+        <span class="n">search_indices</span><span class="p">,</span> <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_indices</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span><span class="p">[</span><span class="n">atoms</span><span class="p">],</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get atom counts</span>
+        <span class="n">at_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_atom_counts</span><span class="p">(</span><span class="n">search_indices</span><span class="p">)</span>
+
+        <span class="n">max_pairs</span> <span class="o">=</span> <span class="n">at_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">self_interaction</span><span class="p">:</span>
+            <span class="n">max_pairs</span> <span class="o">-=</span> <span class="n">search_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">init_pairs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">max_pairs</span><span class="p">,</span>
+            <span class="c1"># 8 bytes per element (int64)</span>
+            <span class="c1"># While this might be wrong on Win, it shouldn&#39;t matter</span>
+            <span class="n">size_to_elements</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">8</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Find the neighbor pairs</span>
+        <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span> <span class="o">=</span> <span class="n">_operations</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">(</span>
+            <span class="n">atoms</span><span class="p">,</span>
+            <span class="n">search_indices</span><span class="p">,</span>
+            <span class="n">isc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_heads</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">,</span>
+            <span class="n">self_interaction</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
+            <span class="n">pbc</span><span class="p">,</span>
+            <span class="n">thresholds</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_overlap</span><span class="p">,</span>
+            <span class="n">init_pairs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Correct neighbor indices for the case where R was too big and</span>
+        <span class="c1"># we needed to create an auxiliary supercell.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span><span class="p">:</span>
+            <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correct_pairs_R_too_big</span><span class="p">(</span>
+                <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span><span class="p">,</span> <span class="n">pbc</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">as_pairs</span><span class="p">:</span>
+            <span class="c1"># Just return the neighbor pairs</span>
+            <span class="k">return</span> <span class="n">neighbor_pairs</span><span class="p">[:</span> <span class="n">split_ind</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="c1"># Split to get the neighbors of each atom</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">neighbor_pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">split_ind</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="NeighborFinder.find_all_unique_pairs">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_all_unique_pairs">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_all_unique_pairs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">self_interaction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all unique neighbor pairs within the geometry.</span>
+
+<span class="sd">        A pair of atoms is considered unique if atoms have the same index</span>
+<span class="sd">        and correspond to the same unit cell. As an example, the connection</span>
+<span class="sd">        atom 0 (unit cell) to atom 5 (1, 0, 0) is not the same as the</span>
+<span class="sd">        connection atom 5 (unit cell) to atom 0 (-1, 0, 0).</span>
+
+<span class="sd">        Note that this routine can not be called if `overlap` is</span>
+<span class="sd">        set to `False` and the radius is not a single float. In that case,</span>
+<span class="sd">        there is no way of defining &quot;uniqueness&quot; since pair `ij` can have</span>
+<span class="sd">        a different threshold radius than pair `ji`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atoms: optional</span>
+<span class="sd">            the atoms for which neighbors are desired. Anything that can</span>
+<span class="sd">            be sanitized by `sisl.Geometry` is a valid value.</span>
+
+<span class="sd">            If not provided, neighbors for all atoms are searched.</span>
+<span class="sd">        as_pairs: bool, optional</span>
+<span class="sd">            If `True` pairs of atoms are returned. Otherwise a list containing</span>
+<span class="sd">            the neighbors for each atom is returned.</span>
+<span class="sd">        self_interaction: bool, optional</span>
+<span class="sd">            whether to consider an atom a neighbor of itself.</span>
+<span class="sd">        pbc: bool or array-like of shape (3, )</span>
+<span class="sd">            whether periodic conditions should be considered.</span>
+<span class="sd">            If a single bool is passed, all directions use that value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ----------</span>
+<span class="sd">        np.ndarray of shape (n_pairs, 5):</span>
+<span class="sd">            Each pair `ij` means that `j` is a neighbor of `i`.</span>
+<span class="sd">            The three extra columns are the supercell indices of atom `j`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlap</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Unique atom pairs do not make sense if we are not looking for sphere overlaps.&quot;</span>
+                <span class="s2">&quot; Please setup the finder again setting `overlap` to `True` if you wish so.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># In the case where we tiled the geometry to do the binning, it is much better to</span>
+        <span class="c1"># just find all neighbors and then drop duplicate connections. Otherwise it is a bit of a mess.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span><span class="p">:</span>
+            <span class="c1"># Find all neighbors</span>
+            <span class="n">all_neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_neighbors</span><span class="p">(</span>
+                <span class="n">as_pairs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">self_interaction</span><span class="o">=</span><span class="n">self_interaction</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Find out which of the pairs are uc connections</span>
+            <span class="n">is_uc_neigh</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">all_neighbors</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Create an array with unit cell connections where duplicates are removed</span>
+            <span class="n">unique_uc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">all_neighbors</span><span class="p">[</span><span class="n">is_uc_neigh</span><span class="p">][:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">uc_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_uc</span><span class="p">),</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">uc_neighbors</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">unique_uc</span>
+
+            <span class="c1"># Concatenate the uc connections with the rest of the connections.</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">uc_neighbors</span><span class="p">,</span> <span class="n">all_neighbors</span><span class="p">[</span><span class="o">~</span><span class="n">is_uc_neigh</span><span class="p">]))</span>
+
+        <span class="c1"># Cast R and pbc into arrays of appropiate shape and type.</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="c1"># Get search indices</span>
+        <span class="n">search_indices</span><span class="p">,</span> <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_indices</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get atom counts</span>
+        <span class="n">at_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_atom_counts</span><span class="p">(</span><span class="n">search_indices</span><span class="p">)</span>
+
+        <span class="n">max_pairs</span> <span class="o">=</span> <span class="n">at_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">self_interaction</span><span class="p">:</span>
+            <span class="n">max_pairs</span> <span class="o">-=</span> <span class="n">search_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">init_pairs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">max_pairs</span><span class="p">,</span>
+            <span class="c1"># 8 bytes per element (int64)</span>
+            <span class="c1"># While this might be wrong on Win, it shouldn&#39;t matter</span>
+            <span class="n">size_to_elements</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">8</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Find all unique neighbor pairs</span>
+        <span class="n">neighbor_pairs</span> <span class="o">=</span> <span class="n">_operations</span><span class="o">.</span><span class="n">get_all_unique_pairs</span><span class="p">(</span>
+            <span class="n">search_indices</span><span class="p">,</span>
+            <span class="n">isc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_heads</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">,</span>
+            <span class="n">self_interaction</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
+            <span class="n">pbc</span><span class="p">,</span>
+            <span class="n">thresholds</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_overlap</span><span class="p">,</span>
+            <span class="n">init_pairs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">neighbor_pairs</span></div>
+
+
+<div class="viewcode-block" id="NeighborFinder.find_close">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_close">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_close</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">xyz</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span>
+        <span class="n">as_pairs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all atoms that are close to some coordinates in space.</span>
+
+<span class="sd">        This routine only executes the action of finding neighbors,</span>
+<span class="sd">        the parameters of the search (`geometry`, `R`, `overlap`...)</span>
+<span class="sd">        are defined when the finder is initialized or by calling `setup`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xyz: array-like of shape ([npoints], 3)</span>
+<span class="sd">            the coordinates for which neighbors are desired.</span>
+<span class="sd">        as_pairs: bool, optional</span>
+<span class="sd">            If `True` pairs are returned, where the first item is the index</span>
+<span class="sd">            of the point and the second one is the atom index.</span>
+<span class="sd">            Otherwise a list containing the neighbors for each point is returned.</span>
+<span class="sd">        pbc: bool or array-like of shape (3, )</span>
+<span class="sd">            whether periodic conditions should be considered.</span>
+<span class="sd">            If a single bool is passed, all directions use that value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ----------</span>
+<span class="sd">        np.ndarray or list:</span>
+<span class="sd">            If `as_pairs=True`:</span>
+<span class="sd">                A `np.ndarray` of shape (n_pairs, 5) is returned.</span>
+<span class="sd">                Each pair `ij` means that `j` is a neighbor of `i`.</span>
+<span class="sd">                The three extra columns are the supercell indices of atom `j`.</span>
+<span class="sd">            If `as_pairs=False`:</span>
+<span class="sd">                A list containing a numpy array of shape (n_neighs, 4) for each atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Cast R and pbc into arrays of appropiate shape and type.</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+        <span class="c1"># Get search indices</span>
+        <span class="n">search_indices</span><span class="p">,</span> <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_indices</span><span class="p">(</span>
+            <span class="n">xyz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">%</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get atom counts</span>
+        <span class="n">at_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_atom_counts</span><span class="p">(</span><span class="n">search_indices</span><span class="p">)</span>
+
+        <span class="n">max_pairs</span> <span class="o">=</span> <span class="n">at_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">init_pairs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">max_pairs</span><span class="p">,</span>
+            <span class="c1"># 8 bytes per element (int64)</span>
+            <span class="c1"># While this might be wrong on Win, it shouldn&#39;t matter</span>
+            <span class="n">size_to_elements</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">8</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Find the neighbor pairs</span>
+        <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span> <span class="o">=</span> <span class="n">_operations</span><span class="o">.</span><span class="n">get_close</span><span class="p">(</span>
+            <span class="n">xyz</span><span class="p">,</span>
+            <span class="n">search_indices</span><span class="p">,</span>
+            <span class="n">isc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_heads</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
+            <span class="n">pbc</span><span class="p">,</span>
+            <span class="n">thresholds</span><span class="p">,</span>
+            <span class="n">init_pairs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Correct neighbor indices for the case where R was too big and</span>
+        <span class="c1"># we needed to create an auxiliary supercell.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span><span class="p">:</span>
+            <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correct_pairs_R_too_big</span><span class="p">(</span>
+                <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span><span class="p">,</span> <span class="n">pbc</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">as_pairs</span><span class="p">:</span>
+            <span class="c1"># Just return the neighbor pairs</span>
+            <span class="k">return</span> <span class="n">neighbor_pairs</span><span class="p">[:</span> <span class="n">split_ind</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">neighbor_pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">split_ind</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
