@@ -66,6 +66,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- renamed `stdoutSileVASP` to `outcarSileVASP`, #719
 - deprecated scale_atoms in favor of scale_basis in `Geometry.scale`
 - changed default number of eigenvalues calculated in sparse `eigsh`, from 10 to 1
 - `stdoutSileSiesta.read_*` now defaults to read the *next* entry, and not the last
