@@ -15,9 +15,9 @@ from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 from sisl._help import array_fill_repeat
 from sisl._indices import list_index_le
 from sisl._internal import set_module
-from sisl._typing_ext.numpy import NDArray
 from sisl.messages import deprecation, info
 from sisl.shape import Sphere
+from sisl.typing import NDArray
 
 from .orbital import Orbital
 
@@ -997,9 +997,10 @@ class Atom(
     -----
     One can define atoms outside of the periodic table. They will generally
     be handled in this order:
-    - negative numbers will be converted into positive ones, and the returned
-      object will be an AtomGhost
-    - any other number (or name) not found in the periodic table will be returned
+
+    * negative numbers will be converted into positive ones, and the returned
+      object will be an `AtomGhost`
+    * any other number (or name) not found in the periodic table will be returned
       in an AtomUnknown object
 
     The mass for atoms outside the periodic table will default to 1e40 amu.
@@ -1066,7 +1067,7 @@ class Atom(
             mass_Z = self.Z
         else:
             self._Z = _ptbl.Z_int(Z)
-        if isinstance(self._Z, str):
+        if not isinstance(self._Z, Integral):
             raise ValueError(
                 f"{self.__class__.__name__} got an unparseable Z argument, needs to be an integer, got='{Z}'."
             )

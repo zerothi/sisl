@@ -14,9 +14,7 @@ terms of usability to enter the sisl API.
 
 We encourage users to contribute toolboxes to increase visibility and usability.
 
-For a short description of the possible toolboxes do:
-
-::
+For a short description of the possible toolboxes do::
 
    stoolbox --help
 
@@ -29,4 +27,4 @@ Have an idea?
 If you want to contribute or have an idea for a toolbox, feel free to open an issue `here <issue_>`_.
 
 
-
+.. highlight:: python

@@ -48,10 +48,9 @@ from sisl._indices import (
 from sisl._internal import set_module
 from sisl._math_small import cross3, is_ascending
 from sisl._namedindex import NamedIndex
-from sisl._typing_ext.numpy import ArrayLike, NDArray
 from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.shape import Cube, Shape, Sphere
-from sisl.typing import AtomsArgument, OrbitalsArgument, SileLike
+from sisl.typing import ArrayLike, AtomsArgument, NDArray, OrbitalsArgument, SileLike
 from sisl.utils import (
     angle,
     cmd,

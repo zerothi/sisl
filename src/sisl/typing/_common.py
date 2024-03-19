@@ -9,21 +9,18 @@ from typing import TYPE_CHECKING, Any, Callable, Sequence, Union
 import numpy as np
 import scipy.sparse as sps
 
-import sisl._typing_ext.numpy as npt
+from . import _numpy as npt
 
 # To prevent import cycles place any internal imports in the branch below
 # and use a string literal forward reference to it in subsequent types
 # https://mypy.readthedocs.io/en/latest/common_issues.html#import-cycles
 if TYPE_CHECKING:
-    from sisl import Atom, Atoms, BaseSile, Geometry, Grid, Lattice, Shape
+    from sisl import BaseSile, Geometry, Grid, Lattice, Shape
     from sisl._category import GenericCategory
     from sisl.geom.category import AtomCategory
 
 __all__ = [
     "AtomsArgument",
-    "AtomsLike",
-    "AtomType",
-    "AtomsType",
     "Axes",
     "Axies",
     "Axis",
@@ -45,16 +42,6 @@ __all__ = [
     "SparseMatrixExt",
 ]
 
-
-AtomType = Union["Atom", int, str]
-AtomsType = Union[
-    "Atom",
-    "Atoms",
-    Sequence[AtomType],
-    int,
-    str,
-]
-AtomsLike = Union[AtomType, AtomsType]
 
 # Pure integer axis specification
 Axis = int

@@ -1,4 +1,4 @@
-.. highlight:: bash
+.. highlight:: console
 
 .. _script_sgrid:
 
@@ -10,9 +10,7 @@ it into CUBE format for plotting 3D data in, *e.g.* VMD or XCrySDen.
 
 Any `Sile` which implements a ``read_grid`` method can be used to post-process data.
 
-For a short help description of the possible uses do:
-
-::
+For a short help description of the possible uses do::
 
    sgrid --help
 
@@ -41,7 +39,7 @@ implemented in `sisl` are also compatible with `sgrid`.
 
 
 the shorthand flag for ``-geometry`` is ``-G``.
-   
+
 Grid differences
 ----------------
 
@@ -54,9 +52,7 @@ takes one additional grid file for the difference. I.e.
 
 which takes the difference between the spin up and spin down in the same ``Rho.grid.nc`` file.
 The spin (index) specification takes either a single integer or a list of floating point values, as can be
-seen in the below and shorter equivalent syntax:
-
-::
+seen in the below and shorter equivalent syntax::
 
    sgrid "Rho.grid.nc{1.,-1.}" -G RUN.fdf diff_up-down.cube
 
@@ -80,17 +76,13 @@ Reducing grid sizes
 Often grids are far too large in that only a small part of the full cell is needed to be studied.
 One can remove certain parts of the grid after reading, before writing. This will greatly decrease
 the output file *and* greatly speed-up the process as writing huge ASCII files is *extremely* time
-consuming. There are two methods for reducing grids:
-
-::
+consuming. There are two methods for reducing grids::
 
    sgrid <file> --sub <pos|<frac>f> x
    sgrid <file> --remove [+-]<pos|<frac>f> x
 
 This needs an example, say the unit cell is an orthogonal unit-cell with side lengths 10x10x20 Angstrom.
-To reduce the cell to a middle square of 5x5x5 Angstrom you can do:
-
-::
+To reduce the cell to a middle square of 5x5x5 Angstrom you can do::
 
    sgrid Rho.grid.nc --sub 2.5:7.5 x --sub 2.5:7.5 y --sub 7.5:12.5 z 5x5x5.cube
 
@@ -107,9 +99,7 @@ The length unit for the position is *always* in Ångstrøm, unless an optional *
 forces the unit to be in fractional position (must be between 0 and 1).
 
 When combining grid reductions with grid differences the order is also important, the following two
-commands are not equivalent:
-
-::
+commands are not equivalent::
 
    sgrid Rho.grid.nc --sub 2.5:7.5 x --diff Other.Rho.grid.nc --out test.cube
    sgrid Rho.grid.nc --diff Other.Rho.grid.nc --sub 2.5:7.5 x --out test.cube
@@ -122,9 +112,7 @@ shape, then the reduction will be performed on the grid difference.
 Averaging and summing
 ---------------------
 
-Sometimes it is convenient to average or sum grids along cell directions:
-
-::
+Sometimes it is convenient to average or sum grids along cell directions::
 
    sgrid Rho.grid.nc --average x meanx.cube
    sgrid Rho.grid.nc --sum x sumx.cube

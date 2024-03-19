@@ -152,6 +152,14 @@ class Orbital:
     ``dict(contains=0.9999, func=lambda radial, r: abs(radial(r)), maxR=100)``
     The optimization problem depends heavily on the ``func`` since the tails are
     important for real-space quantities.
+
+    See also
+    --------
+    SphericalOrbital : orbitals with a spherical basis set
+    AtomicOrbital : specification of n, m, l quantum numbers + a spherical basis set
+    HydrogenicOrbital : simplistic orbital model of Hydrogenic-like basis sets
+    GTOrbital : Gaussian-type orbitals
+    STOrbital : Slater-type orbitals
     """
 
     __slots__ = ("_R", "_tag", "_q0")
@@ -202,7 +210,7 @@ class Orbital:
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             return f"{self.__class__.__name__}{{R: {self.R:.5f}, q0: {self.q0}, tag: {self.tag}}}"
         return f"{self.__class__.__name__}{{R: {self.R:.5f}, q0: {self.q0}}}"
 
@@ -522,11 +530,11 @@ def _set_radial(self, *args, **kwargs) -> None:
     >>> r = np.linspace(0, 4, 300)
     >>> f = np.exp(-r)
     >>> def i_univariate(r, f):
-    ...    return interp.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)
+        ...    return interp.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)
     >>> def i_interp1d(r, f):
-    ...    return interp.interp1d(r, f, kind="cubic", fill_value=(f[0], 0.), bounds_error=False)
+        ...    return interp.interp1d(r, f, kind="cubic", fill_value=(f[0], 0.), bounds_error=False)
     >>> def i_spline(r, f):
-    ...    from functools import partial
+        ...    from functools import partial
     ...    tck = interp.splrep(r, f, k=3, s=0)
     ...    return partial(interp.splev, tck=tck, der=0, ext=1)
     >>> R = np.linspace(0, 4, 400)
@@ -647,6 +655,8 @@ class SphericalOrbital(Orbital):
        initial charge
     tag : str, optional
        user defined tag
+    **kwargs:
+       arguments passed directly to ``set_radial(rf_or_func, **kwargs)``
 
     Attributes
     ----------
@@ -800,7 +810,7 @@ class SphericalOrbital(Orbital):
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             return f"{self.__class__.__name__}{{l: {self.l}, R: {self.R}, q0: {self.q0}, tag: {self.tag}}}"
         return f"{self.__class__.__name__}{{l: {self.l}, R: {self.R}, q0: {self.q0}}}"
 
@@ -886,7 +896,7 @@ class AtomicOrbital(Orbital):
         Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
              e^{i m \theta} P^m_l(\cos(\varphi))
         \\
-        \phi_{lmn}(\mathbf r) &= R(|\mathbf r|) Y^m_l(\theta, \varphi)
+                \phi_{lmn}(\mathbf r) &= R(|\mathbf r|) Y^m_l(\theta, \varphi)
 
     where the function :math:`R(|\mathbf r|)` is user-defined.
 
@@ -1103,6 +1113,12 @@ class AtomicOrbital(Orbital):
             # Determine the correct R if requested a sub-set
             self._orb = SphericalOrbital(l, s, q0=q0, R=R)
 
+        if isinstance(self._orb, SphericalOrbital):
+            if self._orb.l != self.l:
+                raise ValueError(
+                    f"{self.__class__.__name__} got a spherical argument with l={self._orb.l} which is different from this objects l={self.l}."
+                )
+
         super().__init__(self._orb.R, q0=q0, tag=kwargs.get("tag", ""))
 
     def __hash__(self):
@@ -1237,7 +1253,7 @@ class AtomicOrbital(Orbital):
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             return f"{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, tag: {self.tag}, {self.orb!s}}}"
         return (
             f"{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, {self.orb!s}}}"
@@ -1535,7 +1551,7 @@ class _ExponentialOrbital(Orbital):
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}, tag: {self.tag}"
         else:
             s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}"

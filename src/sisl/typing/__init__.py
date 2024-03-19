@@ -3,4 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from ._atom import *
 from ._common import *
+from ._numpy import *

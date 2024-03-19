@@ -5,7 +5,7 @@ A sisl `Geometry` object may easily be converted to ASE objects and thus directl
 plotted.
 
 
-.. code::
+.. code-block::
 
    import sisl
    from ase.visualize import view

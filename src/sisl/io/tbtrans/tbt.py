@@ -930,8 +930,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         .. math::
            S(V) = \frac{2e^2}{h}\sum_k\sum_n \int\mathrm d E
-                  \big\{T_{k,n}(E)[f_L(1-f_L)+f_R(1-f_R)] +
-                        T_{k,n}(E)[1 - T_{k,n}(E)](f_L - f_R)^2\big\} w_k
+                  \big\{&T_{k,n}(E)[f_L(1-f_L)+f_R(1-f_R)] +
+           \\
+                        &T_{k,n}(E)[1 - T_{k,n}(E)](f_L - f_R)^2\big\} w_k
 
         Where :math:`f_i` are the Fermi-Dirac distributions for the electrodes.
 
@@ -1021,7 +1022,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         .. math::
            F(E) &= \frac{\sum_{k,n} T_{k,n}(E)[1 - T_{k,n}(E)] w_k}{\sum_{k,n} T_{k,n}(E) w_k}
            \\
-                   &= S(E, V) / S_P(E, V)
+               &= S(E, V) / S_P(E, V)
 
         Notes
         -----
@@ -1035,7 +1036,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         For a spin-polarized calculation one should calculate the Fano factor as:
 
-            >>> up = get_sile('siesta.TBT_UP.nc')
+        >>> up = get_sile('siesta.TBT_UP.nc')
         >>> down = get_sile('siesta.TBT_DN.nc')
         >>> fano = up.fano() * up.transmission() + down.fano() * down.transmission()
         >>> fano /= up.transmission() + down.transmission()
