@@ -309,6 +309,7 @@ plot_include_source = True
 plot_formats = [("png", 90)]
 plot_pre_code = """\
 import numpy as np
+import matplotlib.pyplot as plt
 import sisl as si"""
 
 
@@ -321,6 +322,7 @@ header = f"""\
 
    import numpy as np
    import sisl as si
+   import matplotlib.pyplot as plt
 
    np.random.seed(123987)
    np.set_printoptions(precision=4, suppress=True)
@@ -330,6 +332,7 @@ header = f"""\
 ipython_execlines = [
     "import numpy as np",
     "import sisl as si",
+    "import matplotlib.pyplot as plt",
 ]
 
 html_context = {
