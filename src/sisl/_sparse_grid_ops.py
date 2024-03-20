@@ -1,9 +1,6 @@
 import cython
+import cython.cimports.numpy as cnp
 import numpy as np
-
-cimport numpy as np
-
-import math
 
 from sisl import SparseCSR
 
@@ -11,7 +8,11 @@ from sisl import SparseCSR
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
-cpdef cython.int transpose_raveled_index(index: cython.int, grid_shape: np.int32_t[:], new_order: np.int32_t[:]):
+@cython.ccall
+@cython.exceptval(check=False)
+def transpose_raveled_index(
+    index: cython.int, grid_shape: cnp.int32_t[:], new_order: cnp.int32_t[:]
+) -> cython.int:
     """Transposes a raveled index, given the shape that raveled it and the new axis order.
 
     Currently it only works for 3D indices.
@@ -44,14 +45,19 @@ cpdef cython.int transpose_raveled_index(index: cython.int, grid_shape: np.int32
         new_grid_shape[iaxis] = grid_shape[new_order[iaxis]]
         new_unraveled[iaxis] = unraveled[new_order[iaxis]]
 
-    new_raveled = new_unraveled[2] + new_unraveled[1] * new_grid_shape[2] + new_unraveled[0] * new_grid_shape[1] * new_grid_shape[2]
+    new_raveled = (
+        new_unraveled[2]
+        + new_unraveled[1] * new_grid_shape[2]
+        + new_unraveled[0] * new_grid_shape[1] * new_grid_shape[2]
+    )
 
     return new_raveled
+
 
 # This function should be in sisl._sparse, but I don't know how to import it from there
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def dense_index(shape, ptr: np.int32_t[:], col: np.int32_t[:]):
+def dense_index(shape, ptr: cnp.int32_t[:], col: cnp.int32_t[:]) -> cnp.int32_t[:, :]:
     """Returns a dense array containing the value index for each nonzero (row, col) element.
 
     Zero elements are asigned an index of -1, so routines using this dense index should
@@ -69,15 +75,12 @@ def dense_index(shape, ptr: np.int32_t[:], col: np.int32_t[:]):
     np.ndarray:
         Numpy array of shape = matrix shape and data type np.int32.
     """
-    nrows: cython.int = ptr.shape[0] - 1
+    nrows = ptr.shape[0] - 1
     row: cython.int
-    row_start: cython.int
-    row_end: cython.int
     ival: cython.int
-    val_col: cython.int
 
     # Initialize the dense index
-    dense_index: np.int32_t[:, :] = np.full(shape, -1, dtype=np.int32)
+    dense_index: cnp.int32_t[:, :] = np.full(shape, -1, dtype=np.int32)
 
     for row in range(nrows):
         row_start = ptr[row]
@@ -89,13 +92,18 @@ def dense_index(shape, ptr: np.int32_t[:], col: np.int32_t[:]):
 
     return np.asarray(dense_index)
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
 def reduce_grid_sum(
-    cython.numeric[:] data, ptr: np.int32_t[:], col: np.int32_t[:],
-    reduce_factor: cython.int, grid_shape: np.int32_t[:], new_axes: np.int32_t[:],
-    cython.numeric[:] out
+    data: cython.numeric[:],
+    ptr: cnp.int32_t[:],
+    col: cnp.int32_t[:],
+    reduce_factor: cython.int,
+    grid_shape: cnp.int32_t[:],
+    new_axes: cnp.int32_t[:],
+    out: cython.numeric[:],
 ):
     """Performs sum over the extra dimension while reducing other dimensions of the grid.
 
@@ -121,38 +129,43 @@ def reduce_grid_sum(
     out:
         The array where the output should be stored.
     """
-    nrows: cython.int = ptr.shape[0] - 1
+    nrows = ptr.shape[0] - 1
 
     i: cython.int
-    reduced_i: cython.int
     j: cython.int
-    jcol: cython.int
 
     need_transpose: cython.bint = new_axes.shape[0] > 1
 
-    cdef cython.numeric row_value
+    row_value: cython.numeric
 
     for i in range(nrows):
 
         if need_transpose:
-            reduced_i = transpose_raveled_index(i, grid_shape, new_axes) // reduce_factor
+            reduced_i = (
+                transpose_raveled_index(i, grid_shape, new_axes) // reduce_factor
+            )
         else:
             reduced_i = i // reduce_factor
 
         row_value = 0
         for j in range(ptr[i], ptr[i + 1]):
-            jcol = col[j]
             row_value += data[j]
 
         out[reduced_i] = out[reduced_i] + row_value
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
 def reduce_grid_matvec_multiply(
-    cython.numeric[:] data, ptr: np.int32_t[:], col: np.int32_t[:], cython.numeric[:] V,
-    reduce_factor: cython.int, grid_shape: np.int32_t[:], new_axes: np.int32_t[:],
-    cython.numeric[:] out
+    data: cython.numeric[:],
+    ptr: cnp.int32_t[:],
+    col: cnp.int32_t[:],
+    V: cython.numeric[:],
+    reduce_factor: cython.int,
+    grid_shape: cnp.int32_t[:],
+    new_axes: cnp.int32_t[:],
+    out: cython.numeric[:],
 ):
     """Performs a matrix-vector multiplication while reducing other dimensions of the grid.
 
@@ -190,13 +203,15 @@ def reduce_grid_matvec_multiply(
 
     need_transpose: cython.bint = new_axes.shape[0] > 1
 
-    cdef cython.numeric row_value
+    row_value: cython.numeric
 
     for i in range(nrows):
         reduced_i = i // reduce_factor
 
         if need_transpose:
-            reduced_i = transpose_raveled_index(i, grid_shape, new_axes) // reduce_factor
+            reduced_i = (
+                transpose_raveled_index(i, grid_shape, new_axes) // reduce_factor
+            )
         else:
             reduced_i = i // reduce_factor
 
@@ -207,13 +222,19 @@ def reduce_grid_matvec_multiply(
 
         out[reduced_i] = out[reduced_i] + row_value
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
 def reduce_grid_matvecs_multiply(
-    cython.numeric[:] data, np.int32_t[:] ptr, np.int32_t[:] col, cython.numeric[:, :] V,
-    reduce_factor: cython.int, grid_shape: np.int32_t[:], new_axes: np.int32_t[:],
-    cython.numeric[:, :] out
+    data: cython.numeric[:],
+    ptr: cnp.int32_t[:],
+    col: cnp.int32_t[:],
+    V: cython.numeric[:, :],
+    reduce_factor: cython.int,
+    grid_shape: cnp.int32_t[:],
+    new_axes: cnp.int32_t[:],
+    out: cython.numeric[:, :],
 ):
     """Performs a matrix-matrix multiplication while reducing other dimensions of the grid.
 
@@ -242,22 +263,22 @@ def reduce_grid_matvecs_multiply(
         The array where the output should be stored.
     """
 
-    nrows: cython.int = ptr.shape[0] - 1
-    nvecs: cython.int = V.shape[1]
+    nrows = ptr.shape[0] - 1
+    nvecs = V.shape[1]
 
     i: cython.int
-    reduced_i: cython.int
     j: cython.int
-    jcol: cython.int
     ivec: cython.int
 
     need_transpose: cython.bint = new_axes.shape[0] > 1
 
-    cdef cython.numeric[:] row_value = np.zeros(nvecs, np.asarray(data).dtype)
+    row_value: cython.numeric[:] = np.zeros(nvecs, np.asarray(data).dtype)
 
     for i in range(nrows):
         if need_transpose:
-            reduced_i = transpose_raveled_index(i, grid_shape, new_axes) // reduce_factor
+            reduced_i = (
+                transpose_raveled_index(i, grid_shape, new_axes) // reduce_factor
+            )
         else:
             reduced_i = i // reduce_factor
 
@@ -271,14 +292,22 @@ def reduce_grid_matvecs_multiply(
         for ivec in range(nvecs):
             out[reduced_i, ivec] = out[reduced_i, ivec] + row_value[ivec]
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
 def reduce_sc_products(
-    cython.floating[:] data, ptr: np.int32_t[:], col: np.int32_t[:], cython.floating[:, :] coeffs,
-    uc_ncol: cython.int, data_sc_off: np.int32_t[:, :], coeffs_isc_off: np.int32_t[:, :, :],
-    reduce_factor: cython.int, grid_shape: np.int32_t[:], new_axes: np.int32_t[:],
-    cython.floating[:] out
+    data: cython.floating[:],
+    ptr: cnp.int32_t[:],
+    col: cnp.int32_t[:],
+    coeffs: cython.floating[:, :],
+    uc_ncol: cython.int,
+    data_sc_off: cnp.int32_t[:, :],
+    coeffs_isc_off: cnp.int32_t[:, :, :],
+    reduce_factor: cython.int,
+    grid_shape: cnp.int32_t[:],
+    new_axes: cnp.int32_t[:],
+    out: cython.floating[:],
 ):
     """For each row, sums all possible products between column pairs.
 
@@ -319,13 +348,11 @@ def reduce_sc_products(
     out:
         The array where the output should be stored.
     """
-    nrows: cython.int = ptr.shape[0] - 1
+    nrows = ptr.shape[0] - 1
 
     # Indices to handle rows
     row: cython.int
     reduced_row: cython.int
-    row_start: cython.int
-    row_end: cython.int
 
     # Indices to handle pairs of columns (ij)
     i: cython.int
@@ -343,14 +370,13 @@ def reduce_sc_products(
     jpair_sc: cython.int
 
     # Temporal storage to build values
-    cdef cython.floating row_value
-    cdef cython.floating i_row_value
+    row_value: cython.floating
+    i_row_value: cython.floating
 
     # Index to loop over axes of the grid.
     iaxis: cython.int
 
     # Variables that will help managing orbital pairs that are not within the same cell.
-    coeffs_nsc: cython.int[3]
     sc_diff: cython.int[3]
     inv_sc_diff: cython.int[3]
     force_same_cell: cython.bint
@@ -367,8 +393,8 @@ def reduce_sc_products(
     # (if any) have been stored in the unit cell. This is what SIESTA does for gamma point calculations
     # with nsc <= 3.
     force_same_cell = True
+    coeffs_nsc = coeffs_isc_off.shape
     for iaxis in range(3):
-        coeffs_nsc[iaxis] = coeffs_isc_off.shape[iaxis]
         if coeffs_nsc[iaxis] != 1:
             force_same_cell = False
 
@@ -426,9 +452,11 @@ def reduce_sc_products(
                 if not same_cell:
                     # Calculate the sc offset between both orbitals.
                     for iaxis in range(3):
-                        sc_diff[iaxis] = data_sc_off[jcol_sc, iaxis] - data_sc_off[icol_sc, iaxis]
+                        sc_diff[iaxis] = (
+                            data_sc_off[jcol_sc, iaxis] - data_sc_off[icol_sc, iaxis]
+                        )
                         # Calculate also the offset in the reverse direction
-                        inv_sc_diff[iaxis] = - sc_diff[iaxis]
+                        inv_sc_diff[iaxis] = -sc_diff[iaxis]
 
                         # If the sc_difference is negative, convert it to positive so that we can
                         # use it to index the isc_off array (we switched off the handling of negative
@@ -444,7 +472,9 @@ def reduce_sc_products(
                     sc_jcol = jpair_sc * uc_ncol + uc_jcol
 
                     # Do the same for the ji pair
-                    ipair_sc = coeffs_isc_off[inv_sc_diff[0], inv_sc_diff[1], inv_sc_diff[2]]
+                    ipair_sc = coeffs_isc_off[
+                        inv_sc_diff[0], inv_sc_diff[1], inv_sc_diff[2]
+                    ]
                     sc_icol = ipair_sc * uc_ncol + uc_icol
 
                 # Add the contribution of this column pair to the row total value. Note that we only
@@ -455,9 +485,13 @@ def reduce_sc_products(
                     if icol == jcol:
                         i_row_value += coeffs[uc_icol, uc_jcol] * data[j]
                     else:
-                        i_row_value += (coeffs[uc_icol, uc_jcol] + coeffs[uc_jcol, uc_icol]) * data[j]
+                        i_row_value += (
+                            coeffs[uc_icol, uc_jcol] + coeffs[uc_jcol, uc_icol]
+                        ) * data[j]
                 else:
-                    i_row_value += (coeffs[uc_icol, sc_jcol] + coeffs[uc_jcol, sc_icol]) * data[j]
+                    i_row_value += (
+                        coeffs[uc_icol, sc_jcol] + coeffs[uc_jcol, sc_icol]
+                    ) * data[j]
 
             # Multiply all the contributions of ij pairs with this i by data[i], as explained inside the j loop.
             i_row_value *= data[i]
@@ -468,14 +502,22 @@ def reduce_sc_products(
         # Store the row value in the output
         out[reduced_row] = out[reduced_row] + row_value
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
 def reduce_sc_products_multicoeffs(
-    cython.floating[:] data, ptr: np.int32_t[:], col: np.int32_t[:], cython.floating[:, :, :] coeffs,
-    uc_ncol: cython.int, data_sc_off: np.int32_t[:, :], coeffs_isc_off: np.int32_t[:, :, :],
-    reduce_factor: cython.int, grid_shape: np.int32_t[:], new_axes: np.int32_t[:],
-    cython.floating[:, :] out,
+    data: cython.floating[:],
+    ptr: cnp.int32_t[:],
+    col: cnp.int32_t[:],
+    coeffs: cython.floating[:, :, :],
+    uc_ncol: cython.int,
+    data_sc_off: cnp.int32_t[:, :],
+    coeffs_isc_off: cnp.int32_t[:, :, :],
+    reduce_factor: cython.int,
+    grid_shape: cnp.int32_t[:],
+    new_axes: cnp.int32_t[:],
+    out: cython.floating[:, :],
 ):
     """For each row, sums all possible products between column pairs.
 
@@ -515,13 +557,11 @@ def reduce_sc_products_multicoeffs(
     out:
         The array where the output should be stored.
     """
-    nrows: cython.int = ptr.shape[0] - 1
+    nrows = ptr.shape[0] - 1
 
     # Indices to handle rows
     row: cython.int
     reduced_row: cython.int
-    row_start: cython.int
-    row_end: cython.int
 
     # Indices to handle pairs of columns (ij)
     i: cython.int
@@ -543,14 +583,13 @@ def reduce_sc_products_multicoeffs(
     icoeff: cython.int
 
     # Temporal storage to build values
-    cdef cython.floating[:] row_value = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
-    cdef cython.floating[:] i_row_value = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
+    row_value: cython.floating[:] = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
+    i_row_value: cython.floating[:] = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
 
     # Index to loop over axes of the grid.
     iaxis: cython.int
 
     # Variables that will help managing orbital pairs that are not within the same cell.
-    coeffs_nsc: cython.int[3]
     sc_diff: cython.int[3]
     inv_sc_diff: cython.int[3]
     force_same_cell: cython.bint
@@ -567,8 +606,8 @@ def reduce_sc_products_multicoeffs(
     # (if any) have been stored in the unit cell. This is what SIESTA does for gamma point calculations
     # with nsc <= 3.
     force_same_cell = True
+    coeffs_nsc = coeffs_isc_off.shape
     for iaxis in range(3):
-        coeffs_nsc[iaxis] = coeffs_isc_off.shape[iaxis]
         if coeffs_nsc[iaxis] != 1:
             force_same_cell = False
 
@@ -626,9 +665,11 @@ def reduce_sc_products_multicoeffs(
                 if not same_cell:
                     # Calculate the sc offset between both orbitals.
                     for iaxis in range(3):
-                        sc_diff[iaxis] = data_sc_off[jcol_sc, iaxis] - data_sc_off[icol_sc, iaxis]
+                        sc_diff[iaxis] = (
+                            data_sc_off[jcol_sc, iaxis] - data_sc_off[icol_sc, iaxis]
+                        )
                         # Calculate also the offset in the reverse direction
-                        inv_sc_diff[iaxis] = - sc_diff[iaxis]
+                        inv_sc_diff[iaxis] = -sc_diff[iaxis]
 
                         # If the sc_difference is negative, convert it to positive so that we can
                         # use it to index the isc_off array (we switched off the handling of negative
@@ -644,7 +685,9 @@ def reduce_sc_products_multicoeffs(
                     sc_jcol = jpair_sc * uc_ncol + uc_jcol
 
                     # Do the same for the ji pair
-                    ipair_sc = coeffs_isc_off[inv_sc_diff[0], inv_sc_diff[1], inv_sc_diff[2]]
+                    ipair_sc = coeffs_isc_off[
+                        inv_sc_diff[0], inv_sc_diff[1], inv_sc_diff[2]
+                    ]
                     sc_icol = ipair_sc * uc_ncol + uc_icol
 
                 # Add the contribution of this column pair to the row total value. Note that we only
@@ -656,11 +699,19 @@ def reduce_sc_products_multicoeffs(
                 for icoeff in range(ncoeffs):
                     if same_cell:
                         if icol == jcol:
-                            i_row_value[icoeff] += coeffs[uc_icol, uc_jcol, icoeff] * data[j]
+                            i_row_value[icoeff] += (
+                                coeffs[uc_icol, uc_jcol, icoeff] * data[j]
+                            )
                         else:
-                            i_row_value[icoeff] += (coeffs[uc_icol, uc_jcol, icoeff] + coeffs[uc_jcol, uc_icol, icoeff]) * data[j]
+                            i_row_value[icoeff] += (
+                                coeffs[uc_icol, uc_jcol, icoeff]
+                                + coeffs[uc_jcol, uc_icol, icoeff]
+                            ) * data[j]
                     else:
-                        i_row_value[icoeff] += (coeffs[uc_icol, sc_jcol, icoeff] + coeffs[uc_jcol, sc_icol, icoeff]) * data[j]
+                        i_row_value[icoeff] += (
+                            coeffs[uc_icol, sc_jcol, icoeff]
+                            + coeffs[uc_jcol, sc_icol, icoeff]
+                        ) * data[j]
 
             for icoeff in range(ncoeffs):
                 # Multiply all the contributions of ij pairs with this i by data[i], as explained inside the j loop.
@@ -673,14 +724,22 @@ def reduce_sc_products_multicoeffs(
             # Store the row value in the output
             out[reduced_row, icoeff] = out[reduced_row, icoeff] + row_value[icoeff]
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
 def reduce_sc_products_multicoeffs_sparse_denseindex(
-    cython.floating[:] data, ptr: np.int32_t[:], col: np.int32_t[:], coeffs_csr: SparseCSR,
-    uc_ncol: cython.int, data_sc_off: np.int32_t[:, :], coeffs_isc_off: np.int32_t[:, :, :],
-    reduce_factor: cython.int, grid_shape: np.int32_t[:], new_axes: np.int32_t[:],
-    cython.floating[:, :] out,
+    data: cython.floating[:],
+    ptr: cnp.int32_t[:],
+    col: cnp.int32_t[:],
+    coeffs_csr: SparseCSR,
+    uc_ncol: cython.int,
+    data_sc_off: cnp.int32_t[:, :],
+    coeffs_isc_off: cnp.int32_t[:, :, :],
+    reduce_factor: cython.int,
+    grid_shape: cnp.int32_t[:],
+    new_axes: cnp.int32_t[:],
+    out: cython.floating[:, :],
 ):
     """For each row, sums all possible products between column pairs.
 
@@ -720,13 +779,11 @@ def reduce_sc_products_multicoeffs_sparse_denseindex(
     out:
         The array where the output should be stored.
     """
-    nrows: cython.int = ptr.shape[0] - 1
+    nrows = ptr.shape[0] - 1
 
     # Indices to handle rows
     row: cython.int
     reduced_row: cython.int
-    row_start: cython.int
-    row_end: cython.int
 
     # Indices to handle pairs of columns (ij)
     i: cython.int
@@ -744,9 +801,11 @@ def reduce_sc_products_multicoeffs_sparse_denseindex(
     jpair_sc: cython.int
 
     # Extra variables to handle coefficients
-    cdef cython.floating[:, :] coeffs = coeffs_csr.data
+    coeffs: cython.floating[:, :] = coeffs_csr.data
     # Get the array containing all the dense indices.
-    dense_idx: np.int32_t[:, :] = dense_index(coeffs_csr.shape[:2], coeffs_csr.ptr, coeffs_csr.col)
+    dense_idx: cnp.int32_t[:, :] = dense_index(
+        coeffs_csr.shape[:2], coeffs_csr.ptr, coeffs_csr.col
+    )
     coeff_index: cython.int
     coeff_index2: cython.int
 
@@ -755,14 +814,13 @@ def reduce_sc_products_multicoeffs_sparse_denseindex(
     icoeff: cython.int
 
     # Temporal storage to build values
-    cdef cython.floating[:] row_value = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
-    cdef cython.floating[:] i_row_value = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
+    row_value: cython.floating[:] = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
+    i_row_value: cython.floating[:] = np.zeros(ncoeffs, dtype=np.asarray(data).dtype)
 
     # Index to loop over axes of the grid.
     iaxis: cython.int
 
     # Variables that will help managing orbital pairs that are not within the same cell.
-    coeffs_nsc: cython.int[3]
     sc_diff: cython.int[3]
     inv_sc_diff: cython.int[3]
     force_same_cell: cython.bint
@@ -779,8 +837,8 @@ def reduce_sc_products_multicoeffs_sparse_denseindex(
     # (if any) have been stored in the unit cell. This is what SIESTA does for gamma point calculations
     # with nsc <= 3.
     force_same_cell = True
+    coeffs_nsc = coeffs_isc_off.shape
     for iaxis in range(3):
-        coeffs_nsc[iaxis] = coeffs_isc_off.shape[iaxis]
         if coeffs_nsc[iaxis] != 1:
             force_same_cell = False
 
@@ -838,9 +896,11 @@ def reduce_sc_products_multicoeffs_sparse_denseindex(
                 if not same_cell:
                     # Calculate the sc offset between both orbitals.
                     for iaxis in range(3):
-                        sc_diff[iaxis] = data_sc_off[jcol_sc, iaxis] - data_sc_off[icol_sc, iaxis]
+                        sc_diff[iaxis] = (
+                            data_sc_off[jcol_sc, iaxis] - data_sc_off[icol_sc, iaxis]
+                        )
                         # Calculate also the offset in the reverse direction
-                        inv_sc_diff[iaxis] = - sc_diff[iaxis]
+                        inv_sc_diff[iaxis] = -sc_diff[iaxis]
 
                         # If the sc_difference is negative, convert it to positive so that we can
                         # use it to index the isc_off array (we switched off the handling of negative
@@ -856,7 +916,9 @@ def reduce_sc_products_multicoeffs_sparse_denseindex(
                     sc_jcol = jpair_sc * uc_ncol + uc_jcol
 
                     # Do the same for the ji pair
-                    ipair_sc = coeffs_isc_off[inv_sc_diff[0], inv_sc_diff[1], inv_sc_diff[2]]
+                    ipair_sc = coeffs_isc_off[
+                        inv_sc_diff[0], inv_sc_diff[1], inv_sc_diff[2]
+                    ]
                     sc_icol = ipair_sc * uc_ncol + uc_icol
 
                 # Get the index needed to find the coefficients that we want from the coeffs array.
@@ -888,9 +950,14 @@ def reduce_sc_products_multicoeffs_sparse_denseindex(
                         if icol == jcol:
                             i_row_value[icoeff] += coeffs[coeff_index, icoeff] * data[j]
                         else:
-                            i_row_value[icoeff] += (coeffs[coeff_index, icoeff] + coeffs[coeff_index2, icoeff]) * data[j]
+                            i_row_value[icoeff] += (
+                                coeffs[coeff_index, icoeff]
+                                + coeffs[coeff_index2, icoeff]
+                            ) * data[j]
                     else:
-                        i_row_value[icoeff] += (coeffs[coeff_index, icoeff] + coeffs[coeff_index2, icoeff]) * data[j]
+                        i_row_value[icoeff] += (
+                            coeffs[coeff_index, icoeff] + coeffs[coeff_index2, icoeff]
+                        ) * data[j]
 
             for icoeff in range(ncoeffs):
                 # Multiply all the contributions of ij pairs with this i by data[i], as explained inside the j loop.
