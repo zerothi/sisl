@@ -1157,8 +1157,10 @@ try:
     from ase import Cell as ase_Cell
 
     new_dispatch.register(ase_Cell, LatticeNewAseDispatch)
+
     # ensure we don't pollute name-space
     del ase_Cell
+
 except Exception:
     pass
 
@@ -1166,8 +1168,8 @@ except Exception:
 class LatticeNewFileDispatch(LatticeNewDispatch):
     def dispatch(self, *args, **kwargs):
         """Defer the `Lattice.read` method by passing down arguments"""
-        # can work either on class or instance
-        return self._obj.read(*args, **kwargs)
+        cls = self._get_class()
+        return cls.read(*args, **kwargs)
 
 
 new_dispatch.register(str, LatticeNewFileDispatch)
@@ -1240,10 +1242,7 @@ to_dispatch.register("Cuboid", LatticeToCuboidDispatch)
 to_dispatch.register(Cuboid, LatticeToCuboidDispatch)
 
 
-# Remove references
-del new_dispatch, to_dispatch
-
-
+@set_module("sisl")
 class SuperCell(Lattice):
     """Deprecated class, please use `Lattice` instead"""
 
@@ -1255,6 +1254,7 @@ class SuperCell(Lattice):
         super().__init__(*args, **kwargs)
 
 
+@set_module("sisl")
 class LatticeChild:
     """Class to be inherited by using the ``self.lattice`` as a `Lattice` object
 
@@ -1374,3 +1374,17 @@ class LatticeChild:
     def pbc(self) -> np.ndarray:
         f"""{Lattice.pbc.__doc__}"""
         return self.lattice.pbc
+
+
+class LatticeNewLatticeChildDispatch(LatticeNewDispatch):
+    def dispatch(self, obj, copy=False):
+        # for sanitation purposes
+        if copy:
+            return obj.lattice.copy()
+        return obj.lattice
+
+
+new_dispatch.register(LatticeChild, LatticeNewLatticeChildDispatch)
+
+# Remove references
+del new_dispatch, to_dispatch

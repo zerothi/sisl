@@ -4112,7 +4112,6 @@ new_dispatch.register(Geometry, GeometryNewGeometryDispatch)
 class GeometryNewFileDispatch(GeometryNewDispatch):
     def dispatch(self, *args, **kwargs):
         """Defer the `Geometry.read` method by passing down arguments"""
-        # can work either on class or instance
         cls = self._get_class()
         return cls.read(*args, **kwargs)
 

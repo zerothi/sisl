@@ -241,7 +241,8 @@ class TestLattice:
         assert np.allclose(tmp1.cell, tmp3.cell)
         assert np.allclose(tmp1.cell, tmp4.cell)
 
-    def test_creation2(self, setup):
+    @pytest.mark.xfail(reason="dispatch does not resolve mro (see #721")
+    def test_creation_latticechild_dispatch(self, setup):
         # full cell
         class P(LatticeChild):
             def copy(self):
@@ -251,6 +252,22 @@ class TestLattice:
 
         tmp1 = P()
         tmp1.set_lattice([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+        # test dispatch method
+        tmp2 = Lattice.new(tmp1)
+        assert tmp1 == tmp2
+
+    def test_creation_latticechild(self, setup):
+        # full cell
+        class P(LatticeChild):
+            def copy(self):
+                a = P()
+                a.set_lattice(setup.lattice)
+                return a
+
+        tmp1 = P()
+        tmp1.set_lattice([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
         # diagonal cell
         tmp2 = P()
         tmp2.set_lattice([1, 1, 1])
