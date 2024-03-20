@@ -1577,7 +1577,10 @@ column indices of the sparse elements
         matrix = np.asarray(matrix)
 
         if dtype is None:
-            dtype = np.find_common_type([self.dtype, matrix.dtype], [])
+            # no need for result_type
+            # result_type differs from promote_types, only in the case
+            # where the input arguments mixes scalars and arrays (not the case here)
+            dtype = np.promote_types(self.dtype, matrix.dtype)
 
         if matrix.shape[1] != self.shape[2]:
             raise ValueError(

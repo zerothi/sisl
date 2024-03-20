@@ -55,7 +55,6 @@ from numpy import (
     einsum,
     empty,
     exp,
-    find_common_type,
     floor,
     int32,
     log,
@@ -745,9 +744,10 @@ def berry_curvature(
             state.reshape(1, -1), energy, dHk, dSk, degenerate, degenerate_dir
         )[0]
 
-    dtype = find_common_type(
-        [state.dtype, dHk[0].dtype, dtype_real_to_complex(state.dtype)], []
-    )
+    # cast dtypes to *any* complex valued data-type that can be expressed
+    # minimally by a complex64 object
+    dtype = np.result_type(state.dtype, dHk[0].dtype, np.complex64)
+
     if dSk is None:
         v_matrix = _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype)
     else:

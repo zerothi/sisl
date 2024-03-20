@@ -90,7 +90,7 @@ class OrbitalStyleQuery(StyleSpec, OrbitalQuery): ...
 OrbitalQueries = Sequence[OrbitalQuery]
 OrbitalStyleQueries = Sequence[OrbitalStyleQuery]
 
-CellLike = Union[npt.NDArray[np.float_], Lattice, LatticeChild]
+CellLike = Union[npt.NDArray[Union[np.float32, np.float64]], Lattice, LatticeChild]
 
 
 @dataclass
