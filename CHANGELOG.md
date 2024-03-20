@@ -37,6 +37,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- fixed `chgSileVASP.read_grid` for spinful calculations
 - `txtSileOrca.info.no` used a wrong regex, added a test
 - raises error when requesting isosurface for complex valued grids, #709
 - some attributes associated with `Sile.info.*` will now warn instead of raising information

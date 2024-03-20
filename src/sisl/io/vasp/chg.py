@@ -66,17 +66,27 @@ class chgSileVASP(carSileVASP):
         vals = []
         vext = vals.extend
 
+        is_chgcar = True
         i = 0
         while i < n * max_index:
-            vext(rl().split())
+            line = rl().split()
+            # CHG: 10 columns, CHGCAR: 5 columns
+            if is_chgcar and len(line) > 5:
+                # we have a data line with more than 5 columns, must be a CHG file
+                is_chgcar = False
+            vext(line)
             i = len(vals)
 
             if i % n == 0 and i < n * max_index:
-                # Each time a new spin-index is present, we need to read the coordinates
-                j = 0
-                while j < geom.na:
-                    j += len(rl().split())
-
+                if is_chgcar:
+                    # Read over augmentation occupancies
+                    line = rl()
+                    while "augmentation" in line:
+                        occ = int(line.split()[-1])
+                        j = 0
+                        while j < occ:
+                            j += len(rl().split())
+                        line = rl()
                 # one line of nx, ny, nz
                 rl()
 
