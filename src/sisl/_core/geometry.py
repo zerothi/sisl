@@ -400,7 +400,7 @@ class Geometry(
     def _(
         self,
         atoms_: Union[AtomCategory, GenericCategory],
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
     ) -> ndarray:
         # First do categorization
         cat = atoms_.categorize(self, atoms)
@@ -416,7 +416,7 @@ class Geometry(
         return _a.fromiterl(m(cat))
 
     @_sanitize_atoms.register
-    def _(self, atoms_: dict, atoms: Optional[AtomsArgument] = None) -> ndarray:
+    def _(self, atoms_: dict, atoms: AtomsArgument = None) -> ndarray:
         # First do categorization
         return self._sanitize_atoms(AtomCategory.kw(**atoms_), atoms)
 
@@ -829,9 +829,7 @@ class Geometry(
 
     __iter__ = iter
 
-    def iter_species(
-        self, atoms: Optional[AtomsArgument] = None
-    ) -> Iterator[int, Atom, int]:
+    def iter_species(self, atoms: AtomsArgument = None) -> Iterator[int, Atom, int]:
         """Iterator over all atoms (or a subset) and species as a tuple in this geometry
 
         >>> for ia, a, idx_specie in self.iter_species():
@@ -860,7 +858,7 @@ class Geometry(
                 yield ia, self.atoms[ia], self.atoms.specie[ia]
 
     def iter_orbitals(
-        self, atoms: Optional[AtomsArgument] = None, local: bool = True
+        self, atoms: AtomsArgument = None, local: bool = True
     ) -> Iterator[int, int]:
         r"""Returns an iterator over all atoms and their associated orbitals
 
@@ -952,7 +950,7 @@ class Geometry(
         self,
         iR: int = 20,
         R: Optional[float] = None,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
     ) -> Iterator[Tuple[ndarray, ndarray]]:
         """Perform the *random* block-iteration by randomly selecting the next center of block"""
 
@@ -1030,7 +1028,7 @@ class Geometry(
             )
 
     def iter_block_shape(
-        self, shape=None, iR: int = 20, atoms: Optional[AtomsArgument] = None
+        self, shape=None, iR: int = 20, atoms: AtomsArgument = None
     ) -> Iterator[Tuple[ndarray, ndarray]]:
         """Perform the *grid* block-iteration by looping a grid"""
 
@@ -1163,7 +1161,7 @@ class Geometry(
         self,
         iR: int = 20,
         R: Optional[float] = None,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         method: str = "rand",
     ) -> Iterator[Tuple[ndarray, ndarray]]:
         """Iterator for performance critical loops
@@ -1704,7 +1702,7 @@ class Geometry(
 
     def translate2uc(
         self,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         axes: Optional[Union[int, bool, Sequence[int]]] = None,
     ) -> Geometry:
         """Translates atoms in the geometry into the unit cell
@@ -1962,7 +1960,7 @@ class Geometry(
         out._atoms = out.atoms.insert(index, other.atoms)
         return out
 
-    def reverse(self, atoms: Optional[AtomsArgument] = None) -> Geometry:
+    def reverse(self, atoms: AtomsArgument = None) -> Geometry:
         """Returns a reversed geometry
 
         Also enables reversing a subset of the atoms.
@@ -1986,7 +1984,7 @@ class Geometry(
     def mirror(
         self,
         method,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         point: Sequence[float] = (0, 0, 0),
     ) -> Geometry:
         r"""Mirrors the atomic coordinates about a plane given by its normal vector
@@ -2060,7 +2058,7 @@ class Geometry(
         g.xyz[atoms, :] -= vp.reshape(-1, 1) * method.reshape(1, 3)
         return g
 
-    def axyz(self, atoms: Optional[AtomsArgument] = None, isc=None) -> ndarray:
+    def axyz(self, atoms: AtomsArgument = None, isc=None) -> ndarray:
         """Return the atomic coordinates in the supercell of a given atom.
 
         The ``Geometry[...]`` slicing is calling this function with appropriate options.
@@ -2104,7 +2102,7 @@ class Geometry(
         self,
         shapes,
         isc=None,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         atoms_xyz=None,
         ret_xyz: bool = False,
         ret_rij: bool = False,
@@ -2269,7 +2267,7 @@ class Geometry(
         xyz_ia,
         isc=(0, 0, 0),
         R=None,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         atoms_xyz=None,
         ret_xyz=False,
         ret_rij=False,
@@ -2527,7 +2525,7 @@ class Geometry(
     def within(
         self,
         shapes,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         atoms_xyz=None,
         ret_xyz: bool = False,
         ret_rij: bool = False,
@@ -2656,7 +2654,7 @@ class Geometry(
         self,
         xyz_ia,
         R=None,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         atoms_xyz=None,
         ret_xyz: bool = False,
         ret_rij: bool = False,
@@ -2803,7 +2801,7 @@ class Geometry(
         return ret
 
     def a2transpose(
-        self, atoms1: AtomsArgument, atoms2: Optional[AtomsArgument] = None
+        self, atoms1: AtomsArgument, atoms2: AtomsArgument = None
     ) -> Tuple[ndarray, ndarray]:
         """Transposes connections from `atoms1` to `atoms2` such that supercell connections are transposed
 
@@ -3263,7 +3261,7 @@ class Geometry(
 
     def distance(
         self,
-        atoms: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
         R: Optional[float] = None,
         tol: float = 0.1,
         method: Union[

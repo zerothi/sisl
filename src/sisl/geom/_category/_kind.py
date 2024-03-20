@@ -43,7 +43,7 @@ class AtomZ(AtomCategory):
         super().__init__(f"Z={self._Z}")
 
     @_sanitize_loop
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if geometry.atoms.Z[atoms] in self._Z:
             return self
@@ -77,7 +77,7 @@ class AtomTag(AtomCategory):
         super().__init__(f"tag={self._re}")
 
     @_sanitize_loop
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if self._compiled_re.match(geometry.atoms[atoms].tag):
             return self
@@ -184,7 +184,7 @@ class AtomIndex(AtomCategory):
         )
 
     @_sanitize_loop
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if reduce(op.and_, (f(atoms, b) for f, b in self._op_val), True):
             return self
@@ -291,7 +291,7 @@ class AtomEven(AtomCategory):
         super().__init__(name)
 
     @_sanitize_loop
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms % 2 == 0:
             return self
@@ -311,7 +311,7 @@ class AtomOdd(AtomCategory):
         super().__init__(name)
 
     @_sanitize_loop
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms % 2 == 1:
             return self

@@ -181,7 +181,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         return p
 
-    def iter_orbitals(self, atoms: Optional[AtomsArgument] = None, local: bool = False):
+    def iter_orbitals(self, atoms: AtomsArgument = None, local: bool = False):
         r"""Iterations of the orbital space in the geometry, two indices from loop
 
         An iterator returning the current atomic index and the corresponding

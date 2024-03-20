@@ -89,7 +89,7 @@ class AtomFracSite(AtomCategory):
             f"fracsite(atol={self._atol}, offset={self._offset}, foffset={self._foffset})"
         )
 
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms is None:
             fxyz = np.dot(geometry.xyz + self._offset, self._icell.T) + self._foffset
@@ -257,7 +257,7 @@ class AtomXYZ(AtomCategory):
         self._coord_check = coord_ops
         super().__init__("coord")
 
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         if atoms is None:
             xyz = geometry.xyz
             fxyz = geometry.fxyz

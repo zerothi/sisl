@@ -105,7 +105,7 @@ class AtomNeighbors(AtomCategory):
         return (0.01, self._R)
 
     @_sanitize_loop
-    def categorize(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
         """Check if geometry and atoms matches the neighbor criteria"""
         idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[-1]
         # quick escape the lower bound, in case we have more than max, they could

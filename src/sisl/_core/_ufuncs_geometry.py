@@ -896,7 +896,7 @@ def unrepeat(geometry: Geometry, reps: int, axis: Axis, *args, **kwargs) -> Geom
 def translate(
     geometry: Geometry,
     v: CoordOrScalar,
-    atoms: Optional[AtomsArgument] = None,
+    atoms: AtomsArgument = None,
     cell: bool = False,
 ) -> Geometry:
     """Translates the geometry by `v`
@@ -992,7 +992,7 @@ def rotate(
     angle: float,
     v: Union[str, int, Coord],
     origin: Optional[Union[int, Coord]] = None,
-    atoms: Optional[AtomsArgument] = None,
+    atoms: AtomsArgument = None,
     rad: bool = False,
     what: Optional[Literal["xyz", "abc", "abc+xyz", "x", "a", ...]] = None,
 ) -> Geometry:
@@ -1182,7 +1182,7 @@ def swapaxes(
 @register_sisl_dispatch(Geometry, module="sisl")
 def center(
     geometry: Geometry,
-    atoms: Optional[AtomsArgument] = None,
+    atoms: AtomsArgument = None,
     what: Literal[
         "COP|xyz|position",
         "mm:xyz",

@@ -159,9 +159,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Number of non-zero elements"""
         return self._csr.nnz
 
-    def translate2uc(
-        self, atoms: Optional[AtomsArgument] = None, axes: Optional[Axies] = None
-    ):
+    def translate2uc(self, atoms: AtomsArgument = None, axes: Optional[Axies] = None):
         """Translates all primary atoms to the unit cell.
 
         With this, the coordinates of the geometry are translated to the unit cell
@@ -333,7 +331,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new = array_arange(new * no, n=n)
         self._csr.translate_columns(old, new)
 
-    def edges(self, atoms: AtomsArgument, exclude: Optional[AtomsArgument] = None):
+    def edges(self, atoms: AtomsArgument, exclude: AtomsArgument = None):
         """Retrieve edges (connections) for all `atoms`
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
@@ -1186,7 +1184,7 @@ class SparseAtom(_SparseGeometry):
     def _size(self):
         return self.geometry.na
 
-    def nonzero(self, atoms: Optional[AtomsArgument] = None, only_cols: bool = False):
+    def nonzero(self, atoms: AtomsArgument = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
@@ -1203,7 +1201,7 @@ class SparseAtom(_SparseGeometry):
         atoms = self.geometry._sanitize_atoms(atoms)
         return self._csr.nonzero(rows=atoms, only_cols=only_cols)
 
-    def iter_nnz(self, atoms: Optional[AtomsArgument] = None):
+    def iter_nnz(self, atoms: AtomsArgument = None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1405,8 +1403,8 @@ class SparseOrbital(_SparseGeometry):
 
     def edges(
         self,
-        atoms: Optional[AtomsArgument] = None,
-        exclude: Optional[AtomsArgument] = None,
+        atoms: AtomsArgument = None,
+        exclude: AtomsArgument = None,
         orbitals=None,
     ):
         """Retrieve edges (connections) for all `atoms`
@@ -1443,7 +1441,7 @@ class SparseOrbital(_SparseGeometry):
         orbitals = self.geometry._sanitize_orbs(orbitals)
         return self._csr.edges(orbitals, exclude)
 
-    def nonzero(self, atoms: Optional[AtomsArgument] = None, only_cols: bool = False):
+    def nonzero(self, atoms: AtomsArgument = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
@@ -1463,7 +1461,7 @@ class SparseOrbital(_SparseGeometry):
         rows = self.geometry.a2o(atoms, all=True)
         return self._csr.nonzero(rows=rows, only_cols=only_cols)
 
-    def iter_nnz(self, atoms: Optional[AtomsArgument] = None, orbitals=None):
+    def iter_nnz(self, atoms: AtomsArgument = None, orbitals=None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -2296,7 +2294,7 @@ class SparseOrbital(_SparseGeometry):
         self,
         atoms: AtomsArgument,
         other,
-        other_atoms: Optional[AtomsArgument] = None,
+        other_atoms: AtomsArgument = None,
         eps: float = 0.005,
         scale: SeqOrScalarFloat = 1.0,
     ):

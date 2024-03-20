@@ -203,7 +203,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out
 
-    def spin_align(self, vec: SeqFloat, atoms: Optional[AtomsArgument] = None):
+    def spin_align(self, vec: SeqFloat, atoms: AtomsArgument = None):
         r"""Aligns *all* spin along the vector `vec`
 
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned

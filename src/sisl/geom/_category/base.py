@@ -15,7 +15,7 @@ __all__ = ["NullCategory", "AtomCategory"]
 
 def _sanitize_loop(func):
     @wraps(func)
-    def loop_func(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def loop_func(self, geometry: Geometry, atoms: AtomsArgument = None):
         if atoms is None:
             return [func(self, geometry, ia) for ia in geometry]
 
