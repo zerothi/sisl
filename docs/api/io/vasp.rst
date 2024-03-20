@@ -13,7 +13,7 @@ VASP
    eigenvalSileVASP
    chgSileVASP
    locpotSileVASP
-   stdoutSileVASP
+   outcarSileVASP
 
 
 .. autosummary::
@@ -22,4 +22,3 @@ VASP
 
    SileVASP
    SileBinVASP
-
