@@ -87,7 +87,7 @@ def swapaxes(
     lattice: Lattice,
     axes1: Union[int, str],
     axes2: Union[int, str],
-    what: str = "abc",
+    what: Literal["abc", "xyz", "abc+xyz"] = "abc",
 ) -> Lattice:
     r"""Swaps axes `axes1` and `axes2`
 
@@ -106,7 +106,7 @@ def swapaxes(
        If `str`, then `what` is not used.
     axes2 :
        the new axis indices, same as `axes1`
-    what : {"abc", "xyz", "abc+xyz"}
+    what :
        which elements to swap, lattice vectors (``abc``), or
        Cartesian coordinates (``xyz``), or both.
        This argument is only used if the axes arguments are
@@ -211,7 +211,7 @@ def rotate(
     angle: float,
     v: Union[str, int, Coord],
     rad: bool = False,
-    what: str = "abc",
+    what: Literal["abc", "a", ...] = "abc",
 ) -> Lattice:
     """Rotates the supercell, in-place by the angle around the vector
 
@@ -225,10 +225,10 @@ def rotate(
     v     :
          the vector around the rotation is going to happen
          ``[1, 0, 0]`` will rotate in the ``yz`` plane
-    what : combination of ``"abc"``, str, optional
-         only rotate the designated cell vectors.
-    rad : bool, optional
+    rad :
          Whether the angle is in radians (True) or in degrees (False)
+    what :
+         only rotate the designated cell vectors.
     """
     if isinstance(v, Integral):
         v = direction(v, abc=lattice.cell, xyz=np.diag([1, 1, 1]))
@@ -364,7 +364,9 @@ def center(lattice: Lattice, axis: Optional[int] = None) -> np.ndarray:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def scale(lattice: Lattice, scale: CoordOrScalar, what: str = "abc") -> Lattice:
+def scale(
+    lattice: Lattice, scale: CoordOrScalar, what: Literal["abc", "xyz"] = "abc"
+) -> Lattice:
     """Scale lattice vectors
 
     Does not scale `origin`.
@@ -373,11 +375,12 @@ def scale(lattice: Lattice, scale: CoordOrScalar, what: str = "abc") -> Lattice:
     ----------
     scale :
        the scale factor for the new lattice vectors.
-    what: {"abc", "xyz"}
+    what:
        If three different scale factors are provided, whether each scaling factor
        is to be applied on the corresponding lattice vector ("abc") or on the
        corresponding cartesian coordinate ("xyz").
     """
+    what = what.lower()
     if what == "abc":
         return lattice.copy((lattice.cell.T * scale).T)
     if what == "xyz":

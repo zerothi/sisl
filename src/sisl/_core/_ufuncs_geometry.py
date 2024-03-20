@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import reduce
 from numbers import Integral
-from typing import List, Optional, Tuple, Union
+from typing import List, Literal, Optional, Tuple, Union
 
 import numpy as np
 
@@ -994,7 +994,7 @@ def rotate(
     origin: Optional[Union[int, Coord]] = None,
     atoms: Optional[AtomsArgument] = None,
     rad: bool = False,
-    what: Optional[str] = None,
+    what: Optional[Literal["xyz", "abc", "abc+xyz", "x", "a", ...]] = None,
 ) -> Geometry:
     r"""Rotate geometry around vector and return a new geometry
 
@@ -1103,7 +1103,7 @@ def swapaxes(
     geometry: Geometry,
     axes1: Union[Axis, str],
     axes2: Union[Axis, str],
-    what: str = "abc",
+    what: Literal["abc", "xyz", "abc+xyz"] = "abc",
 ) -> Geometry:
     """Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
 
@@ -1121,7 +1121,7 @@ def swapaxes(
     axes2 :
        the new axis indices, same as `axes1`
        old axis indices (or labels)
-    what : {'abc', 'xyz', 'abc+xyz'}
+    what :
        what to swap, lattice vectors (abc) or Cartesian components (xyz),
        or both.
        Neglected for integer axes arguments.
@@ -1181,7 +1181,16 @@ def swapaxes(
 
 @register_sisl_dispatch(Geometry, module="sisl")
 def center(
-    geometry: Geometry, atoms: Optional[AtomsArgument] = None, what: str = "xyz"
+    geometry: Geometry,
+    atoms: Optional[AtomsArgument] = None,
+    what: Literal[
+        "COP|xyz|position",
+        "mm:xyz",
+        "mm:lattice|mm:cell",
+        "COM|mass",
+        "COMM:pbc|mass:pbc",
+        "COU|lattice|cell",
+    ] = "xyz",
 ) -> np.ndarray:
     """Returns the center of the geometry
 
@@ -1248,7 +1257,7 @@ def append(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
     axis: Axis,
-    offset: Union[str, Coord] = "none",
+    offset: Union[Literal["none", "min"], Coord] = "none",
 ) -> Geometry:
     """Appends two structures along `axis`
 
@@ -1336,7 +1345,7 @@ def prepend(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
     axis: Axis,
-    offset: Union[str, Coord] = "none",
+    offset: Union[Literal["none", "min"], Coord] = "none",
 ) -> Geometry:
     """Prepend two structures along `axis`
 
@@ -1479,7 +1488,7 @@ def add(
 def scale(
     geometry: Geometry,
     scale: CoordOrScalar,
-    what: str = "abc",
+    what: Literal["abc", "xyz"] = "abc",
     scale_basis: bool = True,
 ) -> Geometry:
     """Scale coordinates and unit-cell to get a new geometry with proper scaling
@@ -1510,6 +1519,7 @@ def scale(
     # Scale the supercell
     lattice = geometry.lattice.scale(scale, what=what)
 
+    what = what.lower()
     if what == "xyz":
         # It is faster to rescale coordinates by simply multiplying them by the scale
         xyz = geometry.xyz * scale

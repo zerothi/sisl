@@ -3254,7 +3254,10 @@ class Geometry(
         atoms: Optional[AtomsArgument] = None,
         R: Optional[float] = None,
         tol: float = 0.1,
-        method: str = "average",
+        method: Union[
+            Callable[[Sequence[float]], float],
+            Literal["average", "mode", "<numpy.method>"],
+        ] = "average",
     ) -> Union[float, ndarray]:
         """Calculate the distances for all atoms in shells of radius `tol` within `max_R`
 
@@ -3275,13 +3278,13 @@ class Geometry(
 
            The first shell size will be ``tol * .5`` or ``tol[0] * .5`` if `tol` is a list.
 
-        method : {'average', 'mode', '<numpy.func>', func}
+        method :
            How the distance in each shell is determined.
            A list of distances within each shell is gathered and the equivalent
            method will be used to extract a single quantity from the list of
            distances in the shell.
            If `'mode'` is chosen it will use `scipy.stats.mode`.
-           If a string is given it will correspond to ``getattr(numpy, method)``,
+           If another string is given it will correspond to ``getattr(numpy, method)``,
            while any callable function may be passed. The passed function
            will only be passed a list of unsorted distances that needs to be
            processed.
@@ -3540,7 +3543,14 @@ class Geometry(
         # infinite supercell indices
         return self.sc2uc(idx), xyz, isc
 
-    def apply(self, data, func, mapper, axis: int = 0, segments="atoms") -> ndarray:
+    def apply(
+        self,
+        data,
+        func,
+        mapper,
+        axis: int = 0,
+        segments: Union[Literal["atoms", "orbitals", "all"], Iterator[int]] = "atoms",
+    ) -> ndarray:
         r"""Apply a function `func` to the data along axis `axis` using the method specified
 
         This can be useful for applying conversions from orbital data to atomic data through
@@ -3560,7 +3570,7 @@ class Geometry(
             is present in `data`.
         axis :
             axis selector for `data` along which `func` will be applied
-        segments : {"atoms", "orbitals", "all"} or iterator, optional
+        segments :
             which segments the `mapper` will recieve, if atoms, each atom
             index will be passed to the `mapper(ia)`.
 
