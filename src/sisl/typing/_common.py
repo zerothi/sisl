@@ -90,7 +90,7 @@ LatticeOrGeometryLike = Union[
     GeometryLike,
 ]
 
-IndexArgument = Union[npt.NDArray[Union[np.int_, np.bool_]], int]
+IndexArgument = Union[npt.NDArray[Union[np.int32, np.int64, np.bool_]], int]
 
 # An atoms like argument that may be parsed by Geometry._sanitize_atoms
 AtomsArgument = Union[
@@ -101,6 +101,8 @@ AtomsArgument = Union[
     "AtomCategory",
     "GenericCategory",
     "Shape",
+    bool,
+    None,
 ]
 
 # An atoms like argument that may be parsed by Geometry._sanitize_orbs
@@ -110,6 +112,8 @@ OrbitalsArgument = Union[
     dict,
     "AtomCategory",
     "Shape",
+    bool,
+    None,
 ]
 
 if hasattr(sps, "sparray"):

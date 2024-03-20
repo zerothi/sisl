@@ -428,6 +428,12 @@ class Geometry(
         # then it seems natural to also do that here...
         return atoms.within_index(self.xyz)
 
+    @_sanitize_atoms.register
+    def _(self, atoms: bool) -> ndarray:
+        if atoms:
+            return np.arange(self.na)
+        return np.array([], np.int64)
+
     @singledispatchmethod
     def _sanitize_orbs(self, orbitals) -> ndarray:
         """Converts an `orbital` to index under given inputs
@@ -489,6 +495,12 @@ class Geometry(
         return np.concatenate(
             tuple(conv(atom, orbs) for atom, orbs in orbitals.items())
         )
+
+    @_sanitize_orbs.register
+    def _(self, orbitals: bool) -> ndarray:
+        if orbitals:
+            return np.arange(self.no)
+        return np.array([], dtype=np.int64)
 
     def as_primary(
         self, na_primary: int, axes: Sequence[int] = (0, 1, 2), ret_super: bool = False

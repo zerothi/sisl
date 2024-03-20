@@ -1751,7 +1751,14 @@ def test_geometry_sanitize_atom_other_bool(atoms):
 def test_geometry_sanitize_atom_0_length_float_fail():
     gr = sisl_geom.graphene()
     with pytest.raises(IndexError):
-        gr.axyz(np.array([], dtype=np.float64))
+        # it raises an error because np.float64 is used
+        gr.axyz(np.array([1], dtype=np.float64))
+
+
+def test_geometry_sanitize_atom_bool():
+    gr = sisl_geom.graphene()
+    assert gr.axyz(True).shape == (gr.na, 3)
+    assert gr.axyz(False).shape == (0, 3)
 
 
 def test_geometry_sanitize_orbs():
