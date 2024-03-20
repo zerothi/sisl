@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom._neighbors._finder &mdash; sisl 0.1-97e3544</title>
+  <title>sisl.geom._neighbors._finder &mdash; sisl 0.1-f50bd7e</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=877175e3"></script>
+        <script src="../../../../_static/documentation_options.js?v=1a717e2b"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-97e3544
+                0.1-f50bd7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -120,7 +120,10 @@
            <div itemprop="articleBody">
              
   <h1>Source code for sisl.geom._neighbors._finder</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -495,16 +498,16 @@
 
         <span class="n">third</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">second</span><span class="p">,</span> <span class="n">first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">third</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">third</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_correct_pairs_R_too_big</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">neighbor_pairs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># (n_pairs, 5)</span>
         <span class="n">split_ind</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>  <span class="c1"># (n_queried_atoms, )</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># (3, )</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Correction to atom and supercell indices when the binning has been done on a tiled geometry&quot;&quot;&quot;</span>
         <span class="n">is_sc_neigh</span> <span class="o">=</span> <span class="n">neighbor_pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">pbc</span>
 
         <span class="n">invalid</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">pbc</span><span class="p">):</span>
@@ -541,7 +544,6 @@
         <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">as_pairs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">self_interaction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find neighbors as specified in the finder.</span>
 
@@ -561,9 +563,6 @@
 <span class="sd">            the neighbors for each atom is returned.</span>
 <span class="sd">        self_interaction: bool, optional</span>
 <span class="sd">            whether to consider an atom a neighbor of itself.</span>
-<span class="sd">        pbc: bool or array-like of shape (3, )</span>
-<span class="sd">            whether periodic conditions should be considered.</span>
-<span class="sd">            If a single bool is passed, all directions use that value.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
@@ -578,9 +577,8 @@
         <span class="c1"># Sanitize atoms</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
 
-        <span class="c1"># Cast R and pbc into arrays of appropiate shape and type.</span>
+        <span class="c1"># Cast R into array of appropiate shape and type.</span>
         <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">pbc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="c1"># Get search indices</span>
         <span class="n">search_indices</span><span class="p">,</span> <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_indices</span><span class="p">(</span>
@@ -610,7 +608,7 @@
             <span class="n">self_interaction</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
-            <span class="n">pbc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">pbc</span><span class="p">,</span>
             <span class="n">thresholds</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_overlap</span><span class="p">,</span>
             <span class="n">init_pairs</span><span class="p">,</span>
@@ -621,7 +619,7 @@
         <span class="c1"># we needed to create an auxiliary supercell.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span><span class="p">:</span>
             <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correct_pairs_R_too_big</span><span class="p">(</span>
-                <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span><span class="p">,</span> <span class="n">pbc</span>
+                <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">as_pairs</span><span class="p">:</span>
@@ -632,14 +630,13 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">neighbor_pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">split_ind</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="NeighborFinder.find_all_unique_pairs">
-<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_all_unique_pairs">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_all_unique_pairs</span><span class="p">(</span>
+<div class="viewcode-block" id="NeighborFinder.find_unique_pairs">
+<a class="viewcode-back" href="../../../../api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_unique_pairs">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_unique_pairs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">self_interaction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all unique neighbor pairs within the geometry.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find unique neighbor pairs within the geometry.</span>
 
 <span class="sd">        A pair of atoms is considered unique if atoms have the same index</span>
 <span class="sd">        and correspond to the same unit cell. As an example, the connection</span>
@@ -663,9 +660,6 @@
 <span class="sd">            the neighbors for each atom is returned.</span>
 <span class="sd">        self_interaction: bool, optional</span>
 <span class="sd">            whether to consider an atom a neighbor of itself.</span>
-<span class="sd">        pbc: bool or array-like of shape (3, )</span>
-<span class="sd">            whether periodic conditions should be considered.</span>
-<span class="sd">            If a single bool is passed, all directions use that value.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
@@ -684,7 +678,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span><span class="p">:</span>
             <span class="c1"># Find all neighbors</span>
             <span class="n">all_neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_neighbors</span><span class="p">(</span>
-                <span class="n">as_pairs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">self_interaction</span><span class="o">=</span><span class="n">self_interaction</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span>
+                <span class="n">as_pairs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">self_interaction</span><span class="o">=</span><span class="n">self_interaction</span>
             <span class="p">)</span>
 
             <span class="c1"># Find out which of the pairs are uc connections</span>
@@ -698,9 +692,8 @@
             <span class="c1"># Concatenate the uc connections with the rest of the connections.</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">uc_neighbors</span><span class="p">,</span> <span class="n">all_neighbors</span><span class="p">[</span><span class="o">~</span><span class="n">is_uc_neigh</span><span class="p">]))</span>
 
-        <span class="c1"># Cast R and pbc into arrays of appropiate shape and type.</span>
+        <span class="c1"># Cast R into array of appropiate shape and type.</span>
         <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">pbc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="c1"># Get search indices</span>
         <span class="n">search_indices</span><span class="p">,</span> <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_indices</span><span class="p">(</span>
@@ -729,7 +722,7 @@
             <span class="n">self_interaction</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
-            <span class="n">pbc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">pbc</span><span class="p">,</span>
             <span class="n">thresholds</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_overlap</span><span class="p">,</span>
             <span class="n">init_pairs</span><span class="p">,</span>
@@ -745,7 +738,6 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">xyz</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span>
         <span class="n">as_pairs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">pbc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all atoms that are close to some coordinates in space.</span>
 
@@ -761,9 +753,6 @@
 <span class="sd">            If `True` pairs are returned, where the first item is the index</span>
 <span class="sd">            of the point and the second one is the atom index.</span>
 <span class="sd">            Otherwise a list containing the neighbors for each point is returned.</span>
-<span class="sd">        pbc: bool or array-like of shape (3, )</span>
-<span class="sd">            whether periodic conditions should be considered.</span>
-<span class="sd">            If a single bool is passed, all directions use that value.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
@@ -775,9 +764,8 @@
 <span class="sd">            If `as_pairs=False`:</span>
 <span class="sd">                A list containing a numpy array of shape (n_neighs, 4) for each atom.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Cast R and pbc into arrays of appropiate shape and type.</span>
+        <span class="c1"># Cast R into array of appropiate shape and type.</span>
         <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aux_R</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">pbc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
         <span class="c1"># Get search indices</span>
@@ -805,7 +793,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_bins_geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
-            <span class="n">pbc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">pbc</span><span class="p">,</span>
             <span class="n">thresholds</span><span class="p">,</span>
             <span class="n">init_pairs</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
@@ -815,7 +803,7 @@
         <span class="c1"># we needed to create an auxiliary supercell.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_too_big</span><span class="p">:</span>
             <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correct_pairs_R_too_big</span><span class="p">(</span>
-                <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span><span class="p">,</span> <span class="n">pbc</span>
+                <span class="n">neighbor_pairs</span><span class="p">,</span> <span class="n">split_ind</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">as_pairs</span><span class="p">:</span>

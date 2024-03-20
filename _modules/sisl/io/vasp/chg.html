@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.chg &mdash; sisl 0.1-97e3544</title>
+  <title>sisl.io.vasp.chg &mdash; sisl 0.1-f50bd7e</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=877175e3"></script>
+        <script src="../../../../_static/documentation_options.js?v=1a717e2b"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-97e3544
+                0.1-f50bd7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -190,17 +190,27 @@
         <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">vext</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">extend</span>
 
+        <span class="n">is_chgcar</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">*</span> <span class="n">max_index</span><span class="p">:</span>
-            <span class="n">vext</span><span class="p">(</span><span class="n">rl</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">rl</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="c1"># CHG: 10 columns, CHGCAR: 5 columns</span>
+            <span class="k">if</span> <span class="n">is_chgcar</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="c1"># we have a data line with more than 5 columns, must be a CHG file</span>
+                <span class="n">is_chgcar</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">vext</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">*</span> <span class="n">max_index</span><span class="p">:</span>
-                <span class="c1"># Each time a new spin-index is present, we need to read the coordinates</span>
-                <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">geom</span><span class="o">.</span><span class="n">na</span><span class="p">:</span>
-                    <span class="n">j</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rl</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-
+                <span class="k">if</span> <span class="n">is_chgcar</span><span class="p">:</span>
+                    <span class="c1"># Read over augmentation occupancies</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">rl</span><span class="p">()</span>
+                    <span class="k">while</span> <span class="s2">&quot;augmentation&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="n">occ</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">occ</span><span class="p">:</span>
+                            <span class="n">j</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rl</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">rl</span><span class="p">()</span>
                 <span class="c1"># one line of nx, ny, nz</span>
                 <span class="n">rl</span><span class="p">()</span>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom.NeighborFinder &mdash; sisl 0.1-97e3544</title>
+  <title>sisl.geom.NeighborFinder &mdash; sisl 0.1-f50bd7e</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=877175e3"></script>
+        <script src="../../_static/documentation_options.js?v=1a717e2b"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-97e3544
+                0.1-f50bd7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -195,14 +195,14 @@ bins.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.assert_consistency" title="sisl.geom.NeighborFinder.assert_consistency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_consistency</span></code></a>()</p></td>
 <td><p>Asserts that the data structure (self._list, self._heads, self._counts) is consistent.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.find_all_unique_pairs" title="sisl.geom.NeighborFinder.find_all_unique_pairs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_all_unique_pairs</span></code></a>([self_interaction, pbc])</p></td>
-<td><p>Find all unique neighbor pairs within the geometry.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.find_close" title="sisl.geom.NeighborFinder.find_close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_close</span></code></a>(xyz[, as_pairs, pbc])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.find_close" title="sisl.geom.NeighborFinder.find_close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_close</span></code></a>(xyz[, as_pairs])</p></td>
 <td><p>Find all atoms that are close to some coordinates in space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.find_neighbors" title="sisl.geom.NeighborFinder.find_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_neighbors</span></code></a>([atoms, as_pairs, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.find_neighbors" title="sisl.geom.NeighborFinder.find_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_neighbors</span></code></a>([atoms, as_pairs, ...])</p></td>
 <td><p>Find neighbors as specified in the finder.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.find_unique_pairs" title="sisl.geom.NeighborFinder.find_unique_pairs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_unique_pairs</span></code></a>([self_interaction])</p></td>
+<td><p>Find unique neighbor pairs within the geometry.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.setup" title="sisl.geom.NeighborFinder.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>([geometry, R, overlap, bin_size])</p></td>
 <td><p>Prepares everything for neighbor finding.</p></td>
@@ -242,44 +242,8 @@ bins.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.geom.NeighborFinder.find_all_unique_pairs">
-<span class="sig-name descname"><span class="pre">find_all_unique_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(True,</span> <span class="pre">True,</span> <span class="pre">True)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_all_unique_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_all_unique_pairs" title="Link to this definition"></a></dt>
-<dd><p>Find all unique neighbor pairs within the geometry.</p>
-<p>A pair of atoms is considered unique if atoms have the same index
-and correspond to the same unit cell. As an example, the connection
-atom 0 (unit cell) to atom 5 (1, 0, 0) is not the same as the
-connection atom 5 (unit cell) to atom 0 (-1, 0, 0).</p>
-<p>Note that this routine can not be called if <em class="xref py py-obj">overlap</em> is
-set to <em class="xref py py-obj">False</em> and the radius is not a single float. In that case,
-there is no way of defining “uniqueness” since pair <em class="xref py py-obj">ij</em> can have
-a different threshold radius than pair <em class="xref py py-obj">ji</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>optional</em>) – <p>the atoms for which neighbors are desired. Anything that can
-be sanitized by <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.Geometry</span></code></a> is a valid value.</p>
-<p>If not provided, neighbors for all atoms are searched.</p>
-</p></li>
-<li><p><strong>as_pairs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <em class="xref py py-obj">True</em> pairs of atoms are returned. Otherwise a list containing
-the neighbors for each atom is returned.</p></li>
-<li><p><strong>self_interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to consider an atom a neighbor of itself.</p></li>
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><em>array-like</em><em> of </em><em>shape</em><em> (</em><em>3</em><em>, </em><em>)</em>) – whether periodic conditions should be considered.
-If a single bool is passed, all directions use that value.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Each pair <em class="xref py py-obj">ij</em> means that <em class="xref py py-obj">j</em> is a neighbor of <em class="xref py py-obj">i</em>.
-The three extra columns are the supercell indices of atom <em class="xref py py-obj">j</em>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray of shape (n_pairs, 5)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.find_close">
-<span class="sig-name descname"><span class="pre">find_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(True,</span> <span class="pre">True,</span> <span class="pre">True)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_close" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_close" title="Link to this definition"></a></dt>
 <dd><p>Find all atoms that are close to some coordinates in space.</p>
 <p>This routine only executes the action of finding neighbors,
 the parameters of the search (<em class="xref py py-obj">geometry</em>, <em class="xref py py-obj">R</em>, <em class="xref py py-obj">overlap</em>…)
@@ -291,8 +255,6 @@ are defined when the finder is initialized or by calling <a class="reference int
 <li><p><strong>as_pairs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <em class="xref py py-obj">True</em> pairs are returned, where the first item is the index
 of the point and the second one is the atom index.
 Otherwise a list containing the neighbors for each point is returned.</p></li>
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><em>array-like</em><em> of </em><em>shape</em><em> (</em><em>3</em><em>, </em><em>)</em>) – whether periodic conditions should be considered.
-If a single bool is passed, all directions use that value.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -314,7 +276,7 @@ The three extra columns are the supercell indices of atom <em class="xref py py-
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.find_neighbors">
-<span class="sig-name descname"><span class="pre">find_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int64</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_" title="(in NumPy v1.26)"><span class="pre">bool_</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><span class="pre">Atom</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><span class="pre">AtomCategory</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">GenericCategory</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><span class="pre">Shape</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(True,</span> <span class="pre">True,</span> <span class="pre">True)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_neighbors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_neighbors" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int32</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int64</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_" title="(in NumPy v1.26)"><span class="pre">bool_</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><span class="pre">Atom</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><span class="pre">AtomCategory</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">GenericCategory</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><span class="pre">Shape</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_neighbors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_neighbors" title="Link to this definition"></a></dt>
 <dd><p>Find neighbors as specified in the finder.</p>
 <p>This routine only executes the action of finding neighbors,
 the parameters of the search (<em class="xref py py-obj">geometry</em>, <em class="xref py py-obj">R</em>, <em class="xref py py-obj">overlap</em>…)
@@ -329,8 +291,6 @@ be sanitized by <a class="reference internal" href="sisl.Geometry.html#sisl.Geom
 <li><p><strong>as_pairs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <em class="xref py py-obj">True</em> pairs of atoms are returned. Otherwise a list containing
 the neighbors for each atom is returned.</p></li>
 <li><p><strong>self_interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to consider an atom a neighbor of itself.</p></li>
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><em>array-like</em><em> of </em><em>shape</em><em> (</em><em>3</em><em>, </em><em>)</em>) – whether periodic conditions should be considered.
-If a single bool is passed, all directions use that value.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -346,6 +306,40 @@ The three extra columns are the supercell indices of atom <em class="xref py py-
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.geom.NeighborFinder.find_unique_pairs">
+<span class="sig-name descname"><span class="pre">find_unique_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_unique_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_unique_pairs" title="Link to this definition"></a></dt>
+<dd><p>Find unique neighbor pairs within the geometry.</p>
+<p>A pair of atoms is considered unique if atoms have the same index
+and correspond to the same unit cell. As an example, the connection
+atom 0 (unit cell) to atom 5 (1, 0, 0) is not the same as the
+connection atom 5 (unit cell) to atom 0 (-1, 0, 0).</p>
+<p>Note that this routine can not be called if <em class="xref py py-obj">overlap</em> is
+set to <em class="xref py py-obj">False</em> and the radius is not a single float. In that case,
+there is no way of defining “uniqueness” since pair <em class="xref py py-obj">ij</em> can have
+a different threshold radius than pair <em class="xref py py-obj">ji</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>optional</em>) – <p>the atoms for which neighbors are desired. Anything that can
+be sanitized by <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.Geometry</span></code></a> is a valid value.</p>
+<p>If not provided, neighbors for all atoms are searched.</p>
+</p></li>
+<li><p><strong>as_pairs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <em class="xref py py-obj">True</em> pairs of atoms are returned. Otherwise a list containing
+the neighbors for each atom is returned.</p></li>
+<li><p><strong>self_interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to consider an atom a neighbor of itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Each pair <em class="xref py py-obj">ij</em> means that <em class="xref py py-obj">j</em> is a neighbor of <em class="xref py py-obj">i</em>.
+The three extra columns are the supercell indices of atom <em class="xref py py-obj">j</em>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray of shape (n_pairs, 5)</p>
 </dd>
 </dl>
 </dd></dl>

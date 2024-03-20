@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.geometry &mdash; sisl 0.1-97e3544</title>
+  <title>sisl._core.geometry &mdash; sisl 0.1-f50bd7e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=877175e3"></script>
+        <script src="../../../_static/documentation_options.js?v=1a717e2b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-97e3544
+                0.1-f50bd7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -531,7 +531,7 @@
     <span class="k">def</span> <span class="nf">_</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">atoms_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AtomCategory</span><span class="p">,</span> <span class="n">GenericCategory</span><span class="p">],</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="c1"># First do categorization</span>
         <span class="n">cat</span> <span class="o">=</span> <span class="n">atoms_</span><span class="o">.</span><span class="n">categorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span>
@@ -547,7 +547,7 @@
         <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">fromiterl</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">cat</span><span class="p">))</span>
 
     <span class="nd">@_sanitize_atoms</span><span class="o">.</span><span class="n">register</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms_</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms_</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="c1"># First do categorization</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">AtomCategory</span><span class="o">.</span><span class="n">kw</span><span class="p">(</span><span class="o">**</span><span class="n">atoms_</span><span class="p">),</span> <span class="n">atoms</span><span class="p">)</span>
 
@@ -558,6 +558,12 @@
         <span class="c1"># Since the others only does this for unit-cell atoms</span>
         <span class="c1"># then it seems natural to also do that here...</span>
         <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">)</span>
+
+    <span class="nd">@_sanitize_atoms</span><span class="o">.</span><span class="n">register</span>
+    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 
     <span class="nd">@singledispatchmethod</span>
     <span class="k">def</span> <span class="nf">_sanitize_orbs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -620,6 +626,12 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
             <span class="nb">tuple</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">orbs</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">orbs</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
         <span class="p">)</span>
+
+    <span class="nd">@_sanitize_orbs</span><span class="o">.</span><span class="n">register</span>
+    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">orbitals</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Geometry.as_primary">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.as_primary">[docs]</a>
@@ -980,9 +992,7 @@
 
 <div class="viewcode-block" id="Geometry.iter_species">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.iter_species">[docs]</a>
-    <span class="k">def</span> <span class="nf">iter_species</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">iter_species</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over all atoms (or a subset) and species as a tuple in this geometry</span>
 
 <span class="sd">        &gt;&gt;&gt; for ia, a, idx_specie in self.iter_species():</span>
@@ -1014,7 +1024,7 @@
 <div class="viewcode-block" id="Geometry.iter_orbitals">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.iter_orbitals">[docs]</a>
     <span class="k">def</span> <span class="nf">iter_orbitals</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">local</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">local</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns an iterator over all atoms and their associated orbitals</span>
 
@@ -1112,7 +1122,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">iR</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform the *random* block-iteration by randomly selecting the next center of block&quot;&quot;&quot;</span>
 
@@ -1193,7 +1203,7 @@
 <div class="viewcode-block" id="Geometry.iter_block_shape">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.iter_block_shape">[docs]</a>
     <span class="k">def</span> <span class="nf">iter_block_shape</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iR</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iR</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform the *grid* block-iteration by looping a grid&quot;&quot;&quot;</span>
 
@@ -1329,7 +1339,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">iR</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rand&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator for performance critical loops</span>
@@ -1891,7 +1901,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.translate2uc">[docs]</a>
     <span class="k">def</span> <span class="nf">translate2uc</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Translates atoms in the geometry into the unit cell</span>
@@ -2161,7 +2171,7 @@
 
 <div class="viewcode-block" id="Geometry.reverse">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.reverse">[docs]</a>
-    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a reversed geometry</span>
 
 <span class="sd">        Also enables reversing a subset of the atoms.</span>
@@ -2188,7 +2198,7 @@
     <span class="k">def</span> <span class="nf">mirror</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">method</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">point</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mirrors the atomic coordinates about a plane given by its normal vector</span>
@@ -2265,7 +2275,7 @@
 
 <div class="viewcode-block" id="Geometry.axyz">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.axyz">[docs]</a>
-    <span class="k">def</span> <span class="nf">axyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">axyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the atomic coordinates in the supercell of a given atom.</span>
 
 <span class="sd">        The ``Geometry[...]`` slicing is calling this function with appropriate options.</span>
@@ -2312,7 +2322,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">shapes</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ret_xyz</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ret_rij</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2480,7 +2490,7 @@
         <span class="n">xyz_ia</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">R</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ret_xyz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">ret_rij</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -2744,7 +2754,7 @@
     <span class="k">def</span> <span class="nf">within</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">shapes</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ret_xyz</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ret_rij</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2876,7 +2886,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">xyz_ia</span><span class="p">,</span>
         <span class="n">R</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ret_xyz</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ret_rij</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -3026,7 +3036,7 @@
 <div class="viewcode-block" id="Geometry.a2transpose">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.a2transpose">[docs]</a>
     <span class="k">def</span> <span class="nf">a2transpose</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">atoms1</span><span class="p">:</span> <span class="n">AtomsArgument</span><span class="p">,</span> <span class="n">atoms2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">atoms1</span><span class="p">:</span> <span class="n">AtomsArgument</span><span class="p">,</span> <span class="n">atoms2</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transposes connections from `atoms1` to `atoms2` such that supercell connections are transposed</span>
 
@@ -3528,10 +3538,13 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.distance">[docs]</a>
     <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsArgument</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="nb">float</span><span class="p">],</span>
+            <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;numpy.method&gt;&quot;</span><span class="p">],</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the distances for all atoms in shells of radius `tol` within `max_R`</span>
 
@@ -3552,13 +3565,13 @@
 
 <span class="sd">           The first shell size will be ``tol * .5`` or ``tol[0] * .5`` if `tol` is a list.</span>
 
-<span class="sd">        method : {&#39;average&#39;, &#39;mode&#39;, &#39;&lt;numpy.func&gt;&#39;, func}</span>
+<span class="sd">        method :</span>
 <span class="sd">           How the distance in each shell is determined.</span>
 <span class="sd">           A list of distances within each shell is gathered and the equivalent</span>
 <span class="sd">           method will be used to extract a single quantity from the list of</span>
 <span class="sd">           distances in the shell.</span>
 <span class="sd">           If `&#39;mode&#39;` is chosen it will use `scipy.stats.mode`.</span>
-<span class="sd">           If a string is given it will correspond to ``getattr(numpy, method)``,</span>
+<span class="sd">           If another string is given it will correspond to ``getattr(numpy, method)``,</span>
 <span class="sd">           while any callable function may be passed. The passed function</span>
 <span class="sd">           will only be passed a list of unsorted distances that needs to be</span>
 <span class="sd">           processed.</span>
@@ -3823,7 +3836,14 @@
 
 <div class="viewcode-block" id="Geometry.apply">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.apply">[docs]</a>
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="s2">&quot;atoms&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">,</span>
+        <span class="n">mapper</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">segments</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;orbitals&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">],</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply a function `func` to the data along axis `axis` using the method specified</span>
 
 <span class="sd">        This can be useful for applying conversions from orbital data to atomic data through</span>
@@ -3843,7 +3863,7 @@
 <span class="sd">            is present in `data`.</span>
 <span class="sd">        axis :</span>
 <span class="sd">            axis selector for `data` along which `func` will be applied</span>
-<span class="sd">        segments : {&quot;atoms&quot;, &quot;orbitals&quot;, &quot;all&quot;} or iterator, optional</span>
+<span class="sd">        segments :</span>
 <span class="sd">            which segments the `mapper` will recieve, if atoms, each atom</span>
 <span class="sd">            index will be passed to the `mapper(ia)`.</span>
 

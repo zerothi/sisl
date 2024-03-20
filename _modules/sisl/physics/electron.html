@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1-97e3544</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1-f50bd7e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=877175e3"></script>
+        <script src="../../../_static/documentation_options.js?v=1a717e2b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-97e3544
+                0.1-f50bd7e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -177,7 +177,6 @@
     <span class="n">einsum</span><span class="p">,</span>
     <span class="n">empty</span><span class="p">,</span>
     <span class="n">exp</span><span class="p">,</span>
-    <span class="n">find_common_type</span><span class="p">,</span>
     <span class="n">floor</span><span class="p">,</span>
     <span class="n">int32</span><span class="p">,</span>
     <span class="n">log</span><span class="p">,</span>
@@ -884,9 +883,10 @@
             <span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span>
         <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">find_common_type</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">)],</span> <span class="p">[]</span>
-    <span class="p">)</span>
+    <span class="c1"># cast dtypes to *any* complex valued data-type that can be expressed</span>
+    <span class="c1"># minimally by a complex64 object</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">dSk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">v_matrix</span> <span class="o">=</span> <span class="n">_velocity_matrix_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1644,6 +1644,8 @@
 
 
 
+<div class="viewcode-block" id="_electron_State">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State">[docs]</a>
 <span class="k">class</span> <span class="nc">_electron_State</span><span class="p">:</span>
     <span class="c1"># pylint: disable=E1101</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1655,6 +1657,8 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
+<div class="viewcode-block" id="_electron_State.Sk">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.Sk">[docs]</a>
     <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Retrieve the overlap matrix corresponding to the originating parent structure.</span>
 
@@ -1696,8 +1700,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">n</span>
 
-        <span class="k">return</span> <span class="n">_FakeMatrix</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_FakeMatrix</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="_electron_State.norm2">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.norm2">[docs]</a>
     <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`</span>
 
@@ -1720,8 +1727,11 @@
 
         <span class="k">if</span> <span class="nb">sum</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="n">S</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
 
+
+<div class="viewcode-block" id="_electron_State.spin_moment">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.spin_moment">[docs]</a>
     <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate spin moment from the states</span>
 
@@ -1735,8 +1745,11 @@
 <span class="sd">        project : bool, optional</span>
 <span class="sd">           whether the moments are orbitally resolved or not</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(),</span> <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(),</span> <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="_electron_State.wavefunction">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.wavefunction">[docs]</a>
     <span class="k">def</span> <span class="nf">wavefunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand the coefficients as the wavefunction on `grid` *as-is*</span>
 
@@ -1763,7 +1776,9 @@
 
         <span class="n">wavefunction</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="n">spinor</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="n">spin</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="CoefficientElectron">
