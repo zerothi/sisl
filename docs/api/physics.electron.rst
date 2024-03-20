@@ -40,6 +40,12 @@ automatically passes the correct ``S`` because it knows the states :math:`k`-poi
 
 .. autosummary::
    :toctree: generated/
+   :hidden:
+
+   _electron_State
+
+.. autosummary::
+   :toctree: generated/
 
    CoefficientElectron
    StateElectron
