@@ -19,6 +19,7 @@ sisl objects.
 
    add
    append
+   apply
    center
    copy
    insert

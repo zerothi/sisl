@@ -366,38 +366,6 @@ class Grid(
         func = import_attr(f"scipy.ndimage.{method}_filter")
         return self.apply(func, mode=mode, **kwargs)
 
-    def apply(self, function_, *args, **kwargs):
-        """Applies a function to the grid and returns a new grid
-
-        You can also apply a function that does not return a grid (maybe you want to do
-        some measurement). In that case, you will get the result instead of a `Grid`.
-
-        Parameters
-        -----------
-        function_: str or function
-            for a string the full module path to the function should be given.
-            The function that will be called should have the grid as the first argument in its
-            interface.
-        args and kwargs:
-            arguments that go directly to the function call
-        """
-        if isinstance(function_, str):
-            function_ = import_attr(function_)
-
-        result = function_(self.grid, *args, **kwargs)
-
-        # Maybe the result is not a grid, because there are methods that actually
-        # do measurements of the grid
-        # TODO what to do about functions that squeeze shape == 1 dimensions?
-        if not isinstance(result, np.ndarray) or result.ndim != 3:
-            return result
-
-        # If the result is a grid, we will generate a copy of this one with the new grid values
-        grid = self.copy()
-        grid.grid = result
-
-        return grid
-
     @property
     def size(self):
         """Total number of elements in the grid"""

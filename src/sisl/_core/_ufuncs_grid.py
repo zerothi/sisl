@@ -61,6 +61,45 @@ def write(grid: Grid, sile: SileLike, *args, **kwargs) -> None:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
+def apply(grid: Grid, function_, *args, **kwargs):
+    """Applies a function to the grid and returns a new grid
+
+    You can also apply a function that does not return a grid (maybe you want to do
+    some measurement). In that case, you will get the result instead of a `Grid`.
+
+    Parameters
+    -----------
+    function_: str or function
+        for a string the full module path to the function should be given.
+        The function that will be called should have the grid as the first argument in its
+        interface.
+    *args and **kwargs:
+        arguments that go directly to the function call
+
+    Notes
+    -----
+    The function argument name `function_` is named so that `function` can be an eligible
+    keyword argument for the function.
+    """
+    if isinstance(function_, str):
+        function_ = import_attr(function_)
+
+    result = function_(grid.grid, *args, **kwargs)
+
+    # Maybe the result is not a grid, because there are methods that actually
+    # do measurements of the grid
+    # TODO what to do about functions that squeeze shape == 1 dimensions?
+    if not isinstance(result, np.ndarray) or result.ndim != 3:
+        return result
+
+    # If the result is a grid, we will generate a copy of this one with the new grid values
+    grid = grid.copy()
+    grid.grid = result
+
+    return grid
+
+
+@register_sisl_dispatch(Grid, module="sisl")
 def swapaxes(grid: Grid, axis1: Axis, axis2: Axis) -> Grid:
     """Swap two axes in the grid (also swaps axes in the lattice)
 
