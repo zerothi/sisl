@@ -657,17 +657,26 @@ class SparseOrbitalBZ(SparseOrbital):
         eigvals_only: bool = True,
         **kwargs,
     ):
-        r"""Calculates a subset of eigenvalues of the physical quantity
+        r"""Calculates a subset of eigenvalues of the physical quantity using sparse matrices
 
         Setup the quantity and overlap matrix with respect to
         the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.
 
-        All subsequent arguments gets passed directly to `scipy.sparse.linalg.eigsh`
+        All subsequent arguments gets passed directly to `scipy.sparse.linalg.eigsh`.
 
         Parameters
         ----------
         n :
-            number of eigenvalues to calculate
+            number of eigenvalues to calculate.
+            Defaults to the `n` smallest magnitude eigevalues.
+        **kwargs:
+            arguments passed directly to `scipy.sparse.linalg.eigsh`.
+
+        Notes
+        -----
+        The performance and accuracy of this method depends heavily on `kwargs`.
+        Playing around with a small test example before doing large scale calculations
+        is adviced!
         """
         # We always request the smallest eigenvalues...
         kwargs.update({"which": kwargs.get("which", "SM")})
@@ -1338,20 +1347,29 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         eigvals_only: bool = True,
         **kwargs,
     ):
-        r"""Calculates a subset of eigenvalues of the physical quantity
+        r"""Calculates a subset of eigenvalues of the physical quantity using sparse matrices
 
         Setup the quantity and overlap matrix with respect to
         the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.
 
-        All subsequent arguments gets passed directly to `scipy.sparse.linalg.eigsh`
+        All subsequent arguments gets passed directly to `scipy.sparse.linalg.eigsh`.
 
         Parameters
         ----------
         n :
            number of eigenvalues to calculate
+           Defaults to the `n` smallest magnitude eigevalues.
         spin : int, optional
            the spin-component to calculate the eigenvalue spectrum of, note that
            this parameter is only valid for `Spin.POLARIZED` matrices.
+        **kwargs:
+            arguments passed directly to `scipy.sparse.linalg.eigsh`.
+
+        Notes
+        -----
+        The performance and accuracy of this method depends heavily on `kwargs`.
+        Playing around with a small test example before doing large scale calculations
+        is adviced!
         """
         # We always request the smallest eigenvalues...
         spin = kwargs.pop("spin", 0)
