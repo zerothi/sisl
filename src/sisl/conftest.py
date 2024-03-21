@@ -122,7 +122,6 @@ def sisl_files():
         def _path(*files):
             pytest.xfail(
                 reason=f"Environment SISL_FILES_TESTS not pointing to a valid directory.",
-                run=False,
             )
 
         return _path
@@ -135,7 +134,6 @@ def sisl_files():
         # But it isn't an actual fail since it hasn't runned...
         pytest.xfail(
             reason=f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found",
-            run=False,
         )
 
     return _path
