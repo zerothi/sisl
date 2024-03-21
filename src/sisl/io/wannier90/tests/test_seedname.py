@@ -85,3 +85,13 @@ def test_seedname_write_read(sisl_tmp, sisl_system, frac):
     g = winSileWannier90(f).read_geometry()
     assert np.allclose(g.cell, sisl_system.g.cell)
     assert np.allclose(g.xyz, sisl_system.g.xyz)
+
+
+def test_seedname_read_ham(sisl_files):
+    f = winSileWannier90(sisl_files(_dir, "read_ham", "read_ham.win"))
+
+    ham = {}
+    for key in ["hr", "tb"]:
+        ham[key] = f.read_hamiltonian(cutoff=1e-4, order=[key])
+        if not key == "hr":
+            assert ham["hr"].spsame(ham[key])
