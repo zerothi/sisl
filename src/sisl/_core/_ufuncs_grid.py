@@ -11,6 +11,7 @@ import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import SislError
 from sisl.typing import Axis, GridLike, SileLike
+from sisl.utils import import_attr
 
 from .grid import Grid
 
