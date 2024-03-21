@@ -88,7 +88,7 @@ def test_seedname_write_read(sisl_tmp, sisl_system, frac):
 
 
 def test_seedname_read_ham(sisl_files):
-    f = winSileWannier90(sisl_files(_dir, "read_ham.win"))
+    f = winSileWannier90(sisl_files(_dir, "read_ham", "read_ham.win"))
     
     ham = {}
     for key in ['hr', 'tb']:
