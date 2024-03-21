@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.grid &mdash; sisl 0.1-f50bd7e</title>
+  <title>sisl._core.grid &mdash; sisl 0.1-483c2bd</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1a717e2b"></script>
+        <script src="../../../_static/documentation_options.js?v=f4213e6b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f50bd7e
+                0.1-483c2bd
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -513,41 +513,6 @@
         <span class="c1"># This should raise an import error if the method does not exist</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">import_attr</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;scipy.ndimage.</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">_filter&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Grid.apply">
-<a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.apply">[docs]</a>
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies a function to the grid and returns a new grid</span>
-
-<span class="sd">        You can also apply a function that does not return a grid (maybe you want to do</span>
-<span class="sd">        some measurement). In that case, you will get the result instead of a `Grid`.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        -----------</span>
-<span class="sd">        function_: str or function</span>
-<span class="sd">            for a string the full module path to the function should be given.</span>
-<span class="sd">            The function that will be called should have the grid as the first argument in its</span>
-<span class="sd">            interface.</span>
-<span class="sd">        args and kwargs:</span>
-<span class="sd">            arguments that go directly to the function call</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">function_</span> <span class="o">=</span> <span class="n">import_attr</span><span class="p">(</span><span class="n">function_</span><span class="p">)</span>
-
-        <span class="n">result</span> <span class="o">=</span> <span class="n">function_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># Maybe the result is not a grid, because there are methods that actually</span>
-        <span class="c1"># do measurements of the grid</span>
-        <span class="c1"># TODO what to do about functions that squeeze shape == 1 dimensions?</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">result</span>
-
-        <span class="c1"># If the result is a grid, we will generate a copy of this one with the new grid values</span>
-        <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">result</span>
-
-        <span class="k">return</span> <span class="n">grid</span></div>
 
 
     <span class="nd">@property</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.geometry &mdash; sisl 0.1-f50bd7e</title>
+  <title>sisl._core.geometry &mdash; sisl 0.1-483c2bd</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1a717e2b"></script>
+        <script src="../../../_static/documentation_options.js?v=f4213e6b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f50bd7e
+                0.1-483c2bd
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -3834,88 +3834,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">isc</span></div>
 
 
-<div class="viewcode-block" id="Geometry.apply">
-<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.apply">[docs]</a>
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">,</span>
-        <span class="n">func</span><span class="p">,</span>
-        <span class="n">mapper</span><span class="p">,</span>
-        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">segments</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;orbitals&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">],</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply a function `func` to the data along axis `axis` using the method specified</span>
-
-<span class="sd">        This can be useful for applying conversions from orbital data to atomic data through</span>
-<span class="sd">        sums or other functions.</span>
-
-<span class="sd">        The data may be of any shape but it is expected the function can handle arguments as</span>
-<span class="sd">        ``func(data, axis=axis)``.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data : array_like</span>
-<span class="sd">            the data to be converted</span>
-<span class="sd">        func : callable</span>
-<span class="sd">            a callable function that transforms the data in some way</span>
-<span class="sd">        mapper : func, optional</span>
-<span class="sd">            a function transforming the `segments` into some other segments that</span>
-<span class="sd">            is present in `data`.</span>
-<span class="sd">        axis :</span>
-<span class="sd">            axis selector for `data` along which `func` will be applied</span>
-<span class="sd">        segments :</span>
-<span class="sd">            which segments the `mapper` will recieve, if atoms, each atom</span>
-<span class="sd">            index will be passed to the `mapper(ia)`.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-
-<span class="sd">        This will likely be moved to a separate function since it in principle has nothing to</span>
-<span class="sd">        do with the Geometry class.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        Convert orbital data into summed atomic data</span>
-
-<span class="sd">        &gt;&gt;&gt; g = sisl.geom.diamond(atoms=sisl.Atom(6, R=(1, 2)))</span>
-<span class="sd">        &gt;&gt;&gt; orbital_data = np.random.rand(10, g.no, 3)</span>
-<span class="sd">        &gt;&gt;&gt; atomic_data = g.apply(orbital_data, np.sum, mapper=g.a2o, axis=1)</span>
-
-<span class="sd">        The same can be accomblished by passing an explicit segment iterator,</span>
-<span class="sd">        note that ``iter(g) == range(g.na)``</span>
-
-<span class="sd">        &gt;&gt;&gt; atomic_data = g.apply(orbital_data, np.sum, mapper=g.a2o, axis=1,</span>
-<span class="sd">        ...                       segments=iter(g))</span>
-
-<span class="sd">        To only take out every 2nd orbital:</span>
-
-<span class="sd">        &gt;&gt;&gt; alternate_data = g.apply(orbital_data, np.sum, mapper=lambda idx: idx[::2], axis=1,</span>
-<span class="sd">        ...                          segments=&quot;all&quot;)</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">segments</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
-                <span class="n">segments</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">segments</span> <span class="o">==</span> <span class="s2">&quot;orbitals&quot;</span><span class="p">:</span>
-                <span class="n">segments</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">segments</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-                <span class="n">segments</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">.apply got wrong argument &#39;segments&#39;=</span><span class="si">{</span><span class="n">segments</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-
-        <span class="c1"># handle the data</span>
-        <span class="n">new_data</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="c1"># execute func on the segmented data</span>
-            <span class="n">func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mapper</span><span class="p">(</span><span class="n">segment</span><span class="p">),</span> <span class="n">axis</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
-            <span class="c1"># loop each segment</span>
-            <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segments</span>
-        <span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
-
-
     <span class="c1"># Create pickling routines</span>
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the state of this object&quot;&quot;&quot;</span>
@@ -4475,7 +4393,6 @@
 <span class="k">class</span> <span class="nc">GeometryNewFileDispatch</span><span class="p">(</span><span class="n">GeometryNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defer the `Geometry.read` method by passing down arguments&quot;&quot;&quot;</span>
-        <span class="c1"># can work either on class or instance</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 

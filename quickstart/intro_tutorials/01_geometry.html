@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating common geometries &mdash; sisl 0.1-f50bd7e</title>
+  <title>Creating common geometries &mdash; sisl 0.1-483c2bd</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -25,7 +25,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=1a717e2b"></script>
+        <script src="../../_static/documentation_options.js?v=f4213e6b"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f50bd7e
+                0.1-483c2bd
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -142,9 +142,9 @@
            <div itemprop="articleBody">
              
   <div align="right">
-<a href="https://raw.githubusercontent.com/zerothi/sisl/main//home/runner/work/sisl/sisl/docs/quickstart/intro_tutorials/01_geometry.ipynb"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>
+<a href="https://raw.githubusercontent.com/zerothi/sisl/main/docs/quickstart/intro_tutorials/01_geometry.ipynb"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>
 &nbsp;
-<a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath=/home/runner/work/sisl/sisl/docs/quickstart/intro_tutorials/01_geometry.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
+<a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath=docs/quickstart/intro_tutorials/01_geometry.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
 </div><section id="Creating-common-geometries">
 <h1>Creating common geometries<a class="headerlink" href="#Creating-common-geometries" title="Link to this heading"></a></h1>
 <section id="Importing-sisl">
@@ -153,7 +153,11 @@
 <div class="line">Import the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> package and start working with it.</div>
 <div class="line">To ensure there is no clashes with other packages we encourage users to stick with the same short-hand name. The <code class="docutils literal notranslate"><span class="pre">sisl</span></code>-developers recommends using <code class="docutils literal notranslate"><span class="pre">si</span></code>. In all of <code class="docutils literal notranslate"><span class="pre">sisl</span></code> documentation it is assumed that <code class="docutils literal notranslate"><span class="pre">si</span></code> refers to <code class="docutils literal notranslate"><span class="pre">sisl</span></code>.</div>
 </div>
-<p>An important aspect of <code class="docutils literal notranslate"><span class="pre">sisl</span></code> is the units used: - Ångstrøm [Ang] - Electron volt [eV]</p>
+<p>An important aspect of <code class="docutils literal notranslate"><span class="pre">sisl</span></code> is the units used:</p>
+<ul class="simple">
+<li><p>Ångstrøm [Ang]</p></li>
+<li><p>Electron volt [eV]</p></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -167,8 +171,8 @@
 <section id="Creating-a-geometry">
 <h2>Creating a geometry<a class="headerlink" href="#Creating-a-geometry" title="Link to this heading"></a></h2>
 <div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">sisl</span></code> provides a broad set of methods to create default geometries. There are <code class="docutils literal notranslate"><span class="pre">fcc</span></code>, <code class="docutils literal notranslate"><span class="pre">bcc</span></code>, <code class="docutils literal notranslate"><span class="pre">sc</span></code>, <code class="docutils literal notranslate"><span class="pre">graphene</span></code> and many other default geometries available.</div>
-<div class="line">The default geometry creations are found in the <code class="docutils literal notranslate"><span class="pre">si.geom</span></code> module, (for additional details check out <code class="docutils literal notranslate"><span class="pre">help(si.geom)</span></code>).</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">sisl</span></code> provides a broad set of methods to create <a class="reference internal" href="../../api/geom.html"><span class="doc">default geometries</span></a>. There are <code class="docutils literal notranslate"><span class="pre">fcc</span></code>, <code class="docutils literal notranslate"><span class="pre">bcc</span></code>, <code class="docutils literal notranslate"><span class="pre">sc</span></code>, <code class="docutils literal notranslate"><span class="pre">graphene</span></code> and many other default geometries available.</div>
+<div class="line">The default geometry creations are found in the <a class="reference internal" href="../../api/geom.html"><span class="doc">sisl.geom</span></a> module, (for additional details check out <code class="docutils literal notranslate"><span class="pre">help(si.geom)</span></code>).</div>
 </div>
 <hr class="docutils" />
 <p>Our focus here will be to create an FCC lattice of iron.</p>
@@ -180,7 +184,12 @@
 </pre></div>
 </div>
 </div>
-<p>There is lots of information one can retrieve from the geometry, such as: - lattice vectors - number of atoms and orbitals - atomic species</p>
+<p>There is lots of information one can retrieve from the geometry, such as:</p>
+<ul class="simple">
+<li><p>lattice vectors</p></li>
+<li><p>number of atoms and orbitals</p></li>
+<li><p>atomic species</p></li>
+</ul>
 <p>Try and extract the above information:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -319,13 +328,12 @@ array([[0.  , 0.  , 0.  ],
 <p>The atomic coordinates here signals the two positions, and it is obvious that the default bond-length for graphene is defined to be <span class="math notranslate nohighlight">\(1.42\)</span>.</p>
 <section id="Other-default-geometries">
 <h3>Other default geometries<a class="headerlink" href="#Other-default-geometries" title="Link to this heading"></a></h3>
-<p>There are many other implicit geometries available in <code class="docutils literal notranslate"><span class="pre">sisl</span></code>: - <code class="docutils literal notranslate"><span class="pre">sc</span></code> - <code class="docutils literal notranslate"><span class="pre">bcc</span></code> - <code class="docutils literal notranslate"><span class="pre">fcc</span></code> - <code class="docutils literal notranslate"><span class="pre">hcp</span></code> - <code class="docutils literal notranslate"><span class="pre">rocksalt</span></code> - <code class="docutils literal notranslate"><span class="pre">bilayer</span></code> - <code class="docutils literal notranslate"><span class="pre">honeycomb</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene</span></code> - <code class="docutils literal notranslate"><span class="pre">honeycomb_flake</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene_flake</span></code> - <code class="docutils literal notranslate"><span class="pre">triangulene</span></code> - <code class="docutils literal notranslate"><span class="pre">nanoribbon</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene_nanoribbon</span></code> - <code class="docutils literal notranslate"><span class="pre">agnr</span></code> - <code class="docutils literal notranslate"><span class="pre">cgnr</span></code> - <code class="docutils literal notranslate"><span class="pre">zgnr</span></code> - <code class="docutils literal notranslate"><span class="pre">graphene_heteroribbon</span></code> - <code class="docutils literal notranslate"><span class="pre">nanotube</span></code> - <code class="docutils literal notranslate"><span class="pre">fcc_slab</span></code> - <code class="docutils literal notranslate"><span class="pre">bcc_slab</span></code> - and more will come</p>
-<p>These can be used to generalize and construct geometries on the fly, in a simply and efficient manner.</p>
+<p>There are many other implicit geometries available in <code class="docutils literal notranslate"><span class="pre">sisl</span></code> which can be found <a class="reference internal" href="../../api/geom.html"><span class="doc">here</span></a>. These can be used to generalize and construct geometries on the fly, in a simply and efficient manner.</p>
 <section id="Defining-atoms">
 <h4>Defining atoms<a class="headerlink" href="#Defining-atoms" title="Link to this heading"></a></h4>
 <div class="line-block">
 <div class="line">The geometries will accept an argument <code class="docutils literal notranslate"><span class="pre">atoms=</span></code> where you can define the atoms in the geometry. We already did this in the <code class="docutils literal notranslate"><span class="pre">fcc</span></code> system where we defined the atom <code class="docutils literal notranslate"><span class="pre">si.Atom(&quot;Fe&quot;)</span></code>.</div>
-<div class="line">Lets delve into the <code class="docutils literal notranslate"><span class="pre">Atom</span></code> object.</div>
+<div class="line">Lets delve into the <a class="reference internal" href="../../api/generated/sisl.Atom.html"><span class="doc">Atom</span></a> object.</div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:

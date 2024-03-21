@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic classes &mdash; sisl 0.1-f50bd7e</title>
+  <title>Basic classes &mdash; sisl 0.1-483c2bd</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1a717e2b"></script>
+        <script src="../_static/documentation_options.js?v=f4213e6b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -59,7 +59,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-f50bd7e
+                0.1-483c2bd
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -100,18 +100,21 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Basic classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#simple-objects">Simple objects</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.PeriodicTable.html">sisl.PeriodicTable</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Orbital.html">sisl.Orbital</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html">sisl.HydrogenicOrbital</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.GTOrbital.html">sisl.GTOrbital</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.STOrbital.html">sisl.STOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Geometry.html">sisl.Geometry</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Lattice.html">sisl.Lattice</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.BoundaryCondition.html">sisl.BoundaryCondition</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Grid.html">sisl.Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#orbitals">Orbitals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Orbital.html">sisl.Orbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html">sisl.HydrogenicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.GTOrbital.html">sisl.GTOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.STOrbital.html">sisl.STOrbital</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#advanced-classes">Advanced classes</a><ul>
@@ -129,7 +132,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geom.html">Common geometries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="physics.html">Physical objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="viz/index.html">Visualization</a></li>
@@ -180,24 +183,6 @@ unit cells and grid functions.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.PeriodicTable.html#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>()</p></td>
 <td><p>Periodic table for creating an <a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>, or retrieval of atomic information via atomic numbers</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital</span></code></a>(R[, q0, tag])</p></td>
-<td><p>Base class for orbital information.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital" title="sisl.SphericalOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalOrbital</span></code></a>(l[, rf_or_func, q0, tag])</p></td>
-<td><p>An <em>arbitrary</em> orbital class which only contains the harmonical part of the wavefunction  where <span class="math notranslate nohighlight">\(\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)\)</span></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a>(*args, **kwargs)</p></td>
-<td><p>A projected atomic orbital consisting of real harmonics</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital" title="sisl.HydrogenicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HydrogenicOrbital</span></code></a>(n, l, m, Z, **kwargs)</p></td>
-<td><p>A hydrogen-like atomic orbital defined by an effective atomic number Z in addition to the usual quantum numbers (n, l, m).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.GTOrbital.html#sisl.GTOrbital" title="sisl.GTOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GTOrbital</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Gaussian type orbital</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.STOrbital.html#sisl.STOrbital" title="sisl.STOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STOrbital</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Slater type orbital</p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Atomic information for a single atomic specie</p></td>
 </tr>
@@ -215,6 +200,32 @@ unit cells and grid functions.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>(shape[, bc, lattice, dtype, geometry])</p></td>
 <td><p>Real-space grid information with associated geometry.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="orbitals">
+<span id="basic-orbitals"></span><h2>Orbitals<a class="headerlink" href="#orbitals" title="Link to this heading"></a></h2>
+<p id="index-1">Each of the following orbitals are specialized for various use cases.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital</span></code></a>(R[, q0, tag])</p></td>
+<td><p>Base class for orbital information.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital" title="sisl.SphericalOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalOrbital</span></code></a>(l[, rf_or_func, q0, tag])</p></td>
+<td><p>An <em>arbitrary</em> orbital class which only contains the harmonical part of the wavefunction  where <span class="math notranslate nohighlight">\(\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a>(*args, **kwargs)</p></td>
+<td><p>A projected atomic orbital consisting of real harmonics</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital" title="sisl.HydrogenicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HydrogenicOrbital</span></code></a>(n, l, m, Z, **kwargs)</p></td>
+<td><p>A hydrogen-like atomic orbital defined by an effective atomic number Z in addition to the usual quantum numbers (n, l, m).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.GTOrbital.html#sisl.GTOrbital" title="sisl.GTOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GTOrbital</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Gaussian type orbital</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.STOrbital.html#sisl.STOrbital" title="sisl.STOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STOrbital</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Slater type orbital</p></td>
 </tr>
 </tbody>
 </table>
