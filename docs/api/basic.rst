@@ -14,24 +14,39 @@ unit cells and grid functions.
 Simple objects
 ==============
 
-.. index:: basic, geometry, lattice, supercell, atom, orbital
+.. index:: basic, geometry, lattice, supercell, atom
 
 .. autosummary::
    :toctree: generated/
 
    PeriodicTable
-   Orbital
-   SphericalOrbital
-   AtomicOrbital
-   HydrogenicOrbital
-   GTOrbital
-   STOrbital
    Atom
    Atoms
    Geometry
    Lattice
    BoundaryCondition
    Grid
+
+
+.. _basic-orbitals:
+
+Orbitals
+========
+
+.. index:: orbital, hydrogenic-orbital, atomic-orbital, spherical-orbital
+
+Each of the following orbitals are specialized for various use cases.
+
+
+.. autosummary::
+   :toctree: generated/
+
+   Orbital
+   SphericalOrbital
+   AtomicOrbital
+   HydrogenicOrbital
+   GTOrbital
+   STOrbital
 
 
 Advanced classes

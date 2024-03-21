@@ -22,7 +22,7 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :maxdepth: 2
 
    basic
-   default_geom
+   geom
    physics
    mixing
    viz/index

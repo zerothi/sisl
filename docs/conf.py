@@ -413,7 +413,7 @@ nbsphinx_timeout = 600
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base="docs") %}
+{% set docname = "docs/" + env.doc2path(env.docname, base=False) %}
 
 .. raw:: html
 

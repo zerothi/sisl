@@ -27,7 +27,7 @@ Matrices
    :toctree: generated/
    :hidden:
 
-   _densitymatrix
+   densitymatrix._densitymatrix
 
 .. autosummary::
    :toctree: generated/
