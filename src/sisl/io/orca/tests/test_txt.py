@@ -87,3 +87,52 @@ def test_info_no(sisl_files):
     f = sisl_files(_dir, "molecule3_property.txt")
     out = txtSileORCA(f)
     assert out.info.no == 284
+
+
+def test_gtensor(sisl_files):
+    # file without g-tensor
+    f = sisl_files(_dir, "molecule_property.txt")
+    out = txtSileORCA(f)
+    assert out.read_gtensor() is None
+
+    # file with g-tensor
+    f = sisl_files(_dir, "molecule3_property.txt")
+    out = txtSileORCA(f)
+    G = out.read_gtensor()
+
+    assert G.multiplicity == 2
+    assert G.tensor[0, 0] == 2.002750
+    assert G.vectors[0, 1] == -0.009799
+    for i in range(3):
+        v = G.vectors[i]
+        assert v.dot(v) == pytest.approx(1)
+    assert G.eigenvalues[0] == 2.002127
+
+
+def test_hyperfine_coupling(sisl_files):
+    # file without hyperfine_coupling tensors
+    f = sisl_files(_dir, "molecule_property.txt")
+    out = txtSileORCA(f)
+    assert out.read_hyperfine_coupling() is None
+
+    # file with hyperfine_coupling tensors
+    f = sisl_files(_dir, "molecule3_property.txt")
+    out = txtSileORCA(f)
+    A = out.read_hyperfine_coupling()
+    assert len(A) == 22
+    assert A[0].iso == -23.380794
+    assert A[1].ia == 1
+    assert A[1].sa == "C"
+    assert A[1].isotope == 13
+    assert A[1].spin == 0.5
+    assert A[1].prefactor == 134.190303
+    assert A[1].tensor[0, 1] == -0.320129
+    assert A[1].tensor[2, 2] == 68.556557
+    assert A[1].vectors[1, 0] == 0.407884
+    for i in range(3):
+        v = A[1].vectors[i]
+        assert v.dot(v) == pytest.approx(1)
+    assert A[1].eigenvalues[1] == 5.523380
+    assert A[1].iso == 26.247902
+    assert A[12].sa == "C"
+    assert A[13].sa == "H"
