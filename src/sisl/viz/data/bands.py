@@ -645,6 +645,7 @@ def _get_eigenstate_wrapper(
             "name": "E",
             "getter": lambda eigenstate, spin, spin_index: eigenstate.eig,
         },
+        "ipr",
         *extra_vars,
     )
 
@@ -666,7 +667,7 @@ def _get_eigenstate_wrapper(
     return bands_wrapper, all_vars, coords_values
 
 
-def _norm2_from_eigenstate(eigenstate, spin, spin_index):
+def _norm2_getter(eigenstate, spin, spin_index):
     norm2 = eigenstate.norm2(sum=False)
 
     if not spin.is_diagonal:
@@ -682,16 +683,25 @@ def _spin_moment_getter(eigenstate, spin, spin_index):
     return eigenstate.spin_moment().real
 
 
+def _ipr_getter(eigenstate, spin, spin_index):
+    return eigenstate.ipr()
+
+
 _KNOWN_EIGENSTATE_VARS = {
     "norm2": {
         "coords": ("band", "orb"),
         "name": "norm2",
-        "getter": _norm2_from_eigenstate,
+        "getter": _norm2_getter,
     },
     "spin_moment": {
         "coords": ("axis", "band"),
         "coords_values": dict(axis=["x", "y", "z"]),
         "name": "spin_moments",
         "getter": _spin_moment_getter,
+    },
+    "ipr": {
+        "coords": ("band",),
+        "name": "ipr",
+        "getter": _ipr_getter,
     },
 }

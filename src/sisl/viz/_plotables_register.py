@@ -58,7 +58,7 @@ register_data_source(
     BandsData,
     FatbandsPlot,
     "bands_data",
-    data_source_init_kwargs={"extra_vars": ("norm2",)},
+    data_source_init_kwargs={"extra_vars": ("norm2", "ipr")},
 )
 register_data_source(
     EigenstateData, WavefunctionPlot, "eigenstate", default=[sisl.EigenstateElectron]
