@@ -140,7 +140,7 @@ def apply(
                 f"{geometry.__class__}.apply got wrong argument 'segments'={segments}"
             )
 
-    if isinstance(mapper, "str"):
+    if isinstance(mapper, str):
         # an internal mapper
         mapper = getattr(geometry, mapper)
 
