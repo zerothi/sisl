@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- "Hz", "MHz", "GHz", "THz", and "invcm" as valid energy units, #725
 - enabled `AtomsArgument` and `OrbitalsArgument` to accept `bool` for *all* or *none*
 - enabled `winSileWannier90.read_hamiltonian` to read the ``_tb.dat`` files
 - `atoms` argument to `DensityMatrix.spin_align` to align a subset of atoms

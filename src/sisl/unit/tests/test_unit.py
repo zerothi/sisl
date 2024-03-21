@@ -25,6 +25,16 @@ def test_unit_convert():
     assert approx(unit_convert("J", "eV", opts={"^": 2})) == (1 / 1.60217733e-19) ** 2
     assert approx(unit_convert("J", "eV", opts={"/": 2})) == (1 / 1.60217733e-19) / 2
     assert approx(unit_convert("J", "eV", opts={"*": 2})) == (1 / 1.60217733e-19) * 2
+    assert approx(unit_convert("Ha", "Ry")) == 2
+    assert approx(unit_convert("Ha", "eV")) == 27.211386245988
+    assert approx(unit_convert("eV", "Hz")) == 2.417989242e14
+    assert approx(unit_convert("eV", "MHz")) == 2.417989242e8
+    assert approx(unit_convert("K", "eV")) == 8.617333262e-5
+    assert approx(unit_convert("MHz", "Hz")) == 1e6
+    assert approx(unit_convert("GHz", "Hz")) == 1e9
+    assert approx(unit_convert("THz", "Hz")) == 1e12
+    assert approx(unit_convert("invcm", "eV")) == 1.239841984e-4
+    assert approx(unit_convert("THz", "Hz")) == 1e12
 
 
 def test_class_unit():
