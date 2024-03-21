@@ -134,7 +134,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -192,7 +192,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -247,7 +247,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -318,12 +318,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             see `eigh` for details, this will be passed to the EigenstateElectron
             instance to be used in subsequent calls, may speed up post-processing.
         **kwargs : dict, optional
-            passed arguments to the `eigh` routine
+            passed arguments to the eigenvalue calculator routine
 
         See Also
         --------
-        eigh : eigenvalue routine
-        eigsh : eigenvalue routine
+        eigh : dense eigenvalue routine
+        eigsh : sparse eigenvalue routine
 
         Returns
         -------
@@ -358,12 +358,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             see `eigh` for details, this will be passed to the EigenstateElectron
             instance to be used in subsequent calls, may speed up post-processing.
         **kwargs : dict, optional
-            passed arguments to the `eigh`/`eighs` routine
+            passed arguments to the eigenvalue calculator routine
 
         See Also
         --------
-        eigh : eigenvalue routine
-        eigsh : eigenvalue routine
+        eigh : dense eigenvalue routine
+        eigsh : sparse eigenvalue routine
 
         Returns
         -------

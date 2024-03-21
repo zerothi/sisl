@@ -2243,7 +2243,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def orbital_COOP(self, E, kavg=True, isc=None, orbitals=None) -> csr_matrix:
         r""" Orbital COOP analysis of the Green function
 
-        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
         Each matrix element of the sparse matrix corresponds to the COOP of the
         underlying geometry.
 
@@ -2469,7 +2469,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def orbital_COHP(self, E, kavg=True, isc=None, orbitals=None) -> csr_matrix:
         r"""Orbital resolved COHP analysis of the Green function
 
-        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
         Each matrix element of the sparse matrix corresponds to the COHP of the
         underlying geometry.
 
@@ -2519,7 +2519,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     ) -> csr_matrix:
         r"""Orbital resolved COHP analysis of the spectral function
 
-        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
         Each matrix element of the sparse matrix corresponds to the COHP of the
         underlying geometry.
 

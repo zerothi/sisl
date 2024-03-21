@@ -50,7 +50,7 @@ def reduce_atom_data(
         If not provided, it will be searched in the ``geometry`` attribute of the ``atom_data`` object.
     reduce_func : Callable, optional
         The function that will compute the reduction along the atoms dimension once the selection is done.
-        This could be for example ``numpy.mean`` or ``numpy.sum``.
+        This could be for example `numpy.mean` or `numpy.sum`.
         Notice that this will only be used in case the group specification doesn't specify a particular function
         in its "reduce_func" field, which will take preference.
     spin_reduce: Callable, optional
