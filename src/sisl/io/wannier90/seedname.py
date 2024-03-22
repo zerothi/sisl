@@ -314,6 +314,10 @@ class winSileWannier90(SileWannier90):
             # to ensure we get the correct orbital positions
             kwargs["geometry"] = self.read_geometry()
 
+        if "lattice" not in kwargs:
+            # to ensure we get the correct orbital positions
+            kwargs["lattice"] = self.read_lattice()
+
         kwargs["cutoff"] = cutoff
 
         for f in order:
@@ -392,7 +396,7 @@ class tbSileWannier90(hamSileWannier90):
         #  Lattice vectors [Ang]
         cell = _a.zerosf((3, 3))
         for i in range(3):
-            cell[i] = map(float, self.readline().split())
+            cell[i] = list(map(float, self.readline().split()))
 
         # Number of orbitals
         no = int(self.readline())
@@ -482,7 +486,8 @@ class hrSileWannier90(hamSileWannier90):
         # Number of orbitals
         no = int(self.readline())
         if geometry is None:
-            geometry = Geometry([0.0, 0.0, 0.0], lattice=Lattice([[0.0, 0.0, 0.0]] * 3))
+            lattice = kwargs.pop("lattice", Lattice(_a.zerosf((3, 3))))
+            geometry = Geometry([0.0, 0.0, 0.0] * no, lattice=lattice)
         elif no != geometry.no:
             raise ValueError(
                 f"{self.__class__.__name__}"
