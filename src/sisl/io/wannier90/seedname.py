@@ -12,7 +12,7 @@ import scipy.sparse as sps
 from scipy.sparse import lil_matrix
 
 import sisl._array as _a
-from sisl import Geometry, Lattice
+from sisl import Geometry, Lattice, Atom
 from sisl.messages import deprecate_argument
 from sisl.physics import Hamiltonian
 from sisl.unit import unit_convert
@@ -21,6 +21,7 @@ from ..sile import *
 
 # Import sile objects
 from .sile import SileWannier90
+from ..xyz import xyzSile
 
 __all__ = ["winSileWannier90"]
 
@@ -134,29 +135,17 @@ class winSileWannier90(SileWannier90):
 
         return self._r_lattice()
 
-    @sile_fh_open()
     def _r_geometry_centres(self, *args, **kwargs):
         """Defered routine"""
 
-        nc = int(self.readline())
-
-        # Comment
-        self.readline()
-
-        na = 0
-        sp = [None] * nc
-        xyz = np.empty([nc, 3], np.float64)
-        for ia in range(nc):
-            l = self.readline().split()
-            sp[ia] = l.pop(0)
-            if sp[ia] == "X":
-                na = ia + 1
-            xyz[ia, :] = [float(k) for k in l[:3]]
-
-        return Geometry(xyz[:na, :], atoms="H")
+        f = self.dir_file(self._seed + "_centres.xyz")
+        geometry = None
+        if f.exists():
+            geometry = xyzSileWannier90(f).read_geometry(*args, **kwargs)
+        return geometry
 
     @sile_fh_open()
-    def _r_geometry(self, lattice, *args, **kwargs):
+    def _r_geometry_win(self, lattice, *args, **kwargs):
         """Defered routine"""
 
         is_frac = True
@@ -211,21 +200,13 @@ class winSileWannier90(SileWannier90):
         """Reads a `Geometry` and creates the Wannier90 cell"""
 
         # Read in the super-cell
-        lattice = self.read_lattice()
+        kwargs["lattice"] = self.read_lattice()
 
-        self._set_file("_centres.xyz")
-        if self.file.is_file():
-            geom = self._r_geometry_centres()
-        else:
-            self._set_file()
-            geom = self._r_geometry(lattice, *args, **kwargs)
-
-        # Reset file
-        self._set_file()
-
-        # Specify the supercell and return
-        geom.set_lattice(lattice)
-        return geom
+        order = kwargs.pop("order", ["centres"])
+        for f in order:
+            geometry = getattr(self, f"_r_geometry_{f.lower()}")(*args, **kwargs)
+            if geometry is not None:
+                return geometry
 
     @sile_fh_open()
     def _write_lattice(self, lattice, fmt=".8f", *args, **kwargs):
@@ -297,10 +278,108 @@ class winSileWannier90(SileWannier90):
         ws = 1.0 / _a.arrayd(ws)
         return ws
 
+
+    def _r_hamiltonian_tb(self, *args, **kwargs):
+        """Read Hamiltonian from the <>_tb.dat file"""
+        f = self.dir_file(self._seed + "_tb.dat")
+        H = None
+        if f.exists():
+            H = tbSileWannier90(f).read_hamiltonian(*args, **kwargs)
+        return H
+
+    def _r_hamiltonian_hr(self, *args, **kwargs):
+        """Reads a Hamiltonian model from the <>_hr.dat file"""
+        f = self.dir_file(self._seed + "_hr.dat")
+        H = None
+        if f.exists():
+            H = hrSileWannier90(f).read_hamiltonian(*args, **kwargs)
+        return H
+
     @sile_fh_open()
-    def _r_hamiltonian_hr(self, geometry, dtype=np.float64, **kwargs):
-        """Reads a Hamiltonian model from the _hr.dat file"""
-        cutoff = kwargs.get("cutoff", 0.00001)
+    def read_hamiltonian(self, cutoff: float = 1e-5, *args, **kwargs):
+        """Read the electronic structure of the Wannier90 output by reading the <>_tb.dat, <>_hr.dat
+
+        Parameters
+        ----------
+        cutoff:
+           the cutoff value for the zero Hamiltonian elements, default
+           to 0.00001 eV.
+
+        dtype: np.float64, optional
+            the default data-type used for the matrix.
+            Is mainly useful to check whether the TB model has imaginary
+            components (it should not since it is a Wannier model).
+        """
+        order = kwargs.pop("order", ["tb", "hr"])
+
+        if "geometry" not in kwargs:
+            # to ensure we get the correct orbital positions
+            kwargs["geometry"] = self.read_geometry()
+        
+        kwargs["cutoff"] = cutoff
+
+        for f in order:
+            H = getattr(self, f"_r_hamiltonian_{f.lower()}")(*args, **kwargs)
+            if H is not None:
+                return H
+
+        return None
+
+    def ArgumentParser(self, p=None, *args, **kwargs):
+        """Returns the arguments that is available for this Sile"""
+        newkw = Geometry._ArgumentParser_args_single()
+        newkw.update(kwargs)
+        return self.read_geometry().ArgumentParser(p, *args, **newkw)
+
+class xyzSileWannier90(SileWannier90):
+        
+    @sile_fh_open()
+    def read_geometry(self, lattice):
+        """Defered routine"""
+
+        self.fh.seek(0)
+
+        nc = int(self.readline())
+
+        # Comment
+        self.readline()
+
+        na = 0
+        sp = [None] * nc
+        xyz = np.empty([nc, 3], np.float64)
+        for ia in range(nc):
+            l = self.readline().split()
+            sp[ia] = l.pop(0)
+            if sp[ia] == "X":
+                na = ia + 1
+            xyz[ia, :] = [float(k) for k in l[:3]]
+
+        return Geometry(xyz[:na, :], atoms="H", lattice=lattice)
+
+class hamSileWannier90(SileWannier90):
+    
+    def _r_wigner_seitz_weights(self):
+        # Number of Wigner-Seitz degeneracy points
+        npts = int(self.readline())
+
+        ws = []
+        while len(ws) < npts:
+            # both formats uses 15 points per line,
+            # however, this should be usable if they decide to change
+            # the number of counts per line.
+            ws.extend(list(map(int, self.readline().split())))
+
+        ws = 1.0 / _a.arrayd(ws)
+        return ws
+class tbSileWannier90(hamSileWannier90):
+
+    @sile_fh_open()
+    def read_geometry(self):
+        """Reads a geometry information from the _tb.dat file. 
+        
+        Wannier centres are not stored in the file, so we use dummy coordinates
+        instead.
+        """
 
         # Rewind to ensure we can read the entire matrix structure
         self.fh.seek(0)
@@ -308,57 +387,23 @@ class winSileWannier90(SileWannier90):
         # Time of creation
         self.readline()
 
+        #  Lattice vectors [Ang]
+        cell = _a.zerosf((3,3))
+        for i in range(3):
+            cell[i] = map(float, self.readline().split())
+            
         # Number of orbitals
         no = int(self.readline())
-        if no != geometry.no:
-            raise ValueError(
-                f"{self.__class__.__name__}"
-                ".read_hamiltonian has found inconsistent number "
-                "of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?"
-            )
 
-        ws = self._r_wigner_seitz_weights()
-
-        # List for holding the Hamiltonian
-        Hsc = defaultdict(lambda: lil_matrix((geometry.no, geometry.no), dtype=dtype))
-        is_complex = np.iscomplexobj(dtype(1))
-
-        iws = -1
-        isc = [0, 0, 0]
-        while True:
-            l = self.readline()
-            if l == "":
-                break
-
-            # Split here...
-            l = l.split()
-
-            # Get super-cell, row and column
-            isc[0], isc[1], isc[2], r, c = map(int, l[:5])
-
-            # Update index for degeneracy, if required
-            if r + c == 2:
-                iws += 1
-
-            # Get degeneracy of this element
-            w = ws[iws]
-
-            # Scale matrix elements
-            hr = float(l[5]) * w
-            if is_complex:
-                h = hr + 1j * float(l[6]) * w
-            else:
-                h = hr
-
-            if abs(h) > cutoff:
-                Hsc[tuple(isc)][r - 1, c - 1] = h
-
-        return _construct_hamiltonian(geometry, Hsc)
+        return Geometry([0., 0., 0.]*no, lattice=Lattice(cell))
 
     @sile_fh_open()
-    def _r_hamiltonian_tb(self, geometry, dtype=np.float64, **kwargs):
+    def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
         """Reads a Hamiltonian model from the _tb.dat file"""
         cutoff = kwargs.get("cutoff", 0.00001)
+
+        if geometry is None:
+            geometry = self.read_geometry()
 
         # Rewind to ensure we can read the entire matrix structure
         self.fh.seek(0)
@@ -369,7 +414,6 @@ class winSileWannier90(SileWannier90):
         #  Lattice vectors [Ang]
         for _ in range(3):
             self.readline()
-        # TODO check against self.lattice?!
 
         # Number of orbitals
         no = int(self.readline())
@@ -419,44 +463,68 @@ class winSileWannier90(SileWannier90):
 
         return _construct_hamiltonian(geometry, Hsc)
 
-    def read_hamiltonian(self, cutoff: float = 1e-5, *args, **kwargs):
-        """Read the electronic structure of the Wannier90 output by reading the <>_tb.dat, <>_hr.dat
+class hrSileWannier90(hamSileWannier90):
 
-        Parameters
-        ----------
-        cutoff:
-           the cutoff value for the zero Hamiltonian elements, default
-           to 0.00001 eV.
+    @sile_fh_open()
+    def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
+        """Reads a Hamiltonian model from the _hr.dat file"""
+        cutoff = kwargs.get("cutoff", 0.00001)
 
-        dtype: np.float64, optional
-            the default data-type used for the matrix.
-            Is mainly useful to check whether the TB model has imaginary
-            components (it should not since it is a Wannier model).
-        """
-        # Retrieve the geometry...
-        geom = self.read_geometry()
+        # Rewind to ensure we can read the entire matrix structure
+        self.fh.seek(0)
 
-        order = kwargs.pop("order", ["tb", "hr"])
-        for f in order:
-            # Set file
-            self._set_file(f"_{f.lower()}.dat")
+        # Time of creation
+        self.readline()
 
-            # only parse if the file exists
-            if self._file.exists():
-                H = getattr(self, f"_r_hamiltonian_{f.lower()}")(
-                    geom, *args, cutoff=cutoff, **kwargs
-                )
-            self._set_file()
-            if H is not None:
-                return H
+        # Number of orbitals
+        no = int(self.readline())
+        if geometry is None:
+            geometry = Geometry([0., 0., 0.], lattice=Lattice([[0.,0.,0.]]*3))
+        elif no != geometry.no:
+            raise ValueError(
+                f"{self.__class__.__name__}"
+                ".read_hamiltonian has found inconsistent number "
+                "of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?"
+            )
 
-        return None
+        ws = self._r_wigner_seitz_weights()
 
-    def ArgumentParser(self, p=None, *args, **kwargs):
-        """Returns the arguments that is available for this Sile"""
-        newkw = Geometry._ArgumentParser_args_single()
-        newkw.update(kwargs)
-        return self.read_geometry().ArgumentParser(p, *args, **newkw)
+        # List for holding the Hamiltonian
+        Hsc = defaultdict(lambda: lil_matrix((geometry.no, geometry.no), dtype=dtype))
+        is_complex = np.iscomplexobj(dtype(1))
+
+        iws = -1
+        isc = [0, 0, 0]
+        while True:
+            l = self.readline()
+            if l == "":
+                break
+
+            # Split here...
+            l = l.split()
+
+            # Get super-cell, row and column
+            isc[0], isc[1], isc[2], r, c = map(int, l[:5])
+
+            # Update index for degeneracy, if required
+            if r + c == 2:
+                iws += 1
+
+            # Get degeneracy of this element
+            w = ws[iws]
+
+            # Scale matrix elements
+            hr = float(l[5]) * w
+            if is_complex:
+                h = hr + 1j * float(l[6]) * w
+            else:
+                h = hr
+
+            if abs(h) > cutoff:
+                Hsc[tuple(isc)][r - 1, c - 1] = h
+
+        return _construct_hamiltonian(geometry, Hsc)
+
 
 
 add_sile("win", winSileWannier90, gzip=True)
