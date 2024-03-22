@@ -6,7 +6,8 @@ import numpy as np
 from sisl._core.geometry import Geometry
 from sisl._internal import set_module
 from sisl.messages import deprecation
-from sisl.unit import units
+from sisl.unit import serialize_units_arg
+from sisl.unit import units as sunits
 from sisl.utils import PropertyDict
 
 from .._multiple import SileBinder
@@ -75,7 +76,7 @@ class txtSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_energy(self, unit="eV"):
+    def read_energy(self, units="eV"):
         """Reads the energy blocks
 
         Parameters
@@ -99,7 +100,9 @@ class txtSileORCA(SileORCA):
         self.readline()  # geom. index
         self.readline()  # prop. index
 
-        Ha2unit = units("Ha", unit)
+        units = serialize_units_arg(units)
+        Ha2unit = sunits.convert("Ha", units["energy"])
+
         E = PropertyDict()
 
         line = self.readline()
@@ -199,7 +202,7 @@ class txtSileORCA(SileORCA):
         return G
 
     @sile_fh_open()
-    def read_hyperfine_coupling(self, unit="eV"):
+    def read_hyperfine_coupling(self, units="eV"):
         r"""Reads hyperfine couplings from the ``EPRNMR_ATensor`` block
 
         Parameters
@@ -233,7 +236,8 @@ class txtSileORCA(SileORCA):
         if not f:
             return None
 
-        MHz2unit = units.convert("MHz", unit)
+        units = serialize_units_arg(units)
+        MHz2unit = sunits.convert("MHz", units["energy"])
 
         def read_A():
             A = PropertyDict()

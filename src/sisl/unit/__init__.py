@@ -45,4 +45,4 @@ will use the unit definitions in `Siesta`_.
 """
 # Enable the siesta unit-conversion
 from . import siesta
-from .base import unit_convert, unit_default, unit_group, units
+from .base import serialize_units_arg, unit_convert, unit_default, unit_group, units
