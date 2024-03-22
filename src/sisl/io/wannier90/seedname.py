@@ -213,7 +213,8 @@ class winSileWannier90(SileWannier90):
         """
 
         # Read in the super-cell
-        kwargs["lattice"] = self.read_lattice()
+        if "lattice" not in kwargs:
+            kwargs["lattice"] = self.read_lattice()
 
         order = kwargs.pop("order", ["centres"])
         for f in order:
