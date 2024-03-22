@@ -59,20 +59,25 @@ class winSileWannier90(SileWannier90):
     quantity may be read.
 
     For instance to read the Wannier-centres you *must* have this in your
-    seedname.win:
+    ``seedname.win``:
 
-    .. code:: bash
+    .. code-block:: console
 
         write_xyz = true
-        translate_home_cell = False
 
     while if you want to read the Wannier Hamiltonian you should have this:
 
-    .. code:: bash
+    .. code-block:: console
+
+        write_tb = true
+
+    For legacy compatibility, one might need to use:
+
+    .. code-block:: console
 
         write_xyz = true
-        plot_hr = true
-        translate_home_cell = False
+        hr_plot = true
+        write_hr = true
 
     Examples
     --------
@@ -196,20 +201,20 @@ class winSileWannier90(SileWannier90):
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
     def read_geometry(self, *args, **kwargs):
-        """Reads a `Geometry` and creates the Wannier90 cell by reading the <>_centres.xyz. 
-        
+        """Reads a `Geometry` and creates the Wannier90 cell by reading the ``<>_centres.xyz``.
+
 
         Parameters
         ----------
         order: list of str, optional
             the order of which to try and read the geometry information.
-            By default this is ``["centres"]``. 
+            By default this is ``["centres"]``.
 
         Notes
         -----
-        Reading from `<>_centres.dat` (order=["centres"]) will return the `Geometry` associated with
-        the Wannier functions/Hamiltonian, whereas reading from `<>.win` (order=["win"]) returns
-        the `Geometry` of the crystal structure.  
+        Reading from ``<>_centres.dat`` (order=["centres"]) will return the `Geometry` associated with
+        the Wannier functions/Hamiltonian, whereas reading from ``<>.win`` (order=["win"]) returns
+        the `Geometry` of the crystal structure.
         """
 
         # Read in the super-cell
@@ -221,6 +226,7 @@ class winSileWannier90(SileWannier90):
             geometry = getattr(self, f"_r_geometry_{f.lower()}")(*args, **kwargs)
             if geometry is not None:
                 return geometry
+        return None
 
     @sile_fh_open()
     def _write_lattice(self, lattice, fmt=".8f", *args, **kwargs):
@@ -293,7 +299,7 @@ class winSileWannier90(SileWannier90):
         return ws
 
     def _r_hamiltonian_tb(self, *args, **kwargs):
-        """Read Hamiltonian from the <>_tb.dat file"""
+        """Read Hamiltonian from the ``<>_tb.dat`` file"""
         f = self.dir_file(self._seed + "_tb.dat")
         H = None
         if f.exists():
@@ -301,7 +307,7 @@ class winSileWannier90(SileWannier90):
         return H
 
     def _r_hamiltonian_hr(self, *args, **kwargs):
-        """Reads a Hamiltonian model from the <>_hr.dat file"""
+        """Reads a Hamiltonian model from the ``<>_hr.dat`` file"""
         f = self.dir_file(self._seed + "_hr.dat")
         H = None
         if f.exists():
@@ -309,7 +315,7 @@ class winSileWannier90(SileWannier90):
         return H
 
     def read_hamiltonian(self, cutoff: float = 1e-5, *args, **kwargs):
-        """Read the electronic structure of the Wannier90 output by reading the <>_tb.dat, <>_hr.dat
+        """Read the electronic structure of the Wannier90 output by reading the ``<>_tb.dat``, ``<>_hr.dat``
 
         Parameters
         ----------
@@ -322,10 +328,10 @@ class winSileWannier90(SileWannier90):
             Is mainly useful to check whether the TB model has imaginary
             components (it should not since it is a Wannier model).
 
-        geometry: sisl.Geometry, optional
+        geometry: Geometry, optional
             the geometry associated with the Hamiltonian
 
-        lattice: sisl.Lattice, optional
+        lattice: Lattice, optional
             the lattice associated with the Hamiltonian
         """
         order = kwargs.pop("order", ["tb", "hr"])
@@ -356,11 +362,9 @@ class winSileWannier90(SileWannier90):
 
 class xyzSileWannier90(SileWannier90):
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_geometry(self, lattice):
-        """Read geometry information from Wannier90's charge centres file. """
-
-        self.fh.seek(0)
+        """Read geometry information from Wannier90's charge centres file."""
 
         nc = int(self.readline())
 
@@ -401,8 +405,7 @@ class tbSileWannier90(hamSileWannier90):
 
     @sile_fh_open(True)
     def read_lattice(self):
-        """Reads a cell information from the <>_tb.dat file.
-        """
+        """Reads a cell information from the ``<>_tb.dat`` file."""
 
         # Time of creation
         self.readline()
@@ -411,12 +414,12 @@ class tbSileWannier90(hamSileWannier90):
         cell = _a.zerosd((3, 3))
         for i in range(3):
             cell[i] = list(map(float, self.readline().split()))
-        
+
         return Lattice(cell)
-        
+
     @sile_fh_open(True)
     def read_geometry(self):
-        """Reads a geometry information from the <>_tb.dat file.
+        """Reads a geometry information from the ``<>_tb.dat`` file.
 
         Wannier centres are not stored in the file, so we use dummy coordinates
         instead.
@@ -518,7 +521,7 @@ class hrSileWannier90(hamSileWannier90):
 
     @sile_fh_open(True)
     def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
-        """Reads a Hamiltonian model from the <>_hr.dat file
+        """Reads a Hamiltonian model from the ``<>_hr.dat`` file
 
         Parameters
         ----------
