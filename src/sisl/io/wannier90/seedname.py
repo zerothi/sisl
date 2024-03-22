@@ -12,7 +12,7 @@ import scipy.sparse as sps
 from scipy.sparse import lil_matrix
 
 import sisl._array as _a
-from sisl import Geometry, Lattice, Atom
+from sisl import Geometry, Lattice
 from sisl.messages import deprecate_argument
 from sisl.physics import Hamiltonian
 from sisl.unit import unit_convert
@@ -21,7 +21,6 @@ from ..sile import *
 
 # Import sile objects
 from .sile import SileWannier90
-from ..xyz import xyzSile
 
 __all__ = ["winSileWannier90", "tbSileWannier90", "hrSileWannier90", "xyzSileWannier90"]
 
