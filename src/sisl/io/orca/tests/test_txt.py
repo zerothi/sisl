@@ -118,7 +118,7 @@ def test_hyperfine_coupling(sisl_files):
     # file with hyperfine_coupling tensors
     f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
     out = txtSileORCA(f)
-    A = out.read_hyperfine_coupling()
+    A = out.read_hyperfine_coupling(unit="MHz")
     assert len(A) == 22
     assert A[0].iso == -23.380794
     assert A[1].ia == 1
