@@ -3451,11 +3451,11 @@ class Geometry(
 
         Parameters
         ----------
-        lattice : Lattice or LatticeChild
+        lattice : LatticeLike
             the supercell in which this geometry should be expanded into.
         periodic :
             explicitly define the periodic directions, by default the periodic
-            directions are only where ``self.nsc > 1``.
+            directions are only where ``self.nsc > 1 & self.pbc``.
         tol :
             length tolerance for the fractional coordinates to be on a duplicate site (in Ang).
             This allows atoms within `tol` of the cell boundaries to be taken as *inside* the
@@ -3472,8 +3472,9 @@ class Geometry(
         numpy.ndarray
            integer supercell offsets for `ia` atoms
         """
+        lattice = Lattice.new(lattice)
         if periodic is None:
-            periodic = self.nsc > 1
+            periodic = np.logical_and(self.pbc, self.nsc > 1)
         else:
             periodic = list(periodic)
 
