@@ -147,5 +147,133 @@ class txtSileORCA(SileORCA):
 
         return Geometry(xyz, atoms)
 
+    @sile_fh_open()
+    def read_gtensor(self):
+        r"""Reads electronic g-tensor data from the ``EPRNMR_GTensor`` block
+
+        Returns
+        -------
+        PropertyDict : Electronic g-tensor
+        """
+        G = PropertyDict()
+        f, line = self.step_to("EPRNMR_GTensor", allow_reread=False)
+        if not f:
+            return None
+
+        for _ in range(4):  # skip 4 lines
+            self.readline()
+
+        G["multiplicity"] = int(self.readline().split()[-1])
+        self.readline()
+        self.readline()
+
+        tensor = np.empty([3, 3], np.float64)
+        for i in range(3):
+            v = self.readline().split()
+            tensor[i] = v[1:4]
+        G["tensor"] = tensor  # raw (total) tensor
+
+        self.readline()  # skip g tensor line
+        self.readline()  # skip header
+
+        vectors = np.empty([3, 3], np.float64)
+        for i in range(3):
+            v = self.readline().split()
+            vectors[i] = v[1:4]
+        G["vectors"] = vectors  # g-tensor eigenvectors
+
+        self.readline()  # skip eigenvalue line
+        self.readline()  # skip header
+        v = self.readline().split()
+        G["eigenvalues"] = np.array(v[1:4], np.float64)
+
+        return G
+
+    @sile_fh_open()
+    def read_hyperfine_coupling(self):
+        r"""Reads hyperfine couplings from the ``EPRNMR_ATensor`` block
+
+        For a nucleus :math:`k`, the hyperfine interaction is usually
+        written in terms of the symmetric :math:`3\times 3` hyperfine
+        tensor :math:`A_k` such that
+
+        .. math::
+
+           H_\mathrm{hfi} = \mathbf{S} \cdot A_k \mathbf{I}_k
+
+        where :math:`\mathbf{S}_k` and :math:`\mathbf{I}_k`
+        represent the electron and nuclear spin operators, respectively.
+
+        For a study of hyperfine coupling in nanographenes using ORCA
+        see :cite:`Sengupta2023`.
+
+        Note
+        ----
+        The hyperfine tensors are given in units of MHz. This may change
+        in later versions.
+
+        Returns
+        -------
+        list of PropertyDict : Hyperfine coupling data (in MHz)
+        """
+        f, line = self.step_to("EPRNMR_ATensor", allow_reread=False)
+        if not f:
+            return None
+
+        def read_A():
+            A = PropertyDict()
+            # Read the EPRNMR_ATensor block
+            f, line = self.step_to("Nucleus:", allow_reread=False)
+            if not f:
+                return None
+
+            v = line.split()
+            A["ia"] = int(v[1])
+            A["sa"] = v[2]
+
+            v = self.readline().split()
+            A["isotope"] = int(v[-1])
+
+            v = self.readline().split()
+            A["spin"] = float(v[-1])
+
+            v = self.readline().split()
+            A["prefactor"] = float(v[-1])
+
+            self.readline()  # skip Raw line
+            self.readline()  # skip header
+
+            tensor = np.empty([3, 3], np.float64)
+            for i in range(3):
+                v = self.readline().split()
+                tensor[i] = v[1:4]
+            A["tensor"] = tensor  # raw A_total tensor
+
+            self.readline()  # skip eigenvector line
+            self.readline()  # skip header
+
+            vectors = np.empty([3, 3], np.float64)
+            for i in range(3):
+                v = self.readline().split()
+                vectors[i] = v[1:4]
+            A["vectors"] = vectors
+
+            self.readline()  # skip eigenvalue line
+            self.readline()  # skip header
+
+            v = self.readline().split()
+            A["eigenvalues"] = np.array(v[1:4], np.float64)  # eigenvalues of A_total
+
+            v = self.readline().split()
+            A["iso"] = float(v[1])  # Fermi contact A_FC
+
+            return A
+
+        for _ in range(3):
+            self.readline()
+        stored_nuclei = int(self.readline().split()[-1])
+
+        return [read_A() for k in range(stored_nuclei)]
+
 
 add_sile("txt", txtSileORCA, gzip=True)
