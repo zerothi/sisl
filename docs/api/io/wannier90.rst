@@ -9,6 +9,9 @@ Wannier90
    :toctree: generated/
 
    winSileWannier90 - input file
+   tbSileWannier90 - Hamiltonian and Position operator information
+   hrSileWannier90 - Hamiltonian information
+   xyzSileWannier90 - Wannier charge center information
 
 
 .. autosummary::
