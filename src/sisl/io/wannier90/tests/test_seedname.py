@@ -32,7 +32,7 @@ end
                 unit
             )
         )
-    g = winSileWannier90(f).read_geometry()
+    g = winSileWannier90(f).read_geometry(order=["win"])
 
     if len(unit) == 0:
         unit = "ang"
@@ -62,7 +62,7 @@ end
                 unit_sc, unit
             )
         )
-    g = winSileWannier90(f).read_geometry()
+    g = winSileWannier90(f).read_geometry(order=["win"])
 
     if len(unit) == 0:
         unit = "ang"
@@ -82,7 +82,7 @@ def test_seedname_write_read(sisl_tmp, sisl_system, frac):
     sile = winSileWannier90(f, "w")
     sile.write_geometry(sisl_system.g, frac=frac)
 
-    g = winSileWannier90(f).read_geometry()
+    g = winSileWannier90(f).read_geometry(order=["win"])
     assert np.allclose(g.cell, sisl_system.g.cell)
     assert np.allclose(g.xyz, sisl_system.g.xyz)
 
