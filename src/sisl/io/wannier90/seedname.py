@@ -277,7 +277,6 @@ class winSileWannier90(SileWannier90):
         ws = 1.0 / _a.arrayd(ws)
         return ws
 
-
     def _r_hamiltonian_tb(self, *args, **kwargs):
         """Read Hamiltonian from the <>_tb.dat file"""
         f = self.dir_file(self._seed + "_tb.dat")
@@ -314,7 +313,7 @@ class winSileWannier90(SileWannier90):
         if "geometry" not in kwargs:
             # to ensure we get the correct orbital positions
             kwargs["geometry"] = self.read_geometry()
-        
+
         kwargs["cutoff"] = cutoff
 
         for f in order:
@@ -330,8 +329,9 @@ class winSileWannier90(SileWannier90):
         newkw.update(kwargs)
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
+
 class xyzSileWannier90(SileWannier90):
-        
+
     @sile_fh_open()
     def read_geometry(self, lattice):
         """Defered routine"""
@@ -355,8 +355,9 @@ class xyzSileWannier90(SileWannier90):
 
         return Geometry(xyz[:na, :], atoms="H", lattice=lattice)
 
+
 class hamSileWannier90(SileWannier90):
-    
+
     def _r_wigner_seitz_weights(self):
         # Number of Wigner-Seitz degeneracy points
         npts = int(self.readline())
@@ -370,12 +371,14 @@ class hamSileWannier90(SileWannier90):
 
         ws = 1.0 / _a.arrayd(ws)
         return ws
+
+
 class tbSileWannier90(hamSileWannier90):
 
     @sile_fh_open()
     def read_geometry(self):
-        """Reads a geometry information from the _tb.dat file. 
-        
+        """Reads a geometry information from the _tb.dat file.
+
         Wannier centres are not stored in the file, so we use dummy coordinates
         instead.
         """
@@ -387,14 +390,14 @@ class tbSileWannier90(hamSileWannier90):
         self.readline()
 
         #  Lattice vectors [Ang]
-        cell = _a.zerosf((3,3))
+        cell = _a.zerosf((3, 3))
         for i in range(3):
             cell[i] = map(float, self.readline().split())
-            
+
         # Number of orbitals
         no = int(self.readline())
 
-        return Geometry([0., 0., 0.]*no, lattice=Lattice(cell))
+        return Geometry([0.0, 0.0, 0.0] * no, lattice=Lattice(cell))
 
     @sile_fh_open()
     def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
@@ -462,6 +465,7 @@ class tbSileWannier90(hamSileWannier90):
 
         return _construct_hamiltonian(geometry, Hsc)
 
+
 class hrSileWannier90(hamSileWannier90):
 
     @sile_fh_open()
@@ -478,7 +482,7 @@ class hrSileWannier90(hamSileWannier90):
         # Number of orbitals
         no = int(self.readline())
         if geometry is None:
-            geometry = Geometry([0., 0., 0.], lattice=Lattice([[0.,0.,0.]]*3))
+            geometry = Geometry([0.0, 0.0, 0.0], lattice=Lattice([[0.0, 0.0, 0.0]] * 3))
         elif no != geometry.no:
             raise ValueError(
                 f"{self.__class__.__name__}"
@@ -523,7 +527,6 @@ class hrSileWannier90(hamSileWannier90):
                 Hsc[tuple(isc)][r - 1, c - 1] = h
 
         return _construct_hamiltonian(geometry, Hsc)
-
 
 
 add_sile("win", winSileWannier90, gzip=True)
