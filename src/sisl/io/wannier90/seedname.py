@@ -196,7 +196,21 @@ class winSileWannier90(SileWannier90):
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
     def read_geometry(self, *args, **kwargs):
-        """Reads a `Geometry` and creates the Wannier90 cell"""
+        """Reads a `Geometry` and creates the Wannier90 cell by reading the <>_centres.xyz. 
+        
+
+        Parameters
+        ----------
+        order: list of str, optional
+            the order of which to try and read the geometry information.
+            By default this is ``["centres"]``. 
+
+        Notes
+        -----
+        Reading from `<>_centres.dat` (order=["centres"]) will return the `Geometry` associated with
+        the Wannier functions/Hamiltonian, whereas reading from `<>.win` (order=["win"]) returns
+        the `Geometry` of the crystal structure.  
+        """
 
         # Read in the super-cell
         kwargs["lattice"] = self.read_lattice()
@@ -306,6 +320,12 @@ class winSileWannier90(SileWannier90):
             the default data-type used for the matrix.
             Is mainly useful to check whether the TB model has imaginary
             components (it should not since it is a Wannier model).
+
+        geometry: sisl.Geometry, optional
+            the geometry associated with the Hamiltonian
+
+        lattice: sisl.Lattice, optional
+            the lattice associated with the Hamiltonian
         """
         order = kwargs.pop("order", ["tb", "hr"])
 
@@ -314,7 +334,7 @@ class winSileWannier90(SileWannier90):
             kwargs["geometry"] = self.read_geometry(order=["centres"])
 
         if "lattice" not in kwargs:
-            # to ensure we get the correct orbital positions
+            # to ensure we get the correct cell
             kwargs["lattice"] = self.read_lattice()
 
         kwargs["cutoff"] = cutoff
@@ -337,7 +357,7 @@ class xyzSileWannier90(SileWannier90):
 
     @sile_fh_open()
     def read_geometry(self, lattice):
-        """Defered routine"""
+        """Read geometry information from Wannier90's charge centres file. """
 
         self.fh.seek(0)
 
@@ -379,11 +399,8 @@ class hamSileWannier90(SileWannier90):
 class tbSileWannier90(hamSileWannier90):
 
     @sile_fh_open(True)
-    def read_geometry(self):
-        """Reads a geometry information from the _tb.dat file.
-
-        Wannier centres are not stored in the file, so we use dummy coordinates
-        instead.
+    def read_lattice(self):
+        """Reads a cell information from the <>_tb.dat file.
         """
 
         # Time of creation
@@ -393,15 +410,45 @@ class tbSileWannier90(hamSileWannier90):
         cell = _a.zerosd((3, 3))
         for i in range(3):
             cell[i] = list(map(float, self.readline().split()))
+        
+        return Lattice(cell)
+        
+    @sile_fh_open(True)
+    def read_geometry(self):
+        """Reads a geometry information from the <>_tb.dat file.
+
+        Wannier centres are not stored in the file, so we use dummy coordinates
+        instead.
+        """
+
+        lattice = self.read_lattice()
 
         # Number of orbitals
         no = int(self.readline())
 
-        return Geometry([0.0, 0.0, 0.0] * no, lattice=Lattice(cell))
+        return Geometry([0.0, 0.0, 0.0] * no, lattice=lattice)
 
     @sile_fh_open()
     def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
-        """Reads a Hamiltonian model from the _tb.dat file"""
+        """Reads a Hamiltonian model from the <>_tb.dat file
+
+        Parameters
+        ----------
+        cutoff:
+           the cutoff value for the zero Hamiltonian elements, default
+           to 0.00001 eV.
+
+        dtype: np.float64, optional
+            the default data-type used for the matrix.
+            Is mainly useful to check whether the TB model has imaginary
+            components (it should not since it is a Wannier model).
+
+        geometry: sisl.Geometry, optional
+            the geometry associated with the Hamiltonian
+
+        lattice: sisl.Lattice, optional
+            the lattice associated with the Hamiltonian
+        """
         cutoff = kwargs.get("cutoff", 0.00001)
 
         if geometry is None:
@@ -470,7 +517,25 @@ class hrSileWannier90(hamSileWannier90):
 
     @sile_fh_open(True)
     def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
-        """Reads a Hamiltonian model from the _hr.dat file"""
+        """Reads a Hamiltonian model from the <>_hr.dat file
+
+        Parameters
+        ----------
+        cutoff:
+           the cutoff value for the zero Hamiltonian elements, default
+           to 0.00001 eV.
+
+        dtype: np.float64, optional
+            the default data-type used for the matrix.
+            Is mainly useful to check whether the TB model has imaginary
+            components (it should not since it is a Wannier model).
+
+        geometry: sisl.Geometry, optional
+            the geometry associated with the Hamiltonian
+
+        lattice: sisl.Lattice, optional
+            the lattice associated with the Hamiltonian
+        """
         cutoff = kwargs.get("cutoff", 0.00001)
 
         # Time of creation
@@ -491,7 +556,7 @@ class hrSileWannier90(hamSileWannier90):
             raise ValueError(
                 f"{self.__class__.__name__}"
                 ".read_hamiltonian has found inconsistent number "
-                "of orbitals in _hr.dat vs the geometry. Remember to re-run Wannier90?"
+                "of orbitals in <>_hr.dat vs the geometry. Remember to re-run Wannier90?"
             )
 
         ws = self._r_wigner_seitz_weights()
