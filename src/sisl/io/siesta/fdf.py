@@ -93,56 +93,6 @@ def _order_remove_netcdf(order):
     return order
 
 
-def _parse_output_order(order, output, order_True, order_False):
-    """Parses the correct order of files by examining the kwargs["order"].
-
-    If it is not present, it will use `order_{output}` to retrieve the default list.
-
-    If any elements in `order` is ^name, then all `name` will be removed from the order list.
-    This enables one to remove some from the default order elements.
-
-    For instance:
-
-    read_geometry(order="^fdf", True) with default order = [fdf, TSHS, nc] will only retain [TSHS nc]
-    """
-    order_True = _listify_str(order_True)
-    order_False = _listify_str(order_False)
-    if order is None:
-        if output:
-            return _order_remove_netcdf(order_True)
-        return _order_remove_netcdf(order_False)
-
-    # now handle the cases where the users wants to not use something
-    order = _listify_str(order)
-    rem = []
-
-    positive_list = False
-    for el in order:
-        if el.startswith("^"):
-            rem.append(el)
-            rem.append(el[1:])
-        else:
-            positive_list = True
-
-    if positive_list:
-        # don't manipulate the order list
-        pass
-    elif output:
-        order.extend(order_True)
-    else:
-        order.extend(order_False)
-
-    order = [el for el in order if el not in rem]
-
-    return _order_remove_netcdf(order)
-
-
-def _listify_str(arg):
-    if isinstance(arg, str):
-        return [arg]
-    return arg
-
-
 def _track(method, msg):
     msg_str = str(msg)
     _log.info(msg_str.split("\n", maxsplit=1)[0])
@@ -762,9 +712,7 @@ class fdfSileSiesta(SileSiesta):
         SislWarning
             if none of the files can be read
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "ORB_INDX"], []
-        )
+        order = parse_order(kwargs.pop("order", None), ["nc", "ORB_INDX"])
         for f in order:
             v = getattr(self, f"_r_lattice_nsc_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -800,11 +748,11 @@ class fdfSileSiesta(SileSiesta):
         Parameters
         ----------
         output:
-            whether to read supercell from output files (default to read from
-            the fdf file).
+            whether to read supercell from output files (True), or
+            form the fdf file (False).
         order: list of str, optional
             the order of which to try and read the supercell.
-            By default this is ``["XV", "nc", "fdf"]`` if `output` is true.
+            By default this is ``[XV, nc, TSHS, STRUCT, HSX, fdf]`` if `output` is true
             If `order` is present `output` is disregarded.
 
         Examples
@@ -815,8 +763,10 @@ class fdfSileSiesta(SileSiesta):
         >>> fdf.read_lattice(order=["nc"]) # read from [nc]
         >>> fdf.read_lattice(True, order=["nc"]) # read from [nc]
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), output, "nc XV TSHS fdf".split(), "fdf"
+        order = parse_order(
+            kwargs.pop("order", None),
+            {True: ["XV", "nc", "TSHS", "STRUCT", "HSX", "fdf"], False: "fdf"},
+            output,
         )
         for f in order:
             v = getattr(self, f"_r_lattice_{f.lower()}")(*args, **kwargs)
@@ -894,6 +844,13 @@ class fdfSileSiesta(SileSiesta):
             return tshsSileSiesta(f).read_lattice()
         return None
 
+    def _r_lattice_hsx(self, *args, **kwargs):
+        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".HSX")
+        _track_file(self._r_lattice_hsx, f, inputs=[("HS.Save", "True")])
+        if f.is_file():
+            return hsxSileSiesta(f).read_lattice()
+        return None
+
     def _r_lattice_onlys(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".onlyS")
         _track_file(self._r_lattice_onlys, f, inputs=[("TS.S.Save", "True")])
@@ -913,7 +870,7 @@ class fdfSileSiesta(SileSiesta):
         -------
         numpy.ndarray : vector with forces for each of the atoms, along each Cartesian direction
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["FA", "nc"], [])
+        order = parse_order(kwargs.pop("order", None), ["FA", "nc"])
         for f in order:
             v = getattr(self, f"_r_force_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -970,7 +927,7 @@ class fdfSileSiesta(SileSiesta):
         M : numpy.ndarray
             vector ``[*, 3, 2, *, 3]``  with Hessian/force constant element for each of the atomic displacements
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["nc", "FC"], [])
+        order = parse_order(kwargs.pop("order", None), ["nc", "FC"])
         for f in order:
             v = getattr(self, f"_r_hessian_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -1015,8 +972,8 @@ class fdfSileSiesta(SileSiesta):
         Ef : float
             fermi-level
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ("nc", "TSDE", "TSHS", "EIG", "bands"), []
+        order = parse_order(
+            kwargs.pop("order", None), ["nc", "TSDE", "TSHS", "EIG", "bands"]
         )
         for f in order:
             v = getattr(self, f"_r_fermi_level_{f.lower()}")(*args, **kwargs)
@@ -1099,7 +1056,7 @@ class fdfSileSiesta(SileSiesta):
         dynamic_matrix : DynamicalMatrix
             the dynamical matrix
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["nc", "FC"], [])
+        order = parse_order(kwargs.pop("order", None), ["nc", "FC"])
         for f in order:
             v = getattr(self, f"_r_dynamical_matrix_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -1455,7 +1412,7 @@ class fdfSileSiesta(SileSiesta):
             the fdf file).
         order: list of str, optional
             the order of which to try and read the geometry.
-            By default this is ``["XV", "nc", "fdf", "TSHS", "HSX", "STRUCT"]`` if `output` is true
+            By default this is ``[XV, nc, TSHS, STRUCT, HSX, fdf]`` if `output` is true
             If `order` is present `output` is disregarded.
 
         Examples
@@ -1471,11 +1428,10 @@ class fdfSileSiesta(SileSiesta):
         # When adding more capabilities please check the read_geometry(order=...) in this
         # code to correct.
         ##
-        order = _parse_output_order(
+        order = parse_order(
             kwargs.pop("order", None),
+            {True: ["XV", "nc", "TSHS", "STRUCT", "HSX", "fdf"], False: "fdf"},
             output,
-            "XV nc TSHS STRUCT fdf HSX".split(),
-            "fdf",
         )
         for f in order:
             v = getattr(self, f"_r_geometry_{f.lower()}")(*args, **kwargs)
@@ -1706,9 +1662,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the geometry.
             By default this is ``["nc", "grid.nc", "bin"]`` (bin refers to the binary files)
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "grid.nc", "bin"], []
-        )
+        order = parse_order(kwargs.pop("order", None), ["nc", "grid.nc", "bin"])
         for f in order:
             v = getattr(self, f"_r_grid_{f.lower().replace('.', '_')}")(
                 name, *args, **kwargs
@@ -1825,9 +1779,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the basis information.
             By default this is ``["nc", "ion", "ORB_INDX", "fdf"]``
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "ion", "ORB_INDX", "fdf"], []
-        )
+        order = parse_order(kwargs.pop("order", None), ["nc", "ion", "ORB_INDX", "fdf"])
         for f in order:
             v = getattr(self, f"_r_basis_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -2112,9 +2064,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the density matrix
             By default this is ``["nc", "TSDE", "DM"]``.
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "TSDE", "DM"], []
-        )
+        order = parse_order(kwargs.pop("order", None), ["nc", "TSDE", "DM"])
         for f in order:
             DM = getattr(self, f"_r_density_matrix_{f.lower()}")(*args, **kwargs)
             if DM is not None:
@@ -2169,7 +2119,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the density matrix
             By default this is ``["nc", "TSDE"]``.
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["nc", "TSDE"], [])
+        order = parse_order(kwargs.pop("order", None), ["nc", "TSDE"])
         for f in order:
             EDM = getattr(self, f"_r_energy_density_matrix_{f.lower()}")(
                 *args, **kwargs
@@ -2213,9 +2163,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the overlap matrix
             By default this is ``["nc", "TSHS", "HSX", "onlyS"]``.
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "TSHS", "HSX", "onlyS"], []
-        )
+        order = parse_order(kwargs.pop("order", None), ["nc", "TSHS", "HSX", "onlyS"])
         for f in order:
             v = getattr(self, f"_r_overlap_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -2278,9 +2226,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the Hamiltonian.
             By default this is ``["nc", "TSHS", "HSX"]``.
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "TSHS", "HSX"], []
-        )
+        order = parse_order(kwargs.pop("order", None), ["nc", "TSHS", "HSX"])
         for f in order:
             H = getattr(self, f"_r_hamiltonian_{f.lower()}")(*args, **kwargs)
             if H is not None:

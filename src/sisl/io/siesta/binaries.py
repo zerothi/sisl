@@ -1160,6 +1160,37 @@ class hsxSileSiesta(SileBinSiesta):
         atoms = Atoms(map(get_best, atoms, base.atoms))
         return atoms
 
+    def _r_lattice_v0(self, **kwargs):
+        """Read the Lattice from the old file version"""
+        spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        self._fortran_check("read_geometry", "could not read geometry sizes.")
+        ncol, col, _, _, dxij = _siesta.read_hsx_hsx0(self.file, spin, no, no_s, nnz)
+        dxij = dxij.T * _Bohr2Ang
+        col -= 1
+        self._fortran_check("read_geometry", "could not read Hamiltonian.")
+        ptr = _ncol_to_indptr(ncol)
+        xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
+        geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
+        lattice = geom.lattice
+        del geom
+        return lattice
+
+    def _r_lattice_v1(self, **kwargs):
+        _, na, _, _, _ = _siesta.read_hsx_sizes(self.file)
+
+        cell, nsc, _, _ = _siesta.read_hsx_geom1(self.file, na)
+
+        return Lattice(cell.T * _Bohr2Ang, nsc=nsc)
+
+    def read_lattice(self, **kwargs):
+        """Read the lattice from the file
+
+        This will always work on new files Siesta >=5, but only sometimes on older
+        versions of the HSX file format.
+        """
+        version = _siesta.read_hsx_version(self.file)
+        return getattr(self, f"_r_lattice_v{version}")(**kwargs)
+
     def _r_geometry_v0(self, **kwargs):
         """Read the geometry from the old file version"""
         spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)

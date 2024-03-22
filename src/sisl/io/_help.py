@@ -2,10 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from re import compile as re_compile
+from typing import Optional, Sequence, Union
 
 import numpy as np
 
-__all__ = ["starts_with_list", "header_to_dict", "grid_reduce_indices"]
+__all__ = ["starts_with_list", "header_to_dict", "grid_reduce_indices", "parse_order"]
 
 
 def starts_with_list(l, comments):
@@ -56,3 +57,62 @@ def grid_reduce_indices(grids, factors, axis=0, out=None):
         grid += np.take(grids, idx, axis=axis) * factor
 
     return grid
+
+
+def _listify_str(arg):
+    if isinstance(arg, str):
+        return [arg]
+    return arg
+
+
+def parse_order(
+    order: Optional[Union[str, Sequence[str]]], choice_dict="", choice=None
+):
+    """Converts `order` in to a proper order list, depending on the `output` value
+
+    Can sort through `order` by removing those from ``choice_dict[choice]`` if prefixed with ``^``.
+
+    If `order` is not present, it will return ``choice_dict[choice]``.
+
+    If any elements in `order` is ^name, then all `name` will be removed from the order list.
+    This enables one to remove some from the default order elements.
+
+    For instance:
+
+    >>> read_geometry(order="^fdf", output=True)
+
+    where internally the `order` is parsed as:
+
+    >>> order = parse_order(order, {True: ["fdf", "TSHS", "nc"], False: []}, choice)
+
+    then the `order` on return will retain only ``[TSHS, nc]``
+
+    Parameters
+    ----------
+    order : str or list of str
+        some kind of specifier that is used in the `Sile` to determine how to parse data
+    choice_dict :
+        dictionary of values that will be chosen via `choice`
+    choice :
+        a hashable variable used to extract from `choice_dict`
+    """
+    if choice is None:
+        choice = 1
+        choice_dict = {1: choice_dict}
+    if order is None:
+        return _listify_str(choice_dict[choice])
+
+    # now handle the cases where the users wants to not use something
+    order = _listify_str(order)
+
+    rem = []
+    for el in order:
+        if el.startswith("^"):
+            rem.append(el)
+            rem.append(el[1:])
+
+    if rem:
+        order.extend(_listify_str(choice_dict[choice]))
+        order = [el for el in order if el not in rem]
+
+    return order

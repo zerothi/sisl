@@ -264,7 +264,9 @@ class omxSileOpenMX(SileOpenMX):
             the order of which to try and read the lattice
             If `order` is present `output` is disregarded.
         """
-        order = kwargs.pop("order", ["dat", "omx"])
+        order = parse_order(
+            kwargs.pop("order", None), {True: ["dat", "omx"], False: "omx"}, output
+        )
         for f in order:
             v = getattr(self, "_r_basis_{}".format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -367,10 +369,9 @@ class omxSileOpenMX(SileOpenMX):
             the order of which to try and read the lattice.
             If `order` is present `output` is disregarded.
         """
-        if output:
-            order = kwargs.pop("order", ["dat", "omx"])
-        else:
-            order = kwargs.pop("order", ["dat", "omx"])
+        order = parse_order(
+            kwargs.pop("order", None), {True: ["dat", "omx"], False: "omx"}, output
+        )
         for f in order:
             v = getattr(self, "_r_lattice_{}".format(f.lower()))(*args, **kwargs)
             if v is not None:
@@ -415,10 +416,9 @@ class omxSileOpenMX(SileOpenMX):
             the order of which to try and read the geometry.
             If `order` is present `output` is disregarded.
         """
-        if output:
-            order = kwargs.pop("order", ["dat", "omx"])
-        else:
-            order = kwargs.pop("order", ["dat", "omx"])
+        order = parse_order(
+            kwargs.pop("order", None), {True: ["dat", "omx"], False: "omx"}, output
+        )
         for f in order:
             v = getattr(self, "_r_geometry_{}".format(f.lower()))(*args, **kwargs)
             if v is not None:
