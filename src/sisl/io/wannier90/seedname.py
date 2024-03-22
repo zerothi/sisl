@@ -293,7 +293,6 @@ class winSileWannier90(SileWannier90):
             H = hrSileWannier90(f).read_hamiltonian(*args, **kwargs)
         return H
 
-    @sile_fh_open()
     def read_hamiltonian(self, cutoff: float = 1e-5, *args, **kwargs):
         """Read the electronic structure of the Wannier90 output by reading the <>_tb.dat, <>_hr.dat
 
@@ -312,7 +311,7 @@ class winSileWannier90(SileWannier90):
 
         if "geometry" not in kwargs:
             # to ensure we get the correct orbital positions
-            kwargs["geometry"] = self.read_geometry()
+            kwargs["geometry"] = self.read_geometry(order=["centres"])
 
         if "lattice" not in kwargs:
             # to ensure we get the correct orbital positions
@@ -379,7 +378,7 @@ class hamSileWannier90(SileWannier90):
 
 class tbSileWannier90(hamSileWannier90):
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_geometry(self):
         """Reads a geometry information from the _tb.dat file.
 
@@ -387,14 +386,11 @@ class tbSileWannier90(hamSileWannier90):
         instead.
         """
 
-        # Rewind to ensure we can read the entire matrix structure
-        self.fh.seek(0)
-
         # Time of creation
         self.readline()
 
         #  Lattice vectors [Ang]
-        cell = _a.zerosf((3, 3))
+        cell = _a.zerosd((3, 3))
         for i in range(3):
             cell[i] = list(map(float, self.readline().split()))
 
@@ -472,13 +468,10 @@ class tbSileWannier90(hamSileWannier90):
 
 class hrSileWannier90(hamSileWannier90):
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
         """Reads a Hamiltonian model from the _hr.dat file"""
         cutoff = kwargs.get("cutoff", 0.00001)
-
-        # Rewind to ensure we can read the entire matrix structure
-        self.fh.seek(0)
 
         # Time of creation
         self.readline()
@@ -486,8 +479,14 @@ class hrSileWannier90(hamSileWannier90):
         # Number of orbitals
         no = int(self.readline())
         if geometry is None:
-            lattice = kwargs.pop("lattice", Lattice(_a.zerosf((3, 3))))
-            geometry = Geometry([0.0, 0.0, 0.0] * no, lattice=lattice)
+            if "lattice" not in kwargs:
+                raise ValueError(
+                    f"{self.__class__.__name__}"
+                    ".read_hamiltonian unable determine the geometry and/or lattice"
+                    "from Wannier90 output."
+                )
+            else:
+                geometry = Geometry([0.0, 0.0, 0.0] * no, lattice=kwargs["lattice"])
         elif no != geometry.no:
             raise ValueError(
                 f"{self.__class__.__name__}"
