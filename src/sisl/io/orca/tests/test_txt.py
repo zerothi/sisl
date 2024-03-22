@@ -15,13 +15,13 @@ _dir = osp.join("sisl", "io", "orca")
 
 
 def test_tags(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.info.na == 2
 
 
 def test_read_electrons(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     N = out.read_electrons[:]()
     assert N[0, 0] == 7.9999985377
@@ -32,7 +32,7 @@ def test_read_electrons(sisl_files):
 
 
 def test_read_energy(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     E = out.read_energy[:]()
     assert len(E) == 2
@@ -41,7 +41,7 @@ def test_read_energy(sisl_files):
 
 
 def test_read_energy_vdw(sisl_files):
-    f = sisl_files(_dir, "molecule2_property.txt")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule_property.txt")
     out = txtSileORCA(f)
     E = out.read_energy[:]()
     assert len(E) == 2
@@ -54,7 +54,7 @@ def test_read_energy_vdw(sisl_files):
 
 
 def test_read_geometry(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     G = out.read_geometry[:]()
     assert G[0].xyz[0, 0] == 0.421218019838
@@ -71,7 +71,7 @@ def test_read_geometry(sisl_files):
 
 
 def test_multiple_calls(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     N = out.read_electrons[:]()
     assert len(N) == 2
@@ -84,19 +84,19 @@ def test_multiple_calls(sisl_files):
 
 
 def test_info_no(sisl_files):
-    f = sisl_files(_dir, "molecule3_property.txt")
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.info.no == 284
 
 
 def test_gtensor(sisl_files):
     # file without g-tensor
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.read_gtensor() is None
 
     # file with g-tensor
-    f = sisl_files(_dir, "molecule3_property.txt")
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
     out = txtSileORCA(f)
     G = out.read_gtensor()
 
@@ -111,12 +111,12 @@ def test_gtensor(sisl_files):
 
 def test_hyperfine_coupling(sisl_files):
     # file without hyperfine_coupling tensors
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.read_hyperfine_coupling() is None
 
     # file with hyperfine_coupling tensors
-    f = sisl_files(_dir, "molecule3_property.txt")
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
     out = txtSileORCA(f)
     A = out.read_hyperfine_coupling()
     assert len(A) == 22
