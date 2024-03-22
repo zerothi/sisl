@@ -95,3 +95,11 @@ def test_seedname_read_ham(sisl_files):
         ham[key] = f.read_hamiltonian(cutoff=1e-4, order=[key])
         if not key == "hr":
             assert ham["hr"].spsame(ham[key])
+
+
+def test_seedname_read_lattice(sisl_files):
+    f = winSileWannier90(sisl_files(_dir, "read_ham", "read_ham.win"))
+
+    lat1 = f.read_lattice(order="tb")
+    lat2 = f.read_lattice(order="win")
+    assert np.allclose(lat1.cell, lat2.cell)

@@ -17,6 +17,7 @@ from sisl.messages import deprecate_argument
 from sisl.physics import Hamiltonian
 from sisl.unit import unit_convert
 
+from .._help import parse_order
 from ..sile import *
 
 # Import sile objects
@@ -98,15 +99,17 @@ class winSileWannier90(SileWannier90):
         self._comment = ["!", "#"]
         self._seed = str(self.file).replace(".win", "")
 
-    def _set_file(self, suffix=None):
-        """Update readed file"""
-        if suffix is None:
-            self._file = Path(self._seed + ".win")
-        else:
-            self._file = Path(self._seed + suffix)
+    def _r_lattice_tb(self, *args, **kwargs):
+        """Defered routine"""
+
+        f = self.dir_file(self._seed + "_tb.dat")
+        lattice = None
+        if f.exists():
+            lattice = tbSileWannier90(f).read_lattice(*args, **kwargs)
+        return lattice
 
     @sile_fh_open()
-    def _r_lattice(self):
+    def _r_lattice_win(self):
         """Deferred routine"""
 
         f, l = self.step_to("unit_cell_cart", case=False)
@@ -133,16 +136,30 @@ class winSileWannier90(SileWannier90):
         # Create the cell
         cell = np.empty([3, 3], np.float64)
         for i in [0, 1, 2]:
-            cell[i, :] = [float(x) for x in lines[i].split()]
+            cell[i] = [float(x) for x in lines[i].split()]
 
         return Lattice(cell * unit)
 
-    def read_lattice(self):
-        """Reads a `Lattice` and creates the Wannier90 cell"""
-        # Reset
-        self._set_file()
+    def read_lattice(self, output: bool = False, *args, **kwargs):
+        """Reads a `Lattice` and creates the Wannier90 cell
 
-        return self._r_lattice()
+        Parameters
+        ----------
+        output :
+            whether to read from output files, or not.
+            For Wannier90, they should all result in the same lattice.
+        order :
+            the order of which to try and read the lattice.
+            Default depends on `output`.
+        """
+        order = parse_order(
+            kwargs.pop("order", None), {True: ["tb", "win"], False: ["win"]}, output
+        )
+        for f in order:
+            v = getattr(self, f"_r_lattice_{f.lower()}")(*args, **kwargs)
+            if v is not None:
+                return v
+        return None
 
     def _r_geometry_centres(self, *args, **kwargs):
         """Defered routine"""
@@ -205,15 +222,18 @@ class winSileWannier90(SileWannier90):
     @deprecate_argument(
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
-    def read_geometry(self, *args, **kwargs):
-        """Reads a `Geometry` and creates the Wannier90 cell by reading the ``<>_centres.xyz``.
+    def read_geometry(self, output: bool = False, *args, **kwargs):
+        """Reads a `Geometry` and creates the Wannier90 cell
 
 
         Parameters
         ----------
+        output:
+            whether to read supercell from output files (True), or
+            form the fdf file (False).
         order: list of str, optional
             the order of which to try and read the geometry information.
-            By default this is ``["centres"]``.
+            Depedns on `output`.
 
         Notes
         -----
@@ -221,12 +241,12 @@ class winSileWannier90(SileWannier90):
         the Wannier functions/Hamiltonian, whereas reading from ``<>.win`` (order=["win"]) returns
         the `Geometry` of the crystal structure.
         """
-
-        # Read in the super-cell
         if "lattice" not in kwargs:
-            kwargs["lattice"] = self.read_lattice()
+            kwargs["lattice"] = self.read_lattice(output=output)
 
-        order = kwargs.pop("order", ["centres"])
+        order = parse_order(
+            kwargs.pop("order", None), {True: ["centres"], False: ["win"]}, output
+        )
         for f in order:
             geometry = getattr(self, f"_r_geometry_{f.lower()}")(*args, **kwargs)
             if geometry is not None:
@@ -243,9 +263,9 @@ class winSileWannier90(SileWannier90):
 
         self._write("begin unit_cell_cart\n")
         self._write(" Ang\n")
-        self._write(fmt_str.format(*lattice.cell[0, :]))
-        self._write(fmt_str.format(*lattice.cell[1, :]))
-        self._write(fmt_str.format(*lattice.cell[2, :]))
+        self._write(fmt_str.format(*lattice.cell[0]))
+        self._write(fmt_str.format(*lattice.cell[1]))
+        self._write(fmt_str.format(*lattice.cell[2]))
         self._write("end unit_cell_cart\n")
 
     @deprecate_argument(
@@ -253,7 +273,6 @@ class winSileWannier90(SileWannier90):
     )
     def write_lattice(self, lattice, fmt=".8f", *args, **kwargs):
         """Writes the supercell to the contained file"""
-        self._set_file()
         self._write_lattice(lattice, fmt, *args, **kwargs)
 
     @sile_fh_open()
@@ -286,7 +305,6 @@ class winSileWannier90(SileWannier90):
 
     def write_geometry(self, geom, fmt=".8f", *args, **kwargs):
         """Writes the geometry to the contained file"""
-        self._set_file()
         self._write_geometry(geom, fmt, *args, **kwargs)
 
     def _r_wigner_seitz_weights(self):
@@ -339,15 +357,15 @@ class winSileWannier90(SileWannier90):
         lattice: Lattice, optional
             the lattice associated with the Hamiltonian
         """
-        order = kwargs.pop("order", ["tb", "hr"])
+        order = parse_order(kwargs.pop("order", None), ["tb", "hr"])
 
         if "geometry" not in kwargs:
             # to ensure we get the correct orbital positions
-            kwargs["geometry"] = self.read_geometry(order=["centres"])
+            kwargs["geometry"] = self.read_geometry(output=True)
 
         if "lattice" not in kwargs:
             # to ensure we get the correct cell
-            kwargs["lattice"] = self.read_lattice()
+            kwargs["lattice"] = self.read_lattice(output=True)
 
         kwargs["cutoff"] = cutoff
 
@@ -384,9 +402,9 @@ class centresSileWannier90(SileWannier90):
             sp[ia] = l.pop(0)
             if sp[ia] == "X":
                 na = ia + 1
-            xyz[ia, :] = [float(k) for k in l[:3]]
+            xyz[ia] = [float(k) for k in l[:3]]
 
-        return Geometry(xyz[:na, :], atoms="H", lattice=lattice)
+        return Geometry(xyz[:na], atoms="H", lattice=lattice)
 
 
 class hamSileWannier90(SileWannier90):
