@@ -80,7 +80,7 @@ class txtSileORCA(SileORCA):
 
         Parameters
         ----------
-        units :
+        units : {str, dict, list, tuple}
             selects units in the returned data
 
         Note
@@ -206,7 +206,7 @@ class txtSileORCA(SileORCA):
 
         Parameters
         ----------
-        units :
+        units : {str, dict, list, tuple}
            selects units in the returned data
 
         For a nucleus :math:`k`, the hyperfine interaction is usually

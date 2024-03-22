@@ -39,7 +39,7 @@ class doscarSileVASP(SileVASP):
 
         Parameters
         ----------
-        units :
+        units : {str, dict, list, tuple}
             selects units in the returned data
 
         Returns

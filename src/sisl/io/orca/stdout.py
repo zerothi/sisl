@@ -265,7 +265,7 @@ class stdoutSileORCA(SileORCA):
 
         Parameters
         ----------
-        units :
+        units : {str, dict, list, tuple}
             selects units in the returned data
 
         Note

@@ -38,7 +38,7 @@ class locpotSileVASP(carSileVASP):
            contributions for each corresponding index.
         dtype : numpy.dtype, optional
            grid stored dtype
-        units :
+        units : {str, dict, list, tuple}
            selects units in the returned data
         spin : optional
            same as `index` argument. `spin` argument has precedence.

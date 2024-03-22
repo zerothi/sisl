@@ -26,7 +26,7 @@ class eigenvalSileVASP(SileVASP):
         ----------
         k : bool, optional
            also return k points and weights
-        units :
+        units : {str, dict, list, tuple}
            selects units in the returned data
 
         Returns
