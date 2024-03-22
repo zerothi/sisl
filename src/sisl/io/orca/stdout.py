@@ -5,8 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.messages import deprecation
-from sisl.unit import serialize_units_arg
-from sisl.unit import units as sunits
+from sisl.unit import serialize_units_arg, unit_convert
 from sisl.utils import PropertyDict
 
 from .._multiple import SileBinder
@@ -267,7 +266,7 @@ class stdoutSileORCA(SileORCA):
         Parameters
         ----------
         units :
-            what energy units the data should be returned in
+            selects units in the returned data
 
         Note
         ----
@@ -285,7 +284,7 @@ class stdoutSileORCA(SileORCA):
         self.readline()  # skip blank line
 
         units = serialize_units_arg(units)
-        Ha2unit = sunits.convert("Ha", units["energy"])
+        Ha2unit = unit_convert("Ha", units["energy"])
 
         E = PropertyDict()
 

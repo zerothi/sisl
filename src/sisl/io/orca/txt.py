@@ -6,8 +6,7 @@ import numpy as np
 from sisl._core.geometry import Geometry
 from sisl._internal import set_module
 from sisl.messages import deprecation
-from sisl.unit import serialize_units_arg
-from sisl.unit import units as sunits
+from sisl.unit import serialize_units_arg, unit_convert
 from sisl.utils import PropertyDict
 
 from .._multiple import SileBinder
@@ -81,8 +80,8 @@ class txtSileORCA(SileORCA):
 
         Parameters
         ----------
-        unit :
-            what energy unit the data should be returned in
+        units :
+            selects units in the returned data
 
         Note
         ----
@@ -101,7 +100,7 @@ class txtSileORCA(SileORCA):
         self.readline()  # prop. index
 
         units = serialize_units_arg(units)
-        Ha2unit = sunits.convert("Ha", units["energy"])
+        Ha2unit = unit_convert("Ha", units["energy"])
 
         E = PropertyDict()
 
@@ -207,8 +206,8 @@ class txtSileORCA(SileORCA):
 
         Parameters
         ----------
-        unit :
-            what energy unit the data should be returned in
+        units :
+           selects units in the returned data
 
         For a nucleus :math:`k`, the hyperfine interaction is usually
         written in terms of the symmetric :math:`3\times 3` hyperfine
@@ -237,7 +236,7 @@ class txtSileORCA(SileORCA):
             return None
 
         units = serialize_units_arg(units)
-        MHz2unit = sunits.convert("MHz", units["energy"])
+        MHz2unit = unit_convert("MHz", units["energy"])
 
         def read_A():
             A = PropertyDict()
