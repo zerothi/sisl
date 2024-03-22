@@ -23,7 +23,7 @@ from ..sile import *
 from .sile import SileWannier90
 from ..xyz import xyzSile
 
-__all__ = ["winSileWannier90"]
+__all__ = ["winSileWannier90", "tbSileWannier90", "hrSileWannier90", "xyzSileWannier90"]
 
 
 def _construct_hamiltonian(geometry: Geometry, Hsc):
@@ -528,3 +528,6 @@ class hrSileWannier90(hamSileWannier90):
 
 
 add_sile("win", winSileWannier90, gzip=True)
+add_sile("_tb.dat", tbSileWannier90, gzip=True)
+add_sile("_hr.dat", hrSileWannier90, gzip=True)
+add_sile("_centres.xyz", xyzSileWannier90, gzip=True)
