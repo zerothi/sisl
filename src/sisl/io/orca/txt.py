@@ -282,7 +282,7 @@ class txtSileORCA(SileORCA):
             )  # eigenvalues of A_total
 
             v = self.readline().split()
-            A["iso"] = float(v[1])  # Fermi contact A_FC
+            A["iso"] = float(v[1]) * MHz2unit  # Fermi contact A_FC
 
             return A
 
