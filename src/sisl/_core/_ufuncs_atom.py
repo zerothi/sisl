@@ -9,7 +9,7 @@ import numpy as np
 
 from sisl import _array as _a
 from sisl._ufuncs import register_sisl_dispatch
-from sisl.typing import IndexArgument
+from sisl.typing import SimpleIndex
 
 from .atom import Atom, Atoms
 
@@ -18,7 +18,7 @@ __all__ = []
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def sub(atom: Atoms, atoms: IndexArgument) -> Atoms:
+def sub(atom: Atoms, atoms: SimpleIndex) -> Atoms:
     """Return a subset of the list"""
     atoms = _a.asarray(atoms).ravel()
     new_atoms = Atoms()
@@ -29,7 +29,7 @@ def sub(atom: Atoms, atoms: IndexArgument) -> Atoms:
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def remove(atom: Atoms, atoms: IndexArgument) -> Atoms:
+def remove(atom: Atoms, atoms: SimpleIndex) -> Atoms:
     """Remove a set of atoms"""
     atoms = _a.asarray(atoms).ravel()
     idx = np.setdiff1d(np.arange(len(atom)), atoms, assume_unique=True)
@@ -55,7 +55,7 @@ def repeat(atom: Atoms, reps: int) -> Atoms:
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def swap(atom: Atoms, atoms1: IndexArgument, atoms2: IndexArgument) -> Atoms:
+def swap(atom: Atoms, atoms1: SimpleIndex, atoms2: SimpleIndex) -> Atoms:
     """Swaps atoms by index"""
     a = _a.asarray(atoms1)
     b = _a.asarray(atoms2)
@@ -111,7 +111,7 @@ def prepend(atom: Atoms, other: Union[Atom, Atoms]) -> Atoms:
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def insert(atom: Atoms, index: IndexArgument, other: Union[Atom, Atoms]) -> Atoms:
+def insert(atom: Atoms, index: SimpleIndex, other: Union[Atom, Atoms]) -> Atoms:
     """Insert other atoms into the list of atoms at index"""
     if isinstance(other, Atom):
         other = Atoms(other)
@@ -160,7 +160,7 @@ def copy(atoms: Atoms) -> Atoms:
 
 
 @register_sisl_dispatch(Atom, module="sisl")
-def sub(atom: Atom, orbitals: IndexArgument) -> Atom:
+def sub(atom: Atom, orbitals: SimpleIndex) -> Atom:
     """Return the same atom with only a subset of the orbitals present
 
     Parameters
@@ -193,7 +193,7 @@ def sub(atom: Atom, orbitals: IndexArgument) -> Atom:
 
 
 @register_sisl_dispatch(Atom, module="sisl")
-def remove(atom: Atom, orbitals: IndexArgument) -> Atom:
+def remove(atom: Atom, orbitals: SimpleIndex) -> Atom:
     """Return the same atom without a specific set of orbitals
 
     Parameters

@@ -12,5 +12,5 @@ pytestmark = pytest.mark.typing
 
 
 def test_argument():
-    def func(a: st.AtomsArgument):
+    def func(a: st.AtomsIndex):
         str(a)

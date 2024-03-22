@@ -8,22 +8,37 @@ Typing
 sisl will use `typing <https://docs.python.org/3/library/typing.html>`__
 to enable static analyzers and to aid users when reading documentation.
 
-The typing types is shown below:
+The typing types are shown below:
+
+.. autosummary::
+   :toctree: generated/
+
+   CellAxisLiteral
+   CartesianAxisLiteral
+   CellAxis
+   CellAxes
+   CartesianAxis
+   CartesianAxes
+   AnyAxis
+   AnyAxes
+
+.. autosummary::
+   :toctree: generated/
+
+   SimpleIndex
+   AtomsIndex
+   OrbitalsIndex
 
 .. autosummary::
    :toctree: generated/
 
    AtomsArgument
    AtomsLike
-   Axis
-   Axies
-   Axes
    Coord
    CoordOrScalar
    FuncType
    GeometryLike
    GridLike
-   IndexArgument
    KPoint
    LatticeLike
    LatticeOrGeometry
@@ -32,4 +47,3 @@ The typing types is shown below:
    SileLike
    SparseMatrix
    SparseMatrixExt
-   

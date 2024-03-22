@@ -7,10 +7,10 @@ import itertools
 from typing import Any, List, Literal, TypedDict, Union
 
 import numpy as np
-import numpy.typing as npt
 from xarray import Dataset
 
 from sisl._core.lattice import Lattice, LatticeChild
+from sisl.typing import npt
 
 # from ...types import CellLike
 # from .coords import project_to_axes, CoordsDataset

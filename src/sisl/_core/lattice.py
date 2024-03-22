@@ -23,10 +23,11 @@ from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
-from sisl.messages import SislError, deprecate, deprecation, warn
+from sisl.messages import SislError, deprecate, deprecate_argument, deprecation, warn
 from sisl.shape.prism4 import Cuboid
-from sisl.typing import Axes, Axies, Axis
+from sisl.typing import CellAxes, CellAxis
 from sisl.utils.mathematics import fnorm
+from sisl.utils.misc import direction
 
 from ._lattice import cell_invert, cell_reciprocal
 
@@ -158,9 +159,11 @@ class Lattice(
         """Volume of cell"""
         return abs(dot3(self.cell[0], cross3(self.cell[1], self.cell[2])))
 
-    def area(self, ax0: Axis, ax1: Axis) -> float:
+    def area(self, axis1: CellAxis, axis2: CellAxis) -> float:
         """Calculate the area spanned by the two axis `ax0` and `ax1`"""
-        return (cross3(self.cell[ax0], self.cell[ax1]) ** 2).sum() ** 0.5
+        axis1 = direction(axis1)
+        axis2 = direction(axis2)
+        return (cross3(self.cell[axis1], self.cell[axis2]) ** 2).sum() ** 0.5
 
     @property
     def boundary_condition(self) -> np.ndarray:
@@ -460,7 +463,13 @@ class Lattice(
         """Iterate the supercells and the indices of the supercells"""
         yield from enumerate(self.sc_off)
 
-    def fit(self, xyz, axis: Optional[Axies] = None, tol: float = 0.05) -> Lattice:
+    @deprecate_argument(
+        "axis",
+        "axes",
+        "argument axis has been deprecated in favor of axes, please update your code.",
+        "0.16",
+    )
+    def fit(self, xyz, axes: CellAxes = (0, 1, 2), tol: float = 0.05) -> Lattice:
         """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
 
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
@@ -476,9 +485,8 @@ class Lattice(
         ----------
         xyz : array_like ``shape(*, 3)``
            the coordinates that we will wish to encompass and analyze.
-        axis :
-           if ``None`` equivalent to ``[0, 1, 2]``, else only the cell-vectors
-           along the provided axis will be used
+        axes :
+           only the cell-vectors along the provided axes will be used
         tol : float
            tolerance (in Angstrom) of the positions. I.e. we neglect coordinates
            which are not within the radius of this magnitude
@@ -516,13 +524,14 @@ class Lattice(
         ireps = np.amax(ix, axis=0) - np.amin(ix, axis=0) + 1
 
         # Only repeat the axis requested
-        if isinstance(axis, Integral):
-            axis = [axis]
+        if isinstance(axes, Integral):
+            axes = [axes]
 
         # Reduce the non-set axis
-        if not axis is None:
+        if not axes is None:
+            axes = list(map(direction, axes))
             for ax in (0, 1, 2):
-                if ax not in axis:
+                if ax not in axes:
                     ireps[ax] = 1
 
         # Enlarge the cell vectors
@@ -533,15 +542,15 @@ class Lattice(
         return self.copy(cell)
 
     def plane(
-        self, axis1: Axis, axis2: Axis, origin: bool = True
+        self, axis1: CellAxis, axis2: CellAxis, origin: bool = True
     ) -> Tuple[ndarray, ndarray]:
         """Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
         ----------
-        axis1 : int
+        axis1 :
            the first axis vector
-        axis2 : int
+        axis2 :
            the second axis vector
         origin : bool, optional
            whether the plane intersects the origin or the opposite corner of the
@@ -586,6 +595,8 @@ class Lattice(
         ``p2``, ``p4`` and ``p6`` are always ``uc``.
         Hence this may be used to further reduce certain computations.
         """
+        axis1 = direction(axis1)
+        axis2 = direction(axis2)
         cell = self.cell
         n = cross3(cell[axis1], cell[axis2])
         # Normalize
@@ -647,7 +658,7 @@ class Lattice(
         """
         return cell_reciprocal(self.cell)
 
-    def cell2length(self, length, axes: Axies = (0, 1, 2)) -> ndarray:
+    def cell2length(self, length, axes: CellAxes = (0, 1, 2)) -> ndarray:
         """Calculate cell vectors such that they each have length `length`
 
         Parameters
@@ -655,7 +666,7 @@ class Lattice(
         length : float or array_like
             length for cell vectors, if an array it corresponds to the individual
             vectors and it must have length equal to `axes`
-        axes : int or array_like, optional
+        axes :
             which axes the `length` variable refers too.
 
         Returns
@@ -664,10 +675,8 @@ class Lattice(
              cell-vectors with prescribed length, same order as `axes`
         """
         if isinstance(axes, Integral):
-            # ravel
             axes = [axes]
-        else:
-            axes = list(axes)
+        axes = list(map(direction, axes))
 
         length = _a.asarray(length).ravel()
         if len(length) != len(axes):
@@ -692,7 +701,7 @@ class Lattice(
     __radd__ = __add__
 
     def add_vacuum(
-        self, vacuum: float, axis: Axis, orthogonal_to_plane: bool = False
+        self, vacuum: float, axis: CellAxis, orthogonal_to_plane: bool = False
     ) -> Lattice:
         """Returns a new object with vacuum along the `axis` lattice vector
 
@@ -700,12 +709,13 @@ class Lattice(
         ----------
         vacuum : float
            amount of vacuum added, in Ang
-        axis : int
+        axis :
            the lattice vector to add vacuum along
         orthogonal_to_plane : bool, optional
            whether the lattice vector should be elongated so that it is `vacuum` longer
            when projected onto the normal vector of the other two axis.
         """
+        axis = direction(axis)
         cell = np.copy(self.cell)
         d = cell[axis].copy()
         d /= fnorm(d)
@@ -913,17 +923,19 @@ class Lattice(
         # Check if any of them are above the threshold tolerance
         return ~np.any(np.abs(off_diagonal) > tol)
 
-    def parallel(self, other, axis: Axies = (0, 1, 2)) -> bool:
+    def parallel(self, other, axes: CellAxes = (0, 1, 2)) -> bool:
         """Returns true if the cell vectors are parallel to `other`
 
         Parameters
         ----------
         other : Lattice
            the other object to check whether the axis are parallel
-        axis : int or array_like
-           only check the specified axis (default to all)
+        axes :
+           only check the specified axes (default to all)
         """
-        axis = _a.asarrayi(axis).ravel()
+        if isinstance(axes, Integral):
+            axes = [axes]
+        axis = list(map(direction, axes))
         # Convert to unit-vector cell
         for i in axis:
             a = self.cell[i] / fnorm(self.cell[i])
@@ -932,18 +944,20 @@ class Lattice(
                 return False
         return True
 
-    def angle(self, axis1: Axis, axis2: Axis, rad: bool = False) -> float:
+    def angle(self, axis1: CellAxis, axis2: CellAxis, rad: bool = False) -> float:
         """The angle between two of the cell vectors
 
         Parameters
         ----------
-        axis1 : int
+        axis1 :
            the first cell vector
-        axis2 : int
+        axis2 :
            the second cell vector
         rad : bool, optional
            whether the returned value is in radians
         """
+        axis1 = direction(axis1)
+        axis2 = direction(axis2)
         n = fnorm(self.cell[[axis1, axis2]])
         ang = math.acos(dot3(self.cell[axis1], self.cell[axis2]) / (n[0] * n[1]))
         if rad:

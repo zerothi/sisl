@@ -9,7 +9,7 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
-from sisl.typing import IndexArgument
+from sisl.typing import SimpleIndex
 
 from .state import Coefficient, State, StateC
 
@@ -43,7 +43,7 @@ def copy(statec: StateC) -> StateC:
 
 @register_sisl_dispatch(Coefficient, module="sisl.physics")
 def sub(
-    coefficient: Coefficient, index: IndexArgument, inplace: bool = False
+    coefficient: Coefficient, index: SimpleIndex, inplace: bool = False
 ) -> Optional[Coefficient]:
     """Return a new coefficient with only the specified coefficients
 
@@ -70,7 +70,7 @@ def sub(
 
 @register_sisl_dispatch(Coefficient, module="sisl.physics")
 def remove(
-    coefficient: Coefficient, index: IndexArgument, inplace: bool = False
+    coefficient: Coefficient, index: SimpleIndex, inplace: bool = False
 ) -> Optional[Coefficient]:
     """Return a new coefficient without the specified coefficients
 
@@ -91,7 +91,7 @@ def remove(
 
 
 @register_sisl_dispatch(State, module="sisl.physics")
-def sub(state: State, index: IndexArgument, inplace: bool = False) -> Optional[State]:
+def sub(state: State, index: SimpleIndex, inplace: bool = False) -> Optional[State]:
     """Return a new state with only the specified states
 
     Parameters
@@ -116,9 +116,7 @@ def sub(state: State, index: IndexArgument, inplace: bool = False) -> Optional[S
 
 
 @register_sisl_dispatch(State, module="sisl.physics")
-def remove(
-    state: State, index: IndexArgument, inplace: bool = False
-) -> Optional[State]:
+def remove(state: State, index: SimpleIndex, inplace: bool = False) -> Optional[State]:
     """Return a new state without the specified vectors
 
     Parameters
@@ -138,9 +136,7 @@ def remove(
 
 
 @register_sisl_dispatch(StateC, module="sisl.physics")
-def sub(
-    statec: StateC, index: IndexArgument, inplace: bool = False
-) -> Optional[StateC]:
+def sub(statec: StateC, index: SimpleIndex, inplace: bool = False) -> Optional[StateC]:
     """Return a new state with only the specified states
 
     Parameters
@@ -167,7 +163,7 @@ def sub(
 
 @register_sisl_dispatch(StateC, module="sisl.physics")
 def remove(
-    statec: StateC, index: IndexArgument, inplace: bool = False
+    statec: StateC, index: SimpleIndex, inplace: bool = False
 ) -> Optional[StateC]:
     """Return a new state without the specified indices
 

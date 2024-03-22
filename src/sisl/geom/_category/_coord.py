@@ -17,7 +17,7 @@ from sisl._core._lattice import cell_invert
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.shape import Shape
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 from sisl.utils.misc import direction
 
 from .base import AtomCategory, NullCategory
@@ -89,7 +89,7 @@ class AtomFracSite(AtomCategory):
             f"fracsite(atol={self._atol}, offset={self._offset}, foffset={self._foffset})"
         )
 
-    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms is None:
             fxyz = np.dot(geometry.xyz + self._offset, self._icell.T) + self._foffset
@@ -257,7 +257,7 @@ class AtomXYZ(AtomCategory):
         self._coord_check = coord_ops
         super().__init__("coord")
 
-    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
         if atoms is None:
             xyz = geometry.xyz
             fxyz = geometry.fxyz

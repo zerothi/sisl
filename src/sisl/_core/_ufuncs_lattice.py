@@ -13,9 +13,10 @@ import numpy as np
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument
-from sisl.typing import Coord, CoordOrScalar, SileLike
+from sisl.typing import AnyAxes, CellAxes, CellAxis, Coord, CoordOrScalar, SileLike
 from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
+from sisl.utils.misc import direction
 
 from .lattice import Lattice
 from .quaternion import Quaternion
@@ -85,8 +86,8 @@ def write(lattice: Lattice, sile: SileLike, *args, **kwargs) -> None:
 @register_sisl_dispatch(Lattice, module="sisl")
 def swapaxes(
     lattice: Lattice,
-    axes1: Union[int, str],
-    axes2: Union[int, str],
+    axes1: AnyAxes,
+    axes2: AnyAxes,
     what: Literal["abc", "xyz", "abc+xyz"] = "abc",
 ) -> Lattice:
     r"""Swaps axes `axes1` and `axes2`
@@ -271,7 +272,7 @@ def add(lattice: Lattice, other) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
+def tile(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
     """Extend the unit-cell `reps` times along the `axis` lattice vector
 
     Notes
@@ -285,6 +286,7 @@ def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
     axis :
         the lattice vector along which the repetition is performed
     """
+    axis = direction(axis)
     cell = np.copy(lattice.cell)
     nsc = np.copy(lattice.nsc)
     origin = np.copy(lattice.origin)
@@ -299,7 +301,7 @@ def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def repeat(lattice: Lattice, reps: int, axis: int) -> Lattice:
+def repeat(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
     """Extend the unit-cell `reps` times along the `axis` lattice vector
 
     Notes
@@ -317,7 +319,7 @@ def repeat(lattice: Lattice, reps: int, axis: int) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def untile(lattice: Lattice, reps: int, axis: int) -> Lattice:
+def untile(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
     """Reverses a `Lattice.tile` and returns the segmented version
 
     Notes
@@ -329,6 +331,7 @@ def untile(lattice: Lattice, reps: int, axis: int) -> Lattice:
     --------
     Lattice.tile : opposite of this method
     """
+    axis = direction(axis)
     cell = np.copy(lattice.cell)
     cell[axis] /= reps
     return lattice.copy(cell)
@@ -338,8 +341,9 @@ Lattice.unrepeat = untile
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def append(lattice: Lattice, other, axis: int) -> Lattice:
+def append(lattice: Lattice, other, axis: CellAxis) -> Lattice:
     """Appends other `Lattice` to this grid along axis"""
+    axis = direction(axis)
     cell = np.copy(lattice.cell)
     cell[axis] += other.cell[axis]
     # TODO fix nsc here
@@ -347,7 +351,7 @@ def append(lattice: Lattice, other, axis: int) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def prepend(lattice: Lattice, other, axis: int) -> Lattice:
+def prepend(lattice: Lattice, other, axis: CellAxis) -> Lattice:
     """Prepends other `Lattice` to this grid along axis
 
     For a `Lattice` object this is equivalent to `append`.
@@ -356,11 +360,14 @@ def prepend(lattice: Lattice, other, axis: int) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def center(lattice: Lattice, axis: Optional[int] = None) -> np.ndarray:
-    """Returns center of the `Lattice`, possibly with respect to an axis"""
-    if axis is None:
+def center(lattice: Lattice, axes: CellAxes = (0, 1, 2)) -> np.ndarray:
+    """Returns center of the `Lattice`, possibly with respect to axes"""
+    if axes is None:
         return lattice.cell.sum(0) * 0.5
-    return lattice.cell[axis] * 0.5
+    if isinstance(axes, Integral):
+        axes = [axes]
+    axes = list(map(direction, axes))
+    return lattice.cell[axes].sum(0) * 0.5
 
 
 @register_sisl_dispatch(Lattice, module="sisl")

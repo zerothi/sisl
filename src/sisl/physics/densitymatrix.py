@@ -20,7 +20,7 @@ from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import progressbar, warn
-from sisl.typing import AtomsArgument, SeqFloat
+from sisl.typing import AtomsIndex, SeqFloat
 
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
@@ -203,7 +203,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out
 
-    def spin_align(self, vec: SeqFloat, atoms: AtomsArgument = None):
+    def spin_align(self, vec: SeqFloat, atoms: AtomsIndex = None):
         r"""Aligns *all* spin along the vector `vec`
 
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned
@@ -213,7 +213,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         ----------
         vec : (3,)
            vector to align the spin boxes against
-        atoms : AtomsArgument, optional
+        atoms : AtomsIndex, optional
            only perform alignment for matrix elements on atoms.
            If multiple atoms are specified, the off-diagonal elements between the
            atoms will also be aligned.

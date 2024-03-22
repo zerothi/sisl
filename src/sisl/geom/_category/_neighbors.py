@@ -9,7 +9,7 @@ from numpy import ndarray
 
 from sisl._core import Geometry
 from sisl._internal import set_module
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 
 from .base import AtomCategory, NullCategory, _sanitize_loop
 
@@ -105,7 +105,7 @@ class AtomNeighbors(AtomCategory):
         return (0.01, self._R)
 
     @_sanitize_loop
-    def categorize(self, geometry: Geometry, atoms: AtomsArgument = None):
+    def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
         """Check if geometry and atoms matches the neighbor criteria"""
         idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[-1]
         # quick escape the lower bound, in case we have more than max, they could

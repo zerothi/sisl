@@ -10,7 +10,7 @@ import numpy as np
 from sisl import _array as _a
 from sisl._core.geometry import Geometry
 from sisl._ufuncs import register_sisl_dispatch
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
 from .sparse_geometry import SparseAtom, SparseOrbital, _SparseGeometry
@@ -39,7 +39,7 @@ def copy(S: _SparseGeometry, dtype=None) -> _SparseGeometry:
 
 @register_sisl_dispatch(_SparseGeometry, module="sisl")
 def swap(
-    S: _SparseGeometry, atoms_a: AtomsArgument, atoms_b: AtomsArgument
+    S: _SparseGeometry, atoms_a: AtomsIndex, atoms_b: AtomsIndex
 ) -> _SparseGeometry:
     """Swaps atoms in the sparse geometry to obtain a new order of atoms
 
@@ -444,7 +444,7 @@ def repeat(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
 
 
 @register_sisl_dispatch(SparseAtom, module="sisl")
-def sub(SA: SparseAtom, atoms: AtomsArgument) -> SparseAtom:
+def sub(SA: SparseAtom, atoms: AtomsIndex) -> SparseAtom:
     """Create a subset of this sparse matrix by only retaining the elements corresponding to the `atoms`
 
     Indices passed *MUST* be unique.
@@ -479,7 +479,7 @@ def sub(SA: SparseAtom, atoms: AtomsArgument) -> SparseAtom:
 
 
 @register_sisl_dispatch(SparseOrbital, module="sisl")
-def sub(SO: SparseOrbital, atoms: AtomsArgument) -> SparseOrbital:
+def sub(SO: SparseOrbital, atoms: AtomsIndex) -> SparseOrbital:
     """Create a subset of this sparse matrix by only retaining the atoms corresponding to `atoms`
 
     Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.
@@ -522,7 +522,7 @@ def sub(SO: SparseOrbital, atoms: AtomsArgument) -> SparseOrbital:
 
 @register_sisl_dispatch(SparseAtom, module="sisl")
 @register_sisl_dispatch(SparseOrbital, module="sisl")
-def remove(S: _SparseGeometry, atoms: AtomsArgument) -> _SparseGeometry:
+def remove(S: _SparseGeometry, atoms: AtomsIndex) -> _SparseGeometry:
     """Create a subset of this sparse matrix by removing the atoms corresponding to `atoms`
 
     Negative indices are wrapped and thus works.

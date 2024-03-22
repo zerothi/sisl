@@ -7,11 +7,11 @@ import re
 from typing import Callable, Dict, Optional, Union
 
 import numpy as np
-import numpy.typing as npt
 from xarray import Dataset
 
 from sisl._core._lattice import cell_invert
 from sisl._core.lattice import Lattice, LatticeChild
+from sisl.typing import npt
 from sisl.utils.mathematics import fnorm
 
 from .axes import axes_cross_product, axis_direction, get_ax_title

@@ -13,7 +13,7 @@ from xarray import DataArray, Dataset
 import sisl
 from sisl import Geometry, Spin
 from sisl.messages import SislError
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 from sisl.viz.types import OrbitalStyleQuery
 
 from .._single_dispatch import singledispatchmethod
@@ -771,7 +771,7 @@ def split_orbitals(
 
 def atom_data_from_orbital_data(
     orbital_data,
-    atoms: AtomsArgument = None,
+    atoms: AtomsIndex = None,
     request_kwargs: Dict = {},
     geometry: Optional[Geometry] = None,
     reduce_func: Callable = np.mean,

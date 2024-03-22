@@ -8,13 +8,12 @@ from pathlib import Path
 from typing import Any, Literal, NewType, Optional, Sequence, TypedDict, Union
 
 import numpy as np
-import numpy.typing as npt
 
 import sisl
 from sisl._core.geometry import AtomCategory, Geometry
 from sisl._core.lattice import Lattice, LatticeChild
 from sisl.io.sile import BaseSile
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex, npt
 
 PathLike = Union[str, Path, BaseSile]
 
@@ -43,12 +42,12 @@ class StyleSpec:
 
 @dataclass
 class AtomsStyleSpec(StyleSpec):
-    atoms: AtomsArgument = None
+    atoms: AtomsIndex = None
     vertices: Optional[float] = 15
 
 
 class AtomsStyleSpecDict(TypedDict):
-    atoms: AtomsArgument
+    atoms: AtomsIndex
     color: Optional[Color]
     size: Optional[float]
     opacity: Optional[float]
@@ -71,7 +70,7 @@ SpinIndex = NewType("SpinIndex", Optional[Sequence[Literal[0, 1]]])
 
 @dataclass
 class OrbitalQuery(Query):
-    atoms: AtomsArgument = None
+    atoms: AtomsIndex = None
     species: SpeciesSpec = None
     orbitals: OrbitalsNames = None
     n: Optional[Sequence[int]] = None
@@ -108,7 +107,7 @@ class ArrowSpec:
 @dataclass
 class AtomArrowSpec:
     data: Any
-    atoms: AtomsArgument = None
+    atoms: AtomsIndex = None
     scale: float = 1.0
     color: Any = None
     width: float = 1.0

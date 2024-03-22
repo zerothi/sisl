@@ -13,8 +13,9 @@ import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument, warn
 from sisl.typing import (
-    AtomsArgument,
-    Axis,
+    AnyAxes,
+    AtomsIndex,
+    CellAxis,
     Coord,
     CoordOrScalar,
     GeometryLike,
@@ -177,7 +178,7 @@ def sort(
 
     Parameters
     ----------
-    atoms : AtomsArgument, optional
+    atoms : AtomsIndex, optional
        only perform sorting algorithm for subset of atoms. This is *NOT* a positional dependent
        argument. All sorting algorithms will _only_ be performed on these atoms.
        Default, all atoms will be sorted.
@@ -676,7 +677,7 @@ def sort(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def swap(geometry: Geometry, atoms1: AtomsArgument, atoms2: AtomsArgument) -> Geometry:
+def swap(geometry: Geometry, atoms1: AtomsIndex, atoms2: AtomsIndex) -> Geometry:
     """Swap a set of atoms in the geometry and return a new one
 
     This can be used to reorder elements of a geometry.
@@ -701,7 +702,7 @@ def swap(geometry: Geometry, atoms1: AtomsArgument, atoms2: AtomsArgument) -> Ge
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def insert(geometry: Geometry, atom: AtomsArgument, other: GeometryLike) -> Geometry:
+def insert(geometry: Geometry, atom: AtomsIndex, other: GeometryLike) -> Geometry:
     """Inserts other atoms right before index
 
     We insert the `geometry` `Geometry` before `atom`.
@@ -733,7 +734,7 @@ def insert(geometry: Geometry, atom: AtomsArgument, other: GeometryLike) -> Geom
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def tile(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
+def tile(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
     """Tile the geometry to create a bigger one
 
     The atomic indices are retained for the base structure.
@@ -780,6 +781,7 @@ def tile(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
         raise ValueError(
             f"{geometry.__class__.__name__}.tile requires a repetition above 0"
         )
+    axis = direction(axis)
 
     lattice = geometry.lattice.tile(reps, axis)
 
@@ -803,7 +805,7 @@ def tile(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
 def untile(
     geometry: Geometry,
     reps: int,
-    axis: Axis,
+    axis: CellAxis,
     segment: int = 0,
     rtol: float = 1e-4,
     atol: float = 1e-4,
@@ -860,6 +862,8 @@ def untile(
             f"cannot be cut into {reps} different "
             "pieces. Please check your geometry and input."
         )
+    axis = direction(axis)
+
     # Truncate to the correct segments
     lseg = segment % reps
     # Cut down cell
@@ -878,7 +882,7 @@ def untile(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def repeat(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
+def repeat(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
     """Create a repeated geometry
 
     The atomic indices are *NOT* retained from the base structure.
@@ -937,6 +941,7 @@ def repeat(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
         raise ValueError(
             f"{geometry.__class__.__name__}.repeat requires a repetition above 0"
         )
+    axis = direction(axis)
 
     lattice = geometry.lattice.repeat(reps, axis)
 
@@ -957,7 +962,9 @@ def repeat(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def unrepeat(geometry: Geometry, reps: int, axis: Axis, *args, **kwargs) -> Geometry:
+def unrepeat(
+    geometry: Geometry, reps: int, axis: CellAxis, *args, **kwargs
+) -> Geometry:
     """Unrepeats the geometry similarly as `untile`
 
     This is the opposite of `Geometry.repeat`.
@@ -978,7 +985,7 @@ def unrepeat(geometry: Geometry, reps: int, axis: Axis, *args, **kwargs) -> Geom
 def translate(
     geometry: Geometry,
     v: CoordOrScalar,
-    atoms: AtomsArgument = None,
+    atoms: AtomsIndex = None,
     cell: bool = False,
 ) -> Geometry:
     """Translates the geometry by `v`
@@ -1013,7 +1020,7 @@ Geometry.move = Geometry.translate
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
+def sub(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     """Create a new `Geometry` with a subset of this `Geometry`
 
     Indices passed *MUST* be unique.
@@ -1039,7 +1046,7 @@ def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
+def remove(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     """Remove atoms from the geometry.
 
     Indices passed *MUST* be unique.
@@ -1074,7 +1081,7 @@ def rotate(
     angle: float,
     v: Union[str, int, Coord],
     origin: Optional[Union[int, Coord]] = None,
-    atoms: AtomsArgument = None,
+    atoms: AtomsIndex = None,
     rad: bool = False,
     what: Optional[Literal["xyz", "abc", "abc+xyz", "x", "a", ...]] = None,
 ) -> Geometry:
@@ -1183,8 +1190,8 @@ def rotate(
 @register_sisl_dispatch(Geometry, module="sisl")
 def swapaxes(
     geometry: Geometry,
-    axes1: Union[Axis, str],
-    axes2: Union[Axis, str],
+    axes1: AnyAxes,
+    axes2: AnyAxes,
     what: Literal["abc", "xyz", "abc+xyz"] = "abc",
 ) -> Geometry:
     """Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
@@ -1264,7 +1271,7 @@ def swapaxes(
 @register_sisl_dispatch(Geometry, module="sisl")
 def center(
     geometry: Geometry,
-    atoms: AtomsArgument = None,
+    atoms: AtomsIndex = None,
     what: Literal[
         "COP|xyz|position",
         "mm:xyz",
@@ -1338,7 +1345,7 @@ def center(
 def append(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
-    axis: Axis,
+    axis: CellAxis,
     offset: Union[Literal["none", "min"], Coord] = "none",
 ) -> Geometry:
     """Appends two structures along `axis`
@@ -1380,6 +1387,7 @@ def append(
     Geometry.attach : attach a geometry
     Geometry.insert : insert a geometry
     """
+    axis = direction(axis)
     if isinstance(other, Lattice):
         # Only extend the supercell.
         xyz = np.copy(geometry.xyz)
@@ -1426,7 +1434,7 @@ def append(
 def prepend(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
-    axis: Axis,
+    axis: CellAxis,
     offset: Union[Literal["none", "min"], Coord] = "none",
 ) -> Geometry:
     """Prepend two structures along `axis`
@@ -1468,6 +1476,7 @@ def prepend(
     Geometry.attach : attach a geometry
     Geometry.insert : insert a geometry
     """
+    axis = direction(axis)
     if isinstance(other, Lattice):
         # Only extend the supercell.
         xyz = np.copy(geometry.xyz)

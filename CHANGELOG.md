@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- improved typing system
 - `units` to `read_*` for some `Sile`s, #726
 - enabled reading the Hamiltonian from the Wannier90 _tb.dat file, #727
 - "Hz", "MHz", "GHz", "THz", and "invcm" as valid energy units, #725
@@ -42,6 +43,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- methods with `axis` arguments now accepts the str equivalent 0==a
 - documentation links to external resources
 - fixed `chgSileVASP.read_grid` for spinful calculations
 - `txtSileOrca.info.no` used a wrong regex, added a test

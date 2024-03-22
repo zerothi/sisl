@@ -87,22 +87,22 @@ from .messages import SislDeprecation
 # The unit contain the SI standard conversions using
 # all digits (not program specific)
 from .unit import unit_group, unit_convert, unit_default, units
-import sisl.unit as unit
+from . import unit
 
 # Import numerical constants (they required unit)
-import sisl.constant as constant
+from . import constant
 
 # To make it easier to type ;)
 C = constant
 
 # Specific linear algebra
-import sisl.linalg as linalg
+from . import linalg
 
 # Utilities
-import sisl.utils as utils
+from . import utils
 
 # Mixing
-import sisl.mixing as mixing
+from . import mixing
 
 # Below are sisl-specific imports
 from .shape import *
@@ -121,7 +121,7 @@ from .physics import *
 #  sisl.get_sile
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
-import sisl.io as io
+from . import io
 from .io.sile import (
     add_sile,
     get_sile_class,
@@ -153,7 +153,7 @@ Lattice.to.register("Sile", Lattice.to._dispatchs[str])
 # This enables:
 # import sisl
 # sisl.geom.graphene
-import sisl.geom as geom
+from . import geom
 
 # Set all the placeholders for the plot attribute
 # of sisl classes

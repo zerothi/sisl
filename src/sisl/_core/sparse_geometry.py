@@ -33,7 +33,8 @@ from sisl._array import array_arange
 from sisl._core import Atom, Geometry, Orbital
 from sisl._internal import set_module
 from sisl.messages import SislError, SislWarning, progressbar, warn
-from sisl.typing import AtomsArgument, Axies, Coord, SeqOrScalarFloat
+from sisl.typing import AtomsIndex, CellAxes, Coord, SeqOrScalarFloat
+from sisl.utils.misc import direction
 from sisl.utils.ranges import list2str
 
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
@@ -159,7 +160,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Number of non-zero elements"""
         return self._csr.nnz
 
-    def translate2uc(self, atoms: AtomsArgument = None, axes: Optional[Axies] = None):
+    def translate2uc(self, atoms: AtomsIndex = None, axes: Optional[CellAxes] = None):
         """Translates all primary atoms to the unit cell.
 
         With this, the coordinates of the geometry are translated to the unit cell
@@ -171,7 +172,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             only translate the specified atoms. If not specified, all
             atoms will be translated.
         axes :
-            only translate certain lattice directions, `None` species
+            only translate certain lattice directions, `None` specifies
             only the periodic directions
 
         Returns
@@ -182,6 +183,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # Sanitize the axes argument
         if axes is None:
             axes = (self.lattice.nsc > 1).nonzero()[0]
+
         elif isinstance(axes, bool):
             if axes:
                 axes = (0, 1, 2)
@@ -189,6 +191,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
                 raise ValueError(
                     "translate2uc with a bool argument can only be True to signal all axes"
                 )
+        else:
+            axes = list(map(direction, axes))
 
         # Sanitize also the atoms argument
         if atoms is None:
@@ -331,7 +335,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new = array_arange(new * no, n=n)
         self._csr.translate_columns(old, new)
 
-    def edges(self, atoms: AtomsArgument, exclude: AtomsArgument = None):
+    def edges(self, atoms: AtomsIndex, exclude: AtomsIndex = None):
         """Retrieve edges (connections) for all `atoms`
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
@@ -1184,7 +1188,7 @@ class SparseAtom(_SparseGeometry):
     def _size(self):
         return self.geometry.na
 
-    def nonzero(self, atoms: AtomsArgument = None, only_cols: bool = False):
+    def nonzero(self, atoms: AtomsIndex = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
@@ -1201,7 +1205,7 @@ class SparseAtom(_SparseGeometry):
         atoms = self.geometry._sanitize_atoms(atoms)
         return self._csr.nonzero(rows=atoms, only_cols=only_cols)
 
-    def iter_nnz(self, atoms: AtomsArgument = None):
+    def iter_nnz(self, atoms: AtomsIndex = None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1403,8 +1407,8 @@ class SparseOrbital(_SparseGeometry):
 
     def edges(
         self,
-        atoms: AtomsArgument = None,
-        exclude: AtomsArgument = None,
+        atoms: AtomsIndex = None,
+        exclude: AtomsIndex = None,
         orbitals=None,
     ):
         """Retrieve edges (connections) for all `atoms`
@@ -1441,7 +1445,7 @@ class SparseOrbital(_SparseGeometry):
         orbitals = self.geometry._sanitize_orbs(orbitals)
         return self._csr.edges(orbitals, exclude)
 
-    def nonzero(self, atoms: AtomsArgument = None, only_cols: bool = False):
+    def nonzero(self, atoms: AtomsIndex = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
@@ -1461,7 +1465,7 @@ class SparseOrbital(_SparseGeometry):
         rows = self.geometry.a2o(atoms, all=True)
         return self._csr.nonzero(rows=rows, only_cols=only_cols)
 
-    def iter_nnz(self, atoms: AtomsArgument = None, orbitals=None):
+    def iter_nnz(self, atoms: AtomsIndex = None, orbitals=None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1503,7 +1507,7 @@ class SparseOrbital(_SparseGeometry):
         """
         super().set_nsc(self.no, *args, **kwargs)
 
-    def remove_orbital(self, atoms: AtomsArgument, orbitals):
+    def remove_orbital(self, atoms: AtomsIndex, orbitals):
         """Remove a subset of orbitals on `atoms` according to `orbitals`
 
         For more detailed examples, please see the equivalent (but opposite) method
@@ -1550,7 +1554,7 @@ class SparseOrbital(_SparseGeometry):
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
-    def sub_orbital(self, atoms: AtomsArgument, orbitals):
+    def sub_orbital(self, atoms: AtomsIndex, orbitals):
         r"""Retain only a subset of the orbitals on `atoms` according to `orbitals`
 
         This allows one to retain only a given subset of the sparse matrix elements.
@@ -2292,9 +2296,9 @@ class SparseOrbital(_SparseGeometry):
 
     def replace(
         self,
-        atoms: AtomsArgument,
+        atoms: AtomsIndex,
         other,
-        other_atoms: AtomsArgument = None,
+        other_atoms: AtomsIndex = None,
         eps: float = 0.005,
         scale: SeqOrScalarFloat = 1.0,
     ):

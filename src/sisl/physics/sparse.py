@@ -16,7 +16,7 @@ from sisl._core.sparse import issparse
 from sisl._core.sparse_geometry import SparseOrbital
 from sisl._internal import set_module
 from sisl.messages import warn
-from sisl.typing import AtomsArgument, KPoint
+from sisl.typing import AtomsIndex, KPoint
 
 from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_nc_diag, matrix_ddk_so
 from ._matrix_dk import matrix_dk, matrix_dk_nc, matrix_dk_nc_diag, matrix_dk_so
@@ -185,7 +185,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         return p
 
-    def iter_orbitals(self, atoms: AtomsArgument = None, local: bool = False):
+    def iter_orbitals(self, atoms: AtomsIndex = None, local: bool = False):
         r"""Iterations of the orbital space in the geometry, two indices from loop
 
         An iterator returning the current atomic index and the corresponding

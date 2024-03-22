@@ -6,7 +6,7 @@ from typing import Callable, Literal, Optional, Sequence, Tuple, TypeVar, Union
 import numpy as np
 
 from sisl import BrillouinZone, Geometry
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 from sisl.viz.figure import Figure, get_figure
 from sisl.viz.plotters import plot_actions as plot_actions
 from sisl.viz.types import AtomArrowSpec, AtomsStyleSpec, Axes, StyleSpec
@@ -95,7 +95,7 @@ def _sanitize_scale(
 def geometry_plot(
     geometry: Geometry,
     axes: Axes = ["x", "y", "z"],
-    atoms: AtomsArgument = None,
+    atoms: AtomsIndex = None,
     atoms_style: Sequence[AtomsStyleSpec] = [],
     atoms_scale: float = 1.0,
     atoms_colorscale: Optional[str] = None,
@@ -284,7 +284,7 @@ def _sites_specs_to_atoms_specs(sites_specs: _T) -> _T:
 def sites_plot(
     sites_obj: BrillouinZone,
     axes: Axes = ["x", "y", "z"],
-    sites: AtomsArgument = None,
+    sites: AtomsIndex = None,
     sites_style: Sequence[AtomsStyleSpec] = [],
     sites_scale: float = 1.0,
     sites_name: str = "Sites",

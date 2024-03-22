@@ -362,7 +362,7 @@ class TestLattice:
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        lattice = g.lattice.fit(gbig, axis=0)
+        lattice = g.lattice.fit(gbig, axes=0)
         assert np.allclose(lattice.cell[0, :], gbig.cell[0, :])
         assert np.allclose(lattice.cell[1:, :], g.cell[1:, :])
 
@@ -370,7 +370,7 @@ class TestLattice:
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        lattice = g.lattice.fit(gbig, axis=[0, 1])
+        lattice = g.lattice.fit(gbig, axes=[0, 1])
         assert np.allclose(lattice.cell[0:2, :], gbig.cell[0:2, :])
         assert np.allclose(lattice.cell[2, :], g.cell[2, :])
 

@@ -220,7 +220,7 @@ def str_spec(name):
 
 # Transform a string to a Cartesian direction
 def direction(d, abc=None, xyz=None):
-    """Index coordinate corresponding to the Cartesian coordinate system.
+    """Index coordinate transformation from int/str to an integer
 
     Parameters
     ----------

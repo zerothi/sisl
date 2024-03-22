@@ -6,7 +6,7 @@ from typing import Optional, Sequence, Tuple, Union
 import numpy as np
 
 from sisl import Geometry
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 from sisl.utils import size_to_elements
 
 from . import _operations
@@ -406,7 +406,7 @@ class NeighborFinder:
 
     def find_neighbors(
         self,
-        atoms: AtomsArgument = None,
+        atoms: AtomsIndex = None,
         as_pairs: bool = False,
         self_interaction: bool = False,
     ):
