@@ -5,7 +5,7 @@ import pyparsing as pp
 
 from sisl._internal import set_module
 
-__all__ = ["unit_group", "unit_convert", "unit_default", "units"]
+__all__ = ["unit_group", "unit_convert", "unit_default", "units", "serialize_units_arg"]
 
 
 # We do not import anything as it depends on the package.
@@ -424,3 +424,28 @@ class UnitParser:
 
 # Create base sisl unit conversion object
 units = UnitParser(unit_table)
+
+
+@set_module("sisl.unit")
+def serialize_units_arg(units):
+    "Parse units arguments into a dictionary"
+
+    if isinstance(units, str):
+        return {unit_group(units): units}
+
+    elif isinstance(units, (list, tuple)):
+        new_units_arg = {}
+        for u in units:
+            g = unit_group(u)
+            if g not in new_units_arg:
+                # add new quantity to dictionary
+                new_units_arg[g] = u
+            else:
+                raise ValueError(
+                    f"Two units for the same quantity was specified. This is not allowed."
+                )
+        return new_units_arg
+
+    else:
+
+        return units

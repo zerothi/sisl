@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- `units` to `read_*` for some `Sile`s, #726
 - "Hz", "MHz", "GHz", "THz", and "invcm" as valid energy units, #725
 - added `read_gtensor` and `read_hyperfine_coupling` to `txtSileORCA`, #722
 - enabled `AtomsArgument` and `OrbitalsArgument` to accept `bool` for *all* or *none*

@@ -7,6 +7,7 @@ import numpy as np
 
 from sisl import Grid
 from sisl._internal import set_module
+from sisl.unit import serialize_units_arg, unit_convert
 
 from .._help import grid_reduce_indices
 from ..sile import add_sile, sile_fh_open
@@ -24,8 +25,8 @@ class locpotSileVASP(carSileVASP):
     """
 
     @sile_fh_open(True)
-    def read_grid(self, index=0, dtype=np.float64, **kwargs):
-        """Reads the potential (in eV) from the file and returns with a grid (plus geometry)
+    def read_grid(self, index=0, dtype=np.float64, units="eV", **kwargs):
+        """Reads the potential from the file and returns with a grid (plus geometry)
 
         Parameters
         ----------
@@ -37,6 +38,8 @@ class locpotSileVASP(carSileVASP):
            contributions for each corresponding index.
         dtype : numpy.dtype, optional
            grid stored dtype
+        units : {str, dict, list, tuple}
+           selects units in the returned data
         spin : optional
            same as `index` argument. `spin` argument has precedence.
 
@@ -47,6 +50,9 @@ class locpotSileVASP(carSileVASP):
         index = kwargs.get("spin", index)
         geom = self.read_geometry()
         V = geom.lattice.volume
+
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
 
         # Now we are past the cell and geometry
         # We can now read the size of LOCPOT
@@ -96,7 +102,7 @@ class locpotSileVASP(carSileVASP):
         # Since we populate the grid data afterwards there
         # is no need to create a bigger grid than necessary.
         grid = Grid([1, 1, 1], dtype=dtype, geometry=geom)
-        grid.grid = val
+        grid.grid = val * eV2unit
 
         return grid
 

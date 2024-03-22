@@ -5,7 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.messages import deprecation
-from sisl.unit import units
+from sisl.unit import serialize_units_arg, unit_convert
 from sisl.utils import PropertyDict
 
 from .._multiple import SileBinder
@@ -260,12 +260,21 @@ class stdoutSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_energy(self):
+    def read_energy(self, units="eV"):
         """Reads the energy blocks
+
+        Parameters
+        ----------
+        units : {str, dict, list, tuple}
+            selects units in the returned data
+
+        Note
+        ----
+        Energies written by ORCA have units of Ha.
 
         Returns
         -------
-        PropertyDict or list of PropertyDict : all energy data (in eV) from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
+        PropertyDict or list of PropertyDict : all energy data from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
         """
         f = self.step_to("TOTAL SCF ENERGY", allow_reread=False)[0]
         if not f:
@@ -274,28 +283,30 @@ class stdoutSileORCA(SileORCA):
         self.readline()  # skip ---
         self.readline()  # skip blank line
 
-        Ha2eV = units("Ha", "eV")
+        units = serialize_units_arg(units)
+        Ha2unit = unit_convert("Ha", units["energy"])
+
         E = PropertyDict()
 
         line = self.readline()
         while "----" not in line:
             v = line.split()
             if "Total Energy" in line:
-                E["total"] = float(v[-4]) * Ha2eV
+                E["total"] = float(v[-4]) * Ha2unit
             elif "E(X)" in line:
-                E["exchange"] = float(v[-2]) * Ha2eV
+                E["exchange"] = float(v[-2]) * Ha2unit
             elif "E(C)" in line:
-                E["correlation"] = float(v[-2]) * Ha2eV
+                E["correlation"] = float(v[-2]) * Ha2unit
             elif "E(XC)" in line:
-                E["xc"] = float(v[-2]) * Ha2eV
+                E["xc"] = float(v[-2]) * Ha2unit
             elif "DFET-embed. en." in line:
-                E["embedding"] = float(v[-2]) * Ha2eV
+                E["embedding"] = float(v[-2]) * Ha2unit
             line = self.readline()
 
         if self.info.vdw_correction:
             self.step_to("DFT DISPERSION CORRECTION")
             v = self.step_to("Dispersion correction", allow_reread=False)[1].split()
-            E["vdw"] = float(v[-1]) * Ha2eV
+            E["vdw"] = float(v[-1]) * Ha2unit
 
         return E
 

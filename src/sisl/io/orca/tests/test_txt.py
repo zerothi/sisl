@@ -113,12 +113,12 @@ def test_hyperfine_coupling(sisl_files):
     # file without hyperfine_coupling tensors
     f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
-    assert out.read_hyperfine_coupling() is None
+    assert out.read_hyperfine_coupling(units="MHz") is None
 
     # file with hyperfine_coupling tensors
     f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
     out = txtSileORCA(f)
-    A = out.read_hyperfine_coupling()
+    A = out.read_hyperfine_coupling(units="MHz")
     assert len(A) == 22
     assert A[0].iso == -23.380794
     assert A[1].ia == 1
@@ -136,3 +136,19 @@ def test_hyperfine_coupling(sisl_files):
     assert A[1].iso == 26.247902
     assert A[12].sa == "C"
     assert A[13].sa == "H"
+
+
+def test_hyperfine_coupling_units(sisl_files):
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
+    out = txtSileORCA(f)
+    A = out.read_hyperfine_coupling()
+    B = out.read_hyperfine_coupling(units="eV")
+    C = out.read_hyperfine_coupling(units={"energy": "eV"})
+
+    assert A[0].iso == B[0].iso == C[0].iso
+
+    A = out.read_hyperfine_coupling(units=("MHz", "Ang"))
+    B = out.read_hyperfine_coupling(units={"energy": "MHz"})
+
+    assert A[0].iso == B[0].iso
+    assert A[0].iso != C[0].iso
