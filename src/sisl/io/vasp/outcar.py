@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, deprecation
+from sisl.unit import serialize_units_arg, unit_convert
 from sisl.utils import PropertyDict
 
 from .._multiple import SileBinder
@@ -85,10 +86,15 @@ class outcarSileVASP(SileVASP):
         "WARNING: direct calls to outcarSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.",
         from_version="0.14",
     )
-    def read_energy(self):
+    def read_energy(self, units="eV"):
         """Reads an energy specification block from OUTCAR
 
         The function steps to the next occurrence of the "Free energy of the ion-electron system" segment
+
+        Parameters
+        ----------
+        units :
+            selects units in the returned data
 
         Notes
         -----
@@ -115,6 +121,9 @@ class outcarSileVASP(SileVASP):
         PropertyDict : all energies from a single "Free energy of the ion-electron system" segment
         """
 
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
+
         name_conv = {
             "alpha": "Z",
             "Ewald": "Ewald",
@@ -140,18 +149,18 @@ class outcarSileVASP(SileVASP):
         while "----" not in line:
             key, *v = line.split()
             if key == "PAW":
-                E[f"{name_conv[key]}1"] = float(v[-2])
-                E[f"{name_conv[key]}2"] = float(v[-1])
+                E[f"{name_conv[key]}1"] = float(v[-2]) * eV2unit
+                E[f"{name_conv[key]}2"] = float(v[-1]) * eV2unit
             else:
-                E[name_conv[key]] = float(v[-1])
+                E[name_conv[key]] = float(v[-1]) * eV2unit
             line = self.readline()
         line = self.readline()
-        E.free = float(line.split()[-2])
+        E.free = float(line.split()[-2]) * eV2unit
         self.readline()
         line = self.readline()
         v = line.split()
-        E.total = float(v[4])
-        E.sigma0 = float(v[-1])
+        E.total = float(v[4]) * eV2unit
+        E.sigma0 = float(v[-1]) * eV2unit
         return E
 
     @SileBinder()

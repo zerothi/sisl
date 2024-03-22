@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._array import arrayf
 from sisl._internal import set_module
+from sisl.unit import serialize_units_arg, unit_convert
 
 from ..sile import add_sile, sile_fh_open
 from .sile import SileVASP
@@ -33,15 +34,20 @@ class doscarSileVASP(SileVASP):
         return float(line[3])
 
     @sile_fh_open()
-    def read_data(self):
+    def read_data(self, units="eV"):
         r"""Read DOS, as calculated and written by VASP
+
+        Parameters
+        ----------
+        units :
+            selects units in the returned data
 
         Returns
         -------
         E : numpy.ndarray
-            energy points (in eV)
+            energy points
         DOS : numpy.ndarray
-            DOS points (in 1/eV)
+            DOS points (units of 1/energy)
         """
         # read first line
         self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
@@ -66,7 +72,11 @@ class doscarSileVASP(SileVASP):
             line = arrayf(self.readline().split())
             E[ie] = line[0]
             DOS[:, ie] = line[1 : ns + 1]
-        return E - Ef, DOS
+
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
+
+        return (E - Ef) * eV2unit, DOS / eV2unit
 
 
 add_sile("DOSCAR", doscarSileVASP, gzip=True)
