@@ -22,6 +22,9 @@ def test_graphene_locpot(sisl_files):
     assert gridf32.dtype == np.float32
     assert geom == gridf32.geometry
 
+    gridHa = locpotSileVASP(f).read_grid(units="Ha")
+    assert not np.allclose(gridf64.grid, gridHa.grid)
+
 
 def test_graphene_locpot_index_float(sisl_files):
     f = sisl_files(_dir, "graphene", "LOCPOT")

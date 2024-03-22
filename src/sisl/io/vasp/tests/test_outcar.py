@@ -31,6 +31,9 @@ def test_diamond_outcar_energies(sisl_files):
     assert len(Eall) > 1
     assert f.info.completed()
 
+    EHa = f.read_energy[-1](units="Ha")
+    assert EHa.sigma0 != E.sigma0
+
 
 def test_diamond_outcar_cputime(sisl_files):
     f = sisl_files(_dir, "diamond", "OUTCAR")
