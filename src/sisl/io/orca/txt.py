@@ -75,12 +75,21 @@ class txtSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_energy(self):
+    def read_energy(self, unit="eV"):
         """Reads the energy blocks
+
+        Parameters
+        ----------
+        unit :
+            what energy unit the data should be returned in
+
+        Note
+        ----
+        Energies written by ORCA have units of Ha.
 
         Returns
         -------
-        PropertyDict or list of PropertyDict : all data (in eV) from the "DFT_Energy" and "VdW_Correction" blocks
+        PropertyDict or list of PropertyDict : all data from the "DFT_Energy" and "VdW_Correction" blocks
         """
         # read the DFT_Energy block
         f = self.step_to("$ DFT_Energy", allow_reread=False)[0]
@@ -90,13 +99,13 @@ class txtSileORCA(SileORCA):
         self.readline()  # geom. index
         self.readline()  # prop. index
 
-        Ha2eV = units("Ha", "eV")
+        Ha2unit = units("Ha", unit)
         E = PropertyDict()
 
         line = self.readline()
         while "----" not in line:
             v = line.split()
-            value = float(v[-1]) * Ha2eV
+            value = float(v[-1]) * Ha2conv
             if v[0] == "Exchange":
                 E["exchange"] = value
             elif v[0] == "Correlation":
@@ -115,7 +124,7 @@ class txtSileORCA(SileORCA):
         line = self.readline()
         if self.info.vdw_correction:
             v = self.step_to("Van der Waals Correction:")[1].split()
-            E["vdw"] = float(v[-1]) * Ha2eV
+            E["vdw"] = float(v[-1]) * Ha2conv
 
         return E
 
@@ -190,8 +199,13 @@ class txtSileORCA(SileORCA):
         return G
 
     @sile_fh_open()
-    def read_hyperfine_coupling(self):
+    def read_hyperfine_coupling(self, unit="eV"):
         r"""Reads hyperfine couplings from the ``EPRNMR_ATensor`` block
+
+        Parameters
+        ----------
+        unit :
+            what energy unit the data should be returned in
 
         For a nucleus :math:`k`, the hyperfine interaction is usually
         written in terms of the symmetric :math:`3\times 3` hyperfine
@@ -209,8 +223,7 @@ class txtSileORCA(SileORCA):
 
         Note
         ----
-        The hyperfine tensors are given in units of MHz. This may change
-        in later versions.
+        Hyperfine tensors written by ORCA have units of MHz.
 
         Returns
         -------
@@ -219,6 +232,8 @@ class txtSileORCA(SileORCA):
         f, line = self.step_to("EPRNMR_ATensor", allow_reread=False)
         if not f:
             return None
+
+        MHz2unit = units.convert("MHz", unit)
 
         def read_A():
             A = PropertyDict()
@@ -238,7 +253,7 @@ class txtSileORCA(SileORCA):
             A["spin"] = float(v[-1])
 
             v = self.readline().split()
-            A["prefactor"] = float(v[-1])
+            A["prefactor"] = float(v[-1]) * MHz2unit
 
             self.readline()  # skip Raw line
             self.readline()  # skip header
@@ -247,7 +262,7 @@ class txtSileORCA(SileORCA):
             for i in range(3):
                 v = self.readline().split()
                 tensor[i] = v[1:4]
-            A["tensor"] = tensor  # raw A_total tensor
+            A["tensor"] = tensor * MHz2unit  # raw A_total tensor
 
             self.readline()  # skip eigenvector line
             self.readline()  # skip header
@@ -262,7 +277,9 @@ class txtSileORCA(SileORCA):
             self.readline()  # skip header
 
             v = self.readline().split()
-            A["eigenvalues"] = np.array(v[1:4], np.float64)  # eigenvalues of A_total
+            A["eigenvalues"] = (
+                np.array(v[1:4], np.float64) * MHz2unit
+            )  # eigenvalues of A_total
 
             v = self.readline().split()
             A["iso"] = float(v[1])  # Fermi contact A_FC

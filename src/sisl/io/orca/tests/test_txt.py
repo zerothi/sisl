@@ -113,7 +113,7 @@ def test_hyperfine_coupling(sisl_files):
     # file without hyperfine_coupling tensors
     f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
-    assert out.read_hyperfine_coupling() is None
+    assert out.read_hyperfine_coupling(unit="MHz") is None
 
     # file with hyperfine_coupling tensors
     f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
