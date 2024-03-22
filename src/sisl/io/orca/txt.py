@@ -105,7 +105,7 @@ class txtSileORCA(SileORCA):
         line = self.readline()
         while "----" not in line:
             v = line.split()
-            value = float(v[-1]) * Ha2conv
+            value = float(v[-1]) * Ha2unit
             if v[0] == "Exchange":
                 E["exchange"] = value
             elif v[0] == "Correlation":
@@ -124,7 +124,7 @@ class txtSileORCA(SileORCA):
         line = self.readline()
         if self.info.vdw_correction:
             v = self.step_to("Van der Waals Correction:")[1].split()
-            E["vdw"] = float(v[-1]) * Ha2conv
+            E["vdw"] = float(v[-1]) * Ha2unit
 
         return E
 
