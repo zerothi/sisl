@@ -34,7 +34,6 @@ def test_unit_convert():
     assert approx(unit_convert("GHz", "Hz")) == 1e9
     assert approx(unit_convert("THz", "Hz")) == 1e12
     assert approx(unit_convert("invcm", "eV")) == 1.239841984e-4
-    assert approx(unit_convert("THz", "Hz")) == 1e12
 
 
 def test_class_unit():
@@ -53,6 +52,11 @@ def test_class_unit():
     ) / unit_convert("m", "Ang")
     units("J**eV", "eV**eV")
     units("J/m", "eV/m")
+
+
+@pytest.mark.xfail(reason="extracting math before checking units in tables")
+def test_class_unit_math_in_table():
+    assert np.allclose(units.convert("cm^-1", "eV"), 1.239841984e-4)
 
 
 def test_default():

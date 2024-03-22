@@ -54,6 +54,10 @@ unit_table = {
         "GHz": 6.62607015000000e-25,
         "THz": 6.62607015000000e-22,
         "invcm": 1.98644585714893e-23,
+        # these won't work when using the class
+        # at least for now
+        "cm**-1": 1.98644585714893e-23,
+        "cm^-1": 1.98644585714893e-23,
     },
     "force": {
         "DEFAULT": "eV/Ang",
