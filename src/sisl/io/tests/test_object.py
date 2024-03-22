@@ -22,6 +22,7 @@ from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
 from sisl.io.vasp import chgSileVASP
+from sisl.io.wannier90 import winSileWannier90
 from sisl.io.xsf import xsfSile
 
 pytestmark = pytest.mark.io
@@ -348,7 +349,7 @@ class TestObject:
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
 
-        if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
+        if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans, winSileWannier90)):
             pytest.skip(
                 "does not have a proper writing of the atomic species (no direct comparison available)"
             )

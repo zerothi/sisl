@@ -11,7 +11,7 @@ Wannier90
    winSileWannier90 - input file
    tbSileWannier90 - Hamiltonian and Position operator information
    hrSileWannier90 - Hamiltonian information
-   xyzSileWannier90 - Wannier charge center information
+   centresSileWannier90 - Wannier charge center information
 
 
 .. autosummary::
@@ -20,5 +20,3 @@ Wannier90
 
    SileWannier90
    SileBinWannier90
-
-

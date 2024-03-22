@@ -22,7 +22,12 @@ from ..sile import *
 # Import sile objects
 from .sile import SileWannier90
 
-__all__ = ["winSileWannier90", "tbSileWannier90", "hrSileWannier90", "xyzSileWannier90"]
+__all__ = [
+    "winSileWannier90",
+    "tbSileWannier90",
+    "hrSileWannier90",
+    "centresSileWannier90",
+]
 
 
 def _construct_hamiltonian(geometry: Geometry, Hsc):
@@ -145,7 +150,7 @@ class winSileWannier90(SileWannier90):
         f = self.dir_file(self._seed + "_centres.xyz")
         geometry = None
         if f.exists():
-            geometry = xyzSileWannier90(f).read_geometry(*args, **kwargs)
+            geometry = centresSileWannier90(f).read_geometry(*args, **kwargs)
         return geometry
 
     @sile_fh_open()
@@ -360,7 +365,7 @@ class winSileWannier90(SileWannier90):
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-class xyzSileWannier90(SileWannier90):
+class centresSileWannier90(SileWannier90):
 
     @sile_fh_open(True)
     def read_geometry(self, lattice):
@@ -605,4 +610,4 @@ class hrSileWannier90(hamSileWannier90):
 add_sile("win", winSileWannier90, gzip=True)
 add_sile("_tb.dat", tbSileWannier90, gzip=True)
 add_sile("_hr.dat", hrSileWannier90, gzip=True)
-add_sile("_centres.xyz", xyzSileWannier90, gzip=True)
+add_sile("_centres.xyz", centresSileWannier90, gzip=True)
