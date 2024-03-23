@@ -20,7 +20,7 @@ class eigenvalSileVASP(SileVASP):
 
     @sile_fh_open()
     def read_data(self, k=False, units="eV"):
-        r"""Read eigenvalues, as calculated and written by VASP
+        r"""Read eigenvalues as calculated by VASP
 
         Parameters
         ----------

@@ -20,6 +20,7 @@ def _geometry_group(geometry, ret_index=False):
     in blocks.
 
     I.e. for a geometry like this:
+
     .. code::
 
         [Atom(6), Atom(4), Atom(6)]

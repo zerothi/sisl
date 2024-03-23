@@ -229,7 +229,7 @@ class txtSileORCA(SileORCA):
 
         Returns
         -------
-        list of PropertyDict : Hyperfine coupling data (in MHz)
+        list of PropertyDict : Hyperfine coupling data
         """
         f, line = self.step_to("EPRNMR_ATensor", allow_reread=False)
         if not f:

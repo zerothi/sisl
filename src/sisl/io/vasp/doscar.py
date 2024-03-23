@@ -18,12 +18,13 @@ class doscarSileVASP(SileVASP):
     """Density of states output"""
 
     @sile_fh_open(True)
-    def read_fermi_level(self):
+    def read_fermi_level(self, units="eV"):
         r"""Query the Fermi-level contained in the file
 
         Returns
         -------
-        Ef : fermi-level of the system
+        Ef : float
+            fermi-level of the system
         """
         self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
         self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
@@ -31,7 +32,11 @@ class doscarSileVASP(SileVASP):
         self.readline()  # ' CAR '
         self.readline()  # name
         line = self.readline().split()
-        return float(line[3])
+
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
+
+        return float(line[3]) * eV2unit
 
     @sile_fh_open()
     def read_data(self, units="eV"):
@@ -45,9 +50,9 @@ class doscarSileVASP(SileVASP):
         Returns
         -------
         E : numpy.ndarray
-            energy points
+            energy points (units as selected in argument)
         DOS : numpy.ndarray
-            DOS points (units of 1/energy)
+            DOS points (units of 1/energy_units)
         """
         # read first line
         self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
