@@ -470,7 +470,22 @@ class Geometry(
         return np.arange(start, stop, step)
 
     @_sanitize_orbs.register
-    def _(self, orbitals: Union[str, Atom, AtomCategory, Shape]) -> ndarray:
+    def _(self, orbitals: str) -> ndarray:
+        atoms = self._sanitize_atoms(orbitals)
+        return self.a2o(atoms, all=True)
+
+    @_sanitize_orbs.register
+    def _(self, orbitals: Atom) -> ndarray:
+        atoms = self._sanitize_atoms(orbitals)
+        return self.a2o(atoms, all=True)
+
+    @_sanitize_orbs.register
+    def _(self, orbitals: AtomCategory) -> ndarray:
+        atoms = self._sanitize_atoms(orbitals)
+        return self.a2o(atoms, all=True)
+
+    @_sanitize_orbs.register
+    def _(self, orbitals: Shape) -> ndarray:
         atoms = self._sanitize_atoms(orbitals)
         return self.a2o(atoms, all=True)
 
