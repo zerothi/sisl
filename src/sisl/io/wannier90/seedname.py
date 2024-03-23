@@ -384,6 +384,7 @@ class winSileWannier90(SileWannier90):
 
 
 class centresSileWannier90(SileWannier90):
+    """Wannier90 centres file ``_centres.xyz``"""
 
     @sile_fh_open(True)
     def read_geometry(self, lattice):
@@ -425,6 +426,7 @@ class hamSileWannier90(SileWannier90):
 
 
 class tbSileWannier90(hamSileWannier90):
+    """Wannier90 Hamiltonian file"""
 
     @sile_fh_open(True)
     def read_lattice(self):
@@ -541,6 +543,7 @@ class tbSileWannier90(hamSileWannier90):
 
 
 class hrSileWannier90(hamSileWannier90):
+    """Wannier90 Hamiltonian file"""
 
     @sile_fh_open(True)
     def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):

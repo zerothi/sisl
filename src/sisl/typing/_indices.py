@@ -38,7 +38,7 @@ def _literal_perm(typ):
     for lvls in range(2, len(args) + 1):
         # create combinations
         res.extend(map(lambda t: "".join(t), permutations(args, lvls)))
-    return Literal[*tuple(res)]
+    return Literal[tuple(res)]
 
 
 # The literal interpretations of what an axis specification can be

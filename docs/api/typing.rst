@@ -32,7 +32,6 @@ The typing types are shown below:
 .. autosummary::
    :toctree: generated/
 
-   AtomsArgument
    AtomsLike
    Coord
    CoordOrScalar
@@ -43,7 +42,6 @@ The typing types are shown below:
    LatticeLike
    LatticeOrGeometry
    LatticeOrGeometryLike
-   OrbitalsArgument
    SileLike
    SparseMatrix
    SparseMatrixExt
