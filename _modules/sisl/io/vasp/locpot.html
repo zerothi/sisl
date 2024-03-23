@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.locpot &mdash; sisl 0.1-483c2bd</title>
+  <title>sisl.io.vasp.locpot &mdash; sisl 0.1-786325c</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=f4213e6b"></script>
+        <script src="../../../../_static/documentation_options.js?v=6c1ab1c1"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-483c2bd
+                0.1-786325c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -129,6 +129,7 @@
 
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Grid</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">serialize_units_arg</span><span class="p">,</span> <span class="n">unit_convert</span>
 
 <span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="n">grid_reduce_indices</span>
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
@@ -148,8 +149,8 @@
 <div class="viewcode-block" id="locpotSileVASP.read_grid">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.locpotSileVASP.html#sisl.io.vasp.locpotSileVASP.read_grid">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the potential (in eV) from the file and returns with a grid (plus geometry)</span>
+    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the potential from the file and returns with a grid (plus geometry)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -161,6 +162,8 @@
 <span class="sd">           contributions for each corresponding index.</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           grid stored dtype</span>
+<span class="sd">        units : {str, dict, list, tuple}</span>
+<span class="sd">           selects units in the returned data</span>
 <span class="sd">        spin : optional</span>
 <span class="sd">           same as `index` argument. `spin` argument has precedence.</span>
 
@@ -171,6 +174,9 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
         <span class="n">V</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">volume</span>
+
+        <span class="n">units</span> <span class="o">=</span> <span class="n">serialize_units_arg</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="n">eV2unit</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
 
         <span class="c1"># Now we are past the cell and geometry</span>
         <span class="c1"># We can now read the size of LOCPOT</span>
@@ -220,7 +226,7 @@
         <span class="c1"># Since we populate the grid data afterwards there</span>
         <span class="c1"># is no need to create a bigger grid than necessary.</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geom</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">val</span> <span class="o">*</span> <span class="n">eV2unit</span>
 
         <span class="k">return</span> <span class="n">grid</span></div>
 

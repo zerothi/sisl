@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.orca.txtSileORCA &mdash; sisl 0.1-483c2bd</title>
+  <title>sisl.io.orca.txtSileORCA &mdash; sisl 0.1-786325c</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=f4213e6b"></script>
+        <script src="../../../_static/documentation_options.js?v=6c1ab1c1"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -38,6 +38,8 @@
         <script src="../../../_static/design-tabs.js?v=36754332"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -57,7 +59,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-483c2bd
+                0.1-786325c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -181,6 +183,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read" title="sisl.io.orca.txtSileORCA.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_gtensor" title="sisl.io.orca.txtSileORCA.read_gtensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gtensor</span></code></a>()</p></td>
+<td><p>Reads electronic g-tensor data from the <code class="docutils literal notranslate"><span class="pre">EPRNMR_GTensor</span></code> block</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_hyperfine_coupling" title="sisl.io.orca.txtSileORCA.read_hyperfine_coupling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hyperfine_coupling</span></code></a>([units])</p></td>
+<td><p>Reads hyperfine couplings from the <code class="docutils literal notranslate"><span class="pre">EPRNMR_ATensor</span></code> block</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.write" title="sisl.io.orca.txtSileORCA.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
@@ -289,6 +297,50 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.read_geometry">
 <span class="sig-name descname"><span class="pre">read_geometry</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sisl.io._multiple.SileBound</span> <span class="pre">object&gt;</span></em><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_geometry" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.read_gtensor">
+<span class="sig-name descname"><span class="pre">read_gtensor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_gtensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_gtensor" title="Link to this definition"></a></dt>
+<dd><p>Reads electronic g-tensor data from the <code class="docutils literal notranslate"><span class="pre">EPRNMR_GTensor</span></code> block</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>PropertyDict</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Electronic g-tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.read_hyperfine_coupling">
+<span class="sig-name descname"><span class="pre">read_hyperfine_coupling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eV'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_hyperfine_coupling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_hyperfine_coupling" title="Link to this definition"></a></dt>
+<dd><p>Reads hyperfine couplings from the <code class="docutils literal notranslate"><span class="pre">EPRNMR_ATensor</span></code> block</p>
+<p>For a nucleus <span class="math notranslate nohighlight">\(k\)</span>, the hyperfine interaction is usually
+written in terms of the symmetric <span class="math notranslate nohighlight">\(3\times 3\)</span> hyperfine
+tensor <span class="math notranslate nohighlight">\(\mathbf A_k\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[H_{\mathrm{hfi}} = \mathbf{S} \cdot \mathbf A_k \mathbf{I}_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{S}_k\)</span> and <span class="math notranslate nohighlight">\(\mathbf{I}_k\)</span>
+represent the electron and nuclear spin operators, respectively.</p>
+<p>For a study of hyperfine coupling in nanographenes using ORCA
+see <span id="id1">[<a class="reference internal" href="../../../references.html#id3" title="Sanghita Sengupta, Thomas Frederiksen, and Geza Giedke. Hyperfine interactions in open-shell planar $sp^2$-carbon nanostructures. Phys. Rev. B, 107:224433, Jun 2023. URL: https://link.aps.org/doi/10.1103/PhysRevB.107.224433, doi:10.1103/PhysRevB.107.224433.">9</a>]</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>units</strong> (<em>{str</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>tuple}</em>) – selects units in the returned data</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Hyperfine tensors written by ORCA have units of MHz.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>list of PropertyDict</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hyperfine coupling data (in MHz)</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.write">

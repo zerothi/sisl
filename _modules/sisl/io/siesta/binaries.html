@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-483c2bd</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-786325c</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=f4213e6b"></script>
+        <script src="../../../../_static/documentation_options.js?v=6c1ab1c1"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-483c2bd
+                0.1-786325c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -1316,6 +1316,40 @@
 
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_best</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">atoms</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_r_lattice_v0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the Lattice from the old file version&quot;&quot;&quot;</span>
+        <span class="n">spin</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read geometry sizes.&quot;</span><span class="p">)</span>
+        <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dxij</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_hsx0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
+        <span class="n">dxij</span> <span class="o">=</span> <span class="n">dxij</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
+        <span class="n">col</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read Hamiltonian.&quot;</span><span class="p">)</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">ncol</span><span class="p">)</span>
+        <span class="n">xij</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="p">((</span><span class="n">dxij</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">ptr</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">))</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xij2system</span><span class="p">(</span><span class="n">xij</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)))</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span>
+        <span class="k">del</span> <span class="n">geom</span>
+        <span class="k">return</span> <span class="n">lattice</span>
+
+    <span class="k">def</span> <span class="nf">_r_lattice_v1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_geom1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">na</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+
+<div class="viewcode-block" id="hsxSileSiesta.read_lattice">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_lattice">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the lattice from the file</span>
+
+<span class="sd">        This will always work on new files Siesta &gt;=5, but only sometimes on older</span>
+<span class="sd">        versions of the HSX file format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_r_geometry_v0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

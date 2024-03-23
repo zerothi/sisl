@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-483c2bd</title>
+  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-786325c</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=f4213e6b"></script>
+        <script src="../../../../_static/documentation_options.js?v=6c1ab1c1"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-483c2bd
+                0.1-786325c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -215,54 +215,8 @@
     <span class="k">return</span> <span class="n">order</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_output_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">order_True</span><span class="p">,</span> <span class="n">order_False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses the correct order of files by examining the kwargs[&quot;order&quot;].</span>
-
-<span class="sd">    If it is not present, it will use `order_{output}` to retrieve the default list.</span>
-
-<span class="sd">    If any elements in `order` is ^name, then all `name` will be removed from the order list.</span>
-<span class="sd">    This enables one to remove some from the default order elements.</span>
-
-<span class="sd">    For instance:</span>
-
-<span class="sd">    read_geometry(order=&quot;^fdf&quot;, True) with default order = [fdf, TSHS, nc] will only retain [TSHS nc]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">order_True</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">order_True</span><span class="p">)</span>
-    <span class="n">order_False</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">order_False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_order_remove_netcdf</span><span class="p">(</span><span class="n">order_True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_order_remove_netcdf</span><span class="p">(</span><span class="n">order_False</span><span class="p">)</span>
-
-    <span class="c1"># now handle the cases where the users wants to not use something</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-    <span class="n">rem</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">positive_list</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;^&quot;</span><span class="p">):</span>
-            <span class="n">rem</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
-            <span class="n">rem</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">positive_list</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">if</span> <span class="n">positive_list</span><span class="p">:</span>
-        <span class="c1"># don&#39;t manipulate the order list</span>
-        <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">output</span><span class="p">:</span>
-        <span class="n">order</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">order_True</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">order</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">order_False</span><span class="p">)</span>
-
-    <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">order</span> <span class="k">if</span> <span class="n">el</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rem</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">_order_remove_netcdf</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_listify_str</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">arg</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">arg</span>
+<span class="k">def</span> <span class="nf">_parse_order</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_order_remove_netcdf</span><span class="p">(</span><span class="n">parse_order</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">_track</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
@@ -910,9 +864,7 @@
 <span class="sd">        SislWarning</span>
 <span class="sd">            if none of the files can be read</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;ORB_INDX&quot;</span><span class="p">],</span> <span class="p">[]</span>
-        <span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;ORB_INDX&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_nsc_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -951,11 +903,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        output:</span>
-<span class="sd">            whether to read supercell from output files (default to read from</span>
-<span class="sd">            the fdf file).</span>
+<span class="sd">            whether to read supercell from output files (True), or</span>
+<span class="sd">            form the fdf file (False).</span>
 <span class="sd">        order: list of str, optional</span>
 <span class="sd">            the order of which to try and read the supercell.</span>
-<span class="sd">            By default this is ``[&quot;XV&quot;, &quot;nc&quot;, &quot;fdf&quot;]`` if `output` is true.</span>
+<span class="sd">            By default this is ``[XV, nc, TSHS, STRUCT, HSX, fdf]`` if `output` is true</span>
 <span class="sd">            If `order` is present `output` is disregarded.</span>
 
 <span class="sd">        Examples</span>
@@ -966,8 +918,10 @@
 <span class="sd">        &gt;&gt;&gt; fdf.read_lattice(order=[&quot;nc&quot;]) # read from [nc]</span>
 <span class="sd">        &gt;&gt;&gt; fdf.read_lattice(True, order=[&quot;nc&quot;]) # read from [nc]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">output</span><span class="p">,</span> <span class="s2">&quot;nc XV TSHS fdf&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="s2">&quot;fdf&quot;</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;XV&quot;</span><span class="p">,</span> <span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT&quot;</span><span class="p">,</span> <span class="s2">&quot;HSX&quot;</span><span class="p">,</span> <span class="s2">&quot;fdf&quot;</span><span class="p">],</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;fdf&quot;</span><span class="p">},</span>
+            <span class="n">output</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1046,6 +1000,13 @@
             <span class="k">return</span> <span class="n">tshsSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="k">def</span> <span class="nf">_r_lattice_hsx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.HSX&quot;</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;HS.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">hsxSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="nf">_r_lattice_onlys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.onlyS&quot;</span><span class="p">)</span>
         <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_onlys</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;TS.S.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
@@ -1067,7 +1028,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        numpy.ndarray : vector with forces for each of the atoms, along each Cartesian direction</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;FA&quot;</span><span class="p">,</span> <span class="s2">&quot;nc&quot;</span><span class="p">],</span> <span class="p">[])</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;FA&quot;</span><span class="p">,</span> <span class="s2">&quot;nc&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_force_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1127,7 +1088,7 @@
 <span class="sd">        M : numpy.ndarray</span>
 <span class="sd">            vector ``[*, 3, 2, *, 3]``  with Hessian/force constant element for each of the atomic displacements</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;FC&quot;</span><span class="p">],</span> <span class="p">[])</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;FC&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hessian_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1175,8 +1136,8 @@
 <span class="sd">        Ef : float</span>
 <span class="sd">            fermi-level</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;EIG&quot;</span><span class="p">,</span> <span class="s2">&quot;bands&quot;</span><span class="p">),</span> <span class="p">[]</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;EIG&quot;</span><span class="p">,</span> <span class="s2">&quot;bands&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_fermi_level_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1262,7 +1223,7 @@
 <span class="sd">        dynamic_matrix : DynamicalMatrix</span>
 <span class="sd">            the dynamical matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;FC&quot;</span><span class="p">],</span> <span class="p">[])</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;FC&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_dynamical_matrix_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1621,7 +1582,7 @@
 <span class="sd">            the fdf file).</span>
 <span class="sd">        order: list of str, optional</span>
 <span class="sd">            the order of which to try and read the geometry.</span>
-<span class="sd">            By default this is ``[&quot;XV&quot;, &quot;nc&quot;, &quot;fdf&quot;, &quot;TSHS&quot;, &quot;HSX&quot;, &quot;STRUCT&quot;]`` if `output` is true</span>
+<span class="sd">            By default this is ``[XV, nc, TSHS, STRUCT, HSX, fdf]`` if `output` is true</span>
 <span class="sd">            If `order` is present `output` is disregarded.</span>
 
 <span class="sd">        Examples</span>
@@ -1637,11 +1598,10 @@
         <span class="c1"># When adding more capabilities please check the read_geometry(order=...) in this</span>
         <span class="c1"># code to correct.</span>
         <span class="c1">##</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span>
             <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;XV&quot;</span><span class="p">,</span> <span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT&quot;</span><span class="p">,</span> <span class="s2">&quot;HSX&quot;</span><span class="p">,</span> <span class="s2">&quot;fdf&quot;</span><span class="p">],</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;fdf&quot;</span><span class="p">},</span>
             <span class="n">output</span><span class="p">,</span>
-            <span class="s2">&quot;XV nc TSHS STRUCT fdf HSX&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
-            <span class="s2">&quot;fdf&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_geometry_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1875,9 +1835,7 @@
 <span class="sd">            the order of which to try and read the geometry.</span>
 <span class="sd">            By default this is ``[&quot;nc&quot;, &quot;grid.nc&quot;, &quot;bin&quot;]`` (bin refers to the binary files)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;grid.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">],</span> <span class="p">[]</span>
-        <span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;grid.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_grid_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span>
                 <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -1997,8 +1955,8 @@
 <span class="sd">            the order of which to try and read the basis information.</span>
 <span class="sd">            By default this is ``[&quot;nc&quot;, &quot;ion&quot;, &quot;ORB_INDX&quot;, &quot;fdf&quot;]``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;ion&quot;</span><span class="p">,</span> <span class="s2">&quot;ORB_INDX&quot;</span><span class="p">,</span> <span class="s2">&quot;fdf&quot;</span><span class="p">],</span> <span class="p">[]</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;ion&quot;</span><span class="p">,</span> <span class="s2">&quot;ORB_INDX&quot;</span><span class="p">,</span> <span class="s2">&quot;fdf&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_basis_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2287,9 +2245,7 @@
 <span class="sd">            the order of which to try and read the density matrix</span>
 <span class="sd">            By default this is ``[&quot;nc&quot;, &quot;TSDE&quot;, &quot;DM&quot;]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">,</span> <span class="s2">&quot;DM&quot;</span><span class="p">],</span> <span class="p">[]</span>
-        <span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">,</span> <span class="s2">&quot;DM&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">DM</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_density_matrix_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">DM</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2347,7 +2303,7 @@
 <span class="sd">            the order of which to try and read the density matrix</span>
 <span class="sd">            By default this is ``[&quot;nc&quot;, &quot;TSDE&quot;]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">],</span> <span class="p">[])</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSDE&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">EDM</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_energy_density_matrix_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span>
                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -2394,9 +2350,7 @@
 <span class="sd">            the order of which to try and read the overlap matrix</span>
 <span class="sd">            By default this is ``[&quot;nc&quot;, &quot;TSHS&quot;, &quot;HSX&quot;, &quot;onlyS&quot;]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;HSX&quot;</span><span class="p">,</span> <span class="s2">&quot;onlyS&quot;</span><span class="p">],</span> <span class="p">[]</span>
-        <span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;HSX&quot;</span><span class="p">,</span> <span class="s2">&quot;onlyS&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_overlap_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2462,9 +2416,7 @@
 <span class="sd">            the order of which to try and read the Hamiltonian.</span>
 <span class="sd">            By default this is ``[&quot;nc&quot;, &quot;TSHS&quot;, &quot;HSX&quot;]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_output_order</span><span class="p">(</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;HSX&quot;</span><span class="p">],</span> <span class="p">[]</span>
-        <span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_parse_order</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;TSHS&quot;</span><span class="p">,</span> <span class="s2">&quot;HSX&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">H</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hamiltonian_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">H</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

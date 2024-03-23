@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1-483c2bd</title>
+  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1-786325c</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=f4213e6b"></script>
+        <script src="../../../_static/documentation_options.js?v=6c1ab1c1"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-483c2bd
+                0.1-786325c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -548,7 +548,7 @@ only a single file ending.</p>
 <li><p><strong>output</strong> – whether to read geometry from output files (default to read from
 the fdf file).</p></li>
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the geometry.
-By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;XV&quot;,</span> <span class="pre">&quot;nc&quot;,</span> <span class="pre">&quot;fdf&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;,</span> <span class="pre">&quot;STRUCT&quot;]</span></code> if <em class="xref py py-obj">output</em> is true
+By default this is <code class="docutils literal notranslate"><span class="pre">[XV,</span> <span class="pre">nc,</span> <span class="pre">TSHS,</span> <span class="pre">STRUCT,</span> <span class="pre">HSX,</span> <span class="pre">fdf]</span></code> if <em class="xref py py-obj">output</em> is true
 If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">output</em> is disregarded.</p></li>
 </ul>
 </dd>
@@ -620,10 +620,10 @@ only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>output</strong> – whether to read supercell from output files (default to read from
-the fdf file).</p></li>
+<li><p><strong>output</strong> – whether to read supercell from output files (True), or
+form the fdf file (False).</p></li>
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the supercell.
-By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;XV&quot;,</span> <span class="pre">&quot;nc&quot;,</span> <span class="pre">&quot;fdf&quot;]</span></code> if <em class="xref py py-obj">output</em> is true.
+By default this is <code class="docutils literal notranslate"><span class="pre">[XV,</span> <span class="pre">nc,</span> <span class="pre">TSHS,</span> <span class="pre">STRUCT,</span> <span class="pre">HSX,</span> <span class="pre">fdf]</span></code> if <em class="xref py py-obj">output</em> is true
 If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">output</em> is disregarded.</p></li>
 </ul>
 </dd>

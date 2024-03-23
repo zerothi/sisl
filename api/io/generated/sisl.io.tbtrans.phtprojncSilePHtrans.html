@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.phtprojncSilePHtrans &mdash; sisl 0.1-483c2bd</title>
+  <title>sisl.io.tbtrans.phtprojncSilePHtrans &mdash; sisl 0.1-786325c</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=f4213e6b"></script>
+        <script src="../../../_static/documentation_options.js?v=6c1ab1c1"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -59,7 +59,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-483c2bd
+                0.1-786325c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1524,7 +1524,7 @@ device pivoting indices).</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOHP">
 <span class="sig-name descname"><span class="pre">orbital_ACOHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec_mol_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOHP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COHP analysis of the projected spectral function</p>
-<p>This will return a sparse matrix, see <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COHP of the
 underlying geometry.</p>
 <p>The COHP analysis can be written as:</p>
@@ -1569,7 +1569,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOOP">
 <span class="sig-name descname"><span class="pre">orbital_ACOOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec_mol_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOOP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COOP analysis of the projected spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COOP of the
 underlying geometry.</p>
 <p>The COOP analysis can be written as:</p>
@@ -1714,7 +1714,7 @@ the correct physics is obtained.</p>
 fields. With <span class="math notranslate nohighlight">\(\mathbf B\)</span> fields local transmission loops may form and the pathways does
 not necessarily flow along the transport direction.</p>
 <p>For correct interpretation of the orbital transmissions it is vital that one integrates the full
-Brillouin zone without any symmetry operations, see Section 5.4 in <span id="id1">[<a class="reference internal" href="../../../references.html#id13" title="Nick Rübner Papior. Computational Tools and Studies of Graphene Nanostructures. PhD thesis, Technical University of Denmark, 2016. URL: http://orbit.dtu.dk/en/publications/computational-tools-and-studies-of-graphene-nanostructures(46f34e1c-5f0c-46cb-be32-fff5f37881aa).html, doi:10.11581/DTU:00000025.">7</a>]</span>.</p>
+Brillouin zone without any symmetry operations, see Section 5.4 in <span id="id1">[<a class="reference internal" href="../../../references.html#id14" title="Nick Rübner Papior. Computational Tools and Studies of Graphene Nanostructures. PhD thesis, Technical University of Denmark, 2016. URL: http://orbit.dtu.dk/en/publications/computational-tools-and-studies-of-graphene-nanostructures(46f34e1c-5f0c-46cb-be32-fff5f37881aa).html, doi:10.11581/DTU:00000025.">7</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
