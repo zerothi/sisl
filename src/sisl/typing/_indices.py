@@ -30,17 +30,6 @@ __all__ = [
 ]
 
 
-def _literal_perm(typ):
-    # we only take the str arguments, no need to allow
-    #   0b2
-    args = "".join(filter(lambda x: isinstance(x, str), typing.get_args(typ)))
-    res = []
-    for lvls in range(2, len(args) + 1):
-        # create combinations
-        res.extend(map(lambda t: "".join(t), permutations(args, lvls)))
-    return Literal[tuple(res)]
-
-
 # The literal interpretations of what an axis specification can be
 # Both for lattice vectors and cartesian vectors
 CellAxisLiteral = Literal[0, 1, 2, "a", "b", "c"]
@@ -54,13 +43,11 @@ CartesianAxisLiteral = Literal[0, 1, 2, "x", "y", "z"]
 # And finally, some may do combinations
 # Pure integer axis specification
 CellAxis = CellAxisLiteral
-CellAxes = Union[CellAxis, Sequence[CellAxis], _literal_perm(CellAxisLiteral)]
+CellAxes = Union[CellAxis, Sequence[CellAxis]]
 """A combination of multiple lattice vector arguments"""
 
 CartesianAxis = CartesianAxisLiteral
-CartesianAxes = Union[
-    CartesianAxis, Sequence[CartesianAxis], _literal_perm(CartesianAxisLiteral)
-]
+CartesianAxes = Union[CartesianAxis, Sequence[CartesianAxis]]
 """A combination of multiple Cartesian vector arguments"""
 
 AnyAxis = Union[CellAxis, CartesianAxis]
