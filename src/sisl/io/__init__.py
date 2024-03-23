@@ -82,7 +82,8 @@ OpenMX
 ORCA
 ----
 
-  outSileORCA - standard output file
+  stdoutSileORCA - standard output file
+  outputSileORCA - output file
   txtSileORCA - property.txt file
 
 ScaleUp
@@ -147,12 +148,15 @@ VASP
   eigenvalSileVASP
   chgSileVASP
   locpotSileVASP
-  stdoutSileVASP
+  outcarSileVASP
 
 Wannier90
 ---------
 
   winSileWannier90 - input file
+  tbSileWannier90
+  hrSileWannier90
+  centresSileWannier90
 
 
 Low level methods/classes

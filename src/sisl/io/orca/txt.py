@@ -83,8 +83,8 @@ class txtSileORCA(SileORCA):
         units : {str, dict, list, tuple}
             selects units in the returned data
 
-        Note
-        ----
+        Notes
+        -----
         Energies written by ORCA have units of Ha.
 
         Returns
@@ -204,18 +204,13 @@ class txtSileORCA(SileORCA):
     def read_hyperfine_coupling(self, units="eV"):
         r"""Reads hyperfine couplings from the ``EPRNMR_ATensor`` block
 
-        Parameters
-        ----------
-        units : {str, dict, list, tuple}
-           selects units in the returned data
-
         For a nucleus :math:`k`, the hyperfine interaction is usually
         written in terms of the symmetric :math:`3\times 3` hyperfine
-        tensor :math:`A_k` such that
+        tensor :math:`\mathbf A_k` such that
 
         .. math::
 
-           H_\mathrm{hfi} = \mathbf{S} \cdot A_k \mathbf{I}_k
+           H_{\mathrm{hfi}} = \mathbf{S} \cdot \mathbf A_k \mathbf{I}_k
 
         where :math:`\mathbf{S}_k` and :math:`\mathbf{I}_k`
         represent the electron and nuclear spin operators, respectively.
@@ -223,8 +218,13 @@ class txtSileORCA(SileORCA):
         For a study of hyperfine coupling in nanographenes using ORCA
         see :cite:`Sengupta2023`.
 
-        Note
-        ----
+        Parameters
+        ----------
+        units : {str, dict, list, tuple}
+            selects units in the returned data
+
+        Notes
+        -----
         Hyperfine tensors written by ORCA have units of MHz.
 
         Returns
