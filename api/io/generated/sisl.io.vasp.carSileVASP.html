@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.carSileVASP &mdash; sisl 0.1-47a90a9</title>
+  <title>sisl.io.vasp.carSileVASP &mdash; sisl 0.1-c02b256</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=3bf62550"></script>
+        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-47a90a9
+                0.1-c02b256
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -169,7 +169,7 @@
 <dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.io.vasp.</span></span><span class="sig-name descname"><span class="pre">carSileVASP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.vasp.carSileVASP" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP" title="sisl.io.vasp.SileVASP"><code class="xref py py-class docutils literal notranslate"><span class="pre">SileVASP</span></code></a></p>
-<p>CAR VASP files for defining geomtries</p>
+<p>CAR VASP files for defining geometries</p>
 <p>This file-object handles both POSCAR and CONTCAR files</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
@@ -190,10 +190,10 @@
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.vasp.carSileVASP.read_geometry" title="sisl.io.vasp.carSileVASP.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([ret_dynamic])</p></td>
-<td><p>Returns Geometry object from the CONTCAR/POSCAR file</p></td>
+<td><p>Returns Geometry object from this Sile</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.vasp.carSileVASP.read_lattice" title="sisl.io.vasp.carSileVASP.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
-<td><p>Returns <em class="xref py py-obj">Lattice</em> object from the CONTCAR/POSCAR file</p></td>
+<td><p>Returns <em class="xref py py-obj">Lattice</em> object from this Sile</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.vasp.carSileVASP.write" title="sisl.io.vasp.carSileVASP.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
@@ -254,8 +254,7 @@
 <p>When creating VASP input files (<em class="xref py py-obj">poscarSileVASP</em> for instance) the equivalent
 <code class="docutils literal notranslate"><span class="pre">POTCAR</span></code> file needs to contain the pseudos for each specie as they are provided
 in blocks.</p>
-<p>I.e. for a geometry like this:
-.. code:</p>
+<p>I.e. for a geometry like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
 </pre></div>
 </div>
@@ -269,10 +268,10 @@ in blocks.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>geometry</strong></p>
+<dd class="field-even"><p><strong>geometry</strong> – reordered geometry</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>reordered geometry</p>
+<dd class="field-odd"><p><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -298,7 +297,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.read_geometry">
 <span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret_dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/vasp/car.html#carSileVASP.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.vasp.carSileVASP.read_geometry" title="Link to this definition"></a></dt>
-<dd><p>Returns Geometry object from the CONTCAR/POSCAR file</p>
+<dd><p>Returns Geometry object from this Sile</p>
 <p>Possibly also return the dynamics (if present).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -311,7 +310,7 @@ be returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.read_lattice">
 <span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/vasp/car.html#carSileVASP.read_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.vasp.carSileVASP.read_lattice" title="Link to this definition"></a></dt>
-<dd><p>Returns <em class="xref py py-obj">Lattice</em> object from the CONTCAR/POSCAR file</p>
+<dd><p>Returns <em class="xref py py-obj">Lattice</em> object from this Sile</p>
 </dd></dl>
 
 <dl class="py method">

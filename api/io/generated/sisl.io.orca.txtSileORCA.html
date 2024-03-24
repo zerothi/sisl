@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.orca.txtSileORCA &mdash; sisl 0.1-47a90a9</title>
+  <title>sisl.io.orca.txtSileORCA &mdash; sisl 0.1-c02b256</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=3bf62550"></script>
+        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -59,7 +59,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-47a90a9
+                0.1-c02b256
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -304,17 +304,17 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dd><p>Reads electronic g-tensor data from the <code class="docutils literal notranslate"><span class="pre">EPRNMR_GTensor</span></code> block</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>PropertyDict</strong></p>
+<dd class="field-odd"><p><strong>out</strong> – Electronic g-tensor</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Electronic g-tensor</p>
+<dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict" title="sisl.utils.PropertyDict">PropertyDict</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.read_hyperfine_coupling">
-<span class="sig-name descname"><span class="pre">read_hyperfine_coupling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eV'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_hyperfine_coupling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_hyperfine_coupling" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_hyperfine_coupling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'eV'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_hyperfine_coupling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_hyperfine_coupling" title="Link to this definition"></a></dt>
 <dd><p>Reads hyperfine couplings from the <code class="docutils literal notranslate"><span class="pre">EPRNMR_ATensor</span></code> block</p>
 <p>For a nucleus <span class="math notranslate nohighlight">\(k\)</span>, the hyperfine interaction is usually
 written in terms of the symmetric <span class="math notranslate nohighlight">\(3\times 3\)</span> hyperfine
@@ -327,17 +327,17 @@ represent the electron and nuclear spin operators, respectively.</p>
 see <span id="id1">[<a class="reference internal" href="../../../references.html#id3" title="Sanghita Sengupta, Thomas Frederiksen, and Geza Giedke. Hyperfine interactions in open-shell planar $sp^2$-carbon nanostructures. Phys. Rev. B, 107:224433, Jun 2023. URL: https://link.aps.org/doi/10.1103/PhysRevB.107.224433, doi:10.1103/PhysRevB.107.224433.">9</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>units</strong> (<em>{str</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>tuple}</em>) – selects units in the returned data</p>
+<dd class="field-odd"><p><strong>units</strong> – selects units in the returned data</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>Hyperfine tensors written by ORCA have units of MHz.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>list of PropertyDict</strong></p>
+<dd class="field-odd"><p><strong>out</strong> – Hyperfine coupling data</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Hyperfine coupling data (in MHz)</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of <a class="reference internal" href="../../generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict" title="sisl.utils.PropertyDict">PropertyDict</a></p>
 </dd>
 </dl>
 </dd></dl>

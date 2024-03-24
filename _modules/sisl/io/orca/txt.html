@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.orca.txt &mdash; sisl 0.1-47a90a9</title>
+  <title>sisl.io.orca.txt &mdash; sisl 0.1-c02b256</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=3bf62550"></script>
+        <script src="../../../../_static/documentation_options.js?v=0dee30f6"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-47a90a9
+                0.1-c02b256
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -128,6 +128,7 @@
 <span class="kn">from</span> <span class="nn">sisl._core.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">UnitsVar</span>
 <span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">serialize_units_arg</span><span class="p">,</span> <span class="n">unit_convert</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
 
@@ -187,7 +188,8 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ndarray or list of ndarrays : alpha and beta electrons</span>
+<span class="sd">        out: numpy.ndarray or list of numpy.ndarray</span>
+<span class="sd">            alpha and beta electrons</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Number of Alpha Electrons&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -202,12 +204,12 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.read_energy">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;eV&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the energy blocks</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        units : {str, dict, list, tuple}</span>
+<span class="sd">        units :</span>
 <span class="sd">            selects units in the returned data</span>
 
 <span class="sd">        Notes</span>
@@ -216,18 +218,20 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        PropertyDict or list of PropertyDict : all data from the &quot;DFT_Energy&quot; and &quot;VdW_Correction&quot; blocks</span>
+<span class="sd">        out: PropertyDict or list of PropertyDict</span>
+<span class="sd">            all data from the &quot;DFT_Energy&quot; and &quot;VdW_Correction&quot; blocks</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># read the DFT_Energy block</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;$ DFT_Energy&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># description</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># geom. index</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># prop. index</span>
 
         <span class="n">units</span> <span class="o">=</span> <span class="n">serialize_units_arg</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
         <span class="n">Ha2unit</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Ha&quot;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># geom. index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># prop. index</span>
 
         <span class="n">E</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
 
@@ -297,7 +301,8 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        PropertyDict : Electronic g-tensor</span>
+<span class="sd">        out : PropertyDict</span>
+<span class="sd">            Electronic g-tensor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
         <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;EPRNMR_GTensor&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -337,7 +342,7 @@
 <div class="viewcode-block" id="txtSileORCA.read_hyperfine_coupling">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.read_hyperfine_coupling">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_hyperfine_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;eV&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_hyperfine_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reads hyperfine couplings from the ``EPRNMR_ATensor`` block</span>
 
 <span class="sd">        For a nucleus :math:`k`, the hyperfine interaction is usually</span>
@@ -356,7 +361,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        units : {str, dict, list, tuple}</span>
+<span class="sd">        units :</span>
 <span class="sd">            selects units in the returned data</span>
 
 <span class="sd">        Notes</span>
@@ -365,7 +370,8 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        list of PropertyDict : Hyperfine coupling data (in MHz)</span>
+<span class="sd">        out : list of PropertyDict</span>
+<span class="sd">            Hyperfine coupling data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;EPRNMR_ATensor&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>

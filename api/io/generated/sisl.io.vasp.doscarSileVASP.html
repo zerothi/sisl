@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.doscarSileVASP &mdash; sisl 0.1-47a90a9</title>
+  <title>sisl.io.vasp.doscarSileVASP &mdash; sisl 0.1-c02b256</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=3bf62550"></script>
+        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-47a90a9
+                0.1-c02b256
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -191,7 +191,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.vasp.doscarSileVASP.read_data" title="sisl.io.vasp.doscarSileVASP.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>([units])</p></td>
 <td><p>Read DOS, as calculated and written by VASP</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.vasp.doscarSileVASP.read_fermi_level" title="sisl.io.vasp.doscarSileVASP.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.vasp.doscarSileVASP.read_fermi_level" title="sisl.io.vasp.doscarSileVASP.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>([units])</p></td>
 <td><p>Query the Fermi-level contained in the file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.vasp.doscarSileVASP.write" title="sisl.io.vasp.doscarSileVASP.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
@@ -247,8 +247,7 @@
 <p>When creating VASP input files (<em class="xref py py-obj">poscarSileVASP</em> for instance) the equivalent
 <code class="docutils literal notranslate"><span class="pre">POTCAR</span></code> file needs to contain the pseudos for each specie as they are provided
 in blocks.</p>
-<p>I.e. for a geometry like this:
-.. code:</p>
+<p>I.e. for a geometry like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
 </pre></div>
 </div>
@@ -262,10 +261,10 @@ in blocks.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>geometry</strong></p>
+<dd class="field-even"><p><strong>geometry</strong> – reordered geometry</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>reordered geometry</p>
+<dd class="field-odd"><p><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -284,16 +283,16 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.vasp.doscarSileVASP.read_data">
-<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eV'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/vasp/doscar.html#doscarSileVASP.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.vasp.doscarSileVASP.read_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'eV'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/vasp/doscar.html#doscarSileVASP.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.vasp.doscarSileVASP.read_data" title="Link to this definition"></a></dt>
 <dd><p>Read DOS, as calculated and written by VASP</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>units</strong> (<em>{str</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>tuple}</em>) – selects units in the returned data</p>
+<dd class="field-odd"><p><strong>units</strong> – selects units in the returned data</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>E</strong> (<em>numpy.ndarray</em>) – energy points</p></li>
-<li><p><strong>DOS</strong> (<em>numpy.ndarray</em>) – DOS points (units of 1/energy)</p></li>
+<li><p><strong>E</strong> (<em>numpy.ndarray</em>) – energy points (units as selected in argument)</p></li>
+<li><p><strong>DOS</strong> (<em>numpy.ndarray</em>) – DOS points (units of 1/energy_units)</p></li>
 </ul>
 </p>
 </dd>
@@ -302,14 +301,14 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.vasp.doscarSileVASP.read_fermi_level">
-<span class="sig-name descname"><span class="pre">read_fermi_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/vasp/doscar.html#doscarSileVASP.read_fermi_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.vasp.doscarSileVASP.read_fermi_level" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_fermi_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'eV'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/vasp/doscar.html#doscarSileVASP.read_fermi_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.vasp.doscarSileVASP.read_fermi_level" title="Link to this definition"></a></dt>
 <dd><p>Query the Fermi-level contained in the file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Ef</strong></p>
+<dd class="field-odd"><p><strong>Ef</strong> – fermi-level of the system</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>fermi-level of the system</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
 </dd>
 </dl>
 </dd></dl>

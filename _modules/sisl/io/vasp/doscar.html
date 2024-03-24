@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.doscar &mdash; sisl 0.1-47a90a9</title>
+  <title>sisl.io.vasp.doscar &mdash; sisl 0.1-c02b256</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=3bf62550"></script>
+        <script src="../../../../_static/documentation_options.js?v=0dee30f6"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-47a90a9
+                0.1-c02b256
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -127,6 +127,7 @@
 
 <span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">arrayf</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">UnitsVar</span>
 <span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">serialize_units_arg</span><span class="p">,</span> <span class="n">unit_convert</span>
 
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
@@ -142,40 +143,48 @@
 <div class="viewcode-block" id="doscarSileVASP.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.read_fermi_level">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Query the Fermi-level contained in the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Ef : fermi-level of the system</span>
+<span class="sd">        Ef : float</span>
+<span class="sd">            fermi-level of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">serialize_units_arg</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="n">eV2unit</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># NIONS, NIONS, JOBPAR_, WDES%INCDIJ</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># TEMP</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># &#39; CAR &#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># name</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span></div>
+
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">eV2unit</span></div>
 
 
 <div class="viewcode-block" id="doscarSileVASP.read_data">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.doscarSileVASP.html#sisl.io.vasp.doscarSileVASP.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;eV&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read DOS, as calculated and written by VASP</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        units : {str, dict, list, tuple}</span>
+<span class="sd">        units :</span>
 <span class="sd">            selects units in the returned data</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        E : numpy.ndarray</span>
-<span class="sd">            energy points</span>
+<span class="sd">            energy points (units as selected in argument)</span>
 <span class="sd">        DOS : numpy.ndarray</span>
-<span class="sd">            DOS points (units of 1/energy)</span>
+<span class="sd">            DOS points (units of 1/energy_units)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">serialize_units_arg</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="n">eV2unit</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+
         <span class="c1"># read first line</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># NIONS, NIONS, JOBPAR_, WDES%INCDIJ</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15</span>
@@ -199,9 +208,6 @@
             <span class="n">line</span> <span class="o">=</span> <span class="n">arrayf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
             <span class="n">E</span><span class="p">[</span><span class="n">ie</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">DOS</span><span class="p">[:,</span> <span class="n">ie</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="n">ns</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-
-        <span class="n">units</span> <span class="o">=</span> <span class="n">serialize_units_arg</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
-        <span class="n">eV2unit</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">Ef</span><span class="p">)</span> <span class="o">*</span> <span class="n">eV2unit</span><span class="p">,</span> <span class="n">DOS</span> <span class="o">/</span> <span class="n">eV2unit</span></div>
 
