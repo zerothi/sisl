@@ -18,7 +18,7 @@ __all__ = ["carSileVASP"]
 
 @set_module("sisl.io.vasp")
 class carSileVASP(SileVASP):
-    """CAR VASP files for defining geomtries
+    """CAR VASP files for defining geometries
 
     This file-object handles both POSCAR and CONTCAR files
     """
@@ -124,7 +124,7 @@ class carSileVASP(SileVASP):
 
     @sile_fh_open(True)
     def read_lattice(self):
-        """Returns `Lattice` object from the CONTCAR/POSCAR file"""
+        """Returns `Lattice` object from this Sile"""
 
         # read first line
         self.readline()  # LABEL
@@ -141,7 +141,7 @@ class carSileVASP(SileVASP):
 
     @sile_fh_open()
     def read_geometry(self, ret_dynamic=False):
-        r"""Returns Geometry object from the CONTCAR/POSCAR file
+        r"""Returns Geometry object from this Sile
 
         Possibly also return the dynamics (if present).
 
