@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._array import arrayf
 from sisl._internal import set_module
+from sisl.typing import UnitsVar
 from sisl.unit import serialize_units_arg, unit_convert
 
 from ..sile import add_sile, sile_fh_open
@@ -18,7 +19,7 @@ class doscarSileVASP(SileVASP):
     """Density of states output"""
 
     @sile_fh_open(True)
-    def read_fermi_level(self, units="eV"):
+    def read_fermi_level(self, units: UnitsVar = "eV"):
         r"""Query the Fermi-level contained in the file
 
         Returns
@@ -26,6 +27,9 @@ class doscarSileVASP(SileVASP):
         Ef : float
             fermi-level of the system
         """
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
+
         self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
         self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
         self.readline()  # TEMP
@@ -33,18 +37,15 @@ class doscarSileVASP(SileVASP):
         self.readline()  # name
         line = self.readline().split()
 
-        units = serialize_units_arg(units)
-        eV2unit = unit_convert("eV", units["energy"])
-
         return float(line[3]) * eV2unit
 
     @sile_fh_open()
-    def read_data(self, units="eV"):
+    def read_data(self, units: UnitsVar = "eV"):
         r"""Read DOS, as calculated and written by VASP
 
         Parameters
         ----------
-        units : {str, dict, list, tuple}
+        units :
             selects units in the returned data
 
         Returns
@@ -54,6 +55,9 @@ class doscarSileVASP(SileVASP):
         DOS : numpy.ndarray
             DOS points (units of 1/energy_units)
         """
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
+
         # read first line
         self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
         self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
@@ -77,9 +81,6 @@ class doscarSileVASP(SileVASP):
             line = arrayf(self.readline().split())
             E[ie] = line[0]
             DOS[:, ie] = line[1 : ns + 1]
-
-        units = serialize_units_arg(units)
-        eV2unit = unit_convert("eV", units["energy"])
 
         return (E - Ef) * eV2unit, DOS / eV2unit
 

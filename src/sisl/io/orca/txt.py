@@ -6,6 +6,7 @@ import numpy as np
 from sisl._core.geometry import Geometry
 from sisl._internal import set_module
 from sisl.messages import deprecation
+from sisl.typing import UnitsVar
 from sisl.unit import serialize_units_arg, unit_convert
 from sisl.utils import PropertyDict
 
@@ -63,7 +64,8 @@ class txtSileORCA(SileORCA):
 
         Returns
         -------
-        ndarray or list of ndarrays : alpha and beta electrons
+        out: numpy.ndarray or list of numpy.ndarray
+            alpha and beta electrons
         """
         f = self.step_to("Number of Alpha Electrons", allow_reread=False)
         if f[0]:
@@ -75,12 +77,12 @@ class txtSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_energy(self, units="eV"):
+    def read_energy(self, units: UnitsVar = "eV"):
         """Reads the energy blocks
 
         Parameters
         ----------
-        units : {str, dict, list, tuple}
+        units :
             selects units in the returned data
 
         Notes
@@ -89,18 +91,20 @@ class txtSileORCA(SileORCA):
 
         Returns
         -------
-        PropertyDict or list of PropertyDict : all data from the "DFT_Energy" and "VdW_Correction" blocks
+        out: PropertyDict or list of PropertyDict
+            all data from the "DFT_Energy" and "VdW_Correction" blocks
         """
         # read the DFT_Energy block
         f = self.step_to("$ DFT_Energy", allow_reread=False)[0]
         if not f:
             return None
-        self.readline()  # description
-        self.readline()  # geom. index
-        self.readline()  # prop. index
 
         units = serialize_units_arg(units)
         Ha2unit = unit_convert("Ha", units["energy"])
+
+        self.readline()  # description
+        self.readline()  # geom. index
+        self.readline()  # prop. index
 
         E = PropertyDict()
 
@@ -164,7 +168,8 @@ class txtSileORCA(SileORCA):
 
         Returns
         -------
-        PropertyDict : Electronic g-tensor
+        out : PropertyDict
+            Electronic g-tensor
         """
         G = PropertyDict()
         f, line = self.step_to("EPRNMR_GTensor", allow_reread=False)
@@ -201,7 +206,7 @@ class txtSileORCA(SileORCA):
         return G
 
     @sile_fh_open()
-    def read_hyperfine_coupling(self, units="eV"):
+    def read_hyperfine_coupling(self, units: UnitsVar = "eV"):
         r"""Reads hyperfine couplings from the ``EPRNMR_ATensor`` block
 
         For a nucleus :math:`k`, the hyperfine interaction is usually
@@ -220,7 +225,7 @@ class txtSileORCA(SileORCA):
 
         Parameters
         ----------
-        units : {str, dict, list, tuple}
+        units :
             selects units in the returned data
 
         Notes
@@ -229,7 +234,8 @@ class txtSileORCA(SileORCA):
 
         Returns
         -------
-        list of PropertyDict : Hyperfine coupling data
+        out : list of PropertyDict
+            Hyperfine coupling data
         """
         f, line = self.step_to("EPRNMR_ATensor", allow_reread=False)
         if not f:

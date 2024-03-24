@@ -3,14 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-# wrapper for numpy typing
-from . import _numpy as npt
-from ._numpy import *
+from typing import Mapping, Sequence, Union
 
-# isort: split
+__all__ = ["UnitsVar"]
 
-from ._atom import *
-from ._common import *
-from ._core import *
-from ._indices import *
-from ._units import *
+UnitsVar = Union[str, Mapping[str, str], Sequence[str]]

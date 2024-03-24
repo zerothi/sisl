@@ -45,3 +45,4 @@ The typing types are shown below:
    SileLike
    SparseMatrix
    SparseMatrixExt
+   UnitsVar

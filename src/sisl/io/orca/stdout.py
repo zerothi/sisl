@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.messages import deprecation
+from sisl.typing import UnitsVar
 from sisl.unit import serialize_units_arg, unit_convert
 from sisl.utils import PropertyDict
 
@@ -78,7 +79,8 @@ class stdoutSileORCA(SileORCA):
 
         Returns
         -------
-        ndarray or list of ndarrays : alpha and beta electrons
+        out: ndarray or list of ndarrays
+            alpha and beta electrons
         """
         f = self.step_to("N(Alpha)", allow_reread=False)
         if f[0]:
@@ -115,7 +117,10 @@ class stdoutSileORCA(SileORCA):
 
         Returns
         -------
-        PropertyDicts or ndarray or list thereof: atom/orbital-resolved charge (or spin) data
+        out: numpy.ndarray or list of numpy.ndarray
+            atom/orbital (and spin) resolved charges when `reduced` is False
+        out_reduced : PropertyDict or list of PropertyDict
+            orbital-resolved charges, only when `reduced` is True
         """
         if name.lower() in ("mulliken", "m"):
             name = "mulliken"
@@ -260,31 +265,32 @@ class stdoutSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_energy(self, units="eV"):
+    def read_energy(self, units: UnitsVar = "eV"):
         """Reads the energy blocks
 
         Parameters
         ----------
-        units : {str, dict, list, tuple}
+        units :
             selects units in the returned data
 
-        Note
-        ----
+        Notes
+        -----
         Energies written by ORCA have units of Ha.
 
         Returns
         -------
-        PropertyDict or list of PropertyDict : all energy data from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
+        out : PropertyDict or list of PropertyDict
+            all energy data from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
         """
         f = self.step_to("TOTAL SCF ENERGY", allow_reread=False)[0]
         if not f:
             return None
 
-        self.readline()  # skip ---
-        self.readline()  # skip blank line
-
         units = serialize_units_arg(units)
         Ha2unit = unit_convert("Ha", units["energy"])
+
+        self.readline()  # skip ---
+        self.readline()  # skip blank line
 
         E = PropertyDict()
 
@@ -312,16 +318,25 @@ class stdoutSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_orbital_energies(self):
+    def read_orbital_energies(self, units: UnitsVar = "eV"):
         """Reads the "ORBITAL ENERGIES" blocks
+
+        Parameters
+        ----------
+        units :
+            selects units in the returned data
 
         Returns
         -------
-        ndarray or list of ndarray : orbital energies (in eV) from the "ORBITAL ENERGIES" blocks
+        out : numpy.ndarray or list of numpy.ndarray
+            orbital energies (in eV) from the "ORBITAL ENERGIES" blocks
         """
         f = self.step_to("ORBITAL ENERGIES", allow_reread=False)[0]
         if not f:
             return None
+
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
 
         self.readline()  # skip ---
         if "SPIN UP ORBITALS" in self.readline():
@@ -340,7 +355,7 @@ class stdoutSileORCA(SileORCA):
             v = self.readline().split()
 
         if not spin:
-            return E.ravel()
+            return E.ravel() * eV2unit
 
         self.readline()  # skip "SPIN DOWN ORBITALS"
         self.readline()  # Skip "NO OCC" header line
@@ -349,7 +364,7 @@ class stdoutSileORCA(SileORCA):
             i = int(v[0])
             E[i, 1] = v[-1]
             v = self.readline().split()
-        return E
+        return E * eV2unit
 
 
 outputSileORCA = deprecation(

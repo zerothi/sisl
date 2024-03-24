@@ -38,7 +38,8 @@ def _geometry_group(geometry, ret_index=False):
 
     Returns
     -------
-    geometry: reordered geometry
+    geometry : Geometry
+        reordered geometry
     """
     na = len(geometry)
     idx = _a.emptyi(na)

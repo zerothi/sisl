@@ -4,6 +4,7 @@
 import numpy as np
 
 from sisl._internal import set_module
+from sisl.typing import UnitsVar
 from sisl.unit import serialize_units_arg, unit_convert
 
 from ..sile import add_sile, sile_fh_open
@@ -19,14 +20,14 @@ class eigenvalSileVASP(SileVASP):
     """Kohn-Sham eigenvalues"""
 
     @sile_fh_open()
-    def read_data(self, k=False, units="eV"):
+    def read_data(self, k: bool = False, units: UnitsVar = "eV"):
         r"""Read eigenvalues as calculated by VASP
 
         Parameters
         ----------
         k : bool, optional
            also return k points and weights
-        units : {str, dict, list, tuple}
+        units :
            selects units in the returned data
 
         Returns
@@ -38,6 +39,9 @@ class eigenvalSileVASP(SileVASP):
         numpy.ndarray : weights for k-points (if `k` is true), shape ``(nk)``
 
         """
+        units = serialize_units_arg(units)
+        eV2unit = unit_convert("eV", units["energy"])
+
         # read first line
         line = self.readline()  # NIONS, NIONS, NBLOCK * KBLOCK, NSPIN
         ns = int(line.split()[-1])
@@ -62,8 +66,6 @@ class eigenvalSileVASP(SileVASP):
                 E = map(float, self.readline().split()[1 : ns + 1])
                 eigs[:, ik, ib] = list(E)
 
-        units = serialize_units_arg(units)
-        eV2unit = unit_convert("eV", units["energy"])
         eigs *= eV2unit
 
         if k:

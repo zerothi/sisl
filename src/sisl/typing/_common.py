@@ -23,15 +23,10 @@ __all__ = [
     "Coord",
     "CoordOrScalar",
     "FuncType",
-    "GeometryLike",
-    "GridLike",
     "KPoint",
-    "LatticeLike",
     "LatticeOrGeometry",
-    "LatticeOrGeometryLike",
     "SeqFloat",
     "SeqOrScalarFloat",
-    "SileLike",
     "SparseMatrix",
     "SparseMatrixExt",
 ]
@@ -45,38 +40,12 @@ CoordOrScalar = Union[float, Coord]
 
 KPoint = Sequence[float]
 
-SileLike = Union[
-    str,
-    "BaseSile",
-    Path,
-]
-
-GeometryLike = Union[
-    SileLike,
-    "Geometry",
-]
-
 # Short for *any* function
 FuncType = Callable[..., Any]
-
-LatticeLike = Union[
-    SileLike,
-    "Lattice",
-]
-
-GridLike = Union[
-    SileLike,
-    "Grid",
-]
 
 LatticeOrGeometry = Union[
     "Lattice",
     "Geometry",
-]
-
-LatticeOrGeometryLike = Union[
-    LatticeLike,
-    GeometryLike,
 ]
 
 if hasattr(sps, "sparray"):

@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, deprecation
+from sisl.typing import UnitsVar
 from sisl.unit import serialize_units_arg, unit_convert
 from sisl.utils import PropertyDict
 
@@ -86,14 +87,14 @@ class outcarSileVASP(SileVASP):
         "WARNING: direct calls to outcarSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.",
         from_version="0.14",
     )
-    def read_energy(self, units="eV"):
+    def read_energy(self, units: UnitsVar = "eV"):
         """Reads an energy specification block from OUTCAR
 
         The function steps to the next occurrence of the "Free energy of the ion-electron system" segment
 
         Parameters
         ----------
-        units : {str, dict, list, tuple}
+        units :
             selects units in the returned data
 
         Notes
@@ -118,7 +119,8 @@ class outcarSileVASP(SileVASP):
 
         Returns
         -------
-        PropertyDict : all energies from a single "Free energy of the ion-electron system" segment
+        out : PropertyDict
+            all energies from a single "Free energy of the ion-electron system" segment
         """
 
         units = serialize_units_arg(units)
@@ -174,7 +176,8 @@ class outcarSileVASP(SileVASP):
 
         Returns
         -------
-        PropertyDict : Trajectory step defined by cell vectors (`.cell`), atom positions (`.xyz`), and forces (`.force`)
+        out : PropertyDict
+            Trajectory step defined by cell vectors (`.cell`), atom positions (`.xyz`), and forces (`.force`)
         """
 
         f = self.step_to("VOLUME and BASIS-vectors are now :", allow_reread=False)[0]
