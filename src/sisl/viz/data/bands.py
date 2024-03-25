@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Ideally this code should also use annotaions,
-# but it breaks on 3.8  (TODO remove in 3.9)
+# TODO when forward refs work with annotations
 # from __future__ import annotations
 
 from collections import defaultdict
