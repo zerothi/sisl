@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# Ideally this code should also use annotaions,
+# but it breaks on 3.8  (TODO remove in 3.9)
 from __future__ import annotations
 
 from collections import defaultdict
