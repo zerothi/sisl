@@ -12,11 +12,11 @@ from xarray import Dataset
 
 from sisl._core.lattice import Lattice, LatticeChild
 from sisl.typing import npt
+from sisl.viz.types import CellLike
 
-# from ...types import CellLike
-# from .coords import project_to_axes, CoordsDataset
+from .coords import CoordsDataset
 
-# CellDataset = CoordsDataset
+CellDataset = CoordsDataset
 
 
 def is_cartesian_unordered(cell: CellLike, tol: float = 1e-3) -> bool:
