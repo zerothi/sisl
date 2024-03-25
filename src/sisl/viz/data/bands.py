@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Ideally this code should also use annotaions,
 # but it breaks on 3.8  (TODO remove in 3.9)
-from __future__ import annotations
+# from __future__ import annotations
 
 from collections import defaultdict
 from functools import partial
