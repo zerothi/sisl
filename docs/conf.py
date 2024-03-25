@@ -14,6 +14,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from __future__ import annotations
+
 import logging
 import os
 import pathlib
@@ -200,6 +202,30 @@ autodoc_default_options = {
     "show-inheritance": True,
 }
 
+# typehints only shows the minimal class, instead
+# of full module paths
+# The linkage is still problematic, and a known issue:
+#  https://github.com/sphinx-doc/sphinx/issues/10455
+# autodoc will likely get a rewrite. Until then..
+autodoc_typehints_format = "short"
+
+# Show type-hints in both the signature
+# and in the variable list
+autodoc_typehints = "both"
+
+# Automatically create the autodoc_type_aliases
+autodoc_type_aliases = dict()
+_type_aliases_skip = set(dir(sisl.typing._numpy))
+_type_aliases_skip.add("npt")
+
+for name in dir(sisl.typing):
+    if name.startswith("_"):
+        continue
+    if name in _type_aliases_skip:
+        continue
+
+    autodoc_type_aliases[name] = f"sisl.typing.{name}"
+
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -218,6 +244,9 @@ for _venv in pathlib.Path(".").glob("*venv*"):
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
 default_role = "autolink"
+
+# prefer to use the smallest name, always
+python_use_unqualified_type_names = True
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = False

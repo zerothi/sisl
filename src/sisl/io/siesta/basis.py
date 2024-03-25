@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from sisl._array import aranged, arrayd
 from sisl._core.atom import Atom
 from sisl._core.orbital import SphericalOrbital

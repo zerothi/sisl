@@ -15,6 +15,8 @@
 #  python stats.py $0.profile
 #
 
+from __future__ import annotations
+
 import sys
 
 import numpy as np

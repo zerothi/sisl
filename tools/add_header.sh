@@ -6,7 +6,7 @@ shopt -s globstar
 
 declare -a extensions=(py pyx)
 
-function add_header {
+function add_license {
   local f=$1 ; shift
   if ! $(grep -Fq "mozilla.org/MPL/2.0" $f) ; then
     local tmpdir=$(mktemp -d)
@@ -22,10 +22,26 @@ function add_header {
   fi
 }
 
+function add_future {
+  local f=$1 ; shift
+  if ! $(grep -Fq "__future__ import annotations" $f) ; then
+    local tmpdir=$(mktemp -d)
+    local basef=$(basename $f)
+    cp $f $tmpdir/$basef
+    {
+      sed -n '0,/^[^#]/p' $tmpdir/$basef | head -n -1
+      echo "from __future__ import annotations"
+      sed -n '/^[^#]/,$p' $tmpdir/$basef
+    } > $f
+    rm -fr $tmpdir
+  fi
+}
+
 for ext in ${extensions[@]}
 do
   for f in **/*.$ext
     do
-      add_header $f
+      add_license $f
+      [ $ext == py ] && add_future $f
   done
 done

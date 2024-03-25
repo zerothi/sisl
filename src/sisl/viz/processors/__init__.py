@@ -5,4 +5,4 @@
 # from .fatbands import *
 # from .pdos import *
 # from .geometry import *
-# from .grid import *
+from __future__ import annotations

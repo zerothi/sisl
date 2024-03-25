@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Import sile objects
 # Import the geometry object
+from __future__ import annotations
+
 from sisl import Atom, Atoms
 
 from ..sile import *
