@@ -229,6 +229,10 @@ class cubeSile(Sile):
         header["unit"] = unit_convert(header.get("unit", "Bohr"), "Ang")
         return header
 
+    def read_basis(self) -> Atoms:
+        """Reads the `Atoms` object from the CUBE file"""
+        return self.read_geometry().atoms
+
     @sile_fh_open()
     def read_lattice(self, ret_na: bool = False) -> Lattice:
         """Returns `Lattice` object from the CUBE file

@@ -329,6 +329,14 @@ class xsfSile(Sile):
         return geom
 
     @SileBinder(postprocess=postprocess_tuple(list))
+    def read_basis(self) -> Atoms:
+        """Basis set (`Atoms`) contained in file"""
+        ret = self._r_geometry_next()
+        if ret is None:
+            return ret
+        return ret.atoms
+
+    @SileBinder(postprocess=postprocess_tuple(list))
     def read_lattice(self) -> Lattice:
         """Lattice contained in file"""
         ret = self._r_geometry_next()

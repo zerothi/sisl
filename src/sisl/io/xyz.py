@@ -1,17 +1,17 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from __future__ import annotations
-
 """
 Sile object for reading/writing XYZ files
 """
+from __future__ import annotations
+
 from typing import Optional
 
 import numpy as np
 
 import sisl._array as _a
-from sisl import BoundaryCondition, Geometry, Lattice
+from sisl import Atoms, BoundaryCondition, Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
 
@@ -113,6 +113,27 @@ class xyzSile(Sile):
             s = a.symbol
             s = {"fa": "Ds"}.get(s, s)
             self._write(fmt_str.format(s, *geometry.xyz[ia, :]))
+
+    @SileBinder()
+    def read_basis(self) -> Atoms:
+        """Returns a Atoms object from the XYZ file"""
+        line = self.readline()
+        if line == "":
+            return None
+
+        # Read number of atoms
+        na = int(line)
+
+        # Read header, and try and convert to dictionary
+        self.readline()
+
+        # Read atoms and coordinates
+        sp = [None] * na
+        line = self.readline
+        for ia in range(na):
+            sp[ia] = line().split(maxsplit=1)[0]
+
+        return Atoms(sp)
 
     @SileBinder()
     def read_lattice(self) -> Lattice:
