@@ -356,7 +356,7 @@ class omxSileOpenMX(SileOpenMX):
             atom.append(Atom(Z, orbs, tag=d[0]))
         return atom
 
-    def read_lattice(self, output=False, *args, **kwargs):
+    def read_lattice(self, output: bool = False, *args, **kwargs) -> Lattice:
         """Reads lattice
 
         One can limit the tried files to only one file by passing
@@ -364,7 +364,7 @@ class omxSileOpenMX(SileOpenMX):
 
         Parameters
         ----------
-        output: bool, optional
+        output:
             whether to read lattice from output files (default to read from
             the input file).
         order: {'dat', 'omx'}
@@ -403,7 +403,7 @@ class omxSileOpenMX(SileOpenMX):
 
     _r_lattice_dat = _r_lattice_omx
 
-    def read_geometry(self, output=False, *args, **kwargs):
+    def read_geometry(self, output: bool = False, *args, **kwargs) -> Geometry:
         """Returns Geometry object
 
         One can limit the tried files to only one file by passing
@@ -411,7 +411,7 @@ class omxSileOpenMX(SileOpenMX):
 
         Parameters
         ----------
-        output: bool, optional
+        output:
             whether to read geometry from output files (default to read from
             the input file).
         order: {'dat', 'omx'}

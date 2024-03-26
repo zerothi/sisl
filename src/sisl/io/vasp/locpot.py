@@ -28,7 +28,9 @@ class locpotSileVASP(carSileVASP):
     """
 
     @sile_fh_open(True)
-    def read_grid(self, index=0, dtype=np.float64, units: UnitsVar = "eV", **kwargs):
+    def read_grid(
+        self, index=0, dtype=np.float64, units: UnitsVar = "eV", **kwargs
+    ) -> Grid:
         """Reads the potential from the file and returns with a grid (plus geometry)
 
         Parameters
@@ -48,7 +50,7 @@ class locpotSileVASP(carSileVASP):
 
         Returns
         -------
-        out: Grid
+        Grid
             potential with associated geometry
         """
         units = serialize_units_arg(units)

@@ -86,7 +86,7 @@ class kpSileSiesta(SileSiesta):
     @deprecate_argument(
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
-    def read_brillouinzone(self, lattice: TLattice):
+    def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
         """Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
@@ -154,7 +154,7 @@ class rkpSileSiesta(kpSileSiesta):
     @deprecate_argument(
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
-    def read_brillouinzone(self, lattice: TLattice):
+    def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
         """Returns K-points from the file
 
         Parameters

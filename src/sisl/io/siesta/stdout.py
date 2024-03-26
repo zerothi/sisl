@@ -10,7 +10,7 @@ from typing import Optional
 import numpy as np
 
 import sisl._array as _a
-from sisl import Atom, Geometry, Lattice
+from sisl import Atom, Atoms, Geometry, Lattice
 from sisl._common import Opt
 from sisl._help import voigt_matrix
 from sisl._internal import set_module
@@ -153,7 +153,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @lru_cache(1)
     @sile_fh_open(True)
-    def read_basis(self):
+    def read_basis(self) -> Atoms:
         """Reads the basis as found in the output file
 
         This parses 3 things:
@@ -203,7 +203,7 @@ class stdoutSileSiesta(SileSiesta):
         for atom, orbs in atom_orbs.items():
             atoms[atom]["orbitals"] = orbs
 
-        return [Atom(**atoms[tag]) for tag in order]
+        return Atoms([Atom(**atoms[tag]) for tag in order])
 
     def _r_lattice_outcell(self):
         """Wrapper for reading the unit-cell from the outcoor block"""
@@ -312,7 +312,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder()
     @sile_fh_open()
-    def read_geometry(self, skip_input: bool = True):
+    def read_geometry(self, skip_input: bool = True) -> Geometry:
         """Reads the geometry from the Siesta output file
 
         Parameters
@@ -430,7 +430,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder(postprocess=_a.arrayd)
     @sile_fh_open()
-    def read_stress(self, key: str = "static", skip_final: bool = True):
+    def read_stress(self, key: str = "static", skip_final: bool = True) -> np.ndarray:
         """Reads the stresses from the Siesta output file
 
         Parameters
@@ -483,7 +483,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder(postprocess=_a.arrayd)
     @sile_fh_open()
-    def read_moment(self, orbitals=False, quantity="S"):
+    def read_moment(self, orbitals=False, quantity="S") -> np.ndarray:
         """Reads the moments from the Siesta output file
 
         These will only be present in case of spin-orbit coupling.
@@ -556,7 +556,7 @@ class stdoutSileSiesta(SileSiesta):
         return _a.arrayd(moments)
 
     @sile_fh_open(True)
-    def read_energy(self):
+    def read_energy(self) -> PropertyDict:
         """Reads the final energy distribution
 
         Currently the energies translated are:

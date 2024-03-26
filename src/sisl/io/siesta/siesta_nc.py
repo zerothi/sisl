@@ -53,7 +53,7 @@ class ncSileSiesta(SileCDFSiesta):
         return np.array(self._value("nsc"), np.int32)
 
     @lru_cache(maxsize=1)
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Returns a Lattice object from a Siesta.nc file"""
         cell = np.array(self._value("cell"), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
@@ -65,13 +65,14 @@ class ncSileSiesta(SileCDFSiesta):
         return Lattice(cell, nsc=nsc)
 
     @lru_cache(maxsize=1)
-    def read_basis(self):
+    def read_basis(self) -> Atoms:
         """Returns a set of atoms corresponding to the basis-sets in the nc file"""
         if "BASIS" not in self.groups:
             return None
 
         basis = self.groups["BASIS"]
         atom = [None] * len(basis.groups)
+        species_idx = basis.variables["basis"][:] - 1
 
         for a_str in basis.groups:
             a = basis.groups[a_str]
@@ -138,10 +139,11 @@ class ncSileSiesta(SileCDFSiesta):
 
             i = int(a.ID) - 1
             atom[i] = Atom(Z, orbital, mass=mass, tag=label)
-        return atom
+
+        return Atoms([atom[spc] for spc in species_idx])
 
     @lru_cache(maxsize=1)
-    def read_geometry(self):
+    def read_geometry(self) -> Geometry:
         """Returns Geometry object from a Siesta.nc file"""
 
         # Read supercell
@@ -164,12 +166,12 @@ class ncSileSiesta(SileCDFSiesta):
         return geom
 
     @lru_cache(maxsize=1)
-    def read_force(self):
+    def read_force(self) -> np.ndarray:
         """Returns a vector with final forces contained."""
         return np.array(self._value("fa")) * Ry2eV / Bohr2Ang
 
     @lru_cache(maxsize=1)
-    def read_fermi_level(self):
+    def read_fermi_level(self) -> float:
         """Returns the fermi-level"""
         return self._value("Ef")[:] * Ry2eV
 
@@ -237,7 +239,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return C
 
-    def read_overlap(self, **kwargs):
+    def read_overlap(self, **kwargs) -> Overlap:
         """Returns a overlap matrix from the underlying NetCDF file"""
         S = self._r_class(Overlap, **kwargs)
 
@@ -246,7 +248,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return S.transpose(sort=kwargs.get("sort", True))
 
-    def read_hamiltonian(self, **kwargs):
+    def read_hamiltonian(self, **kwargs) -> Hamiltonian:
         """Returns a Hamiltonian from the underlying NetCDF file"""
         H = self._r_class_spin(Hamiltonian, **kwargs)
 
@@ -268,7 +270,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
-    def read_dynamical_matrix(self, **kwargs):
+    def read_dynamical_matrix(self, **kwargs) -> DynamicalMatrix:
         """Returns a dynamical matrix from the underlying NetCDF file
 
         This assumes that the dynamical matrix is stored in the field "H" as would the
@@ -285,7 +287,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return D.transpose(sort=kwargs.get("sort", True))
 
-    def read_density_matrix(self, **kwargs):
+    def read_density_matrix(self, **kwargs) -> DensityMatrix:
         """Returns a density matrix from the underlying NetCDF file"""
         # This also adds the spin matrix
         DM = self._r_class_spin(DensityMatrix, **kwargs)
@@ -299,7 +301,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return DM.transpose(spin=False, sort=kwargs.get("sort", True))
 
-    def read_energy_density_matrix(self, **kwargs):
+    def read_energy_density_matrix(self, **kwargs) -> EnergyDensityMatrix:
         """Returns energy density matrix from the underlying NetCDF file"""
         EDM = self._r_class_spin(EnergyDensityMatrix, **kwargs)
 
@@ -348,7 +350,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return list(self.groups["GRID"].variables)
 
-    def read_grid(self, name, index=0, **kwargs):
+    def read_grid(self, name, index=0, **kwargs) -> Grid:
         """Reads a grid in the current Siesta.nc file
 
         Enables the reading and processing of the grids created by Siesta
@@ -416,12 +418,12 @@ class ncSileSiesta(SileCDFSiesta):
 
         return grid
 
-    def write_basis(self, atom):
+    def write_basis(self, atoms: Atoms):
         """Write the current atoms orbitals as the basis
 
         Parameters
         ----------
-        atom : Atoms
+        atoms :
            atom specifications to write.
         """
         sile_raise_write(self)
@@ -431,7 +433,7 @@ class ncSileSiesta(SileCDFSiesta):
         b = self._crt_var(bs, "basis", "i4", ("na_u",))
         b.info = "Basis of each atom by ID"
 
-        for isp, (a, ia) in enumerate(atom.iter(True)):
+        for isp, (a, ia) in enumerate(atoms.iter(True)):
             b[ia] = isp + 1
             if a.tag in bs.groups:
                 # Assert the file sizes

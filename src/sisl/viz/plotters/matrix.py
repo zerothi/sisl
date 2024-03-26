@@ -73,8 +73,8 @@ def draw_matrix_separators(
     if separator_mode == "orbitals":
         species_lines = get_orbital_sets_positions(geometry.atoms)
 
-        for atom_specie, atom_first_o in zip(geometry.atoms.specie, geometry.firsto):
-            lines = species_lines[atom_specie][1:]
+        for atom_species, atom_first_o in zip(geometry.atoms.species, geometry.firsto):
+            lines = species_lines[atom_species][1:]
             for line_pos in lines:
                 line_positions.append(line_pos + atom_first_o - 0.5)
     elif separator_mode == "atoms":
@@ -174,8 +174,8 @@ def set_matrix_axes(
                     atom_ticks.append(f"({orb.l}, {orb.m})")
 
             ticks = []
-            for i, specie in enumerate(geometry.atoms.specie):
-                ticks.extend([f"{i}: {orb}" for orb in atoms_ticks[specie]])
+            for i, species in enumerate(geometry.atoms.species):
+                ticks.extend([f"{i}: {orb}" for orb in atoms_ticks[species]])
         else:
             ticks = np.arange(matrix.shape[0]).astype(str)
 

@@ -89,7 +89,7 @@ class outcarSileVASP(SileVASP):
         "WARNING: direct calls to outcarSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.",
         from_version="0.14",
     )
-    def read_energy(self, units: UnitsVar = "eV"):
+    def read_energy(self, units: UnitsVar = "eV") -> PropertyDict:
         """Reads an energy specification block from OUTCAR
 
         The function steps to the next occurrence of the "Free energy of the ion-electron system" segment
@@ -178,7 +178,7 @@ class outcarSileVASP(SileVASP):
 
         Returns
         -------
-        out : PropertyDict
+        PropertyDict
             Trajectory step defined by cell vectors (`.cell`), atom positions (`.xyz`), and forces (`.force`)
         """
 

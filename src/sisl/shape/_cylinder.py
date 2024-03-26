@@ -182,9 +182,7 @@ class EllipticalCylinder(PureShape):
         # I.e. this reduces the search space to the box
         return indices_in_cylinder(tmp, 1.0 + tol, 1.0 + tol)
 
-    @deprecation(
-        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
-    )
+    @deprecation("toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15")
     def toSphere(self):
         """Convert to a sphere"""
         from .ellipsoid import Sphere
@@ -197,9 +195,7 @@ class EllipticalCylinder(PureShape):
         # Rescale each vector
         return Sphere(r, self.center.copy())
 
-    @deprecation(
-        "toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15"
-    )
+    @deprecation("toCuboid is deprecated, use shape.to.Cuboid(...) instead.", "0.15")
     def toCuboid(self):
         """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""
         from .prism4 import Cuboid

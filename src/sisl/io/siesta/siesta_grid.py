@@ -31,7 +31,7 @@ class gridncSileSiesta(SileCDFSiesta):
     The grid sile will automatically convert the units from Siesta units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
     """
 
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Returns a Lattice object from a Siesta.grid.nc file"""
         cell = np.array(self._value("cell"), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
@@ -56,7 +56,7 @@ class gridncSileSiesta(SileCDFSiesta):
         v.unit = "Bohr"
         v[:, :] = lattice.cell[:, :] / Bohr2Ang
 
-    def read_grid(self, index=0, name="gridfunc", *args, **kwargs):
+    def read_grid(self, index=0, name="gridfunc", *args, **kwargs) -> Grid:
         """Reads a grid in the current Siesta.grid.nc file
 
         Enables the reading and processing of the grids created by Siesta

@@ -162,6 +162,7 @@ def test_geometry(sisl_tmp):
     assert np.allclose(g.xyz, [[1.0] * 3, [0, 0, 1]])
     assert g.atoms[0].Z == 6
     assert g.atoms[1].Z == 6
+    assert g.atoms.nspecies == 1
 
     # default read # of atoms from list
     with open(f, "w") as fh:
@@ -175,6 +176,7 @@ def test_geometry(sisl_tmp):
     assert g.atoms[0].Z == 6
     assert g.atoms[1].Z == 6
     assert g.atoms[2].Z == 12
+    assert g.atoms.nspecies == 2
 
 
 def test_re_read(sisl_tmp):
@@ -443,7 +445,7 @@ O                     2                    # Species label, number of l-shells
     assert len(atom_orbs["C"]) == 4
     assert len(atom_orbs["O"]) == 4
     for i, (tag, orbs) in enumerate(atom_orbs.items()):
-        specie_orbs = fdf._parse_pao_basis(block, specie=tag)
+        specie_orbs = fdf._parse_pao_basis(block, species=tag)
         assert specie_orbs == orbs
 
     block = """
@@ -467,7 +469,7 @@ Pt_SOC                2                    # Species label, number of l-shells
     assert len(atom_orbs["Fe_SOC"]) == 5 + 10
     assert len(atom_orbs["Pt_SOC"]) == 5 + 10
     for i, (tag, orbs) in enumerate(atom_orbs.items()):
-        specie_orbs = fdf._parse_pao_basis(block, specie=tag)
+        specie_orbs = fdf._parse_pao_basis(block, species=tag)
         assert specie_orbs == orbs
 
 

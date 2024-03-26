@@ -82,7 +82,7 @@ class pdbSile(Sile):
     @deprecate_argument(
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
-    def write_lattice(self, lattice):
+    def write_lattice(self, lattice: Lattice):
         """Writes the supercell to the contained file"""
         # Check that we can write to the file
         sile_raise_write(self)
@@ -133,7 +133,7 @@ class pdbSile(Sile):
             self._write(fmt.format(*args))
 
     @sile_fh_open()
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Read supercell from the contained file"""
         f, line = self._step_record("CRYST1")
 
@@ -168,12 +168,12 @@ class pdbSile(Sile):
         return Lattice(cell, origin=origin)
 
     @sile_fh_open()
-    def write_geometry(self, geometry):
+    def write_geometry(self, geometry: Geometry):
         """Writes the geometry to the contained file
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            the geometry to be written
         """
         self.write_lattice(geometry.lattice)
@@ -238,7 +238,7 @@ class pdbSile(Sile):
         self._w_model(False)
 
     @sile_fh_open()
-    def read_geometry(self):
+    def read_geometry(self) -> Geometry:
         """Read geometry from the contained file"""
 
         # First we read in the geometry

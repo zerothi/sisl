@@ -679,7 +679,7 @@ class Geometry(
         -----
         This is an in-place operation.
         """
-        self._atoms = self.atoms.reorder(in_place=True)
+        self._atoms = self.atoms.reorder(inplace=True)
 
     def reduce(self) -> None:
         """Remove all atoms not currently used in the ``self.atoms`` object
@@ -688,7 +688,7 @@ class Geometry(
         -----
         This is an in-place operation.
         """
-        self._atoms = self.atoms.reduce(in_place=True)
+        self._atoms = self.atoms.reduce(inplace=True)
 
     def rij(self, ia: AtomsIndex, ja: AtomsIndex) -> ndarray:
         r"""Distance between atom `ia` and `ja`, atoms can be in super-cell indices
@@ -837,12 +837,12 @@ class Geometry(
     def iter_species(self, atoms: AtomsIndex = None) -> Iterator[int, Atom, int]:
         """Iterator over all atoms (or a subset) and species as a tuple in this geometry
 
-        >>> for ia, a, idx_specie in self.iter_species():
+        >>> for ia, a, idx_species in self.iter_species():
         ...     isinstance(ia, int) == True
         ...     isinstance(a, Atom) == True
-        ...     isinstance(idx_specie, int) == True
+        ...     isinstance(idx_species, int) == True
 
-        with ``ia`` being the atomic index, ``a`` the `Atom` object, ``idx_specie``
+        with ``ia`` being the atomic index, ``a`` the `Atom` object, ``idx_species``
         is the index of the specie
 
         Parameters
@@ -857,10 +857,10 @@ class Geometry(
         """
         if atoms is None:
             for ia in self:
-                yield ia, self.atoms[ia], self.atoms.specie[ia]
+                yield ia, self.atoms[ia], self.atoms.species[ia]
         else:
             for ia in self._sanitize_atoms(atoms).ravel():
-                yield ia, self.atoms[ia], self.atoms.specie[ia]
+                yield ia, self.atoms[ia], self.atoms.species[ia]
 
     def iter_orbitals(
         self, atoms: AtomsIndex = None, local: bool = True
@@ -1433,26 +1433,26 @@ class Geometry(
         atoms = self._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
-        specie = self.atoms.specie[atoms]
-        uniq_specie, indices = unique(specie, return_inverse=True)
-        if len(uniq_specie) > 1:
+        species = self.atoms.species[atoms]
+        uniq_species, indices = unique(species, return_inverse=True)
+        if len(uniq_species) > 1:
             # In case there are multiple different species but one wishes to
             # retain the same orbital index, then we loop on the unique species
             new = self
-            for i in range(uniq_specie.size):
+            for i in range(uniq_species.size):
                 idx = (indices == i).nonzero()[0]
                 # now determine whether it is the whole atom
                 # or only part of the geometry
                 new = new.sub_orbital(atoms[idx], orbitals)
             return new
 
-        # At this point we are sure that uniq_specie is *only* one specie!
+        # At this point we are sure that uniq_species is *only* one specie!
         geom = self.copy()
 
         # Get the atom object we wish to reduce
         old_atom = geom.atoms[atoms[0]]
-        old_atom_specie = geom.atoms.specie_index(old_atom)
-        old_atom_count = (geom.atoms.specie == old_atom_specie).sum()
+        old_atom_species = geom.atoms.species_index(old_atom)
+        old_atom_count = (geom.atoms.species == old_atom_species).sum()
 
         if isinstance(orbitals, (Orbital, Integral)):
             orbitals = [orbitals]
@@ -1483,13 +1483,13 @@ class Geometry(
         else:
             # we have to add the new one (in case it does not exist)
             try:
-                new_atom_specie = geom.atoms.specie_index(new_atom)
+                new_atom_species = geom.atoms.species_index(new_atom)
             except Exception:
-                new_atom_specie = geom.atoms.nspecie
+                new_atom_species = geom.atoms.nspecies
                 # the above checks that it is indeed a new atom
                 geom._atoms._atom.append(new_atom)
             # transfer specie index
-            geom.atoms._specie[atoms] = new_atom_specie
+            geom.atoms._species[atoms] = new_atom_species
             geom.atoms._update_orbitals()
 
         return geom
@@ -1515,13 +1515,13 @@ class Geometry(
         atoms = self._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
-        specie = self.atoms.specie[atoms]
-        uniq_specie, indices = unique(specie, return_inverse=True)
-        if len(uniq_specie) > 1:
+        species = self.atoms.species[atoms]
+        uniq_species, indices = unique(species, return_inverse=True)
+        if len(uniq_species) > 1:
             # In case there are multiple different species but one wishes to
             # retain the same orbital index, then we loop on the unique species
             new = self
-            for i in range(uniq_specie.size):
+            for i in range(uniq_species.size):
                 idx = (indices == i).nonzero()[0]
                 # now determine whether it is the whole atom
                 # or only part of the geometry
@@ -3138,8 +3138,8 @@ class Geometry(
         # Default dictionary for passing to newly created figures
         d = dict()
 
-        colors = np.linspace(0, 1, num=self.atoms.nspecie, endpoint=False)
-        colors = colors[self.atoms.specie]
+        colors = np.linspace(0, 1, num=self.atoms.nspecies, endpoint=False)
+        colors = colors[self.atoms.species]
         if "s" in kwargs:
             area = kwargs.pop("s")
         else:

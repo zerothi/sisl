@@ -73,7 +73,7 @@ class gotSileGULP(SileGULP):
         return np.array(nsc[:3], np.int32)
 
     @sile_fh_open()
-    def read_lattice(self, key=None, **kwargs):
+    def read_lattice(self, key=None, **kwargs) -> Lattice:
         """Reads a `Lattice` and creates the GULP cell"""
         self.set_lattice_key(key)
 
@@ -100,7 +100,7 @@ class gotSileGULP(SileGULP):
         self.set_key("geometry", key)
 
     @sile_fh_open()
-    def read_geometry(self, **kwargs):
+    def read_geometry(self, **kwargs) -> Geometry:
         """Reads a geometry and creates the GULP dynamical geometry"""
         # create default supercell
         lattice = Lattice([1, 1, 1])
@@ -185,7 +185,7 @@ class gotSileGULP(SileGULP):
 
     set_dyn_key = set_dynamical_matrix_key
 
-    def read_dynamical_matrix(self, **kwargs):
+    def read_dynamical_matrix(self, **kwargs) -> DynamicalMatrix:
         """Returns a GULP dynamical matrix model for the output of GULP
 
         Parameters

@@ -24,7 +24,7 @@ class fcSileSiesta(SileSiesta):
     @sile_fh_open()
     def read_force(
         self, displacement: Optional[float] = None, na: Optional[int] = None
-    ):
+    ) -> np.ndarray:
         """Reads all displacement forces by multiplying with the displacement value
 
         Since the force constant file does not contain the non-displaced configuration

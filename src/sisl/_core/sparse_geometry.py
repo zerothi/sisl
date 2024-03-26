@@ -1528,13 +1528,13 @@ class SparseOrbital(_SparseGeometry):
         atoms = self.geometry._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
-        specie = self.geometry.atoms.specie[atoms]
-        uniq_specie, indices = unique(specie, return_inverse=True)
-        if len(uniq_specie) > 1:
+        species = self.geometry.atoms.species[atoms]
+        uniq_species, indices = unique(species, return_inverse=True)
+        if len(uniq_species) > 1:
             # In case there are multiple different species but one wishes to
             # retain the same orbital index, then we loop on the unique species
             new = self
-            for i in range(uniq_specie.size):
+            for i in range(uniq_species.size):
                 idx = (indices == i).nonzero()[0]
                 # now determine whether it is the whole atom
                 # or only part of the geometry
@@ -1571,7 +1571,7 @@ class SparseOrbital(_SparseGeometry):
         -----
         Future implementations may allow one to re-arange orbitals using this method.
 
-        When using this method the internal species list will be populated by another specie
+        When using this method the internal species list will be populated by another species
         that is named after the orbitals removed. This is to distinguish different atoms.
 
         Examples
@@ -1616,13 +1616,13 @@ class SparseOrbital(_SparseGeometry):
         atoms = self.geometry._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
-        specie = self.geometry.atoms.specie[atoms]
-        uniq_specie, indices = unique(specie, return_inverse=True)
-        if len(uniq_specie) > 1:
+        species = self.geometry.atoms.species[atoms]
+        uniq_species, indices = unique(species, return_inverse=True)
+        if len(uniq_species) > 1:
             # In case there are multiple different species but one wishes to
             # retain the same orbital index, then we loop on the unique species
             new = self
-            for i in range(uniq_specie.size):
+            for i in range(uniq_species.size):
                 idx = (indices == i).nonzero()[0]
                 # now determine whether it is the whole atom
                 # or only part of the geometry
@@ -1638,7 +1638,7 @@ class SparseOrbital(_SparseGeometry):
             orbitals = [old_atom.index(orb) for orb in orbitals]
         orbitals = np.sort(orbitals)
 
-        # At this point we are sure that uniq_specie is *only* one specie!
+        # At this point we are sure that uniq_species is *only* one species!
         geom = self.geometry.sub_orbital(atoms, orbitals)
 
         # Now create the new sparse orbital class

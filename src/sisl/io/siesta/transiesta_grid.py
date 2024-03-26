@@ -32,7 +32,7 @@ class tsvncSileSiesta(gridncSileSiesta):
     Grid.topyamg : intrinsic grid conversion to the Poisson equation
     """
 
-    def read_grid(self, *args, **kwargs):
+    def read_grid(self, *args, **kwargs) -> Grid:
         """Reads the TranSiesta potential input grid"""
         lattice = self.read_lattice().swapaxes(0, 2)
 

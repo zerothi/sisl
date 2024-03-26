@@ -171,7 +171,7 @@ class _realSileDFTB(SileDFTB):
 
 class overrealSileDFTB(_realSileDFTB):
 
-    def read_overlap(self, geometry: Optional[Geometry] = None):
+    def read_overlap(self, geometry: Optional[Geometry] = None) -> Overlap:
         r"""Parse the output overlap matrix created by DFTB+"""
         geometry, S = self._r_file(geometry)
         S.eliminate_zeros()
@@ -183,7 +183,7 @@ class overrealSileDFTB(_realSileDFTB):
 
 class hamrealSileDFTB(_realSileDFTB):
 
-    def read_overlap(self, geometry: Optional[Geometry] = None):
+    def read_overlap(self, geometry: Optional[Geometry] = None) -> Overlap:
         """Parse the overlap matrix from the ``overreal.dat`` file
 
         Parameters
@@ -208,7 +208,7 @@ class hamrealSileDFTB(_realSileDFTB):
 
         return _lt2full(S)
 
-    def read_hamiltonian(self, geometry: Optional[Geometry] = None):
+    def read_hamiltonian(self, geometry: Optional[Geometry] = None) -> Hamiltonian:
         r"""Parse the output Hamiltonian created by DFTB+
 
         This will automatically try to discover the ``hamreal[1-4].dat``
@@ -242,6 +242,7 @@ class hamrealSileDFTB(_realSileDFTB):
         self._file = orig_file
 
         H = Hamiltonian.fromsp(geometry, Hs, S)
+
         # Transform back from the charge, x, y, z
         # to the intrinsic way that sisl handles things
         if H.spin.is_noncolinear:

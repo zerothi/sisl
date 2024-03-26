@@ -81,7 +81,7 @@ def test_split(orb_manager, geometry: Geometry):
     # Check that it can split over species
     queries = orb_manager.generate_queries(split="species")
 
-    assert len(queries) == geometry.atoms.nspecie
+    assert len(queries) == geometry.atoms.nspecies
 
     atom_tags = [atom.tag for atom in geometry.atoms.atom]
 
@@ -158,7 +158,7 @@ def test_split_exclude(orb_manager, geometry):
         split="species", exclude=[geometry.atoms.atom[0].tag]
     )
 
-    assert len(queries) == geometry.atoms.nspecie - 1
+    assert len(queries) == geometry.atoms.nspecies - 1
     assert geometry.atoms.atom[0].tag not in [query["species"][0] for query in queries]
 
 
@@ -172,7 +172,7 @@ def test_constrained_split(orb_manager, geometry):
 def test_split_name(orb_manager, geometry):
     queries = orb_manager.generate_queries(split="species", name="Tag: $species")
 
-    assert len(queries) == geometry.atoms.nspecie
+    assert len(queries) == geometry.atoms.nspecies
 
     for query in queries:
         assert "name" in query, f"Query does not have name: {query}"

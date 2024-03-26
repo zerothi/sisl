@@ -47,6 +47,7 @@ from ..sile import (
     sile_fh_open,
     sile_raise_write,
 )
+from ._help import _replace_with_species
 from .bands import bandsSileSiesta
 from .basis import ionncSileSiesta, ionxmlSileSiesta
 from .binaries import (
@@ -864,7 +865,7 @@ class fdfSileSiesta(SileSiesta):
             return onlysSileSiesta(f).read_lattice()
         return None
 
-    def read_force(self, *args, **kwargs):
+    def read_force(self, *args, **kwargs) -> np.ndarray:
         """Read forces from the output of the calculation (forces are not defined in the input)
 
         Parameters
@@ -964,7 +965,7 @@ class fdfSileSiesta(SileSiesta):
             return fcSileSiesta(f).read_hessian(na=na)
         return None
 
-    def read_fermi_level(self, *args, **kwargs):
+    def read_fermi_level(self, *args, **kwargs) -> float:
         """Read fermi-level from output of the calculation
 
         Parameters
@@ -975,8 +976,8 @@ class fdfSileSiesta(SileSiesta):
 
         Returns
         -------
-        Ef : float
-            fermi-level
+        float
+            the fermi-level
         """
         order = _parse_order(
             kwargs.pop("order", None), ["nc", "TSDE", "TSHS", "EIG", "bands"]
@@ -1445,6 +1446,12 @@ class fdfSileSiesta(SileSiesta):
                 return v
         return None
 
+    def _r_geometry_species(self):
+        atoms_species = self.get("AtomicCoordinatesAndAtomicSpecies")
+        if atoms_species:
+            atoms_species = map(lambda x: int(x.split()[3]) - 1, atoms_species)
+        return atoms_species
+
     def _r_geometry_xv(self, *args, **kwargs):
         """Returns `Geometry` object from the XV file"""
         geom = None
@@ -1453,14 +1460,10 @@ class fdfSileSiesta(SileSiesta):
         if f.is_file():
             basis = self.read_basis()
             if basis is None:
-                geom = xvSileSiesta(f).read_geometry(species_Z=False)
+                geom = xvSileSiesta(f).read_geometry(species_as_Z=False)
             else:
-                geom = xvSileSiesta(f).read_geometry(species_Z=True)
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    for atom, _ in geom.atoms.iter(True):
-                        geom.atoms.replace(atom, basis[atom.Z - 1])
-                    geom.reduce()
+                geom = xvSileSiesta(f).read_geometry(species_as_Z=True)
+                _replace_with_species(geom.atoms, basis)
             nsc = self.read_lattice_nsc()
             geom.set_nsc(nsc)
         return geom
@@ -1474,14 +1477,10 @@ class fdfSileSiesta(SileSiesta):
             if f.is_file():
                 basis = self.read_basis()
                 if basis is None:
-                    geom = structSileSiesta(f).read_geometry(species_Z=False)
+                    geom = structSileSiesta(f).read_geometry(species_as_Z=False)
                 else:
-                    geom = structSileSiesta(f).read_geometry(species_Z=True)
-                    with warnings.catch_warnings():
-                        warnings.simplefilter("ignore")
-                        for atom, _ in geom.atoms.iter(True):
-                            geom.atoms.replace(atom, basis[atom.Z - 1])
-                        geom.reduce()
+                    geom = structSileSiesta(f).read_geometry(species_as_Z=True)
+                    _replace_with_species(geom.atoms, basis)
                 nsc = self.read_lattice_nsc()
                 geom.set_nsc(nsc)
                 break
@@ -1501,7 +1500,7 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_geometry_tshs, f, inputs=[("TS.HS.Save", "True")])
         if f.is_file():
             # Default to a geometry with the correct atomic numbers etc.
-            return tshsSileSiesta(f).read_geometry(geometry=self.read_geometry(False))
+            return tshsSileSiesta(f).read_geometry(basis=self.read_basis())
         return None
 
     def _r_geometry_hsx(self):
@@ -1594,9 +1593,13 @@ class fdfSileSiesta(SileSiesta):
 
             # Default atom (hydrogen)
             atoms = Atom(1)
-        else:
-            atoms = [atoms[i] for i in species]
-        atoms = Atoms(atoms, na=len(xyz))
+
+        # the above reading of basis sets will always
+        # ensure a correct basis set with correct number of atoms.
+        # After all the number of atoms in the basis set is decided
+        # by the AtomicCoordinatesAndAtomicSpecies block (which is found just
+        # above).
+        atoms = Atoms(atoms[:na], na=len(xyz))
 
         if isinstance(origin, str):
             opt = origin
@@ -1660,7 +1663,7 @@ class fdfSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        name : str
+        name :
             name of data to read. The list of names correspond to the
             Siesta output manual (Rho, TotalPotential, etc.), the strings are
             case insensitive.
@@ -1847,7 +1850,14 @@ class fdfSileSiesta(SileSiesta):
             )
         elif not found_one:
             return None
-        return atoms
+
+        atoms_species = self._r_geometry_species()
+        if atoms_species:
+            return Atoms([atoms[spc] for spc in atoms_species])
+        warn(
+            f"{self!s} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
+        )
+        return Atoms(atoms)
 
     def _r_basis_orb_indx(self):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".ORB_INDX")
@@ -1856,7 +1866,7 @@ class fdfSileSiesta(SileSiesta):
             warn(
                 f"Siesta basis information is read from '{f}'; radial functions are not accessible."
             )
-            return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
+            return orbindxSileSiesta(f).read_basis(basis=self._r_basis_fdf())
         return None
 
     def _r_basis_fdf(self):
@@ -1869,7 +1879,7 @@ class fdfSileSiesta(SileSiesta):
 
         # We create a dictionary with the different atomic species
         # and create defaults with another dictionary.
-        atoms = [{} for _ in spcs]
+        atoms = [None for _ in spcs]
 
         pao_basis = self.get("PAO.Basis", default=[])
 
@@ -1879,10 +1889,10 @@ class fdfSileSiesta(SileSiesta):
 
         # Now spcs contains the block of the chemicalspecieslabel
         for spc in spcs:
-            idx, Z, lbl = spc.split()[:3]
+            idx, Z, tag = spc.split()[:3]
             idx = int(idx) - 1  # F-indexing
             Z = int(Z)
-            lbl = lbl.strip()
+            tag = tag.strip()
 
             if len(all_mass) > 0:
                 for mass_line in all_mass:
@@ -1893,23 +1903,30 @@ class fdfSileSiesta(SileSiesta):
                 else:
                     mass = None
 
-            atoms[idx]["Z"] = Z
-            atoms[idx]["mass"] = mass
-            atoms[idx]["tag"] = lbl
+            atom = {"Z": Z, "mass": mass, "tag": tag}
             try:
                 # Only in some cases can we parse the PAO.Basis block.
                 # There are many corner cases where we can't parse it
                 # And the we just don't do anything...
                 # We don't even warn the user...
-                atoms[idx]["orbitals"] = self._parse_pao_basis(pao_basis, lbl)
+                atom["orbitals"] = self._parse_pao_basis(pao_basis, tag)
             except Exception:
                 pass
 
-        # Now check if we can find the orbitals
-        return [Atom(**atom) for atom in atoms]
+            atoms[idx] = Atom(**atom)
+
+        # retrieve the atomic species (from the AtomicCoordinatesAndSpecies block)
+        atoms_species = self._r_geometry_species()
+        if atoms_species:
+            return Atoms([atoms[spc] for spc in atoms_species])
+
+        warn(
+            f"{self!s} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
+        )
+        return Atoms(atoms)
 
     @classmethod
-    def _parse_pao_basis(cls, block, specie=None):
+    def _parse_pao_basis(cls, block, species=None):
         """Parse the full PAO.Basis block with *optionally* only a single specie
 
         Notes
@@ -1921,15 +1938,15 @@ class fdfSileSiesta(SileSiesta):
         ----------
         block : list of str or str
            the entire PAO.Basis block as read by ``self.get("PAO.Basis")``
-        specie : str, optional
-           which specie to parse
+        species : str, optional
+           which species to parse
 
         Returns
         -------
         orbitals : list of AtomicOrbital
-            only if requested `specie` is not None
+            only if requested `species` is not None
         tag_orbitals : dict
-            if `specie` is None then a dictionary is returned
+            if `species` is None then a dictionary is returned
         """
         if isinstance(block, str):
             block = block.splitlines()
@@ -2036,15 +2053,15 @@ class fdfSileSiesta(SileSiesta):
 
             return tag, orbs
 
-        atoms = {}
+        tag_orbs = {}
         ret = parse_next()
         while ret is not None:
-            atoms[ret[0]] = ret[1]
+            tag_orbs[ret[0]] = ret[1]
             ret = parse_next()
 
-        if specie is None:
-            return atoms
-        return atoms.get(specie, None)
+        if species is None:
+            return tag_orbs
+        return tag_orbs.get(species, None)
 
     def _r_add_overlap(self, parent_call, M):
         """Internal routine to ensure that the overlap matrix is read and added to the matrix `M`"""
@@ -2060,7 +2077,7 @@ class fdfSileSiesta(SileSiesta):
                 f"{self!s} could not succesfully read the overlap matrix in {parent_call}."
             )
 
-    def read_density_matrix(self, *args, **kwargs):
+    def read_density_matrix(self, *args, **kwargs) -> DensityMatrix:
         """Try and read density matrix by reading the <>.nc, <>.TSDE files, <>.DM (in that order)
 
         One can limit the tried files to only one file by passing
@@ -2115,7 +2132,7 @@ class fdfSileSiesta(SileSiesta):
             self._r_add_overlap("_r_density_matrix_dm", DM)
         return DM
 
-    def read_energy_density_matrix(self, *args, **kwargs):
+    def read_energy_density_matrix(self, *args, **kwargs) -> EnergyDensityMatrix:
         """Try and read energy density matrix by reading the <>.nc or <>.TSDE files (in that order)
 
         One can limit the tried files to only one file by passing
@@ -2159,7 +2176,7 @@ class fdfSileSiesta(SileSiesta):
             self._r_add_overlap("_r_energy_density_matrix_tsde", EDM)
         return EDM
 
-    def read_overlap(self, *args, **kwargs):
+    def read_overlap(self, *args, **kwargs) -> Overlap:
         """Try and read the overlap matrix by reading the <>.nc, <>.TSHS files, <>.HSX, <>.onlyS (in that order)
 
         One can limit the tried files to only one file by passing
@@ -2222,7 +2239,7 @@ class fdfSileSiesta(SileSiesta):
             S = onlysSileSiesta(f).read_overlap(*args, **kwargs)
         return S
 
-    def read_hamiltonian(self, *args, **kwargs):
+    def read_hamiltonian(self, *args, **kwargs) -> Hamiltonian:
         """Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order)
 
         One can limit the tried files to only one file by passing

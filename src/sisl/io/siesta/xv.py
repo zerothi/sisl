@@ -7,6 +7,7 @@ import numpy as np
 
 from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Geometry, Lattice
 from sisl._internal import set_module
+from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
 from ..sile import SileError, add_sile, sile_fh_open, sile_raise_write
@@ -81,23 +82,37 @@ class xvSileSiesta(SileSiesta):
         return Lattice(cell)
 
     @sile_fh_open()
+    @deprecate_argument(
+        "velocity",
+        "ret_velocity",
+        "use ret_velocity= instead of velocity=",
+        from_version="0.15",
+    )
+    @deprecate_argument(
+        "species_Z",
+        "species_as_Z",
+        "use species_as_Z= instead of species_Z=",
+        from_version="0.15",
+    )
     def read_geometry(
-        self, velocity: bool = False, species_Z: bool = False
+        self, ret_velocity: bool = False, species_as_Z: bool = False
     ) -> Geometry:
         """Returns a `Geometry` object from the XV file
 
         Parameters
         ----------
-        species_Z :
+        ret_velocity :
+           also return the velocities in the file
+        species_as_Z :
            if ``True`` the atomic numbers are the species indices (useful when
            reading the ChemicalSpeciesLabel block simultaneously).
-        velocity :
-           also return the velocities in the file
 
         Returns
         -------
-        Geometry
-        velocity : only if `velocity` is true.
+        geometry: Geometry
+            the geometry in the XV file
+        velocity: numpy.ndarray
+            only if `ret_velocity` is true.
         """
         lattice = self.read_lattice()
 
@@ -108,12 +123,15 @@ class xvSileSiesta(SileSiesta):
         atms = [None] * na
         sp = np.empty([na], np.int32)
         for ia in range(na):
-            line = list(map(float, self.readline().split()[:8]))
+            line = self.readline().split()
             sp[ia] = int(line[0])
-            if species_Z:
+            Z = int(line[1])
+
+            if species_as_Z:
                 atms[ia] = Atom(sp[ia])
             else:
-                atms[ia] = Atom(int(line[1]))
+                atms[ia] = Atom(Z)
+
             xyz[ia, :] = line[2:5]
             vel[ia, :] = line[5:8]
 
@@ -134,17 +152,17 @@ class xvSileSiesta(SileSiesta):
                 atms2[idx] = atms[idx[0]]
 
         geom = Geometry(xyz, atms2.reduce(), lattice=lattice)
-        if velocity:
+        if ret_velocity:
             return geom, vel
         return geom
 
     @sile_fh_open()
-    def read_velocity(self):
+    def read_velocity(self) -> np.ndarray:
         """Returns an array with the velocities from the XV file
 
         Returns
         -------
-        velocity :
+        numpy.ndarray
         """
         self.read_lattice()
         na = int(self.readline())

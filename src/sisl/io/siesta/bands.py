@@ -19,7 +19,7 @@ class bandsSileSiesta(SileSiesta):
     """Bandstructure information"""
 
     @sile_fh_open(True)
-    def read_fermi_level(self):
+    def read_fermi_level(self) -> float:
         """Returns the Fermi level in the bands file"""
         # Luckily the data is in eV
         return float(self.readline())

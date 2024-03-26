@@ -259,17 +259,17 @@ def test_reorder1():
     atom1 = atom.reorder()
     # Check we haven't done anything to the original Atoms object
     assert atom[0] == Atom["Au"]
-    assert atom.specie[0] == 1
+    assert atom.species[0] == 1
     assert len(atom) == 1
     assert len(atom.atom) == 2
     assert atom1[0] == Atom["Au"]
-    assert atom1.specie[0] == 0
+    assert atom1.species[0] == 0
     assert len(atom1) == 1
     assert len(atom1.atom) == 2
     # Do in-place
     atom.reorder(True)
     assert atom[0] == Atom["Au"]
-    assert atom.specie[0] == 0
+    assert atom.species[0] == 0
     assert len(atom) == 1
     assert len(atom.atom) == 2
 

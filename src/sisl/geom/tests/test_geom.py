@@ -78,7 +78,7 @@ def test_triangulene():
     g = triangulene(3)
     assert g.na == 22
     g = triangulene(3, atoms=["B", "N"])
-    assert g.atoms.nspecie == 2
+    assert g.atoms.nspecies == 2
     g = triangulene(3, bond=1.6)
 
 

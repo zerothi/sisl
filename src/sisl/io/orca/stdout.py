@@ -119,9 +119,9 @@ class stdoutSileORCA(SileORCA):
 
         Returns
         -------
-        out: numpy.ndarray or list of numpy.ndarray
+        numpy.ndarray or list of numpy.ndarray
             atom/orbital (and spin) resolved charges when `reduced` is False
-        out_reduced : PropertyDict or list of PropertyDict
+        PropertyDict or list of PropertyDict
             orbital-resolved charges, only when `reduced` is True
         """
         if name.lower() in ("mulliken", "m"):
@@ -281,7 +281,7 @@ class stdoutSileORCA(SileORCA):
 
         Returns
         -------
-        out : PropertyDict or list of PropertyDict
+        PropertyDict or list of PropertyDict
             all energy data from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
         """
         f = self.step_to("TOTAL SCF ENERGY", allow_reread=False)[0]
@@ -330,8 +330,8 @@ class stdoutSileORCA(SileORCA):
 
         Returns
         -------
-        out : numpy.ndarray or list of numpy.ndarray
-            orbital energies (in eV) from the "ORBITAL ENERGIES" blocks
+        numpy.ndarray or list of numpy.ndarray
+            orbital energies (in `units` unit) from the "ORBITAL ENERGIES" blocks
         """
         f = self.step_to("ORBITAL ENERGIES", allow_reread=False)[0]
         if not f:

@@ -26,7 +26,7 @@ class chgSileVASP(carSileVASP):
     """
 
     @sile_fh_open(True)
-    def read_grid(self, index=0, dtype=np.float64, **kwargs):
+    def read_grid(self, index=0, dtype=np.float64, **kwargs) -> Grid:
         """Reads the charge density from the file and returns with a grid (plus geometry)
 
         Parameters
@@ -44,7 +44,8 @@ class chgSileVASP(carSileVASP):
 
         Returns
         -------
-        Grid : charge density grid with associated geometry
+        Grid
+            charge density grid with associated geometry
         """
         index = kwargs.get("spin", index)
         geom = self.read_geometry()

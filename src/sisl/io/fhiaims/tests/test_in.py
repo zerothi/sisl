@@ -39,7 +39,7 @@ def test_in_velocity(sisl_tmp, sisl_system):
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
 
-    g2, v2 = inSileFHIaims(f).read_geometry(velocity=True)
+    g2, v2 = inSileFHIaims(f).read_geometry(ret_velocity=True)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
@@ -63,7 +63,7 @@ def test_in_moment(sisl_tmp, sisl_system):
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
 
-    g2, m2 = inSileFHIaims(f).read_geometry(moment=True)
+    g2, m2 = inSileFHIaims(f).read_geometry(ret_moment=True)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
@@ -88,19 +88,19 @@ def test_in_v_m(sisl_tmp, sisl_system):
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
 
-    g2, m2 = inSileFHIaims(f).read_geometry(moment=True)
+    g2, m2 = inSileFHIaims(f).read_geometry(ret_moment=True)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
     assert np.allclose(m, m2)
 
-    g2, v2 = inSileFHIaims(f).read_geometry(velocity=True)
+    g2, v2 = inSileFHIaims(f).read_geometry(ret_velocity=True)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
     assert np.allclose(v, v2)
 
-    g2, v2, m2 = inSileFHIaims(f).read_geometry(velocity=True, moment=True)
+    g2, v2, m2 = inSileFHIaims(f).read_geometry(ret_velocity=True, ret_moment=True)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)

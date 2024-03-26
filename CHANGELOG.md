@@ -75,6 +75,9 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- `siesta.*.read_basis` now defaults to read an `Atoms` object with all atoms
+- `atoms.specie` changed to `atoms.species`, generally species is the singular form
+- `in_place` arguments changed to `inplace`
 - renamed `stdoutSileVASP` to `outcarSileVASP`, #719
 - deprecated scale_atoms in favor of scale_basis in `Geometry.scale`
 - changed default number of eigenvalues calculated in sparse `eigsh`, from 10 to 1

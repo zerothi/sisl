@@ -124,7 +124,7 @@ def test_hyperfine_coupling(sisl_files):
     assert len(A) == 22
     assert A[0].iso == -23.380794
     assert A[1].ia == 1
-    assert A[1].sa == "C"
+    assert A[1].species == "C"
     assert A[1].isotope == 13
     assert A[1].spin == 0.5
     assert A[1].prefactor == 134.190303
@@ -136,8 +136,8 @@ def test_hyperfine_coupling(sisl_files):
         assert v.dot(v) == pytest.approx(1)
     assert A[1].eigenvalues[1] == 5.523380
     assert A[1].iso == 26.247902
-    assert A[12].sa == "C"
-    assert A[13].sa == "H"
+    assert A[12].species == "C"
+    assert A[13].species == "H"
 
 
 def test_hyperfine_coupling_units(sisl_files):

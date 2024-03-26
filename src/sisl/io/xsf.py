@@ -194,7 +194,7 @@ class xsfSile(Sile):
     @sile_fh_open()
     def _r_geometry_next(
         self, lattice: Optional[Lattice] = None, atoms=None, ret_data: bool = False
-    ):
+    ) -> Geometry:
         if lattice is None:
             # fetch the prior read cell value
             lattice = self._r_cell
@@ -342,7 +342,7 @@ class xsfSile(Sile):
     )
     def read_geometry(
         self, lattice: Optional[Lattice] = None, atoms=None, ret_data: bool = False
-    ):
+    ) -> Geometry:
         """Geometry contained in file, and optionally the associated data
 
         Parameters

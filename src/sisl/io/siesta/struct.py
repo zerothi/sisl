@@ -7,6 +7,7 @@ import numpy as np
 
 from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Geometry, Lattice
 from sisl._internal import set_module
+from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile, sile_fh_open, sile_raise_write
@@ -63,12 +64,18 @@ class structSileSiesta(SileSiesta):
         return Lattice(cell)
 
     @sile_fh_open()
-    def read_geometry(self, species_Z: bool = False) -> Geometry:
-        """Returns a `Geometry` object from the STRUCT file
+    @deprecate_argument(
+        "species_Z",
+        "species_as_Z",
+        "use species_as_Z= instead of species_Z=",
+        from_version="0.15",
+    )
+    def read_geometry(self, species_as_Z: bool = False) -> Geometry:
+        """Returns a `Geometry` object from the ``STRUCT`` file
 
         Parameters
         ----------
-        species_Z : bool, optional
+        species_as_Z : bool, optional
            if ``True`` the atomic numbers are the species indices (useful when
            reading the ChemicalSpeciesLabel block simultaneously).
 
@@ -86,10 +93,13 @@ class structSileSiesta(SileSiesta):
         for ia in range(na):
             line = self.readline().split()
             sp[ia] = int(line[0])
-            if species_Z:
+            Z = int(line[1])
+
+            if species_as_Z:
                 atms[ia] = Atom(sp[ia])
             else:
-                atms[ia] = Atom(int(line[1]))
+                atms[ia] = Atom(Z)
+
             xyz[ia, :] = line[2:5]
 
         xyz = xyz @ lattice.cell

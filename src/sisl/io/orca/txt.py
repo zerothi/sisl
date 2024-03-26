@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import List
+
 import numpy as np
 
 from sisl._core.geometry import Geometry
@@ -93,7 +95,7 @@ class txtSileORCA(SileORCA):
 
         Returns
         -------
-        out: PropertyDict or list of PropertyDict
+        PropertyDict or list of PropertyDict
             all data from the "DFT_Energy" and "VdW_Correction" blocks
         """
         # read the DFT_Energy block
@@ -138,12 +140,13 @@ class txtSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_geometry(self):
+    def read_geometry(self) -> Geometry:
         """Reads the geometry from ORCA property.txt file
 
         Returns
         -------
-        geometries: Geometry or list of Geometry
+        Geometry or list of Geometry
+            the geometries contained
         """
         # Read the Geometry block
         f = self.step_to("!GEOMETRY!", allow_reread=False)[0]
@@ -165,12 +168,12 @@ class txtSileORCA(SileORCA):
         return Geometry(xyz, atoms)
 
     @sile_fh_open()
-    def read_gtensor(self):
+    def read_gtensor(self) -> PropertyDict:
         r"""Reads electronic g-tensor data from the ``EPRNMR_GTensor`` block
 
         Returns
         -------
-        out : PropertyDict
+        PropertyDict
             Electronic g-tensor
         """
         G = PropertyDict()
@@ -208,7 +211,7 @@ class txtSileORCA(SileORCA):
         return G
 
     @sile_fh_open()
-    def read_hyperfine_coupling(self, units: UnitsVar = "eV"):
+    def read_hyperfine_coupling(self, units: UnitsVar = "eV") -> List[PropertyDict]:
         r"""Reads hyperfine couplings from the ``EPRNMR_ATensor`` block
 
         For a nucleus :math:`k`, the hyperfine interaction is usually
@@ -234,9 +237,21 @@ class txtSileORCA(SileORCA):
         -----
         Hyperfine tensors written by ORCA have units of MHz.
 
+        Currently the fields of each `PropertyDict` contains:
+
+        * ``ia``: atomic index
+        * ``species``: species for atom
+        * ``isotope``: the atomic isotope
+        * ``spin``: spin multiplicity
+        * ``prefactor``: prefactor defined in output
+        * ``tensor``: the A tensor
+        * ``vectors``: eigenvectors
+        * ``eigenvalues``: eigenvalues
+        * ``iso``: Fermi contact
+
         Returns
         -------
-        out : list of PropertyDict
+        list of PropertyDict
             Hyperfine coupling data
         """
         f, line = self.step_to("EPRNMR_ATensor", allow_reread=False)
@@ -255,7 +270,7 @@ class txtSileORCA(SileORCA):
 
             v = line.split()
             A["ia"] = int(v[1])
-            A["sa"] = v[2]
+            A["species"] = v[2]
 
             v = self.readline().split()
             A["isotope"] = int(v[-1])

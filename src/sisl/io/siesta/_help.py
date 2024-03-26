@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 
 import sisl._array as _a
@@ -19,6 +21,7 @@ except ImportError:
 __all__ = ["_csr_from_siesta", "_csr_from_sc_off"]
 __all__ += ["_csr_to_siesta", "_csr_to_sc_off"]
 __all__ += ["_mat_spin_convert", "_fc_correct"]
+__all__ += ["_replace_with_species"]
 
 
 def _ensure_diagonal(csr):
@@ -139,8 +142,8 @@ def _mat_spin_convert(M, spin=None):
 def _geom2hsx(geometry):
     """Convert the geometry into the correct lists of species and lists"""
     atoms = geometry.atoms
-    nspecie = atoms.nspecie
-    isa = atoms.specie
+    nspecies = atoms.nspecies
+    isa = atoms.species
     label, Z, no = [], [], []
     n, l, zeta = [], [], []
     for atom in atoms.atom:
@@ -156,6 +159,20 @@ def _geom2hsx(geometry):
             l.append([-1 for orb in atom])
             zeta.append([1 for orb in atom])
     return (label, Z, no), (n, l, zeta)
+
+
+def _replace_with_species(basis, ref_basis):
+    """Replace the `basis` with the atoms in `ref_basis`
+
+    This method will assume that the `basis` contains
+    the atomic numbers as their species (i.e. starting from 1..n-species).
+    It will make it simple to change according to basis.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for atom, _ in basis.iter(True):
+            basis.replace(atom, ref_basis[atom.Z - 1])
+        basis.reduce(inplace=True)
 
 
 def _fc_correct(fc, trans_inv=True, sum0=True, hermitian=True):

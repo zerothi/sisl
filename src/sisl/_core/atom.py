@@ -15,7 +15,7 @@ from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 from sisl._help import array_fill_repeat
 from sisl._indices import list_index_le
 from sisl._internal import set_module
-from sisl.messages import deprecation, info
+from sisl.messages import deprecate_argument, deprecation, info
 from sisl.shape import Sphere
 from sisl.typing import NDArray
 
@@ -949,17 +949,17 @@ class Atom(
     when_subclassing="keep",
     metaclass=AtomMeta,
 ):
-    """Atomic information for a single atomic specie
+    """Atomic information for a single atomic species
 
-    An atomic object retaining information about a single atomic specie.
+    An atomic object retaining information about a single atomic species.
     It describes the atomic number (integer), the mass of the atom, and
     holds a list of atomic centered orbitals. It also allows one
-    to tag the atom to distinguish it from other atoms of the same specie.
+    to tag the atom to distinguish it from other atoms of the same species.
 
     Parameters
     ----------
     Z : int or str
-        determine specie for the atomic specie.
+        determine species for the atomic species.
     orbitals : list of Orbital or float, optional
         orbitals associated with this atom. See `Orbital` for details on
         how to define orbitals.
@@ -1302,9 +1302,7 @@ class Atom(
         # We don't know how to handle this, simply return...
         return vals
 
-    @deprecation(
-        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
-    )
+    @deprecation("toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15")
     def toSphere(self, center=None):
         """Return a sphere with the maximum orbital radius equal
 
@@ -1316,7 +1314,7 @@ class Atom(
         return self.to.Sphere(center=center)
 
     def equal(self, other, R=True, psi=False):
-        """True if `other` is the same as this atomic specie
+        """True if `other` is the same as this atomic species
 
         Parameters
         ----------
@@ -1451,7 +1449,7 @@ class Atoms:
     """
 
     # Using the slots should make this class slightly faster.
-    __slots__ = ("_atom", "_specie", "_firsto")
+    __slots__ = ("_atom", "_species", "_firsto")
 
     def __init__(self, atoms: AtomsLike = "H", na: Optional[int] = None):
         # Default value of the atom object
@@ -1461,27 +1459,27 @@ class Atoms:
         # Correct the atoms input to Atom
         if isinstance(atoms, Atom):
             uatoms = [atoms]
-            specie = [0]
+            species = [0]
 
         elif isinstance(atoms, Atoms):
             # Ensure we make a copy to not operate
             # on the same data.
             catoms = atoms.copy()
             uatoms = catoms.atom[:]
-            specie = catoms.specie[:]
+            species = catoms.species[:]
 
         elif isinstance(atoms, (str, Integral)):
             uatoms = [Atom(atoms)]
-            specie = [0]
+            species = [0]
 
         elif isinstance(atoms, dict):
             uatoms = [Atom(**atoms)]
-            specie = [0]
+            species = [0]
 
         elif isinstance(atoms, Iterable):
             # TODO this is very inefficient for large MD files
             uatoms = []
-            specie = []
+            species = []
             for a in atoms:
                 if isinstance(a, dict):
                     a = Atom(**a)
@@ -1492,19 +1490,19 @@ class Atoms:
                 except Exception:
                     s = len(uatoms)
                     uatoms.append(a)
-                specie.append(s)
+                species.append(s)
 
         else:
             raise ValueError(f"atoms keyword type is not acceptable {type(atoms)}")
 
         # Default for number of atoms
         if na is None:
-            na = len(specie)
+            na = len(species)
 
         # Create atom and species objects
         self._atom = list(uatoms)
 
-        self._specie = array_fill_repeat(specie, na, cls=np.int16)
+        self._species = array_fill_repeat(species, na, cls=np.int16)
 
         self._update_orbitals()
 
@@ -1512,7 +1510,7 @@ class Atoms:
         """Internal routine for updating the `firsto` attribute"""
         # Get number of orbitals per specie
         uorbs = _a.arrayi([a.no for a in self.atom])
-        self._firsto = np.insert(_a.cumsumi(uorbs[self.specie]), 0, 0)
+        self._firsto = np.insert(_a.cumsumi(uorbs[self.species]), 0, 0)
 
     @property
     def atom(self):
@@ -1520,20 +1518,32 @@ class Atoms:
         return self._atom
 
     @property
+    @deprecation("nspecie is deprecated, use nspecies instead.", "0.15")
     def nspecie(self):
         """Number of different species"""
         return len(self._atom)
 
     @property
+    def nspecies(self):
+        """Number of different species"""
+        return len(self._atom)
+
+    @property
+    def species(self):
+        """List of atomic species"""
+        return self._species
+
+    @property
+    @deprecation("specie is deprecated, use species instead.", "0.15")
     def specie(self):
         """List of atomic species"""
-        return self._specie
+        return self._species
 
     @property
     def no(self):
         """Total number of orbitals in this list of atoms"""
         uorbs = _a.arrayi([a.no for a in self.atom])
-        return uorbs[self.specie].sum()
+        return uorbs[self.species].sum()
 
     @property
     def orbitals(self):
@@ -1554,7 +1564,7 @@ class Atoms:
     def q0(self):
         """Initial charge per atom"""
         q0 = _a.arrayd([a.q0.sum() for a in self.atom])
-        return q0[self.specie]
+        return q0[self.species]
 
     def orbital(self, io):
         """Return an array of orbital of the contained objects"""
@@ -1563,7 +1573,7 @@ class Atoms:
         io = io.ravel() % self.no
         a = list_index_le(io, self.lasto)
         io = io - self.firsto[a]
-        a = self.specie[a]
+        a = self.species[a]
         # Now extract the list of orbitals
         if ndim == 0:
             return self.atom[a[0]].orbitals[io[0]]
@@ -1581,26 +1591,26 @@ class Atoms:
         """
         if all:
             maxR = _a.arrayd([a.maxR() for a in self.atom])
-            return maxR[self.specie[:]]
+            return maxR[self.species]
         return np.amax([a.maxR() for a in self.atom])
 
     @property
     def mass(self):
         """Array of masses of the contained objects"""
         umass = _a.arrayd([a.mass for a in self.atom])
-        return umass[self.specie[:]]
+        return umass[self.species]
 
     @property
     def Z(self):
         """Array of atomic numbers"""
         uZ = _a.arrayi([a.Z for a in self.atom])
-        return uZ[self.specie[:]]
+        return uZ[self.species]
 
     def index(self, atom):
         """Return the indices of the atom object"""
-        return (self._specie == self.specie_index(atom)).nonzero()[0]
+        return (self._species == self.species_index(atom)).nonzero()[0]
 
-    def specie_index(self, atom):
+    def species_index(self, atom):
         """Return the species index of the atom object"""
         if not isinstance(atom, Atom):
             atom = self[atom]
@@ -1608,6 +1618,10 @@ class Atoms:
             if a == atom:
                 return s
         raise KeyError("Could not find `atom` in the list of atoms.")
+
+    specie_index = deprecation(
+        "specie_index is deprecated, use species_index instead.", "0.15"
+    )(species_index)
 
     def group_atom_data(self, data, axis=0):
         r"""Group data for each atom based on number of orbitals
@@ -1636,12 +1650,18 @@ class Atoms:
         """
         return np.split(data, self.lasto[:-1] + 1, axis=axis)
 
-    def reorder(self, in_place=False):
-        """Reorders the atoms and species index so that they are ascending (starting with a specie that exists)
+    @deprecate_argument(
+        "in_place",
+        "inplace",
+        "argument in_place has been deprecated in favor of inplace, please update your code.",
+        "0.16",
+    )
+    def reorder(self, inplace: bool = False):
+        """Reorders the atoms and species index so that they are ascending (starting with a species that exists)
 
         Parameters
         ----------
-        in_place : bool, optional
+        inplace :
             whether the re-order is done *in-place*
         """
 
@@ -1649,25 +1669,24 @@ class Atoms:
         smin = _a.emptyi(len(self.atom))
         smin.fill(len(self))
         for a in range(len(self.atom)):
-            lst = (self.specie == a).nonzero()[0]
+            lst = (self.species == a).nonzero()[0]
             if len(lst) > 0:
                 smin[a] = lst.min()
+
+        if inplace:
+            atoms = self
+        else:
+            atoms = self.copy()
 
         # Now swap indices into correct place
         # This will give the indices of the species
         # in the ascending order
         isort = np.argsort(smin)
         if np.allclose(np.diff(isort), 0):
-            # No swaps required
-            return self.copy()
+            return atoms
 
-        # We need to swap something
-        if in_place:
-            atoms = self
-        else:
-            atoms = self.copy()
         atoms._atom[:] = [atoms._atom[i] for i in isort]
-        atoms._specie[:] = isort[atoms._specie]
+        atoms._species[:] = isort[atoms._species]
 
         atoms._update_orbitals()
         return atoms
@@ -1705,46 +1724,52 @@ class Atoms:
             f"{self.__class__.__name__}.formula got unrecognized argument 'system' {system}"
         )
 
-    def reduce(self, in_place=False):
+    @deprecate_argument(
+        "in_place",
+        "inplace",
+        "argument in_place has been deprecated in favor of inplace, please update your code.",
+        "0.16",
+    )
+    def reduce(self, inplace: bool = False):
         """Returns a new `Atoms` object by removing non-used atoms"""
-        if in_place:
+        if inplace:
             atoms = self
         else:
             atoms = self.copy()
         atom = atoms._atom
-        specie = atoms._specie
+        species = atoms._species
 
         rem = []
         for i in range(len(self.atom)):
-            if np.all(specie != i):
+            if np.all(species != i):
                 rem.append(i)
 
         # Remove the atoms
         for i in rem[::-1]:
             atom.pop(i)
-            specie = np.where(specie > i, specie - 1, specie)
+            species = np.where(species > i, species - 1, species)
 
         atoms._atom = atom
-        atoms._specie = specie
+        atoms._species = species
         atoms._update_orbitals()
 
         return atoms
 
     def swap_atom(self, a, b):
-        """Swap specie index positions"""
-        speciea = self.specie_index(a)
-        specieb = self.specie_index(b)
+        """Swap species index positions"""
+        speciesa = self.species_index(a)
+        speciesb = self.species_index(b)
 
-        idx_a = (self._specie == speciea).nonzero()[0]
-        idx_b = (self._specie == specieb).nonzero()[0]
+        idx_a = (self._species == speciesa).nonzero()[0]
+        idx_b = (self._species == speciesb).nonzero()[0]
 
         atoms = self.copy()
-        atoms._atom[speciea], atoms._atom[specieb] = (
-            atoms._atom[specieb],
-            atoms._atom[speciea],
+        atoms._atom[speciesa], atoms._atom[speciesb] = (
+            atoms._atom[speciesb],
+            atoms._atom[speciesa],
         )
-        atoms._specie[idx_a] = specieb
-        atoms._specie[idx_b] = speciea
+        atoms._species[idx_a] = speciesb
+        atoms._species[idx_b] = speciesa
         atoms._update_orbitals()
         return atoms
 
@@ -1755,9 +1780,9 @@ class Atoms:
         """
         copy = self.copy()
         if atoms is None:
-            copy._specie = self._specie[::-1]
+            copy._species = self._species[::-1]
         else:
-            copy._specie[atoms] = self._specie[atoms[::-1]]
+            copy._species[atoms] = self._species[atoms[::-1]]
         copy._update_orbitals()
         return copy
 
@@ -1773,7 +1798,7 @@ class Atoms:
 
     def __len__(self):
         """Return number of atoms in the object"""
-        return len(self._specie)
+        return len(self._species)
 
     def iter(self, species=False):
         """Loop on all atoms
@@ -1783,7 +1808,7 @@ class Atoms:
         1. `species` is ``False``, this is the slowest method and will yield the
            `Atom` per contained atom.
         2. `species` is ``True``, which yields a tuple of `(Atom, list)` where
-           ``list`` contains all indices of atoms that has the `Atom` specie.
+           ``list`` contains all indices of atoms that has the `Atom` species.
            This is much faster than the first option.
 
         Parameters
@@ -1794,13 +1819,13 @@ class Atoms:
         """
         if species:
             for s, atom in enumerate(self._atom):
-                yield atom, (self.specie == s).nonzero()[0]
+                yield atom, (self.species == s).nonzero()[0]
         else:
-            for s in self.specie:
+            for s in self.species:
                 yield self._atom[s]
 
     def __iter__(self):
-        """Loop on all atoms with the same specie in order of atoms"""
+        """Loop on all atoms with the same species in order of atoms"""
         yield from self.iter()
 
     def __contains__(self, key):
@@ -1811,9 +1836,9 @@ class Atoms:
         """Return an `Atom` object corresponding to the key(s)"""
         if isinstance(key, slice):
             sl = key.indices(len(self))
-            return [self.atom[self._specie[s]] for s in range(sl[0], sl[1], sl[2])]
+            return [self.atom[self._species[s]] for s in range(sl[0], sl[1], sl[2])]
         elif isinstance(key, Integral):
-            return self.atom[self._specie[key]]
+            return self.atom[self._species[key]]
         elif isinstance(key, str):
             for at in self.atom:
                 if at.tag == key:
@@ -1821,8 +1846,8 @@ class Atoms:
             return None
         key = np.asarray(key)
         if key.ndim == 0:
-            return self.atom[self._specie[key]]
-        return [self.atom[i] for i in self._specie[key]]
+            return self.atom[self._species[key]]
+        return [self.atom[i] for i in self._species[key]]
 
     def __setitem__(self, key, value):
         """Overwrite an `Atom` object corresponding to the key(s)"""
@@ -1850,7 +1875,7 @@ class Atoms:
         for atom, s_i in other.iter(True):
             if atom not in self:
                 self._atom.append(atom)
-            self._specie[key[s_i]] = self.specie_index(atom)
+            self._species[key[s_i]] = self.species_index(atom)
         self._update_orbitals()
 
     def replace(self, index, atom):
@@ -1880,11 +1905,11 @@ class Atoms:
         if atom not in self.atom:
             self._atom.append(atom)
 
-        # Get specie index of the atom
-        specie = self.specie_index(atom)
+        # Get species index of the atom
+        species = self.species_index(atom)
 
         # Loop unique species and check that we have the correct number of orbitals
-        for ius in np.unique(self._specie[index]):
+        for ius in np.unique(self._species[index]):
             a = self._atom[ius]
             if a.no != atom.no:
                 a1 = "  " + str(a).replace("\n", "\n  ")
@@ -1892,7 +1917,7 @@ class Atoms:
                 info(
                     f"Substituting atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!"
                 )
-        self._specie[index] = specie
+        self._species[index] = species
         # Update orbital counts...
         self._update_orbitals()
 
@@ -1932,16 +1957,16 @@ class Atoms:
             )
 
         # Get index of `atom_from`
-        idx_from = self.specie_index(atom_from)
+        idx_from = self.species_index(atom_from)
         try:
-            idx_to = self.specie_index(atom_to)
+            idx_to = self.species_index(atom_to)
             if idx_from == idx_to:
                 raise KeyError("")
 
             # Decrement indices of the atoms that are
             # changed to one already there
-            self._specie[self.specie == idx_from] = idx_to
-            self._specie[self.specie > idx_from] -= 1
+            self._species[self.species == idx_from] = idx_to
+            self._species[self.species > idx_from] -= 1
             # Now delete the old index, we replace, so we *have* to remove it
             self._atom.pop(idx_from)
         except KeyError:
@@ -2015,8 +2040,8 @@ class Atoms:
                     return False
                 # We should check that they also have the same indices
                 if not np.all(
-                    np.nonzero(self.specie == iA)[0]
-                    == np.nonzero(other.specie == is_in)[0]
+                    np.nonzero(self.species == iA)[0]
+                    == np.nonzero(other.species == is_in)[0]
                 ):
                     return False
         else:
@@ -2030,8 +2055,8 @@ class Atoms:
                     return False
                 # We should check that they also have the same indices
                 if not np.all(
-                    np.nonzero(other.specie == iB)[0]
-                    == np.nonzero(self.specie == is_in)[0]
+                    np.nonzero(other.species == iB)[0]
+                    == np.nonzero(self.species == is_in)[0]
                 ):
                     return False
         return True
@@ -2043,10 +2068,10 @@ class Atoms:
     # Create pickling routines
     def __getstate__(self):
         """Return the state of this object"""
-        return {"atom": self.atom, "specie": self.specie}
+        return {"atom": self.atom, "species": self.species}
 
     def __setstate__(self, d):
         """Re-create the state of this object"""
         self.__init__()
         self._atom = d["atom"]
-        self._specie = d["specie"]
+        self._species = d["species"]

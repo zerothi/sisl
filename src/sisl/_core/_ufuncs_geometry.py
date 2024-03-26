@@ -205,7 +205,7 @@ def sort(
        For ``'Z'`` atoms will be grouped in atomic number
        For ``'symbol'`` atoms will be grouped by their atomic symbol.
        For ``'tag'`` atoms will be grouped by their atomic tag.
-       For ``'species'`` atoms will be sorted according to their specie index.
+       For ``'species'`` atoms will be sorted according to their species index.
        If a tuple/list is passed the first item is described. All subsequent items are a
        list of groups, where each group comprises elements that should be sorted on an
        equal footing. If one of the groups is None, that group will be replaced with all
@@ -565,7 +565,7 @@ def sort(
 
         symbol: order by symbol (most cases same as Z)
         Z: order by atomic number
-        tag: order by atom tag (should be the same as specie)
+        tag: order by atom tag (should be the same as species)
         specie/species: order by specie (in order of contained in the Geometry)
         """
         # Create new list
@@ -595,9 +595,9 @@ def sort(
             return nl
 
         # See if the attribute exists for the atoms
-        if method.lower() == "species":
+        if method.lower().startswith("specie"):
             # this one has two spelling options!
-            method = "specie"
+            method = "species"
 
         # now get them through `getattr`
         if hasattr(geometry.atoms[0], method):

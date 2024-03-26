@@ -21,12 +21,12 @@ class doscarSileVASP(SileVASP):
     """Density of states output"""
 
     @sile_fh_open(True)
-    def read_fermi_level(self, units: UnitsVar = "eV"):
+    def read_fermi_level(self, units: UnitsVar = "eV") -> float:
         r"""Query the Fermi-level contained in the file
 
         Returns
         -------
-        Ef : float
+        float
             fermi-level of the system
         """
         units = serialize_units_arg(units)
@@ -44,6 +44,8 @@ class doscarSileVASP(SileVASP):
     @sile_fh_open()
     def read_data(self, units: UnitsVar = "eV"):
         r"""Read DOS, as calculated and written by VASP
+
+        The energy points are shifted to the Fermi level.
 
         Parameters
         ----------

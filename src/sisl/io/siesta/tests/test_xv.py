@@ -52,7 +52,7 @@ def test_xv_velocity(sisl_tmp, sisl_system):
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)
 
-    g2, v2 = xvSileSiesta(f).read_geometry(velocity=True)
+    g2, v2 = xvSileSiesta(f).read_geometry(ret_velocity=True)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert g.atoms.equal(g2.atoms, R=False)

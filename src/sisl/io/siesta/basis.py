@@ -26,7 +26,7 @@ class ionxmlSileSiesta(SileSiesta):
     """
 
     @sile_fh_open(True)
-    def read_basis(self):
+    def read_basis(self) -> Atom:
         """Returns data associated with the ion.xml file"""
         # Get the element-tree
         root = xml_parse(self.fh).getroot()
@@ -92,7 +92,7 @@ class ionncSileSiesta(SileCDFSiesta):
     Note that the ``ion.nc`` files are equivalent to the ``ion.xml`` files.
     """
 
-    def read_basis(self):
+    def read_basis(self) -> Atom:
         """Returns data associated with the ion.xml file"""
         no = len(self._dimension("norbs"))
 

@@ -18,7 +18,7 @@ class faSileSiesta(SileSiesta):
     """Forces file"""
 
     @sile_fh_open()
-    def read_force(self):
+    def read_force(self) -> np.ndarray:
         """Reads the forces from the file"""
         na = int(self.readline())
 

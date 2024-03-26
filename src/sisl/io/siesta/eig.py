@@ -76,7 +76,7 @@ class eigSileSiesta(SileSiesta):
     """
 
     @sile_fh_open(True)
-    def read_fermi_level(self):
+    def read_fermi_level(self) -> float:
         r"""Query the Fermi-level contained in the file
 
         Returns
@@ -86,7 +86,7 @@ class eigSileSiesta(SileSiesta):
         return float(self.readline())
 
     @sile_fh_open()
-    def read_data(self):
+    def read_data(self) -> np.ndarray:
         r"""Read eigenvalues, as calculated and written by Siesta
 
         Returns

@@ -173,7 +173,7 @@ class winSileWannier90(SileWannier90):
         return geometry
 
     @sile_fh_open()
-    def _r_geometry_win(self, lattice, *args, **kwargs):
+    def _r_geometry_win(self, lattice: Lattice, *args, **kwargs):
         """Defered routine"""
 
         is_frac = True
@@ -224,7 +224,7 @@ class winSileWannier90(SileWannier90):
     @deprecate_argument(
         "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
     )
-    def read_geometry(self, output: bool = False, *args, **kwargs):
+    def read_geometry(self, output: bool = False, *args, **kwargs) -> Geometry:
         """Reads a `Geometry` and creates the Wannier90 cell
 
 
@@ -305,9 +305,9 @@ class winSileWannier90(SileWannier90):
                 self._write(fmt_str.format(ia + 1, a.symbol, *geom.xyz[ia, :]))
             self._write("end atoms_cart\n")
 
-    def write_geometry(self, geom, fmt=".8f", *args, **kwargs):
+    def write_geometry(self, geometry: Geometry, fmt: str = ".8f", *args, **kwargs):
         """Writes the geometry to the contained file"""
-        self._write_geometry(geom, fmt, *args, **kwargs)
+        self._write_geometry(geometry, fmt, *args, **kwargs)
 
     def _r_wigner_seitz_weights(self):
         # Number of Wigner-Seitz degeneracy points
@@ -389,7 +389,7 @@ class centresSileWannier90(SileWannier90):
     """Wannier90 centres file ``_centres.xyz``"""
 
     @sile_fh_open(True)
-    def read_geometry(self, lattice):
+    def read_geometry(self, lattice: Lattice) -> Geometry:
         """Read geometry information from Wannier90's charge centres file."""
 
         nc = int(self.readline())
@@ -431,7 +431,7 @@ class tbSileWannier90(hamSileWannier90):
     """Wannier90 Hamiltonian file"""
 
     @sile_fh_open(True)
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Reads a cell information from the ``<>_tb.dat`` file."""
 
         # Time of creation
@@ -445,13 +445,12 @@ class tbSileWannier90(hamSileWannier90):
         return Lattice(cell)
 
     @sile_fh_open(True)
-    def read_geometry(self):
+    def read_geometry(self) -> Geometry:
         """Reads a geometry information from the ``<>_tb.dat`` file.
 
         Wannier centres are not stored in the file, so we use dummy coordinates
         instead.
         """
-
         lattice = self.read_lattice()
 
         # Number of orbitals
@@ -460,7 +459,9 @@ class tbSileWannier90(hamSileWannier90):
         return Geometry([0.0, 0.0, 0.0] * no, lattice=lattice)
 
     @sile_fh_open()
-    def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
+    def read_hamiltonian(
+        self, geometry: Optional[Geometry] = None, dtype=np.float64, **kwargs
+    ) -> Hamiltonian:
         """Reads a Hamiltonian model from the <>_tb.dat file
 
         Parameters
@@ -468,17 +469,12 @@ class tbSileWannier90(hamSileWannier90):
         cutoff:
            the cutoff value for the zero Hamiltonian elements, default
            to 0.00001 eV.
-
         dtype: np.float64, optional
             the default data-type used for the matrix.
             Is mainly useful to check whether the TB model has imaginary
             components (it should not since it is a Wannier model).
-
-        geometry: sisl.Geometry, optional
+        geometry:
             the geometry associated with the Hamiltonian
-
-        lattice: sisl.Lattice, optional
-            the lattice associated with the Hamiltonian
         """
         cutoff = kwargs.get("cutoff", 0.00001)
 
@@ -491,7 +487,7 @@ class tbSileWannier90(hamSileWannier90):
         # Time of creation
         self.readline()
 
-        #  Lattice vectors [Ang]
+        # Lattice vectors [Ang]
         for _ in range(3):
             self.readline()
 
@@ -548,7 +544,9 @@ class hrSileWannier90(hamSileWannier90):
     """Wannier90 Hamiltonian file"""
 
     @sile_fh_open(True)
-    def read_hamiltonian(self, geometry=None, dtype=np.float64, **kwargs):
+    def read_hamiltonian(
+        self, geometry: Optional[Geometry] = None, dtype=np.float64, **kwargs
+    ) -> Hamiltonian:
         """Reads a Hamiltonian model from the ``<>_hr.dat`` file
 
         Parameters
@@ -562,7 +560,7 @@ class hrSileWannier90(hamSileWannier90):
             Is mainly useful to check whether the TB model has imaginary
             components (it should not since it is a Wannier model).
 
-        geometry: sisl.Geometry, optional
+        geometry:
             the geometry associated with the Hamiltonian
 
         lattice: sisl.Lattice, optional

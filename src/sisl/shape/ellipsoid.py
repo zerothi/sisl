@@ -134,24 +134,20 @@ class Ellipsoid(PureShape):
         return self.__class__([v0, v1, v2], self.center)
 
     @deprecation(
-        "toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.",
+        "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
     )
     def toEllipsoid(self):
         """Return an ellipsoid that encompass this shape (a copy)"""
         return self.copy()
 
-    @deprecation(
-        "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"
-    )
+    @deprecation("toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15")
     def toSphere(self):
         """Return a sphere with a radius equal to the largest radial vector"""
         r = self.radius.max()
         return Sphere(r, self.center)
 
-    @deprecation(
-        "toCuboid is deprecated, please use shape.to['cuboid'](...) instead.", "0.15"
-    )
+    @deprecation("toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15")
     def toCuboid(self):
         """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""
         from .prism4 import Cuboid
@@ -273,15 +269,13 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
         """
         return self.__class__(self.radius + radius, self.center)
 
-    @deprecation(
-        "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"
-    )
+    @deprecation("toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15")
     def toSphere(self):
         """Return a copy of it-self"""
         return self.copy()
 
     @deprecation(
-        "toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.",
+        "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
     )
     def toEllipsoid(self):
