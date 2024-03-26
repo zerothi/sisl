@@ -45,6 +45,10 @@ def array_fill_repeat(array, size, axis=-1, cls=None):
     to be an integer part of `size`.
     """
     array = np.asarray(array, dtype=cls)
+    if size == 0 or array.size == 0:
+        if cls is None:
+            cls = array.dtype
+        return np.empty([0], dtype=cls)
     try:
         reps = size // array.shape[axis]
     except Exception:
