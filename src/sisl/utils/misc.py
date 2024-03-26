@@ -479,6 +479,10 @@ def lazy_import(name, package=None):
     return module
 
 
+# This class is very much like the addict type
+# However, a much reduced usage
+
+
 class PropertyDict(dict):
     """Simple dictionary which may access items as properties as well"""
 
