@@ -186,7 +186,7 @@ viz-ase = [
 
 test = [
     "pytest",
-    "coverage",
+    "coverage[toml]",
     "pytest-cov",
     "pytest-env",
     "pytest-faulthandler",
@@ -225,7 +225,11 @@ include_namespace_packages = true
 exclude_also = [
     "raise NotImplementedError",
 ]
-
+exclude_lines = [
+  "@overload",
+  'if __name__ == "__main":',
+  "if TYPE_CHECKING:",
+]
 
 [tool.pylint]
 [tool.pylint.master]
