@@ -44,7 +44,8 @@ class tsvncSileSiesta(gridncSileSiesta):
         v = self._variable("V")
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nc, nb, na], bc=Grid.PERIODIC, lattice=lattice, dtype=v.dtype)
+        lattice.set_boundary_condition(Grid.PERIODIC)
+        grid = Grid([nc, nb, na], lattice=lattice, dtype=v.dtype)
 
         grid.grid[:, :, :] = v[:, :, :] * _Ry2eV
 
