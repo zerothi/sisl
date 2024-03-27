@@ -382,7 +382,8 @@ class ncSileSiesta(SileCDFSiesta):
         v = g.variables[name]
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, geometry=geom, dtype=v.dtype)
+        geom.lattice.set_boundary_condition(Grid.PERIODIC)
+        grid = Grid([nz, ny, nx], geometry=geom, dtype=v.dtype)
 
         # Unit-conversion
         BohrC2AngC = Bohr2Ang**3
