@@ -843,6 +843,12 @@ def atom_plot_cli(subp=None):
         atom_plot(p.parse_args())
 
 
+# Import object holding all the CLI
+from sisl_toolbox.cli import register_toolbox_cli
+
+register_toolbox_cli(atom_plot_cli)
+
+
 def atom_plot(args):
     import matplotlib.pyplot as plt
 

@@ -600,5 +600,11 @@ def fftpoisson_fix_run(args):
             V.write(out)
 
 
+# Import object holding all the CLI
+from sisl_toolbox.cli import register_toolbox_cli
+
+register_toolbox_cli(fftpoisson_fix_cli)
+
+
 if __name__ == "__main__":
     fftpoisson_fix_cli()

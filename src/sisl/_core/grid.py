@@ -38,8 +38,6 @@ from .lattice import BoundaryCondition, Lattice, LatticeChild
 
 __all__ = ["Grid", "sgrid"]
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 

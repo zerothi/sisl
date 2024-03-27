@@ -20,7 +20,7 @@ from ._runner import AndRunner
 __all__ = ["MinimizeSiesta", "LocalMinimizeSiesta", "DualAnnealingMinimizeSiesta"]
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.minimize")
+_log = logging.getLogger(__name__)
 
 
 class MinimizeSiesta(BaseMinimize):  # no inheritance!

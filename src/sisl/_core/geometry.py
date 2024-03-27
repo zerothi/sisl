@@ -69,8 +69,6 @@ from .orbital import Orbital
 
 __all__ = ["Geometry", "sgeom", "AtomCategory"]
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 

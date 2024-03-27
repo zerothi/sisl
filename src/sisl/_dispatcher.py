@@ -24,7 +24,6 @@ __all__ = [
     "TypeDispatcher",
 ]
 
-_log = logging.getLogger("sisl")
 _log = logging.getLogger(__name__)
 
 

@@ -30,8 +30,6 @@ from typing import Any, Optional, Sequence, Union
 
 from ._dispatcher import AbstractDispatcher, ClassDispatcher, TypeDispatcher
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 

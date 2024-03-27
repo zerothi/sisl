@@ -24,7 +24,7 @@ __all__ = [
 ]
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.minimize")
+_log = logging.getLogger(__name__)
 
 
 def _siesta_out_accept(out):

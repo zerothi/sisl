@@ -24,7 +24,7 @@ __all__ = [
     "MinimizeToDispatcher",
 ]
 
-_log = logging.getLogger("sisl_toolbox.siesta.minimize")
+_log = logging.getLogger(__name__)
 
 
 def _convert_optimize_result(minimizer, result):

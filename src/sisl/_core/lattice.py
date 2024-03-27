@@ -33,8 +33,6 @@ from ._lattice import cell_invert, cell_reciprocal
 
 __all__ = ["Lattice", "SuperCell", "LatticeChild", "BoundaryCondition"]
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 

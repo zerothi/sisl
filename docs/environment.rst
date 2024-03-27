@@ -48,6 +48,14 @@ Here we list the different options:
 
    Currently not in use.
 
+``SISL_LOG_FILE``
+   if provided `sisl` will log to the provided file.
+
+``SISL_LOG_LEVEL = "info"``
+   the log-level used if writing to a log-file.
+   The value will be taken from the `logging` module,
+   so it should be a variable in that module.
+
 
 Code specific environment variables
 -----------------------------------
@@ -62,4 +70,3 @@ Siesta
    the CODATA 2018 values. This means that quite a bit of
    results changed. This will force the internal variables
    to be consistent with this.
-

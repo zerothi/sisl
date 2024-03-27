@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 """ Global sisl fixtures """
+import logging
 import os
 from pathlib import Path
 
@@ -14,6 +15,8 @@ from sisl import Atom, Geometry, Hamiltonian, Lattice, _environ
 
 # Here we create the necessary methods and fixtures to enabled/disable
 # tests depending on whether a sisl-files directory is present.
+
+_log = logging.getLogger(__name__)
 
 
 # Modify items based on whether the env is correct or not
@@ -120,23 +123,27 @@ def sisl_files():
     """
     sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
     if not sisl_files_tests.is_dir():
+        _log.info(
+            "sisl_files SISL_FILES_TESTS={sisl_files_tests!s} does not exist, xfail dependencies"
+        )
 
         def _path(*files):
             pytest.xfail(
                 reason=f"Environment SISL_FILES_TESTS not pointing to a valid directory.",
             )
 
-        return _path
+    else:
 
-    def _path(*files):
-        p = sisl_files_tests.joinpath(*files)
-        if p.exists():
-            return p
-        # I expect this test to fail due to the wrong environment.
-        # But it isn't an actual fail since it hasn't runned...
-        pytest.xfail(
-            reason=f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found",
-        )
+        def _path(*files):
+            p = sisl_files_tests.joinpath(*files)
+            if p.exists():
+                return p
+            _log.info("sisl_files: test requested non-existing ' {p!s}' -> xfail")
+            # I expect this test to fail due to the wrong environment.
+            # But it isn't an actual fail since it hasn't runned...
+            pytest.xfail(
+                reason=f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found",
+            )
 
     return _path
 

@@ -13,7 +13,7 @@ from ._yaml_reader import parse_variable, read_yaml
 __all__ = ["AtomPseudo"]
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.minimize")
+_log = logging.getLogger(__name__)
 _spdfgh = "spdfgh"
 
 

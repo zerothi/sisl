@@ -15,8 +15,6 @@ __all__ = ["Category", "CompositeCategory", "NullCategory"]
 __all__ += ["AndCategory", "OrCategory", "XOrCategory"]
 __all__ += ["InstanceCache"]
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 

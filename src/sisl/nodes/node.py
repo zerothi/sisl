@@ -140,7 +140,7 @@ class Node(NDArrayOperatorsMixin):
         self._errored = False
         self._error = None
 
-        self._logger = logging.getLogger(str(id(self)))
+        self._logger = logging.getLogger(f"{__name__}.{id(self)!s}")
         self._log_formatter = logging.Formatter(
             fmt="%(asctime)s | %(levelname)-8s :: %(message)s"
         )

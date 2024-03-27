@@ -3,10 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-""" A command-line-interface for toolboxes that provide CLI
+# This module is only to pre-import the local toolboxes that
+# going to be added. If they are not imported, they wont be registered
+__all__ = []
 
-This is a wrapper with sub-commands the toolboxes that are
-accessible.
-"""
-from ._cli import *
-from ._cli_imports import *
+import sisl_toolbox.siesta.atom
+import sisl_toolbox.transiesta.poisson

@@ -72,6 +72,18 @@ del _version, year, datetime
 
 import sisl._environ as _environ
 
+# Immediately check if the file is logable
+log_file = _environ.get_environ_variable("SISL_LOG_FILE")
+if not log_file.is_dir():
+    # Create the logging
+    log_lvl = _environ.get_environ_variable("SISL_LOG_LEVEL")
+
+    # Start the logging to the file
+    logging.basicConfig(filename=str(log_file), level=getattr(logging, log_lvl))
+    del log_lvl
+del log_file
+
+
 # import the common options used
 from ._common import *
 

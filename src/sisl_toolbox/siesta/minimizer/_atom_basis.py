@@ -15,7 +15,7 @@ from ._yaml_reader import parse_variable, read_yaml
 __all__ = ["AtomBasis"]
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.minimize")
+_log = logging.getLogger(__name__)
 _Ang2Bohr = si.units.convert("Ang", "Bohr")
 _eV2Ry = si.units.convert("eV", "Ry")
 
