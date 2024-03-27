@@ -31,9 +31,7 @@ __all__ = [
 @set_module("sisl.shape")
 class Shape(
     _Dispatchs,
-    dispatchs=[
-        ("to", ClassDispatcher("to", type_dispatcher=None, obj_getattr="error"))
-    ],
+    dispatchs=[ClassDispatcher("to", type_dispatcher=None, obj_getattr="error")],
     when_subclassing="copy",
 ):
     """Baseclass for all shapes. Logical operations are implemented on this class.

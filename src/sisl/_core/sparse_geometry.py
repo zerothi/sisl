@@ -382,7 +382,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Check whether a sparse index is non-zero"""
         return key in self._csr
 
-    def set_nsc(self, size, *args, **kwargs):
+    def set_nsc(self, base_size, *args, **kwargs):
         """Reset the number of allowed supercells in the sparse geometry
 
         If one reduces the number of supercells, *any* sparse element
@@ -450,10 +450,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             new = new[keep]
 
             # Create the translation tables
-            n = tile([size], len(old))
+            n = tile([base_size], len(old))
 
-            old = array_arange(old * size, n=n)
-            new = array_arange(new * size, n=n)
+            old = array_arange(old * base_size, n=n)
+            new = array_arange(new * base_size, n=n)
 
             # Move data to new positions
             self._csr.translate_columns(old, new, clean=False)
@@ -462,13 +462,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         else:
             max_n = 0
         # Make sure we delete all column values where we have put fake values
-        delete = _a.arangei(lattice.n_s * size, max(max_n, self.shape[1]))
+        delete = _a.arangei(lattice.n_s * base_size, max(max_n, self.shape[1]))
         if len(delete) > 0:
             self._csr.delete_columns(delete, keep_shape=True)
 
         # Ensure the shape is correct
         shape = list(self._csr.shape)
-        shape[1] = size * lattice.n_s
+        shape[1] = base_size * lattice.n_s
         self._csr._shape = tuple(shape)
         self._csr._clean_columns()
 

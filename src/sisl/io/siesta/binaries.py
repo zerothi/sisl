@@ -161,13 +161,23 @@ def _add_overlap(M, S, str_method):
     if S is None:
         return
 
-    if M.spsame(S):
+    fail = True
+
+    if isinstance(S, np.ndarray):
+        if len(S) == len(M._csr._D):
+            fail = False
+            M._csr._D[:, M.S_idx] = S[:]
+
+    elif M.spsame(S):
         if isinstance(S, Overlap):
+            fail = False
             M._csr._D[:, M.S_idx] = S._csr._D[:, 0]
         elif isinstance(S, SparseOrbitalBZ):
-            if S.non_orthogonal:
+            if not S.orthogonal:
+                fail = False
                 M._csr._D[:, M.S_idx] = S._csr._D[:, S.S_idx]
-    else:
+
+    if fail:
         raise NotImplementedError(
             f"{str_method} could not paste overlap matrix into the "
             "matrix due to non-conforming sparse elements."

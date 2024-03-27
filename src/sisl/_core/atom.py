@@ -945,7 +945,7 @@ class AtomMeta(type):
 @set_module("sisl")
 class Atom(
     _Dispatchs,
-    dispatchs=[("to", ClassDispatcher("to", type_dispatcher=None))],
+    dispatchs=[ClassDispatcher("to", type_dispatcher=None)],
     when_subclassing="keep",
     metaclass=AtomMeta,
 ):

@@ -48,13 +48,8 @@ class Grid(
     LatticeChild,
     _Dispatchs,
     dispatchs=[
-        (
-            "new",
-            ClassDispatcher(
-                "new", obj_getattr="error", instance_dispatcher=TypeDispatcher
-            ),
-        ),
-        ("to", ClassDispatcher("to", obj_getattr="error", type_dispatcher=None)),
+        ClassDispatcher("new", obj_getattr="error", instance_dispatcher=TypeDispatcher),
+        ClassDispatcher("to", obj_getattr="error", type_dispatcher=None),
     ],
     when_subclassing="copy",
 ):

@@ -84,8 +84,8 @@ SeqBoundaryConditionType = Union[BoundaryConditionType, Sequence[BoundaryConditi
 class Lattice(
     _Dispatchs,
     dispatchs=[
-        ("new", ClassDispatcher("new", instance_dispatcher=TypeDispatcher)),
-        ("to", ClassDispatcher("to", type_dispatcher=None)),
+        ClassDispatcher("new", instance_dispatcher=TypeDispatcher),
+        ClassDispatcher("to", type_dispatcher=None),
     ],
     when_subclassing="copy",
 ):

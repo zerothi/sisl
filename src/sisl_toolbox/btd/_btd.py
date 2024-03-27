@@ -484,7 +484,7 @@ class DeviceGreen:
     along the 3rd lattice vector. Then the following example may
     be used to calculate the eigen-channels:
 
-    .. code::
+    .. code-block:: python
 
        import sisl
        from sisl_toolbox.btd import *
@@ -520,7 +520,7 @@ class DeviceGreen:
     To make this easier there exists a short-hand version that does the
     above:
 
-    .. code::
+    .. code-block:: python
 
        G = DeviceGreen.from_fdf("RUN.fdf")
 

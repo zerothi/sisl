@@ -91,8 +91,6 @@ class TestHamiltonian:
     def test_ortho(self, setup):
         assert setup.H.orthogonal
         assert not setup.HS.orthogonal
-        assert not setup.H.non_orthogonal
-        assert setup.HS.non_orthogonal
 
     def test_set1(self, setup):
         setup.H.H[0, 0] = 1.0

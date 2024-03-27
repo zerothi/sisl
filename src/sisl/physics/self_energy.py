@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import Literal, Union
+
 import numpy as np
 from numpy import abs as _abs
 from numpy import (
@@ -24,7 +26,7 @@ from sisl._help import array_replace
 from sisl._internal import set_module
 from sisl.linalg import inv, linalg_info, solve
 from sisl.linalg.base import _compute_lwork
-from sisl.messages import deprecation, info, warn
+from sisl.messages import deprecate_argument, deprecation, info, warn
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.utils.mathematics import fnorm
@@ -129,11 +131,11 @@ class WideBandSE(SelfEnergy):
     ----------
     spgeom : SparseGeometry or int
        for a `SparseGeometry` only the length will be queried.
-    eta : float
+    eta :
        the imaginary part (:math:`\eta`) of the self-energy
     """
 
-    def __init__(self, spgeom, eta):
+    def __init__(self, spgeom, eta: float):
         if isinstance(spgeom, _SparseGeometry):
             self._N = len(spgeom)
         else:
@@ -178,7 +180,12 @@ class SemiInfinite(SelfEnergy):
        the default imaginary part (:math:`\eta`) of the self-energy calculation
     """
 
-    def __init__(self, spgeom, infinite, eta=1e-4):
+    def __init__(
+        self,
+        spgeom,
+        infinite: Literal["+A", "-A", "+B", "-B", "+C", "-C"],
+        eta: float = 1e-4,
+    ):
         """Create a `SelfEnergy` object from any `SparseGeometry`"""
         self.eta = eta
 
@@ -297,19 +304,22 @@ class RecursiveSI(SemiInfinite):
         r"""Dimension of the self-energy"""
         return len(self.spgeom0)
 
-    def green(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, **kwargs):
+    @deprecate_argument(
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15"
+    )
+    def green(self, E: complex, k=(0, 0, 0), dtype=None, atol: float = 1e-14, **kwargs):
         r"""Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).
 
         Parameters
         ----------
-        E : float/complex
+        E :
           energy at which the calculation will take place
         k : array_like, optional
           k-point at which the Green function should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype
           the resulting data type
-        eps : float, optional
+        atol :
           convergence criteria for the recursion
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
@@ -395,7 +405,7 @@ class RecursiveSI(SemiInfinite):
             beta[:, :] = matmul(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
-            if _abs(alpha).max() < eps:
+            if _abs(alpha).max() < atol:
                 # Return the pristine Green function
                 del ab, alpha, beta, ab2, tab
                 return inv(GB)
@@ -404,21 +414,32 @@ class RecursiveSI(SemiInfinite):
             f"{self.__class__.__name__}.green could not converge Green function calculation"
         )
 
-    def self_energy(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs):
+    @deprecate_argument(
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15"
+    )
+    def self_energy(
+        self,
+        E: complex,
+        k=(0, 0, 0),
+        dtype=None,
+        atol: float = 1e-14,
+        bulk: bool = False,
+        **kwargs,
+    ):
         r"""Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
         ----------
-        E : float/complex
+        E :
           energy at which the calculation will take place
         k : array_like, optional
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype
           the resulting data type
-        eps : float, optional
+        atol :
           convergence criteria for the recursion
-        bulk : bool, optional
+        bulk :
           if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
           :math:`\boldsymbol\Sigma` is returned (default).
         **kwargs : dict, optional
@@ -501,7 +522,7 @@ class RecursiveSI(SemiInfinite):
             beta[:, :] = matmul(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
-            if _abs(alpha).max() < eps:
+            if _abs(alpha).max() < atol:
                 # Return the pristine Green function
                 del ab, alpha, beta, ab2, tab, GB
                 if bulk:
@@ -512,8 +533,17 @@ class RecursiveSI(SemiInfinite):
             f"{self.__class__.__name__}: could not converge self-energy calculation"
         )
 
+    @deprecate_argument(
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15"
+    )
     def self_energy_lr(
-        self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs
+        self,
+        E: complex,
+        k=(0, 0, 0),
+        dtype=None,
+        atol: float = 1e-14,
+        bulk: bool = False,
+        **kwargs,
     ):
         r"""Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
 
@@ -522,16 +552,16 @@ class RecursiveSI(SemiInfinite):
 
         Parameters
         ----------
-        E : float/complex
+        E :
           energy at which the calculation will take place, if complex, the hosting ``eta`` won't be used.
         k : array_like, optional
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
-        eps : float, optional
+        eps :
           convergence criteria for the recursion
-        bulk : bool, optional
+        bulk :
           if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else
           :math:`\boldsymbol\Sigma` is returned (default).
         **kwargs : dict, optional
@@ -617,7 +647,7 @@ class RecursiveSI(SemiInfinite):
             beta[:, :] = matmul(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
-            if _abs(alpha).max() < eps:
+            if _abs(alpha).max() < atol:
                 # Return the pristine Green function
                 del ab, alpha, beta, ab2, tab
                 if self.semi_inf_dir == 1:
@@ -653,7 +683,7 @@ class RealSpaceSE(SelfEnergy):
         a physical object from which to calculate the real-space self-energy.
         The parent object *must* have only 3 supercells along the direction where
         self-energies are used.
-    semi_axis : int
+    semi_axis :
         semi-infinite direction (where self-energies are used and thus *exact* precision)
     k_axes : array_like of int
         the axes where k-points are desired. 1 or 2 values are required and the `semi_axis`
@@ -696,7 +726,7 @@ class RealSpaceSE(SelfEnergy):
     Manually specify Brillouin zone integration and default :math:`\eta` value.
     """
 
-    def __init__(self, parent, semi_axis, k_axes, unfold=(1, 1, 1), **options):
+    def __init__(self, parent, semi_axis: int, k_axes, unfold=(1, 1, 1), **options):
         """Initialize real-space self-energy calculator"""
         self.parent = parent
 
@@ -802,7 +832,7 @@ class RealSpaceSE(SelfEnergy):
         P0.set_nsc(nsc)
         return P0
 
-    def real_space_coupling(self, ret_indices=False):
+    def real_space_coupling(self, ret_indices: bool = False):
         r"""Real-space coupling parent where sites fold into the parent real-space unit cell
 
         The resulting parent object only contains the inner-cell couplings for the elements that couple
@@ -810,7 +840,7 @@ class RealSpaceSE(SelfEnergy):
 
         Parameters
         ----------
-        ret_indices : bool, optional
+        ret_indices :
            if true, also return the atomic indices (corresponding to `real_space_parent`) that encompass the coupling matrix
 
         Returns
@@ -938,7 +968,13 @@ class RealSpaceSE(SelfEnergy):
             self._options["bz"] = MonkhorstPack(lattice, nk, trs=self._options["trs"])
 
     def self_energy(
-        self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs
+        self,
+        E: complex,
+        k=(0, 0, 0),
+        bulk: bool = False,
+        coupling: bool = False,
+        dtype=None,
+        **kwargs,
     ):
         r"""Calculate the real-space self-energy
 
@@ -950,15 +986,15 @@ class RealSpaceSE(SelfEnergy):
 
         Parameters
         ----------
-        E : float/complex
+        E :
            energy to evaluate the real-space self-energy at
         k : array_like, optional
            only viable for 3D bulk systems with real-space self-energies along 2 directions.
            I.e. this would correspond to circular self-energies.
-        bulk : bool, optional
+        bulk :
            if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
            is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
-        coupling : bool, optional
+        coupling :
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
         dtype : numpy.dtype, optional
@@ -1019,7 +1055,7 @@ class RealSpaceSE(SelfEnergy):
             - self._calc["P0"](k, dtype=dtype, **kwargs)
         ).toarray() - inv(G, True)
 
-    def green(self, E, k=(0, 0, 0), dtype=None, **kwargs):
+    def green(self, E: complex, k=(0, 0, 0), dtype=None, **kwargs):
         r"""Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -1029,7 +1065,7 @@ class RealSpaceSE(SelfEnergy):
 
         Parameters
         ----------
-        E : float/complex
+        E :
            energy to evaluate the real-space Green function at
         k : array_like, optional
            only viable for 3D bulk systems with real-space Green functions along 2 directions.
@@ -1485,7 +1521,7 @@ class RealSpaceSI(SelfEnergy):
         P0.set_nsc(nsc)
         return P0
 
-    def real_space_coupling(self, ret_indices=False):
+    def real_space_coupling(self, ret_indices: bool = False):
         r"""Real-space coupling surface where the outside fold into the surface real-space unit cell
 
         The resulting parent object only contains the inner-cell couplings for the elements that couple
@@ -1493,7 +1529,7 @@ class RealSpaceSI(SelfEnergy):
 
         Parameters
         ----------
-        ret_indices : bool, optional
+        ret_indices :
            if true, also return the atomic indices (corresponding to `real_space_parent`) that encompass the coupling matrix
 
         Returns
@@ -1659,7 +1695,13 @@ class RealSpaceSI(SelfEnergy):
             self._options["bz"] = MonkhorstPack(lattice, nk, trs=self._options["trs"])
 
     def self_energy(
-        self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs
+        self,
+        E: complex,
+        k=(0, 0, 0),
+        bulk: bool = False,
+        coupling: bool = False,
+        dtype=None,
+        **kwargs,
     ):
         r"""Calculate real-space surface self-energy
 
@@ -1671,15 +1713,15 @@ class RealSpaceSI(SelfEnergy):
 
         Parameters
         ----------
-        E : float/complex
+        E :
            energy to evaluate the real-space self-energy at
         k : array_like, optional
            only viable for 3D bulk systems with real-space self-energies along 2 directions.
            I.e. this would correspond to circular self-energies.
-        bulk : bool, optional
+        bulk :
            if true, :math:`\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}`
            is returned, otherwise :math:`\boldsymbol\Sigma^\mathcal{R}` is returned
-        coupling : bool, optional
+        coupling :
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
         dtype : numpy.dtype, optional
@@ -1740,7 +1782,7 @@ class RealSpaceSI(SelfEnergy):
             - self._calc["P0"](k, dtype=dtype, **kwargs)
         ).toarray() - inv(G, True)
 
-    def green(self, E, k=(0, 0, 0), dtype=None, **kwargs):
+    def green(self, E: complex, k=(0, 0, 0), dtype=None, **kwargs):
         r"""Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -1750,7 +1792,7 @@ class RealSpaceSI(SelfEnergy):
 
         Parameters
         ----------
-        E : float/complex
+        E :
            energy to evaluate the real-space Green function at
         k : array_like, optional
            only viable for 3D bulk systems with real-space Green functions along 2 directions.

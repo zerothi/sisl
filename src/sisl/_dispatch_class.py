@@ -28,7 +28,7 @@ import logging
 from collections import namedtuple
 from typing import Any, Optional, Sequence, Union
 
-from ._dispatcher import ClassDispatcher, TypeDispatcher
+from ._dispatcher import AbstractDispatcher, ClassDispatcher, TypeDispatcher
 
 _log = logging.getLogger("sisl")
 _log.info(f"adding logger: {__name__}")
@@ -64,7 +64,7 @@ class _Dispatchs:
                 if hasattr(base, f"{prefix}_dispatchs"):
                     dispatchs.extend(getattr(base, f"{prefix}_dispatchs"))
 
-        if isinstance(dispatchs, str):
+        elif not isinstance(dispatchs, (list, tuple)):
             dispatchs = [dispatchs]
 
         loop = []
@@ -74,10 +74,11 @@ class _Dispatchs:
             #       ("new", "keep"),
             #       "to"
             #  ]
+            obj = None
             if isinstance(attr, (list, tuple)):
                 attr, obj = attr
-            else:
-                obj = None
+            elif hasattr(attr, "_attr_name"):
+                attr, obj = getattr(attr, "_attr_name"), attr
 
             if attr in cls.__dict__:
                 raise ValueError(f"The attribute {attr} already exists on {cls!r}")
