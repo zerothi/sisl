@@ -843,12 +843,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ).sum()
         return I * constant.q / constant.h("eV s")
 
-    def _check_Teig(self, func_name, TE, eps=0.001):
+    def _check_Teig(self, func_name, TE, atol: float = 0.001):
         """Internal method to check whether all transmission eigenvalues are present"""
-        if np.any(np.logical_and.reduce(TE > eps, axis=-1)):
+        if np.any(np.logical_and.reduce(TE > atol, axis=-1)):
             info(
                 f"{self.__class__.__name__}.{func_name} does possibly not have all relevant transmission eigenvalues in the "
-                "calculation. For some energy values all transmission eigenvalues are above {eps}!"
+                "calculation. For some energy values all transmission eigenvalues are above {atol}!"
             )
 
     def shot_noise(self, elec_from=0, elec_to=1, classical=False, kavg=True) -> ndarray:

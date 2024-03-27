@@ -89,6 +89,12 @@ class Bloch:
         B = self._bloch
         return f"{self.__class__.__name__}{{{B[0]}, {B[1]}, {B[2]}}}"
 
+    def __repr__(self):
+        """Representation of the Bloch model"""
+        B = self._bloch
+        cls = self.__class__
+        return f"<{cls.__module__}.{cls.__name__}{{{B[0]}, {B[1]}, {B[2]}}}>"
+
     @property
     def bloch(self):
         """Number of Bloch expansions along each lattice vector"""

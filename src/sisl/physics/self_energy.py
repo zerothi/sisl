@@ -559,7 +559,7 @@ class RecursiveSI(SemiInfinite):
           the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
-        eps :
+        atol :
           convergence criteria for the recursion
         bulk :
           if true, :math:`E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma` is returned, else

@@ -1228,10 +1228,16 @@ class Geometry(
                 f"{self.__class__.__name__}.iter_block got unexpected 'method' argument: {method}"
             )
 
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol",
+        "0.15",
+    )
     def overlap(
         self,
         other: GeometryLikeType,
-        eps: float = 0.1,
+        atol: float = 0.1,
         offset: Sequence[float] = (0.0, 0.0, 0.0),
         offset_other: Sequence[float] = (0.0, 0.0, 0.0),
     ) -> Tuple[ndarray, ndarray]:
@@ -1247,7 +1253,7 @@ class Geometry(
         ----------
         other :
            Geometry to compare with `self`
-        eps :
+        atol :
            atoms within this distance will be considered *equivalent*
         offset :
            offset for `self.xyz` before comparing
@@ -1284,7 +1290,7 @@ class Geometry(
 
         for ia, xyz in enumerate(s_xyz):
             # only search in the primary unit-cell
-            idx = other.close_sc(xyz, R=(eps,))
+            idx = other.close_sc(xyz, R=(atol,))
             self_extend([ia] * idx.size)
             other_extend(idx)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)

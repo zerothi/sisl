@@ -14,7 +14,7 @@ from sisl._core import Geometry
 from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
-from sisl.messages import warn
+from sisl.messages import deprecate_argument, warn
 
 __all__ = ["degenerate_decouple", "Coefficient", "State", "StateC"]
 
@@ -199,12 +199,18 @@ coefficients retained in this object
         """Returns the shape of the coefficients"""
         return self.c.shape
 
-    def degenerate(self, eps=1e-8):
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol",
+        "0.15",
+    )
+    def degenerate(self, atol: float = 1e-8):
         """Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
-        eps : float, optional
+        atol : float, optional
            the precision above which coefficients are not considered degenerate
 
         Returns
@@ -217,7 +223,7 @@ coefficients retained in this object
         dc = np.diff(self.c[sidx])
 
         # Degenerate indices
-        idx = (np.absolute(dc) <= eps).nonzero()[0]
+        idx = (np.absolute(dc) <= atol).nonzero()[0]
         if len(idx) == 0:
             # There are no degenerate coefficients
             return deg
@@ -1317,12 +1323,18 @@ coefficients assigned to each state
             return ret[0]
         return ret
 
-    def degenerate(self, eps):
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol",
+        "0.15",
+    )
+    def degenerate(self, atol: float):
         """Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
-        eps : float
+        atol :
            the precision above which coefficients are not considered degenerate
 
         Returns
@@ -1331,11 +1343,13 @@ coefficients assigned to each state
             a list of indices
         """
         deg = list()
+
+        # Sort them in ascending order
         sidx = np.argsort(self.c)
         dc = np.diff(self.c[sidx])
 
         # Degenerate indices
-        idx = (dc < eps).nonzero()[0]
+        idx = (dc < atol).nonzero()[0]
         if len(idx) == 0:
             # There are no degenerate coefficients
             return deg

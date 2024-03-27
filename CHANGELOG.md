@@ -43,6 +43,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- all `eps` arguments has changed to `atol`
 - methods with `axis` arguments now accepts the str equivalent 0==a
 - documentation links to external resources
 - fixed `chgSileVASP.read_grid` for spinful calculations

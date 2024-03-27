@@ -32,7 +32,7 @@ from sisl import _array as _a
 from sisl._array import array_arange
 from sisl._core import Atom, Geometry, Orbital
 from sisl._internal import set_module
-from sisl.messages import SislError, SislWarning, progressbar, warn
+from sisl.messages import SislError, SislWarning, deprecate_argument, progressbar, warn
 from sisl.typing import AtomsIndex, CellAxes, Coord, SeqOrScalarFloat
 from sisl.utils.misc import direction
 from sisl.utils.ranges import list2str
@@ -1945,18 +1945,32 @@ class SparseOrbital(_SparseGeometry):
 
         return full
 
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol.",
+        "0.15",
+    )
     def prepend(
-        self, other, axis: int, eps: float = 0.005, scale: SeqOrScalarFloat = 1
+        self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
     ):
         r"""See `append` for details
 
         This is currently equivalent to:
 
-        >>> other.append(self, axis, eps, scale)
+        >>> other.append(self, axis, atol, scale)
         """
-        return other.append(self, axis, eps, scale)
+        return other.append(self, axis, atol, scale)
 
-    def append(self, other, axis: int, eps: float = 0.005, scale: SeqOrScalarFloat = 1):
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol.",
+        "0.15",
+    )
+    def append(
+        self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
+    ):
         r"""Append `other` along `axis` to construct a new connected sparse matrix
 
         This method tries to append two sparse geometry objects together by
@@ -1967,7 +1981,7 @@ class SparseOrbital(_SparseGeometry):
            This *may* cause problems if the coupling atoms are not exactly equi-positioned.
            If the coupling coordinates and the coordinates in `other` differ by more than
            0.01 Ang, a warning will be issued.
-           If this difference is above `eps` the couplings will be removed.
+           If this difference is above `atol` the couplings will be removed.
 
         When appending sparse matrices made up of atoms, this method assumes that
         the orbitals on the overlapping atoms have the same orbitals, as well as the
@@ -2005,11 +2019,11 @@ class SparseOrbital(_SparseGeometry):
             must be an object of the same type as `self`
         axis :
             axis to append the two sparse geometries along
-        eps :
+        atol :
             tolerance that all coordinates *must* be within to allow an append.
             It is important that this value is smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
-            equivalent atoms. An internal stricter eps is used as a baseline, see above.
+            equivalent atoms. An internal stricter tolerance is used as a baseline, see above.
         scale : float or array_like, optional
             the scale used for the overlapping region. For scalar values it corresponds
             to passing: ``(scale, scale)``.
@@ -2121,10 +2135,10 @@ class SparseOrbital(_SparseGeometry):
         # both these sparsity patterns to the correct elements.
 
         # 1. find overlapping atoms along axis
-        idx_s_first, idx_o_first = self.geometry.overlap(other.geometry, eps=eps)
+        idx_s_first, idx_o_first = self.geometry.overlap(other.geometry, atol=atol)
         idx_s_last, idx_o_last = self.geometry.overlap(
             other.geometry,
-            eps=eps,
+            atol=atol,
             offset=-self.geometry.lattice.cell[axis, :],
             offset_other=-other.geometry.lattice.cell[axis, :],
         )
@@ -2294,12 +2308,18 @@ class SparseOrbital(_SparseGeometry):
         full._csr.translate_columns(col_from, col_to)
         return full
 
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol",
+        "0.15",
+    )
     def replace(
         self,
         atoms: AtomsIndex,
         other,
         other_atoms: AtomsIndex = None,
-        eps: float = 0.005,
+        atol: float = 0.005,
         scale: SeqOrScalarFloat = 1.0,
     ):
         r"""Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them
@@ -2355,7 +2375,7 @@ class SparseOrbital(_SparseGeometry):
 
         Algorithms that utilizes atomic indices should be careful.
 
-        When the tolerance `eps` is high, the elements may be more prone to differences in the
+        When the tolerance `atol` is high, the elements may be more prone to differences in the
         symmetry elements. A good idea would be to check the difference between the couplings.
         The below variable ``diff`` will contain the difference ``(self -> other) - (other -> self)``
 
@@ -2371,7 +2391,7 @@ class SparseOrbital(_SparseGeometry):
         other_atoms :
             to select a subset of atoms in `other` that are taken out.
             Defaults to all atoms in `other`.
-        eps :
+        atol :
             coordinate tolerance for allowing replacement.
             It is important that this value is at least smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
@@ -2488,7 +2508,7 @@ class SparseOrbital(_SparseGeometry):
         # We need to get a 1-1 correspondance between the two connecting geometries
         # For instance `self` may be ordered differently than `other`.
         # So we need to figure out how the atoms are arranged in *both* regions.
-        # This is where `eps` comes into play since we have to ensure that the
+        # This is where `atol` comes into play since we have to ensure that the
         # connecting regions are within some given tolerance.
 
         def create_geometry(geom, atoms):
@@ -2504,7 +2524,7 @@ class SparseOrbital(_SparseGeometry):
         ogeom_in = ogeom.sub(o_info.atom_connect.uc.IN)
         soverlap_in, ooverlap_in = sgeom_in.overlap(
             ogeom_in,
-            eps=eps,
+            atol=atol,
             offset=-sgeom_in.xyz.min(0),
             offset_other=-ogeom_in.xyz.min(0),
         )
@@ -2515,7 +2535,7 @@ class SparseOrbital(_SparseGeometry):
         ogeom_out = create_geometry(ogeom, o_info.atom_connect.sc.OUT)
         soverlap_out, ooverlap_out = sgeom_out.overlap(
             ogeom_out,
-            eps=eps,
+            atol=atol,
             offset=-sgeom_out.xyz.min(0),
             offset_other=-ogeom_out.xyz.min(0),
         )
@@ -2795,7 +2815,7 @@ depending on your use case. Note indices in the following are supercell indices.
         old = o_info.atom_connect.sc.OUT
         new = _a.emptyi(len(old))
         for i, atom in enumerate(old):
-            idx = geom.close(ogeom.axyz(atom) + offset, R=eps)
+            idx = geom.close(ogeom.axyz(atom) + offset, R=atol)
             assert (
                 len(idx) == 1
             ), f"More than 1 atom {idx} for atom {atom} = {ogeom.axyz(atom)}, {geom.axyz(idx)}"
