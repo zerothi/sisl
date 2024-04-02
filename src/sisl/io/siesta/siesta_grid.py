@@ -126,9 +126,9 @@ class gridncSileSiesta(SileCDFSiesta):
             v = self._variable(name)
 
         # Create the grid, Siesta uses periodic, always
+        lattice.set_boundary_condition(Grid.PERIODIC)
         grid = Grid(
             [nz, ny, nx],
-            bc=Grid.PERIODIC,
             lattice=lattice,
             dtype=v.dtype,
             geometry=kwargs.get("geometry", None),
