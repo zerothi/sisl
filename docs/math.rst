@@ -6,10 +6,10 @@ Mathematical notation convention
 In `sisl` we strive to make the documentation as consistent
 as possible.
 This should make reading different parts of the documentation
-very simple to understand.
+simple to understand.
 
 Here is a list of rules that sisl will strive to adhere to.
-Please, if you find any inconsistencies in the documentation,
+If you find any inconsistencies in the documentation,
 please let us know!
 
 * upper case characters such as :math:`I` and :math:`J` refer
