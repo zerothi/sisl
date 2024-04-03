@@ -159,7 +159,7 @@ class Geometry(
     >>> g.to.ase()
     Atoms(...)
 
-    converts to an ASE `Atoms` object.
+    converts to an ASE `ase.Atoms` object.
 
     See Also
     --------

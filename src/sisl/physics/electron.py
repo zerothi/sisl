@@ -1653,8 +1653,6 @@ class StateCElectron(_electron_State, StateC):
         This is because of the velocity un-folding for degenerate modes. I.e. calling
         `PDOS` after this method *may* change the result.
 
-        Notes
-        -----
         The velocities are calculated without the Berry curvature contribution see Eq. (2) in :cite:`Wang2006`.
         The missing contribution may be added in later editions, for completeness sake, it is:
 
