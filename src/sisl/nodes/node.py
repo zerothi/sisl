@@ -11,9 +11,10 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, U
 
 from numpy.lib.mixins import NDArrayOperatorsMixin
 
-from sisl.messages import SislError, info
+from sisl.messages import SislError
 
 from .context import SISL_NODES_CONTEXT, NodeContext
+from .registry import REGISTRY
 
 
 class NodeError(SislError):
@@ -42,6 +43,35 @@ class NodeInputError(NodeError):
     def __str__(self):
         # Should make this more specific
         return f"Some input is not right in {self._node} and could not be parsed"
+
+
+class _TimeFilter(logging.Filter):
+    """A helper class to keep the last time a log was emitted.
+
+    This might work in a different way in the future.
+    """
+
+    last: float = 0.0
+
+    def filter(self, record):
+
+        import datetime
+
+        try:
+            last = self.last
+        except AttributeError:
+            last = record.relativeCreated
+
+        delta = datetime.datetime.fromtimestamp(
+            record.relativeCreated / 1000.0
+        ) - datetime.datetime.fromtimestamp(last / 1000.0)
+
+        record.relative = "{0:.2f}".format(
+            delta.seconds + delta.microseconds / 1000000.0
+        )
+
+        self.last = record.relativeCreated
+        return True
 
 
 class Node(NDArrayOperatorsMixin):
@@ -99,6 +129,7 @@ class Node(NDArrayOperatorsMixin):
 
     # Logs of the node's execution.
     _logger: logging.Logger
+    _log_filter: _TimeFilter
     logs: str
 
     # Contains the raw function of the node.
@@ -144,6 +175,7 @@ class Node(NDArrayOperatorsMixin):
         self._log_formatter = logging.Formatter(
             fmt="%(asctime)s | %(levelname)-8s :: %(message)s"
         )
+        self._log_filter = _TimeFilter()
         self.logs = ""
 
         self.context = self.__class__.context.new_child({})
@@ -205,6 +237,8 @@ class Node(NDArrayOperatorsMixin):
                     cls._kwargs_inputs_key = key
 
             cls.__signature__ = no_self_sig
+
+            REGISTRY.register(cls)
 
         return super().__init_subclass__()
 
@@ -396,6 +430,7 @@ class Node(NDArrayOperatorsMixin):
         self._logger.setLevel(getattr(logging, self.context["log_level"].upper()))
 
         logs = logging.StreamHandler(StringIO())
+        logs.addFilter(self._log_filter)
         self._logger.addHandler(logs)
 
         logs.setFormatter(self._log_formatter)
@@ -576,6 +611,11 @@ class Node(NDArrayOperatorsMixin):
         self._receive_outdated()
 
         return self
+
+    @property
+    def last_log(self) -> float:
+        """Last time the logs of this node were updated"""
+        return self._log_filter.last
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         if "out" in kwargs:

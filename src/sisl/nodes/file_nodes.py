@@ -177,5 +177,6 @@ class FileNode(Node):
         if "path" in inputs:
             self._update_observer()
 
-    def function(self, path: str) -> Path:
+    @staticmethod
+    def function(path: str) -> Path:
         return Path(path)

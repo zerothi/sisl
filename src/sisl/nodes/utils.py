@@ -94,6 +94,9 @@ def visit_all_connected(
         traverse_tree_backward((node,), func=visit)
 
 
+_nodified_modules = {}
+
+
 def nodify_module(module: ModuleType, node_class: Type[Node] = Node) -> ModuleType:
     """Returns a copy of a module where all functions are replaced with nodes.
 
@@ -118,6 +121,9 @@ def nodify_module(module: ModuleType, node_class: Type[Node] = Node) -> ModuleTy
     ModuleType
         A new module with all functions replaced with nodes.
     """
+
+    if module in _nodified_modules:
+        return _nodified_modules[module]
 
     # Function that recursively traverses the module and replaces functions with nodes.
     def _nodified_module(
@@ -178,4 +184,8 @@ def nodify_module(module: ModuleType, node_class: Type[Node] = Node) -> ModuleTy
 
         return noded_module
 
-    return _nodified_module(module, visited={}, main_module=module.__name__)
+    nodified_module = _nodified_module(module, visited={}, main_module=module.__name__)
+
+    _nodified_modules[module] = nodified_module
+
+    return nodified_module
