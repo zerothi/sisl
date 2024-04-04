@@ -54,7 +54,7 @@ def _matrix_dk(csr, const int idx, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
 
         # Default must be something else.
@@ -62,7 +62,7 @@ def _matrix_dk(csr, const int idx, iRs, dtype, format, p_opt):
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         d1, d2, d3 = _phase3_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
@@ -84,7 +84,7 @@ def _matrix_dk_nc(csr, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
 
         # Default must be something else.
@@ -92,7 +92,7 @@ def _matrix_dk_nc(csr, iRs, dtype, format, p_opt):
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_nc_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         d1, d2, d3 = _phase3_nc_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
@@ -124,14 +124,14 @@ def _matrix_dk_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
 
         # Default must be something else.
         return _phase_nc_diag_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_diag_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
         return _phase_nc_diag_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
@@ -152,7 +152,7 @@ def _matrix_dk_so(csr, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
 
         # Default must be something else.
@@ -160,7 +160,7 @@ def _matrix_dk_so(csr, iRs, dtype, format, p_opt):
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_so_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         d1, d2, d3 = _phase3_so_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)

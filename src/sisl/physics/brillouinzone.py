@@ -764,8 +764,8 @@ class MonkhorstPack(BrillouinZone):
         if trs:
             # Figure out which direction to TRS
             nmax = 0
-            for i in [0, 1, 2]:
-                if displacement[i] in [0.0, 0.5] and Dn[i] > nmax:
+            for i in (0, 1, 2):
+                if displacement[i] in (0.0, 0.5) and Dn[i] > nmax:
                     nmax = Dn[i]
                     i_trs = i
             if nmax == 1:

@@ -1094,7 +1094,7 @@ class Geometry(
         ixyz = _a.arrayi(ceil(dxyz / ir + 0.0001))
 
         # Calculate the steps required for each iteration
-        for i in [0, 1, 2]:
+        for i in (0, 1, 2):
             dxyz[i] = dxyz[i] / ixyz[i]
 
             # Correct the initial position to offset the initial displacement
@@ -3671,11 +3671,11 @@ class Geometry(
 
         class MoveUnitCell(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
-                if value in ["translate", "tr", "t"]:
+                if value in ("translate", "tr", "t"):
                     # Simple translation
                     tmp = np.amin(ns._geometry.xyz, axis=0)
                     ns._geometry = ns._geometry.translate(-tmp)
-                elif value in ["mod"]:
+                elif value == "mod":
                     g = ns._geometry
                     # Change all coordinates using the reciprocal cell and move to unit-cell (% 1.)
                     fxyz = g.fxyz % 1.0
@@ -3998,11 +3998,11 @@ class Geometry(
                     else:
                         opt = opt[0]
                         val = "True"
-                    if val.lower() in ["t", "true"]:
+                    if val.lower() in ("t", "true"):
                         val = True
-                    elif val.lower() in ["f", "false"]:
+                    elif val.lower() in ("f", "false"):
                         val = False
-                    elif opt in ["atol"]:
+                    elif opt == "atol":
                         # float values
                         val = float(val)
                     elif opt == "group":

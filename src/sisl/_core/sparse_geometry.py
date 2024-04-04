@@ -428,7 +428,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         # Check that we will translate all indices in the old
         # sparsity pattern to the new one
-        if len(old) not in [self.n_s, lattice.n_s]:
+        if len(old) not in (self.n_s, lattice.n_s):
             raise SislError("Not all supercells are accounted for")
 
         old = _a.arrayi(old)
@@ -1785,7 +1785,7 @@ class SparseOrbital(_SparseGeometry):
                 coln = unique(o2a(col[ptr[io] : ptr[io] + ncol[io]]))
                 R[ia, coln] = Rij(ia, coln)
 
-        elif what in ["orbital", "orb"]:
+        elif what in ("orbital", "orb"):
             # We create an *exact* copy of the Rij
             R = SparseOrbital(geom, 3, dtype, nnzpr=1)
             Rij = geom.oRij

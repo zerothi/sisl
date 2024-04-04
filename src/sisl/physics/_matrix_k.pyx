@@ -59,24 +59,24 @@ def _matrix_k(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
 
         # Default must be something else.
         return _phase_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     elif dtype == np.float64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _array_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx)
         return _csr_f64(csr.ptr, csr.ncol, csr.col, csr._D, idx).asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
         return _phase_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     elif dtype == np.float32:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _array_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx)
         return _csr_f32(csr.ptr, csr.ncol, csr.col, csr._D, idx).asformat(format)
 
@@ -88,17 +88,17 @@ def _matrix_k(csr, const int idx, phases, dtype, format, p_opt):
 @cython.initializedcheck(False)
 def _matrix_sc_k(csr, const int nc, const int idx, phases, dtype, format, p_opt):
     if dtype == np.complex128:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt)
         return _sc_phase_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt).asformat(format)
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt)
         return _sc_phase_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt).asformat(format)
-    elif dtype in [np.float32, np.float64]:
+    elif dtype in (np.float32, np.float64):
         # direct conversion, should be simple (generally only at Gamma-point)
         m = csr.tocsr(idx)
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return m.A
         return m
 
@@ -137,11 +137,11 @@ def _matrix_k_nc(csr, phases, dtype, format, p_opt):
         raise ValueError("matrix_k_nc requires input matrix to have 4 components")
 
     if dtype == np.complex128:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
         return _phase_nc_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
         return _phase_nc_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
@@ -157,11 +157,11 @@ def _matrix_sc_k_nc(csr, nc, phases, dtype, format, p_opt):
         raise ValueError("matrix_k_nc: (supercell format) requires input matrix to have 4 components")
 
     if dtype == np.complex128:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt)
         return _sc_phase_nc_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt).asformat(format)
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_nc_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt)
         return _sc_phase_nc_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt).asformat(format)
 
@@ -199,11 +199,11 @@ def _matrix_k_so(csr, phases, dtype, format, p_opt):
         raise ValueError("matrix_k_so requires input matrix to have 8 components")
 
     if dtype == np.complex128:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
         return _phase_so_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_so_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
         return _phase_so_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
@@ -219,11 +219,11 @@ def _matrix_sc_k_so(csr, nc, phases, dtype, format, p_opt):
         raise ValueError("matrix_k_so: (supercell format) requires input matrix to have 8 components")
 
     if dtype == np.complex128:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt)
         return _sc_phase_so_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt).asformat(format)
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_so_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt)
         return _sc_phase_so_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, phases, p_opt).asformat(format)
 
@@ -258,11 +258,11 @@ def matrix_k_nc_diag(gauge, M, const int idx, sc,
 def _matrix_k_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
         return _phase_nc_diag_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_diag_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
         return _phase_nc_diag_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
@@ -275,11 +275,11 @@ def _matrix_k_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 def _matrix_sc_k_nc_diag(csr, const int nc, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt)
         return _sc_phase_nc_diag_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt).asformat(format)
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _sc_phase_nc_diag_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt)
         return _sc_phase_nc_diag_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt).asformat(format)
 
