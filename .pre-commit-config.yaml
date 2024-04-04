@@ -42,5 +42,5 @@ repos:
       files: \.py$
       args:
         - --license-filepath
-        - LICENSE_header
+        - .LICENSE_header
         - --no-extra-eol
