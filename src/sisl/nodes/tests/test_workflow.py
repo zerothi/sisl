@@ -7,6 +7,7 @@ from typing import Type
 
 import pytest
 
+from sisl import SislWarning
 from sisl.nodes import Node, Workflow
 from sisl.nodes.node import ConstantNode
 from sisl.nodes.utils import traverse_tree_forward
@@ -26,28 +27,33 @@ def triple_sum(request) -> Type[Workflow]:
         return a + b
 
     if request.param == "from_func":
-        # A triple sum
-        @Workflow.from_func
-        def triple_sum(a, b, c):
-            first_sum = my_sum(a, b)
-            return my_sum(first_sum, c)
-
-        triple_sum._sum_key = "my_sum"
-    elif request.param == "explicit_class":
-
-        class triple_sum(Workflow):
-            @staticmethod
-            def function(a, b, c):
+        with pytest.warns(SislWarning):
+            # A triple sum
+            @Workflow.from_func
+            def triple_sum(a, b, c):
                 first_sum = my_sum(a, b)
                 return my_sum(first_sum, c)
 
         triple_sum._sum_key = "my_sum"
+    elif request.param == "explicit_class":
+
+        with pytest.warns(SislWarning):
+
+            class triple_sum(Workflow):
+                @staticmethod
+                def function(a, b, c):
+                    first_sum = my_sum(a, b)
+                    return my_sum(first_sum, c)
+
+        triple_sum._sum_key = "my_sum"
     elif request.param == "input_operations":
 
-        @Workflow.from_func
-        def triple_sum(a, b, c):
-            first_sum = a + b
-            return first_sum + c
+        with pytest.warns(SislWarning):
+
+            @Workflow.from_func
+            def triple_sum(a, b, c):
+                first_sum = a + b
+                return first_sum + c
 
         triple_sum._sum_key = "UfuncNode"
 
@@ -141,10 +147,12 @@ def test_args_nodes_registered():
     def some_node(*args):
         return args
 
-    @Workflow.from_func
-    def some_workflow():
-        a = some_node(1, 2, 3)
-        return some_node(2, a, 4)
+    with pytest.warns(SislWarning):
+
+        @Workflow.from_func
+        def some_workflow():
+            a = some_node(1, 2, 3)
+            return some_node(2, a, 4)
 
     # Check that the workflow knows about the first instanced node.
     wf = some_workflow()
@@ -155,10 +163,12 @@ def test_kwargs_nodes_registered():
     def some_node(**kwargs):
         return kwargs
 
-    @Workflow.from_func
-    def some_workflow():
-        a = some_node(a=1, b=2, c=3)
-        return some_node(b=2, a=a, c=4)
+    with pytest.warns(SislWarning):
+
+        @Workflow.from_func
+        def some_workflow():
+            a = some_node(a=1, b=2, c=3)
+            return some_node(b=2, a=a, c=4)
 
     # Check that the workflow knows about the first instanced node.
     wf = some_workflow()
@@ -169,10 +179,12 @@ def test_workflow_inside_workflow(triple_sum):
     def multiply(a, b):
         return a * b
 
-    @Workflow.from_func
-    def some_multiplication(a, b, c, d, e, f):
-        """Workflow that computes (a + b + c) * (d + e + f)"""
-        return multiply(triple_sum(a, b, c), triple_sum(d, e, f))
+    with pytest.warns(SislWarning):
+
+        @Workflow.from_func
+        def some_multiplication(a, b, c, d, e, f):
+            """Workflow that computes (a + b + c) * (d + e + f)"""
+            return multiply(triple_sum(a, b, c), triple_sum(d, e, f))
 
     val = some_multiplication(1, 2, 3, 1, 2, 1)
 

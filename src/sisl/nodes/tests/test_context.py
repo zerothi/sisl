@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import pytest
 
+from sisl import SislWarning
 from sisl.nodes import Node, Workflow
 from sisl.nodes.context import temporal_context
 
@@ -54,10 +55,12 @@ def test_workflow(nodes_lazy):
     def sum_node(a, b):
         return a + b
 
-    @Workflow.from_func
-    def my_workflow(a, b, c):
-        first_sum = sum_node(a, b)
-        return sum_node(first_sum, c)
+    with pytest.warns(SislWarning):
+
+        @Workflow.from_func
+        def my_workflow(a, b, c):
+            first_sum = sum_node(a, b)
+            return sum_node(first_sum, c)
 
     with temporal_context(context=Node.context, lazy=nodes_lazy):
         # It shouldn't matter whether nodes have lazy computation on or off for the working of the workflow

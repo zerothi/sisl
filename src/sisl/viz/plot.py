@@ -12,7 +12,19 @@ class Plot(Workflow):
 
     def __getattr__(self, key):
         if key != "nodes":
-            return getattr(self.nodes.output.get(), key)
+            # If an ipython key is requested, get the plot and look
+            # for the key in the plot. This is simply to enhance
+            # interactivity in a python notebook environment.
+            # However, this results in a (maybe undesired) behavior:
+            # The plot is updated when ipython requests it, without any
+            # explicit request to update it. This is how it has worked
+            # from the beggining, so it's probably best to keep it like
+            # this for now.
+            if "ipython" in key:
+                output = self.nodes.output.get()
+            else:
+                output = self.nodes.output._output
+            return getattr(output, key)
         else:
             return super().__getattr__(key)
 
