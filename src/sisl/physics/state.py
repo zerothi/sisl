@@ -15,6 +15,7 @@ from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
 from sisl.messages import deprecate_argument, warn
+from sisl.typing import GaugeType
 
 __all__ = ["degenerate_decouple", "Coefficient", "State", "StateC"]
 
@@ -790,7 +791,7 @@ state coefficients
         else:
             return self.sub(oidx)
 
-    def change_gauge(self, gauge, offset=(0, 0, 0)):
+    def change_gauge(self, gauge: GaugeType, offset=(0, 0, 0)):
         r"""In-place change of the gauge of the state coefficients
 
         The two gauges are related through:
@@ -799,15 +800,17 @@ state coefficients
 
             \tilde C_j = e^{i\mathbf k\mathbf r_j} C_j
 
-        where :math:`C_j` and :math:`\tilde C_j` belongs to the ``r`` and ``R`` gauge, respectively.
+        where :math:`C_j` and :math:`\tilde C_j` belongs to the ``orbital`` and ``cell`` gauge, respectively.
 
         Parameters
         ----------
-        gauge : {'R', 'r'}
+        gauge : {'cell', 'orbital'}
             specify the new gauge for the mode coefficients
         offset : array_like, optional
             whether the coordinates should be offset by another phase-factor
         """
+        gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
         if self.info.get("gauge", gauge) == gauge:
@@ -837,10 +840,10 @@ state coefficients
             if self.shape[1] == g.no * 2:
                 phase = np.repeat(phase, 2)
 
-        if gauge == "r":
+        if gauge == "orbital":
             # R -> r gauge tranformation.
             self.state *= exp(-1j * phase).reshape(1, -1)
-        elif gauge == "R":
+        elif gauge == "cell":
             # r -> R gauge tranformation.
             self.state *= exp(1j * phase).reshape(1, -1)
 

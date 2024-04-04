@@ -23,11 +23,13 @@ __all__ = ["matrix_k", "matrix_k_nc", "matrix_k_so", "matrix_k_nc_diag"]
 def matrix_k(gauge, M, const int idx, sc,
              np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype)
-    if gauge == 'R':
+    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+
+    if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
 
-    elif gauge == 'r':
+    elif gauge == 'orbital':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0
@@ -108,10 +110,11 @@ def _matrix_sc_k(csr, const int nc, const int idx, phases, dtype, format, p_opt)
 def matrix_k_nc(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    if gauge == 'R':
+    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
-    elif gauge == 'r':
+    elif gauge == 'orbital':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0
@@ -171,10 +174,11 @@ def _matrix_sc_k_nc(csr, nc, phases, dtype, format, p_opt):
 def matrix_k_so(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    if gauge == 'R':
+    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
-    elif gauge == 'r':
+    elif gauge == 'orbital':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0
@@ -233,10 +237,11 @@ def _matrix_sc_k_so(csr, nc, phases, dtype, format, p_opt):
 def matrix_k_nc_diag(gauge, M, const int idx, sc,
                      np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    if gauge == 'R':
+    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
-    elif gauge == 'r':
+    elif gauge == 'orbital':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0

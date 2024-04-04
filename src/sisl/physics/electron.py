@@ -1003,7 +1003,7 @@ def berry_phase(
             pass
 
     else:
-        gauge = eigenstate_kwargs.get("gauge", "R")
+        gauge = eigenstate_kwargs.get("gauge", "cell")
 
         def _lowdin(state):
             """change state to the lowdin state, assuming everything is in R gauge
@@ -1126,7 +1126,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
     Notes
     -----
-    Currently this method only works for `v` being coefficients of the gauge="R" method. In case
+    Currently this method only works for `v` being coefficients of the gauge="cell" method. In case
     you are passing a `v` with the incorrect gauge you will find a phase-shift according to:
 
     .. math::

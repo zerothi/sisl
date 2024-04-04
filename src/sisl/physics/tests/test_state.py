@@ -125,23 +125,23 @@ def test_state_norm():
 
 def test_state_change_gauge():
     g = geom.graphene(1.42)
-    state = State(ar(2, 2).astype(np.complex128), g, gauge="r", k=(0.1, 0.2, 0.4))
+    state = State(ar(2, 2).astype(np.complex128), g, gauge="orbital", k=(0.1, 0.2, 0.4))
     assert len(state) == 2
     old = state.state.copy()
-    state.change_gauge("R")
+    state.change_gauge("cell")
     assert not np.allclose(old, state.state)
-    state.change_gauge("r")
+    state.change_gauge("orbital")
     assert np.allclose(old, state.state)
 
 
 def test_state_change_gauge_nc():
     g = geom.graphene(1.42)
-    state = State(ar(2, 4).astype(np.complex128), g, gauge="r", k=(0.1, 0.2, 0.4))
+    state = State(ar(2, 4).astype(np.complex128), g, gauge="orbital", k=(0.1, 0.2, 0.4))
     assert len(state) == 2
     old = state.state.copy()
-    state.change_gauge("R")
+    state.change_gauge("cell")
     assert not np.allclose(old, state.state)
-    state.change_gauge("r")
+    state.change_gauge("orbital")
     assert np.allclose(old, state.state)
 
 

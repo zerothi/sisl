@@ -112,9 +112,9 @@ class TestDynamicalMatrix:
         D.construct(setup.func)
         em = D.eigenmode(k=(0.2, 0.2, 0.2))
         em2 = em.copy()
-        em2.change_gauge("r")
+        em2.change_gauge("orbital")
         assert not np.allclose(em.mode, em2.mode)
-        em2.change_gauge("R")
+        em2.change_gauge("cell")
         assert np.allclose(em.mode, em2.mode)
 
     @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)

@@ -22,7 +22,7 @@ from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import progressbar, warn
-from sisl.typing import AtomsIndex, SeqFloat
+from sisl.typing import AtomsIndex, GaugeType, SeqFloat
 
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
@@ -1422,7 +1422,15 @@ class DensityMatrix(_densitymatrix):
             f"{self.__class__.__name__}.orbital_momentum only allows projection [orbital, atom]"
         )
 
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def Dk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the density matrix for a given k-point
 
         Creation and return of the density matrix for a given k-point (default to Gamma).
@@ -1452,8 +1460,8 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -1478,7 +1486,15 @@ class DensityMatrix(_densitymatrix):
         """
         pass
 
-    def dDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the density matrix derivative for a given k-point
 
         Creation and return of the density matrix derivative for a given k-point (default to Gamma).
@@ -1509,8 +1525,8 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -1533,7 +1549,15 @@ class DensityMatrix(_densitymatrix):
         """
         pass
 
-    def ddDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def ddDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the density matrix double derivative for a given k-point
 
         Creation and return of the density matrix double derivative for a given k-point (default to Gamma).
@@ -1564,8 +1588,8 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,

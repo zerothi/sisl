@@ -7,6 +7,7 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
+from sisl.typing import GaugeType
 
 from .phonon import EigenmodePhonon, EigenvaluePhonon
 from .sparse import SparseOrbitalBZ
@@ -54,7 +55,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
         self._def_dim = 0
         return self
 
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def Dk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the dynamical matrix for a given k-point
 
         Creation and return of the dynamical matrix for a given k-point (default to Gamma).
@@ -84,8 +93,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -106,7 +115,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         pass
 
-    def dDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the dynamical matrix derivative for a given k-point
 
         Creation and return of the dynamical matrix derivative for a given k-point (default to Gamma).
@@ -137,8 +154,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -157,7 +174,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         pass
 
-    def ddDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def ddDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the dynamical matrix double derivative for a given k-point
 
         Creation and return of the dynamical matrix double derivative for a given k-point (default to Gamma).
@@ -188,8 +213,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -265,7 +290,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         del d_uc
 
-    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs) -> EigenvaluePhonon:
+    def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs) -> EigenvaluePhonon:
         """Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
 
         Parameters
@@ -296,7 +321,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         info = {"k": k, "gauge": gauge}
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
-    def eigenmode(self, k=(0, 0, 0), gauge="R", **kwargs) -> EigenmodePhonon:
+    def eigenmode(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs) -> EigenmodePhonon:
         r"""Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
 
         Notes

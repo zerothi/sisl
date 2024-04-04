@@ -7,6 +7,7 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._internal import set_module
+from sisl.typing import GaugeType
 
 from .distribution import get_distribution
 from .electron import EigenstateElectron, EigenvalueElectron
@@ -102,7 +103,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
         self._def_dim = self.UP
         return self
 
-    def Hk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def Hk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the Hamiltonian for a given k-point
 
         Creation and return of the Hamiltonian for a given k-point (default to Gamma).
@@ -132,8 +141,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -159,7 +168,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         pass
 
-    def dHk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dHk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the Hamiltonian derivative for a given k-point
 
         Creation and return of the Hamiltonian derivative for a given k-point (default to Gamma).
@@ -190,8 +207,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -214,7 +231,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         pass
 
-    def ddHk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def ddHk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the Hamiltonian double derivative for a given k-point
 
         Creation and return of the Hamiltonian double derivative for a given k-point (default to Gamma).
@@ -245,8 +270,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -304,7 +329,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             for i in range(self.spin.spinor):
                 self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E[i]
 
-    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):
         """Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`
 
         Parameters
@@ -344,7 +369,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             info["format"] = format
         return EigenvalueElectron(e, self, **info)
 
-    def eigenstate(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenstate(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):
         """Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates
 
         Parameters

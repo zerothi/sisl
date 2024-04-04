@@ -1809,7 +1809,7 @@ class wfsxSileSiesta(SileBinSiesta):
 
         # Build the info dictionary for the eigenstate to know how it was calculated
         # We include the spin index if needed.
-        info = dict(k=self._convert_k(k), weight=weight, gauge="r", index=idx - 1)
+        info = dict(k=self._convert_k(k), weight=weight, gauge="orbital", index=idx - 1)
         if self._sizes.nspin == 2:
             info["spin"] = ispin
 

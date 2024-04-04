@@ -8,6 +8,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._internal import set_module
 from sisl.messages import SislError
+from sisl.typing import GaugeType
 
 from .densitymatrix import _densitymatrix
 
@@ -100,7 +101,15 @@ class EnergyDensityMatrix(_densitymatrix):
         self._def_dim = self.UP
         return self
 
-    def Ek(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def Ek(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the energy density matrix for a given k-point
 
         Creation and return of the energy density matrix for a given k-point (default to Gamma).
@@ -130,8 +139,8 @@ class EnergyDensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -156,7 +165,15 @@ class EnergyDensityMatrix(_densitymatrix):
         """
         pass
 
-    def dEk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dEk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the energy density matrix derivative for a given k-point
 
         Creation and return of the energy density matrix derivative for a given k-point (default to Gamma).
@@ -187,8 +204,8 @@ class EnergyDensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -211,7 +228,15 @@ class EnergyDensityMatrix(_densitymatrix):
         """
         pass
 
-    def ddEk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def ddEk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the energy density matrix double derivative for a given k-point
 
         Creation and return of the energy density matrix double derivative for a given k-point (default to Gamma).
@@ -242,8 +267,8 @@ class EnergyDensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,

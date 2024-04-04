@@ -78,6 +78,7 @@ we hit release version 1.0.0.
 
 ### Changed
 - documentation build system on RTD is updated, #745
+- `gauge` arguments now accept 'cell' and 'orbital' in replacements for 'R' and 'r', respectively
 - `siesta.*.read_basis` now defaults to read an `Atoms` object with all atoms
 - `atoms.specie` changed to `atoms.species`, generally species is the singular form
 - `in_place` arguments changed to `inplace`
