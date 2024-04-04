@@ -4223,6 +4223,14 @@ class GeometryToAseDispatch(GeometryToDispatch):
 
 
 to_dispatch.register("ase", GeometryToAseDispatch)
+try:
+    from ase import Atoms as ase_Atoms
+
+    to_dispatch.register(ase_Atoms, GeometryToAseDispatch)
+    del ase_Atoms
+
+except ImportError:
+    pass
 
 
 class GeometryTopymatgenDispatch(GeometryToDispatch):
@@ -4282,6 +4290,15 @@ class GeometryToDataframeDispatch(GeometryToDispatch):
 
 
 to_dispatch.register("dataframe", GeometryToDataframeDispatch)
+try:
+    from pandas import DataFrame as pd_DataFrame
+
+    to_dispatch.register(pd_DataFrame, GeometryToDataframeDispatch)
+    del pd_DataFrame
+
+except ImportError:
+    pass
+
 
 # Clean up
 del new_dispatch, to_dispatch
