@@ -986,9 +986,10 @@ def translate(
     geometry: Geometry,
     v: CoordOrScalar,
     atoms: AtomsIndex = None,
-    cell: bool = False,
 ) -> Geometry:
     """Translates the geometry by `v`
+
+    `move` is a shorthand for this function.
 
     One can translate a subset of the atoms by supplying `atoms`.
 
@@ -1002,21 +1003,19 @@ def translate(
     atoms :
          only displace the given atomic indices, if not specified, all
          atoms will be displaced
-    cell :
-         If True the supercell also gets enlarged by the vector
     """
     g = geometry.copy()
     if atoms is None:
         g.xyz += np.asarray(v, g.xyz.dtype)
     else:
         g.xyz[geometry._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)
-    if cell:
-        g.set_lattice(g.lattice.translate(v))
     return g
 
 
-# simple copy...
-Geometry.move = Geometry.translate
+@register_sisl_dispatch(Geometry, module="sisl")
+def move(geometry: Geometry, *args, **kwargs) -> Geometry:
+    """See `translate` for details"""
+    return translate(geometry, *args, **kwargs)
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
