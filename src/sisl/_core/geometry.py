@@ -690,7 +690,7 @@ class Geometry(
         Returns the distance between two atoms:
 
         .. math::
-            r_{ij} = |r_j - r_i|
+            r^{IJ} = |\mathbf r^J - \mathbf r^I|
 
         Parameters
         ----------
@@ -712,7 +712,7 @@ class Geometry(
         Returns the vector between two atoms:
 
         .. math::
-            R_{ij} = r_j - r_i
+            \mathbf r^{IJ} = \mathbf r^J - \mathbf r^I
 
         Parameters
         ----------
@@ -737,7 +737,7 @@ class Geometry(
         Returns the distance between two orbitals:
 
         .. math::
-            r_{ij} = |r_j - r_i|
+            r^{ij} = |\mathbf r^j - \mathbf r^i|
 
         Parameters
         ----------
@@ -754,7 +754,7 @@ class Geometry(
         Returns the vector between two orbitals:
 
         .. math::
-            R_{ij} = r_j - r_i
+            \mathbf r^{ij} = \mathbf r^j - \mathbf r^i
 
         Parameters
         ----------
@@ -1636,8 +1636,8 @@ class Geometry(
         The calculated angle can be written as this
 
         .. math::
-            \alpha = \arccos \frac{(\mathrm{atom} - \mathrm{ref})\cdot \mathrm{dir}}
-            {|\mathrm{atom}-\mathrm{ref}||\mathrm{dir}|}
+            \theta = \arccos \frac{(\mathbf r^I - \mathbf{r^{\mathrm{ref}}})\cdot \mathbf{d}}
+            {|\mathbf r^I-\mathbf{r^{\mathrm{ref}}}||\mathbf{d}|}
 
         and thus lies in the interval :math:`[0 ; \pi]` as one cannot distinguish orientation without
         additional vectors.
