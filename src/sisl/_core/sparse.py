@@ -804,7 +804,7 @@ column indices of the sparse elements
         This will multiply all values with certain column values with `scale`
 
         .. math::
-            M[rows, cols] *= scale
+            \mathbf M\[\mathrm{rows}, \mathrm{cols}\] *= \mathrm{scale}
 
         This is an in-place operation.
 
