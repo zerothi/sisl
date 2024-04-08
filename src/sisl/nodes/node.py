@@ -244,7 +244,10 @@ class Node(NDArrayOperatorsMixin):
 
     @classmethod
     def from_func(
-        cls, func: Union[Callable, None] = None, context: Union[dict, None] = None
+        cls,
+        func: Union[Callable, None] = None,
+        context: Union[dict, None] = None,
+        module: Optional[str] = None,
     ):
         """Builds a node from a function.
 
@@ -261,7 +264,7 @@ class Node(NDArrayOperatorsMixin):
             will be created.
         """
         if func is None:
-            return lambda func: cls.from_func(func=func, context=context)
+            return lambda func: cls.from_func(func=func, context=context, module=module)
 
         if isinstance(func, type) and issubclass(func, Node):
             return func
@@ -281,6 +284,7 @@ class Node(NDArrayOperatorsMixin):
                 "function": staticmethod(func),
                 "_cls_context": context,
                 "_from_function": True,
+                "__module__": module or func.__module__,
             },
         )
 

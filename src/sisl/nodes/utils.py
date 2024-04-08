@@ -162,8 +162,9 @@ def nodify_module(module: ModuleType, node_class: Type[Node] = Node) -> ModuleTy
                 # There are some reasons why a function or class with exotic properties
                 # might not be able to be converted to a node. We do not aim at nodifying them.
                 try:
-                    noded_variable = node_class.from_func(variable)
-                    noded_variable.__module__ = f"nodified_{variable.__module__}"
+                    noded_variable = node_class.from_func(
+                        variable, module=f"nodified_{variable.__module__}"
+                    )
                 except:
                     ...
             elif inspect.ismodule(variable):
