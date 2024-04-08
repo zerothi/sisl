@@ -373,7 +373,7 @@ class Grid(
 
     @property
     def shape(self):
-        r"""Grid shape in :math:`x`, :math:`y`, :math:`z` directions"""
+        r"""Grid shape along the lattice vectors"""
         return self.grid.shape
 
     @property
@@ -875,7 +875,7 @@ class Grid(
         return not (self == other)
 
     def __abs__(self):
-        r"""Take the absolute value of the grid :math:`|grid|`"""
+        r"""Take the absolute value of the grid :math:`|\mathrm{grid}|`"""
         dtype = dtype_complex_to_real(self.dtype)
         a = self.copy()
         a.grid = np.absolute(self.grid).astype(dtype, copy=False)
@@ -1054,7 +1054,7 @@ class Grid(
         Parameters
         ----------
         b : numpy.ndarray
-           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
         pyamg_indices : list of int
            the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
            correspond to returned quantities from `pyamg_indices`.
@@ -1069,7 +1069,7 @@ class Grid(
         A : `~scipy.sparse.csr_matrix`/`~scipy.sparse.csc_matrix`
            sparse matrix describing the LHS for the linear system of equations
         b : numpy.ndarray
-           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
         pyamg_indices : list of int
            the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
            correspond to returned quantities from `pyamg_indices`.
@@ -1113,7 +1113,7 @@ class Grid(
         A : scipy.sparse.csr_matrix
            sparse matrix describing the grid
         b : numpy.ndarray
-           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
         """
 
         def Neumann(idx_bc, idx_p1):
