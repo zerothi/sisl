@@ -27,6 +27,22 @@ def sum_node(request):
     return SumNode
 
 
+def test_node_class_module():
+    def a():
+        pass
+
+    x = Node.from_func(a)
+
+    assert x.__module__ == __name__
+
+    def b():
+        pass
+
+    y = Node.from_func(b, module="other_module")
+
+    assert y.__module__ == "other_module"
+
+
 def test_node_classes_reused():
     def a():
         pass
