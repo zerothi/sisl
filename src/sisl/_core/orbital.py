@@ -68,7 +68,7 @@ del _rfact
 
 
 def _rspherical_harm(m, l, theta, cos_phi):
-    r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
+    r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf r\to \{r, \theta, \varphi\}`.
 
     These real spherical harmonics are via these equations:
 
@@ -86,7 +86,7 @@ def _rspherical_harm(m, l, theta, cos_phi):
     l : int
        degree of the spherical harmonics
     theta : array_like
-       angle in :math:`x-y` plane (azimuthal)
+       angle in :math:`xy` plane (azimuthal)
     cos_phi : array_like
        cos(phi) to angle from :math:`z` axis (polar)
     """
@@ -142,7 +142,7 @@ class Orbital:
     >>> orbq.q0
     1.
 
-    Optimizing the R range for the radial function integral :math:`\int dr radial(r)^2 r ^2`
+    Optimizing the R range for the radial function integral :math:`\int\mathrm dr radial(r)^2 r ^2`
     >>> R = {
     ...    "contains": 0.9999,
     ...    "func": lambda radial, r: (radial(r) * r)**2,
@@ -226,7 +226,7 @@ class Orbital:
         return self.tag
 
     def psi(self, r, *args, **kwargs):
-        r"""Calculate :math:`\phi(\mathbf R)` for Cartesian coordinates"""
+        r"""Calculate :math:`\phi(\mathbf r)` for Cartesian coordinates"""
         raise NotImplementedError
 
     def toSphere(self, center=None):
@@ -718,7 +718,7 @@ class SphericalOrbital(Orbital):
         Parameters
         -----------
         theta : array_like
-            azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+            azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
             polar angle from :math:`z` axis
         m :
@@ -737,7 +737,7 @@ class SphericalOrbital(Orbital):
         return _rspherical_harm(m, self.l, theta, cos(phi))
 
     def psi(self, r, m: int = 0):
-        r"""Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
+        r"""Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -766,7 +766,7 @@ class SphericalOrbital(Orbital):
         return p
 
     def psi_spher(self, r, theta, phi, m: int = 0, cos_phi: bool = False):
-        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -775,7 +775,7 @@ class SphericalOrbital(Orbital):
         r : array_like
            the radius from the orbital origin
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         m :
@@ -839,7 +839,7 @@ class SphericalOrbital(Orbital):
         m : int or list or None
            if ``None`` it defaults to ``-l:l``, else only for the requested `m`
         zeta :
-           the specified zeta-shell
+           the specified :math:`\zeta`-shell
         n :
            specify the :math:`n` quantum number
         P :
@@ -1276,7 +1276,7 @@ class AtomicOrbital(Orbital):
         return self.orb.set_radial(*args, **kwargs)
 
     def radial(self, r, *args, **kwargs):
-        r"""Calculate the radial part of the wavefunction :math:`f(\mathbf R)`
+        r"""Calculate the radial part of the wavefunction :math:`f(\mathbf r)`
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -1315,7 +1315,7 @@ class AtomicOrbital(Orbital):
         Parameters
         -----------
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :
@@ -1330,7 +1330,7 @@ class AtomicOrbital(Orbital):
         return self.orb.spher(theta, phi, self.m, cos_phi)
 
     def psi_spher(self, r, theta, phi, cos_phi: bool = False):
-        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -1339,7 +1339,7 @@ class AtomicOrbital(Orbital):
         r : array_like
            the radius from the orbital origin
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :
@@ -1632,7 +1632,7 @@ class _ExponentialOrbital(Orbital):
         Parameters
         -----------
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :
@@ -1649,7 +1649,7 @@ class _ExponentialOrbital(Orbital):
         return _rspherical_harm(self.m, self.l, theta, cos(phi))
 
     def psi_spher(self, r, theta, phi, cos_phi: bool = False):
-        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -1658,7 +1658,7 @@ class _ExponentialOrbital(Orbital):
         r : array_like
            the radius from the orbital origin
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :
