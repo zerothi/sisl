@@ -302,9 +302,9 @@ class EigenmodePhonon(ModeCPhonon):
 
         .. math::
 
-            \mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}
+            \mathbf{u}_{I\alpha} = \epsilon_{I\alpha}\sqrt{\frac{\hbar}{m_I \omega}}
 
-        where :math:`i` is the atomic index.
+        where :math:`I` is the atomic index.
 
         Even for negative frequencies the characteristic length is calculated for use of non-equilibrium
         modes.
