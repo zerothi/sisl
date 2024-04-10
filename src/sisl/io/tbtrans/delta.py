@@ -49,10 +49,10 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
     .. math::
         \mathbf H'(\mathbf k) = \mathbf H(\mathbf k) +
-            \delta\mathbf H(E, \mathbf k) + \delta\mathbf\Sigma(E, \mathbf k)
+            \delta\mathbf H(E, \mathbf k) + \delta\boldsymbol\Sigma(E, \mathbf k)
 
     This file may either be used directly as the :math:`\delta\mathbf H` or the
-    :math:`\delta\mathbf\Sigma`.
+    :math:`\delta\boldsymbol\Sigma`.
 
     When writing :math:`\delta` terms using `write_delta` one may add ``k`` or ``E`` arguments
     to make the :math:`\delta` dependent on ``k`` and/or ``E``.
@@ -415,7 +415,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         return lvl
 
     def write_delta(self, delta, **kwargs):
-        r"""Writes a :math:`\delta` Hamiltonian to the file
+        r"""Writes a :math:`\delta` term to the file
 
         This term may be of
 
@@ -423,6 +423,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         - level-2: k-dependent
         - level-3: E-dependent
         - level-4: k- and E-dependent
+
 
         Parameters
         ----------
@@ -434,6 +435,11 @@ class deltancSileTBtrans(SileCDFTBtrans):
         E : float, optional
            an energy dependent :math:`\delta` term. I.e. only save the :math:`\delta` term for
            the given energy. May be combined with `k` for a specific k and energy point.
+
+        Notes
+        -----
+        The input options for `TBtrans`_ determine whether this is a self-energy term
+        or a Hamiltonian term.
         """
         csr = delta._csr.copy()
         if csr.nnz == 0:
