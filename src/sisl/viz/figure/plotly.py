@@ -311,6 +311,7 @@ class PlotlyFigure(Figure):
                         **action["kwargs"].get("meta", {}),
                         "i_plot": i,
                     }
+                sanitized_section_actions.append(action)
 
             yield sanitized_section_actions
 
