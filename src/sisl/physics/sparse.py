@@ -300,16 +300,16 @@ class SparseOrbitalBZ(SparseOrbital):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \mathbf S(k) = \mathbf S_{\nu\mu} e^{i k R}
+           \mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \mathbf S(k) = \mathbf S_{\nu\mu} e^{i k r}
+           \mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -338,7 +338,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Returns
         -------
         matrix : numpy.ndarray or scipy.sparse.*_matrix
-            the overlap matrix at :math:`k`. The returned object depends on `format`.
+            the overlap matrix at :math:`\mathbf k`. The returned object depends on `format`.
         """
         pass
 
@@ -403,7 +403,7 @@ class SparseOrbitalBZ(SparseOrbital):
         *args,
         **kwargs,
     ):
-        r"""Setup the :math:`k`-derivatie of the overlap matrix for a given k-point
+        r"""Setup the :math:`\mathbf k`-derivatie of the overlap matrix for a given k-point
 
         Creation and return of the derivative of the overlap matrix for a given k-point (default to Gamma).
 
@@ -413,17 +413,17 @@ class SparseOrbitalBZ(SparseOrbital):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k \mathbf S_\alpha(k) = i R_\alpha \mathbf S_{\nu\mu} e^{i k R}
+           \nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` is one of the Cartesian directions.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \nabla_k \mathbf S_\alpha(k) = i r_\alpha \mathbf S_{ij} e^{i k r}
+           \nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -449,7 +449,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Returns
         -------
         tuple
-            for each of the Cartesian directions a :math:`\partial \mathbf S(k)/\partial k` is returned.
+            for each of the Cartesian directions a :math:`\partial \mathbf S(\mathbf k)/\partial\mathbf k` is returned.
         """
         pass
 
@@ -505,7 +505,7 @@ class SparseOrbitalBZ(SparseOrbital):
         *args,
         **kwargs,
     ):
-        r"""Setup the double :math:`k`-derivatie of the overlap matrix for a given k-point
+        r"""Setup the double :math:`\mathbf k`-derivatie of the overlap matrix for a given k-point
 
         Creation and return of the double derivative of the overlap matrix for a given k-point (default to Gamma).
 
@@ -515,17 +515,17 @@ class SparseOrbitalBZ(SparseOrbital):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k^2 \mathbf S_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf S_{\nu\mu} e^{i k R}
+           \nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \nabla_k^2 \mathbf S_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf S_{ij} e^{i k r}
+           \nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf r_\alpha \mathbf r_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -850,7 +850,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         ...     for ix, p in zip(idx, param):
         ...         self[ia, ix] = p
 
-        In the non-colinear case the matrix element :math:`M_{ij}` will be set
+        In the non-colinear case the matrix element :math:`\mathbf M_{ij}` will be set
         to input values `param` if :math:`i \le j` and the Hermitian conjugated
         values for :math:`j < i`.
 
@@ -1486,7 +1486,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         r"""Transform the matrix by either a matrix or new spin configuration
 
         1. General transformation:
-        * If `matrix` is provided, a linear transformation :math:`R^n \rightarrow R^m` is applied
+        * If `matrix` is provided, a linear transformation :math:`\mathbf R^n \rightarrow \mathbf R^m` is applied
         to the :math:`n`-dimensional elements of the original sparse matrix.
         The `spin` and `orthogonal` flags are optional but need to be consistent with the creation of an
         `m`-dimensional matrix.
