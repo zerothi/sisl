@@ -193,6 +193,7 @@ class Lattice(
     @deprecation(
         "toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.",
         "0.15",
+        "0.16",
     )
     def toCuboid(self, *args, **kwargs):
         """A cuboid with vectors as this unit-cell and center with respect to its origin
@@ -465,6 +466,7 @@ class Lattice(
         "axis",
         "axes",
         "argument axis has been deprecated in favor of axes, please update your code.",
+        "0.15",
         "0.16",
     )
     def fit(self, xyz, axes: CellAxes = (0, 1, 2), tol: float = 0.05) -> Lattice:
@@ -1262,6 +1264,7 @@ class SuperCell(Lattice):
         deprecate(
             f"{self.__class__.__name__} is deprecated; please use 'Lattice' class instead",
             "0.15",
+            "0.16",
         )
         super().__init__(*args, **kwargs)
 
@@ -1280,6 +1283,7 @@ class LatticeChild:
         deprecate(
             f"{self.__class__.__name__}.sc is deprecated; please use 'lattice' instead",
             "0.15",
+            "0.16",
         )
         return self.lattice
 
@@ -1309,7 +1313,7 @@ class LatticeChild:
             self.lattice = Lattice(lattice)
 
     set_supercell = deprecation(
-        "set_sc is deprecated; please use set_lattice instead", "0.15"
+        "set_sc is deprecated; please use set_lattice instead", "0.15", "0.16"
     )(set_lattice)
 
     @property

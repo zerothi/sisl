@@ -139,6 +139,7 @@ class Cuboid(PureShape):
     @deprecation(
         "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
+        "0.16",
     )
     def toEllipsoid(self):
         """Return an ellipsoid that encompass this cuboid"""
@@ -147,14 +148,18 @@ class Cuboid(PureShape):
         # Rescale each vector
         return Ellipsoid(self._v / 2 * 3**0.5, self.center.copy())
 
-    @deprecation("toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15")
+    @deprecation(
+        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.16"
+    )
     def toSphere(self):
         """Return a sphere that encompass this cuboid"""
         from .ellipsoid import Sphere
 
         return Sphere(self.edge_length.max() / 2 * 3**0.5, self.center.copy())
 
-    @deprecation("toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15")
+    @deprecation(
+        "toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15", "0.16"
+    )
     def toCuboid(self):
         """Return a copy of itself"""
         return self.copy()

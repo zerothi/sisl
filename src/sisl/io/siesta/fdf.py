@@ -559,9 +559,7 @@ class fdfSileSiesta(SileSiesta):
         return s
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice: Lattice, fmt: str = ".8f", *args, **kwargs):
         """Writes the supercell
 
@@ -944,7 +942,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     read_force_constant = deprecation(
-        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+        "read_force_constant is deprecated in favor of read_hessian", "0.15", "0.16"
     )(read_hessian)
 
     def _r_hessian_nc(self, *args, **kwargs):

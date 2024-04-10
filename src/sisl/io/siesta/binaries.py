@@ -213,7 +213,8 @@ class onlysSileSiesta(SileBinSiesta):
         "geometry",
         "basis",
         "use basis=geometry.atoms instead of geometry=",
-        from_version="0.15",
+        "0.15",
+        "0.16",
     )
     def read_geometry(self, basis: Optional[Atoms] = None):
         """Returns Geometry object from a TranSiesta file"""

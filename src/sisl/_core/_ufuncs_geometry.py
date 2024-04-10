@@ -1074,6 +1074,7 @@ def remove(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     "what",
     "argument only has been deprecated in favor of what, please update your code.",
     "0.14",
+    "0.16",
 )
 def rotate(
     geometry: Geometry,
@@ -1574,6 +1575,7 @@ def add(
     "scale_basis",
     "argument scale_atoms has been deprecated in favor of scale_basis, please update your code.",
     "0.15",
+    "0.16",
 )
 def scale(
     geometry: Geometry,

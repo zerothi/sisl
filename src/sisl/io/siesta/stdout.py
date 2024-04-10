@@ -145,6 +145,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @deprecation(
         "stdoutSileSiesta.completed is deprecated in favor of stdoutSileSiesta.info.completed",
+        "0.15",
         "0.16",
     )
     def completed(self):
@@ -1444,7 +1445,7 @@ class stdoutSileSiesta(SileSiesta):
 
 
 outSileSiesta = deprecation(
-    "outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15"
+    "outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15", "0.16"
 )(stdoutSileSiesta)
 
 add_sile("siesta.out", stdoutSileSiesta, case=False, gzip=True)

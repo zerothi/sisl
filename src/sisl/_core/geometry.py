@@ -172,6 +172,7 @@ class Geometry(
         "lattice",
         "argument sc has been deprecated in favor of lattice, please update your code.",
         "0.15",
+        "0.16",
     )
     def __init__(self, xyz: ArrayLike, atoms=None, lattice=None, names=None):
         # Create the geometry coordinate, be aware that we do not copy!
@@ -1231,6 +1232,7 @@ class Geometry(
         "atol",
         "argument eps has been deprecated in favor of atol",
         "0.15",
+        "0.16",
     )
     def overlap(
         self,

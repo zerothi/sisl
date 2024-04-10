@@ -305,7 +305,7 @@ class RecursiveSI(SemiInfinite):
         return len(self.spgeom0)
 
     @deprecate_argument(
-        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15"
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.16"
     )
     def green(self, E: complex, k=(0, 0, 0), dtype=None, atol: float = 1e-14, **kwargs):
         r"""Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).
@@ -415,7 +415,7 @@ class RecursiveSI(SemiInfinite):
         )
 
     @deprecate_argument(
-        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15"
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.16"
     )
     def self_energy(
         self,
@@ -534,7 +534,7 @@ class RecursiveSI(SemiInfinite):
         )
 
     @deprecate_argument(
-        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15"
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.16"
     )
     def self_energy_lr(
         self,
@@ -907,6 +907,7 @@ class RealSpaceSE(SelfEnergy):
 
     @deprecation(
         "RealSpaceSE.initialize is deprecated in favor of RealSpaceSE.setup, please update code.",
+        "0.15",
         "0.16",
     )
     def initialize(self):
@@ -1643,6 +1644,7 @@ class RealSpaceSI(SelfEnergy):
 
     @deprecation(
         "RealSpaceSI.initialize is deprecated in favor of RealSpaceSI.setup, please update code.",
+        "0.15",
         "0.16",
     )
     def initialize(self):

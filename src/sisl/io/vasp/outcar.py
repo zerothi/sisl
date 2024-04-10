@@ -44,6 +44,7 @@ class outcarSileVASP(SileVASP):
 
     @deprecation(
         "outcarSileVASP.completed is deprecated in favor of outcarSileVASP.info.completed",
+        "0.15",
         "0.16",
     )
     def completed(self):
@@ -52,6 +53,7 @@ class outcarSileVASP(SileVASP):
 
     @deprecation(
         "outcarSileVASP.accuracy_reached is deprecated in favor of outcarSileVASP.info.accuracy_reached",
+        "0.15",
         "0.16",
     )
     def accuracy_reached(self):
@@ -83,11 +85,13 @@ class outcarSileVASP(SileVASP):
         "all",
         None,
         "use read_energy[:]() instead to get all entries",
-        from_version="0.14",
+        "0.14",
+        "0.16",
     )
     @deprecation(
         "WARNING: direct calls to outcarSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.",
-        from_version="0.14",
+        "0.14",
+        "0.16",
     )
     def read_energy(self, units: UnitsVar = "eV") -> PropertyDict:
         """Reads an energy specification block from OUTCAR
@@ -213,7 +217,7 @@ class outcarSileVASP(SileVASP):
 
 
 outSileVASP = deprecation(
-    "outSileVASP has been deprecated in favor of outcarSileVASP.", "0.15"
+    "outSileVASP has been deprecated in favor of outcarSileVASP.", "0.15", "0.16"
 )(outcarSileVASP)
 
 add_sile("OUTCAR", outcarSileVASP, gzip=True)

@@ -95,6 +95,8 @@ class _ncSileTBtrans(SileCDFTBtrans):
         """Same as `geometry`, but deprecated"""
         deprecate(
             f"{self.__class__.__name__}.geom is deprecated, please use '.geometry'."
+            "0.14",
+            "0.16",
         )
         return self.geometry
 

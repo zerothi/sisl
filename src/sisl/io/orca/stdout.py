@@ -60,7 +60,9 @@ class stdoutSileORCA(SileORCA):
 
     @property
     @deprecation(
-        "stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na", "0.16"
+        "stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na",
+        "0.15",
+        "0.16",
     )
     def na(self):
         """Number of atoms"""
@@ -68,7 +70,9 @@ class stdoutSileORCA(SileORCA):
 
     @property
     @deprecation(
-        "stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no", "0.16"
+        "stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no",
+        "0.15",
+        "0.16",
     )
     def no(self):
         """Number of orbitals (basis functions)"""
@@ -370,7 +374,7 @@ class stdoutSileORCA(SileORCA):
 
 
 outputSileORCA = deprecation(
-    "outputSileORCA has been deprecated in favor of stdoutSileOrca.", "0.15"
+    "outputSileORCA has been deprecated in favor of stdoutSileOrca.", "0.15", "0.16"
 )(stdoutSileORCA)
 
 add_sile("output", stdoutSileORCA, gzip=True, case=False)

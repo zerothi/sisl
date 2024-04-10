@@ -117,7 +117,7 @@ class fcSileSiesta(SileSiesta):
         return fc
 
     read_force_constant = deprecation(
-        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+        "read_force_constant is deprecated in favor of read_hessian", "0.15", "0.16"
     )(read_hessian)
 
 

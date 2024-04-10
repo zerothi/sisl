@@ -86,13 +86,15 @@ class xvSileSiesta(SileSiesta):
         "velocity",
         "ret_velocity",
         "use ret_velocity= instead of velocity=",
-        from_version="0.15",
+        "0.15",
+        "0.16",
     )
     @deprecate_argument(
         "species_Z",
         "species_as_Z",
         "use species_as_Z= instead of species_Z=",
-        from_version="0.15",
+        "0.15",
+        "0.16",
     )
     def read_geometry(
         self, ret_velocity: bool = False, species_as_Z: bool = False

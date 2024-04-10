@@ -28,9 +28,7 @@ class kpSileSiesta(SileSiesta):
     """k-points file in 1/Bohr units"""
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def read_data(self, lattice: TLattice = None):
         """Returns K-points from the file (note that these are in reciprocal units)
 
@@ -83,9 +81,7 @@ class kpSileSiesta(SileSiesta):
             self._write(_fmt.format(i + 1, kk[0], kk[1], kk[2], w))
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
         """Returns K-points from the file (note that these are in reciprocal units)
 
@@ -151,9 +147,7 @@ class rkpSileSiesta(kpSileSiesta):
         return k, w
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
         """Returns K-points from the file
 

@@ -206,6 +206,7 @@ def swapaxes(
     "what",
     "argument only has been deprecated in favor of what, please update your code.",
     "0.14",
+    "0.16",
 )
 def rotate(
     lattice: Lattice,

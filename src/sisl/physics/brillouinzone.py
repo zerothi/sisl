@@ -1233,6 +1233,7 @@ class BandStructure(BrillouinZone):
         "names",
         "argument 'name' has been deprecated in favor of 'names', please update your code.",
         "0.15",
+        "0.16",
     )
     def __init__(self, parent, *args, **kwargs):
         # points, divisions, names=None):

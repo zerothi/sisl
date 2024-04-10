@@ -204,6 +204,7 @@ coefficients retained in this object
         "atol",
         "argument eps has been deprecated in favor of atol",
         "0.15",
+        "0.16",
     )
     def degenerate(self, atol: float = 1e-8):
         """Find degenerate coefficients with a specified precision
@@ -1328,6 +1329,7 @@ coefficients assigned to each state
         "atol",
         "argument eps has been deprecated in favor of atol",
         "0.15",
+        "0.16",
     )
     def degenerate(self, atol: float):
         """Find degenerate coefficients with a specified precision

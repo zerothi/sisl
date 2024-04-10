@@ -79,9 +79,7 @@ class pdbSile(Sile):
         return found, l
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice: Lattice):
         """Writes the supercell to the contained file"""
         # Check that we can write to the file

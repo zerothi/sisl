@@ -221,9 +221,7 @@ class winSileWannier90(SileWannier90):
 
         return Geometry(xyz, atoms=s, lattice=lattice)
 
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def read_geometry(self, output: bool = False, *args, **kwargs) -> Geometry:
         """Reads a `Geometry` and creates the Wannier90 cell
 
@@ -270,9 +268,7 @@ class winSileWannier90(SileWannier90):
         self._write(fmt_str.format(*lattice.cell[2]))
         self._write("end unit_cell_cart\n")
 
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice, fmt=".8f", *args, **kwargs):
         """Writes the supercell to the contained file"""
         self._write_lattice(lattice, fmt, *args, **kwargs)

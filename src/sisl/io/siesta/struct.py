@@ -68,7 +68,8 @@ class structSileSiesta(SileSiesta):
         "species_Z",
         "species_as_Z",
         "use species_as_Z= instead of species_Z=",
-        from_version="0.15",
+        "0.15",
+        "0.16",
     )
     def read_geometry(self, species_as_Z: bool = False) -> Geometry:
         """Returns a `Geometry` object from the ``STRUCT`` file

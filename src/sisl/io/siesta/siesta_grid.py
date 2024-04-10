@@ -40,9 +40,7 @@ class gridncSileSiesta(SileCDFSiesta):
 
         return Lattice(cell)
 
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice):
         """Write a supercell to the grid.nc file"""
         sile_raise_write(self)

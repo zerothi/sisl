@@ -62,7 +62,7 @@ class SislInfo(SislWarning):
 
 
 @set_module("sisl")
-def deprecate(message, from_version=None):
+def deprecate(message, from_version=None, remove_version=None):
     """Issue sisl deprecation warnings
 
     Parameters
@@ -70,17 +70,21 @@ def deprecate(message, from_version=None):
     message : str
        the displayed message
     from_version : optional
-       which version to deprecate this method from
+       which version this deprecation was introduced
+    remove_version : optional
+       which version of sisl this will be removed
     """
     if from_version is not None:
         message = f"{message} [>={from_version}]"
+    if remove_version is not None:
+        message = f"{message} [removed in {remove_version}]"
     warnings.warn_explicit(
         message, SislDeprecation, "dep", 0, registry=_sisl_warn_registry
     )
 
 
 @set_module("sisl")
-def deprecate_argument(old, new, message, from_version=None):
+def deprecate_argument(old, new, message, from_version=None, remove_version=None):
     """Decorator for deprecating `old` argument, and replacing it with `new`
 
     The old keyword argument is still retained.
@@ -92,7 +96,11 @@ def deprecate_argument(old, new, message, from_version=None):
         @wraps(func)
         def wrapped(*args, **kwargs):
             if old in kwargs:
-                deprecate(f"{func.__name__} {message}", from_version=from_version)
+                deprecate(
+                    f"{func.__name__} {message}",
+                    from_version=from_version,
+                    remove_version=remove_version,
+                )
                 if new is not None:
                     kwargs[new] = kwargs.pop(old)
             return func(*args, **kwargs)
@@ -103,7 +111,7 @@ def deprecate_argument(old, new, message, from_version=None):
 
 
 @set_module("sisl")
-def deprecation(message, from_version=None):
+def deprecation(message, from_version=None, remove_version=None):
     """Decorator for deprecating a method or a class
 
     Parameters
@@ -111,14 +119,16 @@ def deprecation(message, from_version=None):
     message : str
        message displayed
     from_version : optional
-       which version to deprecate this method from
+       which version this deprecation was introduced
+    remove_version : optional
+       which version of sisl this will be removed
     """
 
     def install_deprecate(cls_or_func):
         if isinstance(cls_or_func, type):
             # we have a class
             class wrapped(cls_or_func):
-                @deprecation(message, from_version)
+                @deprecation(message, from_version, remove_version)
                 def __init__(self, *args, **kwargs):
                     super().__init__(*args, **kwargs)
 
@@ -126,7 +136,7 @@ def deprecation(message, from_version=None):
 
             @wraps(cls_or_func)
             def wrapped(*args, **kwargs):
-                deprecate(message, from_version)
+                deprecate(message, from_version, remove_version)
                 return cls_or_func(*args, **kwargs)
 
         return wrapped

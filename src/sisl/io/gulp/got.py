@@ -53,7 +53,7 @@ class gotSileGULP(SileGULP):
         self.set_key("lattice", key)
 
     set_supercell_key = deprecation(
-        "set_supercell_key is deprecated in favor of set_lattice_key", "0.15"
+        "set_supercell_key is deprecated in favor of set_lattice_key", "0.15", "0.16"
     )(set_lattice_key)
 
     @sile_fh_open()
