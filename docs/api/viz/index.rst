@@ -37,4 +37,6 @@ Utilities to build custom plots
 
     get_figure
     merge_plots
+    subplots
+    animation
     Figure
