@@ -220,13 +220,13 @@ class txtSileORCA(SileORCA):
 
         For a nucleus :math:`k`, the hyperfine interaction is usually
         written in terms of the symmetric :math:`3\times 3` hyperfine
-        tensor :math:`\mathbf A_k` such that
+        tensor :math:`\mathbf A^{(k)}` such that
 
         .. math::
 
-           H_{\mathrm{hfi}} = \mathbf{S} \cdot \mathbf A_k \mathbf{I}_k
+           H_{\mathrm{hfi}} = \mathbf{S} \cdot \mathbf A^{(k)} \mathbf{I}^{(k)}
 
-        where :math:`\mathbf{S}_k` and :math:`\mathbf{I}_k`
+        where :math:`\mathbf{S}` and :math:`\mathbf{I}^{(k)}`
         represent the electron and nuclear spin operators, respectively.
 
         For a study of hyperfine coupling in nanographenes using ORCA
@@ -248,7 +248,7 @@ class txtSileORCA(SileORCA):
         * ``isotope``: the atomic isotope
         * ``spin``: spin multiplicity
         * ``prefactor``: prefactor defined in output
-        * ``tensor``: the A tensor
+        * ``tensor``: the :math:`\mathbf A^{(k)}` tensor
         * ``vectors``: eigenvectors
         * ``eigenvalues``: eigenvalues
         * ``iso``: Fermi contact
