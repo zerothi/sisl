@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import numpy as np
-from itertools import product
 
 from sisl import Geometry, Lattice, constant
 from sisl._internal import set_module
@@ -12,7 +11,7 @@ from sisl.messages import warn
 from sisl.physics.phonon import EigenmodePhonon
 from sisl.unit.siesta import unit_convert
 
-from ..sile import add_sile, sile_fh_open, sile_raise_write
+from ..sile import add_sile
 from .sile import SileSiesta
 
 
@@ -22,14 +21,27 @@ _Bohr2Ang = unit_convert("Bohr", "Ang")
 _J2eV = unit_convert("J", "eV")
 _hc_eV = constant.h * constant.c * _J2eV
 
+
 @set_module("sisl.io.siesta")
 class vectorsSileSiesta(SileSiesta):
-    """Phonon eigenmode file"""
+    """Phonon eigenmode file
+
+    Parameters
+    ----------
+    parent : obj, optional
+        a parent may contain a geometry, and/or a supercell
+    geometry : Geometry, optional
+        a geometry contains a cell with corresponding lattice vectors
+        used to convert k [1/Ang] -> [b]
+    lattice : Lattice, optional
+        a supercell contains the lattice vectors to convert k
+
+    """
 
     def _setup(self, *args, **kwargs):
         """Simple setup that needs to be overwritten
 
-        All _r_next_* methods expect the fortran file unit to be handled
+        All _r_next_* methods expect the file unit to be handled
         and that the position in the file is correct.
         """
         super()._setup(*args, **kwargs)
@@ -37,7 +49,6 @@ class vectorsSileSiesta(SileSiesta):
         # default lattice
         lattice = None
 
-        # In case the instantiation was called with wfsxSileSiesta("path", geometry=geometry)
         parent = kwargs.get("parent")
         if parent is None:
             geometry = None
@@ -112,28 +123,27 @@ class vectorsSileSiesta(SileSiesta):
         # Read the sizes relevant to the file.
         # We also read whether there's only gamma point information or there are multiple points
         if self._state == -1:
-            self._sizes = self._r_sizes()
+            self._sizes = self._r_next_sizes()
             self._state = 0
 
         if close:
             self._close()
 
-    def _r_sizes(self):
-        """ Determine the dimension of the data stored in the vectors file
-        """
+    def _r_next_sizes(self):
+        """Determine the dimension of the data stored in the vectors file"""
         pos = self.fh.tell()
         # Skip past header
-        self.readline() # Empty line
-        self.readline() # K point
-        self.readline() # Eigenmode index
-        self.readline() # Frequency
-        self.readline() # Eigenmode header
-        
+        self.readline()  # Empty line
+        self.readline()  # K point
+        self.readline()  # Eigenmode index
+        self.readline()  # Frequency
+        self.readline()  # Eigenmode header
+
         # Determine number of atoms (i.e. rows per mode)
         natoms = 0
         while True:
             line = self.readline()
-            if line.startswith('Eigenmode'):
+            if line.startswith("Eigenmode"):
                 break
             else:
                 natoms += 1
@@ -143,9 +153,9 @@ class vectorsSileSiesta(SileSiesta):
         nmodes = 1
         while True:
             line = self.readline()
-            if line.startswith('k            ='):
-                break 
-            elif line.startswith('Eigenvector'):
+            if line.startswith("k            ="):
+                break
+            elif line.startswith("Eigenvector"):
                 nmodes += 1
         self._nmodes = nmodes
 
@@ -155,11 +165,6 @@ class vectorsSileSiesta(SileSiesta):
     def _r_next_eigenmode(self):
         """Reads the next phonon eigenmode in the vectors file.
 
-        Parameters
-        ----------
-        ik: integer
-            the (python) k index of the next eigenstate.
-
         Returns
         --------
         EigenmodePhonon:
@@ -167,40 +172,37 @@ class vectorsSileSiesta(SileSiesta):
         """
         # Skip empty line at the head of the file
         self.readline()
-            
+
         k = list(map(float, self.readline().split()[2:]))
         if len(k) == 0:
             raise GeneratorExit
-        # Read first eigenvector index 
-        
+        # Read first eigenvector index
+
         # Determine number of atoms (i.e. rows per mode)
         state = np.empty((self._nmodes, self._natoms, 3), dtype=np.complex128)
         c = np.empty(self._nmodes, dtype=np.float64)
         for imode in range(self._nmodes):
-            line = self.readline()
-            if line.strip() == '':
-                # End of block for current k is indicated by empty line
-                break
-            
+            self.readline()
+
             # Read frequency
-            c[imode] = float(self.readline().split('=')[1].strip()) * _hc_eV
-            
+            c[imode] = float(self.readline().split("=")[1])
+
             # Read real part of eigenmode
             # Skip eigenmode header
             self.readline()
             for iatom in range(self._natoms):
-                line = self.readline().strip().lower()
-                state[imode,iatom,:].real = list(map(float, line.split()))
+                line = self.readline()
+                state[imode, iatom, :].real = list(map(float, line.split()))
 
             # Read imaginary part of eigenmode
             # Skip eigenmode header
             self.readline()
             for iatom in range(self._natoms):
-                line = self.readline().strip().lower()
-                state[imode,iatom,:].imag = list(map(float, line.split()))
+                line = self.readline()
+                state[imode, iatom, :].imag = list(map(float, line.split()))
 
-        info = dict(k=self._convert_k(k))
-        return EigenmodePhonon(state, c, **info)
+        info = dict(k=self._convert_k(k), parent=self.parent)
+        return EigenmodePhonon(state, c * _hc_eV, **info)
 
     def yield_eigenmode(self):
         """Iterates over the states in the vectors file
@@ -222,7 +224,7 @@ class vectorsSileSiesta(SileSiesta):
             # The loop in which the generator was used has been broken.
             pass
 
-    def read_eigenmode(self, k=(0,0,0), ktol=1e-4) -> EigenmodePhonon:
+    def read_eigenmode(self, k=(0, 0, 0), ktol=1e-4) -> EigenmodePhonon:
         """Reads a specific eigenstate from the file.
 
         This method iterates over the modes until it finds a match. Do not call
