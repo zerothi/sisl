@@ -74,16 +74,16 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \mathbf D(k) = \mathbf D_{i_\alpha j_\beta} e^{i q R}
+           \mathbf D(\mathbf k) = \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
 
         Another possible gauge is the atomic distance which can be written as
 
         .. math::
-           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}
+           \mathbf D(\mathbf k) = \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the atoms.
+        where :math:`\mathbf r` is the distance between the atoms.
 
         Parameters
         ----------
@@ -111,7 +111,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Returns
         -------
         matrix : numpy.ndarray or scipy.sparse.*_matrix
-            the dynamical matrix at :math:`k`. The returned object depends on `format`.
+            the dynamical matrix at :math:`\mathbf k`. The returned object depends on `format`.
         """
         pass
 
@@ -134,17 +134,17 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k \mathbf D_\gamma(k) = i R_\gamma \mathbf D_{i_\alpha j_\beta} e^{i q R}
+           \nabla_{\mathbf k} \mathbf D_\gamma(\mathbf k) = i \mathbf R_\gamma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are atomic indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are atomic indices.
         And :math:`\gamma` is one of the Cartesian directions.
 
         Another possible gauge is the atomic distance which can be written as
 
         .. math::
-          \nabla_k \mathbf D_\gamma(k) = i r_\gamma \mathbf D_{i_\alpha j_\beta} e^{i k r}
+          \nabla_{\mathbf k} \mathbf D_\gamma(\mathbf k) = i \mathbf r_\gamma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the atoms.
+        where :math:`\mathbf r` is the distance between the atoms.
 
         Parameters
         ----------
@@ -170,7 +170,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Returns
         -------
         tuple
-            for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k_\gamma` is returned.
+            for each of the Cartesian directions a :math:`\partial \mathbf D(\mathbf k)/\partial \mathbf k_\gamma` is returned.
         """
         pass
 
@@ -193,17 +193,17 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - R_\gamma R_\sigma \mathbf D_{i_\alpha j_\beta} e^{i q R}
+           \nabla_{\mathbf k^2} \mathbf D_{\gamma\sigma}(\mathbf k) = - \mathbf R_\gamma \mathbf R_\sigma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
         And :math:`\gamma`, :math:`\sigma` are one of the Cartesian directions.
 
         Another possible gauge is the atomic distance which can be written as
 
         .. math::
-           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - r_\gamma r_\sigma \mathbf D_{i_\alpha j_\beta} e^{i k r}
+           \nabla_{\mathbf k^2} \mathbf D_{\gamma\sigma}(\mathbf k) = - \mathbf r_\gamma \mathbf r_\sigma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is atomic distance.
+        where :math:`\mathbf r` is atomic distance.
 
         Parameters
         ----------
