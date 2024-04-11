@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 
+import sisl._array as _a
 from sisl import Geometry, Lattice, constant
 from sisl._internal import set_module
 from sisl.messages import warn
@@ -14,12 +15,11 @@ from sisl.unit.siesta import unit_convert
 from ..sile import add_sile
 from .sile import SileSiesta
 
-
 __all__ = ["vectorsSileSiesta"]
 
 _Bohr2Ang = unit_convert("Bohr", "Ang")
 _J2eV = unit_convert("J", "eV")
-_hc_eV = constant.h * constant.c * _J2eV
+_cm1_eV = constant.h * constant.c * _J2eV
 
 
 @set_module("sisl.io.siesta")
@@ -29,12 +29,10 @@ class vectorsSileSiesta(SileSiesta):
     Parameters
     ----------
     parent : obj, optional
-        a parent may contain a geometry, and/or a supercell
+        a parent may contain a DynamicalMatrix, or Geometry
     geometry : Geometry, optional
         a geometry contains a cell with corresponding lattice vectors
-        used to convert k [1/Ang] -> [b]
-    lattice : Lattice, optional
-        a supercell contains the lattice vectors to convert k
+        used to convert k [1/Ang] -> [b], and the atomic masses
 
     """
 
@@ -83,7 +81,7 @@ class vectorsSileSiesta(SileSiesta):
                 if not np.allclose(k, 0.0):
                     warn(
                         f"{self.__class__.__name__} cannot convert stored k-points from 1/Ang to reduced coordinates. "
-                        "Please ensure parent=Hamiltonian, geometry=Geometry, or lattice=Lattice to ensure reduced k."
+                        "Please ensure parent=DynamicalMatrix, geometry=Geometry, or lattice=Lattice to ensure reduced k."
                     )
                 return k / _Bohr2Ang
 
@@ -173,13 +171,13 @@ class vectorsSileSiesta(SileSiesta):
         # Skip empty line at the head of the file
         self.readline()
 
-        k = list(map(float, self.readline().split()[2:]))
+        k = _a.asarrayd(list(map(float, self.readline().split()[2:])))
         if len(k) == 0:
             raise GeneratorExit
         # Read first eigenvector index
 
         # Determine number of atoms (i.e. rows per mode)
-        state = np.empty((self._nmodes, self._natoms, 3), dtype=np.complex128)
+        state = np.empty((self._nmodes, 3, self._natoms), dtype=np.complex128)
         c = np.empty(self._nmodes, dtype=np.float64)
         for imode in range(self._nmodes):
             self.readline()
@@ -192,17 +190,17 @@ class vectorsSileSiesta(SileSiesta):
             self.readline()
             for iatom in range(self._natoms):
                 line = self.readline()
-                state[imode, iatom, :].real = list(map(float, line.split()))
+                state[imode, :, iatom].real = list(map(float, line.split()))
 
             # Read imaginary part of eigenmode
             # Skip eigenmode header
             self.readline()
             for iatom in range(self._natoms):
                 line = self.readline()
-                state[imode, iatom, :].imag = list(map(float, line.split()))
+                state[imode, :, iatom].imag = list(map(float, line.split()))
 
-        info = dict(k=self._convert_k(k), parent=self.parent)
-        return EigenmodePhonon(state, c * _hc_eV, **info)
+        info = dict(k=self._convert_k(k), parent=self._parent, gauge="r")
+        return EigenmodePhonon(state.reshape(self._nmodes, -1), c * _cm1_eV, **info)
 
     def yield_eigenmode(self):
         """Iterates over the states in the vectors file
@@ -215,41 +213,41 @@ class vectorsSileSiesta(SileSiesta):
         self._setup_parsing(close=False)
 
         try:
-            # Iterate over all eigenstates in the WFSX file, yielding control to the caller at
+            # Iterate over all eigenmodes in the WFSX file, yielding control to the caller at
             # each iteration.
             while True:
                 yield self._r_next_eigenmode()
-            # We ran out of eigenstates
+            # We ran out of eigenmodes
         except GeneratorExit:
             # The loop in which the generator was used has been broken.
             pass
 
-    def read_eigenmode(self, k=(0, 0, 0), ktol=1e-4) -> EigenmodePhonon:
-        """Reads a specific eigenstate from the file.
+    def read_eigenmode(self, k=(0, 0, 0), ktol: float = 1e-4) -> EigenmodePhonon:
+        """Reads a specific eigenmode from the file.
 
         This method iterates over the modes until it finds a match. Do not call
-        this method repeatedly. If you want to loop eigenstates, use `yield_eigenstate`.
+        this method repeatedly. If you want to loop eigenmodes, use `yield_eigenmode`.
 
         Parameters
         ----------
         k: array-like of shape (3,), optional
             The k point of the state you want to find.
-        ktol: float, optional
+        ktol:
             The threshold value for considering two k-points the same (i.e. to match
             the query k point with the states k point).
 
         See Also
         --------
-        yield_eigenstate
+        yield_eigenmode
 
         Returns
         -------
-        EigenstateElectron or None:
+        eigenmodeElectron or None:
             If found, the state that was queried.
             If not found, returns `None`. NOTE this may change to an exception in the future
         """
-        # Iterate over all eigenstates in the file
-        for state in self.yield_eigenstate():
+        # Iterate over all eigenmodes in the file
+        for state in self.yield_eigenmode():
             if np.allclose(state.info["k"], k, atol=ktol):
                 # This is the state that the user requested
                 return state
