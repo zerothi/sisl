@@ -1394,6 +1394,7 @@ class fdfSileSiesta(SileSiesta):
                             ia * 3 : (ia + 1) * 3, joff + ja * 3 : joff + (ja + 1) * 3
                         ] += FC[ia, :, x, y, z, ja, :]
 
+        # The mass-scaling wass added to the FC components
         D = D.tocsr()
         # Remove all zeros
         D.eliminate_zeros()

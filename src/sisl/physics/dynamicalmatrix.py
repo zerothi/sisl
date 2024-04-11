@@ -25,7 +25,18 @@ def _correct_hw(hw):
 
 @set_module("sisl.physics")
 class DynamicalMatrix(SparseOrbitalBZ):
-    """Dynamical matrix of a geometry"""
+    r"""Dynamical matrix of a geometry
+
+    The dynamical matrix is defined as the mass-reduced quantity.
+    Hence the quantities stored in this matrix are expected to contain
+    a factor:
+
+    .. math::
+        \frac1{\sqrt{M_IM_J}}
+
+    for the elements that contains couplings between atoms :math:`I`
+    and :math:`J`.
+    """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
@@ -197,12 +208,16 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         pass
 
-    def apply_newton(self):
+    def apply_newton(self) -> None:
         """Sometimes the dynamical matrix does not obey Newtons 3rd law.
 
         We correct the dynamical matrix by imposing zero force.
 
         Correcting for Newton forces the matrix to be finalized.
+
+        Notes
+        -----
+        This is an in-place operation.
         """
         # Create UC dynamical matrix
         dyn_sc = self.tocsr(0)
@@ -250,7 +265,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         del d_uc
 
-    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs) -> EigenvaluePhonon:
         """Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
 
         Parameters
@@ -281,10 +296,12 @@ class DynamicalMatrix(SparseOrbitalBZ):
         info = {"k": k, "gauge": gauge}
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
-    def eigenmode(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenmode(self, k=(0, 0, 0), gauge="R", **kwargs) -> EigenmodePhonon:
         r"""Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
 
-        Note that the phonon modes are _not_ mass-scaled.
+        Notes
+        -----
+        Note that the phonon modes are *not* mass-scaled.
 
         Parameters
         ----------
@@ -316,7 +333,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         return EigenmodePhonon(v.T, _correct_hw(hw), self, **info)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> DynamicalMatrix:
         """Reads dynamical matrix from `Sile` using `read_dynamical_matrix`.
 
         Parameters
