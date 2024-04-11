@@ -144,7 +144,6 @@ viz = [
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "plotly",
     "matplotlib",
     "ase",
@@ -155,7 +154,6 @@ viz-plotly = [
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "plotly",
 ]
 
@@ -164,7 +162,6 @@ viz-matplotlib = [
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "matplotlib",
 ]
 
@@ -180,7 +177,6 @@ viz-ase = [
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "ase",
 ]
 
@@ -198,6 +194,28 @@ test = [
     "matplotlib",
     "plotly",
     "ase"
+]
+
+docs = [
+    "nbsphinx",
+    "sphinx-rtd-theme",
+    "sphinx-design",
+    "sphinx-gallery",
+    "sphinx-copybutton",
+    "sphinx-togglebutton",
+    "sphinx-inline-tabs",
+    "sphinxcontrib-bibtex",
+    "importlib-metadata",
+    "ipykernel",
+    "ipywidgets",
+    "jupyterlab-widgets",
+    "kaleido",
+    "pytz",
+    # Visualizing nodes
+    "networkx",
+    "pyvis",
+    "pybtex",
+    "pandoc",
 ]
 
 

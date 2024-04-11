@@ -86,6 +86,6 @@ will be used to generate the input file.
 
 
 .. autosummary::
-   :toctree: generated/
+   :toctree: ../generated/
 
    AtomInput

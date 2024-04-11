@@ -5,15 +5,26 @@ submodules:
     - files
 
 build:
-  os: "ubuntu-22.04"
+  os: "ubuntu-lts-latest"
+  apt_packages:
+    - cmake
+    - build-essential
+    - gcc
+    - gfortran
   tools:
-    python: "mambaforge-22.9"
+    python: "latest"
 
 sphinx:
   configuration: docs/conf.py
   fail_on_warning: false
 
-conda:
-  environment: ci/doc.yml
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - viz
+        - test
+        - docs
 
 formats: []
