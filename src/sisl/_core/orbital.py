@@ -17,10 +17,10 @@ import scipy
 from numpy import cos, sin, sqrt, square, take
 from scipy.special import eval_genlaguerre, factorial, lpmv
 
-if scipy.__version__ < "0.16":
-    from scipy.integrate import cumtrapz as cumulative_trapezoid
-else:
+try:
     from scipy.integrate import cumulative_trapezoid
+except ImportError:
+    from scipy.integrate import cumtrapz as cumulative_trapezoid
 
 from scipy.interpolate import UnivariateSpline
 
