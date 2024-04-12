@@ -115,10 +115,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     are in fortran indexing (1-based), everything is returned as Python indexing (0-based)
     when using Python scripts.
 
-    In the following equations we will use this notation:
-
-    * :math:`\alpha` and :math:`\beta` are atomic indices
-    * :math:`\nu` and :math:`\mu` are orbital indices
+    The notation described in `math_convention`_ will be used.
 
     A word on DOS normalization:
 
@@ -604,7 +601,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         .. math::
 
-           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}_{\nu\nu}(E)
+           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{i\in \{I\}} \Im \mathbf{G}_{ii}(E)
 
         The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
         arguments.
@@ -655,7 +652,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         Extract the spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
 
         .. math::
-           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} [\mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger]_{\nu\nu}(E)
+           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{i\in\{I\}} [\mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger]_{ii}(E)
 
         The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
         arguments.
@@ -978,16 +975,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Note that h in eV units will cancel the units in the dE integration
         noise_const = 2 * constant.q**2 / constant.h("eV s")
 
+        def noise(T, eq, neq):
+            return (T.sum(-1) * eq).sum(-1) + ((T * (1 - T)).sum(-1) * neq).sum(-1)
+
         # Determine the k-average
         if isinstance(kavg, bool):
             if not kavg:
                 # The user wants it k-resolved
                 T = self.transmission_eig(elec_from, elec_to, kavg=False)
                 self._check_Teig("noise_power", T)
-                return noise_const * (
-                    (T.sum(-1) * eq_fac).sum(-1)
-                    + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
-                )
+                return noise_const * noise(T, eq_fac, neq_fac)
 
             # We need to manually weigh the k-points
             wkpt = self.wkpt
@@ -995,23 +992,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             T = self.transmission_eig(elec_from, elec_to, kavg=0)
             self._check_Teig("noise_power", T)
             # Separate the calculation into two terms (see Ya.M. Blanter, M. Buttiker, Physics Reports 336 2000)
-            np = (
-                (T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
-            ) * wkpt[0]
+            np = noise(T, eq_fac, neq_fac) * wkpt[0]
             for ik in range(1, self.nkpt):
                 T = self.transmission_eig(elec_from, elec_to, kavg=ik)
                 self._check_Teig("noise_power", T)
-                np += (
-                    (T.sum(-1) * eq_fac).sum(-1)
-                    + ((T * (1 - T)).sum(-1) * neq_fac).sum(-1)
-                ) * wkpt[ik]
+                np += noise(T, eq_fac, neq_fac) * wkpt[ik]
 
         else:
             T = self.transmission_eig(elec_from, elec_to, kavg=kavg)
             self._check_Teig("noise_power", T)
-            np = (T.sum(-1) * eq_fac).sum(-1) + ((T * (1 - T)).sum(-1) * neq_fac).sum(
-                -1
-            )
+            np = noise(T, eq_fac, neq_fac)
 
         # Do final conversion
         return noise_const * np
@@ -1386,17 +1376,17 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         any physical quantity that the sparse matrix may represent but is merely a number that provides an
         idea of *how much* this atom is governing the data in the matrix.
 
-        The atomic contributionmay have two meanings based on these two equations
+        The atomic contribution may have two meanings based on these two equations
 
         .. math::
-            A_\alpha^{|a|} &=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} A_{\nu\mu} \Big|
+            \mathbf a_I^{|a|} &=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf A_{ij} \Big|
             \\
-            A_\alpha^{|o|} &=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| A_{\nu\mu} \big|
+            \mathbf a_I^{|o|} &=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| A_{ij} \big|
 
         If the *activity* is requested (``activity=True``)
-        :math:`A_\alpha^{\mathcal A} = \sqrt{ A_\alpha^{|a|} A_\alpha^{|o|} }` is returned.
+        :math:`\mathbf a_I^{\mathcal A} = \sqrt{\mathbf a_I^{|a|} \mathbf a_I^{|o|} }` is returned.
 
-        If ``activity=False`` :math:`A_\alpha^{|a|}` is returned.
+        If ``activity=False`` :math:`\mathbf a_I^{|a|}` is returned.
 
         For geometries with all atoms only having 1-orbital, they are equivalent.
 
@@ -1464,12 +1454,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The orbital transmissions are calculated as described in the TBtrans manual:
 
         .. math::
-            T_{\mu \nu}(E) = i [
-            (\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)
+            T_{ij}(E) = i [
+            (\mathbf H_{ji} - E\mathbf S_{ji}) \mathbf A_{ij}(E)
             -
-            (\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],
+            (\mathbf H_{ij} - E\mathbf S_{ij}) \mathbf A_{ji}(E)],
 
-        It is easy to show that the above matrix obeys :math:`T_{\mu\nu}=-T_{\nu\mu}`.
+        It is easy to show that the above matrix obeys :math:`T_{ij}=-T_{ji}`.
 
         For inexperienced users it is adviced to try out all three values of ``what`` to ensure
         the correct physics is obtained.
@@ -1569,9 +1559,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         represents how the current is flowing at an applied bias from a given electrode.
 
         .. math::
-            J_{\mu\nu} = \frac eh\int_{\mu_1}^{\mu_2} \!\mathrm dE\, T_{\mu\nu} [n_F(\mu_2, k_B T_2) - n_F(\mu_1, k_B T_1)]
+            J_{ij} = \frac eh\int_{\mu_1}^{\mu_2} \!\mathrm dE\, T_{ij} [n_F(\mu_2, k_B T_2) - n_F(\mu_1, k_B T_1)]
 
-        with :math:`T_i` being the electronic temperature of the respective reservoir.
+        with :math:`T_{\langle\rangle}` being the electronic temperature of the respective reservoir.
 
         Parameters
         ----------
@@ -1678,7 +1668,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The bond transmissions are a sum over all orbital transmissions
 
         .. math::
-           T_{\alpha\beta}(E) = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} T_{\nu\mu}(E)
+           T_{IJ}(E) = \sum_{i\in I}\sum_{j\in J} T_{ij}(E)
 
         Parameters
         ----------
@@ -1756,7 +1746,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The bond currents are a sum over all orbital currents:
 
         .. math::
-           J_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} J_{\nu\mu}
+           J_{IJ} = \sum_{i\in I}\sum_{j\in J} J_{ij}
 
         Parameters
         ----------
@@ -1833,10 +1823,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The vector transmission is defined as:
 
         .. math::
-              \mathbf T_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot T_{\alpha\beta}
+              \mathbf T_I = \sum_J \frac{\mathbf r^{(J)} - \mathbf r^{(I)}}{|\mathbf r^{(J)} - \mathbf r^{(I)}|} \cdot T_{IJ}
 
-        Where :math:`T_{\alpha\beta}` is the bond transmission between atom :math:`\alpha` and :math:`\beta` and
-        :math:`r_\alpha` are the atomic coordinates.
+        Where :math:`T_{IJ}` is the bond transmission between atom :math:`I` and :math:`J` and
+        :math:`\mathbf r^{(\langle\rangle)}` are the atomic coordinates.
 
         Parameters
         ----------
@@ -1913,10 +1903,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The vector current is defined as:
 
         .. math::
-              \mathbf J_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot J_{\alpha\beta}
+              \mathbf J_I = \sum_J \frac{\mathbf r^{(J)} - \mathbf r^{(I)}}{|\mathbf r^{(J)} - \mathbf r^{(I)}|} \cdot J_{IJ}
 
-        Where :math:`J_{\alpha\beta}` is the bond current between atom :math:`\alpha` and :math:`\beta` and
-        :math:`r_\alpha` are the atomic coordinates.
+        Where :math:`J_{IJ}` is the bond current between atom :math:`I` and :math:`J` and
+        :math:`\mathbf r^{(\langle\rangle)}` are the atomic coordinates.
 
         Parameters
         ----------
@@ -1991,14 +1981,16 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The atomic transmission may have two meanings based on these two equations
 
         .. math::
-            T_\alpha^{|a|} &=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} T_{\nu\mu} \Big|
+            T_I^{|a|} &=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf T_{ij} \Big|
             \\
-            T_\alpha^{|o|} &=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| T_{\nu\mu} \big|
+            T_I^{|o|} &=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| T_{ij} \big|
+        .. math::
 
+        If the *activity* is requested (``activity=True``)
+        :math:`T_I^{\mathcal A} = \sqrt{T_I^{|a|} T_I^{|o|} }` is returned.
         If the *activity* current is requested (``activity=True``)
-        :math:`T_\alpha^{\mathcal A} = \sqrt{ T_\alpha^{|a|} T_\alpha^{|o|} }` is returned.
 
-        If ``activity=False`` :math:`T_\alpha^{|a|}` is returned.
+        If ``activity=False`` :math:`T_I^{|a|}` is returned.
 
         For geometries with all atoms only having 1-orbital, they are equivalent.
 
@@ -2063,14 +2055,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The atomic current may have two meanings based on these two equations
 
         .. math::
-            J_\alpha^{|a|} &=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} J_{\nu\mu} \Big|
+            \mathbf j_I^{|a|} &=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf J_{ij} \Big|
             \\
-            J_\alpha^{|o|} &=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| J_{\nu\mu} \big|
+            \mathbf j_I^{|o|} &=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| J_{ij} \big|
+        .. math::
 
-        If the *activity* current is requested (``activity=True``)
-        :math:`J_\alpha^{\mathcal A} = \sqrt{ J_\alpha^{|a|} J_\alpha^{|o|} }` is returned.
+        If the *activity* is requested (``activity=True``)
+        :math:`\mathbf j_I^{\mathcal A} = \sqrt{\mathbf j_I^{|a|} \mathbf j_I^{|o|} }` is returned.
 
-        If ``activity=False`` :math:`J_\alpha^{|a|}` is returned.
+        If ``activity=False`` :math:`\mathbf j_I^{|a|}` is returned.
 
         For geometries with all atoms only having 1-orbital, they are equivalent.
 
@@ -2140,7 +2133,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         routine. Basically the LDOS in real-space may be calculated as
 
         .. math::
-            \rho_{\mathbf G}(E, \mathbf r) = -\frac{1}{\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Im[\mathbf G_{\nu\mu}(E)]
+            \boldsymbol\rho_{\mathbf G}(E, \mathbf r) = -\frac{1}{\pi}\sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \Im[\mathbf G_{ij}(E)]
 
         where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
         ensures the broadening of the density, i.e. it should not be necessary to perform energy
@@ -2194,7 +2187,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         routine. Basically the LDOS in real-space may be calculated as
 
         .. math::
-            \rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, \nu\mu}(E)]
+            \boldsymbol\rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, ij}(E)]
 
         where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
         ensures the broadening of the density, i.e. it should not be necessary to perform energy
@@ -2258,21 +2251,21 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COOP analysis can be written as:
 
         .. math::
-            \mathrm{COOP}^{\mathbf G}_{\nu\mu} = \frac{-1}{2\pi}
-              \Im\big[(\mathbf G - \mathbf G^\dagger)_{\nu\mu} \mathbf S_{\mu\nu} \big]
+            \mathrm{COOP}^{\mathbf G}_{ij} = \frac{-1}{2\pi}
+              \Im\big[(\mathbf G - \mathbf G^\dagger)_{ij} \mathbf S_{ji} \big]
 
         The sum of the COOP DOS is equal to the DOS:
 
         .. math::
-            \mathrm{DOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf G}_{\nu\mu}
+            \mathrm{DOS}_{i} = \sum_j \mathrm{COOP}^{\mathbf G}_{ij}
 
         One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),
         7751-7761 for details. The DBCOOP is given by:
 
         .. math::
-            D &= \sum_\nu \mathrm{COOP}^{\mathbf G}_{\nu\nu}
+            D &= \sum_i \mathrm{COOP}^{\mathbf G}_{ii}
             \\
-            \mathrm{DBCOOP}^{\mathbf G}_{\nu\mu} &= \mathrm{COOP}^{\mathbf G}_{\nu\mu} / D
+            \mathrm{DBCOOP}^{\mathbf G}_{ij} &= \mathrm{COOP}^{\mathbf G}_{ij} / D
 
         The BCOOP can be looked up in the reference above.
 
@@ -2326,20 +2319,20 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COOP analysis can be written as:
 
         .. math::
-            \mathrm{COOP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu} \mathbf S_{\mu\nu} \big]
+            \mathrm{COOP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij} \mathbf S_{ji} \big]
 
         The sum of the COOP DOS is equal to the DOS:
 
         .. math::
-            \mathrm{ADOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}
+            \mathrm{ADOS}_{i} = \sum_j \mathrm{COOP}^{\mathbf A}_{ij}
 
         One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),
         7751-7761 for details. The DBCOOP is given by:
 
         .. math::
-            D &= \sum_\nu \mathrm{COOP}^{\mathbf A}_{\nu\nu}
+            D &= \sum_i \mathrm{COOP}^{\mathbf A}_{ii}
             \\
-            \mathrm{DBCOOP}^{\mathbf A}_{\nu\mu} &= \mathrm{COOP}^{\mathbf A}_{\nu\mu} / D
+            \mathrm{DBCOOP}^{\mathbf A}_{ij} &= \mathrm{COOP}^{\mathbf A}_{ij} / D
 
         The BCOOP can be looked up in the reference above.
 
@@ -2388,7 +2381,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The atomic COOP are a sum over all orbital COOP:
 
         .. math::
-            \mathrm{COOP}_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} \mathrm{COOP}_{\nu\mu}
+            \mathrm{COOP}_{IJ} = \sum_{i\in I}\sum_{j\in J} \mathrm{COOP}_{ij}
 
         Parameters
         ----------
@@ -2432,7 +2425,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The atomic COOP are a sum over all orbital COOP:
 
         .. math::
-            \mathrm{COOP}_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} \mathrm{COOP}_{\nu\mu}
+            \mathrm{COOP}_{IJ} = \sum_{i\in I}\sum_{j\in J} \mathrm{COOP}_{ij}
 
         This is a shorthand for calling `orbital_ACOOP` and `sparse_orbital_to_atom` in order.
 
@@ -2484,8 +2477,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COHP analysis can be written as:
 
         .. math::
-            \mathrm{COHP}^{\mathbf G}_{\nu\mu} = \frac{-1}{2\pi}
-              \Im\big[(\mathbf G - \mathbf G^\dagger)_{\nu\mu} \mathbf H_{\mu\nu} \big]
+            \mathrm{COHP}^{\mathbf G}_{ij} = \frac{-1}{2\pi}
+              \Im\big[(\mathbf G - \mathbf G^\dagger)_{ij} \mathbf H_{ji} \big]
 
         Parameters
         ----------
@@ -2534,8 +2527,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The COHP analysis can be written as:
 
         .. math::
-            \mathrm{COHP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu}
-                \mathbf H_{\nu\mu} \big]
+            \mathrm{COHP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij}
+                \mathbf H_{ij} \big]
 
         Parameters
         ----------
@@ -2574,7 +2567,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         The atomic COHP are a sum over all orbital COHP:
 
         .. math::
-            \mathrm{COHP}_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} \mathrm{COHP}_{\nu\mu}
+            \mathrm{COHP}_{IJ} = \sum_{i\in I}\sum_{j\in J} \mathrm{COHP}_{ij}
 
         Parameters
         ----------

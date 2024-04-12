@@ -32,9 +32,9 @@ Certain classes aid in the usage of the above methods by implementing them
 using automatic arguments.
 
 For instance, the PDOS method requires the overlap matrix in non-orthogonal
-basis sets at the :math:`k`-point corresponding to the eigenstates. Hence, the
+basis sets at the :math:`\mathbf k`-point corresponding to the eigenstates. Hence, the
 argument ``S`` must be :math:`\mathbf S(\mathbf k)`. The `EigenstateElectron` class
-automatically passes the correct ``S`` because it knows the states :math:`k`-point.
+automatically passes the correct ``S`` because it knows the states :math:`\mathbf k`-point.
 
    CoefficientElectron
    StateElectron
@@ -143,7 +143,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
     The :math:`\mathrm{PDOS}(E)` is calculated as:
 
     .. math::
-       \mathrm{PDOS}_\nu(E) = \sum_i \psi^*_{i,\nu} [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_i(E) = \sum_\alpha \psi^*_{\alpha,i} [\mathbf S | \psi_{\alpha}\rangle]_i D(E-\epsilon_\alpha)
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
     used may be a user-defined function. Alternatively a distribution function may
@@ -153,7 +153,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
     Note that `DOS` is the sum of the orbital projected DOS:
 
     .. math::
-       \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS}_\nu(E)
+       \mathrm{DOS}(E) = \sum_i\mathrm{PDOS}_i(E)
 
     For non-colinear calculations (this includes spin-orbit calculations) the PDOS is additionally
     separated into 4 components (in this order):
@@ -167,15 +167,15 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
 
     .. math::
 
-       \mathrm{PDOS}_\nu^\sigma(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_i^\sigma(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
        \\
-       \mathrm{PDOS}_\nu^x(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_x [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_i^x(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_x [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
        \\
-       \mathrm{PDOS}_\nu^y(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_y [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_i^y(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_y [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
        \\
-       \mathrm{PDOS}_\nu^z(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_i^z(E) &= \sum_\alpha\psi^*_{\alpha,i} \boldsymbol\sigma_z [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
 
-    Note that the total PDOS may be calculated using :math:`\boldsymbol\sigma_i\boldsymbol\sigma_i` where :math:`i` may be either of :math:`x`,
+    Note that the total PDOS may be calculated using :math:`\boldsymbol\sigma_\gamma\boldsymbol\sigma_\gamma` where :math:`\gamma` may be either of :math:`x`,
     :math:`y` or :math:`z`.
 
     Parameters
@@ -294,7 +294,7 @@ def COP(E, eig, state, M, distribution="gaussian", tol=1e-10):
     The :math:`\mathrm{COP}(E)` is calculated as:
 
     .. math::
-       \mathrm{COP}_{\nu,\mu}(E) = \sum_i \psi^*_{i,\nu}\psi_{i,\mu} \mathbf M e^{i\mathbf k\cdot \mathbf R} D(E-\epsilon_i)
+       \mathrm{COP}_{i,j}(E) = \sum_\alpha \psi^*_{\alpha,i}\psi_{\alpha,j} \mathbf M e^{i\mathbf k\cdot \mathbf R} D(E-\epsilon_\alpha)
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
     used may be a user-defined function. Alternatively a distribution function may
@@ -439,11 +439,11 @@ def spin_moment(state, S=None, project=False):
 
     .. math::
 
-       \mathbf{S}_i^x &= \langle \psi_i | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
+       \mathbf{S}_\alpha^x &= \langle \psi_\alpha | \boldsymbol\sigma_x \mathbf S | \psi_\alpha \rangle
        \\
-       \mathbf{S}_i^y &= \langle \psi_i | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
+       \mathbf{S}_\alpha^y &= \langle \psi_\alpha | \boldsymbol\sigma_y \mathbf S | \psi_\alpha \rangle
        \\
-       \mathbf{S}_i^z &= \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
+       \mathbf{S}_\alpha^z &= \langle \psi_\alpha | \boldsymbol\sigma_z \mathbf S | \psi_\alpha \rangle
 
     If `project` is true, the above will be the orbitally resolved quantities.
 
@@ -453,7 +453,7 @@ def spin_moment(state, S=None, project=False):
        vectors describing the electronic states, 2nd dimension contains the states
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
-       matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
+       matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors
        has been evaluated at.
     project: bool, optional
        whether the spin-moments will be orbitally resolved or not
@@ -551,7 +551,7 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
        vectors describing the electronic states of spin-channel :math:`\beta`, 2nd dimension contains the states
     S : array_like, optional
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
-       matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
+       matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors
        have been evaluated at.
     sum:
         whether the spin-contamination should be summed for all states (a single number returned).
@@ -720,7 +720,7 @@ def berry_curvature(
        Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
        list of the Hamiltonian derivative along the 3 Cartesian directions.
     dSk : list of array_like, optional
-       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis.
+       :math:`\delta \mathbf S_{\mathbf k}` matrix required for non-orthogonal basis.
        Same derivative as `dHk`.
        NOTE: Using non-orthogonal basis sets are not tested.
     degenerate : list of array_like, optional
@@ -904,11 +904,11 @@ def berry_phase(
     The Berry phase for a single Bloch state is calculated using the discretized formula:
 
     .. math::
-       \mathbf S = \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
+       \mathbf S = \prod_\alpha^{N-1} \langle \psi_{\mathbf k_\alpha} | \psi_{\mathbf k_{\alpha+1}} \rangle
        \\
        \phi = - \Im\ln \mathrm{det} \mathbf S
 
-    where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
+    where :math:`\langle \psi_{\mathbf k_\alpha} | \psi_{\mathbf k_{\alpha+1}} \rangle` may be exchanged with an overlap matrix
     of the investigated bands. I.e. :math:`\psi` is a manifold set of wavefunctions.
     The overlap matrix :math:`\mathbf S` is also known as the global unitary
     rotation matrix corresponding to the maximally localized Wannier centers.
@@ -916,7 +916,7 @@ def berry_phase(
     If `closed` is true the overlap matrix will also include the circular inner product:
 
     .. math::
-       \mathbf S^{\mathcal C} = \mathbf S \langle \psi_{k_N} | \psi_{k_1} \rangle
+       \mathbf S^{\mathcal C} = \mathbf S \langle \psi_{\mathbf k_N} | \psi_{\mathbf k_1} \rangle
 
 
     Parameters
@@ -1003,7 +1003,7 @@ def berry_phase(
             pass
 
     else:
-        gauge = eigenstate_kwargs.get("gauge", "R")
+        gauge = eigenstate_kwargs.get("gauge", "cell")
 
         def _lowdin(state):
             """change state to the lowdin state, assuming everything is in R gauge
@@ -1114,23 +1114,23 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     The wavefunctions are calculated in real-space via:
 
     .. math::
-       \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(i\mathbf k \mathbf R)
+       \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(i\mathbf k\cdot\mathbf R)
 
     While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
     spinor component (`spinor`)
 
     .. math::
-       \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k \mathbf R)
+       \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k\cdot \mathbf R)
 
     where ``spinor in [0, 1]`` determines :math:`\alpha` or :math:`\beta`, respectively.
 
     Notes
     -----
-    Currently this method only works for `v` being coefficients of the gauge="R" method. In case
+    Currently this method only works for `v` being coefficients of the gauge="cell" method. In case
     you are passing a `v` with the incorrect gauge you will find a phase-shift according to:
 
     .. math::
-        \tilde v_j = e^{i\mathbf k\mathbf r_j} v_j
+        \tilde v_j = e^{i\mathbf k\cdot\mathbf r_j} v_j
 
     where :math:`j` is the orbital index and :math:`\mathbf r_j` is the orbital position.
 
@@ -1511,8 +1511,8 @@ class _electron_State:
     def Sk(self, format=None, spin=None):
         r"""Retrieve the overlap matrix corresponding to the originating parent structure.
 
-        When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(k)` for the
-        :math:`k`-point these eigenstates originate from
+        When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(\mathbf k)` for the
+        :math:`\mathbf k`-point these eigenstates originate from
 
         Parameters
         ----------

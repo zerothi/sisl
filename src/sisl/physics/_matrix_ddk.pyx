@@ -22,6 +22,7 @@ __all__ = ["matrix_ddk", "matrix_ddk_nc", "matrix_ddk_nc_diag", "matrix_ddk_so"]
 
 def _phase_ddk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype):
     # dtype *must* be passed through phase_dtype
+    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
 
     # This is the differentiated matrix with respect to k
     # See _phase.pyx, we are using exp(i k.R/r)
@@ -30,7 +31,7 @@ def _phase_ddk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype
     # two dependent variables
     # We always do the Voigt representation
     #  Rd = dx^2, dy^2, dz^2, dzy, dxz, dyx
-    if gauge == 'R':
+    if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype).reshape(-1, 1)
         Rs = _dot(sc.sc_off, sc.cell)
         Rd = - (Rs * Rs * phases).astype(dtype, copy=False)
@@ -39,7 +40,7 @@ def _phase_ddk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype
         del phases, Rs
         p_opt = 1
 
-    elif gauge == 'r':
+    elif gauge == 'orbital':
         M.finalize()
         rij = M.Rij()._csr._D
         phases = phase_rij(rij, sc, k, dtype).reshape(-1, 1)

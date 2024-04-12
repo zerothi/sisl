@@ -15,6 +15,7 @@ from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
 from sisl.messages import deprecate_argument, warn
+from sisl.typing import GaugeType
 
 __all__ = ["degenerate_decouple", "Coefficient", "State", "StateC"]
 
@@ -437,10 +438,10 @@ state coefficients
         The inverse participation ratio is defined as
 
         .. math::
-            I_{q,i} = \frac{\sum_\nu |\psi_{i\nu}|^{2q}}{
-               \big[\sum_\nu |\psi_{i\nu}|^2\big]^q}
+            I_{q,\alpha} = \frac{\sum_i |\psi_{\alpha,i}|^{2q}}{
+               \big[\sum_i |\psi_{\alpha,i}|^2\big]^q}
 
-        where :math:`i` is the band index and :math:`\nu` is the orbital.
+        where :math:`\alpha` is the band index and :math:`i` is the orbital.
         The order of the IPR is defaulted to :math:`q=2`, see :eq:`ipr2` for details.
         The IPR may be used to distinguish Anderson localization and extended
         states:
@@ -450,7 +451,7 @@ state coefficients
            :nowrap:
 
             \begin{align}
-             \lim_{L\to\infty} I_{2,i} = \left\{
+             \lim_{L\to\infty} I_{2,\alpha} = \left\{
                \begin{aligned}
                 1/L^d &\quad \text{extended state}
                 \\
@@ -461,7 +462,7 @@ state coefficients
         For further details see :cite:`Murphy2011`. Note that for eigen states the IPR reduces to:
 
         .. math::
-            I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}
+            I_{q,\alpha} = \sum_i |\psi_{\alpha,i}|^{2q}
 
         since the denominator is :math:`1^{q} = 1`.
 
@@ -500,13 +501,13 @@ state coefficients
         return s
 
     def outer(self, ket=None, matrix=None):
-        r"""Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
+        r"""Return the outer product by :math:`\sum_\alpha|\psi_\alpha\rangle\langle\psi'_\alpha|`
 
         Parameters
         ----------
         ket : State, optional
            the ket object to calculate the outer product of, if not passed it will do the outer
-           product with itself. The object itself will always be the bra :math:`|\psi_i\rangle`
+           product with itself. The object itself will always be the bra :math:`|\psi_\alpha\rangle`
         matrix : array_like, optional
            whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
            1D arrays will be treated as a diagonal matrix.
@@ -790,24 +791,26 @@ state coefficients
         else:
             return self.sub(oidx)
 
-    def change_gauge(self, gauge, offset=(0, 0, 0)):
+    def change_gauge(self, gauge: GaugeType, offset=(0, 0, 0)):
         r"""In-place change of the gauge of the state coefficients
 
         The two gauges are related through:
 
         .. math::
 
-            \tilde C_j = e^{i\mathbf k\mathbf r_j} C_j
+            \tilde C_\alpha = e^{i\mathbf k\mathbf r_\alpha} C_\alpha
 
-        where :math:`C_j` and :math:`\tilde C_j` belongs to the ``r`` and ``R`` gauge, respectively.
+        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``orbital`` and ``cell`` gauge, respectively.
 
         Parameters
         ----------
-        gauge : {'R', 'r'}
+        gauge : {'cell', 'orbital'}
             specify the new gauge for the mode coefficients
         offset : array_like, optional
             whether the coordinates should be offset by another phase-factor
         """
+        gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
         if self.info.get("gauge", gauge) == gauge:
@@ -837,10 +840,10 @@ state coefficients
             if self.shape[1] == g.no * 2:
                 phase = np.repeat(phase, 2)
 
-        if gauge == "r":
+        if gauge == "orbital":
             # R -> r gauge tranformation.
             self.state *= exp(-1j * phase).reshape(1, -1)
-        elif gauge == "R":
+        elif gauge == "cell":
             # r -> R gauge tranformation.
             self.state *= exp(1j * phase).reshape(1, -1)
 

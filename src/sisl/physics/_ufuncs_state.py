@@ -193,9 +193,9 @@ def rotate(
 
     .. math::
 
-        S' = S / S^\dagger_{\phi-\mathrm{max}} \exp (i \phi),
+        \mathbf S' = \mathbf S / \mathbf S^\dagger_{\phi-\mathrm{max}} \exp (i \phi),
 
-    where :math:`S^\dagger_{\phi-\mathrm{max}}` is the phase of the component with the largest amplitude
+    where :math:`\mathbf S^\dagger_{\phi-\mathrm{max}}` is the phase of the component with the largest amplitude
     and :math:`\phi` is the angle to align on.
 
     Parameters

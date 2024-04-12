@@ -290,7 +290,7 @@ class Lattice(
         -----
         Since we return the length and angles between vectors it may not be possible to
         recreate the same cell. Only in the case where the first lattice vector *only*
-        has a Cartesian :math:`x` component will this be the case
+        has a Cartesian :math:`x` component will this be the case.
 
         Parameters
         ----------
@@ -819,7 +819,7 @@ class Lattice(
           the diagonal components of a Cartesian unit-cell
 
         6 arguments
-          the cell parameters give by :math:`a`, :math:`b`, :math:`c`,
+          the cell parameters given by :math:`a`, :math:`b`, :math:`c`,
           :math:`\alpha`, :math:`\beta` and :math:`\gamma` (angles
           in degrees).
 

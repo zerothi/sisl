@@ -104,7 +104,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         Extract the projected spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
 
         .. math::
-           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} [\mathbf{G}(E)|i\rangle\langle i|\Gamma_\mathfrak{el}|i\rangle\langle i|\mathbf{G}^\dagger]_{\nu\nu}(E)
+           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{i\in \{I\}} [\mathbf{G}(E)|i\rangle\langle i|\Gamma_\mathfrak{el}|i\rangle\langle i|\mathbf{G}^\dagger]_{ii}(E)
 
         where :math:`|i\rangle` may be a sum of states.
         The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the
@@ -208,9 +208,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         routine. Basically the LDOS in real-space may be calculated as
 
         .. math::
-            \rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, \nu\mu}(E)]
+            \boldsymbol\rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, ij}(E)]
 
-        where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations
+        where :math:`\phi` are the real-space orbitals. Note that the broadening used in the TBtrans calculations
         ensures the broadening of the density, i.e. it should not be necessary to perform energy
         averages over the density matrices.
 
@@ -269,20 +269,20 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         The COOP analysis can be written as:
 
         .. math::
-            \mathrm{COOP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu} \mathbf S_{\mu\nu} \big]
+            \mathrm{COOP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij} \mathbf S_{ji} \big]
 
         The sum of the COOP DOS is equal to the DOS:
 
         .. math::
-            \mathrm{ADOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}
+            \mathrm{ADOS}_{i} = \sum_j \mathrm{COOP}^{\mathbf A}_{ij}
 
         One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),
         7751-7761 for details. The DBCOOP is given by:
 
         .. math::
-            D &= \sum_\nu \mathrm{COOP}^{\mathbf A}_{\nu\nu}
+            D &= \sum_i \mathrm{COOP}^{\mathbf A}_{ii}
             \\
-            \mathrm{DBCOOP}^{\mathbf A}_{\nu\mu} &= \mathrm{COOP}^{\mathbf A}_{\nu\mu} / D
+            \mathrm{DBCOOP}^{\mathbf A}_{ij} &= \mathrm{COOP}^{\mathbf A}_{ij} / D
 
         The BCOOP can be looked up in the reference above.
 
@@ -338,8 +338,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         The COHP analysis can be written as:
 
         .. math::
-            \mathrm{COHP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu}
-                \mathbf H_{\nu\mu} \big]
+            \mathrm{COHP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij}
+                \mathbf H_{ij} \big]
 
         Parameters
         ----------

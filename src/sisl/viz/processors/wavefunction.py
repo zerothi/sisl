@@ -96,8 +96,8 @@ def eigenstate_wf(
     # Get the particular WF that we want from the eigenstate object
     wf_state = get_ith_eigenstate(eigenstate, i)
 
-    # Ensure we are dealing with the R gauge
-    wf_state.change_gauge("R")
+    # Ensure we are dealing with the cell gauge
+    wf_state.change_gauge("cell")
 
     # Finally, insert the wavefunction values into the grid.
     wavefunction(wf_state.state, grid, geometry=geometry, k=k, spinor=0, spin=spin)

@@ -74,6 +74,7 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
    tutorials.rst
    scripts/index
    environment
+   math
    nodes/nodes_intro
 
 .. toctree::

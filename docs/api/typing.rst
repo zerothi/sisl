@@ -36,6 +36,7 @@ The typing types are shown below:
    Coord
    CoordOrScalar
    FuncType
+   GaugeType
    GeometryLike
    GridLike
    KPoint
