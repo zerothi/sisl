@@ -290,7 +290,9 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         del d_uc
 
-    def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs) -> EigenvaluePhonon:
+    def eigenvalue(
+        self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs
+    ) -> EigenvaluePhonon:
         """Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
 
         Parameters
@@ -321,7 +323,9 @@ class DynamicalMatrix(SparseOrbitalBZ):
         info = {"k": k, "gauge": gauge}
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
-    def eigenmode(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs) -> EigenmodePhonon:
+    def eigenmode(
+        self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs
+    ) -> EigenmodePhonon:
         r"""Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
 
         Notes
