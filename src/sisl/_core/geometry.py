@@ -176,7 +176,7 @@ class Geometry(
     )
     def __init__(self, xyz: ArrayLike, atoms=None, lattice=None, names=None):
         # Create the geometry coordinate, be aware that we do not copy!
-        self.xyz = _a.asarrayd(xyz).reshape(-1, 3)
+        self.xyz = _a.asarrayd(xyz, order="C").reshape(-1, 3)
 
         # Default value
         if atoms is None:
