@@ -25,12 +25,15 @@ which will show 4 plots for different sections. A command-line tool is also
 made available through the `stoolbox`.
 """
 import sys
-from collections.abc import Iterable
 from functools import reduce
 from pathlib import Path
 
 import numpy as np
-from scipy.integrate import trapezoid
+
+try:
+    from scipy.integrate import trapezoid
+except ImportError:
+    from scipy.integrate import trapz as trapezoid
 from scipy.interpolate import interp1d
 
 import sisl as si

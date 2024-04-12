@@ -101,6 +101,6 @@ you are encouraged to use that instead.
 
 
 .. autosummary::
-   :toctree: generated/
+   :toctree: ../generated/
 
    solve_poisson
