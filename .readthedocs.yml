@@ -12,7 +12,7 @@ build:
     - gcc
     - gfortran
   tools:
-    python: "3.11"
+    python: "latest"
 
 sphinx:
   configuration: docs/conf.py
