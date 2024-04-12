@@ -61,8 +61,7 @@ jobs:
       - name: Install sisl + documentation dependencies
         run: |
           python -m pip install --progress-bar=off --upgrade pip
-          python -m pip install --progress-bar=off -r docs/requirements.txt
-          python -m pip install .[viz]
+          python -m pip install --progress-bar=off .[viz,docs]
 
       - name: Build the documentation using the sisl-files as well
         run: |
