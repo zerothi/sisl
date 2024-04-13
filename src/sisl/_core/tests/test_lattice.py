@@ -516,6 +516,13 @@ def test_tocuboid_complex():
     assert np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))
 
 
+def test_fortran_continguous():
+    # for #748
+    abc = np.zeros([3, 3], order="F")
+    latt = Lattice(abc)
+    assert latt.cell.flags.c_contiguous
+
+
 def test_lattice_indices():
     lattice = Lattice([1] * 3, nsc=[3, 5, 7])
     for i in range(lattice.n_s):

@@ -1828,6 +1828,13 @@ def test_translate2uc_axes():
     assert np.allclose(gr_once.xyz, gr_individual.xyz)
 
 
+def test_fortran_continguous():
+    # for #748
+    xyz = np.zeros([10, 3], order="F")
+    geom = Geometry(xyz)
+    assert geom.xyz.flags.c_contiguous
+
+
 def test_as_supercell_graphene():
     gr = sisl_geom.graphene()
     grsc = gr.as_supercell()

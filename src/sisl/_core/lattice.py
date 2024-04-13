@@ -840,7 +840,7 @@ class Lattice(
         >>> cell_1_2_3 = Lattice.tocell([1., 2., 3.]) # same as above
         """
         # Convert into true array (flattened)
-        args = _a.asarrayd(args).ravel()
+        args = _a.arrayd(args, order="C").ravel()
         nargs = len(args)
 
         # A square-box
@@ -883,10 +883,10 @@ class Lattice(
 
         # A complete cell
         if nargs == 9:
-            return args.copy().reshape(3, 3)
+            return args.reshape(3, 3)
 
         raise ValueError(
-            "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct."
+            f"Creating a unit cell has to have 1, 3, 6 or 9 arguments, got {nargs}."
         )
 
     def is_orthogonal(self, tol: float = 0.001) -> bool:
