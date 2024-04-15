@@ -516,7 +516,7 @@ def test_tocuboid_complex():
     assert np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))
 
 
-def test_fortran_continguous():
+def test_fortran_contiguous():
     # for #748
     abc = np.zeros([3, 3], order="F")
     latt = Lattice(abc)

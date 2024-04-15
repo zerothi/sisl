@@ -1828,7 +1828,7 @@ def test_translate2uc_axes():
     assert np.allclose(gr_once.xyz, gr_individual.xyz)
 
 
-def test_fortran_continguous():
+def test_fortran_contiguous():
     # for #748
     xyz = np.zeros([10, 3], order="F")
     geom = Geometry(xyz)
