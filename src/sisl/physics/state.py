@@ -5,9 +5,11 @@ from __future__ import annotations
 
 from functools import singledispatchmethod
 from numbers import Real
+from typing import Literal
 
 import numpy as np
 from numpy import bool_, einsum, exp, ndarray
+from scipy.sparse import csr_matrix
 
 import sisl._array as _a
 from sisl._core import Geometry
@@ -414,23 +416,54 @@ state coefficients
         """
         return self.norm2() ** 0.5
 
-    def norm2(self, sum=True):
+    @deprecate_argument(
+        "sum",
+        "projection",
+        "argument sum has been deprecated in favor of projection",
+        "0.15",
+        "0.16",
+    )
+    def norm2(self, projection: Literal["sum", "orbital", "atom", "none"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
         ----------
-        sum : bool, optional
-           for true only a single number per state will be returned, otherwise the norm
-           per basis element will be returned.
+        projection :
+           whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity
 
         Returns
         -------
         numpy.ndarray
             the squared norm for each state
         """
-        if sum:
+        # ensure backwards compatibility by converting bool
+        if projection is True:
+            projection = "sum"
+        elif projection is False:
+            projection = "orbital"
+
+        if projection == "sum":
             return self.inner()
-        return np.conj(self.state) * self.state
+
+        elif projection in ("orbital", "none"):
+            return np.conj(self.state) * self.state
+
+        elif projection == "atom":
+            na = self.parent.na
+            no = len(self.parent)
+
+            # build sparse matrix M to map from orbital-to-atom-resolved quantity
+            data = np.ones(no)
+            col_idx = np.arange(len(self.parent))
+            row_idx = self.parent.o2a(col_idx)
+            M = csr_matrix((data, (row_idx, col_idx)), shape=(na, no))
+            orb_norm2 = np.conj(self.state) * self.state
+            return M.dot(orb_norm2.T).T
+
+        else:
+            raise ValueError(
+                "norm2: projection needs to be either sum, orbital, or atom"
+            )
 
     def ipr(self, q=2):
         r""" Calculate the inverse participation ratio (IPR) for arbitrary `q` values
