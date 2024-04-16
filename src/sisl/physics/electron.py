@@ -1562,7 +1562,7 @@ class _electron_State:
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "orbital", "atom"] = "sum"):
+    def norm2(self, projection: Literal["sum", "orbital", "atom", "none"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
         :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis
@@ -1590,7 +1590,7 @@ class _electron_State:
         if projection == "sum":
             return self.inner(matrix=S)
 
-        elif projection == "orbital":
+        elif projection in ("orbital", "none"):
             return conj(self.state) * S.dot(self.state.T).T
 
         elif projection == "atom":
@@ -1607,7 +1607,7 @@ class _electron_State:
 
         else:
             raise ValueError(
-                "norm2: projection needs to be either sum, orbital, or atom"
+                "norm2: projection needs to be either sum, orbital, atom, or none"
             )
 
     def spin_moment(self, project=False):
