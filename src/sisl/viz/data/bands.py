@@ -672,7 +672,7 @@ def _get_eigenstate_wrapper(
 
 
 def _norm2_getter(eigenstate, spin, spin_index):
-    norm2 = eigenstate.norm2(sum=False)
+    norm2 = eigenstate.norm2(projection="orbital")
 
     if not spin.is_diagonal:
         # If it is a non-colinear or spin orbit calculation, we have two weights for each

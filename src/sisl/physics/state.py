@@ -504,7 +504,7 @@ state coefficients
           order parameter for the IPR
         """
         # This *has* to be a real value C * C^* == real
-        state_abs2 = self.norm2(sum=False).real
+        state_abs2 = self.norm2(projection="none").real
         assert q >= 2, f"{self.__class__.__name__}.ipr requires q>=2"
         # abs2 is already having the exponent 2
         return (state_abs2**q).sum(-1) / state_abs2.sum(-1) ** q
@@ -789,8 +789,8 @@ state coefficients
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm = self.norm2(False).real
-        onorm = other.norm2(False).real
+        snorm = self.norm2(projection="none").real
+        onorm = other.norm2(projection="none").real
 
         # Now find new orderings
         show_warn = False
