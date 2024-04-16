@@ -449,12 +449,11 @@ state coefficients
             return np.conj(self.state) * self.state
 
         elif projection == "atom":
+            # build sparse matrix M to map from orbital-to-atom-resolved quantity
             na = self.parent.na
             no = len(self.parent)
-
-            # build sparse matrix M to map from orbital-to-atom-resolved quantity
             data = np.ones(no)
-            col_idx = np.arange(len(self.parent))
+            col_idx = np.arange(no)
             row_idx = self.parent.o2a(col_idx)
             M = csr_matrix((data, (row_idx, col_idx)), shape=(na, no))
             orb_norm2 = np.conj(self.state) * self.state
