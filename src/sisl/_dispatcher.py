@@ -14,6 +14,9 @@ import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, namedtuple
 from functools import update_wrapper
+from typing import Any
+
+from sisl.utils._search_mro import find_implementation
 
 __all__ = [
     "AbstractDispatch",
@@ -118,6 +121,20 @@ class AbstractDispatch(metaclass=ABCMeta):
         if callable(attr):
             return self.dispatch(attr)
         return attr
+
+
+def _get_dispatch(dispatcher: AbstractDispatcher, key: Any):
+    """Return the dispatch contained in `obj._dispatchs`"""
+    dispatchs = dispatcher._dispatchs
+    if isinstance(key, type) and key not in dispatchs:
+        dispatch = find_implementation(key, dispatchs)
+        # we will register for a faster look-up next time.
+        dispatcher.register(key, dispatch)
+    else:
+        dispatch = dispatchs.get(key)
+    if dispatch is None:
+        raise KeyError(f"{dispatcher.__class__.__name__} has no dispatch for {key}.")
+    return dispatch
 
 
 class AbstractDispatcher(metaclass=ABCMeta):
@@ -287,7 +304,8 @@ class MethodDispatcher(AbstractDispatcher):
         _log.debug(
             f"__getitem__ {self.__class__.__name__},key={key}", extra={"obj": self}
         )
-        return self._dispatchs[key](self._obj, **self._attrs).dispatch(self.__wrapped__)
+        dispatch = _get_dispatch(self, key)
+        return dispatch(self._obj, **self._attrs).dispatch(self.__wrapped__)
 
     __getattr__ = __getitem__
 
@@ -429,10 +447,13 @@ class ObjectDispatcher(AbstractDispatcher):
         _log.debug(
             f"__getitem__ {self.__class__.__name__},key={key}", extra={"obj": self}
         )
-        return self._dispatchs[key](self._obj, **self._attrs)
+        dispatch = _get_dispatch(self, key)
+        return dispatch(self._obj, **self._attrs)
 
     def __getattr__(self, key):
         """Retrieve dispatched method by name, or if the name does not exist return a MethodDispatcher"""
+        # Attribute retrieval will never be a class, so this will be directly
+        # inferable in the dictionary.
         if key in self._dispatchs:
             _log.debug(
                 f"__getattr__ {self.__class__.__name__},dispatch={key}",
@@ -515,14 +536,8 @@ class TypeDispatcher(ObjectDispatcher):
 
         # if you want obj to be a type, then the dispatcher should control that
         _log.debug(f"call {self.__class__.__name__}{args}", extra={"obj": self})
-        return self._dispatchs[typ](self._obj)(obj, *args, **kwargs)
-
-    def __getitem__(self, key):
-        r"""Retrieve dispatched dispatchs by hash (allows functions to be dispatched)"""
-        _log.debug(
-            f"__getitem__ {self.__class__.__name__},key={key}", extra={"obj": self}
-        )
-        return self._dispatchs[key](self._obj, **self._attrs)
+        dispatch = _get_dispatch(self, typ)
+        return dispatch(self._obj)(obj, *args, **kwargs)
 
 
 class ClassDispatcher(AbstractDispatcher):

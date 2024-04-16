@@ -3,7 +3,15 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-""" Internal class used for subclassing.
+import logging
+from collections import namedtuple
+from typing import Any, Optional, Sequence, Union
+
+from sisl.utils._search_mro import find_implementation
+
+from ._dispatcher import AbstractDispatcher, ClassDispatcher, TypeDispatcher
+
+"""Internal class used for subclassing.
 
 This class implements the
 
@@ -24,17 +32,11 @@ A.new.register ..
 A.hello.register ..
 """
 
-import logging
-from collections import namedtuple
-from typing import Any, Optional, Sequence, Union
-
-from ._dispatcher import AbstractDispatcher, ClassDispatcher, TypeDispatcher
-
 _log = logging.getLogger(__name__)
 
 
 class _Dispatchs:
-    """Subclassable for creating the new/to arguments"""
+    """Subclassable for creating the dispatch arguments"""
 
     def __init_subclass__(
         cls,
@@ -47,18 +49,23 @@ class _Dispatchs:
         super().__init_subclass__(**kwargs)
 
         # Get the allowed actions for subclassing
-        prefix = "_tonew"
+        prefix = "_cls_dispatchs"
         allowed_subclassing = ("keep", "new", "copy")
 
         def find_base(cls, attr):
-            for base in cls.__bases__:
+            # The order of execution, since the implementation search
+            # is based on MRO, we should search in that order.
+            for base in cls.__mro__:
                 if hasattr(base, attr):
                     return base
             return None
 
         if dispatchs is None:
+            # Copy dispatch names when subclassing.
+            # I.e. we will search through all the previous ones
+            # and copy them.
             dispatchs = []
-            for base in cls.__bases__:
+            for base in cls.__mro__:
                 if hasattr(base, f"{prefix}_dispatchs"):
                     dispatchs.extend(getattr(base, f"{prefix}_dispatchs"))
 

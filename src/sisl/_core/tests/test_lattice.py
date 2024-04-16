@@ -243,7 +243,6 @@ class TestLattice:
         assert np.allclose(tmp1.cell, tmp3.cell)
         assert np.allclose(tmp1.cell, tmp4.cell)
 
-    @pytest.mark.xfail(reason="dispatch does not resolve mro (see #721")
     def test_creation_latticechild_dispatch(self, setup):
         # full cell
         class P(LatticeChild):
