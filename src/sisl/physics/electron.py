@@ -1593,19 +1593,12 @@ class _electron_State:
 
         elif projection == "atom":
             na = self.parent.na
-            no = self.parent.no
+            no = len(self.parent)
 
             # build sparse matrix M to map from orbital-to-atom-resolved quantity
-            idx = self.parent.a2o(range(na))
             data = np.ones(no)
-            row_idx = []
-            col_idx = np.arange(no)
-
-            for i, start in enumerate(idx):
-                end = idx[i + 1] if i + 1 < len(idx) else no
-                j = end - start
-                row_idx.extend([i] * j)
-
+            col_idx = np.arange(len(self.parent))
+            row_idx = self.parent.o2a(col_idx)
             M = csr_matrix((data, (row_idx, col_idx)), shape=(na, no))
             orb_norm2 = conj(self.state) * S.dot(self.state.T).T
             return M.dot(orb_norm2.T).T
