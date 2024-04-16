@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import Literal
+
 from sisl.messages import deprecate_argument
 
 r"""Electron related functions and classes
@@ -1560,7 +1562,7 @@ class _electron_State:
         "0.15",
         "0.16",
     )
-    def norm2(self, projection="sum"):
+    def norm2(self, projection: Literal["sum", "orbital", "atom"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
         :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis
@@ -1568,7 +1570,7 @@ class _electron_State:
 
         Parameters
         ----------
-        projection : {"sum", "orbital", "atom"}
+        projection :
            whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity
 
         Returns
