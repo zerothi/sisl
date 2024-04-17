@@ -1555,7 +1555,7 @@ class _electron_State:
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "orbitals", "state", "atoms"] = "sum"):
+    def norm2(self, projection: Literal["sum", "orbitals", "states", "atoms"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
         :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis

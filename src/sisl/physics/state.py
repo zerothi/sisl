@@ -440,13 +440,14 @@ state coefficients
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "atoms", "state"] = "sum"):
+    def norm2(self, projection: Literal["sum", "atoms", "states"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
         ----------
         projection :
-           whether to compute the norm per state as a single number, atom-resolved or none quantity
+           whether to compute the norm per state as a single number, atom-resolved or per
+           state dimension.
 
         See Also
         --------
@@ -609,7 +610,7 @@ state coefficients
         self,
         ket=None,
         matrix=None,
-        projection: Literal["diag", "atoms", "state", "none"] = "diag",
+        projection: Literal["diag", "atoms", "states", "matrix"] = "diag",
     ):
         r"""Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
 
@@ -627,9 +628,9 @@ state coefficients
             full matrix.
 
             * ``diag`` only return the diagonal of the inner product
+            * ``matrix`` return a matrix of inner products, also the off-diagonals
             * ``atoms`` only do inner products for same states, summed over atoms on the state
-            * ``state`` only do inner products for same states
-            * ``matrix`` return a matrix of inner products, also between different states
+            * ``states`` only do inner products for same states
 
         Notes
         -----
@@ -692,10 +693,11 @@ state coefficients
         projection = {
             # temporary work-around for older codes where project/diag=T|F were allowed
             True: "diag",
-            False: "none",
+            False: "matrix",
             "sum": "diag",  # still allowed here (for bypass options)
             "atoms": "atom",  # plural s allowed
-            "orbitals": "none",  # still allowed here (for bypass options)
+            "states": "state",  # plural s allowed
+            "orbitals": "orbital",  # still allowed here (for bypass options)
         }.get(projection, projection)
 
         if projection in ("diag", "diagonal"):
