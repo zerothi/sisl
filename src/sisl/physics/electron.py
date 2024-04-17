@@ -173,11 +173,11 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
 
        \mathrm{PDOS}_i^\sigma(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
        \\
-       \mathrm{PDOS}_i^x(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_x [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
+               \mathrm{PDOS}_i^x(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_x [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
        \\
-       \mathrm{PDOS}_i^y(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_y [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
+               \mathrm{PDOS}_i^y(E) &= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_y [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
        \\
-       \mathrm{PDOS}_i^z(E) &= \sum_\alpha\psi^*_{\alpha,i} \boldsymbol\sigma_z [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
+               \mathrm{PDOS}_i^z(E) &= \sum_\alpha\psi^*_{\alpha,i} \boldsymbol\sigma_z [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)
 
     Note that the total PDOS may be calculated using :math:`\boldsymbol\sigma_\gamma\boldsymbol\sigma_\gamma` where :math:`\gamma` may be either of :math:`x`,
     :math:`y` or :math:`z`.
@@ -1555,7 +1555,7 @@ class _electron_State:
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "orbitals", "states", "atoms"] = "sum"):
+    def norm2(self, projection: Literal["sum", "orbitals", "basis", "atoms"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
         :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis
@@ -1565,6 +1565,10 @@ class _electron_State:
         ----------
         projection :
            whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity
+
+        See Also
+        --------
+        inner: used method for calculating the squared norm.
 
         Returns
         -------

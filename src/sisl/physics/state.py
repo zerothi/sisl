@@ -440,14 +440,14 @@ state coefficients
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "atoms", "states"] = "sum"):
+    def norm2(self, projection: Literal["sum", "atoms", "basis"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
         ----------
         projection :
            whether to compute the norm per state as a single number, atom-resolved or per
-           state dimension.
+           basis dimension.
 
         See Also
         --------
@@ -500,7 +500,7 @@ state coefficients
           order parameter for the IPR
         """
         # This *has* to be a real value C * C^* == real
-        state_abs2 = self.norm2(projection="states").real
+        state_abs2 = self.norm2(projection="basis").real
         assert q >= 2, f"{self.__class__.__name__}.ipr requires q>=2"
         # abs2 is already having the exponent 2
         return (state_abs2**q).sum(-1) / state_abs2.sum(-1) ** q
@@ -610,9 +610,28 @@ state coefficients
         self,
         ket=None,
         matrix=None,
-        projection: Literal["diag", "atoms", "states", "matrix"] = "diag",
+        projection: Literal["diag", "atoms", "basis", "matrix"] = "diag",
     ):
         r"""Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
+
+        Inner product calculation allows for a variety of things.
+
+        * for ``matrix`` it will compute off-diagonal elements as well
+
+        .. math::
+            \mathbf A_{\alpha\beta} = \langle\psi_\alpha|\mathbf M|\psi'_\beta\rangle
+
+        * for ``diag`` only the diagonal components will be returned
+
+        .. math::
+            \mathbf a_\alpha = \langle\psi_\alpha|\mathbf M|\psi_\alpha\rangle
+
+        * for ``basis``, only do inner products for individual states, but return them basis-resolved
+
+        .. math::
+            \mathbf A_{\alpha\beta} = \psi^*_{\alpha,\beta} \mathbf M|\psi_\alpha\rangle_\beta
+
+        * for ``atoms``, only do inner products for individual states, but return them atom-resolved
 
         Parameters
         ----------
@@ -628,9 +647,9 @@ state coefficients
             full matrix.
 
             * ``diag`` only return the diagonal of the inner product
-            * ``matrix`` return a matrix of inner products, also the off-diagonals
-            * ``atoms`` only do inner products for same states, summed over atoms on the state
-            * ``states`` only do inner products for same states
+            * ``matrix`` a matrix with diagonals and the off-diagonals
+            * ``basis`` only do inner products for individual states, but return them basis-resolved
+            * ``atoms`` only do inner products for individual states, but return them atom-resolved
 
         Notes
         -----
@@ -696,7 +715,6 @@ state coefficients
             False: "matrix",
             "sum": "diag",  # still allowed here (for bypass options)
             "atoms": "atom",  # plural s allowed
-            "states": "state",  # plural s allowed
             "orbitals": "orbital",  # still allowed here (for bypass options)
         }.get(projection, projection)
 
@@ -720,7 +738,7 @@ state coefficients
             elif ndim == 0:
                 Aij = einsum("ij,kj->ik", np.conj(bra), ket) * M
 
-        elif projection in ("atom", "orbital", "state"):
+        elif projection in ("atom", "basis", "orbital"):
             if ndim == 2:
                 Aij = np.conj(bra) * M.dot(ket.T).T
             else:
@@ -852,8 +870,8 @@ state coefficients
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm = self.norm2(projection="states").real
-        onorm = other.norm2(projection="states").real
+        snorm = self.norm2(projection="basis").real
+        onorm = other.norm2(projection="basis").real
 
         # Now find new orderings
         show_warn = False

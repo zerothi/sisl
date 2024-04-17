@@ -6,14 +6,14 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from sisl import Coefficient, State, StateC, geom
+from sisl import Atom, Coefficient, State, StateC, geom
 
 pytestmark = [pytest.mark.physics, pytest.mark.state]
 
 
 def ar(*args):
     l = np.prod(args)
-    return np.arange(l, dtype=np.float64).reshape(args)
+    return np.arange(l, dtype=np.float64).reshape(*args)
 
 
 def ortho_matrix(n, m=None):
@@ -198,7 +198,7 @@ def test_state_inner():
     state = ar(10, 10)
     state = State(state)
     inner = state.inner(diag=False)
-    assert np.allclose(inner, state.inner(state, diag=False))
+    assert np.allclose(inner, state.inner(state, projection="matrix"))
     inner_diag = state.inner()
     assert np.allclose(np.diag(inner), inner_diag)
 
@@ -208,7 +208,9 @@ def test_state_inner_matrix():
     M = ar(10)
     state = State(state)
     inner = state.inner(matrix=M, diag=False)
-    assert np.allclose(inner, state.inner(state, matrix=np.diag(M), diag=False))
+    assert np.allclose(
+        inner, state.inner(state, matrix=np.diag(M), projection="matrix")
+    )
     inner_diag = state.inner(matrix=M)
     assert np.allclose(np.diag(inner), inner_diag)
     inner_diag = state.inner(matrix=np.diag(M))
@@ -219,8 +221,40 @@ def test_state_inner_differing_size():
     state1 = State(ar(8, 10))
     state2 = State(ar(4, 10))
 
-    inner = state1.inner(state2, diag=False)
+    inner = state1.inner(state2, projection="matrix")
     assert inner.shape == (8, 4)
+
+
+def test_state_inner_projections():
+    g = geom.graphene(atoms=Atom(6, R=(1, 2))) * (2, 2, 1)
+    n = g.no + 1
+    state = State(ar(n, g.no), parent=g)
+
+    for projs, shape in (
+        (("diag", "diagonal", "sum", True), (n,)),
+        (("matrix", False), (n, n)),
+        (("basis", "orbitals", "orbital"), (n, g.no)),
+        (("atoms", "atom"), (n, g.na)),
+    ):
+        for proj in projs:
+            data = state.inner(projection=proj)
+            assert data.shape == shape
+
+
+def test_state_norm_projections():
+    g = geom.graphene(atoms=Atom(6, R=(1, 2))) * (2, 2, 1)
+    n = g.no + 1
+    state = State(ar(n, g.no), parent=g)
+    assert state.shape[0] != state.shape[1]
+
+    for projs, shape in (
+        (("sum", True), (n,)),
+        (("basis", "orbitals", "orbital"), (n, g.no)),
+        (("atoms", "atom"), (n, g.na)),
+    ):
+        for proj in projs:
+            data = state.norm2(projection=proj)
+            assert data.shape == shape
 
 
 def test_state_phase_max():
