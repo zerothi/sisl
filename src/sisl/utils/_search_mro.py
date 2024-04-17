@@ -3,7 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from types import GenericAlias
+try:
+    from types import GenericAlias
+except:
+    GenericAlias = None
 
 #
 # This code is directly taken from:
@@ -112,13 +115,20 @@ def _compose_mro(cls, types):
     bases = set(cls.__mro__)
 
     # Remove entries which are already present in the __mro__ or unrelated.
-    def is_related(typ):
-        return (
-            typ not in bases
-            and hasattr(typ, "__mro__")
-            and not isinstance(typ, GenericAlias)
-            and issubclass(cls, typ)
-        )
+    if GenericAlias is None:
+        # TODO when we force 3.9 we can remove this branch
+        def is_related(typ):
+            return typ not in bases and hasattr(typ, "__mro__") and issubclass(cls, typ)
+
+    else:
+
+        def is_related(typ):
+            return (
+                typ not in bases
+                and hasattr(typ, "__mro__")
+                and not isinstance(typ, GenericAlias)
+                and issubclass(cls, typ)
+            )
 
     types = [n for n in types if is_related(n)]
 
