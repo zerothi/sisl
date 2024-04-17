@@ -1852,3 +1852,17 @@ def test_as_supercell_fcc():
 def test_sc_warn():
     with pytest.warns(SislDeprecation):
         lattice = sisl_geom.graphene().sc
+
+
+def test_geometry_apply():
+    from functools import partial
+
+    g = sisl_geom.fcc(2**0.5, Atom(1, R=(1.0001, 2)))
+    data = np.random.rand(3, g.no, 4)
+    data_dup = g.apply(data, "sum", lambda x: x, segments="orbitals", axis=1)
+    assert data_dup.shape == data.shape
+    assert np.allclose(data, data_dup)
+
+    data_atom = g.apply(data, "sum", partial(g.a2o, all=True), axis=1)
+    assert data_atom.shape == (3, g.na, 4)
+    assert np.allclose(data_atom[:, 0], data[:, :2].sum(1))

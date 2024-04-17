@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Optional
 
 from sisl.messages import deprecate_argument
 
@@ -1505,28 +1505,26 @@ class _electron_State:
     # pylint: disable=E1101
     __slots__ = []
 
-    def __is_nc(self):
+    def __is_nc(self, spin: Optional[Spin] = None):
         """Internal routine to check whether this is a non-colinear calculation"""
+        if spin is not None:
+            return not spin.is_diagonal
         try:
             return not self.parent.spin.is_diagonal
         except Exception:
             return False
 
-    def Sk(self, format=None, spin=None):
+    def Sk(self, format=None):
         r"""Retrieve the overlap matrix corresponding to the originating parent structure.
 
         When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(\mathbf k)` for the
-        :math:`\mathbf k`-point these eigenstates originate from
+        :math:`\mathbf k`-point these eigenstates originate from.
 
         Parameters
         ----------
         format : str, optional
            the returned format of the overlap matrix. This only takes effect for
            non-orthogonal parents.
-        spin : Spin, optional
-           for non-colinear spin configurations the *fake* overlap matrix returned
-           will have halve the size of the input matrix. If you want the *full* overlap
-           matrix, simply do not specify the `spin` argument.
         """
         if format is None:
             format = self.info.get("format", "csr")
@@ -1544,14 +1542,9 @@ class _electron_State:
                         opt[key] = val
                 return self.parent.Sk(**opt)
 
-        if self.__is_nc():
-            n = self.shape[1] // 2
-        else:
-            n = self.shape[1]
+        n = m = self.shape[1]
         if "sc:" in format:
             m = n * self.parent.n_s
-        else:
-            m = n
 
         return _FakeMatrix(n, m)
 
@@ -1562,7 +1555,7 @@ class _electron_State:
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "orbital", "atom", "none"] = "sum"):
+    def norm2(self, projection: Literal["sum", "orbitals", "state", "atoms"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
         :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis
@@ -1578,36 +1571,7 @@ class _electron_State:
         numpy.ndarray
             the squared norm for each state
         """
-        # Retrieve the overlap matrix (FULL S is required for NC)
-        S = self.Sk()
-
-        # ensure backwards compatibility by converting bool
-        if projection is True:
-            projection = "sum"
-        elif projection is False:
-            projection = "orbital"
-
-        if projection == "sum":
-            return self.inner(matrix=S)
-
-        elif projection in ("orbital", "none"):
-            return conj(self.state) * S.dot(self.state.T).T
-
-        elif projection == "atom":
-            # build sparse matrix M to map from orbital-to-atom-resolved quantity
-            na = self.parent.na
-            no = len(self.parent)
-            data = np.ones(no)
-            col_idx = np.arange(no)
-            row_idx = self.parent.o2a(col_idx)
-            M = csr_matrix((data, (row_idx, col_idx)), shape=(na, no))
-            orb_norm2 = conj(self.state) * S.dot(self.state.T).T
-            return M.dot(orb_norm2.T).T
-
-        else:
-            raise ValueError(
-                "norm2: projection needs to be either sum, orbital, atom, or none"
-            )
+        return self.inner(matrix=self.Sk(), projection=projection)
 
     def spin_moment(self, project=False):
         r"""Calculate spin moment from the states

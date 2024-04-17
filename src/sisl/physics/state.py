@@ -92,6 +92,23 @@ class _FakeMatrix:
             pass
         return v
 
+    def __getitem__(self, key):
+        n, m = self.n, self.m
+        if isinstance(key, tuple):
+            if key[0] == slice(None, None, 2):
+                n = n // 2
+            else:
+                raise RuntimeError
+            if key[1] == slice(None, None, 2):
+                m = m // 2
+            else:
+                raise RuntimeError
+        else:
+            if key == slice(None, None, 2):
+                n = n // 2
+
+        return self.__class__(n, m)
+
     @property
     def T(self):
         return self
@@ -423,46 +440,24 @@ state coefficients
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "orbital", "atom", "none"] = "sum"):
+    def norm2(self, projection: Literal["sum", "atoms", "state"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
         ----------
         projection :
-           whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity
+           whether to compute the norm per state as a single number, atom-resolved or none quantity
+
+        See Also
+        --------
+        inner: used method for calculating the squared norm.
 
         Returns
         -------
         numpy.ndarray
             the squared norm for each state
         """
-        # ensure backwards compatibility by converting bool
-        if projection is True:
-            projection = "sum"
-        elif projection is False:
-            projection = "orbital"
-
-        if projection == "sum":
-            return self.inner()
-
-        elif projection in ("orbital", "none"):
-            return np.conj(self.state) * self.state
-
-        elif projection == "atom":
-            # build sparse matrix M to map from orbital-to-atom-resolved quantity
-            na = self.parent.na
-            no = len(self.parent)
-            data = np.ones(no)
-            col_idx = np.arange(no)
-            row_idx = self.parent.o2a(col_idx)
-            M = csr_matrix((data, (row_idx, col_idx)), shape=(na, no))
-            orb_norm2 = np.conj(self.state) * self.state
-            return M.dot(orb_norm2.T).T
-
-        else:
-            raise ValueError(
-                "norm2: projection needs to be either sum, orbital, or atom"
-            )
+        return self.inner(projection=projection)
 
     def ipr(self, q=2):
         r""" Calculate the inverse participation ratio (IPR) for arbitrary `q` values
@@ -504,7 +499,7 @@ state coefficients
           order parameter for the IPR
         """
         # This *has* to be a real value C * C^* == real
-        state_abs2 = self.norm2(projection="none").real
+        state_abs2 = self.norm2(projection="state").real
         assert q >= 2, f"{self.__class__.__name__}.ipr requires q>=2"
         # abs2 is already having the exponent 2
         return (state_abs2**q).sum(-1) / state_abs2.sum(-1) ** q
@@ -603,7 +598,19 @@ state coefficients
             Aij = einsum("ij,ik->jk", ket * M, np.conj(bra))
         return Aij
 
-    def inner(self, ket=None, matrix=None, diag=True):
+    @deprecate_argument(
+        "diag",
+        "projection",
+        "argument diag has been deprecated in favor of projection",
+        "0.15",
+        "0.16",
+    )
+    def inner(
+        self,
+        ket=None,
+        matrix=None,
+        projection: Literal["diag", "atoms", "state", "none"] = "diag",
+    ):
         r"""Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
 
         Parameters
@@ -614,17 +621,26 @@ state coefficients
         matrix : array_like, optional
            whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
            1D arrays will be treated as a diagonal matrix.
-        diag : bool, optional
-           only return the diagonal matrix :math:`\mathbf A_{ii}`.
+        projection:
+            how to perform the final projection.
+            This can be used to sum specific sub-elements, return the diagonal, or the
+            full matrix.
+
+            * ``diag`` only return the diagonal of the inner product
+            * ``atoms`` only do inner products for same states, summed over atoms on the state
+            * ``state`` only do inner products for same states
+            * ``matrix`` return a matrix of inner products, also between different states
 
         Notes
         -----
-        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
+        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used. One have to add the overlap matrix in the `matrix` argument, if needed.
 
         Raises
         ------
         ValueError
             if the number of state coefficients are different for the bra and ket
+        RuntimeError
+            if the matrix shapes are incompatible with an atomic resolution conversion
 
         Returns
         -------
@@ -650,12 +666,12 @@ state coefficients
             # non-orthogonal basis. That would be non-ideal
             ket = ket.state
         if len(ket.shape) == 1:
-            ket.shape = (1, -1)
+            ket = ket.reshape(1, -1)
 
         # check that the shapes matches (ket should be transposed)
         #  bra M ket
         if ndim == 0:
-            # M,N @ N, L
+            # M, N @ N, L
             if bra.shape[1] != ket.shape[1]:
                 raise ValueError(
                     f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}"
@@ -673,7 +689,16 @@ state coefficients
                     f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}"
                 )
 
-        if diag:
+        projection = {
+            # temporary work-around for older codes where project/diag=T|F were allowed
+            True: "diag",
+            False: "none",
+            "sum": "diag",  # still allowed here (for bypass options)
+            "atoms": "atom",  # plural s allowed
+            "orbitals": "none",  # still allowed here (for bypass options)
+        }.get(projection, projection)
+
+        if projection in ("diag", "diagonal"):
             if bra.shape[0] != ket.shape[0]:
                 raise ValueError(
                     f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors."
@@ -684,12 +709,48 @@ state coefficients
                 Aij = einsum("ij,j,ij->i", np.conj(bra), M, ket)
             elif ndim == 0:
                 Aij = einsum("ij,ij->i", np.conj(bra), ket) * M
-        elif ndim == 2:
-            Aij = np.conj(bra) @ M.dot(ket.T)
-        elif ndim == 1:
-            Aij = einsum("ij,j,kj->ik", np.conj(bra), M, ket)
-        elif ndim == 0:
-            Aij = einsum("ij,kj->ik", np.conj(bra), ket) * M
+
+        elif projection in ("matrix", "none"):
+            if ndim == 2:
+                Aij = np.conj(bra) @ M.dot(ket.T)
+            elif ndim == 1:
+                Aij = einsum("ij,j,kj->ik", np.conj(bra), M, ket)
+            elif ndim == 0:
+                Aij = einsum("ij,kj->ik", np.conj(bra), ket) * M
+
+        elif projection in ("atom", "orbital", "state"):
+            if ndim == 2:
+                Aij = np.conj(bra) * M.dot(ket.T).T
+            else:
+                Aij = np.conj(bra) * ket * M
+
+            # Now do the projection
+            if projection == "atom":
+                # Now we need to convert it
+                geom = self._geometry()
+                if Aij.shape[1] == geom.no * 2:
+                    # We have some kind of spin-configuration (hidden)
+                    def mapper(atom):
+                        return np.arange(
+                            geom.firsto[atom] * 2, geom.firsto[atom + 1] * 2
+                        )
+
+                elif Aij.shape[1] == geom.no:
+
+                    def mapper(atom):
+                        return np.arange(geom.firsto[atom], geom.firsto[atom + 1])
+
+                else:
+                    raise RuntimeError(
+                        f"{self.__class__.__name__}.inner could not determine "
+                        "the correct atom conversions."
+                    )
+                Aij = geom.apply(Aij, np.sum, mapper, axis=1)
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.inner got unknown argument 'projection'={projection}"
+            )
+
         return Aij
 
     def phase(self, method="max", ret_index=False):
@@ -789,11 +850,12 @@ state coefficients
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm = self.norm2(projection="none").real
-        onorm = other.norm2(projection="none").real
+        snorm = self.norm2(projection="state").real
+        onorm = other.norm2(projection="state").real
 
         # Now find new orderings
         show_warn = False
+
         sidx = _a.fulli(len(self), -1)
         oidx = _a.emptyi(len(self))
         for i in range(len(self)):
