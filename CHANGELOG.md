@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- improved `atom` projections of states, #750
 - improved typing system
 - `units` to `read_*` for some `Sile`s, #726
 - enabled reading the Hamiltonian from the Wannier90 _tb.dat file, #727

@@ -95,8 +95,9 @@ def apply(
     ----------
     data : array_like
         the data to be converted
-    func : callable
-        a callable function that transforms the data in some way
+    func : callable or str
+        a callable function that transforms the data in some way.
+        If a `str`, will use ``getattr(numpy, func)``.
     mapper : func, optional
         a function transforming the `segments` into some other segments that
         is present in `data`.
@@ -114,13 +115,13 @@ def apply(
 
     >>> g = sisl.geom.diamond(atoms=sisl.Atom(6, R=(1, 2)))
     >>> orbital_data = np.random.rand(10, g.no, 3)
-    >>> atomic_data = g.apply(orbital_data, np.sum, mapper=g.a2o, axis=1)
+    >>> atomic_data = g.apply(orbital_data, np.sum, mapper=partial(g.a2o, all=True), axis=1)
 
     The same can be accomblished by passing an explicit segment iterator,
     note that ``iter(g) == range(g.na)``
 
-    >>> atomic_data = g.apply(orbital_data, np.sum, mapper=g.a2o, axis=1,
-    ...                       segments=iter(g))
+    >>> atomic_data = g.apply(orbital_data, np.sum, mapper=partial(g.a2o, all=True), axis=1,
+    ...                       segments=g)
 
     To only take out every 2nd orbital:
 
@@ -129,31 +130,36 @@ def apply(
 
     """
     if isinstance(segments, str):
-        segments = segments.lower()
-        if segments.startswith("atom"):
+        segment = segments.lower().rstrip("s")
+        if segment == "atom":
             segments = range(geometry.na)
-        elif segments.startswith("orbital"):
+        elif segment in ("orbital", "none"):
             segments = range(geometry.no)
-        elif segments == "all":
+        elif segment == "all":
             segments = range(data.shape[axis])
         else:
             raise ValueError(
                 f"{geometry.__class__}.apply got wrong argument 'segments'={segments}"
             )
 
+    if isinstance(func, str):
+        func = getattr(np, func)
+
     if isinstance(mapper, str):
         # an internal mapper
         mapper = getattr(geometry, mapper)
 
-    # handle the data
+    take = np.take
+    atleast_1d = np.atleast_1d
     new_data = [
-        # execute func on the segmented data
-        func(np.take(data, mapper(segment), axis), axis=axis)
-        # loop each segment
+        func(take(data, atleast_1d(mapper(segment)), axis), axis=axis)
         for segment in segments
     ]
 
-    return np.stack(new_data, axis=axis)
+    new_data = np.stack(new_data, axis=axis)
+    if new_data.ndim != data.ndim:
+        new_data = np.expand_dims(new_data, axis=axis)
+    return new_data
 
 
 @register_sisl_dispatch(Geometry, module="sisl")

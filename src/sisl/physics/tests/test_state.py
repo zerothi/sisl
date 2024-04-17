@@ -259,9 +259,9 @@ def test_state_align_phase():
 
 
 def test_state_ipr():
-    state = State(ortho_matrix(15))
+    state = State(ortho_matrix(10))
     ipr = state.ipr()
-    assert ipr.shape == (15,)
+    assert ipr.shape == (10,)
 
 
 def test_state_align_norm():
@@ -282,7 +282,7 @@ def test_state_align_norm():
 
 
 def test_state_align_norm2():
-    state = ortho_matrix(15)
+    state = ortho_matrix(10)
     state1 = State(state)
     idx = np.arange(len(state))
     np.random.shuffle(idx)
