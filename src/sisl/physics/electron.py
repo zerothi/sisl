@@ -3,6 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import Literal
+
+from sisl.messages import deprecate_argument
+
 r"""Electron related functions and classes
 ==========================================
 
@@ -1551,7 +1555,14 @@ class _electron_State:
 
         return _FakeMatrix(n, m)
 
-    def norm2(self, sum=True):
+    @deprecate_argument(
+        "sum",
+        "projection",
+        "argument sum has been deprecated in favor of projection",
+        "0.15",
+        "0.16",
+    )
+    def norm2(self, projection: Literal["sum", "orbital", "atom", "none"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
         :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis
@@ -1559,9 +1570,8 @@ class _electron_State:
 
         Parameters
         ----------
-        sum : bool, optional
-           for true only a single number per state will be returned, otherwise the norm
-           per basis element will be returned.
+        projection :
+           whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity
 
         Returns
         -------
@@ -1571,9 +1581,33 @@ class _electron_State:
         # Retrieve the overlap matrix (FULL S is required for NC)
         S = self.Sk()
 
-        if sum:
+        # ensure backwards compatibility by converting bool
+        if projection is True:
+            projection = "sum"
+        elif projection is False:
+            projection = "orbital"
+
+        if projection == "sum":
             return self.inner(matrix=S)
-        return conj(self.state) * S.dot(self.state.T).T
+
+        elif projection in ("orbital", "none"):
+            return conj(self.state) * S.dot(self.state.T).T
+
+        elif projection == "atom":
+            # build sparse matrix M to map from orbital-to-atom-resolved quantity
+            na = self.parent.na
+            no = len(self.parent)
+            data = np.ones(no)
+            col_idx = np.arange(no)
+            row_idx = self.parent.o2a(col_idx)
+            M = csr_matrix((data, (row_idx, col_idx)), shape=(na, no))
+            orb_norm2 = conj(self.state) * S.dot(self.state.T).T
+            return M.dot(orb_norm2.T).T
+
+        else:
+            raise ValueError(
+                "norm2: projection needs to be either sum, orbital, atom, or none"
+            )
 
     def spin_moment(self, project=False):
         r"""Calculate spin moment from the states
