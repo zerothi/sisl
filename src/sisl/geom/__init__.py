@@ -53,6 +53,8 @@ Surfaces
   honeycomb
   graphene
   bilayer
+  hexagonal
+  goldene
 
 
 They generally take a lattice-parameter argument, and will all allow

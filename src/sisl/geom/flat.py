@@ -13,7 +13,15 @@ from sisl.typing import AtomsLike
 
 from ._common import geometry_define_nsc
 
-__all__ = ["honeycomb", "graphene", "honeycomb_flake", "graphene_flake", "triangulene"]
+__all__ = [
+    "honeycomb",
+    "graphene",
+    "honeycomb_flake",
+    "graphene_flake",
+    "triangulene",
+    "hexagonal",
+    "goldene",
+]
 
 
 @set_module("sisl.geom")
@@ -65,7 +73,10 @@ def honeycomb(bond: float, atoms: AtomsLike, orthogonal: bool = False) -> Geomet
             atoms,
             lattice=lattice,
         )
+
+    # Set boundary conditions
     geometry_define_nsc(g, [True, True, False])
+
     return g
 
 
@@ -250,3 +261,80 @@ def triangulene(
     geometry_define_nsc(geom, [False, False, False])
 
     return geom
+
+
+def hexagonal(
+    bond: float, atoms: AtomsLike = None, orthogonal: bool = False
+) -> Geometry:
+    """A hexagonal unit-cell with 1 or 2 atoms in the basic unit cell
+
+    The hexagonal unit-cell is the equivalent of an FCC(111) surface, i.e.
+    a close-packed lattice.
+
+    Parameters
+    ----------
+    bond :
+        bond length between atoms (*not* lattice constant)
+    atoms : Atom, optional
+        the atom (or atoms) that the hexagonal lattice consists of.
+    orthogonal :
+        if True returns an orthogonal lattice (2 atoms), otherwise
+        a non-orthogonal lattice (1 atom).
+    """
+    sq3h = 3.0**0.5 * 0.5
+    if orthogonal:
+        lattice = Lattice(
+            np.array([[2 * sq3h, 0.0, 0.0], [0, 1, 0.0], [0.0, 0.0, 10.0]], np.float64)
+            * bond
+        )
+        g = Geometry(
+            np.array(
+                [[0.0, 0.0, 0.0], [sq3h, 0.5, 0.0]],
+                np.float64,
+            )
+            * bond,
+            atoms,
+            lattice=lattice,
+        )
+    else:
+        lattice = Lattice(
+            np.array(
+                [[sq3h, -0.5, 0.0], [sq3h, 0.5, 0.0], [0.0, 0.0, 10.0]], np.float64
+            )
+            * bond
+        )
+        g = Geometry(
+            np.array([[0.0, 0.0, 0.0]], np.float64),
+            atoms,
+            lattice=lattice,
+        )
+
+    # Set boundary conditions
+    geometry_define_nsc(g, [True, True, False])
+
+    return g
+
+
+def goldene(
+    bond: float = 2.7, atoms: AtomsLike = None, orthogonal: bool = False
+) -> Geometry:
+    """A goldene unit-cell with 1 or 2 atoms in the basic unit cell
+
+    Parameters
+    ----------
+    bond :
+        bond length between atoms (*not* lattice constant)
+    atoms : Atom, optional
+        the atom (or atoms) that the hexagonal lattice consists of.
+        Default to Gold atom.
+    orthogonal :
+        if True returns an orthogonal lattice (2 atoms), otherwise
+        a non-orthogonal lattice (1 atom).
+
+    See Also
+    --------
+    hexagonal : the underlying unit cell
+    """
+    if atoms is None:
+        atoms = Atom(Z=79, R=bond * 1.01)
+    return hexagonal(bond, atoms, orthogonal)
