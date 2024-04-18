@@ -87,9 +87,6 @@ del log_file
 # import the common options used
 from ._common import *
 
-# Import plot routine
-from ._plot import plot as plot
-
 # Import warning classes
 # We currently do not import warn and info
 # as they are too generic names in case one does from sisl import *

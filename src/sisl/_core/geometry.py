@@ -34,7 +34,6 @@ from numpy import (
 )
 
 import sisl._array as _a
-import sisl._plot as plt
 from sisl._category import Category, GenericCategory
 from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
@@ -3111,81 +3110,6 @@ class Geometry(
         Returns the super-cell offset for a specific orbital.
         """
         return self.lattice.offset(self.o2isc(orbitals))
-
-    def __plot__(
-        self,
-        axis=None,
-        lattice: bool = True,
-        axes=False,
-        atom_indices: bool = False,
-        *args,
-        **kwargs,
-    ):
-        """Plot the geometry in a specified ``matplotlib.Axes`` object.
-
-        Parameters
-        ----------
-        axis : array_like, optional
-           only plot a subset of the axis, defaults to all axis
-        lattice : bool, optional
-           If `True` also plot the lattice structure
-        atom_indices : bool, optional
-           if true, also add atomic numbering in the plot (0-based)
-        axes : bool or matplotlib.Axes, optional
-           the figure axes to plot in (if ``matplotlib.Axes`` object).
-           If `True` it will create a new figure to plot in.
-           If `False` it will try and grap the current figure and the current axes.
-        """
-        # Default dictionary for passing to newly created figures
-        d = dict()
-
-        colors = np.linspace(0, 1, num=self.atoms.nspecies, endpoint=False)
-        colors = colors[self.atoms.species]
-        if "s" in kwargs:
-            area = kwargs.pop("s")
-        else:
-            area = _a.arrayd(self.atoms.Z)
-            area[:] *= 20 * np.pi / area.min()
-
-        if axis is None:
-            axis = [0, 1, 2]
-
-        # Ensure we have a new 3D Axes3D
-        if len(axis) == 3:
-            d["projection"] = "3d"
-
-        # The Geometry determines the axes, then we pass it to supercell.
-        axes = plt.get_axes(axes, **d)
-
-        # Start by plotting the supercell
-        if lattice:
-            axes = self.lattice.__plot__(axis, axes=axes, *args, **kwargs)
-
-        # Create short-hand
-        xyz = self.xyz
-
-        if axes.__class__.__name__.startswith("Axes3D"):
-            # We should plot in 3D plots
-            axes.scatter(xyz[:, 0], xyz[:, 1], xyz[:, 2], s=area, c=colors, alpha=0.8)
-            axes.set_zlabel("Ang")
-            if atom_indices:
-                for i, loc in enumerate(xyz):
-                    axes.text(
-                        loc[0], loc[1], loc[2], str(i), verticalalignment="bottom"
-                    )
-
-        else:
-            axes.scatter(xyz[:, axis[0]], xyz[:, axis[1]], s=area, c=colors, alpha=0.8)
-            if atom_indices:
-                for i, loc in enumerate(xyz):
-                    axes.text(
-                        loc[axis[0]], loc[axis[1]], str(i), verticalalignment="bottom"
-                    )
-
-        axes.set_xlabel("Ang")
-        axes.set_ylabel("Ang")
-
-        return axes
 
     def equal(self, other: GeometryLike, R: bool = True, tol: float = 1e-4) -> bool:
         """Whether two geometries are the same (optional not check of the orbital radius)
