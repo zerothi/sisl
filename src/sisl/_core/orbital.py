@@ -25,7 +25,6 @@ except ImportError:
 from scipy.interpolate import UnivariateSpline
 
 import sisl._array as _a
-import sisl._plot as plt
 from sisl._internal import set_module
 from sisl.constant import a0
 from sisl.messages import warn
@@ -278,52 +277,6 @@ class Orbital:
 
     def __eq__(self, other):
         return self.equal(other)
-
-    def __plot__(self, harmonics: bool = False, axes=False, *args, **kwargs):
-        """Plot the orbital radial/spherical harmonics
-
-        Parameters
-        ----------
-        harmonics : bool, optional
-           if `True` the spherical harmonics will be plotted in a 3D only plot a subset of the axis, defaults to all axis
-        axes : bool or matplotlib.Axes, optional
-           the figure axes to plot in (if ``matplotlib.Axes`` object).
-           If ``True`` it will create a new figure to plot in.
-           If ``False`` it will try and grap the current figure and the current axes.
-        """
-        d = dict()
-
-        if harmonics:
-            # We are plotting the harmonic part
-            d["projection"] = "polar"
-
-        axes = plt.get_axes(axes, **d)
-
-        # Add plots
-        if harmonics:
-            # Calculate the spherical harmonics
-            theta, phi = np.meshgrid(np.arange(360), np.arange(180) - 90)
-            s = self.spher(np.radians(theta), np.radians(phi))
-
-            # Plot data
-            cax = axes.contourf(theta, phi, s, *args, **kwargs)
-            cax.set_clim(s.min(), s.max())
-            axes.get_figure().colorbar(cax)
-            axes.set_title(r"${}$".format(self.name(True)))
-            # I don't know how exactly to handle this...
-            # axes.set_xlabel(r"Azimuthal angle $\theta$")
-            # axes.set_ylabel(r"Polar angle $\phi$")
-
-        else:
-            # Plot the radial function and 5% above 0 value
-            r = np.linspace(0, self.R * 1.05, 1000)
-            f = self.radial(r)
-            axes.plot(r, f, *args, **kwargs)
-            axes.set_xlim(left=0)
-            axes.set_xlabel("Radius [Ang]")
-            axes.set_ylabel(r"$f(r)$ [1/Ang$^{3/2}$]")
-
-        return axes
 
     def toGrid(
         self, precision: float = 0.05, c: float = 1.0, R=None, dtype=np.float64, atom=1

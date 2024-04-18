@@ -18,7 +18,6 @@ import numpy as np
 from numpy import dot, ndarray
 
 import sisl._array as _a
-import sisl._plot as plt
 from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from sisl._internal import set_module
@@ -1061,72 +1060,6 @@ class Lattice(
         """Re-create the state of this object"""
         self.__init__(d["cell"], d["nsc"], d["origin"])
         self.sc_off = d["sc_off"]
-
-    def __plot__(self, axis=None, axes=False, *args, **kwargs):
-        """Plot the supercell in a specified ``matplotlib.Axes`` object.
-
-        Parameters
-        ----------
-        axis : array_like, optional
-           only plot a subset of the axis, defaults to all axis
-        axes : bool or matplotlib.Axes, optional
-           the figure axes to plot in (if ``matplotlib.Axes`` object).
-           If ``True`` it will create a new figure to plot in.
-           If ``False`` it will try and grap the current figure and the current axes.
-        """
-        # Default dictionary for passing to newly created figures
-        d = dict()
-
-        # Try and default the color and alpha
-        if "color" not in kwargs and len(args) == 0:
-            kwargs["color"] = "k"
-        if "alpha" not in kwargs:
-            kwargs["alpha"] = 0.5
-
-        if axis is None:
-            axis = [0, 1, 2]
-
-        # Ensure we have a new 3D Axes3D
-        if len(axis) == 3:
-            d["projection"] = "3d"
-
-        axes = plt.get_axes(axes, **d)
-
-        # Create vector objects
-        o = self.origin
-        v = []
-        for a in axis:
-            v.append(np.vstack((o[axis], o[axis] + self.cell[a, axis])))
-        v = np.array(v)
-
-        if axes.__class__.__name__.startswith("Axes3D"):
-            # We should plot in 3D plots
-            for vv in v:
-                axes.plot(vv[:, 0], vv[:, 1], vv[:, 2], *args, **kwargs)
-
-            v0, v1 = v[0], v[1] - o
-            axes.plot(
-                v0[1, 0] + v1[:, 0],
-                v0[1, 1] + v1[:, 1],
-                v0[1, 2] + v1[:, 2],
-                *args,
-                **kwargs,
-            )
-
-            axes.set_zlabel("Ang")
-
-        else:
-            for vv in v:
-                axes.plot(vv[:, 0], vv[:, 1], *args, **kwargs)
-
-            v0, v1 = v[0], v[1] - o[axis]
-            axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], *args, **kwargs)
-            axes.plot(v1[1, 0] + v0[:, 0], v1[1, 1] + v0[:, 1], *args, **kwargs)
-
-        axes.set_xlabel("Ang")
-        axes.set_ylabel("Ang")
-
-        return axes
 
 
 new_dispatch = Lattice.new
