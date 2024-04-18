@@ -9,6 +9,8 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- added the `goldene` 2D lattice, a `hexagonal` Gold 2D structure
+- added the `hexagonal` 2D lattice, close-packed FCC(111) surface
 - improved `atom` projections of states, #750
 - improved typing system
 - `units` to `read_*` for some `Sile`s, #726

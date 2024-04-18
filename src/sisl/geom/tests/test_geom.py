@@ -45,11 +45,14 @@ def test_basic():
     a = rocksalt(5.64, [Atom("Na", R=3), Atom("Cl", R=4)], orthogonal=True)
 
 
-def test_flat():
-    a = graphene()
+@pytest.mark.parametrize(
+    "func, orthogonal",
+    itertools.product([graphene, goldene], [True, False]),
+)
+def test_flat(func, orthogonal):
+    a = func(orthogonal=orthogonal)
     assert is_right_handed(a)
-    graphene(atoms="C")
-    a = graphene(orthogonal=True)
+    a = func(atoms="C", orthogonal=orthogonal)
     assert is_right_handed(a)
 
 

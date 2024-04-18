@@ -77,6 +77,8 @@ Surfaces (slabs)
    honeycomb
    bilayer
    graphene
+   hexagonal
+   goldene
 
 
 Helpers
