@@ -90,8 +90,12 @@ class chgSileVASP(carSileVASP):
                         while j < occ:
                             j += len(rl().split())
                         line = rl()
+                    # read over an additional block with geom.na entries???
+                    j = len(line.split())
+                    while j < geom.na:
+                        j += len(rl().split())
                 # one line of nx, ny, nz
-                rl()
+                assert len(rl().split()) == 3
 
         # Cut size before proceeding (otherwise it *may* fail)
         vals = np.array(vals).astype(dtype, copy=False)
