@@ -53,7 +53,7 @@ class chgSileVASP(carSileVASP):
         >>> charge = fh.read_grid()
         >>> spin = fh.read_grid(1)
         >>> up_density = fh.read_grid([0.5, 0.5])
-        >>> assert np.allclose((charge + spin).grid, up_density.grid)
+        >>> assert np.allclose((charge + spin).grid / 2, up_density.grid)
 
         Returns
         -------
