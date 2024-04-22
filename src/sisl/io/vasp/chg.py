@@ -27,7 +27,7 @@ class chgSileVASP(carSileVASP):
 
     @sile_fh_open(True)
     def read_grid(self, index=0, dtype=np.float64, **kwargs) -> Grid:
-        """Reads the charge density from the file and returns with a grid (plus geometry)
+        r"""Reads the charge density from the file and returns with a grid (plus geometry)
 
         Parameters
         ----------
@@ -36,7 +36,7 @@ class chgSileVASP(carSileVASP):
            For spin-polarized calculations, 0 and 1 refer to the charge (spin-up plus spin-down) and
            magnetitization (spin-up minus spin-down), respectively.
            For non-collinear calculations, 0 refers to the charge while 1, 2 and 3 to
-           the magnetization in the :math:`\sigma_1`, :math:`\sigma_2`, and :math:`\sigma_3` directions, respectively.
+           the magnetization in the :math:`\sigma_x`, :math:`\sigma_y`, and :math:`\sigma_z` directions, respectively.
            TOTAL, x, y, z charge density with the Cartesian directions equal to the charge
            magnetization.
            For array-like they refer to the fractional contributions for each corresponding index.
@@ -54,6 +54,8 @@ class chgSileVASP(carSileVASP):
         >>> spin = fh.read_grid(1)
         >>> up_density = fh.read_grid([0.5, 0.5])
         >>> assert np.allclose((charge + spin).grid / 2, up_density.grid)
+        >>> down_density = fh.read_grid([0.5, -0.5])
+        >>> assert np.allclose((charge - spin).grid / 2, down_density.grid)
 
         Returns
         -------
