@@ -95,7 +95,7 @@ class chgSileVASP(carSileVASP):
                     while j < geom.na:
                         j += len(rl().split())
                 # one line of nx, ny, nz
-                assert len(rl().split()) == 3
+                assert np.allclose(list(map(int, rl().split())), [nx, ny, nz])
 
         # Cut size before proceeding (otherwise it *may* fail)
         vals = np.array(vals).astype(dtype, copy=False)
