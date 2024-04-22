@@ -32,15 +32,28 @@ class chgSileVASP(carSileVASP):
         Parameters
         ----------
         index : int or array_like, optional
-           the index of the grid to read. For a spin-polarized VASP calculation 0 and 1 are
-           allowed, UP/DOWN. For non-collinear 0, 1, 2 or 3 is allowed which equals,
+           the index of the grid to read.
+           For spin-polarized calculations, 0 and 1 refer to the charge (spin-up plus spin-down) and
+           magnetitization (spin-up minus spin-down), respectively.
+           For non-collinear calculations, 0 refers to the charge while 1, 2 and 3 to
+           the magnetization in the :math:`\sigma_1`, :math:`\sigma_2`, and :math:`\sigma_3` directions, respectively.
            TOTAL, x, y, z charge density with the Cartesian directions equal to the charge
-           magnetization. For array-like they refer to the fractional
-           contributions for each corresponding index.
+           magnetization.
+           For array-like they refer to the fractional contributions for each corresponding index.
         dtype : numpy.dtype, optional
            grid stored dtype
         spin : optional
            same as `index` argument. `spin` argument has precedence.
+
+        Examples
+        --------
+        Read the spin polarization from a spin-polarized CHGCAR file
+
+        >>> fh = sisl.get_sile('CHGCAR')
+        >>> charge = fh.read_grid()
+        >>> spin = fh.read_grid(1)
+        >>> up_density = fh.read_grid([0.5, 0.5])
+        >>> assert np.allclose((charge + spin).grid, up_density.grid)
 
         Returns
         -------
