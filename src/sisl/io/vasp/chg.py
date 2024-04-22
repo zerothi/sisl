@@ -36,7 +36,8 @@ class chgSileVASP(carSileVASP):
            For spin-polarized calculations, 0 and 1 refer to the charge (spin-up plus spin-down) and
            magnetitization (spin-up minus spin-down), respectively.
            For non-collinear calculations, 0 refers to the charge while 1, 2 and 3 to
-           the magnetization in the :math:`\sigma_x`, :math:`\sigma_y`, and :math:`\sigma_z` directions, respectively.
+           the magnetization in the :math:`\sigma_1`, :math:`\sigma_2`, and :math:`\sigma_3` directions, respectively.
+           The directions are related via the VASP input option ``SAXIS``.
            TOTAL, x, y, z charge density with the Cartesian directions equal to the charge
            magnetization.
            For array-like they refer to the fractional contributions for each corresponding index.
