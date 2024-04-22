@@ -46,6 +46,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- fixed `CHGCAR` spin-polarized density reads, #754
 - dispatch methods now searches the mro for best matches, #721
 - all `eps` arguments has changed to `atol`
 - methods with `axis` arguments now accepts the str equivalent 0==a

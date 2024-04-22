@@ -27,20 +27,35 @@ class chgSileVASP(carSileVASP):
 
     @sile_fh_open(True)
     def read_grid(self, index=0, dtype=np.float64, **kwargs) -> Grid:
-        """Reads the charge density from the file and returns with a grid (plus geometry)
+        r"""Reads the charge density from the file and returns with a grid (plus geometry)
 
         Parameters
         ----------
         index : int or array_like, optional
-           the index of the grid to read. For a spin-polarized VASP calculation 0 and 1 are
-           allowed, UP/DOWN. For non-collinear 0, 1, 2 or 3 is allowed which equals,
+           the index of the grid to read.
+           For spin-polarized calculations, 0 and 1 refer to the charge (spin-up plus spin-down) and
+           magnetitization (spin-up minus spin-down), respectively.
+           For non-collinear calculations, 0 refers to the charge while 1, 2 and 3 to
+           the magnetization in the :math:`\sigma_x`, :math:`\sigma_y`, and :math:`\sigma_z` directions, respectively.
            TOTAL, x, y, z charge density with the Cartesian directions equal to the charge
-           magnetization. For array-like they refer to the fractional
-           contributions for each corresponding index.
+           magnetization.
+           For array-like they refer to the fractional contributions for each corresponding index.
         dtype : numpy.dtype, optional
            grid stored dtype
         spin : optional
            same as `index` argument. `spin` argument has precedence.
+
+        Examples
+        --------
+        Read the spin polarization from a spin-polarized CHGCAR file
+
+        >>> fh = sisl.get_sile('CHGCAR')
+        >>> charge = fh.read_grid()
+        >>> spin = fh.read_grid(1)
+        >>> up_density = fh.read_grid([0.5, 0.5])
+        >>> assert np.allclose((charge + spin).grid / 2, up_density.grid)
+        >>> down_density = fh.read_grid([0.5, -0.5])
+        >>> assert np.allclose((charge - spin).grid / 2, down_density.grid)
 
         Returns
         -------
@@ -90,8 +105,12 @@ class chgSileVASP(carSileVASP):
                         while j < occ:
                             j += len(rl().split())
                         line = rl()
+                    # read over an additional block with geom.na entries???
+                    j = len(line.split())
+                    while j < geom.na:
+                        j += len(rl().split())
                 # one line of nx, ny, nz
-                rl()
+                assert np.allclose(list(map(int, rl().split())), [nx, ny, nz])
 
         # Cut size before proceeding (otherwise it *may* fail)
         vals = np.array(vals).astype(dtype, copy=False)
