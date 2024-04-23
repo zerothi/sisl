@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.grid &mdash; sisl 0.1-c02b256</title>
+  <title>sisl._core.grid &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -123,6 +124,8 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Real</span>
@@ -158,8 +161,6 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Grid&quot;</span><span class="p">,</span> <span class="s2">&quot;sgrid&quot;</span><span class="p">]</span>
 
-<span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
-<span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;adding logger: </span><span class="si">{</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
@@ -168,13 +169,8 @@
     <span class="n">LatticeChild</span><span class="p">,</span>
     <span class="n">_Dispatchs</span><span class="p">,</span>
     <span class="n">dispatchs</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span>
-            <span class="s2">&quot;new&quot;</span><span class="p">,</span>
-            <span class="n">ClassDispatcher</span><span class="p">(</span>
-                <span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">obj_getattr</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">instance_dispatcher</span><span class="o">=</span><span class="n">TypeDispatcher</span>
-            <span class="p">),</span>
-        <span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">obj_getattr</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">)),</span>
+        <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">obj_getattr</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">instance_dispatcher</span><span class="o">=</span><span class="n">TypeDispatcher</span><span class="p">),</span>
+        <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">obj_getattr</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
     <span class="p">],</span>
     <span class="n">when_subclassing</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">,</span>
 <span class="p">):</span>
@@ -236,12 +232,14 @@
         <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument sc has been deprecated in favor of lattice, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span>
         <span class="s2">&quot;bc&quot;</span><span class="p">,</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;argument bc has been deprecated (removed) in favor of the boundary conditions in Lattice, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -275,8 +273,9 @@
 <div class="viewcode-block" id="Grid.set_bc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.set_bc">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
-        <span class="s2">&quot;Grid.set_bc is deprecated since boundary conditions are moved to Lattice (see github issue #626&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Grid.set_bc is deprecated since boundary conditions are moved to Lattice (see github issue #626)&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_bc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span></div>
@@ -285,8 +284,9 @@
 <div class="viewcode-block" id="Grid.set_boundary">
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.set_boundary">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
-        <span class="s2">&quot;Grid.set_boundary is deprecated since boundary conditions are moved to Lattice (see github issue #626&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Grid.set_boundary is deprecated since boundary conditions are moved to Lattice (see github issue #626)&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span></div>
@@ -295,8 +295,9 @@
 <div class="viewcode-block" id="Grid.set_boundary_condition">
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.set_boundary_condition">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
-        <span class="s2">&quot;Grid.set_boundary_condition is deprecated since boundary conditions are moved to Lattice (see github issue #626&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Grid.set_boundary_condition is deprecated since boundary conditions are moved to Lattice (see github issue #626)&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_boundary_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span></div>
@@ -522,7 +523,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Grid shape in :math:`x`, :math:`y`, :math:`z` directions&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Grid shape along the lattice vectors&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span>
 
     <span class="nd">@property</span>
@@ -1057,7 +1058,7 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Take the absolute value of the grid :math:`|grid|`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Take the absolute value of the grid :math:`|\mathrm{grid}|`&quot;&quot;&quot;</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">a</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1244,7 +1245,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        b : numpy.ndarray</span>
-<span class="sd">           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil</span>
+<span class="sd">           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil</span>
 <span class="sd">        pyamg_indices : list of int</span>
 <span class="sd">           the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should</span>
 <span class="sd">           correspond to returned quantities from `pyamg_indices`.</span>
@@ -1262,7 +1263,7 @@
 <span class="sd">        A : `~scipy.sparse.csr_matrix`/`~scipy.sparse.csc_matrix`</span>
 <span class="sd">           sparse matrix describing the LHS for the linear system of equations</span>
 <span class="sd">        b : numpy.ndarray</span>
-<span class="sd">           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil</span>
+<span class="sd">           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil</span>
 <span class="sd">        pyamg_indices : list of int</span>
 <span class="sd">           the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should</span>
 <span class="sd">           correspond to returned quantities from `pyamg_indices`.</span>
@@ -1309,7 +1310,7 @@
 <span class="sd">        A : scipy.sparse.csr_matrix</span>
 <span class="sd">           sparse matrix describing the grid</span>
 <span class="sd">        b : numpy.ndarray</span>
-<span class="sd">           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil</span>
+<span class="sd">           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">Neumann</span><span class="p">(</span><span class="n">idx_bc</span><span class="p">,</span> <span class="n">idx_p1</span><span class="p">):</span>
@@ -1382,6 +1383,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Grid.html#sisl.Grid.topyamg">[docs]</a>
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;Grid.topyamg is deprecated in favor of Grid.to.pyamg&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">topyamg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

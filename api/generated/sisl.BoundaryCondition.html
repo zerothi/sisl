@@ -4,14 +4,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.BoundaryCondition &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.BoundaryCondition &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -24,8 +24,8 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -74,6 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -156,49 +157,37 @@
 <h1>sisl.BoundaryCondition<a class="headerlink" href="#sisl-boundarycondition" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.BoundaryCondition">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">BoundaryCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/lattice.html#BoundaryCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.BoundaryCondition" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">BoundaryCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/lattice.html#BoundaryCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.BoundaryCondition" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a></p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.getitem" title="sisl.BoundaryCondition.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(key)</p></td>
-<td><p>Search for a specific integer entry by value, and not by name</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.as_integer_ratio" title="sisl.BoundaryCondition.as_integer_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_integer_ratio</span></code></a>()</p></td>
-<td><p>Return integer ratio.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.bit_count" title="sisl.BoundaryCondition.bit_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bit_count</span></code></a>()</p></td>
-<td><p>Number of ones in the binary representation of the absolute value of self.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.conjugate" title="sisl.BoundaryCondition.conjugate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conjugate</span></code></a></p></td>
+<td><p>Returns self, the complex conjugate of any int.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.bit_length" title="sisl.BoundaryCondition.bit_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bit_length</span></code></a>()</p></td>
 <td><p>Number of bits necessary to represent self in binary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.conjugate" title="sisl.BoundaryCondition.conjugate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conjugate</span></code></a></p></td>
-<td><p>Returns self, the complex conjugate of any int.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.bit_count" title="sisl.BoundaryCondition.bit_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bit_count</span></code></a>()</p></td>
+<td><p>Number of ones in the binary representation of the absolute value of self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.from_bytes" title="sisl.BoundaryCondition.from_bytes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_bytes</span></code></a>([byteorder, signed])</p></td>
-<td><p>Return the integer represented by the given array of bytes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.to_bytes" title="sisl.BoundaryCondition.to_bytes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bytes</span></code></a>([length, byteorder, signed])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.to_bytes" title="sisl.BoundaryCondition.to_bytes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bytes</span></code></a>([length, byteorder, signed])</p></td>
 <td><p>Return an array of bytes representing an integer.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.UNKNOWN" title="sisl.BoundaryCondition.UNKNOWN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNKNOWN</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.from_bytes" title="sisl.BoundaryCondition.from_bytes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_bytes</span></code></a>([byteorder, signed])</p></td>
+<td><p>Return the integer represented by the given array of bytes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.PERIODIC" title="sisl.BoundaryCondition.PERIODIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PERIODIC</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.as_integer_ratio" title="sisl.BoundaryCondition.as_integer_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_integer_ratio</span></code></a>()</p></td>
+<td><p>Return a pair of integers, whose ratio is equal to the original int.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.DIRICHLET" title="sisl.BoundaryCondition.DIRICHLET"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DIRICHLET</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.is_integer" title="sisl.BoundaryCondition.is_integer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_integer</span></code></a>()</p></td>
+<td><p>Returns True.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.NEUMANN" title="sisl.BoundaryCondition.NEUMANN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NEUMANN</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.getitem" title="sisl.BoundaryCondition.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(key)</p></td>
+<td><p>Search for a specific integer entry by value, and not by name</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.OPEN" title="sisl.BoundaryCondition.OPEN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OPEN</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.denominator" title="sisl.BoundaryCondition.denominator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator</span></code></a></p></td>
-<td><p>the denominator of a rational number in lowest terms</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.real" title="sisl.BoundaryCondition.real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real</span></code></a></p></td>
+<td><p>the real part of a complex number</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.imag" title="sisl.BoundaryCondition.imag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imag</span></code></a></p></td>
 <td><p>the imaginary part of a complex number</p></td>
@@ -206,8 +195,23 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.numerator" title="sisl.BoundaryCondition.numerator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numerator</span></code></a></p></td>
 <td><p>the numerator of a rational number in lowest terms</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.real" title="sisl.BoundaryCondition.real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real</span></code></a></p></td>
-<td><p>the real part of a complex number</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.denominator" title="sisl.BoundaryCondition.denominator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator</span></code></a></p></td>
+<td><p>the denominator of a rational number in lowest terms</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.UNKNOWN" title="sisl.BoundaryCondition.UNKNOWN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNKNOWN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.PERIODIC" title="sisl.BoundaryCondition.PERIODIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PERIODIC</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.DIRICHLET" title="sisl.BoundaryCondition.DIRICHLET"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DIRICHLET</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.NEUMANN" title="sisl.BoundaryCondition.NEUMANN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NEUMANN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.BoundaryCondition.OPEN" title="sisl.BoundaryCondition.OPEN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OPEN</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -244,9 +248,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.BoundaryCondition.as_integer_ratio">
 <span class="sig-name descname"><span class="pre">as_integer_ratio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.BoundaryCondition.as_integer_ratio" title="Link to this definition"></a></dt>
-<dd><p>Return integer ratio.</p>
-<p>Return a pair of integers, whose ratio is exactly equal to the original int
-and with a positive denominator.</p>
+<dd><p>Return a pair of integers, whose ratio is equal to the original int.</p>
+<p>The ratio is in lowest terms and has a positive denominator.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
 <span class="go">(10, 1)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
@@ -325,6 +328,12 @@ byte array.  To request the native byte order of the host system, use
 <dt class="sig sig-object py" id="sisl.BoundaryCondition.imag">
 <span class="sig-name descname"><span class="pre">imag</span></span><a class="headerlink" href="#sisl.BoundaryCondition.imag" title="Link to this definition"></a></dt>
 <dd><p>the imaginary part of a complex number</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.BoundaryCondition.is_integer">
+<span class="sig-name descname"><span class="pre">is_integer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.BoundaryCondition.is_integer" title="Link to this definition"></a></dt>
+<dd><p>Returns True. Exists for duck type compatibility with float.is_integer.</p>
 </dd></dl>
 
 <dl class="py attribute">

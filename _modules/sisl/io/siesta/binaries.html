@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -123,9 +124,12 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -149,7 +153,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sisl._core.sparse</span> <span class="kn">import</span> <span class="n">_ncol_to_indptr</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">DensityMatrix</span><span class="p">,</span> <span class="n">EnergyDensityMatrix</span><span class="p">,</span> <span class="n">Hamiltonian</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.electron</span> <span class="kn">import</span> <span class="n">EigenstateElectron</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.overlap</span> <span class="kn">import</span> <span class="n">Overlap</span>
@@ -280,13 +284,23 @@
     <span class="k">if</span> <span class="n">S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
 
-    <span class="k">if</span> <span class="n">M</span><span class="o">.</span><span class="n">spsame</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+    <span class="n">fail</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">):</span>
+            <span class="n">fail</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">M</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="p">[:]</span>
+
+    <span class="k">elif</span> <span class="n">M</span><span class="o">.</span><span class="n">spsame</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">Overlap</span><span class="p">):</span>
+            <span class="n">fail</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">M</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">SparseOrbitalBZ</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">S</span><span class="o">.</span><span class="n">non_orthogonal</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">S</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+                <span class="n">fail</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">M</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">S</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="n">fail</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">str_method</span><span class="si">}</span><span class="s2"> could not paste overlap matrix into the &quot;</span>
             <span class="s2">&quot;matrix due to non-conforming sparse elements.&quot;</span>
@@ -304,7 +318,7 @@
 
 <div class="viewcode-block" id="onlysSileSiesta.read_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_lattice">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Lattice object from a TranSiesta file&quot;&quot;&quot;</span>
         <span class="n">n_s</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read sizes.&quot;</span><span class="p">)</span>
@@ -323,7 +337,14 @@
 
 <div class="viewcode-block" id="onlysSileSiesta.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_geometry">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;geometry&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;basis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;use basis=geometry.atoms instead of geometry=&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Atoms</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns Geometry object from a TranSiesta file&quot;&quot;&quot;</span>
 
         <span class="c1"># Read supercell</span>
@@ -341,7 +362,18 @@
         <span class="c1"># and/or other stuff we *can* reuse an existing</span>
         <span class="c1"># geometry which contains the correct atomic numbers etc.</span>
         <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">lasto</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+            <span class="n">basis</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbs</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_geometry &quot;</span>
+                    <span class="s2">&quot;got a basis set (Atoms object) with incorrect &quot;</span>
+                    <span class="s2">&quot;number of atoms.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Create all different atoms...</span>
             <span class="c1"># The TSHS file does not contain the</span>
             <span class="c1"># atomic numbers, so we will just</span>
@@ -364,10 +396,12 @@
                 <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_atom</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">orb</span><span class="p">))</span>
 
         <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+                <span class="n">basis</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">atoms</span>
+
             <span class="c1"># Create a new geometry with the correct atomic numbers</span>
             <span class="n">atom</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">no</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">no</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">no</span> <span class="o">==</span> <span class="n">no</span><span class="p">:</span>
                     <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -384,7 +418,7 @@
 
 <div class="viewcode-block" id="onlysSileSiesta.read_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_overlap">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the overlap matrix from the TranSiesta file&quot;&quot;&quot;</span>
         <span class="n">tshs_g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="n">_geometry_align</span><span class="p">(</span>
@@ -427,12 +461,13 @@
 
 <div class="viewcode-block" id="onlysSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_fermi_level">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Query the Fermi-level contained in the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Ef : fermi-level of the system</span>
+<span class="sd">        float</span>
+<span class="sd">            fermi-level of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Ef</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_ef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_fermi_level&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read fermi-level.&quot;</span><span class="p">)</span>
@@ -446,7 +481,7 @@
 
 <div class="viewcode-block" id="tshsSileSiesta.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tshsSileSiesta.html#sisl.io.siesta.tshsSileSiesta.read_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Electronic structure from the siesta.TSHS file</span>
 
 <span class="sd">        The TSHS file format does *not* contain exact orbital information.</span>
@@ -615,7 +650,7 @@
 
 <div class="viewcode-block" id="dmSileSiesta.read_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.dmSileSiesta.html#sisl.io.siesta.dmSileSiesta.read_density_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DensityMatrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the density matrix from the siesta.DM file</span>
 
 <span class="sd">        Parameters</span>
@@ -726,7 +761,7 @@
 
 <div class="viewcode-block" id="tsdeSileSiesta.read_energy_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tsdeSileSiesta.html#sisl.io.siesta.tsdeSileSiesta.read_energy_density_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnergyDensityMatrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the energy density matrix from the siesta.TSDE file</span>
 
 <span class="sd">        Parameters</span>
@@ -804,12 +839,13 @@
 
 <div class="viewcode-block" id="tsdeSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tsdeSileSiesta.html#sisl.io.siesta.tsdeSileSiesta.read_fermi_level">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Query the Fermi-level contained in the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Ef : fermi-level of the system</span>
+<span class="sd">        float :</span>
+<span class="sd">            fermi-level of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Ef</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tsde_ef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_fermi_level&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read fermi-level.&quot;</span><span class="p">)</span>
@@ -1209,13 +1245,13 @@
 
 <div class="viewcode-block" id="hsxSileSiesta.read_basis">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_basis">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads basis set and geometry information from the HSX file&quot;&quot;&quot;</span>
         <span class="c1"># Now read the sizes used...</span>
-        <span class="n">no</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nspecies</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_specie_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">no</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nspecies</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_species_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_basis&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read specie sizes.&quot;</span><span class="p">)</span>
         <span class="c1"># Read specie information</span>
-        <span class="n">labels</span><span class="p">,</span> <span class="n">val_q</span><span class="p">,</span> <span class="n">norbs</span><span class="p">,</span> <span class="n">isa</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_species</span><span class="p">(</span>
+        <span class="n">labels</span><span class="p">,</span> <span class="n">val_q</span><span class="p">,</span> <span class="n">norbs</span><span class="p">,</span> <span class="n">isa</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_species_info</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nspecies</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">na</span>
         <span class="p">)</span>
         <span class="c1"># convert to proper string</span>
@@ -1264,7 +1300,7 @@
         <span class="c1"># Read in orbital information</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ispecie</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nspecies</span><span class="p">):</span>
-            <span class="n">n_l_zeta</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_specie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">ispecie</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">norbs</span><span class="p">[</span><span class="n">ispecie</span><span class="p">])</span>
+            <span class="n">n_l_zeta</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_species</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">ispecie</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">norbs</span><span class="p">[</span><span class="n">ispecie</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_basis&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;could not read specie </span><span class="si">{</span><span class="n">ispecie</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="c1"># create orbital</span>
             <span class="c1"># since the n, l, zeta is unique per atomic orbital (before expanding to</span>
@@ -1342,7 +1378,7 @@
 
 <div class="viewcode-block" id="hsxSileSiesta.read_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_lattice">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the lattice from the file</span>
 
 <span class="sd">        This will always work on new files Siesta &gt;=5, but only sometimes on older</span>
@@ -1379,7 +1415,7 @@
 
 <div class="viewcode-block" id="hsxSileSiesta.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_geometry">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the geometry from the file</span>
 
 <span class="sd">        This will always work on new files Siesta &gt;=5, but only sometimes on older</span>
@@ -1391,7 +1427,7 @@
 
 <div class="viewcode-block" id="hsxSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_fermi_level">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the fermi level in the file</span>
 
 <span class="sd">        Only valid for files created by Siesta &gt;=5.</span>
@@ -1485,7 +1521,7 @@
 
 <div class="viewcode-block" id="hsxSileSiesta.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the electronic structure from the siesta.TSHS file&quot;&quot;&quot;</span>
         <span class="n">version</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hamiltonian_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -1567,7 +1603,7 @@
 
 <div class="viewcode-block" id="hsxSileSiesta.read_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_overlap">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the electronic structure from the siesta.TSHS file&quot;&quot;&quot;</span>
         <span class="n">version</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_overlap_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -1947,7 +1983,7 @@
 
         <span class="c1"># Build the info dictionary for the eigenstate to know how it was calculated</span>
         <span class="c1"># We include the spin index if needed.</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">info</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ispin</span>
 
@@ -1975,7 +2011,7 @@
 
 <div class="viewcode-block" id="wfsxSileSiesta.read_basis">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_basis">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the basis contained in the WFSX file.</span>
 
 <span class="sd">        The WFSX file only contains information about the atom labels, which atom</span>
@@ -2025,7 +2061,7 @@
 
 <div class="viewcode-block" id="wfsxSileSiesta.read_eigenstate">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_eigenstate">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ktol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ktol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenstateElectron</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a specific eigenstate from the file.</span>
 
 <span class="sd">        This method iterates over the states until it finds a match. Do not call</span>
@@ -2102,7 +2138,7 @@
 
 <div class="viewcode-block" id="wfsxSileSiesta.read_brillouinzone">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_brillouinzone">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the brillouin zone object&quot;&quot;&quot;</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_info</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span></div>
@@ -2117,7 +2153,7 @@
 <span class="sd">    units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the cell contained in the file&quot;&quot;&quot;</span>
 
         <span class="n">cell</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_grid_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
@@ -2139,7 +2175,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_grid_size&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read grid sizes.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">mesh</span>
 
-    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Grid</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read grid contained in the Grid file</span>
 
 <span class="sd">        Parameters</span>
@@ -2502,7 +2538,7 @@
 
         <span class="k">return</span> <span class="n">mem</span>
 
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return current Hamiltonian and overlap matrix from the GF file</span>
 
 <span class="sd">        Returns</span>
@@ -2518,7 +2554,7 @@
         <span class="c1"># we don&#39;t convert to C order!</span>
         <span class="k">return</span> <span class="n">H</span> <span class="o">*</span> <span class="n">_Ry2eV</span><span class="p">,</span> <span class="n">S</span>
 
-    <span class="k">def</span> <span class="nf">read_self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read the currently reached bulk self-energy</span>
 
 <span class="sd">        The returned self-energy is:</span>
@@ -2536,7 +2572,7 @@
         <span class="c1"># we don&#39;t convert to C order!</span>
         <span class="k">return</span> <span class="n">SE</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
 
-    <span class="k">def</span> <span class="nf">HkSk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">HkSk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve H and S for the given k-point</span>
 
 <span class="sd">        Parameters</span>
@@ -2545,7 +2581,7 @@
 <span class="sd">           k-point to read the corresponding Hamiltonian and overlap matrices</span>
 <span class="sd">           for. If a specific k-point is passed `kindex` will be used to find</span>
 <span class="sd">           the corresponding index.</span>
-<span class="sd">        spin : int, optional</span>
+<span class="sd">        spin :</span>
 <span class="sd">           spin-index for the Hamiltonian and overlap matrices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_is_open</span><span class="p">():</span>
@@ -2577,7 +2613,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_read</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># signal this is to be read</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve self-energy for a given energy-point and k-point</span>
 
 <span class="sd">        Parameters</span>
@@ -2586,7 +2622,7 @@
 <span class="sd">           energy to retrieve self-energy at</span>
 <span class="sd">        k : int or array_like of float, optional</span>
 <span class="sd">           k-point to retrieve k-point at</span>
-<span class="sd">        spin : int, optional</span>
+<span class="sd">        spin :</span>
 <span class="sd">           spin-index to retrieve self-energy at</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_is_open</span><span class="p">():</span>
@@ -2618,7 +2654,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_read</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># signal this is to be read</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_self_energy</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write to the binary file the header of the file</span>
 
 <span class="sd">        Parameters</span>
@@ -2629,7 +2665,7 @@
 <span class="sd">           the energy points. If `obj` is an instance of `SelfEnergy` where an</span>
 <span class="sd">           associated ``eta`` is defined then `E` may be float, otherwise</span>
 <span class="sd">           it *has* to be a complex array.</span>
-<span class="sd">        mu : float, optional</span>
+<span class="sd">        mu :</span>
 <span class="sd">           chemical potential in the file</span>
 <span class="sd">        obj : ..., optional</span>
 <span class="sd">           an object that contains the Hamiltonian definitions, defaults to ``bz.parent``</span>

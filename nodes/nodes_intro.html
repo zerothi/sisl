@@ -4,14 +4,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nodes and workflows &mdash; sisl 0.1-c02b256</title>
+  <title>Nodes and workflows &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -25,8 +25,8 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="sisl.viz" href="../visualization/viz_module/index.html" />
-    <link rel="prev" title="Environment variables" href="../environment.html" /> 
+    <link rel="prev" title="Mathematical notation convention" href="../math.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -60,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -77,6 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Nodes and workflows</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Nodes">Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Workflows">Workflows</a></li>
@@ -145,7 +146,7 @@ creating “workchains” from a GUI by providing only simple inputs.</p></li>
 <section id="Nodes">
 <h2>Nodes<a class="headerlink" href="#Nodes" title="Link to this heading"></a></h2>
 <p>In <code class="docutils literal notranslate"><span class="pre">sisl.nodes</span></code>, you have the <code class="docutils literal notranslate"><span class="pre">Node</span></code> class:</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -153,6 +154,14 @@ creating “workchains” from a GUI by providing only simple inputs.</p></li>
 <span class="kn">from</span> <span class="nn">sisl.nodes</span> <span class="kn">import</span> <span class="n">Node</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+info:0: SislInfo: Please install tqdm (pip install tqdm) for better looking progress bars
+</pre></div></div>
 </div>
 <p>You can easily create a node from a function with the <code class="docutils literal notranslate"><span class="pre">from_func</span></code> method:</p>
 <div class="nbinput nblast docutils container">
@@ -191,7 +200,7 @@ creating “workchains” from a GUI by providing only simple inputs.</p></li>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7f06719f9410&gt;
+&lt;__main__.my_sum at 0x7f8ca00edf40&gt;
 </pre></div></div>
 </div>
 <p>It is only when you call <code class="docutils literal notranslate"><span class="pre">.get()</span></code> on it that it will compute its result.</p>
@@ -256,7 +265,7 @@ SUMMING 2 + 5
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7f06725c4190&gt;
+&lt;__main__.my_sum at 0x7f8ca82b4e30&gt;
 </pre></div></div>
 </div>
 <p>And now, when you need the value again, it will understand that the stored output is outdated and recompute:</p>
@@ -314,7 +323,7 @@ SUMMING 8 + 5
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7f0671999850&gt;
+&lt;__main__.my_sum at 0x7f8c7494b5f0&gt;
 </pre></div></div>
 </div>
 <p>And now comes the most useful thing about nodes. If you pass a node as an input to another node, the <strong>nodes are recursively resolved</strong> until they reach a leaf that is not a node.</p>
@@ -467,7 +476,7 @@ SUMMING 12 + 5
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7f0675120490&gt;
+&lt;__main__.my_sum at 0x7f8c749840e0&gt;
 </pre></div></div>
 </div>
 <p>This might be useful to create “event listeners” that enable live updating naturally. We might introduce “async” nodes at some point (?).</p>
@@ -529,7 +538,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.workflow.WorkflowNodes at 0x7f06717c9b10&gt;
+&lt;sisl.nodes.workflow.WorkflowNodes at 0x7f8c75d0a750&gt;
 </pre></div></div>
 </div>
 <p>You can print them to get an idea of the nodes that you have there:</p>
@@ -546,11 +555,11 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Inputs: {&#39;a&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7f06717c9ad0&gt;, &#39;b&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7f06717c9cd0&gt;, &#39;c&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7f06717c9ed0&gt;}
+Inputs: {&#39;a&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7f8ca8fc91c0&gt;, &#39;b&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7f8c74e31070&gt;, &#39;c&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7f8c777716d0&gt;}
 
-Workers: {&#39;my_sum&#39;: &lt;sisl.nodes.node.my_sum object at 0x7f0671999910&gt;, &#39;my_sum_1&#39;: &lt;sisl.nodes.node.my_sum object at 0x7f06717c3a50&gt;}
+Workers: {&#39;my_sum&#39;: &lt;__main__.my_sum object at 0x7f8c7494b500&gt;, &#39;my_sum_1&#39;: &lt;__main__.my_sum object at 0x7f8c74f4cf50&gt;}
 
-Output: &lt;sisl.nodes.workflow.WorkflowOutput object at 0x7f06717ca510&gt;
+Output: &lt;sisl.nodes.workflow.WorkflowOutput object at 0x7f8c74984830&gt;
 
 Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 </pre></div></div>
@@ -571,7 +580,7 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7f0671999910&gt;
+&lt;__main__.my_sum at 0x7f8c7494b500&gt;
 </pre></div></div>
 </div>
 <p>Accessing nodes of the workflows is nice, but often it is <strong>difficult to get an idea of the whole workflow</strong> if it gets a bit complex.</p>
@@ -589,7 +598,7 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/opt/hostedtoolcache/Python/3.11.8/x64/lib/python3.11/site-packages/IPython/core/display.py:431: UserWarning: Consider using IPython.display.IFrame instead
+/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/IPython/core/display.py:431: UserWarning: Consider using IPython.display.IFrame instead
   warnings.warn(&#34;Consider using IPython.display.IFrame instead&#34;)
 </pre></div></div>
 </div>
@@ -881,7 +890,7 @@ function highlightFilter(filter) {
 
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#fde725&quot;, &quot;font&quot;: {}, &quot;id&quot;: &quot;my_sum_1&quot;, &quot;label&quot;: &quot;my_sum_1&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: my_sum\nNo documentation\n............................................\na = Linked( my_sum.output )\nb = Linked( triple_sum.c )\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 4.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nvalue = Linked( my_sum_1.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;my_sum&quot;, &quot;label&quot;: &quot;my_sum&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: my_sum\nNo documentation\n............................................\na = Linked( triple_sum.a )\nb = Linked( triple_sum.b )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = c\n&quot;}]);
+                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#fde725&quot;, &quot;font&quot;: {}, &quot;id&quot;: &quot;my_sum_1&quot;, &quot;label&quot;: &quot;my_sum_1&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: my_sum\nNo documentation\n............................................\na = Linked( my_sum.output )\nb = Linked( triple_sum.c )\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 4.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nvalue = Linked( my_sum_1.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;my_sum&quot;, &quot;label&quot;: &quot;my_sum&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: my_sum\nNo documentation\n............................................\na = Linked( triple_sum.a )\nb = Linked( triple_sum.b )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = c\n&quot;}]);
                   edges = new vis.DataSet([{&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;my_sum_1&quot;, &quot;label&quot;: &quot;value&quot;, &quot;title&quot;: &quot;my_sum() -\u003e WorkflowOutput.value&quot;, &quot;to&quot;: &quot;output&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;a&quot;, &quot;label&quot;: &quot;a&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e my_sum.a&quot;, &quot;to&quot;: &quot;my_sum&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;my_sum&quot;, &quot;label&quot;: &quot;a&quot;, &quot;title&quot;: &quot;my_sum() -\u003e my_sum.a&quot;, &quot;to&quot;: &quot;my_sum_1&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;b&quot;, &quot;label&quot;: &quot;b&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e my_sum.b&quot;, &quot;to&quot;: &quot;my_sum&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;c&quot;, &quot;label&quot;: &quot;b&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e my_sum.b&quot;, &quot;to&quot;: &quot;my_sum_1&quot;, &quot;width&quot;: 1}]);
 
                   nodeColors = {};
@@ -978,7 +987,7 @@ function highlightFilter(filter) {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.triple_sum at 0x7f0670f5d2d0&gt;
+&lt;__main__.triple_sum at 0x7f8ca8f67a70&gt;
 </pre></div></div>
 </div>
 <p>And then whenever you ask for the value, the workflow runs.</p>
@@ -1023,7 +1032,7 @@ SUMMING 5 + 4
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.triple_sum at 0x7f0670f5d2d0&gt;
+&lt;__main__.triple_sum at 0x7f8ca8f67a70&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1066,7 +1075,7 @@ SUMMING 5 + 8
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.workflow.WorkflowNodes at 0x7f0670fc8d10&gt;
+&lt;sisl.nodes.workflow.WorkflowNodes at 0x7f8c73353c20&gt;
 </pre></div></div>
 </div>
 <p>One can imagine <strong>reusing their result for something else</strong>.</p>
@@ -1105,7 +1114,7 @@ VALUE CHANGED, it now is 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.triple_sum at 0x7f0670f5d2d0&gt;
+&lt;__main__.triple_sum at 0x7f8ca8f67a70&gt;
 </pre></div></div>
 </div>
 <p>It sometimes might be useful to provide methods for a workflow. For that case, workflows can also be defined with class syntax, passing the workflow as a static method in the <code class="docutils literal notranslate"><span class="pre">function</span></code> method.</p>
@@ -1507,7 +1516,7 @@ function highlightFilter(filter) {
 
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#fde725&quot;, &quot;font&quot;: {}, &quot;id&quot;: &quot;UfuncNode_1&quot;, &quot;label&quot;: &quot;UfuncNode_1&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: UfuncNode\nNo documentation\n............................................\nkwargs = {\u0027input_0\u0027: \u0027Linked( UfuncNode.output )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.c )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 4.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nvalue = Linked( UfuncNode_1.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;UfuncNode&quot;, &quot;label&quot;: &quot;UfuncNode&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: UfuncNode\nNo documentation\n............................................\nkwargs = {\u0027input_0\u0027: \u0027Linked( sum_triple.a )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.b )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = c\n&quot;}]);
+                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#fde725&quot;, &quot;font&quot;: {}, &quot;id&quot;: &quot;UfuncNode_1&quot;, &quot;label&quot;: &quot;UfuncNode_1&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: UfuncNode\nNo documentation\n............................................\nkwargs = {\u0027input_0\u0027: \u0027Linked( UfuncNode.output )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.c )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 4.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nvalue = Linked( UfuncNode_1.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;UfuncNode&quot;, &quot;label&quot;: &quot;UfuncNode&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: UfuncNode\nNo documentation\n............................................\nkwargs = {\u0027input_0\u0027: \u0027Linked( sum_triple.a )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.b )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = c\n&quot;}]);
                   edges = new vis.DataSet([{&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;UfuncNode_1&quot;, &quot;label&quot;: &quot;value&quot;, &quot;title&quot;: &quot;UfuncNode() -\u003e WorkflowOutput.value&quot;, &quot;to&quot;: &quot;output&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;a&quot;, &quot;label&quot;: &quot;kwargs[input_0]&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e UfuncNode.kwargs[input_0]&quot;, &quot;to&quot;: &quot;UfuncNode&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;UfuncNode&quot;, &quot;label&quot;: &quot;kwargs[input_0]&quot;, &quot;title&quot;: &quot;UfuncNode() -\u003e UfuncNode.kwargs[input_0]&quot;, &quot;to&quot;: &quot;UfuncNode_1&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;b&quot;, &quot;label&quot;: &quot;kwargs[input_1]&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e UfuncNode.kwargs[input_1]&quot;, &quot;to&quot;: &quot;UfuncNode&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;c&quot;, &quot;label&quot;: &quot;kwargs[input_1]&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e UfuncNode.kwargs[input_1]&quot;, &quot;to&quot;: &quot;UfuncNode_1&quot;, &quot;width&quot;: 1}]);
 
                   nodeColors = {};
@@ -1901,7 +1910,7 @@ function highlightFilter(filter) {
 
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;operation&quot;, &quot;label&quot;: &quot;operation&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: operation\nNo documentation\n............................................\na = Linked( sum_triple.a )\nb = Linked( sum_triple.b )\nc = Linked( sum_triple.c )\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nvalue = Linked( operation.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f0671f28610\u003e\ninput_key = c\n&quot;}]);
+                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;operation&quot;, &quot;label&quot;: &quot;operation&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: operation\nNo documentation\n............................................\na = Linked( sum_triple.a )\nb = Linked( sum_triple.b )\nc = Linked( sum_triple.c )\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nvalue = Linked( operation.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7f8ca0132980\u003e\ninput_key = c\n&quot;}]);
                   edges = new vis.DataSet([{&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;operation&quot;, &quot;label&quot;: &quot;value&quot;, &quot;title&quot;: &quot;operation() -\u003e WorkflowOutput.value&quot;, &quot;to&quot;: &quot;output&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;a&quot;, &quot;label&quot;: &quot;a&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e operation.a&quot;, &quot;to&quot;: &quot;operation&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;b&quot;, &quot;label&quot;: &quot;b&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e operation.b&quot;, &quot;to&quot;: &quot;operation&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;c&quot;, &quot;label&quot;: &quot;c&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e operation.c&quot;, &quot;to&quot;: &quot;operation&quot;, &quot;width&quot;: 1}]);
 
                   nodeColors = {};
@@ -1995,7 +2004,7 @@ function highlightFilter(filter) {
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../environment.html" class="btn btn-neutral float-left" title="Environment variables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../math.html" class="btn btn-neutral float-left" title="Mathematical notation convention" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../visualization/viz_module/index.html" class="btn btn-neutral float-right" title="sisl.viz" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

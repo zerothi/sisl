@@ -4,14 +4,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating common geometries &mdash; sisl 0.1-c02b256</title>
+  <title>Creating common geometries &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
@@ -25,8 +25,8 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -60,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -92,6 +92,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -158,7 +159,7 @@
 <li><p>Ångstrøm [Ang]</p></li>
 <li><p>Electron volt [eV]</p></li>
 </ul>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -166,6 +167,14 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+info:0: SislInfo: Please install tqdm (pip install tqdm) for better looking progress bars
+</pre></div></div>
 </div>
 </section>
 <section id="Creating-a-geometry">
@@ -353,17 +362,17 @@ Help on class Atom in module sisl:
 class Atom(sisl._dispatch_class._Dispatchs)
  |  Atom(*args, **kwargs)
  |
- |  Atomic information for a single atomic specie
+ |  Atomic information for a single atomic species
  |
- |  An atomic object retaining information about a single atomic specie.
+ |  An atomic object retaining information about a single atomic species.
  |  It describes the atomic number (integer), the mass of the atom, and
  |  holds a list of atomic centered orbitals. It also allows one
- |  to tag the atom to distinguish it from other atoms of the same specie.
+ |  to tag the atom to distinguish it from other atoms of the same species.
  |
  |  Parameters
  |  ----------
  |  Z : int or str
- |      determine specie for the atomic specie.
+ |      determine species for the atomic species.
  |  orbitals : list of Orbital or float, optional
  |      orbitals associated with this atom. See `Orbital` for details on
  |      how to define orbitals.
@@ -421,51 +430,51 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |
  |  Methods defined here:
  |
- |  __eq__(self, b)
+ |  __eq__(self, b) from sisl._core.atom.Atom
  |      Return true if the saved quantities are the same
  |
- |  __getattr__(self, attr)
+ |  __getattr__(self, attr) from sisl._core.atom.Atom
  |      Pass attribute calls to the orbital classes and return lists/array
  |
  |      Parameters
  |      ----------
  |      attr : str
  |
- |  __getitem__(self, key)
+ |  __getitem__(self, key) from sisl._core.atom.Atom
  |      The orbital corresponding to index `key`
  |
- |  __getstate__(self)
+ |  __getstate__(self) from sisl._core.atom.Atom
  |      Return the state of this object
  |
- |  __hash__(self)
+ |  __hash__(self) from sisl._core.atom.Atom
  |      Return hash(self).
  |
- |  __init__(self, Z, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None, **kwargs)
+ |  __init__(self, Z, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None, **kwargs) from sisl._core.atom.Atom
  |      Initialize self.  See help(type(self)) for accurate signature.
  |
- |  __iter__(self)
+ |  __iter__(self) from sisl._core.atom.Atom
  |      Loop on all orbitals in this atom
  |
- |  __len__(self)
+ |  __len__(self) from sisl._core.atom.Atom
  |      Return number of orbitals in this atom
  |
- |  __ne__(self, b)
+ |  __ne__(self, b) from sisl._core.atom.Atom
  |      Return self!=value.
  |
- |  __repr__(self)
+ |  __repr__(self) from sisl._core.atom.Atom
  |      Return repr(self).
  |
- |  __setstate__(self, d)
+ |  __setstate__(self, d) from sisl._core.atom.Atom
  |      Re-create the state of this object
  |
- |  __str__(self)
+ |  __str__(self) from sisl._core.atom.Atom
  |      Return str(self).
  |
- |  copy(atom: &#39;Atom&#39;, Z: &#39;Optional[Union[int, str]]&#39; = None, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None) -&gt; &#39;Atom&#39;
+ |  copy(atom: &#39;Atom&#39;, Z: &#39;Optional[Union[int, str]]&#39; = None, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None) -&gt; &#39;Atom&#39; from sisl
  |      Return copy of this object
  |
- |  equal(self, other, R=True, psi=False)
- |      True if `other` is the same as this atomic specie
+ |  equal(self, other, R=True, psi=False) from sisl._core.atom.Atom
+ |      True if `other` is the same as this atomic species
  |
  |      Parameters
  |      ----------
@@ -476,10 +485,10 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |      psi : bool, optional
  |         if True, also check the wave-function component of the orbitals, see `Orbital.psi`
  |
- |  index(self, orbital)
+ |  index(self, orbital) from sisl._core.atom.Atom
  |      Return the index of the orbital in the atom object
  |
- |  iter(self, group=False)
+ |  iter(self, group=False) from sisl._core.atom.Atom
  |      Loop on all orbitals in this atom
  |
  |      Parameters
@@ -494,15 +503,15 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |          current orbital, if `group` is ``True`` this is a list of orbitals,
  |          otherwise a single orbital is returned
  |
- |  maxR(self)
+ |  maxR(self) from sisl._core.atom.Atom
  |      Return the maximum range of orbitals.
  |
- |  radius(self, method=&#39;calc&#39;)
+ |  radius(self, method=&#39;calc&#39;) from sisl._core.atom.Atom
  |      Return the atomic radii of the atom (in Ang)
  |
  |      See `PeriodicTable.radius` for details on the argument.
  |
- |  remove(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39;
+ |  remove(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Return the same atom without a specific set of orbitals
  |
  |      Parameters
@@ -519,7 +528,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |      --------
  |      Atom.sub : retain a selected set of orbitals
  |
- |  scale(atom: &#39;Atom&#39;, scale: &#39;float&#39;) -&gt; &#39;Atom&#39;
+ |  scale(atom: &#39;Atom&#39;, scale: &#39;float&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Scale the atomic radii and return an equivalent atom.
  |
  |      Parameters
@@ -527,7 +536,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |      scale :
  |         the scale factor for the atomic radii
  |
- |  sub(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39;
+ |  sub(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Return the same atom with only a subset of the orbitals present
  |
  |      Parameters
@@ -547,7 +556,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |
  |  to = ClassDispatcher(...)
  |
- |  toSphere(self, center=None)
+ |  toSphere(self, center=None) from sisl._core.atom.Atom
  |      Return a sphere with the maximum orbital radius equal
  |
  |      Returns
@@ -558,7 +567,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |  ----------------------------------------------------------------------
  |  Static methods defined here:
  |
- |  __new__(cls, *args, **kwargs)
+ |  __new__(cls, *args, **kwargs) from sisl._core.atom.Atom
  |      Figure out which class to actually use
  |
  |  ----------------------------------------------------------------------
@@ -585,7 +594,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |  ----------------------------------------------------------------------
  |  Class methods inherited from sisl._dispatch_class._Dispatchs:
  |
- |  __init_subclass__(dispatchs: Union[str, Sequence[Any], NoneType] = None, when_subclassing: Optional[str] = None, **kwargs) from sisl._core.atom.AtomMeta
+ |  __init_subclass__(dispatchs: &#39;Optional[Union[str, Sequence[Any]]]&#39; = None, when_subclassing: &#39;Optional[str]&#39; = None, **kwargs)
  |      This method is called when a class is subclassed.
  |
  |      The default implementation does nothing. It may be

@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.sparse_geometry &mdash; sisl 0.1-c02b256</title>
+  <title>sisl._core.sparse_geometry &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -154,7 +155,7 @@
 <span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">array_arange</span>
 <span class="kn">from</span> <span class="nn">sisl._core</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Orbital</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">CellAxes</span><span class="p">,</span> <span class="n">Coord</span><span class="p">,</span> <span class="n">SeqOrScalarFloat</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">direction</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.ranges</span> <span class="kn">import</span> <span class="n">list2str</span>
@@ -504,7 +505,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether a sparse index is non-zero&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span>
 
-    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_size</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the number of allowed supercells in the sparse geometry</span>
 
 <span class="sd">        If one reduces the number of supercells, *any* sparse element</span>
@@ -550,7 +551,7 @@
 
         <span class="c1"># Check that we will translate all indices in the old</span>
         <span class="c1"># sparsity pattern to the new one</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;Not all supercells are accounted for&quot;</span><span class="p">)</span>
 
         <span class="n">old</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
@@ -572,10 +573,10 @@
             <span class="n">new</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
 
             <span class="c1"># Create the translation tables</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="n">tile</span><span class="p">([</span><span class="n">size</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">old</span><span class="p">))</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">tile</span><span class="p">([</span><span class="n">base_size</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">old</span><span class="p">))</span>
 
-            <span class="n">old</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">old</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-            <span class="n">new</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">new</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">old</span> <span class="o">*</span> <span class="n">base_size</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">new</span> <span class="o">*</span> <span class="n">base_size</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 
             <span class="c1"># Move data to new positions</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">translate_columns</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -584,13 +585,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">max_n</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># Make sure we delete all column values where we have put fake values</span>
-        <span class="n">delete</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">delete</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span> <span class="o">*</span> <span class="n">base_size</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">delete</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">delete_columns</span><span class="p">(</span><span class="n">delete</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Ensure the shape is correct</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span> <span class="o">*</span> <span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span>
+        <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">base_size</span> <span class="o">*</span> <span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_clean_columns</span><span class="p">()</span>
 
@@ -1682,13 +1683,13 @@
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
         <span class="c1"># Figure out if all atoms have the same species</span>
-        <span class="n">specie</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">specie</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
-        <span class="n">uniq_specie</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq_specie</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">species</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
+        <span class="n">uniq_species</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq_species</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># In case there are multiple different species but one wishes to</span>
             <span class="c1"># retain the same orbital index, then we loop on the unique species</span>
             <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">uniq_specie</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">uniq_species</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">indices</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="c1"># now determine whether it is the whole atom</span>
                 <span class="c1"># or only part of the geometry</span>
@@ -1728,7 +1729,7 @@
 <span class="sd">        -----</span>
 <span class="sd">        Future implementations may allow one to re-arange orbitals using this method.</span>
 
-<span class="sd">        When using this method the internal species list will be populated by another specie</span>
+<span class="sd">        When using this method the internal species list will be populated by another species</span>
 <span class="sd">        that is named after the orbitals removed. This is to distinguish different atoms.</span>
 
 <span class="sd">        Examples</span>
@@ -1773,13 +1774,13 @@
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
         <span class="c1"># Figure out if all atoms have the same species</span>
-        <span class="n">specie</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">specie</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
-        <span class="n">uniq_specie</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq_specie</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">species</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
+        <span class="n">uniq_species</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq_species</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># In case there are multiple different species but one wishes to</span>
             <span class="c1"># retain the same orbital index, then we loop on the unique species</span>
             <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">uniq_specie</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">uniq_species</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">indices</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="c1"># now determine whether it is the whole atom</span>
                 <span class="c1"># or only part of the geometry</span>
@@ -1795,7 +1796,7 @@
             <span class="n">orbitals</span> <span class="o">=</span> <span class="p">[</span><span class="n">old_atom</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">orb</span><span class="p">)</span> <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="p">]</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
 
-        <span class="c1"># At this point we are sure that uniq_specie is *only* one specie!</span>
+        <span class="c1"># At this point we are sure that uniq_species is *only* one species!</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span>
 
         <span class="c1"># Now create the new sparse orbital class</span>
@@ -1951,7 +1952,7 @@
                 <span class="n">coln</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">o2a</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">ptr</span><span class="p">[</span><span class="n">io</span><span class="p">]</span> <span class="p">:</span> <span class="n">ptr</span><span class="p">[</span><span class="n">io</span><span class="p">]</span> <span class="o">+</span> <span class="n">ncol</span><span class="p">[</span><span class="n">io</span><span class="p">]]))</span>
                 <span class="n">R</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="n">coln</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rij</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">coln</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;orb&quot;</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;orb&quot;</span><span class="p">):</span>
             <span class="c1"># We create an *exact* copy of the Rij</span>
             <span class="n">R</span> <span class="o">=</span> <span class="n">SparseOrbital</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">Rij</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">oRij</span>
@@ -2117,21 +2118,37 @@
 
 <div class="viewcode-block" id="SparseOrbital.prepend">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.prepend">[docs]</a>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;eps&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument eps has been deprecated in favor of atol.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">prepend</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="n">SeqOrScalarFloat</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="n">SeqOrScalarFloat</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;See `append` for details</span>
 
 <span class="sd">        This is currently equivalent to:</span>
 
-<span class="sd">        &gt;&gt;&gt; other.append(self, axis, eps, scale)</span>
+<span class="sd">        &gt;&gt;&gt; other.append(self, axis, atol, scale)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SparseOrbital.append">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.append">[docs]</a>
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="n">SeqOrScalarFloat</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;eps&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument eps has been deprecated in favor of atol.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="n">SeqOrScalarFloat</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Append `other` along `axis` to construct a new connected sparse matrix</span>
 
 <span class="sd">        This method tries to append two sparse geometry objects together by</span>
@@ -2142,7 +2159,7 @@
 <span class="sd">           This *may* cause problems if the coupling atoms are not exactly equi-positioned.</span>
 <span class="sd">           If the coupling coordinates and the coordinates in `other` differ by more than</span>
 <span class="sd">           0.01 Ang, a warning will be issued.</span>
-<span class="sd">           If this difference is above `eps` the couplings will be removed.</span>
+<span class="sd">           If this difference is above `atol` the couplings will be removed.</span>
 
 <span class="sd">        When appending sparse matrices made up of atoms, this method assumes that</span>
 <span class="sd">        the orbitals on the overlapping atoms have the same orbitals, as well as the</span>
@@ -2180,11 +2197,11 @@
 <span class="sd">            must be an object of the same type as `self`</span>
 <span class="sd">        axis :</span>
 <span class="sd">            axis to append the two sparse geometries along</span>
-<span class="sd">        eps :</span>
+<span class="sd">        atol :</span>
 <span class="sd">            tolerance that all coordinates *must* be within to allow an append.</span>
 <span class="sd">            It is important that this value is smaller than half the distance between</span>
 <span class="sd">            the two closests atoms such that there is no ambiguity in selecting</span>
-<span class="sd">            equivalent atoms. An internal stricter eps is used as a baseline, see above.</span>
+<span class="sd">            equivalent atoms. An internal stricter tolerance is used as a baseline, see above.</span>
 <span class="sd">        scale : float or array_like, optional</span>
 <span class="sd">            the scale used for the overlapping region. For scalar values it corresponds</span>
 <span class="sd">            to passing: ``(scale, scale)``.</span>
@@ -2296,10 +2313,10 @@
         <span class="c1"># both these sparsity patterns to the correct elements.</span>
 
         <span class="c1"># 1. find overlapping atoms along axis</span>
-        <span class="n">idx_s_first</span><span class="p">,</span> <span class="n">idx_o_first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+        <span class="n">idx_s_first</span><span class="p">,</span> <span class="n">idx_o_first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
         <span class="n">idx_s_last</span><span class="p">,</span> <span class="n">idx_o_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span>
             <span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
-            <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+            <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=-</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:],</span>
             <span class="n">offset_other</span><span class="o">=-</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:],</span>
         <span class="p">)</span>
@@ -2472,12 +2489,19 @@
 
 <div class="viewcode-block" id="SparseOrbital.replace">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.replace">[docs]</a>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;eps&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument eps has been deprecated in favor of atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">,</span>
         <span class="n">other</span><span class="p">,</span>
         <span class="n">other_atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span>
         <span class="n">scale</span><span class="p">:</span> <span class="n">SeqOrScalarFloat</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them</span>
@@ -2533,7 +2557,7 @@
 
 <span class="sd">        Algorithms that utilizes atomic indices should be careful.</span>
 
-<span class="sd">        When the tolerance `eps` is high, the elements may be more prone to differences in the</span>
+<span class="sd">        When the tolerance `atol` is high, the elements may be more prone to differences in the</span>
 <span class="sd">        symmetry elements. A good idea would be to check the difference between the couplings.</span>
 <span class="sd">        The below variable ``diff`` will contain the difference ``(self -&gt; other) - (other -&gt; self)``</span>
 
@@ -2549,7 +2573,7 @@
 <span class="sd">        other_atoms :</span>
 <span class="sd">            to select a subset of atoms in `other` that are taken out.</span>
 <span class="sd">            Defaults to all atoms in `other`.</span>
-<span class="sd">        eps :</span>
+<span class="sd">        atol :</span>
 <span class="sd">            coordinate tolerance for allowing replacement.</span>
 <span class="sd">            It is important that this value is at least smaller than half the distance between</span>
 <span class="sd">            the two closests atoms such that there is no ambiguity in selecting</span>
@@ -2666,7 +2690,7 @@
         <span class="c1"># We need to get a 1-1 correspondance between the two connecting geometries</span>
         <span class="c1"># For instance `self` may be ordered differently than `other`.</span>
         <span class="c1"># So we need to figure out how the atoms are arranged in *both* regions.</span>
-        <span class="c1"># This is where `eps` comes into play since we have to ensure that the</span>
+        <span class="c1"># This is where `atol` comes into play since we have to ensure that the</span>
         <span class="c1"># connecting regions are within some given tolerance.</span>
 
         <span class="k">def</span> <span class="nf">create_geometry</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
@@ -2682,7 +2706,7 @@
         <span class="n">ogeom_in</span> <span class="o">=</span> <span class="n">ogeom</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span><span class="p">)</span>
         <span class="n">soverlap_in</span><span class="p">,</span> <span class="n">ooverlap_in</span> <span class="o">=</span> <span class="n">sgeom_in</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span>
             <span class="n">ogeom_in</span><span class="p">,</span>
-            <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+            <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=-</span><span class="n">sgeom_in</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
             <span class="n">offset_other</span><span class="o">=-</span><span class="n">ogeom_in</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
         <span class="p">)</span>
@@ -2693,7 +2717,7 @@
         <span class="n">ogeom_out</span> <span class="o">=</span> <span class="n">create_geometry</span><span class="p">(</span><span class="n">ogeom</span><span class="p">,</span> <span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
         <span class="n">soverlap_out</span><span class="p">,</span> <span class="n">ooverlap_out</span> <span class="o">=</span> <span class="n">sgeom_out</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span>
             <span class="n">ogeom_out</span><span class="p">,</span>
-            <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+            <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=-</span><span class="n">sgeom_out</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
             <span class="n">offset_other</span><span class="o">=-</span><span class="n">ogeom_out</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
         <span class="p">)</span>
@@ -2973,7 +2997,7 @@
         <span class="n">old</span> <span class="o">=</span> <span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span>
         <span class="n">new</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyi</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">old</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">old</span><span class="p">):</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ogeom</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ogeom</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
             <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;More than 1 atom </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> for atom </span><span class="si">{</span><span class="n">atom</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">ogeom</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">geom</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>

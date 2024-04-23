@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.energydensitymatrix &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.physics.energydensitymatrix &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -123,11 +124,14 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">GaugeType</span>
 
 <span class="kn">from</span> <span class="nn">.densitymatrix</span> <span class="kn">import</span> <span class="n">_densitymatrix</span>
 
@@ -225,7 +229,15 @@
 
 <div class="viewcode-block" id="EnergyDensityMatrix.Ek">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.Ek">[docs]</a>
-    <span class="k">def</span> <span class="nf">Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Ek</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the energy density matrix for a given k-point</span>
 
 <span class="sd">        Creation and return of the energy density matrix for a given k-point (default to Gamma).</span>
@@ -236,16 +248,16 @@
 <span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \mathbf E(k) = \mathbf E_{\nu\mu} e^{i k R}</span>
+<span class="sd">           \mathbf E(\mathbf k) = \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}</span>
 
-<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+<span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.</span>
 
 <span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \mathbf E(k) = \mathbf E_{\nu\mu} e^{i k r}</span>
+<span class="sd">           \mathbf E(\mathbf k) = \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf r}</span>
 
-<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+<span class="sd">        where :math:`\mathbf r` is the distance between the orbitals.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -255,8 +267,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
-<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -277,14 +289,22 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        matrix : numpy.ndarray or scipy.sparse.*_matrix</span>
-<span class="sd">            the energy density matrix at :math:`k`. The returned object depends on `format`.</span>
+<span class="sd">            the energy density matrix at :math:`\mathbf k`. The returned object depends on `format`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="EnergyDensityMatrix.dEk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.dEk">[docs]</a>
-    <span class="k">def</span> <span class="nf">dEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dEk</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the energy density matrix derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the energy density matrix derivative for a given k-point (default to Gamma).</span>
@@ -295,17 +315,17 @@
 <span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \nabla_k \mathbf E_\alpha(k) = i R_\alpha \mathbf E_{\nu\mu} e^{i k R}</span>
+<span class="sd">           \nabla_{\mathbf k} \mathbf E_\alpha(\mathbf k) = i\mathbf R_\alpha \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}</span>
 
-<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+<span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.</span>
 <span class="sd">        And :math:`\alpha` is one of the Cartesian directions.</span>
 
 <span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \nabla_k \mathbf E_\alpha(k) = i r_\alpha \mathbf E_{\nu\mu} e^{i k r}</span>
+<span class="sd">           \nabla_{\mathbf k} \mathbf E_\alpha(\mathbf k) = i\mathbf r_\alpha \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf r}</span>
 
-<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+<span class="sd">        where :math:`\mathbf r` is the distance between the orbitals.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -315,8 +335,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
-<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -335,14 +355,22 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tuple</span>
-<span class="sd">            for each of the Cartesian directions a :math:`\partial \mathbf E(k)/\partial k` is returned.</span>
+<span class="sd">            for each of the Cartesian directions a :math:`\partial \mathbf E(\mathbf k)/\partial\mathbf k` is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="EnergyDensityMatrix.ddEk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.ddEk">[docs]</a>
-    <span class="k">def</span> <span class="nf">ddEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">ddEk</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the energy density matrix double derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the energy density matrix double derivative for a given k-point (default to Gamma).</span>
@@ -353,17 +381,17 @@
 <span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \nabla_k^2 \mathbf E_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf E_{\nu\mu} e^{i k R}</span>
+<span class="sd">           \nabla_{\mathbf k^2} \mathbf E_{\alpha\beta}(\mathbf k) = -\mathbf R_\alpha\mathbf R_\beta \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}</span>
 
-<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+<span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.</span>
 <span class="sd">        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.</span>
 
 <span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \nabla_k^2 \mathbf E_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf E_{\nu\mu} e^{i k r}</span>
+<span class="sd">           \nabla_{\mathbf k^2} \mathbf E_{\alpha\beta}(\mathbf k) = -\mathbf r_\alpha\mathbf r_\beta \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf r}</span>
 
-<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+<span class="sd">        where :math:`\mathbf r` is the distance between the orbitals.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -373,8 +401,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
-<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>

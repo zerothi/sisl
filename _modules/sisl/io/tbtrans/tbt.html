@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -123,6 +124,8 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -235,10 +238,7 @@
 <span class="sd">    are in fortran indexing (1-based), everything is returned as Python indexing (0-based)</span>
 <span class="sd">    when using Python scripts.</span>
 
-<span class="sd">    In the following equations we will use this notation:</span>
-
-<span class="sd">    * :math:`\alpha` and :math:`\beta` are atomic indices</span>
-<span class="sd">    * :math:`\nu` and :math:`\mu` are orbital indices</span>
+<span class="sd">    The notation described in `math_convention`_ will be used.</span>
 
 <span class="sd">    A word on DOS normalization:</span>
 
@@ -744,7 +744,7 @@
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}_{\nu\nu}(E)</span>
+<span class="sd">           \mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{i\in \{I\}} \Im \mathbf{G}_{ii}(E)</span>
 
 <span class="sd">        The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the</span>
 <span class="sd">        arguments.</span>
@@ -798,7 +798,7 @@
 <span class="sd">        Extract the spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} [\mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger]_{\nu\nu}(E)</span>
+<span class="sd">           \mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{i\in\{I\}} [\mathbf{G}(E)\Gamma_\mathfrak{el}\mathbf{G}^\dagger]_{ii}(E)</span>
 
 <span class="sd">        The normalization constant (:math:`N`) is defined in the routine `norm` and depends on the</span>
 <span class="sd">        arguments.</span>
@@ -996,12 +996,12 @@
         <span class="k">return</span> <span class="n">I</span> <span class="o">*</span> <span class="n">constant</span><span class="o">.</span><span class="n">q</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="s2">&quot;eV s&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_check_Teig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">TE</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_check_Teig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">TE</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to check whether all transmission eigenvalues are present&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">TE</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">TE</span> <span class="o">&gt;</span> <span class="n">atol</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)):</span>
             <span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> does possibly not have all relevant transmission eigenvalues in the &quot;</span>
-                <span class="s2">&quot;calculation. For some energy values all transmission eigenvalues are above </span><span class="si">{eps}</span><span class="s2">!&quot;</span>
+                <span class="s2">&quot;calculation. For some energy values all transmission eigenvalues are above </span><span class="si">{atol}</span><span class="s2">!&quot;</span>
             <span class="p">)</span>
 
 <div class="viewcode-block" id="tbtncSileTBtrans.shot_noise">
@@ -1136,16 +1136,16 @@
         <span class="c1"># Note that h in eV units will cancel the units in the dE integration</span>
         <span class="n">noise_const</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">constant</span><span class="o">.</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="s2">&quot;eV s&quot;</span><span class="p">)</span>
 
+        <span class="k">def</span> <span class="nf">noise</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">eq</span><span class="p">,</span> <span class="n">neq</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">eq</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">neq</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="c1"># Determine the k-average</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kavg</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">kavg</span><span class="p">:</span>
                 <span class="c1"># The user wants it k-resolved</span>
                 <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_eig</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_check_Teig</span><span class="p">(</span><span class="s2">&quot;noise_power&quot;</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">noise_const</span> <span class="o">*</span> <span class="p">(</span>
-                    <span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">eq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="p">((</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">neq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">noise_const</span> <span class="o">*</span> <span class="n">noise</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">eq_fac</span><span class="p">,</span> <span class="n">neq_fac</span><span class="p">)</span>
 
             <span class="c1"># We need to manually weigh the k-points</span>
             <span class="n">wkpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wkpt</span>
@@ -1153,23 +1153,16 @@
             <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_eig</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_check_Teig</span><span class="p">(</span><span class="s2">&quot;noise_power&quot;</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
             <span class="c1"># Separate the calculation into two terms (see Ya.M. Blanter, M. Buttiker, Physics Reports 336 2000)</span>
-            <span class="n">np</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">eq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">neq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="p">)</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">np</span> <span class="o">=</span> <span class="n">noise</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">eq_fac</span><span class="p">,</span> <span class="n">neq_fac</span><span class="p">)</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">ik</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nkpt</span><span class="p">):</span>
                 <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_eig</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">ik</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_check_Teig</span><span class="p">(</span><span class="s2">&quot;noise_power&quot;</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-                <span class="n">np</span> <span class="o">+=</span> <span class="p">(</span>
-                    <span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">eq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="p">((</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">neq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                <span class="p">)</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="n">ik</span><span class="p">]</span>
+                <span class="n">np</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">eq_fac</span><span class="p">,</span> <span class="n">neq_fac</span><span class="p">)</span> <span class="o">*</span> <span class="n">wkpt</span><span class="p">[</span><span class="n">ik</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_eig</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_check_Teig</span><span class="p">(</span><span class="s2">&quot;noise_power&quot;</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-            <span class="n">np</span> <span class="o">=</span> <span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">eq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">neq_fac</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
-                <span class="o">-</span><span class="mi">1</span>
-            <span class="p">)</span>
+            <span class="n">np</span> <span class="o">=</span> <span class="n">noise</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">eq_fac</span><span class="p">,</span> <span class="n">neq_fac</span><span class="p">)</span>
 
         <span class="c1"># Do final conversion</span>
         <span class="k">return</span> <span class="n">noise_const</span> <span class="o">*</span> <span class="n">np</span></div>
@@ -1559,17 +1552,17 @@
 <span class="sd">        any physical quantity that the sparse matrix may represent but is merely a number that provides an</span>
 <span class="sd">        idea of *how much* this atom is governing the data in the matrix.</span>
 
-<span class="sd">        The atomic contributionmay have two meanings based on these two equations</span>
+<span class="sd">        The atomic contribution may have two meanings based on these two equations</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            A_\alpha^{|a|} &amp;=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} A_{\nu\mu} \Big|</span>
+<span class="sd">            \mathbf a_I^{|a|} &amp;=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf A_{ij} \Big|</span>
 <span class="sd">            \\</span>
-<span class="sd">            A_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| A_{\nu\mu} \big|</span>
+<span class="sd">            \mathbf a_I^{|o|} &amp;=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| A_{ij} \big|</span>
 
 <span class="sd">        If the *activity* is requested (``activity=True``)</span>
-<span class="sd">        :math:`A_\alpha^{\mathcal A} = \sqrt{ A_\alpha^{|a|} A_\alpha^{|o|} }` is returned.</span>
+<span class="sd">        :math:`\mathbf a_I^{\mathcal A} = \sqrt{\mathbf a_I^{|a|} \mathbf a_I^{|o|} }` is returned.</span>
 
-<span class="sd">        If ``activity=False`` :math:`A_\alpha^{|a|}` is returned.</span>
+<span class="sd">        If ``activity=False`` :math:`\mathbf a_I^{|a|}` is returned.</span>
 
 <span class="sd">        For geometries with all atoms only having 1-orbital, they are equivalent.</span>
 
@@ -1620,6 +1613,7 @@
         <span class="s2">&quot;what&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span>
@@ -1639,12 +1633,12 @@
 <span class="sd">        The orbital transmissions are calculated as described in the TBtrans manual:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            T_{\mu \nu}(E) = i [</span>
-<span class="sd">            (\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)</span>
+<span class="sd">            T_{ij}(E) = i [</span>
+<span class="sd">            (\mathbf H_{ji} - E\mathbf S_{ji}) \mathbf A_{ij}(E)</span>
 <span class="sd">            -</span>
-<span class="sd">            (\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],</span>
+<span class="sd">            (\mathbf H_{ij} - E\mathbf S_{ij}) \mathbf A_{ji}(E)],</span>
 
-<span class="sd">        It is easy to show that the above matrix obeys :math:`T_{\mu\nu}=-T_{\nu\mu}`.</span>
+<span class="sd">        It is easy to show that the above matrix obeys :math:`T_{ij}=-T_{ji}`.</span>
 
 <span class="sd">        For inexperienced users it is adviced to try out all three values of ``what`` to ensure</span>
 <span class="sd">        the correct physics is obtained.</span>
@@ -1729,6 +1723,7 @@
         <span class="s2">&quot;what&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_current</span><span class="p">(</span>
@@ -1746,9 +1741,9 @@
 <span class="sd">        represents how the current is flowing at an applied bias from a given electrode.</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            J_{\mu\nu} = \frac eh\int_{\mu_1}^{\mu_2} \!\mathrm dE\, T_{\mu\nu} [n_F(\mu_2, k_B T_2) - n_F(\mu_1, k_B T_1)]</span>
+<span class="sd">            J_{ij} = \frac eh\int_{\mu_1}^{\mu_2} \!\mathrm dE\, T_{ij} [n_F(\mu_2, k_B T_2) - n_F(\mu_1, k_B T_1)]</span>
 
-<span class="sd">        with :math:`T_i` being the electronic temperature of the respective reservoir.</span>
+<span class="sd">        with :math:`T_{\langle\rangle}` being the electronic temperature of the respective reservoir.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1846,6 +1841,7 @@
         <span class="s2">&quot;what&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">bond_transmission</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span>
@@ -1857,7 +1853,7 @@
 <span class="sd">        The bond transmissions are a sum over all orbital transmissions</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           T_{\alpha\beta}(E) = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} T_{\nu\mu}(E)</span>
+<span class="sd">           T_{IJ}(E) = \sum_{i\in I}\sum_{j\in J} T_{ij}(E)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1919,6 +1915,7 @@
         <span class="s2">&quot;what&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">bond_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1937,7 +1934,7 @@
 <span class="sd">        The bond currents are a sum over all orbital currents:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           J_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} J_{\nu\mu}</span>
+<span class="sd">           J_{IJ} = \sum_{i\in I}\sum_{j\in J} J_{ij}</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2007,6 +2004,7 @@
         <span class="s2">&quot;what&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">vector_transmission</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
@@ -2016,10 +2014,10 @@
 <span class="sd">        The vector transmission is defined as:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">              \mathbf T_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot T_{\alpha\beta}</span>
+<span class="sd">              \mathbf T_I = \sum_J \frac{\mathbf r^{(J)} - \mathbf r^{(I)}}{|\mathbf r^{(J)} - \mathbf r^{(I)}|} \cdot T_{IJ}</span>
 
-<span class="sd">        Where :math:`T_{\alpha\beta}` is the bond transmission between atom :math:`\alpha` and :math:`\beta` and</span>
-<span class="sd">        :math:`r_\alpha` are the atomic coordinates.</span>
+<span class="sd">        Where :math:`T_{IJ}` is the bond transmission between atom :math:`I` and :math:`J` and</span>
+<span class="sd">        :math:`\mathbf r^{(\langle\rangle)}` are the atomic coordinates.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2083,6 +2081,7 @@
         <span class="s2">&quot;what&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">vector_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -2098,10 +2097,10 @@
 <span class="sd">        The vector current is defined as:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">              \mathbf J_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot J_{\alpha\beta}</span>
+<span class="sd">              \mathbf J_I = \sum_J \frac{\mathbf r^{(J)} - \mathbf r^{(I)}}{|\mathbf r^{(J)} - \mathbf r^{(I)}|} \cdot J_{IJ}</span>
 
-<span class="sd">        Where :math:`J_{\alpha\beta}` is the bond current between atom :math:`\alpha` and :math:`\beta` and</span>
-<span class="sd">        :math:`r_\alpha` are the atomic coordinates.</span>
+<span class="sd">        Where :math:`J_{IJ}` is the bond current between atom :math:`I` and :math:`J` and</span>
+<span class="sd">        :math:`\mathbf r^{(\langle\rangle)}` are the atomic coordinates.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2179,14 +2178,16 @@
 <span class="sd">        The atomic transmission may have two meanings based on these two equations</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            T_\alpha^{|a|} &amp;=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} T_{\nu\mu} \Big|</span>
+<span class="sd">            T_I^{|a|} &amp;=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf T_{ij} \Big|</span>
 <span class="sd">            \\</span>
-<span class="sd">            T_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| T_{\nu\mu} \big|</span>
+<span class="sd">            T_I^{|o|} &amp;=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| T_{ij} \big|</span>
+<span class="sd">        .. math::</span>
 
+<span class="sd">        If the *activity* is requested (``activity=True``)</span>
+<span class="sd">        :math:`T_I^{\mathcal A} = \sqrt{T_I^{|a|} T_I^{|o|} }` is returned.</span>
 <span class="sd">        If the *activity* current is requested (``activity=True``)</span>
-<span class="sd">        :math:`T_\alpha^{\mathcal A} = \sqrt{ T_\alpha^{|a|} T_\alpha^{|o|} }` is returned.</span>
 
-<span class="sd">        If ``activity=False`` :math:`T_\alpha^{|a|}` is returned.</span>
+<span class="sd">        If ``activity=False`` :math:`T_I^{|a|}` is returned.</span>
 
 <span class="sd">        For geometries with all atoms only having 1-orbital, they are equivalent.</span>
 
@@ -2254,14 +2255,15 @@
 <span class="sd">        The atomic current may have two meanings based on these two equations</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            J_\alpha^{|a|} &amp;=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} J_{\nu\mu} \Big|</span>
+<span class="sd">            \mathbf j_I^{|a|} &amp;=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf J_{ij} \Big|</span>
 <span class="sd">            \\</span>
-<span class="sd">            J_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| J_{\nu\mu} \big|</span>
+<span class="sd">            \mathbf j_I^{|o|} &amp;=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| J_{ij} \big|</span>
+<span class="sd">        .. math::</span>
 
-<span class="sd">        If the *activity* current is requested (``activity=True``)</span>
-<span class="sd">        :math:`J_\alpha^{\mathcal A} = \sqrt{ J_\alpha^{|a|} J_\alpha^{|o|} }` is returned.</span>
+<span class="sd">        If the *activity* is requested (``activity=True``)</span>
+<span class="sd">        :math:`\mathbf j_I^{\mathcal A} = \sqrt{\mathbf j_I^{|a|} \mathbf j_I^{|o|} }` is returned.</span>
 
-<span class="sd">        If ``activity=False`` :math:`J_\alpha^{|a|}` is returned.</span>
+<span class="sd">        If ``activity=False`` :math:`\mathbf j_I^{|a|}` is returned.</span>
 
 <span class="sd">        For geometries with all atoms only having 1-orbital, they are equivalent.</span>
 
@@ -2334,7 +2336,7 @@
 <span class="sd">        routine. Basically the LDOS in real-space may be calculated as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \rho_{\mathbf G}(E, \mathbf r) = -\frac{1}{\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Im[\mathbf G_{\nu\mu}(E)]</span>
+<span class="sd">            \boldsymbol\rho_{\mathbf G}(E, \mathbf r) = -\frac{1}{\pi}\sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \Im[\mathbf G_{ij}(E)]</span>
 
 <span class="sd">        where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations</span>
 <span class="sd">        ensures the broadening of the density, i.e. it should not be necessary to perform energy</span>
@@ -2391,7 +2393,7 @@
 <span class="sd">        routine. Basically the LDOS in real-space may be calculated as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, \nu\mu}(E)]</span>
+<span class="sd">            \boldsymbol\rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, ij}(E)]</span>
 
 <span class="sd">        where :math:`\phi` are the orbitals. Note that the broadening used in the TBtrans calculations</span>
 <span class="sd">        ensures the broadening of the density, i.e. it should not be necessary to perform energy</span>
@@ -2458,21 +2460,21 @@
 <span class="sd">        The COOP analysis can be written as:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{COOP}^{\mathbf G}_{\nu\mu} = \frac{-1}{2\pi}</span>
-<span class="sd">              \Im\big[(\mathbf G - \mathbf G^\dagger)_{\nu\mu} \mathbf S_{\mu\nu} \big]</span>
+<span class="sd">            \mathrm{COOP}^{\mathbf G}_{ij} = \frac{-1}{2\pi}</span>
+<span class="sd">              \Im\big[(\mathbf G - \mathbf G^\dagger)_{ij} \mathbf S_{ji} \big]</span>
 
 <span class="sd">        The sum of the COOP DOS is equal to the DOS:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{DOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf G}_{\nu\mu}</span>
+<span class="sd">            \mathrm{DOS}_{i} = \sum_j \mathrm{COOP}^{\mathbf G}_{ij}</span>
 
 <span class="sd">        One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),</span>
 <span class="sd">        7751-7761 for details. The DBCOOP is given by:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            D &amp;= \sum_\nu \mathrm{COOP}^{\mathbf G}_{\nu\nu}</span>
+<span class="sd">            D &amp;= \sum_i \mathrm{COOP}^{\mathbf G}_{ii}</span>
 <span class="sd">            \\</span>
-<span class="sd">            \mathrm{DBCOOP}^{\mathbf G}_{\nu\mu} &amp;= \mathrm{COOP}^{\mathbf G}_{\nu\mu} / D</span>
+<span class="sd">            \mathrm{DBCOOP}^{\mathbf G}_{ij} &amp;= \mathrm{COOP}^{\mathbf G}_{ij} / D</span>
 
 <span class="sd">        The BCOOP can be looked up in the reference above.</span>
 
@@ -2529,20 +2531,20 @@
 <span class="sd">        The COOP analysis can be written as:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{COOP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu} \mathbf S_{\mu\nu} \big]</span>
+<span class="sd">            \mathrm{COOP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij} \mathbf S_{ji} \big]</span>
 
 <span class="sd">        The sum of the COOP DOS is equal to the DOS:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{ADOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}</span>
+<span class="sd">            \mathrm{ADOS}_{i} = \sum_j \mathrm{COOP}^{\mathbf A}_{ij}</span>
 
 <span class="sd">        One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),</span>
 <span class="sd">        7751-7761 for details. The DBCOOP is given by:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            D &amp;= \sum_\nu \mathrm{COOP}^{\mathbf A}_{\nu\nu}</span>
+<span class="sd">            D &amp;= \sum_i \mathrm{COOP}^{\mathbf A}_{ii}</span>
 <span class="sd">            \\</span>
-<span class="sd">            \mathrm{DBCOOP}^{\mathbf A}_{\nu\mu} &amp;= \mathrm{COOP}^{\mathbf A}_{\nu\mu} / D</span>
+<span class="sd">            \mathrm{DBCOOP}^{\mathbf A}_{ij} &amp;= \mathrm{COOP}^{\mathbf A}_{ij} / D</span>
 
 <span class="sd">        The BCOOP can be looked up in the reference above.</span>
 
@@ -2594,7 +2596,7 @@
 <span class="sd">        The atomic COOP are a sum over all orbital COOP:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{COOP}_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} \mathrm{COOP}_{\nu\mu}</span>
+<span class="sd">            \mathrm{COOP}_{IJ} = \sum_{i\in I}\sum_{j\in J} \mathrm{COOP}_{ij}</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2641,7 +2643,7 @@
 <span class="sd">        The atomic COOP are a sum over all orbital COOP:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{COOP}_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} \mathrm{COOP}_{\nu\mu}</span>
+<span class="sd">            \mathrm{COOP}_{IJ} = \sum_{i\in I}\sum_{j\in J} \mathrm{COOP}_{ij}</span>
 
 <span class="sd">        This is a shorthand for calling `orbital_ACOOP` and `sparse_orbital_to_atom` in order.</span>
 
@@ -2696,8 +2698,8 @@
 <span class="sd">        The COHP analysis can be written as:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{COHP}^{\mathbf G}_{\nu\mu} = \frac{-1}{2\pi}</span>
-<span class="sd">              \Im\big[(\mathbf G - \mathbf G^\dagger)_{\nu\mu} \mathbf H_{\mu\nu} \big]</span>
+<span class="sd">            \mathrm{COHP}^{\mathbf G}_{ij} = \frac{-1}{2\pi}</span>
+<span class="sd">              \Im\big[(\mathbf G - \mathbf G^\dagger)_{ij} \mathbf H_{ji} \big]</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2749,8 +2751,8 @@
 <span class="sd">        The COHP analysis can be written as:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{COHP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu}</span>
-<span class="sd">                \mathbf H_{\nu\mu} \big]</span>
+<span class="sd">            \mathrm{COHP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij}</span>
+<span class="sd">                \mathbf H_{ij} \big]</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2792,7 +2794,7 @@
 <span class="sd">        The atomic COHP are a sum over all orbital COHP:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathrm{COHP}_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} \mathrm{COHP}_{\nu\mu}</span>
+<span class="sd">            \mathrm{COHP}_{IJ} = \sum_{i\in I}\sum_{j\in J} \mathrm{COHP}_{ij}</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

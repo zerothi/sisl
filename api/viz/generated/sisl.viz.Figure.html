@@ -4,14 +4,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.Figure &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.viz.Figure &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -24,8 +24,8 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Units and constants" href="../../unit_constant.html" />
-    <link rel="prev" title="merge_plots" href="sisl.viz.merge_plots.html" /> 
+    <link rel="prev" title="animation" href="sisl.viz.animation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -74,6 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -104,6 +105,8 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#utilities">Utilities</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.viz.get_figure.html">get_figure</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.viz.merge_plots.html">merge_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.subplots.html">subplots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.animation.html">animation</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.viz.Figure</a></li>
 </ul>
 </li>
@@ -231,29 +234,40 @@ using other methods, which should work for most backends.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_scatter_3D" title="sisl.viz.Figure.draw_scatter_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_scatter_3D</span></code></a>(x, y, z[, name, marker, ...])</p></td>
 <td><p>Draws a 3D scatter satisfying the specifications</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_3D" title="sisl.viz.Figure.init_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_3D</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.fig_has_attr" title="sisl.viz.Figure.fig_has_attr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fig_has_attr</span></code></a>(key)</p></td>
+<td><p>Whether the figure that this class generates has a given attribute.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_3D" title="sisl.viz.Figure.init_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_3D</span></code></a>()</p></td>
 <td><p>Called if functions that draw in 3D are going to be called.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_coloraxis" title="sisl.viz.Figure.init_coloraxis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_coloraxis</span></code></a>(name[, cmin, cmax, cmid, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_coloraxis" title="sisl.viz.Figure.init_coloraxis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_coloraxis</span></code></a>(name[, cmin, cmax, cmid, ...])</p></td>
 <td><p>Initializes a color axis to be used by the drawing functions</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_figure" title="sisl.viz.Figure.init_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_figure</span></code></a>([composite_method, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_figure" title="sisl.viz.Figure.init_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_figure</span></code></a>([composite_method, ...])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.set_axes_equal" title="sisl.viz.Figure.set_axes_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axes_equal</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.set_axes_equal" title="sisl.viz.Figure.set_axes_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axes_equal</span></code></a>()</p></td>
 <td><p>Sets the axes equal.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.set_axis" title="sisl.viz.Figure.set_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axis</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.set_axis" title="sisl.viz.Figure.set_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axis</span></code></a>(**kwargs)</p></td>
 <td><p>Sets the axis parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.show" title="sisl.viz.Figure.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.show" title="sisl.viz.Figure.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.to" title="sisl.viz.Figure.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a>(key)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.to" title="sisl.viz.Figure.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a>(key)</p></td>
 <td><p>Converts the figure to another backend.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.plot_actions" title="sisl.viz.Figure.plot_actions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_actions</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plot_actions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>)</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.Figure.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_actions</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.__init__" title="Link to this definition"></a></dt>
@@ -305,7 +319,7 @@ the scatter. This will of course be framework specific</p></li>
 <li><p><strong>arrowhead_angle</strong> (<em>angle</em>) – the angle that the arrow head forms with the direction of the arrow (in degrees).</p></li>
 <li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – multiplying factor to display the arrows. It does not affect the underlying data,
 therefore if the data is somehow displayed it should be without the scale factor.</p></li>
-<li><p><strong>annotate</strong> – whether to annotate the arrows with the vector they represent.</p></li>
+<li><p><strong>annotate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – whether to annotate the arrows with the vector they represent.</p></li>
 <li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
 <li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
 </ul>
@@ -578,6 +592,20 @@ the scatter. This will of course be framework specific</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.fig_has_attr">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fig_has_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.fig_has_attr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.fig_has_attr" title="Link to this definition"></a></dt>
+<dd><p>Whether the figure that this class generates has a given attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the attribute to check for.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.Figure.init_3D">
 <span class="sig-name descname"><span class="pre">init_3D</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.init_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.init_3D" title="Link to this definition"></a></dt>
 <dd><p>Called if functions that draw in 3D are going to be called.</p>
@@ -592,6 +620,19 @@ the scatter. This will of course be framework specific</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.viz.Figure.init_figure">
 <span class="sig-name descname"><span class="pre">init_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">composite_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'same_axes'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'multiple'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'multiple_x'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'multiple_y'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'subplots'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'animation'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.init_figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.init_figure" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>composite_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a><em>[</em><em>None</em><em>, </em><em>'same_axes'</em><em>, </em><em>'multiple'</em><em>, </em><em>'multiple_x'</em><em>, </em><em>'multiple_y'</em><em>, </em><em>'subplots'</em><em>, </em><em>'animation'</em><em>]</em>)</p></li>
+<li><p><strong>init_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.Figure.plot_actions">
+<span class="sig-name descname"><span class="pre">plot_actions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#sisl.viz.Figure.plot_actions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -633,7 +674,7 @@ functionality.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.viz.merge_plots.html" class="btn btn-neutral float-left" title="merge_plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.viz.animation.html" class="btn btn-neutral float-left" title="animation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../unit_constant.html" class="btn btn-neutral float-right" title="Units and constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

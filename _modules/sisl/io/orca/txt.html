@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.orca.txt &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.io.orca.txt &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -123,6 +124,10 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">sisl._core.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
@@ -168,13 +173,17 @@
     <span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;txtSileORCA.na is deprecated in favor of txtSileORCA.info.na&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;txtSileORCA.na is deprecated in favor of txtSileORCA.info.na&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of atoms&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">na</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;txtSileORCA.no is deprecated in favor of txtSileORCA.info.no&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;txtSileORCA.no is deprecated in favor of txtSileORCA.info.no&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of orbitals (basis functions)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">no</span>
@@ -218,7 +227,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        out: PropertyDict or list of PropertyDict</span>
+<span class="sd">        PropertyDict or list of PropertyDict</span>
 <span class="sd">            all data from the &quot;DFT_Energy&quot; and &quot;VdW_Correction&quot; blocks</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># read the DFT_Energy block</span>
@@ -266,12 +275,13 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.read_geometry">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the geometry from ORCA property.txt file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        geometries: Geometry or list of Geometry</span>
+<span class="sd">        Geometry or list of Geometry</span>
+<span class="sd">            the geometries contained</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Read the Geometry block</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;!GEOMETRY!&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -296,12 +306,12 @@
 <div class="viewcode-block" id="txtSileORCA.read_gtensor">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.read_gtensor">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_gtensor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_gtensor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PropertyDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reads electronic g-tensor data from the ``EPRNMR_GTensor`` block</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        out : PropertyDict</span>
+<span class="sd">        PropertyDict</span>
 <span class="sd">            Electronic g-tensor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
@@ -342,18 +352,18 @@
 <div class="viewcode-block" id="txtSileORCA.read_hyperfine_coupling">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.read_hyperfine_coupling">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_hyperfine_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_hyperfine_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PropertyDict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reads hyperfine couplings from the ``EPRNMR_ATensor`` block</span>
 
 <span class="sd">        For a nucleus :math:`k`, the hyperfine interaction is usually</span>
 <span class="sd">        written in terms of the symmetric :math:`3\times 3` hyperfine</span>
-<span class="sd">        tensor :math:`\mathbf A_k` such that</span>
+<span class="sd">        tensor :math:`\mathbf A^{(k)}` such that</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">           H_{\mathrm{hfi}} = \mathbf{S} \cdot \mathbf A_k \mathbf{I}_k</span>
+<span class="sd">           H_{\mathrm{hfi}} = \mathbf{S} \cdot \mathbf A^{(k)} \mathbf{I}^{(k)}</span>
 
-<span class="sd">        where :math:`\mathbf{S}_k` and :math:`\mathbf{I}_k`</span>
+<span class="sd">        where :math:`\mathbf{S}` and :math:`\mathbf{I}^{(k)}`</span>
 <span class="sd">        represent the electron and nuclear spin operators, respectively.</span>
 
 <span class="sd">        For a study of hyperfine coupling in nanographenes using ORCA</span>
@@ -368,9 +378,21 @@
 <span class="sd">        -----</span>
 <span class="sd">        Hyperfine tensors written by ORCA have units of MHz.</span>
 
+<span class="sd">        Currently the fields of each `PropertyDict` contains:</span>
+
+<span class="sd">        * ``ia``: atomic index</span>
+<span class="sd">        * ``species``: species for atom</span>
+<span class="sd">        * ``isotope``: the atomic isotope</span>
+<span class="sd">        * ``spin``: spin multiplicity</span>
+<span class="sd">        * ``prefactor``: prefactor defined in output</span>
+<span class="sd">        * ``tensor``: the :math:`\mathbf A^{(k)}` tensor</span>
+<span class="sd">        * ``vectors``: eigenvectors</span>
+<span class="sd">        * ``eigenvalues``: eigenvalues</span>
+<span class="sd">        * ``iso``: Fermi contact</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        out : list of PropertyDict</span>
+<span class="sd">        list of PropertyDict</span>
 <span class="sd">            Hyperfine coupling data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;EPRNMR_ATensor&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -389,7 +411,7 @@
 
             <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="n">A</span><span class="p">[</span><span class="s2">&quot;ia&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">A</span><span class="p">[</span><span class="s2">&quot;sa&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">A</span><span class="p">[</span><span class="s2">&quot;species&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="n">A</span><span class="p">[</span><span class="s2">&quot;isotope&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>

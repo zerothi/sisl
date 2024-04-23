@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -123,6 +124,12 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
+
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Electron related functions and classes</span>
 <span class="sd">==========================================</span>
 
@@ -152,9 +159,9 @@
 <span class="sd">using automatic arguments.</span>
 
 <span class="sd">For instance, the PDOS method requires the overlap matrix in non-orthogonal</span>
-<span class="sd">basis sets at the :math:`k`-point corresponding to the eigenstates. Hence, the</span>
+<span class="sd">basis sets at the :math:`\mathbf k`-point corresponding to the eigenstates. Hence, the</span>
 <span class="sd">argument ``S`` must be :math:`\mathbf S(\mathbf k)`. The `EigenstateElectron` class</span>
-<span class="sd">automatically passes the correct ``S`` because it knows the states :math:`k`-point.</span>
+<span class="sd">automatically passes the correct ``S`` because it knows the states :math:`\mathbf k`-point.</span>
 
 <span class="sd">   CoefficientElectron</span>
 <span class="sd">   StateElectron</span>
@@ -268,7 +275,7 @@
 <span class="sd">    The :math:`\mathrm{PDOS}(E)` is calculated as:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \mathrm{PDOS}_\nu(E) = \sum_i \psi^*_{i,\nu} [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)</span>
+<span class="sd">       \mathrm{PDOS}_i(E) = \sum_\alpha \psi^*_{\alpha,i} [\mathbf S | \psi_{\alpha}\rangle]_i D(E-\epsilon_\alpha)</span>
 
 <span class="sd">    where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function</span>
 <span class="sd">    used may be a user-defined function. Alternatively a distribution function may</span>
@@ -278,7 +285,7 @@
 <span class="sd">    Note that `DOS` is the sum of the orbital projected DOS:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \mathrm{DOS}(E) = \sum_\nu\mathrm{PDOS}_\nu(E)</span>
+<span class="sd">       \mathrm{DOS}(E) = \sum_i\mathrm{PDOS}_i(E)</span>
 
 <span class="sd">    For non-colinear calculations (this includes spin-orbit calculations) the PDOS is additionally</span>
 <span class="sd">    separated into 4 components (in this order):</span>
@@ -292,15 +299,15 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \mathrm{PDOS}_\nu^\sigma(E) &amp;= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)</span>
+<span class="sd">       \mathrm{PDOS}_i^\sigma(E) &amp;= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)</span>
 <span class="sd">       \\</span>
-<span class="sd">       \mathrm{PDOS}_\nu^x(E) &amp;= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_x [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)</span>
+<span class="sd">               \mathrm{PDOS}_i^x(E) &amp;= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_x [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)</span>
 <span class="sd">       \\</span>
-<span class="sd">       \mathrm{PDOS}_\nu^y(E) &amp;= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_y [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)</span>
+<span class="sd">               \mathrm{PDOS}_i^y(E) &amp;= \sum_\alpha \psi^*_{\alpha,i} \boldsymbol\sigma_y [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)</span>
 <span class="sd">       \\</span>
-<span class="sd">       \mathrm{PDOS}_\nu^z(E) &amp;= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)</span>
+<span class="sd">               \mathrm{PDOS}_i^z(E) &amp;= \sum_\alpha\psi^*_{\alpha,i} \boldsymbol\sigma_z [\mathbf S | \psi_\alpha\rangle]_i D(E-\epsilon_\alpha)</span>
 
-<span class="sd">    Note that the total PDOS may be calculated using :math:`\boldsymbol\sigma_i\boldsymbol\sigma_i` where :math:`i` may be either of :math:`x`,</span>
+<span class="sd">    Note that the total PDOS may be calculated using :math:`\boldsymbol\sigma_\gamma\boldsymbol\sigma_\gamma` where :math:`\gamma` may be either of :math:`x`,</span>
 <span class="sd">    :math:`y` or :math:`z`.</span>
 
 <span class="sd">    Parameters</span>
@@ -422,7 +429,7 @@
 <span class="sd">    The :math:`\mathrm{COP}(E)` is calculated as:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \mathrm{COP}_{\nu,\mu}(E) = \sum_i \psi^*_{i,\nu}\psi_{i,\mu} \mathbf M e^{i\mathbf k\cdot \mathbf R} D(E-\epsilon_i)</span>
+<span class="sd">       \mathrm{COP}_{i,j}(E) = \sum_\alpha \psi^*_{\alpha,i}\psi_{\alpha,j} \mathbf M e^{i\mathbf k\cdot \mathbf R} D(E-\epsilon_\alpha)</span>
 
 <span class="sd">    where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function</span>
 <span class="sd">    used may be a user-defined function. Alternatively a distribution function may</span>
@@ -570,11 +577,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \mathbf{S}_i^x &amp;= \langle \psi_i | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle</span>
+<span class="sd">       \mathbf{S}_\alpha^x &amp;= \langle \psi_\alpha | \boldsymbol\sigma_x \mathbf S | \psi_\alpha \rangle</span>
 <span class="sd">       \\</span>
-<span class="sd">       \mathbf{S}_i^y &amp;= \langle \psi_i | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle</span>
+<span class="sd">       \mathbf{S}_\alpha^y &amp;= \langle \psi_\alpha | \boldsymbol\sigma_y \mathbf S | \psi_\alpha \rangle</span>
 <span class="sd">       \\</span>
-<span class="sd">       \mathbf{S}_i^z &amp;= \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle</span>
+<span class="sd">       \mathbf{S}_\alpha^z &amp;= \langle \psi_\alpha | \boldsymbol\sigma_z \mathbf S | \psi_\alpha \rangle</span>
 
 <span class="sd">    If `project` is true, the above will be the orbitally resolved quantities.</span>
 
@@ -584,7 +591,7 @@
 <span class="sd">       vectors describing the electronic states, 2nd dimension contains the states</span>
 <span class="sd">    S : array_like, optional</span>
 <span class="sd">       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity</span>
-<span class="sd">       matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors</span>
+<span class="sd">       matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors</span>
 <span class="sd">       has been evaluated at.</span>
 <span class="sd">    project: bool, optional</span>
 <span class="sd">       whether the spin-moments will be orbitally resolved or not</span>
@@ -685,7 +692,7 @@
 <span class="sd">       vectors describing the electronic states of spin-channel :math:`\beta`, 2nd dimension contains the states</span>
 <span class="sd">    S : array_like, optional</span>
 <span class="sd">       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity</span>
-<span class="sd">       matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors</span>
+<span class="sd">       matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors</span>
 <span class="sd">       have been evaluated at.</span>
 <span class="sd">    sum:</span>
 <span class="sd">        whether the spin-contamination should be summed for all states (a single number returned).</span>
@@ -857,7 +864,7 @@
 <span class="sd">       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or</span>
 <span class="sd">       list of the Hamiltonian derivative along the 3 Cartesian directions.</span>
 <span class="sd">    dSk : list of array_like, optional</span>
-<span class="sd">       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis.</span>
+<span class="sd">       :math:`\delta \mathbf S_{\mathbf k}` matrix required for non-orthogonal basis.</span>
 <span class="sd">       Same derivative as `dHk`.</span>
 <span class="sd">       NOTE: Using non-orthogonal basis sets are not tested.</span>
 <span class="sd">    degenerate : list of array_like, optional</span>
@@ -1047,11 +1054,11 @@
 <span class="sd">    The Berry phase for a single Bloch state is calculated using the discretized formula:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \mathbf S = \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle</span>
+<span class="sd">       \mathbf S = \prod_\alpha^{N-1} \langle \psi_{\mathbf k_\alpha} | \psi_{\mathbf k_{\alpha+1}} \rangle</span>
 <span class="sd">       \\</span>
 <span class="sd">       \phi = - \Im\ln \mathrm{det} \mathbf S</span>
 
-<span class="sd">    where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix</span>
+<span class="sd">    where :math:`\langle \psi_{\mathbf k_\alpha} | \psi_{\mathbf k_{\alpha+1}} \rangle` may be exchanged with an overlap matrix</span>
 <span class="sd">    of the investigated bands. I.e. :math:`\psi` is a manifold set of wavefunctions.</span>
 <span class="sd">    The overlap matrix :math:`\mathbf S` is also known as the global unitary</span>
 <span class="sd">    rotation matrix corresponding to the maximally localized Wannier centers.</span>
@@ -1059,7 +1066,7 @@
 <span class="sd">    If `closed` is true the overlap matrix will also include the circular inner product:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \mathbf S^{\mathcal C} = \mathbf S \langle \psi_{k_N} | \psi_{k_1} \rangle</span>
+<span class="sd">       \mathbf S^{\mathcal C} = \mathbf S \langle \psi_{\mathbf k_N} | \psi_{\mathbf k_1} \rangle</span>
 
 
 <span class="sd">    Parameters</span>
@@ -1146,7 +1153,7 @@
             <span class="k">pass</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">gauge</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">)</span>
+        <span class="n">gauge</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;change state to the lowdin state, assuming everything is in R gauge</span>
@@ -1260,23 +1267,23 @@
 <span class="sd">    The wavefunctions are calculated in real-space via:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(i\mathbf k \mathbf R)</span>
+<span class="sd">       \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(i\mathbf k\cdot\mathbf R)</span>
 
 <span class="sd">    While for non-colinear/spin-orbit calculations the wavefunctions are determined from the</span>
 <span class="sd">    spinor component (`spinor`)</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k \mathbf R)</span>
+<span class="sd">       \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k\cdot \mathbf R)</span>
 
 <span class="sd">    where ``spinor in [0, 1]`` determines :math:`\alpha` or :math:`\beta`, respectively.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Currently this method only works for `v` being coefficients of the gauge=&quot;R&quot; method. In case</span>
+<span class="sd">    Currently this method only works for `v` being coefficients of the gauge=&quot;cell&quot; method. In case</span>
 <span class="sd">    you are passing a `v` with the incorrect gauge you will find a phase-shift according to:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \tilde v_j = e^{i\mathbf k\mathbf r_j} v_j</span>
+<span class="sd">        \tilde v_j = e^{i\mathbf k\cdot\mathbf r_j} v_j</span>
 
 <span class="sd">    where :math:`j` is the orbital index and :math:`\mathbf r_j` is the orbital position.</span>
 
@@ -1650,8 +1657,10 @@
     <span class="c1"># pylint: disable=E1101</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__is_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__is_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Spin</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine to check whether this is a non-colinear calculation&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">spin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -1659,21 +1668,17 @@
 
 <div class="viewcode-block" id="_electron_State.Sk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.Sk">[docs]</a>
-    <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Retrieve the overlap matrix corresponding to the originating parent structure.</span>
 
-<span class="sd">        When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(k)` for the</span>
-<span class="sd">        :math:`k`-point these eigenstates originate from</span>
+<span class="sd">        When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(\mathbf k)` for the</span>
+<span class="sd">        :math:`\mathbf k`-point these eigenstates originate from.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        format : str, optional</span>
 <span class="sd">           the returned format of the overlap matrix. This only takes effect for</span>
 <span class="sd">           non-orthogonal parents.</span>
-<span class="sd">        spin : Spin, optional</span>
-<span class="sd">           for non-colinear spin configurations the *fake* overlap matrix returned</span>
-<span class="sd">           will have halve the size of the input matrix. If you want the *full* overlap</span>
-<span class="sd">           matrix, simply do not specify the `spin` argument.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;csr&quot;</span><span class="p">)</span>
@@ -1691,21 +1696,23 @@
                         <span class="n">opt</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_nc</span><span class="p">():</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;sc:&quot;</span> <span class="ow">in</span> <span class="nb">format</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">n_s</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">n</span>
 
         <span class="k">return</span> <span class="n">_FakeMatrix</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="_electron_State.norm2">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.norm2">[docs]</a>
-    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;projection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument sum has been deprecated in favor of projection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;orbitals&quot;</span><span class="p">,</span> <span class="s2">&quot;basis&quot;</span><span class="p">,</span> <span class="s2">&quot;atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`</span>
 
 <span class="sd">        :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis</span>
@@ -1713,21 +1720,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sum : bool, optional</span>
-<span class="sd">           for true only a single number per state will be returned, otherwise the norm</span>
-<span class="sd">           per basis element will be returned.</span>
+<span class="sd">        projection :</span>
+<span class="sd">           whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        inner: used method for calculating the squared norm.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            the squared norm for each state</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Retrieve the overlap matrix (FULL S is required for NC)</span>
-        <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="nb">sum</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="n">S</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(),</span> <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="_electron_State.spin_moment">
@@ -1825,8 +1830,6 @@
 <span class="sd">        This is because of the velocity un-folding for degenerate modes. I.e. calling</span>
 <span class="sd">        `PDOS` after this method *may* change the result.</span>
 
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
 <span class="sd">        The velocities are calculated without the Berry curvature contribution see Eq. (2) in :cite:`Wang2006`.</span>
 <span class="sd">        The missing contribution may be added in later editions, for completeness sake, it is:</span>
 

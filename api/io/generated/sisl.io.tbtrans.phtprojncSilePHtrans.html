@@ -4,14 +4,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.phtprojncSilePHtrans &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.io.tbtrans.phtprojncSilePHtrans &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -24,8 +24,8 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -59,7 +59,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -76,6 +76,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -478,7 +479,7 @@
 <dd><p>Projected spectral density of states (DOS) (1/eV)</p>
 <p>Extract the projected spectral DOS from electrode <em class="xref py py-obj">elec</em> on a selected subset of atoms/orbitals in the device region</p>
 <div class="math notranslate nohighlight">
-\[\mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} [\mathbf{G}(E)|i\rangle\langle i|\Gamma_\mathfrak{el}|i\rangle\langle i|\mathbf{G}^\dagger]_{\nu\nu}(E)\]</div>
+\[\mathrm{ADOS}_\mathfrak{el}(E) = \frac{1}{2\pi N} \sum_{i\in \{I\}} [\mathbf{G}(E)|i\rangle\langle i|\Gamma_\mathfrak{el}|i\rangle\langle i|\mathbf{G}^\dagger]_{ii}(E)\]</div>
 <p>where <span class="math notranslate nohighlight">\(|i\rangle\)</span> may be a sum of states.
 The normalization constant (<span class="math notranslate nohighlight">\(N\)</span>) is defined in the routine <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.norm" title="sisl.io.tbtrans.phtprojncSilePHtrans.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a> and depends on the
 arguments.</p>
@@ -508,8 +509,8 @@ or a selection of k-points</p></li>
 <p>The <span class="math notranslate nohighlight">\(\mathrm{LDOS}(E, \mathbf r)\)</span> may be calculated using the <a class="reference internal" href="../../generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.density" title="sisl.physics.DensityMatrix.density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">density</span></code></a>
 routine. Basically the LDOS in real-space may be calculated as</p>
 <div class="math notranslate nohighlight">
-\[\rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, \nu\mu}(E)]\]</div>
-<p>where <span class="math notranslate nohighlight">\(\phi\)</span> are the orbitals. Note that the broadening used in the TBtrans calculations
+\[\boldsymbol\rho_{\mathbf A_{\mathfrak{el}}}(E, \mathbf r) = \frac{1}{2\pi}\sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \Re[\mathbf A_{\mathfrak{el}, ij}(E)]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi\)</span> are the real-space orbitals. Note that the broadening used in the TBtrans calculations
 ensures the broadening of the density, i.e. it should not be necessary to perform energy
 averages over the density matrices.</p>
 <dl class="field-list simple">
@@ -567,6 +568,9 @@ is returned</p></li>
 Currently one cannot extract DOS per atom/orbital.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -585,7 +589,7 @@ Currently one cannot extract DOS per atom/orbital.</p></li>
 <dd><p>Green function density of states (DOS) (1/eV).</p>
 <p>Extract the DOS on a selected subset of atoms/orbitals in the device region</p>
 <div class="math notranslate nohighlight">
-\[\mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{\nu\in \mathrm{atom}/\mathrm{orbital}} \Im \mathbf{G}_{\nu\nu}(E)\]</div>
+\[\mathrm{DOS}(E) = -\frac{1}{\pi N} \sum_{i\in \{I\}} \Im \mathbf{G}_{ii}(E)\]</div>
 <p>The normalization constant (<span class="math notranslate nohighlight">\(N\)</span>) is defined in the routine <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.norm" title="sisl.io.tbtrans.phtprojncSilePHtrans.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a> and depends on the
 arguments.</p>
 <dl class="field-list simple">
@@ -603,6 +607,9 @@ False is equivalent to None.</p></li>
 <li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned quantities are summed or returned <em>as is</em>, i.e. resolved per atom/orbital.</p></li>
 <li><p><strong>norm</strong> (<em>{'none'</em><em>, </em><em>'atom'</em><em>, </em><em>'orbital'</em><em>, </em><em>'all'}</em>) – how the normalization of the summed DOS is performed (see <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.norm" title="sisl.io.tbtrans.phtprojncSilePHtrans.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a> routine)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -697,7 +704,7 @@ or the down-folding region (electrode + downfolding region, not in device)</p></
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.atom_ACOHP">
-<span class="sig-name descname"><span class="pre">atom_ACOHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.atom_ACOHP" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">atom_ACOHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.atom_ACOHP" title="Link to this definition"></a></dt>
 <dd><p>Atomic COHP curve of the spectral function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -718,6 +725,9 @@ If <code class="docutils literal notranslate"><span class="pre">True</span></cod
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -743,11 +753,11 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.atom_ACOOP">
-<span class="sig-name descname"><span class="pre">atom_ACOOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.atom_ACOOP" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">atom_ACOOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.atom_ACOOP" title="Link to this definition"></a></dt>
 <dd><p>Atomic COOP curve of the spectral function</p>
 <p>The atomic COOP are a sum over all orbital COOP:</p>
 <div class="math notranslate nohighlight">
-\[\mathrm{COOP}_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} \mathrm{COOP}_{\nu\mu}\]</div>
+\[\mathrm{COOP}_{IJ} = \sum_{i\in I}\sum_{j\in J} \mathrm{COOP}_{ij}\]</div>
 <p>This is a shorthand for calling <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOOP" title="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOOP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_ACOOP</span></code></a> and <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom" title="sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_atom</span></code></a> in order.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -768,6 +778,9 @@ If <code class="docutils literal notranslate"><span class="pre">True</span></cod
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -811,12 +824,14 @@ the physical current flowing in/out of atoms but is merely a number that provide
 idea of <em>how much</em> current this atom is redistributing.</p>
 <p>The atomic current may have two meanings based on these two equations</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}J_\alpha^{|a|} &amp;=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} J_{\nu\mu} \Big|
+\[\begin{split}\mathbf j_I^{|a|} &amp;=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf J_{ij} \Big|
 \\
-J_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| J_{\nu\mu} \big|\end{split}\]</div>
-<p>If the <em>activity</em> current is requested (<code class="docutils literal notranslate"><span class="pre">activity=True</span></code>)
-<span class="math notranslate nohighlight">\(J_\alpha^{\mathcal A} = \sqrt{ J_\alpha^{|a|} J_\alpha^{|o|} }\)</span> is returned.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">activity=False</span></code> <span class="math notranslate nohighlight">\(J_\alpha^{|a|}\)</span> is returned.</p>
+\mathbf j_I^{|o|} &amp;=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| J_{ij} \big|\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>If the <em>activity</em> is requested (<code class="docutils literal notranslate"><span class="pre">activity=True</span></code>)
+<span class="math notranslate nohighlight">\(\mathbf j_I^{\mathcal A} = \sqrt{\mathbf j_I^{|a|} \mathbf j_I^{|o|} }\)</span> is returned.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">activity=False</span></code> <span class="math notranslate nohighlight">\(\mathbf j_I^{|a|}\)</span> is returned.</p>
 <p>For geometries with all atoms only having 1-orbital, they are equivalent.</p>
 <p>Generally the activity current is a more rigorous figure of merit for the current
 flowing through an atom. More so than than the summed absolute atomic current due to
@@ -837,6 +852,9 @@ the given supercell, the default is all orbital currents for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
 <li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -880,12 +898,15 @@ the physical transmission flowing in/out of atoms but is merely a number that pr
 idea of <em>how much</em> this atom is redistributing.</p>
 <p>The atomic transmission may have two meanings based on these two equations</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}T_\alpha^{|a|} &amp;=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} T_{\nu\mu} \Big|
+\[\begin{split}T_I^{|a|} &amp;=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf T_{ij} \Big|
 \\
-T_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| T_{\nu\mu} \big|\end{split}\]</div>
-<p>If the <em>activity</em> current is requested (<code class="docutils literal notranslate"><span class="pre">activity=True</span></code>)
-<span class="math notranslate nohighlight">\(T_\alpha^{\mathcal A} = \sqrt{ T_\alpha^{|a|} T_\alpha^{|o|} }\)</span> is returned.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">activity=False</span></code> <span class="math notranslate nohighlight">\(T_\alpha^{|a|}\)</span> is returned.</p>
+T_I^{|o|} &amp;=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| T_{ij} \big|\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>If the <em>activity</em> is requested (<code class="docutils literal notranslate"><span class="pre">activity=True</span></code>)
+<span class="math notranslate nohighlight">\(T_I^{\mathcal A} = \sqrt{T_I^{|a|} T_I^{|o|} }\)</span> is returned.
+If the <em>activity</em> current is requested (<code class="docutils literal notranslate"><span class="pre">activity=True</span></code>)</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">activity=False</span></code> <span class="math notranslate nohighlight">\(T_I^{|a|}\)</span> is returned.</p>
 <p>For geometries with all atoms only having 1-orbital, they are equivalent.</p>
 <p>Generally the <em>activity</em> is a more rigorous figure of merit for the transmission
 flowing through an atom. More so than than the summed absolute atomic transmission due to
@@ -908,6 +929,9 @@ the given supercell, the default is all orbital transmissions are used for the s
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
 <li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -961,12 +985,12 @@ To only get unit cell orbital currents, pass <code class="docutils literal notra
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.bond_current">
-<span class="sig-name descname"><span class="pre">bond_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.bond_current" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bond_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.bond_current" title="Link to this definition"></a></dt>
 <dd><p>Bond current between atoms (sum of orbital currents)</p>
 <p>Short hand function for calling <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_current" title="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_current</span></code></a> and <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom" title="sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_atom</span></code></a>.</p>
 <p>The bond currents are a sum over all orbital currents:</p>
 <div class="math notranslate nohighlight">
-\[J_{\alpha\beta} = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} J_{\nu\mu}\]</div>
+\[J_{IJ} = \sum_{i\in I}\sum_{j\in J} J_{ij}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -989,6 +1013,9 @@ If <em class="xref py py-obj">True</em> this will return a sparse matrix of <cod
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1027,12 +1054,12 @@ no bias window.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.bond_transmission">
-<span class="sig-name descname"><span class="pre">bond_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.bond_transmission" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bond_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.bond_transmission" title="Link to this definition"></a></dt>
 <dd><p>Bond transmission between atoms at a specific energy</p>
 <p>Short hand function for calling <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_transmission" title="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_transmission</span></code></a> and <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom" title="sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_atom</span></code></a>.</p>
 <p>The bond transmissions are a sum over all orbital transmissions</p>
 <div class="math notranslate nohighlight">
-\[T_{\alpha\beta}(E) = \sum_{\nu\in\alpha}\sum_{\mu\in\beta} T_{\nu\mu}(E)\]</div>
+\[T_{IJ}(E) = \sum_{i\in I}\sum_{j\in J} T_{ij}(E)\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1055,6 +1082,9 @@ If <em class="xref py py-obj">True</em> this will return a sparse matrix of <cod
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1153,7 +1183,7 @@ The eigenstate will be in the Lowdin basis:</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron" title="sisl.physics.electron.EigenstateElectron">EigenstateElectron</a></p>
+<dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron" title="sisl.physics.electron.EigenstateElectron"><em>EigenstateElectron</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1488,6 +1518,9 @@ is equivalent to the ‘atom’ option.</p>
 <li><p><strong>norm</strong> (<em>{'none'</em><em>, </em><em>'atom'</em><em>, </em><em>'orbital'</em><em>, </em><em>'all'}</em>) – how the normalization of the summed DOS is performed (see <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.norm" title="sisl.io.tbtrans.phtprojncSilePHtrans.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a> routine)</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -1524,13 +1557,13 @@ device pivoting indices).</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOHP">
 <span class="sig-name descname"><span class="pre">orbital_ACOHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec_mol_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOHP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COHP analysis of the projected spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COHP of the
 underlying geometry.</p>
 <p>The COHP analysis can be written as:</p>
 <div class="math notranslate nohighlight">
-\[\mathrm{COHP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu}
-    \mathbf H_{\nu\mu} \big]\]</div>
+\[\mathrm{COHP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij}
+    \mathbf H_{ij} \big]\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1569,21 +1602,21 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOOP">
 <span class="sig-name descname"><span class="pre">orbital_ACOOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec_mol_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_ACOOP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COOP analysis of the projected spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COOP of the
 underlying geometry.</p>
 <p>The COOP analysis can be written as:</p>
 <div class="math notranslate nohighlight">
-\[\mathrm{COOP}^{\mathbf A}_{\nu\mu} = \frac{1}{2\pi} \Re\big[\mathbf A_{\nu\mu} \mathbf S_{\mu\nu} \big]\]</div>
+\[\mathrm{COOP}^{\mathbf A}_{ij} = \frac{1}{2\pi} \Re\big[\mathbf A_{ij} \mathbf S_{ji} \big]\]</div>
 <p>The sum of the COOP DOS is equal to the DOS:</p>
 <div class="math notranslate nohighlight">
-\[\mathrm{ADOS}_{\nu} = \sum_\mu \mathrm{COOP}^{\mathbf A}_{\nu\mu}\]</div>
+\[\mathrm{ADOS}_{i} = \sum_j \mathrm{COOP}^{\mathbf A}_{ij}\]</div>
 <p>One can calculate the (diagonal) balanced COOP analysis, see JPCM 15 (2003),
 7751-7761 for details. The DBCOOP is given by:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}D &amp;= \sum_\nu \mathrm{COOP}^{\mathbf A}_{\nu\nu}
+\[\begin{split}D &amp;= \sum_i \mathrm{COOP}^{\mathbf A}_{ii}
 \\
-\mathrm{DBCOOP}^{\mathbf A}_{\nu\mu} &amp;= \mathrm{COOP}^{\mathbf A}_{\nu\mu} / D\end{split}\]</div>
+\mathrm{DBCOOP}^{\mathbf A}_{ij} &amp;= \mathrm{COOP}^{\mathbf A}_{ij} / D\end{split}\]</div>
 <p>The BCOOP can be looked up in the reference above.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1639,13 +1672,13 @@ other are set to 0.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_current">
-<span class="sig-name descname"><span class="pre">orbital_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_current" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">orbital_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_current" title="Link to this definition"></a></dt>
 <dd><p>Orbital current originating from <em class="xref py py-obj">elec</em> as a sparse matrix</p>
 <p>This is the bias window integrated quantity of <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_transmission" title="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_transmission</span></code></a>. As such it
 represents how the current is flowing at an applied bias from a given electrode.</p>
 <div class="math notranslate nohighlight">
-\[J_{\mu\nu} = \frac eh\int_{\mu_1}^{\mu_2} \!\mathrm dE\, T_{\mu\nu} [n_F(\mu_2, k_B T_2) - n_F(\mu_1, k_B T_1)]\]</div>
-<p>with <span class="math notranslate nohighlight">\(T_i\)</span> being the electronic temperature of the respective reservoir.</p>
+\[J_{ij} = \frac eh\int_{\mu_1}^{\mu_2} \!\mathrm dE\, T_{ij} [n_F(\mu_2, k_B T_2) - n_F(\mu_1, k_B T_1)]\]</div>
+<p>with <span class="math notranslate nohighlight">\(T_{\langle\rangle}\)</span> being the electronic temperature of the respective reservoir.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1662,6 +1695,9 @@ Default to <code class="docutils literal notranslate"><span class="pre">&quot;al
 arguments for <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom" title="sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_atom</span></code></a> and <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_scalar" title="sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_scalar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_scalar</span></code></a>.</p></li>
 <li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1703,11 +1739,11 @@ While if one is interested in the transmission between subset of orbitals,
 <code class="docutils literal notranslate"><span class="pre">what=&quot;all&quot;</span></code> is the correct method to account for loop transmissions.</p>
 <p>The orbital transmissions are calculated as described in the TBtrans manual:</p>
 <div class="math notranslate nohighlight">
-\[T_{\mu \nu}(E) = i [
-(\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)
+\[T_{ij}(E) = i [
+(\mathbf H_{ji} - E\mathbf S_{ji}) \mathbf A_{ij}(E)
 -
-(\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],\]</div>
-<p>It is easy to show that the above matrix obeys <span class="math notranslate nohighlight">\(T_{\mu\nu}=-T_{\nu\mu}\)</span>.</p>
+(\mathbf H_{ij} - E\mathbf S_{ij}) \mathbf A_{ji}(E)],\]</div>
+<p>It is easy to show that the above matrix obeys <span class="math notranslate nohighlight">\(T_{ij}=-T_{ji}\)</span>.</p>
 <p>For inexperienced users it is adviced to try out all three values of <code class="docutils literal notranslate"><span class="pre">what</span></code> to ensure
 the correct physics is obtained.</p>
 <p>This becomes even more important when the orbital transmissions are calculated with magnetic
@@ -1734,7 +1770,7 @@ To only get unit cell transmissions, pass <code class="docutils literal notransl
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p>A <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> containing the supercell transmission pathways, or</p></li>
+<li><p>A <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> containing the supercell transmission pathways, or</p></li>
 <li><p><em>orbital transmissions.</em></p></li>
 </ul>
 </p>
@@ -1906,6 +1942,9 @@ is returned</p></li>
 single scattering matrix Eq. (2) above (true), otherwise Eq. (1) will be used (false).</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1934,14 +1973,17 @@ single scattering matrix Eq. (2) above (true), otherwise Eq. (1) will be used (f
 be a generic routine usable for other parts of <a class="reference internal" href="../../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Dab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><em>scipy.sparse.csr_matrix</em></a>) – the input sparse matrix in atomic indices</p>
+<dd class="field-odd"><p><strong>Dab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a>) – the input sparse matrix in atomic indices</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom">
-<span class="sig-name descname"><span class="pre">sparse_orbital_to_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dij</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum_dup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sparse_orbital_to_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dij</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum_dup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><span class="pre">csr_matrix</span></a></span></span><a class="headerlink" href="#sisl.io.tbtrans.phtprojncSilePHtrans.sparse_orbital_to_atom" title="Link to this definition"></a></dt>
 <dd><p>Reduce a sparse matrix in orbital sparse to a sparse matrix in atomic indices</p>
 <p>This algorithm <em>may</em> keep the same non-zero entries, but will return
 a new csr_matrix with duplicate indices.</p>
@@ -1951,7 +1993,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><em>scipy.sparse.csr_matrix</em></a>) – the input sparse matrix in orbital format</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a>) – the input sparse matrix in orbital format</p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
@@ -1960,6 +2002,9 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 present in the returned sparse matrix. If false, duplicates may exist for
 multi-orbital systems.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1972,21 +2017,24 @@ multi-orbital systems.</p></li>
 of sparse matrix elements for each atom. It is thus <em>not</em> a quantity that can be related to
 any physical quantity that the sparse matrix may represent but is merely a number that provides an
 idea of <em>how much</em> this atom is governing the data in the matrix.</p>
-<p>The atomic contributionmay have two meanings based on these two equations</p>
+<p>The atomic contribution may have two meanings based on these two equations</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}A_\alpha^{|a|} &amp;=\frac{1}{2} \sum_\beta \Big| \sum_{\nu\in \alpha}\sum_{\mu\in \beta} A_{\nu\mu} \Big|
+\[\begin{split}\mathbf a_I^{|a|} &amp;=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf A_{ij} \Big|
 \\
-A_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \beta} \big| A_{\nu\mu} \big|\end{split}\]</div>
+\mathbf a_I^{|o|} &amp;=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| A_{ij} \big|\end{split}\]</div>
 <p>If the <em>activity</em> is requested (<code class="docutils literal notranslate"><span class="pre">activity=True</span></code>)
-<span class="math notranslate nohighlight">\(A_\alpha^{\mathcal A} = \sqrt{ A_\alpha^{|a|} A_\alpha^{|o|} }\)</span> is returned.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">activity=False</span></code> <span class="math notranslate nohighlight">\(A_\alpha^{|a|}\)</span> is returned.</p>
+<span class="math notranslate nohighlight">\(\mathbf a_I^{\mathcal A} = \sqrt{\mathbf a_I^{|a|} \mathbf a_I^{|o|} }\)</span> is returned.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">activity=False</span></code> <span class="math notranslate nohighlight">\(\mathbf a_I^{|a|}\)</span> is returned.</p>
 <p>For geometries with all atoms only having 1-orbital, they are equivalent.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital sparse matrix.</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a>) – the orbital sparse matrix.</p></li>
 <li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the atomic activity, see explanation above</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -2010,7 +2058,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.12.0)"><em>scipy.sparse.csr_matrix</em></a>) – the input sparse matrix</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><em>csr_matrix</em></a>) – the input sparse matrix</p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
@@ -2019,6 +2067,9 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 present in the returned sparse matrix. If false, duplicates may exist for
 multi-orbital systems.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2059,6 +2110,9 @@ electrode <em class="xref py py-obj">elec</em> tiled 3 times.</p>
 <li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned transmission are k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2103,9 +2157,9 @@ or a selection of k-points</p></li>
 <dd><p>Vector for each atom being the sum of bond currents times the normalized bond vector between the atoms</p>
 <p>The vector current is defined as:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf J_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot J_{\alpha\beta}\]</div>
-<p>Where <span class="math notranslate nohighlight">\(J_{\alpha\beta}\)</span> is the bond current between atom <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> and
-<span class="math notranslate nohighlight">\(r_\alpha\)</span> are the atomic coordinates.</p>
+\[\mathbf J_I = \sum_J \frac{\mathbf r^{(J)} - \mathbf r^{(I)}}{|\mathbf r^{(J)} - \mathbf r^{(I)}|} \cdot J_{IJ}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(J_{IJ}\)</span> is the bond current between atom <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(J\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf r^{(\langle\rangle)}\)</span> are the atomic coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2126,6 +2180,9 @@ of the vector is compatible with the other options given a pristine system.</p><
 Passed directly to <a class="reference internal" href="#sisl.io.tbtrans.phtprojncSilePHtrans.orbital_current" title="sisl.io.tbtrans.phtprojncSilePHtrans.orbital_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_current</span></code></a>.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>Calculating the current between two electrodes with the same
@@ -2137,7 +2194,10 @@ no bias window.</p>
 <dd class="field-odd"><p>array of vectors per atom in the Geometry (only non-zero for device atoms)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>what</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2167,9 +2227,9 @@ no bias window.</p>
 <dd><p>Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms</p>
 <p>The vector transmission is defined as:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf T_\alpha = \sum_\beta \frac{r_\beta - r_\alpha}{|r_\beta - r_\alpha|} \cdot T_{\alpha\beta}\]</div>
-<p>Where <span class="math notranslate nohighlight">\(T_{\alpha\beta}\)</span> is the bond transmission between atom <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> and
-<span class="math notranslate nohighlight">\(r_\alpha\)</span> are the atomic coordinates.</p>
+\[\mathbf T_I = \sum_J \frac{\mathbf r^{(J)} - \mathbf r^{(I)}}{|\mathbf r^{(J)} - \mathbf r^{(I)}|} \cdot T_{IJ}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(T_{IJ}\)</span> is the bond transmission between atom <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(J\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf r^{(\langle\rangle)}\)</span> are the atomic coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2196,7 +2256,7 @@ Passed directly to <a class="reference internal" href="#sisl.io.tbtrans.phtprojn
 <dd class="field-even"><p>array of vectors per atom in the Geometry (only non-zero for device atoms)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">

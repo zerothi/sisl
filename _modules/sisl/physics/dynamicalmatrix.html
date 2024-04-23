@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.dynamicalmatrix &mdash; sisl 0.1-c02b256</title>
+  <title>sisl.physics.dynamicalmatrix &mdash; sisl 0.1-005c5ba</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
       <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
@@ -23,8 +23,8 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=0dee30f6"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-c02b256
+                0.1-005c5ba
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
@@ -123,10 +124,13 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">GaugeType</span>
 
 <span class="kn">from</span> <span class="nn">.phonon</span> <span class="kn">import</span> <span class="n">EigenmodePhonon</span><span class="p">,</span> <span class="n">EigenvaluePhonon</span>
 <span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZ</span>
@@ -145,7 +149,18 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DynamicalMatrix</span><span class="p">(</span><span class="n">SparseOrbitalBZ</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dynamical matrix of a geometry&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dynamical matrix of a geometry</span>
+
+<span class="sd">    The dynamical matrix is defined as the mass-reduced quantity.</span>
+<span class="sd">    Hence the quantities stored in this matrix are expected to contain</span>
+<span class="sd">    a factor:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \frac1{\sqrt{M_IM_J}}</span>
+
+<span class="sd">    for the elements that contains couplings between atoms :math:`I`</span>
+<span class="sd">    and :math:`J`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="DynamicalMatrix.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.__init__">[docs]</a>
@@ -168,7 +183,15 @@
 
 <div class="viewcode-block" id="DynamicalMatrix.Dk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.Dk">[docs]</a>
-    <span class="k">def</span> <span class="nf">Dk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Dk</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the dynamical matrix for a given k-point</span>
 
 <span class="sd">        Creation and return of the dynamical matrix for a given k-point (default to Gamma).</span>
@@ -179,16 +202,16 @@
 <span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \mathbf D(k) = \mathbf D_{i_\alpha j_\beta} e^{i q R}</span>
+<span class="sd">           \mathbf D(\mathbf k) = \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}</span>
 
-<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.</span>
+<span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.</span>
 
 <span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}</span>
+<span class="sd">           \mathbf D(\mathbf k) = \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}</span>
 
-<span class="sd">        where :math:`r` is the distance between the atoms.</span>
+<span class="sd">        where :math:`\mathbf r` is the distance between the atoms.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -198,8 +221,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
-<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance</span>
+<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -216,14 +239,22 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        matrix : numpy.ndarray or scipy.sparse.*_matrix</span>
-<span class="sd">            the dynamical matrix at :math:`k`. The returned object depends on `format`.</span>
+<span class="sd">            the dynamical matrix at :math:`\mathbf k`. The returned object depends on `format`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="DynamicalMatrix.dDk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.dDk">[docs]</a>
-    <span class="k">def</span> <span class="nf">dDk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dDk</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the dynamical matrix derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the dynamical matrix derivative for a given k-point (default to Gamma).</span>
@@ -234,17 +265,17 @@
 <span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \nabla_k \mathbf D_\gamma(k) = i R_\gamma \mathbf D_{i_\alpha j_\beta} e^{i q R}</span>
+<span class="sd">           \nabla_{\mathbf k} \mathbf D_\gamma(\mathbf k) = i \mathbf R_\gamma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}</span>
 
-<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are atomic indices.</span>
+<span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are atomic indices.</span>
 <span class="sd">        And :math:`\gamma` is one of the Cartesian directions.</span>
 
 <span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">          \nabla_k \mathbf D_\gamma(k) = i r_\gamma \mathbf D_{i_\alpha j_\beta} e^{i k r}</span>
+<span class="sd">          \nabla_{\mathbf k} \mathbf D_\gamma(\mathbf k) = i \mathbf r_\gamma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}</span>
 
-<span class="sd">        where :math:`r` is the distance between the atoms.</span>
+<span class="sd">        where :math:`\mathbf r` is the distance between the atoms.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -254,8 +285,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
-<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance</span>
+<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -270,14 +301,22 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tuple</span>
-<span class="sd">            for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k_\gamma` is returned.</span>
+<span class="sd">            for each of the Cartesian directions a :math:`\partial \mathbf D(\mathbf k)/\partial \mathbf k_\gamma` is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="DynamicalMatrix.ddDk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.ddDk">[docs]</a>
-    <span class="k">def</span> <span class="nf">ddDk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">ddDk</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the dynamical matrix double derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the dynamical matrix double derivative for a given k-point (default to Gamma).</span>
@@ -288,17 +327,17 @@
 <span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - R_\gamma R_\sigma \mathbf D_{i_\alpha j_\beta} e^{i q R}</span>
+<span class="sd">           \nabla_{\mathbf k^2} \mathbf D_{\gamma\sigma}(\mathbf k) = - \mathbf R_\gamma \mathbf R_\sigma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}</span>
 
-<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.</span>
+<span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.</span>
 <span class="sd">        And :math:`\gamma`, :math:`\sigma` are one of the Cartesian directions.</span>
 
 <span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - r_\gamma r_\sigma \mathbf D_{i_\alpha j_\beta} e^{i k r}</span>
+<span class="sd">           \nabla_{\mathbf k^2} \mathbf D_{\gamma\sigma}(\mathbf k) = - \mathbf r_\gamma \mathbf r_\sigma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}</span>
 
-<span class="sd">        where :math:`r` is atomic distance.</span>
+<span class="sd">        where :math:`\mathbf r` is atomic distance.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -308,8 +347,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
-<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -331,12 +370,16 @@
 
 <div class="viewcode-block" id="DynamicalMatrix.apply_newton">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.apply_newton">[docs]</a>
-    <span class="k">def</span> <span class="nf">apply_newton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">apply_newton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sometimes the dynamical matrix does not obey Newtons 3rd law.</span>
 
 <span class="sd">        We correct the dynamical matrix by imposing zero force.</span>
 
 <span class="sd">        Correcting for Newton forces the matrix to be finalized.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This is an in-place operation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create UC dynamical matrix</span>
         <span class="n">dyn_sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -387,7 +430,9 @@
 
 <div class="viewcode-block" id="DynamicalMatrix.eigenvalue">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenvalue">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenvaluePhonon</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`</span>
 
 <span class="sd">        Parameters</span>
@@ -421,10 +466,14 @@
 
 <div class="viewcode-block" id="DynamicalMatrix.eigenmode">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenmode">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">eigenmode</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenmodePhonon</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes</span>
 
-<span class="sd">        Note that the phonon modes are _not_ mass-scaled.</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Note that the phonon modes are *not* mass-scaled.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -459,7 +508,7 @@
 <div class="viewcode-block" id="DynamicalMatrix.read">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.read">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DynamicalMatrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads dynamical matrix from `Sile` using `read_dynamical_matrix`.</span>
 
 <span class="sd">        Parameters</span>
