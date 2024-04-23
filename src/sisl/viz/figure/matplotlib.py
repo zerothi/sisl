@@ -195,9 +195,16 @@ class MatplotlibFigure(Figure):
 
             yield sanitized_section_actions
 
+    @classmethod
+    def fig_has_attr(cls, key: str) -> bool:
+        return hasattr(plt.Axes, key) or hasattr(plt.Figure, key)
+
     def __getattr__(self, key):
         if key != "axes":
-            return getattr(self.axes, key)
+            if hasattr(self.axes, key):
+                return getattr(self.axes, key)
+            elif key != "figure" and hasattr(self.figure, key):
+                return getattr(self.figure, key)
         raise AttributeError(key)
 
     def clear(self, layout=False):

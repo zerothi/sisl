@@ -402,6 +402,11 @@ class PlotlyFigure(Figure):
 
         self.update_layout(sliders=[slider], updatemenus=updatemenus)
 
+    @classmethod
+    def fig_has_attr(cls, key: str) -> bool:
+        print(key, hasattr(go.Figure, key))
+        return hasattr(go.Figure, key)
+
     def __getattr__(self, key):
         if key != "figure":
             return getattr(self.figure, key)

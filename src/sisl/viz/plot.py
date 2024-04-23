@@ -6,25 +6,31 @@ from __future__ import annotations
 from sisl.messages import deprecate
 from sisl.nodes import Workflow
 
+from .figure import BACKENDS
+
 
 class Plot(Workflow):
     """Base class for all plots"""
 
     def __getattr__(self, key):
         if key != "nodes":
-            # If an ipython key is requested, get the plot and look
-            # for the key in the plot. This is simply to enhance
-            # interactivity in a python notebook environment.
-            # However, this results in a (maybe undesired) behavior:
-            # The plot is updated when ipython requests it, without any
-            # explicit request to update it. This is how it has worked
-            # from the beggining, so it's probably best to keep it like
-            # this for now.
-            if "ipython" in key:
-                output = self.nodes.output.get()
+            # From the backend input, we find out which class is the figure going to be
+            # (even if no figure has been created yet or the latest figure was from a different backend)
+            # Then we check if the attribute will be available there. If it will, we update the plot and
+            # get the attribute on the updated plot.
+            # This is so that things like `plot.show()` work as expected.
+            # It has the downside that `.get()` is called even when for example a method of the figure is
+            # retreived to get its docs (e.g. in the helper messages of jupyter notebooks)
+            selected_backend = self.inputs.get("backend")
+            figure_cls = BACKENDS.get(selected_backend)
+            if figure_cls is not None and (
+                hasattr(figure_cls, key) or figure_cls.fig_has_attr(key)
+            ):
+                return getattr(self.nodes.output.get(), key)
             else:
-                output = self.nodes.output._output
-            return getattr(output, key)
+                raise AttributeError(
+                    f"'{key}' not found in {self.__class__.__name__} with backend '{selected_backend}'"
+                )
         else:
             return super().__getattr__(key)
 

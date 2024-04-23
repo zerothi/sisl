@@ -68,6 +68,17 @@ class Figure:
 
         return fig
 
+    @classmethod
+    def fig_has_attr(cls, key: str) -> bool:
+        """Whether the figure that this class generates has a given attribute.
+
+        Parameters
+        -----------
+        key
+            the attribute to check for.
+        """
+        return False
+
     @staticmethod
     def _sanitize_plot_actions(plot_actions):
         def _flatten(plot_actions, out, level=0, root_i=0):
