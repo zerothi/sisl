@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import itertools
 import math
+from typing import Optional
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -32,6 +33,9 @@ class MatplotlibFigure(Figure):
     """
 
     _axes_defaults = {}
+
+    figure: Optional[plt.Figure] = None
+    axes: Optional[plt.Axes] = None
 
     def _init_figure(self, *args, **kwargs):
         self.figure, self.axes = self._init_plt_figure()

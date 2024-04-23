@@ -42,6 +42,8 @@ class Figure:
     _SUBPLOTS = 3
     _ANIMATION = 4
 
+    plot_actions: list = []
+
     def __init__(self, plot_actions, *args, **kwargs):
         self.plot_actions = plot_actions
         self._build(plot_actions, *args, **kwargs)

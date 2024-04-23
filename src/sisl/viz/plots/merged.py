@@ -35,13 +35,8 @@ def merge_plots(
         which controls the arrangement ("rows", "cols" or "square").
     """
 
-    def _san_plot(plot):
-        if isinstance(plot, Plot) and plot._nupdates == 0:
-            plot.get()
-        return plot
-
     plot_actions = combined(
-        *[_san_plot(fig).plot_actions for fig in figures],
+        *[fig.plot_actions for fig in figures],
         composite_method=composite_method,
         **kwargs,
     )
