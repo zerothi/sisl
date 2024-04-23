@@ -149,6 +149,8 @@ class PlotlyFigure(Figure):
 
     _layout_defaults = {}
 
+    figure: Optional[go.Figure] = None
+
     def _init_figure(self, *args, **kwargs):
         self.figure = go.Figure()
         self.update_layout(**self._layout_defaults)
