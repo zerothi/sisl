@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from nodify import Workflow
+
 from sisl.messages import deprecate
-from sisl.nodes import Workflow
 
 from .figure import BACKENDS
 
