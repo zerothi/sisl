@@ -24,7 +24,7 @@ build-backend = "scikit_build_core.build"
 
 # Top most items are probably changed the most
 [project]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 name = "sisl"
 description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
@@ -65,7 +65,6 @@ classifiers = [
     "Programming Language :: C",
     "Programming Language :: Fortran",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -342,9 +341,7 @@ skip = [
     "*musllinux*",
 ]
 
-# cibuildwheel on Python 3.8 uses x86_64 installer, cannot test arm64, even
-# on arm silicon
-test-skip = "cp38-macosx_*:arm64"
+test-skip = ""
 
 # Instead of running pytest directly, we use a bash script that will set up
 # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
