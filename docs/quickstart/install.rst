@@ -11,7 +11,7 @@ Required dependencies
 
 Running sisl requires these dependencies:
 
-- `Python`_ 3.8 or above
+- `Python`_ 3.9 or above
 - `numpy`_
 - `scipy`_
 - `xarray`_
