@@ -185,14 +185,6 @@ test = [
     "pytest-cov",
     "pytest-env",
     "pytest-faulthandler",
-    "netCDF4",
-    "tqdm>=4.36.0",
-    "dill >= 0.3.2",
-    "pathos",
-    "scikit-image",
-    "matplotlib",
-    "plotly",
-    "ase"
 ]
 
 docs = [
