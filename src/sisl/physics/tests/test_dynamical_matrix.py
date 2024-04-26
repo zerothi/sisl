@@ -125,6 +125,12 @@ class TestDynamicalMatrix:
         em = D.eigenmode()
         assert np.allclose(em.DOS(E), em.PDOS(E).sum(0))
 
+    def test_displacement(self, setup):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        em = D.eigenmode()
+        assert em.displacement().shape == (len(em), D.geometry.na, 3)
+
     def test_pickle(self, setup):
         import pickle as p
 
