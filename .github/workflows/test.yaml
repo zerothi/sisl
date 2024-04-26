@@ -66,6 +66,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: ['3.9', '3.12']
+        full: [true]
         include:
           # Run a minimal dependency check for 3.9
           # This is not per-see a minimal dependency check.
@@ -73,8 +74,6 @@ jobs:
           # and those dependencies.
           - python-version: '3.9'
             full: false
-          # Adds to *all* matrix combinations above
-          - full: true
 
     steps:
     - name: Checkout sisl
