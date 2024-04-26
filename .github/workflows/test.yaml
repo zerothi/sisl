@@ -73,6 +73,7 @@ jobs:
           # However, it checks that sisl can run without viz
           # and those dependencies.
           - python-version: '3.9'
+            os: ubuntu-latest
             full: false
 
     steps:
