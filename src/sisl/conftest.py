@@ -191,7 +191,7 @@ def sisl_system():
     return d
 
 
-# We are ignoring stuff in sisl.viz.plotly if plotly cannot be imported
+# We are ignoring stuff in sisl.viz if nodify cannot be imported
 # collect - ignore seems not to fully work... I should report this upstream.
 # however, the pytest_ignore_collect seems very stable and favourable
 collect_ignore = ["setup.py"]
@@ -200,9 +200,9 @@ collect_ignore_glob = []
 # skip paths
 _skip_paths = []
 try:
-    import plotly
+    import nodify
 except ImportError:
-    _skip_paths.append(os.path.join("sisl", "viz", "plotly"))
+    _skip_paths.append(os.path.join("sisl", "viz"))
 
 
 def _wrapped_ignore_collect(path, config):
