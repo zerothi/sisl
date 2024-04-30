@@ -18,14 +18,14 @@ from sisl import Atom, Geometry, Hamiltonian, Lattice, _environ
 
 _log = logging.getLogger(__name__)
 
+sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
+sisl_has_files_tests = (sisl_files_tests / "sisl").is_dir()
+
 
 # Modify items based on whether the env is correct or not
 def pytest_collection_modifyitems(config, items):
-    sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
-    if sisl_files_tests.is_dir():
-        if (sisl_files_tests / "sisl").is_dir():
-            return
-        print(f"pytest-sisl: Could not locate sisl directory in: {sisl_files_tests}")
+    global sisl_has_files_tests
+    if sisl_has_files_tests:
         return
 
     xfail_sisl_files = pytest.mark.xfail(
@@ -191,12 +191,10 @@ def sisl_system():
     return d
 
 
-# We are ignoring stuff in sisl.viz if nodify cannot be imported
-# collect - ignore seems not to fully work... I should report this upstream.
-# however, the pytest_ignore_collect seems very stable and favourable
-collect_ignore = ["setup.py"]
+collect_ignore = []
 collect_ignore_glob = []
 
+# We are ignoring stuff in sisl.viz if nodify cannot be imported
 # skip paths
 _skip_paths = []
 try:
@@ -205,10 +203,10 @@ except ImportError:
     _skip_paths.append(os.path.join("sisl", "viz"))
 
 
-def _wrapped_ignore_collect(path, config):
+def pytest_ignore_collect(collection_path, config):
     # ensure we only compare against final *sisl* stuff
     global _skip_paths
-    parts = list(Path(path).parts)
+    parts = list(Path(collection_path).parts)
     parts.reverse()
     sisl_parts = parts[: parts.index("sisl")]
     sisl_parts.reverse()
@@ -220,15 +218,16 @@ def _wrapped_ignore_collect(path, config):
     return False
 
 
-if pytest.version_tuple >= (7, 0):
-
-    def pytest_ignore_collect(collection_path, config):
-        return _wrapped_ignore_collect(collection_path, config)
-
-else:
-
-    def pytest_ignore_collect(path, config):
-        return _wrapped_ignore_collect(path, config)
+def pytest_report_header(config, start_path):
+    global sisl_files_tests, sisl_has_files_tests
+    global _skip_paths
+    s = []
+    s.append(f"sisl-test: found FILES_TESTS: {sisl_files_tests!s}")
+    if _skip_paths:
+        s.append("sisl-test: skip test-discovery in these folders:")
+        for skip in _skip_paths:
+            s.append(f" - {skip}")
+    return s
 
 
 def pytest_configure(config):

@@ -184,7 +184,7 @@ viz-ase = [
 ]
 
 test = [
-    "pytest",
+    "pytest>=7",
     "coverage[toml]",
     "pytest-cov",
     "pytest-env",
