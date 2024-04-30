@@ -139,6 +139,7 @@ analysis = [
 ]
 
 viz = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",
@@ -149,6 +150,7 @@ viz = [
 ]
 
 viz-plotly = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",
@@ -157,6 +159,7 @@ viz-plotly = [
 ]
 
 viz-matplotlib = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",
@@ -165,6 +168,7 @@ viz-matplotlib = [
 ]
 
 viz-blender = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",

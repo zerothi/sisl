@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from sisl.nodes import Node
+from nodify import Node
 
 
 class DataSource(Node):
