@@ -235,8 +235,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         # Create list with correct number of orbitals
         lasto = _a.arrayi(np.copy(self._value("lasto")))
-        nos = np.append([lasto[0]], np.diff(lasto))
-        nos = _a.arrayi(nos)
+        nos = np.diff(lasto, prepend=0)
 
         if "atom" in kwargs:
             # The user "knows" which atoms are present
