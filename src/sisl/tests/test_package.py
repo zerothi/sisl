@@ -27,13 +27,13 @@ def test_import_simple():
     sisl.io.xyzSile
 
 
-def test_import_only_in_io():
+def test_import_in_io():
     # The imports should only be visible in the io module
     with pytest.raises(AttributeError):
         sisl.xyzSile
 
 
-def test_import_only_in_io_from():
+def test_import_in_io_from():
     # The imports should only be visible in the io module
     with pytest.raises(ImportError):
         from sisl import xyzSile

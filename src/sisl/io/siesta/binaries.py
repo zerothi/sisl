@@ -56,12 +56,15 @@ _eV2Ry = unit_convert("eV", "Ry")
 
 def _toF(array, dtype, scale=None):
     if scale is None:
-        return array.astype(dtype, order="F", copy=False)
-    elif array.dtype == dtype and array.flags.f_contiguous:
-        # no need to copy since the order is correct
-        return array * scale
+        # we won't force the fortran order, f2py,
+        # will handle this anyways. So we might as
+        # well let that machinery deal with the
+        # details.
+        return array.astype(dtype, copy=False)
 
-    # We have to handle cases
+    # As we are writing to Fortran, we might as well
+    # do the proper copy to F-contiguous.
+    # This will save a 2nd copy!
     out = np.empty_like(array, dtype, order="F")
     np.multiply(array, scale, out=out)
     return out
@@ -489,8 +492,8 @@ class tshsSileSiesta(onlysSileSiesta):
             nsc[0],
             nsc[1],
             nsc[2],
-            cell.T / _Bohr2Ang,
-            xyz.T / _Bohr2Ang,
+            _toF(cell.T, np.float64, 1 / _Bohr2Ang),
+            _toF(xyz.T, np.float64, 1 / _Bohr2Ang),
             H.geometry.firsto,
             csr.ncol,
             csr.col + 1,
@@ -2035,6 +2038,36 @@ class _gridSileSiesta(SileBinSiesta):
         #       and thus the first axis is the fast (x, y, z) is retained
         g.grid = grid * self.grid_unit
         return g
+
+    def write_grid(self, *grids: Grid) -> None:
+        """Write the grid to the file"""
+        self._fortran_open("w")
+
+        _siesta.write_grid_header(
+            self._iu,
+            len(grids),
+            *grids[0].shape,
+            _toF(grids[0].cell.T, np.float64, 1.0 / _Bohr2Ang),
+        )
+
+        for grid in grids:
+            if grid.shape != grids[0].shape:
+                raise ValueError(
+                    f"{self.__class__.__name__}.write_grid got grids with different shapes."
+                )
+
+            if grid.dtype in (np.float32, np.float64):
+                _siesta.write_grid_sp(
+                    self._iu,
+                    _toF(grid.grid, np.float32, 1.0 / self.grid_unit),
+                    *grid.shape,
+                )
+            else:
+                raise ValueError(
+                    f"{self.__class__.__name__}.write_grid can only write real-valued grids."
+                )
+
+        self._fortran_close()
 
 
 @set_module("sisl.io.siesta")
