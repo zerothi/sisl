@@ -11,6 +11,16 @@ Visualization utilities
 
 import os
 
+try:
+    import nodify as _
+except ModuleNotFoundError as e:
+    raise ModuleNotFoundError(
+        """\
+sisl.viz requires additional packages.
+ - conda install nodify plotly netCDF4 scikit-image pathos
+ - pip install sisl[viz]"""
+    ) from e
+
 # Placeholders for 'plot' attributes are set in the classes while
 # sisl.viz is not loaded. Now we are loading it, so just remove those
 # placeholders.
@@ -30,6 +40,8 @@ register_environ_variable(
 )
 
 clear_viz_placeholders()
+
+del os, register_environ_variable, clear_viz_placeholders
 
 from . import _xarray_accessor
 from ._plotables import register_plotable
