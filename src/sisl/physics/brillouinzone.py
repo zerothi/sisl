@@ -422,17 +422,17 @@ class BrillouinZone:
            the dimensionality of the volume
         """
         # default periodic array
-        if periodic is None:
-            periodic = self.parent.pbc.nonzero()[0]
+        if axes is None:
+            axes = self.parent.pbc.nonzero()[0]
 
-        dim = len(periodic)
+        dim = len(axes)
         vol = 0.0
         if dim == 3:
             vol = self.parent.volume
         elif dim == 2:
-            vol = self.parent.area(*periodic)
+            vol = self.parent.area(*axes)
         elif dim == 1:
-            vol = self.parent.length[periodic[0]]
+            vol = self.parent.length[axes[0]]
 
         if ret_dim:
             return vol, dim
