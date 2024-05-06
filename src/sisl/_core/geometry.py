@@ -1724,7 +1724,7 @@ class Geometry(
 
         Notes
         -----
-        By default only the periodic axes will be translated to the UC. If
+        By default only the periodic axes (``self.pbc``) will be translated to the UC. If
         translation is required for all axes, supply them directly.
 
         Parameters
@@ -1738,7 +1738,7 @@ class Geometry(
              directions.
         """
         if axes is None:
-            axes = (self.lattice.nsc > 1).nonzero()[0]
+            axes = self.pbc.nonzero()[0]
         elif isinstance(axes, bool):
             if axes:
                 axes = (0, 1, 2)
@@ -3279,7 +3279,7 @@ class Geometry(
                     "The internal `maxR()` is negative and thus not set. "
                     "Set an explicit value for `R`."
                 )
-        elif np.any(self.nsc > 1):
+        elif np.any(self.pbc):
             maxR = fnorm(self.cell).max()
             # These loops could be leveraged if we look at angles...
             for i, j, k in product(
@@ -3387,7 +3387,7 @@ class Geometry(
 
         Note this function is rather different from `close` and `within`.
         Specifically this routine is returning *all* indices for the infinite
-        periodic system (where ``self.nsc > 1`` or `periodic` is true).
+        periodic system (where ``self.pbc`` or `periodic` is true).
 
         Atomic coordinates lying on the boundary of the supercell will be duplicated
         on the neighboring supercell images. Thus performing `geom.within_inf(geom.lattice)`
@@ -3404,7 +3404,7 @@ class Geometry(
             the supercell in which this geometry should be expanded into.
         periodic :
             explicitly define the periodic directions, by default the periodic
-            directions are only where ``self.nsc > 1 & self.pbc``.
+            directions are only where ``self.pbc``.
         atol :
             length tolerance for the coordinates to be on a duplicate site (in Ang).
             This allows atoms within `atol` of the cell boundaries to be taken as *inside* the
@@ -3423,7 +3423,7 @@ class Geometry(
         """
         lattice = self.lattice.__class__.new(lattice)
         if periodic is None:
-            periodic = np.logical_and(self.pbc, self.nsc > 1)
+            periodic = self.pbc
         else:
             periodic = list(periodic)
 
@@ -4172,7 +4172,7 @@ class GeometryToAseDispatch(GeometryToDispatch):
             symbols=geom.atoms.Z,
             positions=geom.xyz.tolist(),
             cell=geom.cell.tolist(),
-            pbc=geom.nsc > 1,
+            pbc=geom.pbc,
             **kwargs,
         )
 
@@ -4203,10 +4203,10 @@ class GeometryTopymatgenDispatch(GeometryToDispatch):
         xyz = geom.xyz
         species = [PT.Z_label(Z) for Z in geom.atoms.Z]
 
-        if all(self.nsc == 1):
-            # we define a molecule
-            return Molecule(species, xyz, **kwargs)
-        return Structure(lattice, species, xyz, coords_are_cartesian=True, **kwargs)
+        if np.any(self.pbc):
+            return Structure(lattice, species, xyz, coords_are_cartesian=True, **kwargs)
+        # we define a molecule
+        return Molecule(species, xyz, **kwargs)
 
 
 to_dispatch.register("pymatgen", GeometryTopymatgenDispatch)

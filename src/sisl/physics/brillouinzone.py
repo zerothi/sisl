@@ -389,7 +389,14 @@ class BrillouinZone:
 
         return BrillouinZone(parent, np.concatenate(k), np.concatenate(w))
 
-    def volume(self, ret_dim: bool = False, periodic=None):
+    @deprecate_argument(
+        "periodic",
+        "axes",
+        "argument 'periodic' has been deprecated in favor of 'axes', please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def volume(self, ret_dim: bool = False, axes: Optional[AnyAxes] = None):
         """Calculate the volume of the full Brillouin zone of the parent
 
         This will return the volume depending on the dimensions of the system.
@@ -400,11 +407,11 @@ class BrillouinZone:
 
         Parameters
         ----------
-        ret_dim:
+        ret_dim :
            also return the dimensionality of the system
-        periodic : array_like of int, optional
+        axes :
            estimate the volume using only the directions indexed by this array.
-           The default value is `(self.parent.nsc > 1).nonzero()[0]`.
+           The default value is ``self.parent.pbc.nonzero()[0]``.
 
         Returns
         -------
@@ -416,7 +423,7 @@ class BrillouinZone:
         """
         # default periodic array
         if periodic is None:
-            periodic = (self.parent.nsc > 1).nonzero()[0]
+            periodic = self.parent.pbc.nonzero()[0]
 
         dim = len(periodic)
         vol = 0.0

@@ -179,6 +179,16 @@ class Lattice(
         # along the same lattice vector. So checking one should suffice
         return self._bc[:, 0] == BoundaryCondition.PERIODIC
 
+    @pbc.setter
+    def pbc(self, pbc) -> None:
+        """Boolean array to specify whether the boundary conditions are periodic`"""
+        # set_boundary_condition does not allow to have PERIODIC and non-PERIODIC
+        # along the same lattice vector. So checking one should suffice
+        assert len(pbc) == 3
+        for axis, bc in enumerate(pbc):
+            if bc:
+                self._bc[axis] = BoundaryCondition.PERIODIC
+
     @property
     def origin(self) -> ndarray:
         """Origin for the cell"""

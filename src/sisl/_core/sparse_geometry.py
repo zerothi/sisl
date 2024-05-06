@@ -182,7 +182,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """
         # Sanitize the axes argument
         if axes is None:
-            axes = (self.lattice.nsc > 1).nonzero()[0]
+            axes = self.lattice.pbc.nonzero()[0]
 
         elif isinstance(axes, bool):
             if axes:

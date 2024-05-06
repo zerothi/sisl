@@ -48,6 +48,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- xsf files now only respect `lattice.pbc` for determining PBC, #764
 - fixed `CHGCAR` spin-polarized density reads, #754
 - dispatch methods now searches the mro for best matches, #721
 - all `eps` arguments has changed to `atol`
