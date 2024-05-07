@@ -152,10 +152,12 @@ from sisl._core.oplist import oplist
 from sisl._core.quaternion import Quaternion
 from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
+from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
 from sisl.unit import units
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm
+from sisl.utils.misc import direction, listify
 
 __all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure", "linspace_bz"]
 
@@ -396,10 +398,11 @@ class BrillouinZone:
         "0.15",
         "0.16",
     )
-    def volume(self, ret_dim: bool = False, axes: Optional[AnyAxes] = None):
-        """Calculate the volume of the full Brillouin zone of the parent
+    def volume(self, ret_dim: bool = False, axes: Optional[CellAxes] = None):
+        """Calculate the volume of the BrillouinZone, optionally only on some axes `axes`
 
-        This will return the volume depending on the dimensions of the system.
+        This will return the volume of the Brillouin zone,
+        depending on the dimensions of the system.
         Here the dimensions of the system is determined by how many dimensions
         have auxilliary supercells that can contribute to Brillouin zone integrals.
         Therefore the returned value will have differing units depending on
@@ -411,29 +414,33 @@ class BrillouinZone:
            also return the dimensionality of the system
         axes :
            estimate the volume using only the directions indexed by this array.
-           The default value is ``self.parent.pbc.nonzero()[0]``.
+           The default axes are only the periodic ones (``self.parent.pbc.nonzero()[0]``).
+           Hence the units might not necessarily be 1/Ang^3.
 
         Returns
         -------
         vol :
-           the volume of the Brillouin zone. Units are Ang^D with D being the dimensionality.
+           the volume of the Brillouin zone. Units are 1/Ang^D with D being the dimensionality.
            For 0D it will return 0.
         dimensionality : int
            the dimensionality of the volume
         """
-        # default periodic array
+        lattice = self._parent_lattice()
         if axes is None:
-            axes = self.parent.pbc.nonzero()[0]
+            axes = lattice.pbc.nonzero()[0]
+        else:
+            axes = map(direction, listify(axes)) | listify
+
+        cell = lattice.rcell
 
         dim = len(axes)
         vol = 0.0
         if dim == 3:
-            vol = self.parent.volume
-        elif dim == 2:
-            vol = self.parent.area(*axes)
-        elif dim == 1:
-            vol = self.parent.length[axes[0]]
-
+            vol = abs(dot3(cell[axes[0]], cross3(cell[axes[1]], cell[axes[2]])))
+        if dim == 2:
+            vol = fnorm(cross3(cell[axes[0]], cell[axes[1]]))
+        if dim == 1:
+            vol = fnorm(cell[axes])
         if ret_dim:
             return vol, dim
         return vol

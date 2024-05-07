@@ -26,31 +26,31 @@ __all__ = []
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def copy(lattice: Lattice, cell=None, origin: Optional[Coord] = None) -> Lattice:
+def copy(lattice: Lattice, cell=None, **kwargs) -> Lattice:
     """A deepcopy of the object
 
     Parameters
     ----------
     cell : array_like
        the new cell parameters
-    origin : array_like
-       the new origin
     """
     d = dict()
-    d["nsc"] = lattice.nsc.copy()
-    d["boundary_condition"] = lattice.boundary_condition.copy()
-    if origin is None:
-        d["origin"] = lattice.origin.copy()
-    else:
-        d["origin"] = origin
+    for key in ("nsc", "boundary_condition", "origin"):
+        if key in kwargs:
+            d[key] = kwargs.pop(key)
+        else:
+            d[key] = getattr(lattice, key).copy()
     if cell is None:
         d["cell"] = lattice.cell.copy()
     else:
         d["cell"] = np.array(cell)
+    assert len(kwargs) == 0, f"Unknown arguments passed to Lattice.copy {kwargs.keys()}"
 
     copy = lattice.__class__(**d)
     # Ensure that the correct super-cell information gets carried through
-    if not np.allclose(copy.sc_off, lattice.sc_off):
+    if np.allclose(copy.nsc, lattice.nsc) and not np.allclose(
+        copy.sc_off, lattice.sc_off
+    ):
         copy.sc_off = lattice.sc_off
     return copy
 
@@ -195,7 +195,7 @@ def swapaxes(
             origin = origin[idx]
             bc = bc[idx]
 
-    return lattice.__class__(
+    return lattice.copy(
         cell.copy(), nsc=nsc.copy(), origin=origin.copy(), boundary_condition=bc
     )
 
@@ -269,7 +269,7 @@ def add(lattice: Lattice, other) -> Lattice:
     cell = lattice.cell + other.cell
     origin = lattice.origin + other.origin
     nsc = np.where(lattice.nsc > other.nsc, lattice.nsc, other.nsc)
-    return lattice.__class__(cell, nsc=nsc, origin=origin)
+    return lattice.copy(cell, nsc=nsc, origin=origin)
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
@@ -290,7 +290,6 @@ def tile(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
     axis = direction(axis)
     cell = np.copy(lattice.cell)
     nsc = np.copy(lattice.nsc)
-    origin = np.copy(lattice.origin)
     cell[axis] *= reps
     # Only reduce the size if it is larger than 5
     if nsc[axis] > 3 and reps > 1:
@@ -298,7 +297,7 @@ def tile(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
         h_nsc = nsc[axis] // 2
         # The new number of supercells will then be
         nsc[axis] = max(1, int(math.ceil(h_nsc / reps))) * 2 + 1
-    return lattice.__class__(cell, nsc=nsc, origin=origin)
+    return lattice.copy(cell, nsc=nsc)
 
 
 @register_sisl_dispatch(Lattice, module="sisl")

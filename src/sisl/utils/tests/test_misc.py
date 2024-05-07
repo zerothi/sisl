@@ -101,6 +101,20 @@ def test_str_spec1():
     assert a[1] == "bar"
 
 
+def test_listify():
+    assert isinstance(listify([1, 2]), list)
+    assert isinstance(1 | listify, list)
+    a = np.ones(2)
+    assert isinstance(listify(a), list)
+    assert isinstance(a | listify, list)
+
+
+def test_listify_as_index():
+    idx = 1 | listify
+    a = np.arange(2)
+    assert a[idx] == 1
+
+
 def test_merge_instances1():
     class A:
         pass

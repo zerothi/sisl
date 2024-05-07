@@ -49,13 +49,21 @@ from sisl._math_small import cross3, is_ascending
 from sisl._namedindex import NamedIndex
 from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.shape import Cube, Shape, Sphere
-from sisl.typing import ArrayLike, AtomsIndex, NDArray, OrbitalsIndex, SileLike
+from sisl.typing import (
+    ArrayLike,
+    AtomsIndex,
+    CellAxes,
+    NDArray,
+    OrbitalsIndex,
+    SileLike,
+)
 from sisl.utils import (
     angle,
     cmd,
     default_ArgumentParser,
     default_namespace,
     direction,
+    listify,
     lstranges,
     str_spec,
     strmap,
@@ -1746,6 +1754,7 @@ class Geometry(
                 raise ValueError(
                     "translate2uc with a bool argument can only be True to signal all axes"
                 )
+        axes = map(direction, listify(axes)) | listify
 
         fxyz = self.fxyz
         # move to unit-cell
@@ -3379,7 +3388,7 @@ class Geometry(
     def within_inf(
         self,
         lattice: Lattice,
-        periodic: Optional[Sequence[bool]] = None,
+        periodic: Optional[Union[Sequence[bool], CellAxes]] = None,
         atol: float = 1e-5,
         origin: Sequence[float] = (0.0, 0.0, 0.0),
     ) -> Tuple[ndarray, ndarray, ndarray]:
@@ -3387,10 +3396,11 @@ class Geometry(
 
         Note this function is rather different from `close` and `within`.
         Specifically this routine is returning *all* indices for the infinite
-        periodic system (where ``self.pbc`` or `periodic` is true).
+        periodic system. The default periodic directions are ``self.pbc``,
+        unless `periodic` is provided.
 
         Atomic coordinates lying on the boundary of the supercell will be duplicated
-        on the neighboring supercell images. Thus performing `geom.within_inf(geom.lattice)`
+        on the neighboring supercell images. Thus performing ``geom.within_inf(geom.lattice)``
         may result in more atoms than in the structure.
 
         Notes
@@ -3423,15 +3433,25 @@ class Geometry(
         """
         lattice = self.lattice.__class__.new(lattice)
         if periodic is None:
-            periodic = self.pbc
+            periodic = self.pbc.nonzero()[0]
+        elif isinstance(periodic, bool):
+            periodic = (0, 1, 2)
         else:
-            periodic = list(periodic)
+            try:
+                periodic = map(direction, listify(periodic)) | listify
+            except:
+                periodic = np.asarray(periodic).nonzero()[0]
+
+        # extract the non-periodic directions
+        non_periodic = filter(lambda i: i not in periodic, range(3)) | listify
 
         if origin is None:
             origin = _a.zerosd(3)
 
         # Our first task is to construct a geometry large
         # enough to fully encompass the supercell
+        # The supercell here defines how big `self` needs to be
+        # to be fully located inside `lattice`.
 
         # 1. Number of times each lattice vector must be expanded to fit
         #    inside the "possibly" larger `lattice`.
@@ -3440,7 +3460,7 @@ class Geometry(
         tile_max = ceil(idx.max(0)).astype(dtype=int32)
 
         # Intrinsic offset (when atomic coordinates are outside primary unit-cell)
-        idx = dot(self.xyz, self.icell.T)
+        idx = self.fxyz
         tmp = floor(idx.min(0))
         tile_min = np.where(tile_min < tmp, tile_min, tmp).astype(dtype=int32)
         tmp = ceil(idx.max(0))
@@ -3454,8 +3474,8 @@ class Geometry(
         tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
 
         # 2. Reduce tiling along non-periodic directions
-        tile_min = np.where(periodic, tile_min, 0)
-        tile_max = np.where(periodic, tile_max, 1)
+        tile_min[non_periodic] = 0
+        tile_max[non_periodic] = 1
 
         # 3. Find the *new* origin according to the *negative* tilings.
         #    This is important for skewed cells as the placement of the new
@@ -3464,6 +3484,7 @@ class Geometry(
 
         # The xyz geometry that fully encompass the (possibly) larger supercell
         tile = tile_max - tile_min
+
         full_geom = (self * tile).translate(big_origin - origin)
 
         # Now we have to figure out all atomic coordinates within
@@ -3471,7 +3492,9 @@ class Geometry(
 
         # Make sure that full_geom doesn't return coordinates outside the unit cell
         # for non periodic directions
-        full_geom.set_nsc([full_geom.nsc[i] if periodic[i] else 1 for i in range(3)])
+        nsc = full_geom.nsc.copy()
+        nsc[non_periodic] = 1
+        full_geom.set_nsc(nsc)
 
         # Now retrieve all atomic coordinates from the full geometry
         xyz = full_geom.axyz(_a.arangei(full_geom.na_s))

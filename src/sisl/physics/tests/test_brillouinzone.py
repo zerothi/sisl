@@ -1,4 +1,4 @@
-# Source Code Form is subject to the terms of the Mozilla Public
+# This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
@@ -71,13 +71,18 @@ class TestBrillouinZone:
 
     def test_volume_self(self):
         bz = BrillouinZone(1.0)
-        assert bz.volume(True)[1] == 0
-        bz = BrillouinZone(Lattice(1, nsc=[3, 1, 1]))
+        bz.parent.pbc = (False, False, False)
+        v, dim = bz.volume(True)
+        assert dim == 0
+        assert v == pytest.approx(0)
+        bz.parent.pbc = (True, False, False)
         assert bz.volume(True)[1] == 1
-        bz = BrillouinZone(Lattice(1, nsc=[3, 3, 1]))
+        bz.parent.pbc = (True, True, False)
         assert bz.volume(True)[1] == 2
-        bz = BrillouinZone(Lattice(1, nsc=[3, 3, 3]))
-        assert bz.volume(True)[1] == 3
+        bz.parent.pbc = (True, True, True)
+        v, dim = bz.volume(True)
+        assert dim == 3
+        assert v == pytest.approx((2 * np.pi) ** 3)
 
     def test_volume_direct(self):
         bz = BrillouinZone(1.0)

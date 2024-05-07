@@ -906,7 +906,7 @@ class TestGeometry:
                 assert np.allclose(d[j], di[j])
                 assert np.allclose(isc[j], isci[j])
 
-    def test_within_inf1(self, setup):
+    def test_within_inf_small_translated(self, setup):
         g = setup.g.translate([0.05] * 3)
         lattice_3x3 = g.lattice.tile(3, 0).tile(3, 1)
         assert len(g.within_inf(lattice_3x3)[0]) == len(g) * 3**2
@@ -930,7 +930,7 @@ class TestGeometry:
         assert np.any(isc[:, 0] != 0)
         assert np.all(isc[:, 1] == 0)
 
-    def test_within_inf2(self, setup):
+    def test_within_inf_molecule(self, setup):
         g = setup.mol.translate([0.05] * 3)
         lattice = Lattice(1.5)
         for o in range(10):
@@ -942,10 +942,9 @@ class TestGeometry:
 
     def test_within_inf_duplicates(self, setup):
         g = setup.g.copy()
+        g.lattice.pbc = [True, True, False]
         lattice_3x3 = g.lattice.tile(3, 0).tile(3, 1)
-        assert (
-            len(g.within_inf(lattice_3x3)[0]) == len(g) * 3**2 + 7
-        )  # 3 per vector and 1 in the upper right corner
+        assert len(g.within_inf(lattice_3x3)[0]) == 25
 
     def test_close_sizes(self, setup):
         point = 0
