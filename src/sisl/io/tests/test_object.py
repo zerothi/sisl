@@ -302,14 +302,14 @@ class TestObject:
         try:
             with sile(f, mode="r") as s:
                 l = s.read_lattice()
-            assert l.equal(L, tol=1e-3)  # pdb files have 8.3 for atomic coordinates
+            assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
             with sile(f, mode="r") as s:
                 l = Lattice.read(s)
-            assert l.equal(L, tol=1e-3)
+            assert l.equal(L, atol=1e-3)
         except UnicodeDecodeError as e:
             pass
 
@@ -336,7 +336,7 @@ class TestObject:
         try:
             with sile(f, mode="r") as s:
                 l = s.read_lattice()
-            assert l.equal(L, tol=1e-3)  # pdb files have 8.3 for atomic coordinates
+            assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
 
@@ -370,7 +370,7 @@ class TestObject:
                 if isinstance(g, list):
                     g = g[0]
             assert g.equal(
-                G, R=False, tol=1e-3
+                G, R=False, atol=1e-3
             )  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
@@ -380,7 +380,7 @@ class TestObject:
                 g = Geometry.read(s)
                 if isinstance(g, list):
                     g = g[0]
-            assert g.equal(G, R=False, tol=1e-3)
+            assert g.equal(G, R=False, atol=1e-3)
         except UnicodeDecodeError as e:
             pass
 

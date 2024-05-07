@@ -21,7 +21,7 @@ from sisl._core.sparse_geometry import SparseAtom, SparseOrbital
 from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
-from sisl.messages import progressbar, warn
+from sisl.messages import deprecate_argument, progressbar, warn
 from sisl.typing import AtomsIndex, GaugeType, SeqFloat
 
 from .sparse import SparseOrbitalBZSpin
@@ -681,7 +681,14 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out_cls.fromsp(geom, BO)
 
-    def density(self, grid, spinor=None, tol: float = 1e-7, eta=None):
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def density(self, grid, spinor=None, atol: float = 1e-7, eta=None):
         r"""Expand the density matrix to the charge density on a grid
 
         This routine calculates the real-space density components on a specified grid.
@@ -715,7 +722,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
            this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
            length 2 (defaults to total density).
            For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
-        tol : float, optional
+        atol : float, optional
            DM tolerance for accepted values. For all density matrix elements with absolute values below
            the tolerance, they will be treated as strictly zeros.
         eta : bool, optional
@@ -833,7 +840,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         del csr, csr_sum
 
         # Remove all zero elements (note we use the tolerance here!)
-        csrDM.data = np.where(np.fabs(csrDM.data) > tol, csrDM.data, 0.0)
+        csrDM.data = np.where(np.fabs(csrDM.data) > atol, csrDM.data, 0.0)
 
         # Eliminate zeros and sort indices etc.
         csrDM.eliminate_zeros()

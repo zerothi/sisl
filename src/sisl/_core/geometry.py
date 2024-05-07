@@ -519,14 +519,14 @@ class Geometry(
 
         Returns
         -------
-        `Geometry`
+        Geometry
              the primary unit cell
-        `Lattice`
+        Lattice
              the tiled supercell numbers used to find the primary unit cell (only if `ret_super` is true)
 
         Raises
         ------
-        `SislError`
+        SislError
              If the algorithm fails.
         """
         na = len(self)
@@ -2272,8 +2272,8 @@ class Geometry(
         R=None,
         atoms: AtomsIndex = None,
         atoms_xyz=None,
-        ret_xyz=False,
-        ret_rij=False,
+        ret_xyz: bool = False,
+        ret_rij: bool = False,
     ):
         """Indices of atoms in a given supercell within a given radius from a given coordinate
 
@@ -3111,7 +3111,14 @@ class Geometry(
         """
         return self.lattice.offset(self.o2isc(orbitals))
 
-    def equal(self, other: GeometryLike, R: bool = True, tol: float = 1e-4) -> bool:
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def equal(self, other: GeometryLike, R: bool = True, atol: float = 1e-4) -> bool:
         """Whether two geometries are the same (optional not check of the orbital radius)
 
         Parameters
@@ -3120,14 +3127,14 @@ class Geometry(
             the other Geometry to check against
         R :
             if True also check if the orbital radii are the same (see `Atom.equal`)
-        tol :
+        atol :
             tolerance for checking the atomic coordinates
         """
         other = self.new(other)
         if not isinstance(other, Geometry):
             return False
-        same = self.lattice.equal(other.lattice, tol=tol)
-        same = same and np.allclose(self.xyz, other.xyz, atol=tol)
+        same = self.lattice.equal(other.lattice, atol=atol)
+        same = same and np.allclose(self.xyz, other.xyz, atol=atol)
         same = same and self.atoms.equal(other.atoms, R)
         return same
 
@@ -3187,11 +3194,18 @@ class Geometry(
 
         return rij
 
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
     def distance(
         self,
         atoms: AtomsIndex = None,
         R: Optional[float] = None,
-        tol: float = 0.1,
+        atol: Union[float, Sequence[float]] = 0.1,
         method: Union[
             Callable[[Sequence[float]], float],
             Literal["average", "mode", "<numpy.method>"],
@@ -3207,14 +3221,14 @@ class Geometry(
            the maximum radius to consider, default to ``self.maxR()``.
            To retrieve all distances for atoms within the supercell structure
            you can pass `numpy.inf`.
-        tol : float or array_like, optional
+        atol :
            the tolerance for grouping a set of atoms.
            This parameter sets the shell radius for each shell.
            I.e. the returned distances between two shells will be maximally
-           ``2*tol``, but only if atoms are within two consecutive lists.
+           ``2*atol``, but only if atoms are within two consecutive lists.
            If this is a list, the shells will be of unequal size.
 
-           The first shell size will be ``tol * .5`` or ``tol[0] * .5`` if `tol` is a list.
+           The first shell size will be ``atol * .5`` or ``atol[0] * .5`` if `atol` is a list.
 
         method :
            How the distance in each shell is determined.
@@ -3237,11 +3251,11 @@ class Geometry(
         >>> geom = Geometry([0]*3, Atom(1, R=1.), lattice=Lattice(1., nsc=[5, 5, 1]))
         >>> geom.distance()
         array([1.])
-        >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
+        >>> geom.distance(atol=[0.5, 0.4, 0.3, 0.2])
         array([1.])
-        >>> geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2])
+        >>> geom.distance(R=2, atol=[0.5, 0.4, 0.3, 0.2])
         array([1.        ,  1.41421356,  2.        ])
-        >>> geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged
+        >>> geom.distance(R=2, atol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged
         array([1.20710678,  2.        ])
 
         Returns
@@ -3284,20 +3298,20 @@ class Geometry(
                 R = maxR
 
         # Convert to list
-        tol = _a.asarrayd(tol).ravel()
-        if len(tol) == 1:
+        atol = _a.asarray(atol).ravel()
+        if len(atol) == 1:
             # Now we are in a position to determine the sizes
-            dR = _a.aranged(tol[0] * 0.5, R + tol[0] * 0.55, tol[0])
+            dR = _a.aranged(atol[0] * 0.5, R + atol[0] * 0.55, atol[0])
         else:
-            dR = tol.copy()
+            dR = atol.copy()
             dR[0] *= 0.5
             # The first tolerance, is for it-self, the second
             # has to have the first tolerance as the field
-            dR = _a.cumsumd(np.insert(dR, 1, tol[0]))
+            dR = _a.cumsumd(np.insert(dR, 1, atol[0]))
 
             if dR[-1] < R:
                 # Now finalize dR by ensuring all remaining segments are captured
-                t = tol[-1]
+                t = atol[-1]
 
                 dR = concatenate((dR, _a.aranged(dR[-1] + t, R + t * 0.55, t)))
 
@@ -3355,11 +3369,18 @@ class Geometry(
 
         return d
 
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
     def within_inf(
         self,
         lattice: Lattice,
         periodic: Optional[Sequence[bool]] = None,
-        tol: float = 1e-5,
+        atol: float = 1e-5,
         origin: Sequence[float] = (0.0, 0.0, 0.0),
     ) -> Tuple[ndarray, ndarray, ndarray]:
         """Find all atoms within a provided supercell
@@ -3384,9 +3405,9 @@ class Geometry(
         periodic :
             explicitly define the periodic directions, by default the periodic
             directions are only where ``self.nsc > 1 & self.pbc``.
-        tol :
-            length tolerance for the fractional coordinates to be on a duplicate site (in Ang).
-            This allows atoms within `tol` of the cell boundaries to be taken as *inside* the
+        atol :
+            length tolerance for the coordinates to be on a duplicate site (in Ang).
+            This allows atoms within `atol` of the cell boundaries to be taken as *inside* the
             cell.
         origin :
             origin that is the basis for comparison, default to 0.
@@ -3466,7 +3487,7 @@ class Geometry(
         # Since there are numerical errors for the above operation
         # we *have* to account for possible sign-errors
         # This is done by a length tolerance
-        ftol = tol / fnorm(self.cell).reshape(1, 3)
+        ftol = atol / fnorm(self.cell).reshape(1, 3)
         isc = floor(fxyz - ftol).astype(int32)
 
         # Now we can extract the indices where the two are non-matching.

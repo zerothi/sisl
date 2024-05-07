@@ -468,7 +468,14 @@ class Lattice(
         "0.15",
         "0.16",
     )
-    def fit(self, xyz, axes: CellAxes = (0, 1, 2), tol: float = 0.05) -> Lattice:
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def fit(self, xyz, axes: CellAxes = (0, 1, 2), atol: float = 0.05) -> Lattice:
         """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
 
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
@@ -486,9 +493,14 @@ class Lattice(
            the coordinates that we will wish to encompass and analyze.
         axes :
            only the cell-vectors along the provided axes will be used
-        tol : float
+        atol :
            tolerance (in Angstrom) of the positions. I.e. we neglect coordinates
            which are not within the radius of this magnitude
+
+        Raises
+        ------
+        RuntimeError :
+            when the cell-parameters does not fit within the given tolerance (`atol`).
         """
         # In case the passed coordinates are from a Geometry
         from .geometry import Geometry
@@ -509,11 +521,11 @@ class Lattice(
         # Then reduce search space by removing those coordinates
         # that are more than the tolerance.
         dist = np.sqrt((dot(cell.T, (x - ix).T) ** 2).sum(0))
-        idx = (dist <= tol).nonzero()[0]
+        idx = (dist <= atol).nonzero()[0]
         if len(idx) == 0:
-            raise ValueError(
+            raise RuntimeError(
                 "Could not fit the cell parameters to the coordinates "
-                "due to insufficient accuracy (try increase the tolerance)"
+                "due to insufficient accuracy (try to increase the tolerance)"
             )
 
         # Reduce problem to allowed values below the tolerance
@@ -888,39 +900,58 @@ class Lattice(
             f"Creating a unit cell has to have 1, 3, 6 or 9 arguments, got {nargs}."
         )
 
-    def is_orthogonal(self, tol: float = 0.001) -> bool:
+    @deprecate_argument(
+        "tol",
+        "rtol",
+        "argument tol has been deprecated in favor of rtol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def is_orthogonal(self, rtol: float = 0.001) -> bool:
         """
         Returns true if the cell vectors are orthogonal.
 
+        Internally this will be done on the normalized lattice vectors
+        to ensure no numerical instability.
+
         Parameters
         -----------
-        tol: float, optional
-            the threshold above which the scalar product of two cell vectors will be considered non-zero.
+        rtol: float, optional
+            the threshold above which the scalar product of two normalized cell
+            vectors will be considered non-zero.
         """
         # Convert to unit-vector cell
-        cell = np.copy(self.cell)
+        cell = self.cell
         cl = fnorm(cell)
         cell[0] = cell[0] / cl[0]
         cell[1] = cell[1] / cl[1]
         cell[2] = cell[2] / cl[2]
-        i_s = dot3(cell[0], cell[1]) < tol
-        i_s = dot3(cell[0], cell[2]) < tol and i_s
-        i_s = dot3(cell[1], cell[2]) < tol and i_s
+        i_s = dot3(cell[0], cell[1]) < rtol
+        i_s = dot3(cell[0], cell[2]) < rtol and i_s
+        i_s = dot3(cell[1], cell[2]) < rtol and i_s
         return i_s
 
-    def is_cartesian(self, tol: float = 0.001) -> bool:
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def is_cartesian(self, atol: float = 0.001) -> bool:
         """
         Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)
 
         Parameters
         -----------
-        tol: float, optional
+        atol: float, optional
             the threshold above which an off diagonal term will be considered non-zero.
         """
         # Get the off diagonal terms of the cell
         off_diagonal = self.cell.ravel()[:-1].reshape(2, 4)[:, 1:]
-        # Check if any of them are above the threshold tolerance
-        return ~np.any(np.abs(off_diagonal) > tol)
+
+        # Check if all are bolew the threshold tolerance
+        return np.all(np.abs(off_diagonal) <= atol)
 
     def parallel(self, other, axes: CellAxes = (0, 1, 2)) -> bool:
         """Returns true if the cell vectors are parallel to `other`
@@ -983,21 +1014,28 @@ class Lattice(
             with get_sile(sile, mode="r") as fh:
                 return fh.read_lattice(*args, **kwargs)
 
-    def equal(self, other, tol: float = 1e-4) -> bool:
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def equal(self, other, atol: float = 1e-4) -> bool:
         """Check whether two lattices are equivalent
 
         Parameters
         ----------
         other : Lattice
            the other object to check whether the lattice is equivalent
-        tol : float, optional
+        atol : float, optional
             tolerance value for the cell vectors and origin
         """
         if not isinstance(other, (Lattice, LatticeChild)):
             return False
-        same = np.allclose(self.cell, other.cell, atol=tol)
+        same = np.allclose(self.cell, other.cell, atol=atol)
         same = same and np.allclose(self.nsc, other.nsc)
-        same = same and np.allclose(self.origin, other.origin, atol=tol)
+        same = same and np.allclose(self.origin, other.origin, atol=atol)
         return same
 
     def __str__(self) -> str:

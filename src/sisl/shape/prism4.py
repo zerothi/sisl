@@ -10,7 +10,7 @@ from sisl._indices import indices_gt_le
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.linalg import inv
-from sisl.messages import deprecation
+from sisl.messages import deprecate_argument, deprecation
 from sisl.utils.mathematics import expand, fnorm
 
 from .base import PureShape, ShapeToDispatch
@@ -80,7 +80,7 @@ class Cuboid(PureShape):
         )
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Return volume of Cuboid"""
         return abs(dot3(self._v[0, :], cross3(self._v[1, :], self._v[2, :])))
 
@@ -164,26 +164,33 @@ class Cuboid(PureShape):
         """Return a copy of itself"""
         return self.copy()
 
-    def within_index(self, other, tol=1.0e-8):
+    @deprecate_argument(
+        "tol",
+        "rtol",
+        "argument tol has been deprecated in favor of rtol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def within_index(self, other, rtol: float = 1.0e-8):
         """Return indices of the `other` object which are contained in the shape
 
         Parameters
         ----------
         other : array_like
            the object that is checked for containment
-        tol : float, optional
-           absolute tolerance for boundaries
+        rtol : float, optional
+           relative tolerance for boundaries.
         """
         other = _a.asarrayd(other).reshape(-1, 3)
 
         # Offset origin
-        tmp = np.dot(other - self.origin[None, :], self._iv)
+        tmp = np.dot(other - self.origin, self._iv)
 
         # First reject those that are definitely not inside
         # The proximity is 1e-12 of the inverse cell.
         # So, sadly, the bigger the cell the bigger the tolerance
         # However due to numerics this is probably best anyway
-        return indices_gt_le(tmp, -tol, 1.0 + tol)
+        return indices_gt_le(tmp, -rtol, 1.0 + rtol)
 
 
 to_dispatch = Cuboid.to

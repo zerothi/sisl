@@ -1224,14 +1224,14 @@ class TestGeometry:
 
         # Create a 2D grid
         geom.set_nsc([3, 3, 1])
-        d = geom.distance(R=2, tol=[0.4, 0.3, 0.2, 0.1])
+        d = geom.distance(R=2, atol=[0.4, 0.3, 0.2, 0.1])
         assert len(d) == 2  # 1, sqrt(2)
         # Add one due arange not adding the last item
         assert np.allclose(d, [1, 2**0.5])
 
         # Create a 2D grid
         geom.set_nsc([5, 5, 1])
-        d = geom.distance(R=2, tol=[0.4, 0.3, 0.2, 0.1])
+        d = geom.distance(R=2, atol=[0.4, 0.3, 0.2, 0.1])
         assert len(d) == 3  # 1, sqrt(2), 2
         # Add one due arange not adding the last item
         assert np.allclose(d, [1, 2**0.5, 2])
@@ -1242,7 +1242,7 @@ class TestGeometry:
         geom.set_nsc([77, 1, 1])
         # Try with a short R and a long tolerance list
         # We know that the tolerance list prevails, because
-        d = geom.distance(R=1, tol=np.ones(10) * 0.5)
+        d = geom.distance(R=1, atol=np.ones(10) * 0.5)
         assert len(d) == 1
         assert np.allclose(d, [1.0])
 
