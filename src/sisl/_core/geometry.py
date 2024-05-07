@@ -3400,7 +3400,7 @@ class Geometry(
         numpy.ndarray
            integer supercell offsets for `ia` atoms
         """
-        lattice = Lattice.new(lattice)
+        lattice = self.lattice.__class__.new(lattice)
         if periodic is None:
             periodic = np.logical_and(self.pbc, self.nsc > 1)
         else:
@@ -4029,7 +4029,15 @@ class GeometryNewDispatch(AbstractDispatch):
 # Bypass regular Geometry to be returned as is
 class GeometryNewGeometryDispatch(GeometryNewDispatch):
     def dispatch(self, geometry, copy=False):
-        """Return geometry as-is (no copy), for sanitization purposes"""
+        """Return Geometry, for sanitization purposes"""
+        cls = self._get_class()
+        if cls != geometry.__class__:
+            geometry = cls(
+                geometry.xyz.copy(),
+                atoms=geometry.atoms.copy(),
+                lattice=geometry.lattice.copy(),
+            )
+            copy = False
         if copy:
             return geometry.copy()
         return geometry

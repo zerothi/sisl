@@ -503,3 +503,18 @@ def test_grid_tile_in_commensurate():
     str(grid)
     with pytest.raises(SislError):
         grid.tile(2, 2)
+
+
+def test_new_inherit_class():
+    gr = geom.graphene()
+    g = Grid([4, 5, 6], geometry=gr)
+
+    class MyClass(Grid):
+        pass
+
+    g2 = MyClass.new(g)
+    assert g2.__class__ == MyClass
+    assert g2 == g
+    g2 = Grid.new(g)
+    assert g2.__class__ == Grid
+    assert g2 == g

@@ -1622,7 +1622,13 @@ class GridNewDispatch(AbstractDispatch):
 
 class GridNewGridDispatch(GridNewDispatch):
     def dispatch(self, grid, copy=False):
-        """Return grid as-is (no copy), for sanitization purposes"""
+        """Return Grid, for sanitization purposes"""
+        cls = self._get_class()
+        if cls != grid.__class__:
+            out = cls(shape=grid.shape, lattice=grid.lattice, geometry=grid.geometry)
+            out.grid = grid.grid.copy()
+            grid = out
+            copy = False
         if copy:
             return grid.copy()
         return grid

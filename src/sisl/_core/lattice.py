@@ -1079,7 +1079,16 @@ class LatticeNewDispatch(AbstractDispatch):
 
 class LatticeNewLatticeDispatch(LatticeNewDispatch):
     def dispatch(self, lattice, copy=False):
-        # for sanitation purposes
+        """Return Lattice as-is, for sanitization purposes"""
+        cls = self._get_class()
+        if cls != lattice.__class__:
+            lattice = cls(
+                lattice.cell.copy(),
+                nsc=lattice.nsc.copy(),
+                origin=lattice.origin.copy(),
+                boundary_condition=lattice.boundary_condition.copy(),
+            )
+            copy = False
         if copy:
             return lattice.copy()
         return lattice

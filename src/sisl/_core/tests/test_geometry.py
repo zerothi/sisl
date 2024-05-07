@@ -1849,6 +1849,20 @@ def test_as_supercell_fcc():
     assert np.allclose(gsc.axyz(np.arange(g.na_s)), g.axyz(np.arange(g.na_s)))
 
 
+def test_new_inherit_class():
+    g = sisl_geom.fcc(2**0.5, Atom(1, R=1.0001))
+
+    class MyClass(Geometry):
+        pass
+
+    g2 = MyClass.new(g)
+    assert g2.__class__ == MyClass
+    assert g2 == g
+    g2 = Geometry.new(g)
+    assert g2.__class__ == Geometry
+    assert g2 == g
+
+
 def test_sc_warn():
     with pytest.warns(SislDeprecation):
         lattice = sisl_geom.graphene().sc
