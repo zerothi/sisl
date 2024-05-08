@@ -2,6 +2,7 @@
 
 [![Install sisl using PyPI](https://badge.fury.io/py/sisl.svg)](https://pypi.org/project/sisl)
 [![Install sisl using conda](https://anaconda.org/conda-forge/sisl/badges/version.svg)](https://anaconda.org/conda-forge/sisl)
+[![sisl](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.juleskreuer.eu%2Fcitation-badge.php%3Fshield%26doi%3D10.5281%2Fzenodo.597181&label=sisl)](https://doi.org/10.5281/zenodo.597181)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://www.mozilla.org/en-US/MPL/2.0/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![DOI for citation](https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg)](https://doi.org/10.5281/zenodo.597181)
