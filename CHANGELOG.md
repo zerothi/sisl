@@ -10,6 +10,9 @@ we hit release version 1.0.0.
 
 ### Added
 - ability to retain sub-classes through `<class>.new` calls
+- added `Listify` to ensure arguments behaves as *iterables*
+- setter for `Lattice.pbc` to specify it through an array
+- `Lattice.volumef` to calculate a subset volume based on axes
 - added `write_grid` to Siesta binary grid files
 - added the `goldene` 2D lattice, a `hexagonal` Gold 2D structure
 - added the `hexagonal` 2D lattice, close-packed FCC(111) surface
@@ -48,6 +51,10 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- lots of `Lattice` methods did not consistently copy over BC
+- `BrillouinZone.volume` fixed to actually return BZ volume
+  use `Lattice.volume` for getting the lattice volume.
+- xsf files now only respect `lattice.pbc` for determining PBC, #764
 - fixed `CHGCAR` spin-polarized density reads, #754
 - dispatch methods now searches the mro for best matches, #721
 - all `eps` arguments has changed to `atol`
@@ -85,7 +92,8 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
-- changed `Eigenmode.displacement` return shape, please read the documentation
+- deprecated `periodic` to `axes` argument in `BrillouinZone.volume`
+- changed `Eigenmode.displacement` shape, please read the documentation
 - bumped minimal Python version to 3.9, #640
 - documentation build system on RTD is updated, #745
 - `gauge` arguments now accept 'cell' and 'orbital' in replacements for 'R' and 'r', respectively

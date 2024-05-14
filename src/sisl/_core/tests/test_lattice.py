@@ -606,3 +606,15 @@ def test_lattice_info():
         lat.set_boundary_condition(b=Lattice.BC.DIRICHLET)
         lat.set_boundary_condition(c=Lattice.BC.PERIODIC)
         assert len(record) == 1
+
+
+def test_lattice_pbc_setter():
+    lat = Lattice(1, nsc=[3, 3, 3])
+    assert np.all(lat.pbc)
+    pbc = [True, False, True]
+    lat.pbc = pbc
+    assert np.all(lat.pbc == pbc)
+    # check that None won't change anything
+    pbc = [False, None, None]
+    lat.pbc = pbc
+    assert np.all(lat.pbc == [False, False, True])

@@ -24,6 +24,28 @@ def test_default(sisl_tmp):
     assert grid.geometry is None
 
 
+@pytest.mark.parametrize(
+    "pbc",
+    [
+        (True, True, True),
+        (True, True, False),
+        (True, False, False),
+        (False, False, False),
+    ],
+)
+def test_pbc(sisl_tmp, pbc):
+    f = sisl_tmp("GRID_default.xsf", _dir)
+    geom = Geometry(
+        np.random.rand(10, 3),
+        np.random.randint(1, 70, 10),
+        lattice=[10, 10, 10, 45, 60, 90],
+    )
+    geom.lattice.pbc = pbc
+    geom.write(f)
+    geom2 = geom.read(f)
+    assert all(geom.pbc == geom2.pbc)
+
+
 def test_default_size(sisl_tmp):
     f = sisl_tmp("GRID_default_size.xsf", _dir)
     grid = Grid(0.2, lattice=2.0)

@@ -26,7 +26,7 @@ from sisl.messages import SislError, deprecate, deprecate_argument, deprecation,
 from sisl.shape.prism4 import Cuboid
 from sisl.typing import CellAxes, CellAxis
 from sisl.utils.mathematics import fnorm
-from sisl.utils.misc import direction
+from sisl.utils.misc import direction, listify
 
 from ._lattice import cell_invert, cell_reciprocal
 
@@ -151,16 +151,64 @@ class Lattice(
         """Length of each lattice vector"""
         return fnorm(self.cell)
 
+    def lengthf(self, axes: CellAxes = (0, 1, 2)) -> ndarray:
+        """Length of specific lattice vectors (as a function)
+        Parameters
+        ----------
+        axes:
+            only calculate the volume based on a subset of axes
+
+        Examples
+        --------
+        Only get lengths of two lattice vectors:
+
+        >>> lat = Lattice(1)
+        >>> lat.lengthf([0, 1])
+        """
+        axes = map(direction, listify(axes)) | listify
+        return fnorm(self.cell[axes])
+
     @property
     def volume(self) -> float:
         """Volume of cell"""
-        return abs(dot3(self.cell[0], cross3(self.cell[1], self.cell[2])))
+        return self.volumef((0, 1, 2))
+
+    def volumef(self, axes: CellAxes = (0, 1, 2)) -> float:
+        """Volume of cell (as a function)
+
+        Default to the 3D volume.
+        For `axes` with only 2 elements, it corresponds to an area.
+        For `axes` with only 1 element, it corresponds to a length.
+
+        Parameters
+        ----------
+        axes:
+            only calculate the volume based on a subset of axes
+
+        Examples
+        --------
+        Only get the volume of the periodic directions:
+
+        >>> lat = Lattice(1)
+        >>> lat.pbc = (True, False, True)
+        >>> lat.volumef(lat.pbc.nonzero()[0])
+        """
+        axes = map(direction, listify(axes)) | listify
+
+        cell = self.cell
+        if len(axes) == 3:
+            return abs(dot3(cell[axes[0]], cross3(cell[axes[1]], cell[axes[2]])))
+        if len(axes) == 2:
+            return fnorm(cross3(cell[axes[0]], cell[axes[1]]))
+        if len(axes) == 1:
+            return fnorm(cell[axes])
+        return 0.0
 
     def area(self, axis1: CellAxis, axis2: CellAxis) -> float:
         """Calculate the area spanned by the two axis `ax0` and `ax1`"""
         axis1 = direction(axis1)
         axis2 = direction(axis2)
-        return (cross3(self.cell[axis1], self.cell[axis2]) ** 2).sum() ** 0.5
+        return fnorm(cross3(self.cell[axis1], self.cell[axis2]))
 
     @property
     def boundary_condition(self) -> np.ndarray:
@@ -178,6 +226,25 @@ class Lattice(
         # set_boundary_condition does not allow to have PERIODIC and non-PERIODIC
         # along the same lattice vector. So checking one should suffice
         return self._bc[:, 0] == BoundaryCondition.PERIODIC
+
+    @pbc.setter
+    def pbc(self, pbc) -> None:
+        """Boolean array to specify whether the boundary conditions are periodic`"""
+        # set_boundary_condition does not allow to have PERIODIC and non-PERIODIC
+        # along the same lattice vector. So checking one should suffice
+        assert len(pbc) == 3
+
+        PERIODIC = BoundaryCondition.PERIODIC
+        for axis, bc in enumerate(pbc):
+
+            # Simply skip those that are not T|F
+            if not isinstance(bc, bool):
+                continue
+
+            if bc:
+                self._bc[axis] = PERIODIC
+            elif self._bc[axis, 0] == PERIODIC:
+                self._bc[axis] = BoundaryCondition.UNKNOWN
 
     @property
     def origin(self) -> ndarray:
@@ -534,13 +601,9 @@ class Lattice(
         # Reduce to total repetitions
         ireps = np.amax(ix, axis=0) - np.amin(ix, axis=0) + 1
 
-        # Only repeat the axis requested
-        if isinstance(axes, Integral):
-            axes = [axes]
-
         # Reduce the non-set axis
         if not axes is None:
-            axes = list(map(direction, axes))
+            axes = map(direction, listify(axes))
             for ax in (0, 1, 2):
                 if ax not in axes:
                     ireps[ax] = 1
@@ -608,6 +671,7 @@ class Lattice(
         """
         axis1 = direction(axis1)
         axis2 = direction(axis2)
+
         cell = self.cell
         n = cross3(cell[axis1], cell[axis2])
         # Normalize
@@ -685,9 +749,7 @@ class Lattice(
         numpy.ndarray
              cell-vectors with prescribed length, same order as `axes`
         """
-        if isinstance(axes, Integral):
-            axes = [axes]
-        axes = list(map(direction, axes))
+        axes = map(direction, listify(axes)) | listify
 
         length = _a.asarray(length).ravel()
         if len(length) != len(axes):
@@ -698,6 +760,7 @@ class Lattice(
                     f"{self.__class__.__name__}.cell2length length parameter should be a single "
                     "float, or an array of values according to axes argument."
                 )
+
         return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
     def offset(self, isc=None) -> Tuple[float, float, float]:
@@ -963,9 +1026,8 @@ class Lattice(
         axes :
            only check the specified axes (default to all)
         """
-        if isinstance(axes, Integral):
-            axes = [axes]
-        axis = list(map(direction, axes))
+        axis = map(direction, listify(axes))
+
         # Convert to unit-vector cell
         for i in axis:
             a = self.cell[i] / fnorm(self.cell[i])

@@ -122,11 +122,12 @@ class xsfSile(Sile):
             "# File created by: sisl {}\n#\n".format(strftime("%Y-%m-%d", gmtime()))
         )
 
-        if all(lattice.nsc == 1):
+        pbc = lattice.pbc
+        if pbc.sum() == 0:
             self._write_once("MOLECULE\n#\n")
-        elif all(lattice.nsc[:2] > 1):
+        elif all(pbc == (True, True, False)):
             self._write_once("SLAB\n#\n")
-        elif lattice.nsc[0] > 1:
+        elif all(pbc == (True, False, False)):
             self._write_once("POLYMER\n#\n")
         else:
             self._write_once("CRYSTAL\n#\n")
