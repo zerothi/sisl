@@ -250,9 +250,11 @@ class Listify:
 
     Notes
     -----
-    If using this to convert to `tuple` instances ``Iterfy(tuple)``,
+    If using this to convert to `tuple` instances ``Listify(tuple)``,
     please do note the problems of using a tuple as indices for
     `numpy.ndarray` objects.
+
+    This is partly inspired by `pip <https://pypi.org/project/pipe/>`_.
     """
 
     __slots__ = ("_cls",)
@@ -276,7 +278,7 @@ class Listify:
         return cls([arg])
 
     def __ror__(self, arg: Any) -> IterableAny:
-        """Allow piping of function calls"""
+        """Allow piping of function calls (on the right side)"""
         return self(arg)
 
     def __getattr__(self, attr):
