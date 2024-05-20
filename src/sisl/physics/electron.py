@@ -1059,13 +1059,13 @@ def berry_phase(
             # Loop remaining eigenstates
             for second in eigenstates:
                 _lowdin(second)
-                prd = _process(prd, prev.inner(second, diag=False))
+                prd = _process(prd, prev.inner(second, projection="matrix"))
                 prev = second
 
             # Complete the loop
             if closed:
                 # Include last-to-first segment
-                prd = _process(prd, prev.inner(first, diag=False))
+                prd = _process(prd, prev.inner(first, projection="matrix"))
             return prd
 
     else:
@@ -1080,10 +1080,10 @@ def berry_phase(
             for second in eigenstates:
                 second.sub(sub, inplace=True)
                 _lowdin(second)
-                prd = _process(prd, prev.inner(second, diag=False))
+                prd = _process(prd, prev.inner(second, projection="matrix"))
                 prev = second
             if closed:
-                prd = _process(prd, prev.inner(first, diag=False))
+                prd = _process(prd, prev.inner(first, projection="matrix"))
             return prd
 
     S = _berry(contour.apply.iter.eigenstate(**eigenstate_kwargs))
