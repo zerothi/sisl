@@ -1687,6 +1687,59 @@ class Geometry(
             return ang
         return np.degrees(ang)
 
+    def dihedral(
+        self,
+        atoms: AtomsIndex,
+        rad: bool = False,
+    ) -> Union[float, ndarray]:
+        r"""Calculate the dihedral angle defined by four atoms.
+
+        Parameters
+        ----------
+        atoms :
+           An array of shape (4,)  or (N, 4) representing the indices of 4 atoms forming the dihedral angle
+        rad :
+           whether the returned value is in radians
+        """
+        atoms = self._sanitize_atoms(atoms)
+        if atoms.ndim == 1:
+            if len(atoms) != 4:
+                raise ValueError(
+                    f"{self.__class__.__name__}.dihedral requires atoms to be 4 indices"
+                )
+            atoms = [atoms]
+        elif atoms.ndim == 2:
+            if atoms.shape[1] != 4:
+                raise ValueError(
+                    f"{self.__class__.__name__}.dihedral requires atoms to be (N, 4) indices"
+                )
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.dihedral requires atoms index of shape (4,) or (N, 4)"
+            )
+
+        angles = []
+        for idx in atoms:
+            v0, v1, v2 = np.diff(self.xyz[idx], axis=0)
+            # normalize for accurate angles
+            v0 /= np.linalg.norm(v0)
+            v1 /= np.linalg.norm(v1)
+            v2 /= np.linalg.norm(v2)
+            w0 = np.cross(v0, v1)
+            w1 = np.cross(v1, v2)
+            y = np.dot(v0, w1)
+            x = np.dot(w0, w1)
+            # see https://en.wikipedia.org/wiki/Dihedral_angle
+            angles.append(np.arctan2(y, x))
+
+        if not rad:
+            angles = np.degrees(angles)
+
+        if len(angles) == 1:
+            return angles[0]
+
+        return angles
+
     def rotate_miller(self, m, v) -> Geometry:
         """Align Miller direction along ``v``
 
