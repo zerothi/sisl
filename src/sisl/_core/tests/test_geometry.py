@@ -760,6 +760,17 @@ class TestGeometry:
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
 
+    def test_dihedral(self):
+        g = sisl_geom.graphene() * (2, 2, 1)
+        g.xyz[-1, 2] = 1
+        assert g.dihedral(range(4)) == 180
+        assert g.dihedral(range(4), rad=True) == np.pi
+        assert g.dihedral(range(4, 8)) == pytest.approx(-140.88304639377796)
+        assert np.allclose(
+            g.dihedral([range(4), range(1, 5), range(4, 8)]),
+            [180, 0, -140.88304639377796],
+        )
+
     def test_2uc(self, setup):
         # functions for any-thing to UC
         g = setup.g

@@ -1687,6 +1687,85 @@ class Geometry(
             return ang
         return np.degrees(ang)
 
+    def dihedral(
+        self,
+        atoms: AtomsIndex,
+        rad: bool = False,
+    ) -> Union[float, ndarray]:
+        r"""Calculate the dihedral angle defined by four atoms.
+
+        The dihehral angle is defined between 2 half-planes.
+
+        The first 3 atoms define the first plane
+        The last 3 atoms define the second.
+
+        The dihedral angle is calculated using this formula:
+
+        .. math::
+
+            \mathbf u_0 &= \mathbf r_1 - \mathbf r_0
+            \\
+            \mathbf u_1 &= \mathbf r_2 - \mathbf r_1
+            \\
+            \mathbf u_2 &= \mathbf r_3 - \mathbf r_2
+            \\
+            \phi &= \operatorname{atan2}\Big(\hat\mathbf u_0\dot
+                (\hat\mathbf u_1\times\hat\mathbf u_2),
+                (\hat\mathbf u_0\times\hat\mathbf u_1)\dot
+                (\hat\mathbf u_1\times\hat\mathbf u_2)
+                \Big)
+
+        Parameters
+        ----------
+        atoms :
+           An array of shape (4,)  or (N, 4) representing the indices of 4 atoms forming the dihedral angle
+        rad :
+           whether the returned value is in radians
+        """
+        atoms = self._sanitize_atoms(atoms)
+        ndim = atoms.ndim
+        if ndim == 1:
+            if len(atoms) != 4:
+                raise ValueError(
+                    f"{self.__class__.__name__}.dihedral requires atoms to be 4 indices"
+                )
+            atoms = [atoms]
+        elif ndim == 2:
+            if atoms.shape[1] != 4:
+                raise ValueError(
+                    f"{self.__class__.__name__}.dihedral requires atoms to be (N, 4) indices"
+                )
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.dihedral requires atoms index of shape (4,) or (N, 4)"
+            )
+
+        # The 2 planes are defined by
+        #  r0, r1, r2
+        # and
+        #  r1, r2, r3
+        #   we know that atoms has a dimension of 2!
+        u = diff(self.axyz(atoms), axis=1)
+        # normalize to make algorithm easier
+        u /= fnorm(u)[..., None]
+        # calculate the two planes normal vector
+        n0 = np.cross(u[:, 0], u[:, 1])
+        n1 = np.cross(u[:, 1], u[:, 2])
+
+        # Prepare arguments for atan2
+        y = (u[:, 0] * n1).sum(axis=-1)
+        x = (n0 * n1).sum(axis=-1)
+        # see https://en.wikipedia.org/wiki/Dihedral_angle
+        angles = np.arctan2(y, x)
+
+        if not rad:
+            angles = np.degrees(angles)
+
+        if ndim == 1:
+            return angles[0]
+
+        return angles
+
     def rotate_miller(self, m, v) -> Geometry:
         """Align Miller direction along ``v``
 
