@@ -1740,23 +1740,23 @@ class Geometry(
                 f"{self.__class__.__name__}.dihedral requires atoms index of shape (4,) or (N, 4)"
             )
 
-        angles = []
-        for idx in atoms:
-            # The 2 planes are defined by
-            #  r0, r1, r2
-            # and
-            #  r1, r2, r3
-            v = np.diff(self.xyz[idx], axis=0)
-            # normalize for accurate angles
-            v /= fnorm(v)[..., None]
+        # The 2 planes are defined by
+        #  r0, r1, r2
+        # and
+        #  r1, r2, r3
+        #   we know that atoms has a dimension of 2!
+        u = diff(self.axyz(atoms), axis=1)
+        # normalize to make algorithm easier
+        u /= fnorm(u)[..., None]
+        # calculate the two planes normal vector
+        n0 = np.cross(u[:, 0], u[:, 1])
+        n1 = np.cross(u[:, 1], u[:, 2])
 
-            # get normal vectors
-            w0 = np.cross(v[0], v[1])
-            w1 = np.cross(v[1], v[2])
-            y = np.dot(v[0], w1)
-            x = np.dot(w0, w1)
-            # see https://en.wikipedia.org/wiki/Dihedral_angle
-            angles.append(np.arctan2(y, x))
+        # Prepare arguments for atan2
+        y = (u[:, 0] * n1).sum(axis=-1)
+        x = (n0 * n1).sum(axis=-1)
+        # see https://en.wikipedia.org/wiki/Dihedral_angle
+        angles = np.arctan2(y, x)
 
         if not rad:
             angles = np.degrees(angles)
