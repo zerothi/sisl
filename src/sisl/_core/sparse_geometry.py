@@ -1155,7 +1155,7 @@ class SparseAtom(_SparseGeometry):
                 # We guess it is the supercell index
                 off = self.geometry.sc_index(key[-1]) * self.na
                 key = [el for el in key[:-1]]
-                key[1] = self.geometry.sc2uc(key[1]) + off
+                key[1] = self.geometry.asc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -1174,7 +1174,7 @@ class SparseAtom(_SparseGeometry):
                 # We guess it is the supercell index
                 off = self.geometry.sc_index(key[-1]) * self.na
                 key = [el for el in key[:-1]]
-                key[1] = self.geometry.sc2uc(key[1]) + off
+                key[1] = self.geometry.asc2uc(key[1]) + off
         key = tuple(
             self.geometry._sanitize_atoms(k) if i < 2 else k for i, k in enumerate(key)
         )
@@ -2186,7 +2186,7 @@ class SparseOrbital(_SparseGeometry):
             edges_sc = geom.o2a(
                 spgeom.edges(orbitals=_a.arangei(geom.no), exclude=exclude), True
             )
-            edges_uc = geom.sc2uc(edges_sc, True)
+            edges_uc = geom.asc2uc(edges_sc, True)
             edges_valid = np.isin(edges_uc, atoms, assume_unique=True)
             if not np.all(edges_valid):
                 edges_uc = edges_sc % geom.na
@@ -2517,7 +2517,7 @@ class SparseOrbital(_SparseGeometry):
         def create_geometry(geom, atoms):
             """Create the supercell geometry with coordinates as given"""
             xyz = geom.axyz(atoms)
-            uc_atoms = geom.sc2uc(atoms)
+            uc_atoms = geom.asc2uc(atoms)
             return Geometry(xyz, atoms=geom.atoms[uc_atoms])
 
         # We know that the *IN* connections are in the primary unit-cell
@@ -2761,11 +2761,10 @@ depending on your use case. Note indices in the following are supercell indices.
         # 3: couplings from *inside* to *inside* (no scale)
         # 4: couplings from *inside* to *outside* (scaled)
         convert = [[], []]
-        conc = np.concatenate
 
         def assert_unique(old, new):
-            old = conc(old)
-            new = conc(new)
+            old = concatenate(old)
+            new = concatenate(new)
             assert len(unique(old)) == len(old)
             assert len(unique(new)) == len(new)
             return old, new
@@ -2891,7 +2890,7 @@ depending on your use case. Note indices in the following are supercell indices.
             ptr[ia + 1] = ptr[ia] + len(acol)
 
         # Now we can create the sparse atomic
-        col = np.concatenate(col, axis=0).astype(int32, copy=False)
+        col = concatenate(col, axis=0).astype(int32, copy=False)
         spAtom = SparseAtom(geom, dim=dim, dtype=dtype, nnzpr=0)
         spAtom._csr.ptr[:] = ptr[:]
         spAtom._csr.ncol[:] = diff(ptr)

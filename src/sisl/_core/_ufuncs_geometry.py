@@ -1042,7 +1042,7 @@ def sub(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     Lattice.fit : update the supercell according to a reference supercell
     Geometry.remove : the negative of this routine, i.e. remove a subset of atoms
     """
-    atoms = geometry.sc2uc(atoms)
+    atoms = geometry.asc2uc(atoms)
     return geometry.__class__(
         geometry.xyz[atoms, :].copy(),
         atoms=geometry.atoms.sub(atoms),
@@ -1067,7 +1067,7 @@ def remove(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     --------
     Geometry.sub : the negative of this routine, i.e. retain a subset of atoms
     """
-    atoms = geometry.sc2uc(atoms)
+    atoms = geometry.asc2uc(atoms)
     if atoms.size == 0:
         return geometry.copy()
     atoms = np.delete(_a.arangei(geometry.na), atoms)
@@ -1154,7 +1154,7 @@ def rotate(
         if what is None:
             what = "xyz"
         # Only rotate the unique values
-        atoms = geometry.sc2uc(atoms, unique=True)
+        atoms = geometry.asc2uc(atoms, unique=True)
 
     if isinstance(v, Integral):
         v = direction(v, abc=geometry.cell, xyz=np.diag([1, 1, 1]))

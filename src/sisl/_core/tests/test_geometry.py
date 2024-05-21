@@ -260,14 +260,18 @@ class TestGeometry:
         assert np.allclose(np.dot(fxyz, setup.g.cell), setup.g.xyz)
 
     def test_axyz(self, setup):
-        assert np.allclose(setup.g[:], setup.g.xyz[:])
-        assert np.allclose(setup.g[0], setup.g.xyz[0, :])
-        assert np.allclose(setup.g[2], setup.g.axyz(2))
-        isc = setup.g.a2isc(2)
-        off = setup.g.lattice.offset(isc)
-        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(2))
-        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(0, isc))
-        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(isc=isc)[0])
+        g = setup.g
+        assert np.allclose(g[:], g.xyz[:])
+        assert np.allclose(g[0], g.xyz[0, :])
+        assert np.allclose(g[2], g.axyz(2))
+        isc = g.a2isc(2)
+        off = g.lattice.offset(isc)
+        assert np.allclose(g.xyz[0] + off, g.axyz(2))
+        assert np.allclose(g.xyz[0] + off, g.axyz(0, isc))
+        assert np.allclose(g.xyz[0] + off, g.axyz(isc=isc)[0])
+
+        # Also check multidimensional things
+        assert g.axyz([[0], [1]]).shape == (2, 1, 3)
 
     def test_atranspose_indices(self, setup):
         g = setup.g
@@ -296,7 +300,7 @@ class TestGeometry:
     def test_auc2sc(self, setup):
         g = setup.g
         # All supercell indices
-        asc = g.uc2sc(0)
+        asc = g.auc2sc(0)
         assert asc.size == g.n_s
         assert (asc % g.na == 0).sum() == g.n_s
 
@@ -738,11 +742,14 @@ class TestGeometry:
         setup.g.reorder()
 
     def test_o2a(self, setup):
+        g = setup.g
         # There are 2 orbitals per C atom
-        assert setup.g.o2a(2) == 1
-        assert setup.g.o2a(3) == 1
-        assert setup.g.o2a(4) == 2
-        assert np.all(setup.g.o2a([0, 2, 4]) == [0, 1, 2])
+        assert g.o2a(2) == 1
+        assert g.o2a(3) == 1
+        assert g.o2a(4) == 2
+        assert np.all(g.o2a([0, 2, 4]) == [0, 1, 2])
+        assert np.all(g.o2a([[0], [2], [4]]) == [[0], [1], [2]])
+        assert np.all(g.o2a([[0], [2], [4]], unique=True) == [0, 1, 2])
 
     def test_angle(self, setup):
         # There are 2 orbitals per C atom
@@ -755,29 +762,51 @@ class TestGeometry:
 
     def test_2uc(self, setup):
         # functions for any-thing to UC
-        assert setup.g.sc2uc(2) == 0
-        assert np.all(setup.g.sc2uc([2, 3]) == [0, 1])
-        assert setup.g.asc2uc(2) == 0
-        assert np.all(setup.g.asc2uc([2, 3]) == [0, 1])
-        assert setup.g.osc2uc(4) == 0
-        assert setup.g.osc2uc(5) == 1
-        assert np.all(setup.g.osc2uc([4, 5]) == [0, 1])
+        g = setup.g
+        assert g.asc2uc(2) == 0
+        assert np.all(g.asc2uc([2, 3]) == [0, 1])
+        assert g.asc2uc(2) == 0
+        assert np.all(g.asc2uc([2, 3]) == [0, 1])
+        assert g.osc2uc(4) == 0
+        assert g.osc2uc(5) == 1
+        assert np.all(g.osc2uc([4, 5]) == [0, 1])
+
+    def test_2uc_many_axes(self, setup):
+        # 2 orbitals per atom
+        g = setup.g
+        # functions for any-thing to SC
+        idx = [[1], [2]]
+        assert np.all(g.asc2uc(idx) == [[1], [0]])
+        idx = [[2], [4]]
+        assert np.all(g.osc2uc(idx) == [[2], [0]])
 
     def test_2sc(self, setup):
         # functions for any-thing to SC
-        c = setup.g.cell
+        g = setup.g
+        c = g.cell
 
         # check indices
-        assert np.all(setup.g.a2isc([1, 2]) == [[0, 0, 0], [-1, -1, 0]])
-        assert np.all(setup.g.a2isc(2) == [-1, -1, 0])
-        assert np.allclose(setup.g.a2sc(2), -c[0, :] - c[1, :])
-        assert np.all(setup.g.o2isc([1, 5]) == [[0, 0, 0], [-1, -1, 0]])
-        assert np.all(setup.g.o2isc(5) == [-1, -1, 0])
-        assert np.allclose(setup.g.o2sc(5), -c[0, :] - c[1, :])
+        assert np.all(g.a2isc([1, 2]) == [[0, 0, 0], [-1, -1, 0]])
+        assert np.all(g.a2isc(2) == [-1, -1, 0])
+        assert np.allclose(g.a2sc(2), -c[0, :] - c[1, :])
+        assert np.all(g.o2isc([1, 5]) == [[0, 0, 0], [-1, -1, 0]])
+        assert np.all(g.o2isc(5) == [-1, -1, 0])
+        assert np.allclose(g.o2sc(5), -c[0, :] - c[1, :])
 
         # Check off-sets
         assert np.allclose(setup.g.a2sc([1, 2]), [[0.0, 0.0, 0.0], -c[0, :] - c[1, :]])
         assert np.allclose(setup.g.o2sc([1, 5]), [[0.0, 0.0, 0.0], -c[0, :] - c[1, :]])
+
+    def test_2sc_many_axes(self, setup):
+        # 2 orbitals per atom
+        g = setup.g
+        # functions for any-thing to SC
+        idx = [[1], [2]]
+        assert np.all(g.a2isc(idx) == [[[0, 0, 0]], [[-1, -1, 0]]])
+        assert g.auc2sc(idx).shape == (2, g.n_s)
+        idx = [[2], [4]]
+        assert np.all(g.o2isc(idx) == [[[0, 0, 0]], [[-1, -1, 0]]])
+        assert g.ouc2sc(idx).shape == (2, g.n_s)
 
     def test_reverse(self, setup):
         rev = setup.g.reverse()

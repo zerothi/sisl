@@ -51,6 +51,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- `Geometry.[ao][us]c2[su]c` methods now retains the input shapes (unless `unique=True`)
 - lots of `Lattice` methods did not consistently copy over BC
 - `BrillouinZone.volume` fixed to actually return BZ volume
   use `Lattice.volume` for getting the lattice volume.

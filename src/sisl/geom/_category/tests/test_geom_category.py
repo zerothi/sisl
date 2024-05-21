@@ -258,7 +258,7 @@ def test_geom_category_xyz_meta():
     We check that the metaclass defined for individual direction categories works.
     """
     hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
-    sc2uc = hBN_gr.sc2uc
+    sc2uc = hBN_gr.asc2uc
 
     # Check that all classes work
     for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):

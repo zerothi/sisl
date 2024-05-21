@@ -47,7 +47,7 @@ from sisl._indices import (
 from sisl._internal import set_module
 from sisl._math_small import cross3, is_ascending
 from sisl._namedindex import NamedIndex
-from sisl.messages import SislError, deprecate_argument, info, warn
+from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
 from sisl.shape import Cube, Shape, Sphere
 from sisl.typing import (
     ArrayLike,
@@ -1004,7 +1004,8 @@ class Geometry(
             # Get unit-cell atoms, we are drawing a circle, and this
             # circle only encompasses those already in the unit-cell.
             all_idx[1] = np.union1d(
-                self.sc2uc(all_idx[0], unique=True), self.sc2uc(all_idx[1], unique=True)
+                self.asc2uc(all_idx[0], unique=True),
+                self.asc2uc(all_idx[1], unique=True),
             )
             # If we translated stuff into the unit-cell, we could end up in situations
             # where the supercell atom is in the circle, but not the UC-equivalent
@@ -1134,7 +1135,8 @@ class Geometry(
             # Get unit-cell atoms, we are drawing a circle, and this
             # circle only encompasses those already in the unit-cell.
             all_idx[1] = np.union1d(
-                self.sc2uc(all_idx[0], unique=True), self.sc2uc(all_idx[1], unique=True)
+                self.asc2uc(all_idx[0], unique=True),
+                self.asc2uc(all_idx[1], unique=True),
             )
             # If we translated stuff into the unit-cell, we could end up in situations
             # where the supercell atom is in the circle, but not the UC-equivalent
@@ -2105,7 +2107,7 @@ class Geometry(
             # get offsets from atomic indices (note that this will be per atom)
             isc = self.a2isc(atoms)
             offset = self.lattice.offset(isc)
-            return self.xyz[self.sc2uc(atoms)] + offset
+            return self.xyz[self.asc2uc(atoms)] + offset
 
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.lattice.offset(isc)
@@ -2512,7 +2514,7 @@ class Geometry(
             )
             i = np.argmin(d[1])
             # Convert to unitcell atom (and get the one atom)
-            atoms = self.sc2uc(atoms[1][i])
+            atoms = self.asc2uc(atoms[1][i])
             c = c[1][i]
             d = d[1][i]
 
@@ -2995,13 +2997,13 @@ class Geometry(
                 + (orbitals // self.no) * self.na
             )
 
-        isc, orbitals = np.divmod(_a.asarrayi(orbitals.ravel()), self.no)
-        a = list_index_le(orbitals, self.lasto)
+        isc, orbitals = np.divmod(_a.asarrayi(orbitals), self.no)
+        a = list_index_le(orbitals.ravel(), self.lasto).reshape(orbitals.shape)
         if unique:
             return np.unique(a + isc * self.na)
         return a + isc * self.na
 
-    def uc2sc(self, atoms: AtomsIndex, unique: bool = False) -> ndarray:
+    def auc2sc(self, atoms: AtomsIndex, unique: bool = False) -> ndarray:
         """Returns atom from unit-cell indices to supercell indices, possibly removing dublicates
 
         Parameters
@@ -3012,16 +3014,20 @@ class Geometry(
            If True the returned indices are unique and sorted.
         """
         atoms = self._sanitize_atoms(atoms) % self.na
-        atoms = (
-            atoms.reshape(1, -1) + _a.arangei(self.n_s).reshape(-1, 1) * self.na
-        ).ravel()
+        atoms = (atoms[..., None] + _a.arangei(self.n_s) * self.na).reshape(
+            *atoms.shape[:-1], -1
+        )
         if unique:
             return np.unique(atoms)
         return atoms
 
-    auc2sc = uc2sc
+    uc2sc = deprecation(
+        "uc2sc is deprecated, update the code to use the explicit form auc2sc",
+        "0.15.0",
+        "0.16.0",
+    )(auc2sc)
 
-    def sc2uc(self, atoms: AtomsIndex, unique: bool = False) -> ndarray:
+    def asc2uc(self, atoms: AtomsIndex, unique: bool = False) -> ndarray:
         """Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
@@ -3036,7 +3042,11 @@ class Geometry(
             return np.unique(atoms)
         return atoms
 
-    asc2uc = sc2uc
+    sc2uc = deprecation(
+        "sc2uc is deprecated, update the code to use the explicit form asc2uc",
+        "0.15.0",
+        "0.16.0",
+    )(asc2uc)
 
     def osc2uc(self, orbitals: OrbitalsIndex, unique: bool = False) -> ndarray:
         """Orbitals from supercell indices to unit-cell indices, possibly removing dublicates
@@ -3064,10 +3074,9 @@ class Geometry(
            If True the returned indices are unique and sorted.
         """
         orbitals = self._sanitize_orbs(orbitals) % self.no
-        orbitals = (
-            orbitals.reshape(1, *orbitals.shape)
-            + _a.arangei(self.n_s).reshape(-1, *([1] * orbitals.ndim)) * self.no
-        ).ravel()
+        orbitals = (orbitals[..., None] + _a.arangei(self.n_s) * self.no).reshape(
+            *orbitals.shape[:-1], -1
+        )
         if unique:
             return np.unique(orbitals)
         return orbitals
@@ -3086,8 +3095,6 @@ class Geometry(
             atom indices to extract the supercell locations of
         """
         atoms = self._sanitize_atoms(atoms) // self.na
-        if atoms.ndim > 1:
-            atoms = atoms.ravel()
         return self.lattice.sc_off[atoms, :]
 
     # This function is a bit weird, it returns a real array,
@@ -3110,8 +3117,6 @@ class Geometry(
         Returns a vector of 3 numbers with integers.
         """
         orbitals = self._sanitize_orbs(orbitals) // self.no
-        if orbitals.ndim > 1:
-            orbitals = orbitals.ravel()
         return self.lattice.sc_off[orbitals, :]
 
     def o2sc(self, orbitals: OrbitalsIndex) -> ndarray:
@@ -3524,7 +3529,7 @@ class Geometry(
 
         # Convert indices to unit-cell indices and also return coordinates and
         # infinite supercell indices
-        return self.sc2uc(idx), xyz, isc
+        return self.asc2uc(idx), xyz, isc
 
     # Create pickling routines
     def __getstate__(self):

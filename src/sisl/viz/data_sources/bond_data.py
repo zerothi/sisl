@@ -54,7 +54,7 @@ def bond_data_from_atom(
     fold_to_uc: bool = False,
 ):
     if fold_to_uc:
-        bonds = geometry.sc2uc(bonds)
+        bonds = geometry.asc2uc(bonds)
 
     return atom_data[bonds[:, 0]]
 
@@ -63,7 +63,7 @@ def bond_data_from_matrix(
     matrix, geometry: sisl.Geometry, bonds: np.ndarray, fold_to_uc: bool = False
 ):
     if fold_to_uc:
-        bonds = geometry.sc2uc(bonds)
+        bonds = geometry.asc2uc(bonds)
 
     return matrix[bonds[:, 0], bonds[:, 1]]
 

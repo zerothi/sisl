@@ -462,7 +462,7 @@ def sub(SA: SparseAtom, atoms: AtomsIndex) -> SparseAtom:
     Geometry.sub : equivalent to the resulting `Geometry` from this routine
     SparseAtom.remove : the negative of `sub`, i.e. remove a subset of atoms
     """
-    atoms = SA.sc2uc(atoms)
+    atoms = SA.asc2uc(atoms)
     geom = SA.geometry.sub(atoms)
 
     idx = np.tile(atoms, SA.n_s)
@@ -503,7 +503,7 @@ def sub(SO: SparseOrbital, atoms: AtomsIndex) -> SparseOrbital:
     Geometry.sub : equivalent to the resulting `Geometry` from this routine
     SparseOrbital.remove : the negative of `sub`, i.e. remove a subset of atoms
     """
-    atoms = SO.sc2uc(atoms)
+    atoms = SO.asc2uc(atoms)
     orbs = SO.a2o(atoms, all=True)
     geom = SO.geometry.sub(atoms)
 
@@ -538,6 +538,6 @@ def remove(S: _SparseGeometry, atoms: AtomsIndex) -> _SparseGeometry:
     Geometry.sub : the negative of `Geometry.remove`
     sub : the opposite of `remove`, i.e. retain a subset of atoms
     """
-    atoms = S.sc2uc(atoms)
+    atoms = S.asc2uc(atoms)
     atoms = np.delete(_a.arangei(S.na), atoms)
     return S.sub(atoms)
