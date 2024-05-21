@@ -760,7 +760,7 @@ class TestGeometry:
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
 
-    def test_dihedral(self, setup):
+    def test_dihedral(self):
         g = sisl_geom.graphene() * (2, 2, 1)
         g.xyz[-1, 2] = 1
         assert g.dihedral(range(4)) == 180

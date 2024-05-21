@@ -1694,6 +1694,27 @@ class Geometry(
     ) -> Union[float, ndarray]:
         r"""Calculate the dihedral angle defined by four atoms.
 
+        The dihehral angle is defined between 2 half-planes.
+
+        The first 3 atoms define the first plane
+        The last 3 atoms define the second.
+
+        The dihedral angle is calculated using this formula:
+
+        .. math::
+
+            \mathbf u_0 &= \mathbf r_1 - \mathbf r_0
+            \\
+            \mathbf u_1 &= \mathbf r_2 - \mathbf r_1
+            \\
+            \mathbf u_2 &= \mathbf r_3 - \mathbf r_2
+            \\
+            \phi &= \operatorname{atan2}\Big(\hat\mathbf u_0\dot
+                (\hat\mathbf u_1\times\hat\mathbf u_2),
+                (\hat\mathbf u_0\times\hat\mathbf u_1)\dot
+                (\hat\mathbf u_1\times\hat\mathbf u_2)
+                \Big)
+
         Parameters
         ----------
         atoms :
@@ -1702,13 +1723,14 @@ class Geometry(
            whether the returned value is in radians
         """
         atoms = self._sanitize_atoms(atoms)
-        if atoms.ndim == 1:
+        ndim = atoms.ndim
+        if ndim == 1:
             if len(atoms) != 4:
                 raise ValueError(
                     f"{self.__class__.__name__}.dihedral requires atoms to be 4 indices"
                 )
             atoms = [atoms]
-        elif atoms.ndim == 2:
+        elif ndim == 2:
             if atoms.shape[1] != 4:
                 raise ValueError(
                     f"{self.__class__.__name__}.dihedral requires atoms to be (N, 4) indices"
@@ -1720,14 +1742,18 @@ class Geometry(
 
         angles = []
         for idx in atoms:
-            v0, v1, v2 = np.diff(self.xyz[idx], axis=0)
+            # The 2 planes are defined by
+            #  r0, r1, r2
+            # and
+            #  r1, r2, r3
+            v = np.diff(self.xyz[idx], axis=0)
             # normalize for accurate angles
-            v0 /= np.linalg.norm(v0)
-            v1 /= np.linalg.norm(v1)
-            v2 /= np.linalg.norm(v2)
-            w0 = np.cross(v0, v1)
-            w1 = np.cross(v1, v2)
-            y = np.dot(v0, w1)
+            v /= fnorm(v)[..., None]
+
+            # get normal vectors
+            w0 = np.cross(v[0], v[1])
+            w1 = np.cross(v[1], v[2])
+            y = np.dot(v[0], w1)
             x = np.dot(w0, w1)
             # see https://en.wikipedia.org/wiki/Dihedral_angle
             angles.append(np.arctan2(y, x))
@@ -1735,7 +1761,7 @@ class Geometry(
         if not rad:
             angles = np.degrees(angles)
 
-        if len(angles) == 1:
+        if ndim == 1:
             return angles[0]
 
         return angles
