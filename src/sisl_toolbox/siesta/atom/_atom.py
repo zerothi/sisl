@@ -348,7 +348,7 @@ class AtomInput:
         # get default options for pseudo
         opts = NotNonePropertyDict()
         pseudo = dic["pseudo"]
-        opts["logr"] = parse_variable(pseudo.get("log-radii"), unit="Ang").value
+        opts["logr"] = parse_variable(pseudo.get("log-radius"), unit="Ang").value
         opts["rcore"] = parse_variable(pseudo.get("core-correction"), unit="Ang").value
         opts["xc"] = pseudo.get("xc")
         opts["equation"] = pseudo.get("equation")

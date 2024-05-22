@@ -3,11 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Union
 
-from sisl import Atom, AtomicOrbital, Atoms, Orbital, PeriodicTable
+from sisl import Atom, AtomicOrbital, Atoms, Geometry, Orbital, PeriodicTable
 from sisl._array import arrayi
 from sisl._internal import set_module
+from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile, sile_fh_open
@@ -49,7 +50,14 @@ class orbindxSileSiesta(SileSiesta):
         return arrayi([n * 2 + 1 for n in nsc])
 
     @sile_fh_open()
-    def read_basis(self, basis: Optional[Atoms] = None) -> Atoms:
+    @deprecate_argument(
+        "basis",
+        "atoms",
+        "use atoms instead of basis",
+        "0.15",
+        "0.16",
+    )
+    def read_basis(self, atoms: Optional[Union[Atoms, Geometry]] = None) -> Atoms:
         """Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file
 
         The specie names have a short field in the ORB_INDX file, hence the name may
@@ -57,7 +65,7 @@ class orbindxSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        basis :
+        atoms :
            list of atoms used for the species index
         """
 
@@ -70,7 +78,7 @@ class orbindxSileSiesta(SileSiesta):
 
         pt = PeriodicTable()
 
-        if basis is None:
+        if atoms is None:
 
             def crt_atom(i_s, spec, orbs):
                 # The user has not specified an atomic basis
@@ -81,13 +89,15 @@ class orbindxSileSiesta(SileSiesta):
                     return Atom(-1, orbs, tag=spec)
 
         else:
+            if isinstance(atoms, Geometry):
+                atoms = atoms.atoms
 
             def crt_atom(i_s, spec, orbs):
                 # Get the atom and add the orbitals
-                return basis[i_s].copy(orbitals=orbs)
+                return atoms[i_s].copy(orbitals=orbs)
 
         # Now we begin by reading the atoms
-        atoms = []
+        atom = []
         orbs = []
         specs = []
         ia = 1
@@ -99,7 +109,7 @@ class orbindxSileSiesta(SileSiesta):
             spec = line[3]
             if i_a != ia:
                 if i_s not in specs:
-                    atoms.append(crt_atom(i_s, spec, orbs))
+                    atom.append(crt_atom(i_s, spec, orbs))
                 specs.append(i_s)
                 ia = i_a
                 orbs = []
@@ -116,11 +126,11 @@ class orbindxSileSiesta(SileSiesta):
             orbs.append(o)
 
         if i_s not in specs:
-            atoms.append(crt_atom(i_s, spec, orbs))
+            atom.append(crt_atom(i_s, spec, orbs))
         specs.append(i_s)
 
         # Now re-arrange the atoms and create the Atoms object
-        return Atoms([atoms[i] for i in specs])
+        return Atoms([atom[i] for i in specs])
 
 
 add_sile("ORB_INDX", orbindxSileSiesta, gzip=True)

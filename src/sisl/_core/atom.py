@@ -6,6 +6,7 @@ from __future__ import annotations
 from collections import Counter
 from collections.abc import Iterable
 from numbers import Integral, Real
+from typing import Literal
 
 import numpy as np
 
@@ -37,9 +38,9 @@ class PeriodicTable:
     The following values are accessible:
 
     * atomic mass (in atomic units)
-    * empirical atomic radii (in Ang)
-    * calculated atomic radii (in Ang)
-    * van der Waals atomic radii (in Ang)
+    * empirical atomic radius (in Ang)
+    * calculated atomic radius (in Ang)
+    * van der Waals atomic radius (in Ang)
 
     For certain species the above quantities are not available
     and a negative number is returned.
@@ -62,13 +63,13 @@ class PeriodicTable:
     True
     >>> 12.0107 == PeriodicTable().atomic_mass('Carbon')
     True
-    >>> .67 == PeriodicTable().radii('Carbon')
+    >>> .67 == PeriodicTable().radius('Carbon')
     True
-    >>> .67 == PeriodicTable().radii(6,'calc')
+    >>> .67 == PeriodicTable().radius(6,'calc')
     True
-    >>> .7  == PeriodicTable().radii(6,'empirical')
+    >>> .7  == PeriodicTable().radius(6,'empirical')
     True
-    >>> 1.7 == PeriodicTable().radii(6,'vdw')
+    >>> 1.7 == PeriodicTable().radius(6,'vdw')
     True
     """
 
@@ -881,10 +882,10 @@ class PeriodicTable:
             return get(Z, 0.0)
         return _a.fromiterd(map(get, Z, iter(float, 1)))
 
-    def radius(self, key, method="calc"):
-        """Atomic radii using different methods
+    def radius(self, key, method: Literal["calc", "empirical", "vdw"] = "calc"):
+        """Atomic radius using different methods
 
-        Return the atomic radii.
+        Return the atomic radius.
 
         Parameters
         ----------
@@ -894,7 +895,7 @@ class PeriodicTable:
         method : {'calc', 'empirical', 'vdw'}
             There are 3 different radii stored:
 
-             1. ``calc``, the calculated atomic radii
+             1. ``calc``, the calculated atomic radius
              2. ``empirical``, the empirically found values
              3. ``vdw``, the van-der-Waals found values
 
@@ -908,8 +909,6 @@ class PeriodicTable:
         if isinstance(Z, Integral):
             return func(Z) / 100
         return _a.fromiterd(map(func, Z)) / 100
-
-    radii = radius
 
 
 # Create a local instance of the periodic table to
@@ -1086,6 +1085,9 @@ class Atom(
             elif isinstance(orbitals[0], str):
                 # radius has been given
                 self._orbitals = [Orbital(-1, tag=tag) for tag in orbitals]
+            elif isinstance(orbitals[0], tuple):
+                # likely a radiuse + tag
+                self._orbitals = [Orbital(R, tag=tag) for R, tag in orbitals]
             elif all(orb is None for orb in orbitals):
                 orbitals = None
 
@@ -1112,13 +1114,11 @@ class Atom(
         else:
             self._mass = mass
 
-        if tag is None:
-            self._tag = self.symbol
-        else:
-            self._tag = tag
+        # self.tag will return self.symbol if not set
+        self._tag = tag
 
     def __hash__(self):
-        return hash((self._tag, self._mass, self._Z, *self._orbitals))
+        return hash((self.tag, self._mass, self._Z, *self._orbitals))
 
     @property
     def Z(self) -> int:
@@ -1138,6 +1138,8 @@ class Atom(
     @property
     def tag(self) -> str:
         """Tag for atom"""
+        if self._tag is None:
+            return self.symbol
         return self._tag
 
     @property
@@ -1158,8 +1160,8 @@ class Atom(
                 return i
         raise KeyError("Could not find `orbital` in the list of orbitals.")
 
-    def radius(self, method="calc"):
-        """Return the atomic radii of the atom (in Ang)
+    def radius(self, method: Literal["calc", "empirical", "vdw"] = "calc"):
+        """Return the atomic radius of the atom (in Ang)
 
         See `PeriodicTable.radius` for details on the argument.
         """
@@ -1196,7 +1198,7 @@ class Atom(
         """Loop on all orbitals in this atom"""
         yield from self.orbitals
 
-    def iter(self, group=False):
+    def iter(self, group: bool = False):
         """Loop on all orbitals in this atom
 
         Parameters
@@ -1315,7 +1317,7 @@ class Atom(
         """
         return self.to.Sphere(center=center)
 
-    def equal(self, other, R=True, psi=False):
+    def equal(self, other, R: bool = True, psi: bool = False):
         """True if `other` is the same as this atomic species
 
         Parameters
@@ -1323,7 +1325,7 @@ class Atom(
         other : Atom
            the other object to check againts
         R : bool, optional
-           if True the equality check also checks the orbital radii, else they are not compared
+           if True the equality check also checks the orbital radius, else they are not compared
         psi : bool, optional
            if True, also check the wave-function component of the orbitals, see `Orbital.psi`
         """
@@ -1581,7 +1583,7 @@ class Atoms:
             return self.atom[a[0]].orbitals[io[0]]
         return [self.atom[ia].orbitals[o] for ia, o in zip(a, io)]
 
-    def maxR(self, all=False):
+    def maxR(self, all: bool = False):
         """The maximum radius of the atoms
 
         Parameters

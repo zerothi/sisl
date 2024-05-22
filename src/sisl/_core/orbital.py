@@ -30,7 +30,7 @@ from sisl.constant import a0
 from sisl.messages import warn
 from sisl.shape import Sphere
 from sisl.typing import npt
-from sisl.utils.mathematics import cart2spher
+from sisl.utils.mathematics import cart2spher, close
 
 __all__ = [
     "Orbital",
@@ -259,21 +259,23 @@ class Orbital:
         elif not isinstance(other, Orbital):
             return False
 
-        same = abs(self.R - other.R) <= 1e-4 and abs(self.q0 - other.q0) < 1e-4
+        same = self.tag == other.tag
+        same &= close(self.R, other.R, atol=1e-4)
+        same &= close(self.q0, other.q0, atol=1e-4)
         if not same:
             # Quick return
             return False
 
         if same and radial:
             # Ensure they also have the same fill-values
-            r = np.linspace(0, self.R * 2, 500)
+            r = np.linspace(0, self.R + 1, 500)
             same &= np.allclose(self.radial(r), other.radial(r))
 
         if same and psi:
             xyz = np.linspace(0, self.R * 2, 999).reshape(-1, 3)
             same &= np.allclose(self.psi(xyz), other.psi(xyz))
 
-        return same and self.tag == other.tag
+        return same
 
     def __eq__(self, other):
         return self.equal(other)
@@ -1518,7 +1520,7 @@ class _ExponentialOrbital(Orbital):
     def __repr__(self):
         if self.tag:
             return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}, tag={self.tag}>"
-        return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}, >"
+        return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}>"
 
     def __hash__(self):
         return hash(

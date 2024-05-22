@@ -1499,7 +1499,7 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_geometry_tshs, f, inputs=[("TS.HS.Save", "True")])
         if f.is_file():
             # Default to a geometry with the correct atomic numbers etc.
-            return tshsSileSiesta(f).read_geometry(basis=self.read_basis())
+            return tshsSileSiesta(f).read_geometry(atoms=self.read_basis())
         return None
 
     def _r_geometry_hsx(self):
@@ -1508,7 +1508,9 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_geometry_hsx, f, inputs=[("Save.HS", "True")])
         if f.is_file():
             # Default to a geometry with the correct atomic numbers etc.
-            return hsxSileSiesta(f).read_geometry(geometry=self.read_geometry(False))
+            return hsxSileSiesta(f).read_geometry(
+                geometry=self.read_geometry(order="^hsx")
+            )
         return None
 
     def _r_geometry_fdf(self, *args, **kwargs):
@@ -1833,8 +1835,10 @@ class fdfSileSiesta(SileSiesta):
 
             # now try and read the basis
             for ext in exts:
-                if f.with_suffix(f".{ext}").is_file():
-                    atoms[idx] = ion_files[ext](f.with_suffix(f".{ext}")).read_basis()
+                ion = f.with_suffix(f".{ext}")
+                _track_file(self._r_basis_ion, ion)
+                if ion.is_file():
+                    atoms[idx] = ion_files[ext](ion).read_basis()
                     found_one = True
                     break
             else:
@@ -1865,7 +1869,7 @@ class fdfSileSiesta(SileSiesta):
             warn(
                 f"Siesta basis information is read from '{f}'; radial functions are not accessible."
             )
-            return orbindxSileSiesta(f).read_basis(basis=self._r_basis_fdf())
+            return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
         return None
 
     def _r_basis_fdf(self):
@@ -2283,11 +2287,11 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_hamiltonian_hsx, f, inputs=[("Save.HS", "True")])
         H = None
         if f.is_file():
-            if hsxSileSiesta(f).version == 0:
-                if "geometry" not in kwargs:
-                    # to ensure we get the correct orbital count
-                    kwargs["geometry"] = self.read_geometry(True)
-            H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
+            hsx = hsxSileSiesta(f)
+            _track_file(self._r_hamiltonian_hsx, f, f"  got version = {hsx.version}")
+            if "atoms" not in kwargs:
+                kwargs["atoms"] = self.read_basis(order="^hsx")
+            H = hsx.read_hamiltonian(*args, **kwargs)
             Ef = self.read_fermi_level()
             if Ef is None:
                 info(

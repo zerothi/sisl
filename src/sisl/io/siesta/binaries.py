@@ -214,12 +214,12 @@ class onlysSileSiesta(SileBinSiesta):
 
     @deprecate_argument(
         "geometry",
-        "basis",
-        "use basis=geometry.atoms instead of geometry=",
+        "atoms",
+        "use atoms=geometry.atoms instead of geometry=",
         "0.15",
         "0.16",
     )
-    def read_geometry(self, basis: Optional[Atoms] = None):
+    def read_geometry(self, atoms: Optional[Union[Atoms, Geometry]] = None):
         """Returns Geometry object from a TranSiesta file"""
 
         # Read supercell
@@ -238,17 +238,17 @@ class onlysSileSiesta(SileBinSiesta):
         # geometry which contains the correct atomic numbers etc.
         orbs = np.diff(lasto)
 
-        if isinstance(basis, Geometry):
-            basis = basis.atoms
-        if isinstance(basis, Atoms):
-            if len(basis) != len(orbs):
+        if isinstance(atoms, Geometry):
+            atoms = atoms.atoms
+        if isinstance(atoms, Atoms):
+            if len(atoms) != len(orbs):
                 raise ValueError(
                     f"{self.__class__.__name__}.read_geometry "
                     "got a basis set (Atoms object) with incorrect "
                     "number of atoms."
                 )
 
-        if basis is None:
+        if atoms is None:
             # Create all different atoms...
             # The TSHS file does not contain the
             # atomic numbers, so we will just
@@ -256,6 +256,7 @@ class onlysSileSiesta(SileBinSiesta):
 
             # Get unique orbitals
             uorb = np.unique(orbs)
+
             # Create atoms
             atoms = []
             for Z, orb in enumerate(uorb):
@@ -271,12 +272,9 @@ class onlysSileSiesta(SileBinSiesta):
                 atom.append(get_atom(atoms, orb))
 
         else:
-            if isinstance(basis, Geometry):
-                basis = basis.atoms
-
             # Create a new geometry with the correct atomic numbers
             atom = []
-            for a, no in zip(basis, orbs):
+            for a, no in zip(atoms, orbs):
                 if a.no == no:
                     atom.append(a)
                 else:
@@ -790,7 +788,7 @@ class hsxSileSiesta(SileBinSiesta):
         """The version of the file"""
         return _siesta.read_hsx_version(self.file)
 
-    def _xij2system(self, xij, geometry=None):
+    def _xij2system(self, xij, geometry=None, **kwargs):
         """Create a new geometry with *correct* nsc and somewhat correct xyz
 
         Parameters
@@ -802,7 +800,7 @@ class hsxSileSiesta(SileBinSiesta):
         """
 
         def get_geom_handle(xij):
-            atoms = self.read_basis()
+            atoms = self.read_basis(geometry=geometry, **kwargs)
             if not atoms is None:
                 return Geometry(np.zeros([len(atoms), 3]), atoms)
 
@@ -1088,6 +1086,10 @@ class hsxSileSiesta(SileBinSiesta):
             # TODO check that geometry and xyz are the same!
             geometry._atoms = atms
 
+        geometry = _geometry_align(
+            geometry, kwargs.get("geometry", geometry), self.__class__, "read_geometry"
+        )
+
         return geometry
 
     def read_basis(self, **kwargs) -> Atoms:
@@ -1167,8 +1169,11 @@ class hsxSileSiesta(SileBinSiesta):
         atoms = Atoms([atoms[ia] for ia in isa])
 
         base = kwargs.get("geometry", kwargs.get("geom", None))
+        base = kwargs.get("atoms", base)
         if base is None:
             return atoms
+        if isinstance(base, Geometry):
+            base = base.atoms
 
         # Now compare the atoms such that we select the best one
         def get_best(aF, aI):
@@ -1195,7 +1200,7 @@ class hsxSileSiesta(SileBinSiesta):
             # and the charge
             return aI
 
-        atoms = Atoms(map(get_best, atoms, base.atoms))
+        atoms = Atoms(map(get_best, atoms, base))
         return atoms
 
     def _r_lattice_v0(self, **kwargs):
@@ -1239,7 +1244,7 @@ class hsxSileSiesta(SileBinSiesta):
         self._fortran_check("read_geometry", "could not read Hamiltonian.")
         ptr = _ncol_to_indptr(ncol)
         xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
-        geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
+        geom = self._xij2system(xij, **kwargs)
         return geom
 
     def _r_geometry_v1(self, **kwargs):

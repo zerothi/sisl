@@ -89,6 +89,7 @@ we hit release version 1.0.0.
   be done for assigning matrix elements (it fills with 0's).
 
 ### Removed
+- `Atom.radii` is removed, `Atom.radius` is the correct invocation
 - `sisl.plot` is removed (`sisl.viz` is replacing it!)
 - `cell` argument for `Geometry.translate/move` (it never worked)
 - removed `Selector` and `TimeSelector`, they were never used internally

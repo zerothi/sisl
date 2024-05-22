@@ -27,7 +27,7 @@ from sisl._indices import indices_le
 
 __all__ = ["fnorm", "fnorm2", "expand", "orthogonalize"]
 __all__ += ["spher2cart", "cart2spher", "spherical_harm"]
-__all__ += ["curl"]
+__all__ += ["curl", "close"]
 
 
 def fnorm(array, axis=-1):
@@ -302,6 +302,11 @@ def curl(M, axis=-2, axisv=-1):
     curl[vy] = M[slz][vx] - M[slx][vz]
     curl[vz] = M[slx][vy] - M[sly][vx]
     return curl
+
+
+def close(a, b, /, rtol: float = 1e-5, atol: float = 1e-8) -> bool:
+    """Equivalent to `numpy.allclose` for scalars"""
+    return abs(a - b) <= (atol + rtol * abs(b))
 
 
 def intersect_and_diff_sets(a, b):
