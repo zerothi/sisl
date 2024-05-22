@@ -56,8 +56,8 @@ def test_struct_ghost(sisl_tmp):
 
 
 def test_si_pdos_kgrid_struct_out(sisl_files):
-    fdf = get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"))
-    struct = get_sile(sisl_files(_dir, "si_pdos_kgrid.STRUCT_OUT"))
+    fdf = get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"))
+    struct = get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.STRUCT_OUT"))
 
     struct_geom = struct.read_geometry()
     fdf_geom = fdf.read_geometry(order="STRUCT")

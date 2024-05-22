@@ -15,7 +15,7 @@ _dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_pdos_kgrid_fa(sisl_files):
-    f = sisl_files(_dir, "si_pdos_kgrid.FA")
+    f = sisl_files("siesta", "Si_pdos_k", "Si_pdos.FA")
     fa = faSileSiesta(f).read_data()
 
     assert len(fa) == 2

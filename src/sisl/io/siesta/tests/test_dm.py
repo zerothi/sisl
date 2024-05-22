@@ -17,9 +17,8 @@ _dir = osp.join("sisl", "io", "siesta")
 
 
 def test_dm_si_pdos_kgrid(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"), base=sisl_files(_dir))
-
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.DM"))
+    fdf = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.DM"))
 
     DM1 = si.read_density_matrix(geometry=fdf.read_geometry())
     DM2 = fdf.read_density_matrix(order=["DM"])
@@ -29,10 +28,10 @@ def test_dm_si_pdos_kgrid(sisl_files):
 
 
 def test_dm_si_pdos_kgrid_rw(sisl_files, sisl_tmp):
-    fdf = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"), base=sisl_files(_dir))
+    fdf = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"))
     geom = fdf.read_geometry()
 
-    f1 = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.DM"))
+    f1 = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.DM"))
     f2 = sisl.get_sile(sisl_tmp("test.DM", _dir))
 
     DM1 = f1.read_density_matrix(geometry=geom)
@@ -51,7 +50,7 @@ def test_dm_si_pdos_kgrid_rw(sisl_files, sisl_tmp):
 
 
 def test_dm_si_pdos_kgrid_mulliken(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"), base=sisl_files(_dir))
+    fdf = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"))
     DM = fdf.read_density_matrix(order=["DM"])
 
     Mo = DM.mulliken("orbital")

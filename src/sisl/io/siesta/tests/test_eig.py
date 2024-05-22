@@ -24,17 +24,17 @@ def _convert45(unit):
 
 
 def test_si_pdos_kgrid_eig(sisl_files):
-    f = sisl_files(_dir, "si_pdos_kgrid.EIG")
+    f = sisl_files("siesta", "Si_pdos_k", "Si_pdos.EIG")
     eig = eigSileSiesta(f).read_data()
 
     # nspin, nk, nb
-    assert np.all(eig.shape == (1, 32, 26))
+    assert np.all(eig.shape == (1, 63, 18))
 
 
 def test_si_pdos_kgrid_eig_ArgumentParser(sisl_files, sisl_tmp):
     pytest.importorskip("matplotlib", reason="matplotlib not available")
     png = sisl_tmp("si_pdos_kgrid.EIG.png", _dir)
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.EIG"))
+    si = eigSileSiesta(sisl_files("siesta", "Si_pdos_k", "Si_pdos.EIG"))
     p, ns = si.ArgumentParser()
     p.parse_args([], namespace=ns)
     p.parse_args(["--energy", " -2:2"], namespace=ns)
@@ -43,8 +43,8 @@ def test_si_pdos_kgrid_eig_ArgumentParser(sisl_files, sisl_tmp):
 
 def test_si_pdos_kgrid_eig_ArgumentParser_de(sisl_files, sisl_tmp):
     dat = sisl_tmp("si_pdos_kgrid.EIG.dat", _dir)
-    kp = sisl_files(_dir, "si_pdos_kgrid.KP")
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.EIG"))
+    kp = sisl_files("siesta", "Si_pdos_k", "Si_pdos.KP")
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.EIG"))
     p, ns = si.ArgumentParser()
     assert ns._dos_args[0] == pytest.approx(0.005)
     assert ns._dos_args[2] == "gaussian"

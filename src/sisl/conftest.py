@@ -19,7 +19,7 @@ from sisl import Atom, Geometry, Hamiltonian, Lattice, _environ
 _log = logging.getLogger(__name__)
 
 sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
-sisl_has_files_tests = (sisl_files_tests / "sisl").is_dir()
+sisl_has_files_tests = (sisl_files_tests / "tests").is_dir()
 
 
 # Modify items based on whether the env is correct or not
@@ -121,8 +121,8 @@ def sisl_files():
     If the environment variable is empty and a test has this fixture, it will
     be skipped.
     """
-    sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
-    if not sisl_files_tests.is_dir():
+    global sisl_files_tests
+    if not (sisl_files_tests / "tests").is_dir():
         _log.info(
             "sisl_files SISL_FILES_TESTS={sisl_files_tests!s} does not exist, xfail dependencies"
         )
@@ -135,7 +135,7 @@ def sisl_files():
     else:
 
         def _path(*files):
-            p = sisl_files_tests.joinpath(*files)
+            p = sisl_files_tests.joinpath("tests", *files)
             if p.exists():
                 return p
             _log.info("sisl_files: test requested non-existing ' {p!s}' -> xfail")

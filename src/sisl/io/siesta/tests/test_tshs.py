@@ -17,7 +17,7 @@ _dir = osp.join("sisl", "io", "siesta")
 
 
 def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     assert si.version == 1
     HS1 = si.read_hamiltonian()
     f = sisl_tmp("tmp.TSHS", _dir)
@@ -32,7 +32,7 @@ def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
 
 def test_tshs_si_pdos_kgrid_tofromnc(sisl_files, sisl_tmp):
     pytest.importorskip("netCDF4")
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS1 = si.read_hamiltonian()
     f = sisl_tmp("tmp.TSHS", _dir)
     fnc = sisl_tmp("tmp.nc", _dir)
@@ -52,7 +52,7 @@ def test_tshs_si_pdos_kgrid_tofromnc(sisl_files, sisl_tmp):
 
 
 def test_tshs_si_pdos_kgrid_repeat_tile(sisl_files, sisl_tmp):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS = si.read_hamiltonian()
     HSr = HS.repeat(3, 2).repeat(3, 0).repeat(3, 1)
     HSt = HS.tile(3, 2).tile(3, 0).tile(3, 1)
@@ -60,7 +60,7 @@ def test_tshs_si_pdos_kgrid_repeat_tile(sisl_files, sisl_tmp):
 
 
 def test_tshs_si_pdos_kgrid_repeat_tile_not_used(sisl_files, sisl_tmp):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS = si.read_hamiltonian()
     for i in range(HS.no):
         HS._csr._extend_empty(i, 3 + i % 3)
@@ -91,7 +91,7 @@ def test_tshs_soc_pt2_xx_pdos(sisl_files):
 
 
 def test_tshs_warn(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
 
     # check number of orbitals
     geom = si.read_geometry()
@@ -120,7 +120,7 @@ def test_tshs_warn(sisl_files):
 
 def test_tshs_error(sisl_files):
     # reading with a wrong geometry
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
 
     # check number of orbitals
     geom = si.read_geometry()
@@ -130,7 +130,7 @@ def test_tshs_error(sisl_files):
 
 
 def test_tshs_si_pdos_kgrid_overlap(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS = si.read_hamiltonian()
     S = si.read_overlap()
     assert HS._csr.spsame(S._csr)

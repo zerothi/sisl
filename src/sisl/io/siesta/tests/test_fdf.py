@@ -347,7 +347,7 @@ def test_geom_constraints(sisl_tmp):
 
 
 def test_h2_dynamical_matrix(sisl_files):
-    si = fdfSileSiesta(sisl_files(_dir, "H2_dynamical_matrix.fdf"))
+    si = fdfSileSiesta(sisl_files("siesta", "H2_hessian", "H2_hessian.fdf"))
 
     trans_inv = [True, False]
     sum0 = trans_inv[:]
@@ -410,9 +410,12 @@ def test_fdf_argumentparser(sisl_tmp):
 
 
 def test_fdf_fe_basis(sisl_files):
-    geom = fdfSileSiesta(sisl_files(_dir, "fe.fdf")).read_geometry()
-    assert geom.no == 15
+    geom = fdfSileSiesta(
+        sisl_files("siesta", "fe_bcc_simple", "fe.fdf")
+    ).read_geometry()
     assert geom.na == 1
+    # The fe.fdf does not contain basis information, so it will default to 1.
+    assert geom.no == 1
 
 
 def test_fdf_pao_basis():
