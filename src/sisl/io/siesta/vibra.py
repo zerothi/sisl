@@ -176,7 +176,7 @@ class vectorsSileSiesta(SileSiesta):
         # Read first eigenvector index
 
         # Determine number of atoms (i.e. rows per mode)
-        state = np.empty((self._nmodes, 3, self._natoms), dtype=np.complex128)
+        mode = np.empty((self._nmodes, 3, self._natoms), dtype=np.complex128)
         c = np.empty(self._nmodes, dtype=np.float64)
         for imode in range(self._nmodes):
             self.readline()
@@ -189,20 +189,20 @@ class vectorsSileSiesta(SileSiesta):
             self.readline()
             for iatom in range(self._natoms):
                 line = self.readline()
-                state[imode, :, iatom].real = list(map(float, line.split()))
+                mode[imode, :, iatom].real = list(map(float, line.split()))
 
             # Read imaginary part of eigenmode
             # Skip eigenmode header
             self.readline()
             for iatom in range(self._natoms):
                 line = self.readline()
-                state[imode, :, iatom].imag = list(map(float, line.split()))
+                mode[imode, :, iatom].imag = list(map(float, line.split()))
 
         info = dict(k=self._convert_k(k), parent=self._parent, gauge="r")
-        return EigenmodePhonon(state.reshape(self._nmodes, -1), c * _cm1_eV, **info)
+        return EigenmodePhonon(mode.reshape(self._nmodes, -1), c * _cm1_eV, **info)
 
     def yield_eigenmode(self):
-        """Iterates over the states in the vectors file
+        """Iterates over the modes in the vectors file
 
         Yields
         ------
@@ -230,10 +230,10 @@ class vectorsSileSiesta(SileSiesta):
         Parameters
         ----------
         k: array-like of shape (3,), optional
-            The k point of the state you want to find.
+            The k point of the mode you want to find.
         ktol:
             The threshold value for considering two k-points the same (i.e. to match
-            the query k point with the states k point).
+            the query k point with the modes k point).
 
         See Also
         --------
@@ -241,15 +241,15 @@ class vectorsSileSiesta(SileSiesta):
 
         Returns
         -------
-        eigenmodeElectron or None:
-            If found, the state that was queried.
+        EigenmodePhonon or None:
+            If found, the mode that was queried.
             If not found, returns `None`. NOTE this may change to an exception in the future
         """
         # Iterate over all eigenmodes in the file
-        for state in self.yield_eigenmode():
-            if np.allclose(state.info["k"], k, atol=ktol):
-                # This is the state that the user requested
-                return state
+        for mode in self.yield_eigenmode():
+            if np.allclose(mode.info["k"], k, atol=ktol):
+                # This is the mode that the user requested
+                return mode
         return None
 
 
