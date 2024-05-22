@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 
 import sisl._array as _a
-from sisl import Geometry, Lattice, constant
+from sisl import Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.physics.phonon import EigenmodePhonon
