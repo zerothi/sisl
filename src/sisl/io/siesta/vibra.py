@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import re
+
 import numpy as np
 
 import sisl._array as _a
@@ -150,7 +152,7 @@ class vectorsSileSiesta(SileSiesta):
         nmodes = 1
         while True:
             line = self.readline()
-            if line.startswith("k            ="):
+            if re.match("k *=", line):
                 break
             elif line.startswith("Eigenvector"):
                 nmodes += 1
