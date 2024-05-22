@@ -18,8 +18,7 @@ from .sile import SileSiesta
 __all__ = ["vectorsSileSiesta"]
 
 _Bohr2Ang = unit_convert("Bohr", "Ang")
-_J2eV = unit_convert("J", "eV")
-_cm1_eV = constant.h * constant.c * _J2eV
+_cm1_eV = unit_convert("cm^-1", "eV")
 
 
 @set_module("sisl.io.siesta")
