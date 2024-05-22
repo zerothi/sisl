@@ -14,10 +14,10 @@ _dir = osp.join("sisl", "io", "siesta")
 
 
 def test_eigenmode_read(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, "si_vibra.fdf"))
+    fdf = sisl.get_sile(sisl_files(_dir, "h_chain_vibra.fdf"))
     geometry = fdf.read_geometry()
     vectors = sisl.io.siesta.vectorsSileSiesta(
-        sisl_files(_dir, "si_vibra.vectors"),
+        sisl_files(_dir, "h_chain_vibra.vectors"),
         geometry=geometry,
     )
 
