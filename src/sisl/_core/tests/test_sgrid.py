@@ -12,8 +12,6 @@ import pytest
 from sisl import Atom, Geometry, Grid, Lattice, get_sile
 from sisl._core.grid import sgrid
 
-_dir = osp.join("sisl")
-
 
 @pytest.fixture
 def setup():
@@ -192,11 +190,11 @@ class TestsGrid:
         assert np.allclose(G.grid, g2.grid)
 
     def test_write_data(self, setup, sisl_tmp):
-        out = sisl_tmp("table.dat", _dir)
+        out = sisl_tmp("table.dat")
         G = setup.sg_g(argv=f"--sum 0 --average 1 --out {out}".split())
         dat = get_sile(out).read_data()
         assert np.allclose(dat[1, :], G.grid.ravel())
 
     def test_write_grid(self, setup, sisl_tmp):
-        out = sisl_tmp("table.cube", _dir)
+        out = sisl_tmp("table.cube")
         G = setup.sg_g(argv=f"--sum 0 --out {out}".split())

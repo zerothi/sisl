@@ -12,11 +12,10 @@ from sisl import Atom, Atoms
 from sisl.io.siesta.orb_indx import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_pdos_kgrid_orb_indx(sisl_files):
-    f = sisl_files(_dir, "si_pdos_kgrid.ORB_INDX")
+    f = sisl_files("siesta", "Si_pdos_k", "Si_pdos.ORB_INDX")
     nsc = orbindxSileSiesta(f).read_lattice_nsc()
     assert np.all(nsc > 1)
     atoms = orbindxSileSiesta(f).read_basis()
@@ -24,29 +23,31 @@ def test_si_pdos_kgrid_orb_indx(sisl_files):
     assert len(atoms) == 2
     assert atoms.nspecies == 1
     assert atoms.atom[0].Z == 14
-    assert len(atoms[0]) == 13
-    assert len(atoms[1]) == 13
+    assert len(atoms[0]) == 9
+    assert len(atoms[1]) == 9
 
 
-def test_sih_orb_indx(sisl_files):
-    f = sisl_files(_dir, "sih.ORB_INDX")
+def test_h2o_dipole_orb_indx(sisl_files):
+    f = sisl_files("siesta", "H2O_dipole", "h2o_dipole.ORB_INDX")
+
     nsc = orbindxSileSiesta(f).read_lattice_nsc()
     assert np.all(nsc == 1)
     atoms = orbindxSileSiesta(f).read_basis()
 
-    assert len(atoms) == 65
+    assert len(atoms) == 6
     assert atoms.nspecies == 2
     Z = np.zeros(len(atoms))
-    Z[:] = 14
-    Z[-1] = 1
+    Z[:] = 1
+    Z[[0, 3]] = 8
+
     assert np.allclose(atoms.Z, Z)
     # number of orbitals on each atom
-    assert len(atoms[0]) == 4
-    assert len(atoms[-1]) == 1
+    assert len(atoms[0]) == 9
+    assert len(atoms[-1]) == 4
 
 
 def test_orb_indx_order(sisl_tmp):
-    f = sisl_tmp("test.ORD_INDX", _dir)
+    f = sisl_tmp("test.ORD_INDX")
 
     with open(f, "w") as fh:
         fh.write(

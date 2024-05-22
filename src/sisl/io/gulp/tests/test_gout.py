@@ -13,11 +13,10 @@ import pytest
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.gulp]
-_dir = osp.join("sisl", "io", "gulp")
 
 
 def test_zz_dynamical_matrix(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "zz.gout"))
+    si = sisl.get_sile(sisl_files("gulp", "graphene_zz", "zz.gout"))
     D1 = si.read_dynamical_matrix(order=["got"], cutoff=1.0e-4)
     D2 = si.read_dynamical_matrix(order=["FC"], cutoff=1.0e-4)
 
@@ -28,7 +27,7 @@ def test_zz_dynamical_matrix(sisl_files):
 
 
 def test_zz_sc_geom(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "zz.gout"))
+    si = sisl.get_sile(sisl_files("gulp", "graphene_zz", "zz.gout"))
     lattice = si.read_lattice()
     geom = si.read_geometry()
     assert lattice == geom.lattice
@@ -37,7 +36,7 @@ def test_zz_sc_geom(sisl_files):
 def test_graphene_8x8_untiling(sisl_files):
     # Test untiling the graphene example 8 times
     # thanks to Xabier de Cerio for this example
-    si = sisl.get_sile(sisl_files(_dir, "graphene_8x8.gout"))
+    si = sisl.get_sile(sisl_files("gulp", "ancient", "graphene_8x8.gout"))
     dyn = si.read_dynamical_matrix()
 
     # Now untile it for different segments

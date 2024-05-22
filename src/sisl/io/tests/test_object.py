@@ -28,7 +28,6 @@ from sisl.io.wannier90 import winSileWannier90
 from sisl.io.xsf import xsfSile
 
 pytestmark = pytest.mark.io
-_dir = osp.join("sisl", "io")
 
 
 gs = get_sile
@@ -93,7 +92,7 @@ class TestObject:
             pytest.importorskip("netCDF4")
 
         # branch with string arguments
-        fp = sisl_tmp("shouldnotexist.1234567", _dir)
+        fp = sisl_tmp("shouldnotexist.1234567")
         if os.path.exists(fp):
             os.remove(fp)
 
@@ -106,7 +105,7 @@ class TestObject:
         assert not os.path.exists(fp)
 
         # branch with Path arguments
-        fp = Path(sisl_tmp("shouldnotexist.1234567", _dir))
+        fp = Path(sisl_tmp("shouldnotexist.1234567"))
         if fp.exists():
             os.remove(str(fp))
 
@@ -277,7 +276,7 @@ class TestObject:
 
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G.set_nsc([1, 1, 1])
-        f = sisl_tmp("test_write", _dir)
+        f = sisl_tmp("test_write")
 
         sile(f, mode="w").write_geometry(G)
 
@@ -288,7 +287,7 @@ class TestObject:
 
         L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
-        f = sisl_tmp("test_read_write_geom.win", _dir)
+        f = sisl_tmp("test_read_write_geom.win")
 
         # These files does not store the atomic species
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
@@ -320,7 +319,7 @@ class TestObject:
 
         L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
-        f = sisl_tmp("test_read_write_geom.win", _dir)
+        f = sisl_tmp("test_read_write_geom.win")
 
         if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
             pytest.xfail(
@@ -349,7 +348,7 @@ class TestObject:
 
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G.set_nsc([1, 1, 1])
-        f = sisl_tmp("test_read_write_geom.win", _dir)
+        f = sisl_tmp("test_read_write_geom.win")
 
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans, winSileWannier90)):
             pytest.skip(
@@ -397,7 +396,7 @@ class TestObject:
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         H = Hamiltonian(G)
         H.construct([[0.1, 1.45], [0.1, -2.7]])
-        f = sisl_tmp("test_read_write_hamiltonian.win", _dir)
+        f = sisl_tmp("test_read_write_hamiltonian.win")
         # Write
         with sile(f, mode="w") as s:
             s.write_hamiltonian(H)
@@ -427,7 +426,7 @@ class TestObject:
         DM = DensityMatrix(G, orthogonal=True)
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
 
-        f = sisl_tmp("test_read_write_density_matrix.win", _dir)
+        f = sisl_tmp("test_read_write_density_matrix.win")
         # Write
         with sile(f, mode="w") as s:
             s.write_density_matrix(DM)
@@ -458,7 +457,7 @@ class TestObject:
         EDM = EnergyDensityMatrix(G, orthogonal=True)
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
 
-        f = sisl_tmp("test_read_write_energy_density_matrix.win", _dir)
+        f = sisl_tmp("test_read_write_energy_density_matrix.win")
         # Write
         with sile(f, mode="w") as s:
             s.write_energy_density_matrix(EDM)
@@ -491,7 +490,7 @@ class TestObject:
         H = Hamiltonian(G, orthogonal=False)
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
 
-        f = sisl_tmp("test_read_write_hamiltonian_overlap.win", _dir)
+        f = sisl_tmp("test_read_write_hamiltonian_overlap.win")
         # Write
         with sile(f, mode="w") as s:
             s.write_hamiltonian(H)
@@ -522,7 +521,7 @@ class TestObject:
         G = Grid([10, 11, 12])
         G[:, :, :] = np.random.rand(10, 11, 12)
 
-        f = sisl_tmp("test_read_write_grid.win", _dir)
+        f = sisl_tmp("test_read_write_grid.win")
         # Write
         try:
             with sile(f, mode="w") as s:
@@ -546,7 +545,7 @@ class TestObject:
             pass
 
     def test_arg_parser1(self, sisl_tmp):
-        f = sisl_tmp("something", _dir)
+        f = sisl_tmp("something")
         for sile in get_siles(["ArgumentParser"]):
             try:
                 sile(f).ArgumentParser()
@@ -554,7 +553,7 @@ class TestObject:
                 pass
 
     def test_arg_parser2(self, sisl_tmp):
-        f = sisl_tmp("something", _dir)
+        f = sisl_tmp("something")
         for sile in get_siles(["ArgumentParser_out"]):
             try:
                 sile(f).ArgumentParser()

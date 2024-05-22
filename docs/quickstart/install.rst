@@ -141,15 +141,16 @@ Testing the installation may be done by:
    pytest --pyargs sisl
 
 The above will run the default test-suite which covers most of `sisl`.
-Additional tests may be runned by cloning the `sisl-files <sisl-files_>`_
-and setting the environment variable `SISL_FILES_TESTS` as the ``tests`` path to the repository.
+Additional tests may be runned by cloning the `stripped` branch of
+`sisl-files <sisl-files_>`_
+and setting the environment variable `SISL_FILES_TESTS` to the path of the cloned repository.
 
 A basic procedure would be:
 
 .. code-block:: bash
 
    git clone https://github.com/zerothi/sisl-files.git
-   SISL_FILES_TESTS=$(pwd)/sisl-files/tests pytest --pyargs sisl
+   SISL_FILES_TESTS=$(pwd)/sisl-files pytest --pyargs sisl
 
 
 Compile time options

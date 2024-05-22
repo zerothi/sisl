@@ -13,23 +13,22 @@ import pytest
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_pdos_gamma(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_gamma.PDOS.xml"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_gamma", "Si_pdos.PDOS.xml"))
     geom, E, pdos = si.read_data()
     assert len(geom) == 2
-    assert len(E) == 500
-    assert pdos.shape == (1, geom.no, 500)
+    assert len(E) == 200
+    assert pdos.shape == (1, geom.no, 200)
 
 
 def test_si_pdos_gamma_xarray(sisl_files):
     pytest.importorskip("xarray", reason="xarray not available")
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_gamma.PDOS.xml"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_gamma", "Si_pdos.PDOS.xml"))
     X = si.read_data(as_dataarray=True)
     assert len(X.geometry) == 2
-    assert len(X.E) == 500
+    assert len(X.E) == 200
     assert len(X.spin) == 1
     assert X.spin[0] == "sum"
     size = np.prod(X.shape[2:])
@@ -37,19 +36,19 @@ def test_si_pdos_gamma_xarray(sisl_files):
 
 
 def test_si_pdos_kgrid(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.PDOS.xml"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.PDOS.xml"))
     geom, E, pdos = si.read_data()
     assert len(geom) == 2
-    assert len(E) == 500
-    assert pdos.shape == (1, geom.no, 500)
+    assert len(E) == 200
+    assert pdos.shape == (1, geom.no, 200)
 
 
 def test_si_pdos_kgrid_xarray(sisl_files):
     pytest.importorskip("xarray", reason="xarray not available")
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.PDOS.xml"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.PDOS.xml"))
     X = si.read_data(as_dataarray=True)
     assert len(X.geometry) == 2
-    assert len(X.E) == 500
+    assert len(X.E) == 200
     assert len(X.spin) == 1
     assert X.spin[0] == "sum"
     size = np.prod(X.shape[2:])

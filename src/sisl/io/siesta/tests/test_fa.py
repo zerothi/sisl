@@ -11,11 +11,10 @@ import pytest
 from sisl.io.siesta.fa import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_pdos_kgrid_fa(sisl_files):
-    f = sisl_files(_dir, "si_pdos_kgrid.FA")
+    f = sisl_files("siesta", "Si_pdos_k", "Si_pdos.FA")
     fa = faSileSiesta(f).read_data()
 
     assert len(fa) == 2
@@ -24,7 +23,7 @@ def test_si_pdos_kgrid_fa(sisl_files):
 
 
 def test_read_write_fa(sisl_tmp):
-    f = sisl_tmp("test.FA", _dir)
+    f = sisl_tmp("test.FA")
 
     fa = np.random.rand(10, 3)
     faSileSiesta(f, "w").write_force(fa)

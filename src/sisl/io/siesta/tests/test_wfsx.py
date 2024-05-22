@@ -11,13 +11,13 @@ import pytest
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_wfsx_read(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, "bi2se3_3ql.fdf"))
+    fdf = sisl.get_sile(sisl_files("siesta", "Bi2Se3_3layer", "Bi2Se3.fdf"))
     wfsx = sisl.get_sile(
-        sisl_files(_dir, "bi2se3_3ql.bands.WFSX"), parent=fdf.read_geometry()
+        sisl_files("siesta", "Bi2Se3_3layer", "Bi2Se3.bands.WFSX"),
+        parent=fdf.read_geometry(),
     )
 
     info = wfsx.read_info()

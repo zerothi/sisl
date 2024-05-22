@@ -11,11 +11,10 @@ import pytest
 from sisl.io.vasp.eigenval import *
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
-_dir = osp.join("sisl", "io", "vasp")
 
 
 def test_read_eigenval(sisl_files):
-    f = sisl_files(_dir, "graphene", "EIGENVAL")
+    f = sisl_files("vasp", "graphene", "EIGENVAL")
     eigs = eigenvalSileVASP(f).read_data()
     eigsHa = eigenvalSileVASP(f).read_data(units="Ha")
     assert not np.allclose(eigs, eigsHa)

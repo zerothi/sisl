@@ -99,6 +99,13 @@ Here we list the different options:
 ``SISL_FILES_TESTS``
    Full path to a folder containing tests files. Primarily used for developers.
 
+   This can be used like this:
+
+   .. code-block:: shell
+
+      git clone -b stripped --single-branch https://github.com/zerothi/sisl-files.git
+      SISL_FILES_TESTS=$(pwd)/sisl-files pytest --pyargs sisl
+
 ``SISL_CONFIGDIR = $HOME/.config/sisl``
    where certain configuration files should be stored.
 

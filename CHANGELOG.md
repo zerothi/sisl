@@ -114,6 +114,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- internal test structure, should improve future progress
 - `Lattice.parameters` now returns a 2-tuple of ``length, angles``
 - units of `conductivity` has changed to S / Ang
 - `conductivity` is deprecated, use `ahc` and `shc` instead

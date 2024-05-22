@@ -12,11 +12,10 @@ from sisl import Geometry
 from sisl.io.siesta import aniSileSiesta
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_ani(sisl_tmp):
-    f = sisl_tmp("sisl.ANI", _dir)
+    f = sisl_tmp("sisl.ANI")
     open(f, "w").write(
         """1
 

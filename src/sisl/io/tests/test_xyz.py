@@ -11,11 +11,10 @@ import pytest
 from sisl.io.xyz import *
 
 pytestmark = [pytest.mark.io, pytest.mark.generic]
-_dir = osp.join("sisl", "io")
 
 
 def test_xyz1(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.xyz", _dir)
+    f = sisl_tmp("gr.xyz")
     sisl_system.g.write(xyzSile(f, "w"))
     g = xyzSile(f).read_geometry()
 
@@ -28,7 +27,7 @@ def test_xyz1(sisl_tmp, sisl_system):
 
 
 def test_xyz_sisl(sisl_tmp):
-    f = sisl_tmp("sisl.xyz", _dir)
+    f = sisl_tmp("sisl.xyz")
 
     with open(f, "w") as fh:
         fh.write(
@@ -53,7 +52,7 @@ C   2.00000  0.00000000  0.00000000
 
 
 def test_xyz_ase(sisl_tmp):
-    f = sisl_tmp("ase.xyz", _dir)
+    f = sisl_tmp("ase.xyz")
     with open(f, "w") as fh:
         fh.write(
             """3
@@ -75,7 +74,7 @@ C   2.00000  0.00000000  0.00000000
 
 
 def test_xyz_arbitrary(sisl_tmp):
-    f = sisl_tmp("ase.xyz", _dir)
+    f = sisl_tmp("ase.xyz")
     with open(f, "w") as fh:
         fh.write(
             """3
@@ -95,7 +94,7 @@ C   2.00000  0.00000000  0.00000000
 
 
 def test_xyz_multiple(sisl_tmp):
-    f = sisl_tmp("sisl_multiple.xyz", _dir)
+    f = sisl_tmp("sisl_multiple.xyz")
     with open(f, "w") as fh:
         fh.write(
             """1
