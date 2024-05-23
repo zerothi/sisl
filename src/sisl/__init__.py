@@ -166,6 +166,8 @@ Lattice.to.register("Sile", Lattice.to._dispatchs[str])
 # sisl.geom.graphene
 from . import geom
 
+from ._nodify import on_nodify as __nodify__
+
 # Set all the placeholders for the plot attribute
 # of sisl classes
 from ._lazy_viz import set_viz_placeholders
