@@ -222,11 +222,7 @@ subroutine read_hsx_ef(fname, Ef)
 
   call read_hsx_version(fname, version)
 
-  if ( version == 0 ) then ! old
-
-    call read_hsx_ef0(fname, Ef)
-
-  else if ( version == 1 ) then
+  if ( version == 1 ) then
 
     call read_hsx_ef1(fname, Ef)
 

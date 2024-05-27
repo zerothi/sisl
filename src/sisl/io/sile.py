@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import gzip
+import logging
 import re
 from functools import reduce, wraps
 from io import TextIOBase
@@ -635,6 +636,15 @@ class BaseSile:
         p : ArgumentParser
            the argument parser to add the arguments to.
         """
+
+    def _log(self, msg, *args, level=logging.INFO, **kwargs):
+        """Provide a log message to the logging mechanism"""
+        if not hasattr(self, "_logger"):
+            self._logger = logging.getLogger(
+                f"{self.__module__}.{self.__class__.__name__}|{self.base_file}"
+            )
+        logger = self._logger
+        logger.log(level, msg, *args, **kwargs)
 
     def __str__(self):
         """Return a representation of the `Sile`"""

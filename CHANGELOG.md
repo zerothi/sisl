@@ -95,6 +95,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- `hsxSileSiesta.read_hamiltonian` now implicitly shifts Fermi-level to 0 (for newer HSX versions)
 - deprecated `periodic` to `axes` argument in `BrillouinZone.volume`
 - changed `Eigenmode.displacement` shape, please read the documentation
 - bumped minimal Python version to 3.9, #640

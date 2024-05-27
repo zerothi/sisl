@@ -161,7 +161,7 @@ class fdfSileSiesta(SileSiesta):
             self.fh = gzip.open(self.dir_file(f"{f}.gz"), mode="rt")
         else:
             warn(
-                f"{self!s} is trying to include file: {f} but the file seems not to exist? Will disregard file!"
+                f"{self!r} is trying to include file: {f} but the file seems not to exist? Will disregard file!"
             )
 
     def _popfile(self):
@@ -666,7 +666,7 @@ class fdfSileSiesta(SileSiesta):
                 idx = list2str(geometry.names[n] + 1).replace("-", " -- ")
                 if len(idx) > 200:
                     info(
-                        f"{self!s}.write_geometry will not write the constraints for {n} (too long line)."
+                        f"{self!r}.write_geometry will not write the constraints for {n} (too long line)."
                     )
                 else:
                     _write_block = write_block(idx, append, _write_block)
@@ -832,7 +832,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_lattice_struct(self, *args, **kwargs):
         """Returns `Lattice` object from the STRUCT files"""
-        for end in ["STRUCT_NEXT_ITER", "STRUCT_OUT", "STRUCT_IN"]:
+        for end in ("STRUCT_NEXT_ITER", "STRUCT_OUT", "STRUCT_IN"):
             f = self.dir_file(self.get("SystemLabel", default="siesta") + f".{end}")
             _track_file(self._r_lattice_struct, f)
             if f.is_file():
@@ -1228,7 +1228,7 @@ class fdfSileSiesta(SileSiesta):
                 daxis = geom_tile.xyz[:, ax] - geom.xyz[:, ax]
                 if not np.allclose(daxis, daxis[0], rtol=0.0, atol=0.01):
                     raise SislError(
-                        f"{self!s}.read_dynamical_matrix(FC) could "
+                        f"{self!r}.read_dynamical_matrix(FC) could "
                         "not figure out the tiling method for the supercell"
                     )
 
@@ -1858,7 +1858,7 @@ class fdfSileSiesta(SileSiesta):
         if atoms_species:
             return Atoms([atoms[spc] for spc in atoms_species])
         warn(
-            f"{self!s} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
+            f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
         )
         return Atoms(atoms)
 
@@ -1924,7 +1924,7 @@ class fdfSileSiesta(SileSiesta):
             return Atoms([atoms[spc] for spc in atoms_species])
 
         warn(
-            f"{self!s} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
+            f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
         )
         return Atoms(atoms)
 
@@ -2077,7 +2077,7 @@ class fdfSileSiesta(SileSiesta):
                 raise ValueError
         except Exception:
             warn(
-                f"{self!s} could not succesfully read the overlap matrix in {parent_call}."
+                f"{self!r} could not succesfully read the overlap matrix in {parent_call}."
             )
 
     def read_density_matrix(self, *args, **kwargs) -> DensityMatrix:
@@ -2292,13 +2292,14 @@ class fdfSileSiesta(SileSiesta):
             if "atoms" not in kwargs:
                 kwargs["atoms"] = self.read_basis(order="^hsx")
             H = hsx.read_hamiltonian(*args, **kwargs)
-            Ef = self.read_fermi_level()
-            if Ef is None:
-                info(
-                    f"{self!s}.read_hamiltonian from HSX file failed shifting to the Fermi-level."
-                )
-            else:
-                H.shift(-Ef)
+            if hsx.version == 0:
+                Ef = self.read_fermi_level()
+                if Ef is None:
+                    info(
+                        f"{self!r}.read_hamiltonian from HSX file failed shifting to the Fermi-level."
+                    )
+                else:
+                    H.shift(-Ef)
         return H
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
