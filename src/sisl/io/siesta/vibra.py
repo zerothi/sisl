@@ -200,7 +200,7 @@ class vectorsSileSiesta(SileSiesta):
                 line = self.readline()
                 mode[imode, :, iatom].imag = list(map(float, line.split()))
 
-        info = dict(k=self._convert_k(k), parent=self._parent, gauge="r")
+        info = dict(k=self._convert_k(k), parent=self._parent, gauge="orbital")
         return EigenmodePhonon(mode.reshape(self._nmodes, -1), c * _cm1_eV, **info)
 
     def yield_eigenmode(self):
