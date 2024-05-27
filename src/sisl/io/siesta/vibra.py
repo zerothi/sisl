@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+from typing import Iterator
 
 import numpy as np
 
@@ -11,6 +12,7 @@ import sisl._array as _a
 from sisl import Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import warn
+from sisl.physics.brillouinzone import BrillouinZone
 from sisl.physics.phonon import EigenmodePhonon
 from sisl.unit.siesta import unit_convert
 
@@ -30,11 +32,10 @@ class vectorsSileSiesta(SileSiesta):
     Parameters
     ----------
     parent : obj, optional
-        a parent may contain a DynamicalMatrix, or Geometry
+        a parent may contain a DynamicalMatrix, Geometry or Lattice
     geometry : Geometry, optional
         a geometry contains a cell with corresponding lattice vectors
         used to convert k [1/Ang] -> [b], and the atomic masses
-
     """
 
     def _setup(self, *args, **kwargs):
@@ -62,7 +63,7 @@ class vectorsSileSiesta(SileSiesta):
         if geometry is not None and lattice is None:
             lattice = geometry.lattice
 
-        lattice = kwargs.get("lattice", kwargs.get("sc", lattice))
+        lattice = kwargs.get("lattice", lattice)
         if lattice is None and geometry is not None:
             raise ValueError(
                 f"{self.__class__.__name__}(geometry=Geometry, lattice=None) is not an allowed argument combination."
@@ -82,7 +83,7 @@ class vectorsSileSiesta(SileSiesta):
                 if not np.allclose(k, 0.0):
                     warn(
                         f"{self.__class__.__name__} cannot convert stored k-points from 1/Ang to reduced coordinates. "
-                        "Please ensure parent=DynamicalMatrix, geometry=Geometry, or lattice=Lattice to ensure reduced k."
+                        "Please ensure parent=DynamicalMatrix, geometry=Geometry, or lattice=Lattice to calculate reduced k."
                     )
                 return k / _Bohr2Ang
 
@@ -93,7 +94,7 @@ class vectorsSileSiesta(SileSiesta):
 
         self._convert_k = conv
 
-    def _open(self, rewind=False):
+    def _open(self, rewind: bool = False):
         """Open the file
 
         Here we also initialize some variables to keep track of the state of the read.
@@ -101,6 +102,7 @@ class vectorsSileSiesta(SileSiesta):
         super()._open()
         if rewind:
             self.seek(0)
+
         # Here we initialize the variables that will keep track of the state of the read.
         # The process for identification is done on this basis:
         #  _ik is the current (Python) index for the k-point to be read
@@ -110,27 +112,14 @@ class vectorsSileSiesta(SileSiesta):
         self._state = -1
         self._ik = 0
 
-    def _setup_parsing(self, close=True):
-        """Gets all the things needed to parse the wfsx file.
+        # read in sizes
+        self._sizes = self._r_next_sizes()
+        self._state = 0
 
-        Parameters
-        -----------
-        close: bool, optional
-            Whether the file unit should be closed afterwards.
-        """
-        self._open()
-        # Read the sizes relevant to the file.
-        # We also read whether there's only gamma point information or there are multiple points
-        if self._state == -1:
-            self._sizes = self._r_next_sizes()
-            self._state = 0
-
-        if close:
-            self._close()
-
-    def _r_next_sizes(self):
+    def _r_next_sizes(self) -> None:
         """Determine the dimension of the data stored in the vectors file"""
         pos = self.fh.tell()
+
         # Skip past header
         self.readline()  # Empty line
         self.readline()  # K point
@@ -161,7 +150,7 @@ class vectorsSileSiesta(SileSiesta):
         # Rewind
         self.seek(pos)
 
-    def _r_next_eigenmode(self):
+    def _r_next_eigenmode(self) -> EigenmodePhonon:
         """Reads the next phonon eigenmode in the vectors file.
 
         Returns
@@ -172,14 +161,14 @@ class vectorsSileSiesta(SileSiesta):
         # Skip empty line at the head of the file
         self.readline()
 
-        k = _a.asarrayd(list(map(float, self.readline().split()[2:])))
+        k = _a.fromiterd(map(float, self.readline().split()[2:]))
         if len(k) == 0:
-            raise GeneratorExit
+            return None
         # Read first eigenvector index
 
         # Determine number of atoms (i.e. rows per mode)
-        mode = np.empty((self._nmodes, 3, self._natoms), dtype=np.complex128)
-        c = np.empty(self._nmodes, dtype=np.float64)
+        mode = _a.emptyz([self._nmodes, self._natoms, 3])
+        c = _a.emptyd(self._nmodes)
         for imode in range(self._nmodes):
             self.readline()
 
@@ -191,19 +180,19 @@ class vectorsSileSiesta(SileSiesta):
             self.readline()
             for iatom in range(self._natoms):
                 line = self.readline()
-                mode[imode, :, iatom].real = list(map(float, line.split()))
+                mode[imode, iatom].real = list(map(float, line.split()))
 
             # Read imaginary part of eigenmode
             # Skip eigenmode header
             self.readline()
             for iatom in range(self._natoms):
                 line = self.readline()
-                mode[imode, :, iatom].imag = list(map(float, line.split()))
+                mode[imode, iatom].imag = list(map(float, line.split()))
 
         info = dict(k=self._convert_k(k), parent=self._parent, gauge="orbital")
         return EigenmodePhonon(mode.reshape(self._nmodes, -1), c * _cm1_eV, **info)
 
-    def yield_eigenmode(self):
+    def yield_eigenmode(self) -> Iterator[EigenmodePhonon]:
         """Iterates over the modes in the vectors file
 
         Yields
@@ -211,19 +200,16 @@ class vectorsSileSiesta(SileSiesta):
         EigenmodePhonon
         """
         # Open file and get parsing information
-        self._setup_parsing(close=False)
+        self._open()
 
-        try:
-            # Iterate over all eigenmodes in the WFSX file, yielding control to the caller at
-            # each iteration.
-            while True:
-                yield self._r_next_eigenmode()
-            # We ran out of eigenmodes
-        except GeneratorExit:
-            # The loop in which the generator was used has been broken.
-            pass
+        # Iterate over all eigenmodes in the vectors file, yielding control to the caller at
+        # each iteration.
+        mode = self._r_next_eigenmode()
+        while mode is not None:
+            yield mode
+            mode = self._r_next_eigenmode()
 
-    def read_eigenmode(self, k=(0, 0, 0), ktol: float = 1e-4) -> EigenmodePhonon:
+    def read_eigenmode(self, k=(0, 0, 0), atol: float = 1e-4) -> EigenmodePhonon:
         """Reads a specific eigenmode from the file.
 
         This method iterates over the modes until it finds a match. Do not call
@@ -233,7 +219,7 @@ class vectorsSileSiesta(SileSiesta):
         ----------
         k: array-like of shape (3,), optional
             The k point of the mode you want to find.
-        ktol:
+        atol:
             The threshold value for considering two k-points the same (i.e. to match
             the query k point with the modes k point).
 
@@ -245,14 +231,25 @@ class vectorsSileSiesta(SileSiesta):
         -------
         EigenmodePhonon or None:
             If found, the mode that was queried.
-            If not found, returns `None`. NOTE this may change to an exception in the future
+
+        Raises
+        ------
+        LookupError :
+            in case the requested k-point can not be found in the file.
         """
         # Iterate over all eigenmodes in the file
         for mode in self.yield_eigenmode():
-            if np.allclose(mode.info["k"], k, atol=ktol):
+            if np.allclose(mode.info["k"], k, atol=atol):
                 # This is the mode that the user requested
                 return mode
-        return None
+        raise LookupError(
+            f"{self.__class__.__name__}.read_eigenmode could not find k-point: {k!s} eigenmode"
+        )
+
+    def read_brillouinzone(self) -> BrillouinZone:
+        """Read the brillouin zone object (only containing the k-points)"""
+        k = [mode.info["k"] for mode in self.yield_eigenmode()]
+        return BrillouinZone(self._parent, k=k)
 
 
 add_sile("vectors", vectorsSileSiesta, gzip=True)

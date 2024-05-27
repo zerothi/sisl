@@ -1919,7 +1919,16 @@ class wfsxSileSiesta(SileBinSiesta):
             # The loop in which the generator was used has been broken.
             self._close_wfsx()
 
-    def read_eigenstate(self, k=(0, 0, 0), spin=0, ktol=1e-4) -> EigenstateElectron:
+    @deprecate_argument(
+        "ktol",
+        "atol",
+        "use atol instead of ktol",
+        "0.15",
+        "0.16",
+    )
+    def read_eigenstate(
+        self, k=(0, 0, 0), spin: int = 0, atol: float = 1e-4
+    ) -> EigenstateElectron:
         """Reads a specific eigenstate from the file.
 
         This method iterates over the states until it finds a match. Do not call
@@ -1929,10 +1938,10 @@ class wfsxSileSiesta(SileBinSiesta):
         ----------
         k: array-like of shape (3,), optional
             The k point of the state you want to find.
-        spin: integer, optional
+        spin:
             The spin index of the state you want to find. Only meaningful for polarized
             calculations.
-        ktol: float, optional
+        atol:
             The threshold value for considering two k-points the same (i.e. to match
             the query k point with the states k point).
 
@@ -1944,16 +1953,21 @@ class wfsxSileSiesta(SileBinSiesta):
         -------
         EigenstateElectron or None:
             If found, the state that was queried.
-            If not found, returns `None`. NOTE this may change to an exception in the future
+
+        Raises
+        ------
+        LookupError :
+            in case the requested k-point can not be found in the file.
         """
         # Iterate over all eigenstates in the file
         for state in self.yield_eigenstate():
-            if state.info.get("spin", 0) == spin and np.allclose(
-                state.info["k"], k, atol=ktol
-            ):
+            info = state.info
+            if info.get("spin", 0) == spin and np.allclose(info["k"], k, atol=atol):
                 # This is the state that the user requested
                 return state
-        return None
+        raise LookupError(
+            f"{self.__class__.__name__}.read_eigenstate could not find k-point: {k!s} eigenstate"
+        )
 
     def read_info(self):
         """Reads the information for all the k points contained in the file

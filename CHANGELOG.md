@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- added `vectorsSileSiesta` to read vibra eigenmode output
 - added `dihedral` to `Geometry`, #773
 - ability to retain sub-classes through `<class>.new` calls
 - added `Listify` to ensure arguments behaves as *iterables*
