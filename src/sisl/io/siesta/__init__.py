@@ -64,4 +64,5 @@ from .siesta_nc import *
 from .stdout import *
 from .struct import *
 from .transiesta_grid import *
+from .vibra import *
 from .xv import *
