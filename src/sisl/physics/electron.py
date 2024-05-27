@@ -207,6 +207,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
     DOS : total DOS (same as summing over orbitals)
     COP : calculate COOP or COHP curves
     spin_moment : spin moment
+    Geometry.apply : allows one to convert orbital data, to atomic data
 
     Returns
     -------
