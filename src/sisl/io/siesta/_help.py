@@ -170,9 +170,8 @@ def _replace_with_species(basis, ref_basis):
     """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        for atom, _ in basis.iter(True):
-            basis.replace(atom, ref_basis[atom.Z - 1])
-        basis.reduce(inplace=True)
+        for at in basis.atom:
+            basis.replace_atom(at, ref_basis.atom[at.Z - 1])
 
 
 def _fc_correct(fc, trans_inv=True, sum0=True, hermitian=True):

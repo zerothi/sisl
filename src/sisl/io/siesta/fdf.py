@@ -1457,7 +1457,7 @@ class fdfSileSiesta(SileSiesta):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".XV")
         _track_file(self._r_geometry_xv, f)
         if f.is_file():
-            basis = self.read_basis()
+            basis = self.read_basis(sort_by_fdf_appearance=False)
             if basis is None:
                 geom = xvSileSiesta(f).read_geometry(species_as_Z=False)
             else:
@@ -1474,7 +1474,7 @@ class fdfSileSiesta(SileSiesta):
             f = self.dir_file(self.get("SystemLabel", default="siesta") + f".{end}")
             _track_file(self._r_geometry_struct, f)
             if f.is_file():
-                basis = self.read_basis()
+                basis = self.read_basis(sort_by_fdf_appearance=False)
                 if basis is None:
                     geom = structSileSiesta(f).read_geometry(species_as_Z=False)
                 else:
@@ -1775,7 +1775,7 @@ class fdfSileSiesta(SileSiesta):
             return grid
         return None
 
-    def read_basis(self, *args, **kwargs):
+    def read_basis(self, *args, sort_by_fdf_appearance: bool = True, **kwargs) -> Atoms:
         """Read the atomic species and figure out the number of atomic orbitals in their basis
 
         The order of the read is shown below.
@@ -1788,16 +1788,30 @@ class fdfSileSiesta(SileSiesta):
         order: list of str, optional
             the order of which to try and read the basis information.
             By default this is ``["nc", "ion", "ORB_INDX", "fdf"]``
+        sort_by_fdf_appearance: bool
+            whether to sort the atom species by their order of appearance
+            in the coordinates of the fdf file.
         """
         order = _parse_order(
             kwargs.pop("order", None), ["nc", "ion", "ORB_INDX", "fdf"]
         )
         for f in order:
-            v = getattr(self, f"_r_basis_{f.lower()}")(*args, **kwargs)
-            if v is not None:
+            atoms = getattr(self, f"_r_basis_{f.lower()}")(*args, **kwargs)
+            if atoms is not None:
                 if self.track:
                     info(f"{self.file}(read_basis) found in file={f}")
-                return v
+
+                if sort_by_fdf_appearance:
+                    # retrieve the atomic species (from the AtomicCoordinatesAndSpecies block)
+                    atoms_species = self._r_geometry_species()
+                    if atoms_species:
+                        return Atoms([atoms[spc] for spc in atoms_species])
+
+                    warn(
+                        f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
+                    )
+
+                return atoms
         return None
 
     def _r_basis_nc(self):
@@ -1854,12 +1868,6 @@ class fdfSileSiesta(SileSiesta):
         elif not found_one:
             return None
 
-        atoms_species = self._r_geometry_species()
-        if atoms_species:
-            return Atoms([atoms[spc] for spc in atoms_species])
-        warn(
-            f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
-        )
         return Atoms(atoms)
 
     def _r_basis_orb_indx(self):
@@ -1918,14 +1926,6 @@ class fdfSileSiesta(SileSiesta):
 
             atoms[idx] = Atom(**atom)
 
-        # retrieve the atomic species (from the AtomicCoordinatesAndSpecies block)
-        atoms_species = self._r_geometry_species()
-        if atoms_species:
-            return Atoms([atoms[spc] for spc in atoms_species])
-
-        warn(
-            f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
-        )
         return Atoms(atoms)
 
     @classmethod
