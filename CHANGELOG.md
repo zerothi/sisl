@@ -53,6 +53,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- reading XV/STRUCT files from fdf siles could cause problems, #778
 - `Geometry.[ao][us]c2[su]c` methods now retains the input shapes (unless `unique=True`)
 - lots of `Lattice` methods did not consistently copy over BC
 - `BrillouinZone.volume` fixed to actually return BZ volume
@@ -90,6 +91,8 @@ we hit release version 1.0.0.
   be done for assigning matrix elements (it fills with 0's).
 
 ### Removed
+- `xvSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
+- `structSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
 - `Atom.radii` is removed, `Atom.radius` is the correct invocation
 - `sisl.plot` is removed (`sisl.viz` is replacing it!)
 - `cell` argument for `Geometry.translate/move` (it never worked)

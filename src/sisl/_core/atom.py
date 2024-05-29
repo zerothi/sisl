@@ -1927,7 +1927,7 @@ class Atoms:
         # Update orbital counts...
         self._update_orbitals()
 
-    def replace_atom(self, atom_from, atom_to):
+    def replace_atom(self, atom_from: Atom, atom_to: Atom):
         """Replace all atoms equivalent to `atom_from` with `atom_to` (in-place)
 
         I.e. this is the preferred way of adapting all atoms of a specific type

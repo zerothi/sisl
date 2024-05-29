@@ -5,11 +5,12 @@ from __future__ import annotations
 
 import numpy as np
 
-from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Geometry, Lattice
+from sisl import Atom, AtomGhost, Atoms, Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
+from .._help import _fill_basis_empty, _replace_basis
 from ..sile import SileError, add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
@@ -92,22 +93,34 @@ class xvSileSiesta(SileSiesta):
     @deprecate_argument(
         "species_Z",
         "species_as_Z",
-        "use species_as_Z= instead of species_Z=",
+        "species_ arguments (species_Z and species_as_Z) are deprecated in favor of atoms=",
+        "0.15",
+        "0.16",
+    )
+    @deprecate_argument(
+        "species_as_Z",
+        None,
+        "species_as_Z= is deprecated, please pass an Atoms object with the basis information as atoms=",
         "0.15",
         "0.16",
     )
     def read_geometry(
-        self, ret_velocity: bool = False, species_as_Z: bool = False
+        self,
+        ret_velocity: bool = False,
+        atoms: Optional[Atoms, Geometry] = None,
+        species_as_Z: bool = False,
     ) -> Geometry:
         """Returns a `Geometry` object from the XV file
 
         Parameters
         ----------
         ret_velocity :
-           also return the velocities in the file
+            also return the velocities in the file
+        atoms :
+            an object containing the basis information, is useful to overwrite
+            the atoms object contained in the geometry.
         species_as_Z :
-           if ``True`` the atomic numbers are the species indices (useful when
-           reading the ChemicalSpeciesLabel block simultaneously).
+            Deprecated, it does nothing!
 
         Returns
         -------
@@ -129,10 +142,7 @@ class xvSileSiesta(SileSiesta):
             sp[ia] = int(line[0])
             Z = int(line[1])
 
-            if species_as_Z:
-                atms[ia] = Atom(sp[ia])
-            else:
-                atms[ia] = Atom(Z)
+            atms[ia] = Atom(Z)
 
             xyz[ia, :] = line[2:5]
             vel[ia, :] = line[5:8]
@@ -141,19 +151,17 @@ class xvSileSiesta(SileSiesta):
         vel *= Bohr2Ang
 
         # Ensure correct sorting
-        max_s = sp.max()
-        sp -= 1
-        # Ensure we can remove the atom after having aligned them
-        atms2 = Atoms(AtomUnknown(1000), na=na)
-        for i in range(max_s):
-            idx = (sp[:] == i).nonzero()[0]
-            if len(idx) == 0:
-                # Always ensure we have "something" for the unoccupied places
-                atms2[idx] = AtomUnknown(1000 + i)
-            else:
-                atms2[idx] = atms[idx[0]]
+        # This is important when users creates geometries with
+        # basis information for atoms that are not present.
+        # E.g. a graphene flake with a H basis information as the first species
 
-        geom = Geometry(xyz, atms2.reduce(), lattice=lattice)
+        if atoms is not None:
+            atms2 = _fill_basis_empty(sp - 1, atoms)
+            _replace_basis(atms2, atoms)
+        else:
+            atms2 = _fill_basis_empty(sp - 1, atms)
+
+        geom = Geometry(xyz, atms2, lattice=lattice)
         if ret_velocity:
             return geom, vel
         return geom

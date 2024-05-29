@@ -8,7 +8,7 @@ import os.path as osp
 import numpy as np
 import pytest
 
-from sisl import Atom, Geometry
+from sisl import Atom, Atoms, AtomUnknown, Geometry
 from sisl.io.siesta.xv import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
@@ -77,3 +77,83 @@ def test_xv_ghost(sisl_tmp):
     assert g.atoms[0].__class__ is g2.atoms[0].__class__
     assert g.atoms[1].__class__ is g2.atoms[1].__class__
     assert g.atoms[0].__class__ is not g2.atoms[1].__class__
+
+
+def test_xv_missing_atoms(sisl_tmp):
+    # test for #778
+    f = sisl_tmp("missing.XV", _dir)
+    with open(f, "w") as fh:
+        fh.write(
+            """\
+1. 0. 0.  0. 0. 0.
+0. 1. 0.  0. 0. 0.
+0. 0. 2.  0. 0. 0.
+6
+2 6 0. 1. 0.  0. 0. 0.
+1 2 0. 1. 0.  0. 0. 0.
+4 3 0. 1. 0.  0. 0. 0.
+4 3 0. 1. 0.  0. 0. 0.
+1 2 0. 1. 0.  0. 0. 0.
+2 6 0. 1. 0.  0. 0. 0.
+"""
+        )
+    geom = xvSileSiesta(f).read_geometry()
+    assert len(geom) == 6
+    assert len(geom.atoms.atom) == 4
+    assert np.allclose(geom.atoms.species, [1, 0, 3, 3, 0, 1])
+
+    # start_Z + sp_idx
+    atom = AtomUnknown(1000 + 2)
+    assert geom.atoms.atom[2].Z == atom.Z
+    assert isinstance(geom.atoms.atom[2], atom.__class__)
+
+
+def test_xv_missing_atoms_end(sisl_tmp):
+    # test for #778
+    f = sisl_tmp("missing_end.XV", _dir)
+    with open(f, "w") as fh:
+        fh.write(
+            """\
+1. 0. 0.  0. 0. 0.
+0. 1. 0.  0. 0. 0.
+0. 0. 2.  0. 0. 0.
+6
+2 6 0. 1. 0.  0. 0. 0.
+1 2 0. 1. 0.  0. 0. 0.
+1 2 0. 1. 0.  0. 0. 0.
+3 3 0. 1. 0.  0. 0. 0.
+3 3 0. 1. 0.  0. 0. 0.
+2 6 0. 1. 0.  0. 0. 0.
+"""
+        )
+    atoms = Atoms([2, 6, 3, 5])
+    geom = xvSileSiesta(f).read_geometry(atoms=atoms)
+    assert len(geom) == 6
+    assert len(geom.atoms.atom) == 4
+    assert np.allclose(geom.atoms.species, [1, 0, 0, 2, 2, 1])
+
+
+def test_xv_missing_atoms_species(sisl_tmp):
+    # test for #778
+    f = sisl_tmp("missing_species.XV", _dir)
+    with open(f, "w") as fh:
+        fh.write(
+            """\
+1. 0. 0.  0. 0. 0.
+0. 1. 0.  0. 0. 0.
+0. 0. 2.  0. 0. 0.
+6
+2 1 0. 1. 0.  0. 0. 0.
+1 1 0. 1. 0.  0. 0. 0.
+1 1 0. 1. 0.  0. 0. 0.
+3 1 0. 1. 0.  0. 0. 0.
+3 1 0. 1. 0.  0. 0. 0.
+2 1 0. 1. 0.  0. 0. 0.
+"""
+        )
+
+    atoms = Atoms([Atom(1, tag=tag) for tag in "ABCD"])
+    geom = xvSileSiesta(f).read_geometry(atoms=atoms)
+    assert len(geom) == 6
+    assert len(geom.atoms.atom) == 4
+    assert np.allclose(geom.atoms.species, [1, 0, 0, 2, 2, 1])

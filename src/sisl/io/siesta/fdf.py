@@ -47,7 +47,6 @@ from ..sile import (
     sile_fh_open,
     sile_raise_write,
 )
-from ._help import _replace_with_species
 from .bands import bandsSileSiesta
 from .basis import ionncSileSiesta, ionxmlSileSiesta
 from .binaries import (
@@ -1446,10 +1445,11 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_geometry_species(self):
-        atoms_species = self.get("AtomicCoordinatesAndAtomicSpecies")
-        if atoms_species:
-            atoms_species = map(lambda x: int(x.split()[3]) - 1, atoms_species)
-        return atoms_species
+        species = self.get("AtomicCoordinatesAndAtomicSpecies", default=[])
+        if species:
+            na = self.get("NumberOfAtoms", default=len(species))
+            species = _a.fromiteri(map(lambda x: x.split()[3], species[:na])) - 1
+        return species
 
     def _r_geometry_xv(self, *args, **kwargs):
         """Returns `Geometry` object from the XV file"""
@@ -1458,11 +1458,7 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_geometry_xv, f)
         if f.is_file():
             basis = self.read_basis()
-            if basis is None:
-                geom = xvSileSiesta(f).read_geometry(species_as_Z=False)
-            else:
-                geom = xvSileSiesta(f).read_geometry(species_as_Z=True)
-                _replace_with_species(geom.atoms, basis)
+            geom = xvSileSiesta(f).read_geometry(atoms=basis)
             nsc = self.read_lattice_nsc()
             geom.set_nsc(nsc)
         return geom
@@ -1475,11 +1471,7 @@ class fdfSileSiesta(SileSiesta):
             _track_file(self._r_geometry_struct, f)
             if f.is_file():
                 basis = self.read_basis()
-                if basis is None:
-                    geom = structSileSiesta(f).read_geometry(species_as_Z=False)
-                else:
-                    geom = structSileSiesta(f).read_geometry(species_as_Z=True)
-                    _replace_with_species(geom.atoms, basis)
+                geom = structSileSiesta(f).read_geometry(atoms=basis)
                 nsc = self.read_lattice_nsc()
                 geom.set_nsc(nsc)
                 break
@@ -1589,18 +1581,13 @@ class fdfSileSiesta(SileSiesta):
         atoms = self.read_basis()
         if atoms is None:
             warn(
-                "Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all Hydrogen)."
+                "Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all will be their species indices)."
             )
+            # the following call will then make use of this object
+            atoms = species
 
-            # Default atom (hydrogen)
-            atoms = Atom(1)
-
-        # the above reading of basis sets will always
-        # ensure a correct basis set with correct number of atoms.
-        # After all the number of atoms in the basis set is decided
-        # by the AtomicCoordinatesAndAtomicSpecies block (which is found just
-        # above).
-        atoms = Atoms(atoms[:na], na=len(xyz))
+        # Default atoms are the species indices... Basically unknown
+        atoms = _fill_basis_empty(species, atoms)
 
         if isinstance(origin, str):
             opt = origin
@@ -1855,7 +1842,7 @@ class fdfSileSiesta(SileSiesta):
             return None
 
         atoms_species = self._r_geometry_species()
-        if atoms_species:
+        if len(atoms_species) > 0:
             return Atoms([atoms[spc] for spc in atoms_species])
         warn(
             f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
@@ -1929,9 +1916,9 @@ class fdfSileSiesta(SileSiesta):
             atoms[idx] = Atom(**atom)
 
         # retrieve the atomic species (from the AtomicCoordinatesAndSpecies block)
-        atoms_species = self._r_geometry_species()
-        if atoms_species:
-            return Atoms([atoms[spc] for spc in atoms_species])
+        species = self._r_geometry_species()
+        if len(species) > 0:
+            return _fill_basis_empty(species, Atoms(atoms))
 
         warn(
             f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
