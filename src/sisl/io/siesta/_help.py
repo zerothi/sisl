@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 
 import sisl._array as _a
-from sisl import SislError
+from sisl import Atoms, AtomUnknown, Geometry, SislError
 from sisl.messages import warn
 
 try:
@@ -21,7 +21,7 @@ except ImportError:
 __all__ = ["_csr_from_siesta", "_csr_from_sc_off"]
 __all__ += ["_csr_to_siesta", "_csr_to_sc_off"]
 __all__ += ["_mat_spin_convert", "_fc_correct"]
-__all__ += ["_replace_with_species"]
+__all__ += ["_fill_basis_empty", "_replace_basis"]
 
 
 def _ensure_diagonal(csr):
@@ -161,18 +161,65 @@ def _geom2hsx(geometry):
     return (label, Z, no), (n, l, zeta)
 
 
-def _replace_with_species(basis, ref_basis):
-    """Replace the `basis` with the atoms in `ref_basis`
+def _fill_basis_empty(sp: np.ndarray, basis: List[Atom], start_Z=1000) -> Atoms:
+    """Adds atoms in `basis` with ``AtomUnknown(start_Z + species_idx)``
 
-    This method will assume that the `basis` contains
-    the atomic numbers as their species (i.e. starting from 1..n-species).
-    It will make it simple to change according to basis.
+    This is useful when one does not have the required atom in the basis,
+    but one knows that the species are existing.
+
+    Parameters
+    ----------
+    basis:
+        the basis to insert *empty* atoms into
+    sp:
+        the array of species indices
+    start_Z:
+        the offset used in AtomUnknown
     """
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        for atom, _ in basis.iter(True):
-            basis.replace(atom, ref_basis[atom.Z - 1])
-        basis.reduce(inplace=True)
+    # Retrieve the first atom object
+    # This is important to initialize the Atoms object with the
+    # correct species index
+    idx = (sp == 0).nonzero()[0]
+    if len(idx) == 0:
+        atom = AtomUnknown(start_Z)
+    else:
+        atom = basis[idx[0]]
+
+    atoms = Atoms(atom, na=len(sp))
+
+    for isp in range(1, sp.max() + 1):
+        idx = (sp == isp).nonzero()[0]
+        if len(idx) == 0:
+            atoms[idx] = AtomUnknown(start_Z + isp)
+        else:
+            atoms[idx] = basis[idx[0]]
+
+    return atoms
+
+
+def _replace_basis(basis: Atoms, ref_basis: Union[Atoms, Geometry]) -> None:
+    """Replace the `basis` with the atoms in `ref_basis`"""
+    if isinstance(ref_basis, Geometry):
+        ref_basis = ref_basis.atoms
+    only_basis = len(basis) != len(ref_basis)
+
+    # Try and replace stuff
+    # We *must* assume that the species are aligned
+    for (atom_in, in_idx), (atom_ref, ref_idx) in zip(
+        basis.iter(True), ref_basis.iter(True)
+    ):
+        # Check if the indices are the same
+        if len(in_idx) > 0 and (np.allclose(in_idx, ref_idx) or only_basis):
+            if atom_in.Z == atom_ref.Z:
+                # replace
+                basis.replace_atom(atom_in, atom_ref)
+        elif len(in_idx) == 0 and (len(ref_idx) == 0 or only_basis):
+            # replace because it is a missing
+            basis.replace_atom(atom_in, atom_ref)
+        elif not only_basis:
+            warn(
+                f"Trying to replace atom {atom_in!r} with {atom_ref!r}, but they don't share the same atoms in the geometry."
+            )
 
 
 def _fc_correct(fc, trans_inv=True, sum0=True, hermitian=True):

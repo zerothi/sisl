@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 import sisl
-from sisl import Atom, Geometry, geom
+from sisl import Atom, AtomUnknown, Geometry, geom
 from sisl.io import SileError, fdfSileSiesta
 from sisl.messages import SislWarning
 from sisl.unit.siesta import unit_convert
@@ -538,3 +538,75 @@ def test_fdf_write_bandstructure(sisl_tmp, sisl_system):
     with fdfSileSiesta(f) as fdf:
         block = fdf.get("BandLines")
     assert len(block) == 3
+
+
+def test_fdf_read_from_xv(sisl_tmp):
+    # test for #778
+    f_fdf = sisl_tmp("read_from_xv.fdf", _dir)
+    sc_lines = [
+        "Latticeconstant 1. Ang",
+        "%block latticeparameters",
+        " 1. 1. 1. 90. 90. 90.",
+        "%endblock",
+    ]
+    lines = [
+        "%block chemicalSpeciesLabel",
+        " 2 6 C",
+        " 1 2 He",
+        " 4 3 Li",
+        " 3 1 H",  # not present in the geometry
+        "%endblock",
+        "AtomicCoordinatesFormat Ang",
+        "%block atomiccoordinatesandatomicspecies",
+        " 1. 1. 1. 2",
+        " 0. 0. 1. 1",
+        " 1. 0. 1. 4",
+        " 1. 1. 1. 2",
+        " 1. 0. 1. 4",
+        " 0. 0. 1. 1",
+        "%endblock",
+    ]
+    with open(f_fdf, "w") as fh:
+        fh.write("\n".join(sc_lines) + "\n")
+        fh.write("\n".join(lines))
+        fh.write("\nSystemLabel read_from_xv")
+
+    f_xv = sisl_tmp("read_from_xv.XV", _dir)
+    with open(f_xv, "w") as fh:
+        fh.write(
+            """\
+1. 0. 0.  0. 0. 0.
+0. 1. 0.  0. 0. 0.
+0. 0. 2.  0. 0. 0.
+6
+2 6 0. 1. 0.  0. 0. 0.
+1 2 0. 1. 1.  0. 0. 0.
+4 3 1. 1. 1.  0. 0. 0.
+2 6 0. 1. 0.  0. 0. 0.
+4 3 1. 1. 1.  0. 0. 0.
+1 2 0. 1. 1.  0. 0. 0.
+"""
+        )
+
+    fdf = fdfSileSiesta(f_fdf, track=True, base=sisl_tmp.getbase())
+    geom_fdf = fdf.read_geometry(order="fdf")
+
+    assert len(geom_fdf) == 6
+    assert len(geom_fdf.atoms.atom) == 4
+    assert np.allclose(geom_fdf.atoms.species, [1, 0, 3, 1, 3, 0])
+    assert np.allclose(geom_fdf.xyz[0], [1, 1, 1])
+    assert np.allclose(geom_fdf.xyz[1], [0, 0, 1])
+    assert np.allclose(geom_fdf.xyz[2], [1, 0, 1])
+
+    geom_xv = fdf.read_geometry(order="xv")
+    assert len(geom_xv) == 6
+    assert len(geom_xv.atoms.atom) == 4
+    assert np.allclose(geom_fdf.atoms.species, [1, 0, 3, 1, 3, 0])
+    xyz = geom_xv.xyz * unit_convert("Ang", "Bohr")
+    assert np.allclose(xyz[0], [0, 1, 0])
+    assert np.allclose(xyz[1], [0, 1, 1])
+    assert np.allclose(xyz[2], [1, 1, 1])
+    # start_Z + sp_idx
+    atom = AtomUnknown(1000 + 2)
+    assert geom_xv.atoms.atom[2].Z == atom.Z
+    assert isinstance(geom_xv.atoms.atom[2], atom.__class__)

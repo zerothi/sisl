@@ -11,6 +11,7 @@ from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile, sile_fh_open, sile_raise_write
+from ._help import _fill_basis_empty, _replace_basis
 from .sile import SileSiesta
 
 __all__ = ["structSileSiesta"]
@@ -71,14 +72,25 @@ class structSileSiesta(SileSiesta):
         "0.15",
         "0.16",
     )
-    def read_geometry(self, species_as_Z: bool = False) -> Geometry:
+    @deprecate_argument(
+        "species_as_Z",
+        None,
+        "species_as_Z= is deprecated, please pass an Atoms object with the basis information as atoms=",
+        "0.15",
+        "0.16",
+    )
+    def read_geometry(
+        self, atoms: Optional[Atoms, Geometry] = None, species_as_Z: bool = False
+    ) -> Geometry:
         """Returns a `Geometry` object from the ``STRUCT`` file
 
         Parameters
         ----------
-        species_as_Z : bool, optional
-           if ``True`` the atomic numbers are the species indices (useful when
-           reading the ChemicalSpeciesLabel block simultaneously).
+        atoms :
+            an object containing the basis information, is useful to overwrite
+            the atoms object contained in the geometry.
+        species_as_Z :
+            Deprecated, it does nothing!
 
         Returns
         -------
@@ -96,29 +108,18 @@ class structSileSiesta(SileSiesta):
             sp[ia] = int(line[0])
             Z = int(line[1])
 
-            if species_as_Z:
-                atms[ia] = Atom(sp[ia])
-            else:
-                atms[ia] = Atom(Z)
+            atms[ia] = Atom(Z)
 
             xyz[ia, :] = line[2:5]
 
         xyz = xyz @ lattice.cell
 
         # Ensure correct sorting
-        max_s = sp.max()
-        sp -= 1
-        # Ensure we can remove the atom after having aligned them
-        atms2 = Atoms(AtomUnknown(1000), na=na)
-        for i in range(max_s):
-            idx = (sp[:] == i).nonzero()[0]
-            if len(idx) == 0:
-                # Always ensure we have "something" for the unoccupied places
-                atms2[idx] = AtomUnknown(1000 + i)
-            else:
-                atms2[idx] = atms[idx[0]]
+        atms2 = _fill_basis_empty(sp - 1, atms)
+        if atoms is not None:
+            _replace_basis(atms2, atoms)
 
-        return Geometry(xyz, atms2.reduce(), lattice=lattice)
+        return Geometry(xyz, atms2, lattice=lattice)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """Returns the arguments that is available for this Sile"""
