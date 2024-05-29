@@ -1787,10 +1787,10 @@ class fdfSileSiesta(SileSiesta):
         ----------
         order: list of str, optional
             the order of which to try and read the basis information.
-            By default this is ``["nc", "ion", "ORB_INDX", "fdf"]``
+            By default this is ``["nc", "ion", "ORB_INDX", "HSX", "fdf"]``
         """
         order = _parse_order(
-            kwargs.pop("order", None), ["nc", "ion", "ORB_INDX", "fdf"]
+            kwargs.pop("order", None), ["nc", "ion", "ORB_INDX", "HSX", "fdf"]
         )
         for f in order:
             v = getattr(self, f"_r_basis_{f.lower()}")(*args, **kwargs)
@@ -1870,6 +1870,16 @@ class fdfSileSiesta(SileSiesta):
                 f"Siesta basis information is read from '{f}'; radial functions are not accessible."
             )
             return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
+        return None
+
+    def _r_basis_hsx(self, *args, **kwargs):
+        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".HSX")
+        _track_file(self._r_basis_hsx, f, inputs=[("Save.HS", "True")])
+        if f.is_file():
+            if "atoms" not in kwargs:
+                # to ensure we get the correct orbital count
+                kwargs["atoms"] = self.read_basis(order="^hsx")
+            return hsxSileSiesta(f).read_basis(*args, **kwargs)
         return None
 
     def _r_basis_fdf(self):

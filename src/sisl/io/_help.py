@@ -68,7 +68,10 @@ def _listify_str(arg):
 
 
 def parse_order(
-    order: Optional[Union[str, Sequence[str]]], choice_dict="", choice=None
+    order: Optional[Union[str, Sequence[str]]],
+    choice_dict="",
+    choice=None,
+    case: bool = False,
 ):
     """Converts `order` in to a proper order list, depending on the `output` value
 
@@ -97,6 +100,8 @@ def parse_order(
         dictionary of values that will be chosen via `choice`
     choice :
         a hashable variable used to extract from `choice_dict`
+    case:
+        if `True`, do not lower case
     """
     if choice is None:
         choice = 1
@@ -110,11 +115,18 @@ def parse_order(
     rem = []
     for el in order:
         if el.startswith("^"):
-            rem.append(el)
-            rem.append(el[1:])
+            if case:
+                rem.append(el)
+                rem.append(el[1:])
+            else:
+                rem.append(el.lower())
+                rem.append(el[1:].lower())
 
     if rem:
         order.extend(_listify_str(choice_dict[choice]))
-        order = [el for el in order if el not in rem]
+        if case:
+            order = [el for el in order if el not in rem]
+        else:
+            order = [el for el in order if el.lower() not in rem]
 
     return order
