@@ -713,3 +713,31 @@ AtomicCoordinatesFormat Ang
     assert geom.na == 2
     assert np.allclose(geom.atoms.Z, [8, 79])
     assert np.allclose(geom.atoms.species, [1, 0])
+
+    with open(f, "w") as fh:
+        fh.write(
+            """
+%block ChemicalSpeciesLabel
+    1   79  Au
+    2    8   O
+%endblock ChemicalSpeciesLabel
+
+LatticeConstant    1.000 Ang
+%block LatticeVectors
+    4  0  0
+    0  10 0
+    0  0  10
+%endblock LatticeVectors
+AtomicCoordinatesFormat Ang
+%block AtomicCoordinatesAndAtomicSpecies
+    0 0 0  2
+    2 0 0  1
+    0 0 0  2
+%endblock AtomicCoordinatesAndAtomicSpecies
+                """
+        )
+
+    geom = fdfSileSiesta(f).read_geometry()
+    assert geom.na == 3
+    assert np.allclose(geom.atoms.Z, [8, 79, 8])
+    assert np.allclose(geom.atoms.species, [1, 0, 1])
