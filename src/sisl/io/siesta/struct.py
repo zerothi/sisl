@@ -5,13 +5,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Geometry, Lattice
+from sisl import Atom, AtomGhost, Atoms, Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
+from .._help import _fill_basis_empty, _replace_basis
 from ..sile import add_sile, sile_fh_open, sile_raise_write
-from ._help import _fill_basis_empty, _replace_basis
 from .sile import SileSiesta
 
 __all__ = ["structSileSiesta"]

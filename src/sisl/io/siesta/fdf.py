@@ -47,7 +47,6 @@ from ..sile import (
     sile_fh_open,
     sile_raise_write,
 )
-from ._help import _fill_basis_empty
 from .bands import bandsSileSiesta
 from .basis import ionncSileSiesta, ionxmlSileSiesta
 from .binaries import (
@@ -1446,10 +1445,11 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_geometry_species(self):
-        atoms_species = self.get("AtomicCoordinatesAndAtomicSpecies")
-        if atoms_species:
-            atoms_species = _a.fromiteri(map(lambda x: x.split()[3], atoms_species)) - 1
-        return atoms_species
+        species = self.get("AtomicCoordinatesAndAtomicSpecies", default=[])
+        if species:
+            na = self.get("NumberOfAtoms", default=len(species))
+            species = _a.fromiteri(map(lambda x: x.split()[3], species[:na])) - 1
+        return species
 
     def _r_geometry_xv(self, *args, **kwargs):
         """Returns `Geometry` object from the XV file"""
@@ -1914,9 +1914,9 @@ class fdfSileSiesta(SileSiesta):
             atoms[idx] = Atom(**atom)
 
         # retrieve the atomic species (from the AtomicCoordinatesAndSpecies block)
-        atoms_species = self._r_geometry_species()
-        if len(atoms_species) > 0:
-            return _fill_basis_empty(atoms_species, atoms)
+        species = self._r_geometry_species()
+        if len(species) > 0:
+            return _fill_basis_empty(species, atoms)
 
         warn(
             f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."

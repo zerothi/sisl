@@ -5,13 +5,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Geometry, Lattice
+from sisl import Atom, AtomGhost, Atoms, Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
+from .._help import _fill_basis_empty, _replace_basis
 from ..sile import SileError, add_sile, sile_fh_open, sile_raise_write
-from ._help import _fill_basis_empty, _replace_basis
 from .sile import SileSiesta
 
 __all__ = ["xvSileSiesta"]
@@ -154,10 +154,12 @@ class xvSileSiesta(SileSiesta):
         # This is important when users creates geometries with
         # basis information for atoms that are not present.
         # E.g. a graphene flake with a H basis information as the first species
-        atms2 = _fill_basis_empty(sp - 1, atms)
 
         if atoms is not None:
+            atms2 = _fill_basis_empty(sp - 1, atoms)
             _replace_basis(atms2, atoms)
+        else:
+            atms2 = _fill_basis_empty(sp - 1, atms)
 
         geom = Geometry(xyz, atms2, lattice=lattice)
         if ret_velocity:

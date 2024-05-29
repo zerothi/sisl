@@ -4,11 +4,15 @@
 from __future__ import annotations
 
 from re import compile as re_compile
-from typing import Optional, Sequence, Union
+from typing import List, Optional, Sequence, Union
 
 import numpy as np
 
+from sisl import Atoms, AtomUnknown, Geometry
+from sisl.messages import warn
+
 __all__ = ["starts_with_list", "header_to_dict", "grid_reduce_indices", "parse_order"]
+__all__ += ["_fill_basis_empty", "_replace_basis"]
 
 
 def starts_with_list(l, comments):
@@ -130,3 +134,93 @@ def parse_order(
             order = [el for el in order if el.lower() not in rem]
 
     return order
+
+
+def _fill_basis_empty(sp: np.ndarray, basis: List[Atom], start_Z=1000) -> Atoms:
+    """Adds atoms in `basis` with ``AtomUnknown(start_Z + species_idx)``
+
+    This is useful when one does not have the required atom in the basis,
+    but one knows that the species are existing.
+
+    Parameters
+    ----------
+    basis:
+        the basis to insert *empty* atoms into
+    sp:
+        the array of species indices
+    start_Z:
+        the offset used in AtomUnknown
+    """
+    n_species = sp.max() + 1
+
+    only_basis = False
+    if isinstance(basis, Atoms):
+        # for atoms objects that holds the reference
+        # basis, it *must* be complete.
+        # Hence we extract the species list, and specifies
+        # it as the *only* basis option.
+        only_basis = True
+        n_species = max(n_species, len(basis.atom))
+        basis = basis.atom
+    else:
+        # it *can* be the correct basis, in case there are more basis
+        # atoms than actually used, but fewer than the actual number
+        # of atoms
+        only_basis = n_species <= len(basis) and len(basis) < len(sp)
+
+    if only_basis:
+        n_species = max(n_species, len(basis))
+
+    # Retrieve the first atom object
+    # This is important to initialize the Atoms object with the
+    # correct species index
+    def get_atom(basis, isp, idx=None):
+        nonlocal sp
+        if idx is None:
+            idx = (sp == isp).nonzero()[0]
+        if only_basis:
+            atom = basis[isp]
+        elif len(idx) > 0:
+            atom = basis[idx[0]]
+        else:
+            atom = AtomUnknown(start_Z + isp)
+        return atom
+
+    atoms = Atoms(get_atom(basis, 0), na=len(sp))
+
+    for isp in range(n_species):
+        idx = (sp == isp).nonzero()[0]
+        atoms[idx] = get_atom(basis, isp, idx)
+
+    return atoms
+
+
+def _replace_basis(basis: Atoms, ref_basis: Union[Atoms, Geometry]) -> None:
+    """Replace the `basis` with the atoms in `ref_basis`"""
+    if isinstance(ref_basis, Geometry):
+        ref_basis = ref_basis.atoms
+
+    only_basis = len(basis) == len(ref_basis.atom)
+    if not only_basis:
+        # it *can* be the correct basis, in case there are more basis
+        # atoms than actually used, but fewer than the actual number
+        # of atoms
+        only_basis = len(ref_basis.atom) < len(basis) and len(basis) < len(ref_basis)
+
+    # Try and replace stuff
+    # We *must* assume that the species are aligned
+    for (atom_in, in_idx), (atom_ref, ref_idx) in zip(
+        basis.iter(True), ref_basis.iter(True)
+    ):
+        # Check if the indices are the same
+        if len(in_idx) > 0 and (np.allclose(in_idx, ref_idx) or only_basis):
+            if atom_in.Z == atom_ref.Z:
+                # replace
+                basis.replace_atom(atom_in, atom_ref)
+        elif len(in_idx) == 0 and (len(ref_idx) == 0 or only_basis):
+            # replace because it is a missing
+            basis.replace_atom(atom_in, atom_ref)
+        elif not only_basis:
+            warn(
+                f"Trying to replace atom {atom_in!r} with {atom_ref!r}, but they don't share the same atoms in the geometry."
+            )

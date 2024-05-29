@@ -606,7 +606,41 @@ def test_fdf_read_from_xv(sisl_tmp):
     assert np.allclose(xyz[0], [0, 1, 0])
     assert np.allclose(xyz[1], [0, 1, 1])
     assert np.allclose(xyz[2], [1, 1, 1])
-    # start_Z + sp_idx
-    atom = AtomUnknown(1000 + 2)
-    assert geom_xv.atoms.atom[2].Z == atom.Z
-    assert isinstance(geom_xv.atoms.atom[2], atom.__class__)
+    # reading XV from fdf corrects the actual species value
+    assert geom_xv.atoms.atom[2].Z == 1
+
+
+def test_fdf_multiple_atoms(sisl_tmp):
+    # test for #778
+    f_fdf = sisl_tmp("multiple_atoms.fdf", _dir)
+    sc_lines = [
+        "Latticeconstant 1. Ang",
+        "%block latticeparameters",
+        " 1. 1. 1. 90. 90. 90.",
+        "%endblock",
+    ]
+    lines = [
+        "%block chemicalSpeciesLabel",
+        " 1 1 H.opt88",
+        " 4 6 C.blyp",
+        " 2 79 Au.blyp",
+        " 3 79 Aus.blyp",
+        "%endblock",
+        "AtomicCoordinatesFormat Ang",
+        "%block atomiccoordinatesandatomicspecies",
+        " 1. 1. 1. 1",
+        " 0. 0. 1. 2",
+        " 1. 0. 1. 3",
+        " 1. 1. 1. 4",
+        " 1. 0. 1. 1",
+        "%endblock",
+    ]
+    with open(f_fdf, "w") as fh:
+        fh.write("\n".join(sc_lines) + "\n")
+        fh.write("\n".join(lines))
+
+    geom = fdfSileSiesta(f_fdf).read_geometry()
+
+    assert len(geom) == 5
+    assert len(geom.atoms.atom) == 4
+    assert np.allclose(geom.atoms.species, [0, 1, 2, 3, 0])
