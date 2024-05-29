@@ -1583,9 +1583,11 @@ class fdfSileSiesta(SileSiesta):
             warn(
                 "Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all will be their species indices)."
             )
+            # the following call will then make use of this object
+            atoms = species
 
         # Default atoms are the species indices... Basically unknown
-        atoms = _fill_basis_empty(species, atoms or species)
+        atoms = _fill_basis_empty(species, atoms)
 
         if isinstance(origin, str):
             opt = origin
@@ -1916,7 +1918,7 @@ class fdfSileSiesta(SileSiesta):
         # retrieve the atomic species (from the AtomicCoordinatesAndSpecies block)
         species = self._r_geometry_species()
         if len(species) > 0:
-            return _fill_basis_empty(species, atoms)
+            return _fill_basis_empty(species, Atoms(atoms))
 
         warn(
             f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."

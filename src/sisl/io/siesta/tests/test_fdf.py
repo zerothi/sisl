@@ -160,9 +160,8 @@ def test_geometry(sisl_tmp):
     g = fdf.read_geometry()
     assert g.na == 2
     assert np.allclose(g.xyz, [[1.0] * 3, [0, 0, 1]])
-    assert g.atoms[0].Z == 6
-    assert g.atoms[1].Z == 6
-    assert g.atoms.nspecies == 1
+    assert np.allclose(g.atoms.Z, [6, 6])
+    assert g.atoms.nspecies == 2
 
     # default read # of atoms from list
     with open(f, "w") as fh:
@@ -593,6 +592,7 @@ def test_fdf_read_from_xv(sisl_tmp):
 
     assert len(geom_fdf) == 6
     assert len(geom_fdf.atoms.atom) == 4
+    assert np.allclose(geom_fdf.atoms.Z, [6, 2, 3, 6, 3, 2])
     assert np.allclose(geom_fdf.atoms.species, [1, 0, 3, 1, 3, 0])
     assert np.allclose(geom_fdf.xyz[0], [1, 1, 1])
     assert np.allclose(geom_fdf.xyz[1], [0, 0, 1])
@@ -601,18 +601,17 @@ def test_fdf_read_from_xv(sisl_tmp):
     geom_xv = fdf.read_geometry(order="xv")
     assert len(geom_xv) == 6
     assert len(geom_xv.atoms.atom) == 4
-    assert np.allclose(geom_fdf.atoms.species, [1, 0, 3, 1, 3, 0])
+    assert np.allclose(geom_xv.atoms.Z, [6, 2, 3, 6, 3, 2])
+    assert np.allclose(geom_xv.atoms.species, [1, 0, 3, 1, 3, 0])
     xyz = geom_xv.xyz * unit_convert("Ang", "Bohr")
     assert np.allclose(xyz[0], [0, 1, 0])
     assert np.allclose(xyz[1], [0, 1, 1])
     assert np.allclose(xyz[2], [1, 1, 1])
-    # reading XV from fdf corrects the actual species value
-    assert geom_xv.atoms.atom[2].Z == 1
 
 
-def test_fdf_multiple_atoms(sisl_tmp):
+def test_fdf_multiple_atoms_scrambeld(sisl_tmp):
     # test for #778
-    f_fdf = sisl_tmp("multiple_atoms.fdf", _dir)
+    f_fdf = sisl_tmp("multiple_atoms_scrambled.fdf", _dir)
     sc_lines = [
         "Latticeconstant 1. Ang",
         "%block latticeparameters",
@@ -643,4 +642,74 @@ def test_fdf_multiple_atoms(sisl_tmp):
 
     assert len(geom) == 5
     assert len(geom.atoms.atom) == 4
+    assert np.allclose(geom.atoms.Z, [1, 79, 79, 6, 1])
     assert np.allclose(geom.atoms.species, [0, 1, 2, 3, 0])
+
+
+def test_fdf_multiple_atoms_linear(sisl_tmp):
+    # test for #778
+    f = sisl_tmp("multiple_atoms_linear.fdf", _dir)
+    sc_lines = [
+        "Latticeconstant 1. Ang",
+        "%block latticeparameters",
+        " 1. 1. 1. 90. 90. 90.",
+        "%endblock",
+    ]
+    lines = [
+        "%block chemicalSpeciesLabel",
+        " 1 1 H.opt88",
+        " 2 79 Au.blyp",
+        " 3 79 Aus.blyp",
+        " 4 6 C.blyp",
+        "%endblock",
+        "AtomicCoordinatesFormat Ang",
+        "%block atomiccoordinatesandatomicspecies",
+        " 1. 1. 1. 1",
+        " 0. 0. 1. 2",
+        " 1. 0. 1. 3",
+        " 1. 1. 1. 4",
+        " 1. 0. 1. 1",
+        "%endblock",
+    ]
+    with open(f, "w") as fh:
+        fh.write("\n".join(sc_lines) + "\n")
+        fh.write("\n".join(lines))
+
+    geom = fdfSileSiesta(f).read_geometry()
+
+    assert len(geom) == 5
+    assert len(geom.atoms.atom) == 4
+    assert np.allclose(geom.atoms.Z, [1, 79, 79, 6, 1])
+    assert np.allclose(geom.atoms.species, [0, 1, 2, 3, 0])
+
+
+def test_fdf_multiple_simple(sisl_tmp):
+    # test for #778
+    f = sisl_tmp("multiple_simple.fdf", _dir)
+
+    with open(f, "w") as fh:
+        fh.write(
+            """
+%block ChemicalSpeciesLabel
+    1   79  Au
+    2    8   O
+%endblock ChemicalSpeciesLabel
+
+LatticeConstant    1.000 Ang
+%block LatticeVectors
+    4  0  0
+    0  10 0
+    0  0  10
+%endblock LatticeVectors
+AtomicCoordinatesFormat Ang
+%block AtomicCoordinatesAndAtomicSpecies
+    0 0 0  2
+    2 0 0  1
+%endblock AtomicCoordinatesAndAtomicSpecies
+                """
+        )
+
+    geom = fdfSileSiesta(f).read_geometry()
+    assert geom.na == 2
+    assert np.allclose(geom.atoms.Z, [8, 79])
+    assert np.allclose(geom.atoms.species, [1, 0])
