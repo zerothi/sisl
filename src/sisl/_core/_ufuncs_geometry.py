@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import reduce
 from numbers import Integral
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Callable, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 
@@ -79,7 +79,7 @@ def apply(
     geometry: Geometry,
     data,
     func,
-    mapper,
+    mapper: Union[Callable[[int], int], str],
     axis: int = 0,
     segments: Union[Literal["atoms", "orbitals", "all"], Iterator[int]] = "atoms",
 ) -> ndarray:
@@ -101,6 +101,7 @@ def apply(
     mapper : func, optional
         a function transforming the `segments` into some other segments that
         is present in `data`.
+        It can accept anything the `segments` returns.
         If a `str`, it will be equivalent to ``getattr(geometry, mapper)``
     axis :
         axis selector for `data` along which `func` will be applied
