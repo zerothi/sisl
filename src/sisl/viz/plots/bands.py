@@ -29,7 +29,12 @@ def bands_plot(
     E_axis: Literal["x", "y"] = "y",
     bands_range: Optional[Tuple[int, int]] = None,
     spin: Optional[Literal[0, 1]] = None,
-    bands_style: StyleSpec = {"color": "black", "width": 1, "opacity": 1},
+    bands_style: StyleSpec = {
+        "color": "black",
+        "width": 1,
+        "opacity": 1,
+        "dash": "solid",
+    },
     spindown_style: StyleSpec = {"color": "blue", "width": 1},
     colorscale: Optional[str] = None,
     gap: bool = False,

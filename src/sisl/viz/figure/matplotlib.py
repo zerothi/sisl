@@ -233,6 +233,13 @@ class MatplotlibFigure(Figure):
     def show(self, *args, **kwargs):
         return self.figure.show(*args, **kwargs)
 
+    def _plotly_dash_to_matplotlib(self, dash: str) -> str:
+        """Converts a plotly line_dash specification to a matplotlib linestyle."""
+        return {
+            "dash": "dashed",
+            "dot": "dotted",
+        }.get(dash, dash)
+
     def draw_line(
         self,
         x,
@@ -256,6 +263,7 @@ class MatplotlibFigure(Figure):
             y,
             color=line.get("color"),
             linewidth=line.get("width", 1),
+            linestyle=self._plotly_dash_to_matplotlib(line.get("dash", "solid")),
             marker=marker_format,
             markersize=marker.get("size"),
             markerfacecolor=marker_color,
@@ -310,6 +318,7 @@ class MatplotlibFigure(Figure):
         # Set the values used for colormapping
         lc.set_array(line.get("color"))
         lc.set_linewidth(line.get("width", 1))
+        lc.set_linestyle(self._plotly_dash_to_matplotlib(line.get("dash", "solid")))
 
         axes = _axes or self._get_subplot_axes(row=row, col=col)
 
@@ -337,6 +346,7 @@ class MatplotlibFigure(Figure):
 
         # Set the values used for colormapping
         lc.set_linewidth(line.get("width", 1))
+        lc.set_linestyle(self._plotly_dash_to_matplotlib(line.get("dash", "solid")))
 
         axes = _axes or self._get_subplot_axes(row=row, col=col)
 

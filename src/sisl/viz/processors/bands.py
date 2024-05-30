@@ -128,7 +128,7 @@ def style_bands(
                 )
     else:
         style_arrays = {}
-        for key in ["color", "width", "opacity"]:
+        for key in ["color", "width", "opacity", "dash"]:
             style_arrays[key] = xr.DataArray(bands_style[key])
 
     # Merge the style arrays with the bands dataset and return the styled dataset
