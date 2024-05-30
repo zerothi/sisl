@@ -5,12 +5,23 @@ from __future__ import annotations
 
 from typing import Optional, Union
 
-from sisl import Atom, AtomicOrbital, Atoms, Geometry, Orbital, PeriodicTable
+import numpy as np
+
+from sisl import (
+    Atom,
+    AtomicOrbital,
+    Atoms,
+    AtomUnknown,
+    Geometry,
+    Orbital,
+    PeriodicTable,
+)
 from sisl._array import arrayi
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
+from .._help import _fill_basis_empty
 from ..sile import add_sile, sile_fh_open
 from .sile import SileSiesta
 
@@ -78,46 +89,62 @@ class orbindxSileSiesta(SileSiesta):
 
         pt = PeriodicTable()
 
+        if isinstance(atoms, Geometry):
+            atoms = atoms.atoms
+
         if atoms is None:
 
-            def crt_atom(i_s, spec, orbs):
+            def crt_atom(i_s, tag, orbs):
                 # The user has not specified an atomic basis
-                i = pt.Z(spec)
+                i = pt.Z(tag)
                 if isinstance(i, int):
+                    # we can convert tag name to an atom
+                    # Hence we don't need to add the tag
                     return Atom(i, orbs)
-                else:
-                    return Atom(-1, orbs, tag=spec)
+                return AtomUnknown(1000 + i_s, orbs, tag=tag)
 
         else:
-            if isinstance(atoms, Geometry):
-                atoms = atoms.atoms
 
-            def crt_atom(i_s, spec, orbs):
+            def crt_atom(i_s, tag, orbs):
                 # Get the atom and add the orbitals
-                return atoms[i_s].copy(orbitals=orbs)
+                kwargs = {}
+                if atoms[i_s].tag != tag:
+                    # we know ORB_INDX tag is correct
+                    kwargs["tag"] = tag
+                if len(atoms[i_s]) != len(orbs):
+                    # only overwrite if # of orbitals don't match
+                    kwargs["orbitals"] = orbs
+                if kwargs:
+                    return atoms[i_s].copy(**kwargs)
+                return atoms[i_s]
 
         # Now we begin by reading the atoms
-        atom = []
-        orbs = []
-        specs = []
-        ia = 1
+        atom, orbs = [], []
+        species, order_species = [], []
+        current_ia = 1
+        tag = ""
         i_s = 0
         for _ in range(no):
             line = self.readline().split()
 
-            i_a = int(line[1])
-            spec = line[3]
-            if i_a != ia:
-                if i_s not in specs:
-                    atom.append(crt_atom(i_s, spec, orbs))
-                specs.append(i_s)
-                ia = i_a
+            ia = int(line[1])
+            if ia != current_ia:
+                if i_s not in species:
+                    order_species.append(i_s)
+                    atom.append(crt_atom(i_s, tag, orbs))
+                species.append(i_s)
+                current_ia = ia
                 orbs = []
 
+            # Get tag for atom
+            tag = line[3]
+            # and species number
             i_s = int(line[2]) - 1
 
-            if i_s in specs:
+            if i_s in order_species:
+                # no need to collect information for the same orbital
                 continue
+
             nlmz = list(map(int, line[5:9]))
             P = line[9] == "T"
             rc = float(line[11]) * Bohr2Ang
@@ -125,12 +152,13 @@ class orbindxSileSiesta(SileSiesta):
             o = AtomicOrbital(n=nlmz[0], l=nlmz[1], m=nlmz[2], zeta=nlmz[3], P=P, R=rc)
             orbs.append(o)
 
-        if i_s not in specs:
-            atom.append(crt_atom(i_s, spec, orbs))
-        specs.append(i_s)
+        if i_s not in species:
+            order_species.append(i_s)
+            atom.append(crt_atom(i_s, tag, orbs))
+        species.append(i_s)
+        atom = Atoms([atom[i] for i in np.argsort(order_species)])
 
-        # Now re-arrange the atoms and create the Atoms object
-        return Atoms([atom[i] for i in specs])
+        return _fill_basis_empty(np.array(species), atom)
 
 
 add_sile("ORB_INDX", orbindxSileSiesta, gzip=True)
