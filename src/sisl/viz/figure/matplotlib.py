@@ -84,7 +84,7 @@ class MatplotlibFigure(Figure):
         self.axes.update(self._axes_defaults)
 
     def _init_figure_subplots(self, rows, cols, **kwargs):
-        self.figure, self.axes = plt.subplots(rows, cols)
+        self.figure, self.axes = plt.subplots(rows, cols, **kwargs)
 
         # Normalize the axes array to have two dimensions
         if rows == 1 and cols == 1:
