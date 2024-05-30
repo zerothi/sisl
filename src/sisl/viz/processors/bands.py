@@ -98,7 +98,7 @@ def style_bands(
 
     # Include default styles in bands_style, only if they are not already
     # present in the bands dataset (e.g. because the styler included them)
-    default_styles = {"color": "black", "width": 1, "opacity": 1}
+    default_styles = {"color": "black", "width": 1, "opacity": 1, "dash": "solid"}
     for key in default_styles:
         if key not in bands_data.data_vars and key not in bands_style:
             bands_style[key] = default_styles[key]
