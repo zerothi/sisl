@@ -1841,9 +1841,9 @@ class fdfSileSiesta(SileSiesta):
         elif not found_one:
             return None
 
-        atoms_species = self._r_geometry_species()
-        if len(atoms_species) > 0:
-            return Atoms([atoms[spc] for spc in atoms_species])
+        species = self._r_geometry_species()
+        if len(species) > 0:
+            return _fill_basis_empty(species, Atoms(atoms))
         warn(
             f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
         )
