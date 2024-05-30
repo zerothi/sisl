@@ -10,7 +10,7 @@ from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
-from .._help import _fill_basis_empty, _replace_basis
+from .._help import _fill_basis_empty
 from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
@@ -114,10 +114,11 @@ class structSileSiesta(SileSiesta):
 
         xyz = xyz @ lattice.cell
 
+        if atoms is None:
+            atoms = atms
+
         # Ensure correct sorting
-        atms2 = _fill_basis_empty(sp - 1, atms)
-        if atoms is not None:
-            _replace_basis(atms2, atoms)
+        atms2 = _fill_basis_empty(sp - 1, atoms)
 
         return Geometry(xyz, atms2, lattice=lattice)
 

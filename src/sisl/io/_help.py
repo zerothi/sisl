@@ -178,13 +178,12 @@ def _fill_basis_empty(sp: np.ndarray, basis: List[Atom], start_Z=1000) -> Atoms:
         nonlocal sp
         if idx is None:
             idx = (sp == isp).nonzero()[0]
+
         if only_basis:
-            atom = basis[isp]
+            return basis[isp]
         elif len(idx) > 0:
-            atom = basis[idx[0]]
-        else:
-            atom = AtomUnknown(start_Z + isp)
-        return atom
+            return basis[idx[0]]
+        return AtomUnknown(start_Z + isp)
 
     atoms = Atoms(get_atom(basis, 0), na=len(sp))
 

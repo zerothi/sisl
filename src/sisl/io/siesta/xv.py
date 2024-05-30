@@ -10,7 +10,7 @@ from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
-from .._help import _fill_basis_empty, _replace_basis
+from .._help import _fill_basis_empty
 from ..sile import SileError, add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
@@ -155,11 +155,10 @@ class xvSileSiesta(SileSiesta):
         # basis information for atoms that are not present.
         # E.g. a graphene flake with a H basis information as the first species
 
-        if atoms is not None:
-            atms2 = _fill_basis_empty(sp - 1, atoms)
-            _replace_basis(atms2, atoms)
-        else:
-            atms2 = _fill_basis_empty(sp - 1, atms)
+        if atoms is None:
+            atoms = atms
+        # ensure correct sorting
+        atms2 = _fill_basis_empty(sp - 1, atoms)
 
         geom = Geometry(xyz, atms2, lattice=lattice)
         if ret_velocity:
