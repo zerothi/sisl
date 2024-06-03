@@ -26,8 +26,8 @@ Miscellaneous routines
 
    str_spec
    direction - abc/012 -> 012
-   Listify
    listify
    angle - radian to degree
    iter_shape
    math_eval
+   batched_indices

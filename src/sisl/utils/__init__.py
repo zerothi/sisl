@@ -12,7 +12,6 @@ Several utility functions are used throughout sisl.
 Range routines
 ==============
 
-   array_arange - fast creation of sub-aranges
    strmap
    strseq
    lstranges
@@ -26,6 +25,7 @@ Miscellaneous routines
    str_spec
    direction - abc/012 -> 012
    angle - radian to degree
+   listify
    iter_shape
    math_eval
    batched_indices
