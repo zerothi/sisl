@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.geometry &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl._core.geometry &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -34,7 +34,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -72,7 +72,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -170,15 +169,23 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">is_ascending</span>
 <span class="kn">from</span> <span class="nn">sisl._namedindex</span> <span class="kn">import</span> <span class="n">NamedIndex</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.shape</span> <span class="kn">import</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Shape</span><span class="p">,</span> <span class="n">Sphere</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">OrbitalsIndex</span><span class="p">,</span> <span class="n">SileLike</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">AtomsIndex</span><span class="p">,</span>
+    <span class="n">CellAxes</span><span class="p">,</span>
+    <span class="n">NDArray</span><span class="p">,</span>
+    <span class="n">OrbitalsIndex</span><span class="p">,</span>
+    <span class="n">SileLike</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">angle</span><span class="p">,</span>
     <span class="n">cmd</span><span class="p">,</span>
     <span class="n">default_ArgumentParser</span><span class="p">,</span>
     <span class="n">default_namespace</span><span class="p">,</span>
     <span class="n">direction</span><span class="p">,</span>
+    <span class="n">listify</span><span class="p">,</span>
     <span class="n">lstranges</span><span class="p">,</span>
     <span class="n">str_spec</span><span class="p">,</span>
     <span class="n">strmap</span><span class="p">,</span>
@@ -653,14 +660,14 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `Geometry`</span>
+<span class="sd">        Geometry</span>
 <span class="sd">             the primary unit cell</span>
-<span class="sd">        `Lattice`</span>
+<span class="sd">        Lattice</span>
 <span class="sd">             the tiled supercell numbers used to find the primary unit cell (only if `ret_super` is true)</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `SislError`</span>
+<span class="sd">        SislError</span>
 <span class="sd">             If the algorithm fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">na</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1169,7 +1176,8 @@
             <span class="c1"># Get unit-cell atoms, we are drawing a circle, and this</span>
             <span class="c1"># circle only encompasses those already in the unit-cell.</span>
             <span class="n">all_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="c1"># If we translated stuff into the unit-cell, we could end up in situations</span>
             <span class="c1"># where the supercell atom is in the circle, but not the UC-equivalent</span>
@@ -1302,7 +1310,8 @@
             <span class="c1"># Get unit-cell atoms, we are drawing a circle, and this</span>
             <span class="c1"># circle only encompasses those already in the unit-cell.</span>
             <span class="n">all_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">all_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="c1"># If we translated stuff into the unit-cell, we could end up in situations</span>
             <span class="c1"># where the supercell atom is in the circle, but not the UC-equivalent</span>
@@ -1872,6 +1881,88 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">ang</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Geometry.dihedral">
+<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.dihedral">[docs]</a>
+    <span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">,</span>
+        <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the dihedral angle defined by four atoms.</span>
+
+<span class="sd">        The dihehral angle is defined between 2 half-planes.</span>
+
+<span class="sd">        The first 3 atoms define the first plane</span>
+<span class="sd">        The last 3 atoms define the second.</span>
+
+<span class="sd">        The dihedral angle is calculated using this formula:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \mathbf u_0 &amp;= \mathbf r_1 - \mathbf r_0</span>
+<span class="sd">            \\</span>
+<span class="sd">            \mathbf u_1 &amp;= \mathbf r_2 - \mathbf r_1</span>
+<span class="sd">            \\</span>
+<span class="sd">            \mathbf u_2 &amp;= \mathbf r_3 - \mathbf r_2</span>
+<span class="sd">            \\</span>
+<span class="sd">            \phi &amp;= \operatorname{atan2}\Big(\hat\mathbf u_0\dot</span>
+<span class="sd">                (\hat\mathbf u_1\times\hat\mathbf u_2),</span>
+<span class="sd">                (\hat\mathbf u_0\times\hat\mathbf u_1)\dot</span>
+<span class="sd">                (\hat\mathbf u_1\times\hat\mathbf u_2)</span>
+<span class="sd">                \Big)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atoms :</span>
+<span class="sd">           An array of shape (4,)  or (N, 4) representing the indices of 4 atoms forming the dihedral angle</span>
+<span class="sd">        rad :</span>
+<span class="sd">           whether the returned value is in radians</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ndim</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.dihedral requires atoms to be 4 indices&quot;</span>
+                <span class="p">)</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atoms</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.dihedral requires atoms to be (N, 4) indices&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.dihedral requires atoms index of shape (4,) or (N, 4)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># The 2 planes are defined by</span>
+        <span class="c1">#  r0, r1, r2</span>
+        <span class="c1"># and</span>
+        <span class="c1">#  r1, r2, r3</span>
+        <span class="c1">#   we know that atoms has a dimension of 2!</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">atoms</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># normalize to make algorithm easier</span>
+        <span class="n">u</span> <span class="o">/=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">u</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="c1"># calculate the two planes normal vector</span>
+        <span class="n">n0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">u</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">u</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+
+        <span class="c1"># Prepare arguments for atan2</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">u</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">n0</span> <span class="o">*</span> <span class="n">n1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># see https://en.wikipedia.org/wiki/Dihedral_angle</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rad</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">angles</span></div>
+
+
 <div class="viewcode-block" id="Geometry.rotate_miller">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.rotate_miller">[docs]</a>
     <span class="k">def</span> <span class="nf">rotate_miller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
@@ -1924,7 +2015,7 @@
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        By default only the periodic axes will be translated to the UC. If</span>
+<span class="sd">        By default only the periodic axes (``self.pbc``) will be translated to the UC. If</span>
 <span class="sd">        translation is required for all axes, supply them directly.</span>
 
 <span class="sd">        Parameters</span>
@@ -1938,7 +2029,7 @@
 <span class="sd">             directions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">axes</span><span class="p">:</span>
                 <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -1946,6 +2037,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;translate2uc with a bool argument can only be True to signal all axes&quot;</span>
                 <span class="p">)</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
 
         <span class="n">fxyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fxyz</span>
         <span class="c1"># move to unit-cell</span>
@@ -2314,7 +2406,7 @@
             <span class="c1"># get offsets from atomic indices (note that this will be per atom)</span>
             <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2isc</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
             <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">atoms</span><span class="p">)]</span> <span class="o">+</span> <span class="n">offset</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">atoms</span><span class="p">)]</span> <span class="o">+</span> <span class="n">offset</span>
 
         <span class="c1"># Neither of atoms, or isc are `None`, we add the offset to all coordinates</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span></div>
@@ -2496,8 +2588,8 @@
         <span class="n">R</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">ret_xyz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">ret_rij</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ret_xyz</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ret_rij</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Indices of atoms in a given supercell within a given radius from a given coordinate</span>
 
@@ -2730,7 +2822,7 @@
             <span class="p">)</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="c1"># Convert to unitcell atom (and get the one atom)</span>
-            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
             <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
 
@@ -3231,16 +3323,16 @@
                 <span class="o">+</span> <span class="p">(</span><span class="n">orbitals</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
             <span class="p">)</span>
 
-        <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">orbitals</span><span class="o">.</span><span class="n">ravel</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">list_index_le</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">)</span>
+        <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">orbitals</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">list_index_le</span><span class="p">(</span><span class="n">orbitals</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">orbitals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">isc</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">isc</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span></div>
 
 
-<div class="viewcode-block" id="Geometry.uc2sc">
-<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.uc2sc">[docs]</a>
-    <span class="k">def</span> <span class="nf">uc2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="Geometry.auc2sc">
+<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.auc2sc">[docs]</a>
+    <span class="k">def</span> <span class="nf">auc2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns atom from unit-cell indices to supercell indices, possibly removing dublicates</span>
 
 <span class="sd">        Parameters</span>
@@ -3251,19 +3343,23 @@
 <span class="sd">           If True the returned indices are unique and sorted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
-        <span class="n">atoms</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">atoms</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">atoms</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">atoms</span></div>
 
 
-    <span class="n">auc2sc</span> <span class="o">=</span> <span class="n">uc2sc</span>
+    <span class="n">uc2sc</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;uc2sc is deprecated, update the code to use the explicit form auc2sc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16.0&quot;</span><span class="p">,</span>
+    <span class="p">)(</span><span class="n">auc2sc</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Geometry.sc2uc">
-<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.sc2uc">[docs]</a>
-    <span class="k">def</span> <span class="nf">sc2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="Geometry.asc2uc">
+<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.asc2uc">[docs]</a>
+    <span class="k">def</span> <span class="nf">asc2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates</span>
 
 <span class="sd">        Parameters</span>
@@ -3279,7 +3375,11 @@
         <span class="k">return</span> <span class="n">atoms</span></div>
 
 
-    <span class="n">asc2uc</span> <span class="o">=</span> <span class="n">sc2uc</span>
+    <span class="n">sc2uc</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;sc2uc is deprecated, update the code to use the explicit form asc2uc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16.0&quot;</span><span class="p">,</span>
+    <span class="p">)(</span><span class="n">asc2uc</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Geometry.osc2uc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.osc2uc">[docs]</a>
@@ -3312,10 +3412,9 @@
 <span class="sd">           If True the returned indices are unique and sorted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">orbitals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">orbitals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">ndim</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="p">(</span><span class="n">orbitals</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">orbitals</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">orbitals</span></div>
@@ -3337,8 +3436,6 @@
 <span class="sd">            atom indices to extract the supercell locations of</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
-        <span class="k">if</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="p">:]</span></div>
 
 
@@ -3367,8 +3464,6 @@
 <span class="sd">        Returns a vector of 3 numbers with integers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
-        <span class="k">if</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">orbitals</span> <span class="o">=</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">orbitals</span><span class="p">,</span> <span class="p">:]</span></div>
 
 
@@ -3383,7 +3478,14 @@
 
 <div class="viewcode-block" id="Geometry.equal">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.equal">[docs]</a>
-    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GeometryLike</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GeometryLike</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether two geometries are the same (optional not check of the orbital radius)</span>
 
 <span class="sd">        Parameters</span>
@@ -3392,14 +3494,14 @@
 <span class="sd">            the other Geometry to check against</span>
 <span class="sd">        R :</span>
 <span class="sd">            if True also check if the orbital radii are the same (see `Atom.equal`)</span>
-<span class="sd">        tol :</span>
+<span class="sd">        atol :</span>
 <span class="sd">            tolerance for checking the atomic coordinates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">same</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
-        <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
         <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">same</span></div>
 
@@ -3465,11 +3567,18 @@
 
 <div class="viewcode-block" id="Geometry.distance">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.distance">[docs]</a>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
             <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="nb">float</span><span class="p">],</span>
             <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;numpy.method&gt;&quot;</span><span class="p">],</span>
@@ -3485,14 +3594,14 @@
 <span class="sd">           the maximum radius to consider, default to ``self.maxR()``.</span>
 <span class="sd">           To retrieve all distances for atoms within the supercell structure</span>
 <span class="sd">           you can pass `numpy.inf`.</span>
-<span class="sd">        tol : float or array_like, optional</span>
+<span class="sd">        atol :</span>
 <span class="sd">           the tolerance for grouping a set of atoms.</span>
 <span class="sd">           This parameter sets the shell radius for each shell.</span>
 <span class="sd">           I.e. the returned distances between two shells will be maximally</span>
-<span class="sd">           ``2*tol``, but only if atoms are within two consecutive lists.</span>
+<span class="sd">           ``2*atol``, but only if atoms are within two consecutive lists.</span>
 <span class="sd">           If this is a list, the shells will be of unequal size.</span>
 
-<span class="sd">           The first shell size will be ``tol * .5`` or ``tol[0] * .5`` if `tol` is a list.</span>
+<span class="sd">           The first shell size will be ``atol * .5`` or ``atol[0] * .5`` if `atol` is a list.</span>
 
 <span class="sd">        method :</span>
 <span class="sd">           How the distance in each shell is determined.</span>
@@ -3515,11 +3624,11 @@
 <span class="sd">        &gt;&gt;&gt; geom = Geometry([0]*3, Atom(1, R=1.), lattice=Lattice(1., nsc=[5, 5, 1]))</span>
 <span class="sd">        &gt;&gt;&gt; geom.distance()</span>
 <span class="sd">        array([1.])</span>
-<span class="sd">        &gt;&gt;&gt; geom.distance(tol=[0.5, 0.4, 0.3, 0.2])</span>
+<span class="sd">        &gt;&gt;&gt; geom.distance(atol=[0.5, 0.4, 0.3, 0.2])</span>
 <span class="sd">        array([1.])</span>
-<span class="sd">        &gt;&gt;&gt; geom.distance(R=2, tol=[0.5, 0.4, 0.3, 0.2])</span>
+<span class="sd">        &gt;&gt;&gt; geom.distance(R=2, atol=[0.5, 0.4, 0.3, 0.2])</span>
 <span class="sd">        array([1.        ,  1.41421356,  2.        ])</span>
-<span class="sd">        &gt;&gt;&gt; geom.distance(R=2, tol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged</span>
+<span class="sd">        &gt;&gt;&gt; geom.distance(R=2, atol=[0.5, 0.7]) # the R = 1 and R = 2 ** .5 gets averaged</span>
 <span class="sd">        array([1.20710678,  2.        ])</span>
 
 <span class="sd">        Returns</span>
@@ -3543,7 +3652,7 @@
                     <span class="s2">&quot;The internal `maxR()` is negative and thus not set. &quot;</span>
                     <span class="s2">&quot;Set an explicit value for `R`.&quot;</span>
                 <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="p">):</span>
             <span class="n">maxR</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
             <span class="c1"># These loops could be leveraged if we look at angles...</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span>
@@ -3562,20 +3671,20 @@
                 <span class="n">R</span> <span class="o">=</span> <span class="n">maxR</span>
 
         <span class="c1"># Convert to list</span>
-        <span class="n">tol</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">atol</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">atol</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atol</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># Now we are in a position to determine the sizes</span>
-            <span class="n">dR</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="n">tol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">R</span> <span class="o">+</span> <span class="n">tol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.55</span><span class="p">,</span> <span class="n">tol</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">dR</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="n">atol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">R</span> <span class="o">+</span> <span class="n">atol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.55</span><span class="p">,</span> <span class="n">atol</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">dR</span> <span class="o">=</span> <span class="n">tol</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">dR</span> <span class="o">=</span> <span class="n">atol</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">dR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.5</span>
             <span class="c1"># The first tolerance, is for it-self, the second</span>
             <span class="c1"># has to have the first tolerance as the field</span>
-            <span class="n">dR</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">cumsumd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">dR</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">dR</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">cumsumd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">dR</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">atol</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
             <span class="k">if</span> <span class="n">dR</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">R</span><span class="p">:</span>
                 <span class="c1"># Now finalize dR by ensuring all remaining segments are captured</span>
-                <span class="n">t</span> <span class="o">=</span> <span class="n">tol</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">atol</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
                 <span class="n">dR</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">((</span><span class="n">dR</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="n">dR</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">t</span><span class="p">,</span> <span class="n">R</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="mf">0.55</span><span class="p">,</span> <span class="n">t</span><span class="p">)))</span>
 
@@ -3636,21 +3745,29 @@
 
 <div class="viewcode-block" id="Geometry.within_inf">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.within_inf">[docs]</a>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">within_inf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">,</span>
-        <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+        <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">CellAxes</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">origin</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all atoms within a provided supercell</span>
 
 <span class="sd">        Note this function is rather different from `close` and `within`.</span>
 <span class="sd">        Specifically this routine is returning *all* indices for the infinite</span>
-<span class="sd">        periodic system (where ``self.nsc &gt; 1`` or `periodic` is true).</span>
+<span class="sd">        periodic system. The default periodic directions are ``self.pbc``,</span>
+<span class="sd">        unless `periodic` is provided.</span>
 
 <span class="sd">        Atomic coordinates lying on the boundary of the supercell will be duplicated</span>
-<span class="sd">        on the neighboring supercell images. Thus performing `geom.within_inf(geom.lattice)`</span>
+<span class="sd">        on the neighboring supercell images. Thus performing ``geom.within_inf(geom.lattice)``</span>
 <span class="sd">        may result in more atoms than in the structure.</span>
 
 <span class="sd">        Notes</span>
@@ -3664,10 +3781,10 @@
 <span class="sd">            the supercell in which this geometry should be expanded into.</span>
 <span class="sd">        periodic :</span>
 <span class="sd">            explicitly define the periodic directions, by default the periodic</span>
-<span class="sd">            directions are only where ``self.nsc &gt; 1 &amp; self.pbc``.</span>
-<span class="sd">        tol :</span>
-<span class="sd">            length tolerance for the fractional coordinates to be on a duplicate site (in Ang).</span>
-<span class="sd">            This allows atoms within `tol` of the cell boundaries to be taken as *inside* the</span>
+<span class="sd">            directions are only where ``self.pbc``.</span>
+<span class="sd">        atol :</span>
+<span class="sd">            length tolerance for the coordinates to be on a duplicate site (in Ang).</span>
+<span class="sd">            This allows atoms within `atol` of the cell boundaries to be taken as *inside* the</span>
 <span class="sd">            cell.</span>
 <span class="sd">        origin :</span>
 <span class="sd">            origin that is the basis for comparison, default to 0.</span>
@@ -3681,17 +3798,27 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">           integer supercell offsets for `ia` atoms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">periodic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">periodic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">periodic</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">periodic</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">periodic</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">periodic</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">periodic</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">periodic</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">periodic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">periodic</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># extract the non-periodic directions</span>
+        <span class="n">non_periodic</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">periodic</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
 
         <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">origin</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
         <span class="c1"># Our first task is to construct a geometry large</span>
         <span class="c1"># enough to fully encompass the supercell</span>
+        <span class="c1"># The supercell here defines how big `self` needs to be</span>
+        <span class="c1"># to be fully located inside `lattice`.</span>
 
         <span class="c1"># 1. Number of times each lattice vector must be expanded to fit</span>
         <span class="c1">#    inside the &quot;possibly&quot; larger `lattice`.</span>
@@ -3700,7 +3827,7 @@
         <span class="n">tile_max</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="c1"># Intrinsic offset (when atomic coordinates are outside primary unit-cell)</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fxyz</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
         <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tile_min</span> <span class="o">&lt;</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">tile_min</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
@@ -3714,8 +3841,8 @@
         <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tile_min</span> <span class="o">&lt;</span> <span class="n">idx</span><span class="p">,</span> <span class="n">tile_min</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="c1"># 2. Reduce tiling along non-periodic directions</span>
-        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">periodic</span><span class="p">,</span> <span class="n">tile_min</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">tile_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">periodic</span><span class="p">,</span> <span class="n">tile_max</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">tile_min</span><span class="p">[</span><span class="n">non_periodic</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">tile_max</span><span class="p">[</span><span class="n">non_periodic</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="c1"># 3. Find the *new* origin according to the *negative* tilings.</span>
         <span class="c1">#    This is important for skewed cells as the placement of the new</span>
@@ -3724,6 +3851,7 @@
 
         <span class="c1"># The xyz geometry that fully encompass the (possibly) larger supercell</span>
         <span class="n">tile</span> <span class="o">=</span> <span class="n">tile_max</span> <span class="o">-</span> <span class="n">tile_min</span>
+
         <span class="n">full_geom</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span> <span class="o">*</span> <span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">big_origin</span> <span class="o">-</span> <span class="n">origin</span><span class="p">)</span>
 
         <span class="c1"># Now we have to figure out all atomic coordinates within</span>
@@ -3731,7 +3859,9 @@
 
         <span class="c1"># Make sure that full_geom doesn&#39;t return coordinates outside the unit cell</span>
         <span class="c1"># for non periodic directions</span>
-        <span class="n">full_geom</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">([</span><span class="n">full_geom</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">periodic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">full_geom</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">nsc</span><span class="p">[</span><span class="n">non_periodic</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">full_geom</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
 
         <span class="c1"># Now retrieve all atomic coordinates from the full geometry</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">full_geom</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">full_geom</span><span class="o">.</span><span class="n">na_s</span><span class="p">))</span>
@@ -3747,7 +3877,7 @@
         <span class="c1"># Since there are numerical errors for the above operation</span>
         <span class="c1"># we *have* to account for possible sign-errors</span>
         <span class="c1"># This is done by a length tolerance</span>
-        <span class="n">ftol</span> <span class="o">=</span> <span class="n">tol</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">ftol</span> <span class="o">=</span> <span class="n">atol</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">isc</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">fxyz</span> <span class="o">-</span> <span class="n">ftol</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="c1"># Now we can extract the indices where the two are non-matching.</span>
@@ -3761,7 +3891,7 @@
 
         <span class="c1"># Convert indices to unit-cell indices and also return coordinates and</span>
         <span class="c1"># infinite supercell indices</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc2uc</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">isc</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">isc</span></div>
 
 
     <span class="c1"># Create pickling routines</span>
@@ -4311,7 +4441,15 @@
 <span class="c1"># Bypass regular Geometry to be returned as is</span>
 <span class="k">class</span> <span class="nc">GeometryNewGeometryDispatch</span><span class="p">(</span><span class="n">GeometryNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return geometry as-is (no copy), for sanitization purposes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Geometry, for sanitization purposes&quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="o">!=</span> <span class="n">geometry</span><span class="o">.</span><span class="vm">__class__</span><span class="p">:</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+                <span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">atoms</span><span class="o">=</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">lattice</span><span class="o">=</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="p">)</span>
+            <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">geometry</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">geometry</span>
@@ -4425,7 +4563,7 @@
             <span class="n">symbols</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span>
             <span class="n">positions</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
             <span class="n">cell</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="n">pbc</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">pbc</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">pbc</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -4456,10 +4594,10 @@
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">xyz</span>
         <span class="n">species</span> <span class="o">=</span> <span class="p">[</span><span class="n">PT</span><span class="o">.</span><span class="n">Z_label</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">Z</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">Z</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="c1"># we define a molecule</span>
-            <span class="k">return</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Structure</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">coords_are_cartesian</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Structure</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">coords_are_cartesian</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># we define a molecule</span>
+        <span class="k">return</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pymatgen&quot;</span><span class="p">,</span> <span class="n">GeometryTopymatgenDispatch</span><span class="p">)</span>

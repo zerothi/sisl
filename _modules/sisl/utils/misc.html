@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.utils.misc &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl.utils.misc &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -34,7 +34,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -72,7 +72,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -133,11 +132,12 @@
 <span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">op</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;merge_instances&quot;</span><span class="p">,</span> <span class="s2">&quot;str_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;direction&quot;</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;merge_instances&quot;</span><span class="p">,</span> <span class="s2">&quot;str_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;direction&quot;</span><span class="p">,</span> <span class="s2">&quot;listify&quot;</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;iter_shape&quot;</span><span class="p">,</span> <span class="s2">&quot;math_eval&quot;</span><span class="p">,</span> <span class="s2">&quot;allow_kwargs&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;import_attr&quot;</span><span class="p">,</span> <span class="s2">&quot;lazy_import&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;PropertyDict&quot;</span><span class="p">,</span> <span class="s2">&quot;NotNonePropertyDict&quot;</span><span class="p">]</span>
@@ -350,6 +350,70 @@
     <span class="n">lname</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;{&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lname</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">lname</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
+
+
+<span class="n">IterableAny</span> <span class="o">=</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+<span class="n">IterableInstantiation</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">IterableAny</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">Listify</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert arguments to an iterable-like (any iterable, default to `list`)</span>
+
+<span class="sd">    It provides also an easy mechanism for &quot;piping&quot; content to</span>
+<span class="sd">    a function call (for better readability).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls:</span>
+<span class="sd">        the default list-like object to cast it to</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; listify = Listify()</span>
+<span class="sd">    &gt;&gt;&gt; 1 | listify</span>
+<span class="sd">    [1]</span>
+<span class="sd">    &gt;&gt;&gt; Listify(tuple)(1)</span>
+<span class="sd">    (1,)</span>
+
+<span class="sd">    It can greatly improve readability with `map` constructs:</span>
+<span class="sd">    &gt;&gt;&gt; map(lambda x, [1]) | listify</span>
+<span class="sd">    [1]</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If using this to convert to `tuple` instances ``Listify(tuple)``,</span>
+<span class="sd">    please do note the problems of using a tuple as indices for</span>
+<span class="sd">    `numpy.ndarray` objects.</span>
+
+<span class="sd">    This is partly inspired by `pip &lt;https://pypi.org/project/pipe/&gt;`_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_cls&quot;</span><span class="p">,)</span>
+
+    <span class="c1"># Ensures that numpy function calls won&#39;t happen!</span>
+    <span class="c1"># Just a higher priority than *any* numpy arrays and subclasses.</span>
+    <span class="n">__array_priority__</span> <span class="o">=</span> <span class="mi">1000000</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">IterableInstantiation</span> <span class="o">=</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cls</span> <span class="o">=</span> <span class="bp">cls</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IterableInstantiation</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IterableAny</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cls</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">arg</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">arg</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__ror__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IterableAny</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow piping of function calls (on the right side)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+
+<span class="n">listify</span> <span class="o">=</span> <span class="n">Listify</span><span class="p">()</span>
 
 
 <span class="c1"># Transform a string to a Cartesian direction</span>

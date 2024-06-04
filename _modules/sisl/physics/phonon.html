@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.phonon &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl.physics.phonon &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -34,7 +34,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -72,7 +72,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -461,7 +460,7 @@
 
 <div class="viewcode-block" id="EigenmodePhonon.displacement">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.displacement">[docs]</a>
-    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-9</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate real-space displacements for a given mode (in units of the characteristic length)</span>
 
 <span class="sd">        The displacements per mode may be written as:</span>
@@ -477,26 +476,26 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        mode : array_like</span>
-<span class="sd">            vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate</span>
-<span class="sd">            modes the vectors *may* be rotated upon return.</span>
-<span class="sd">        hw : array_like</span>
-<span class="sd">            frequencies of the modes, for any negative frequency the returned displacement will be 0.</span>
-<span class="sd">        mass : array_like</span>
-<span class="sd">            masses for the atoms (has to have length ``mode.shape[1] // 3``</span>
+<span class="sd">        atol :</span>
+<span class="sd">            absolute tolerance for whether a phonon is 0 or not.</span>
+<span class="sd">            Since the phonon energy is used in the calculation of the displacement vector</span>
+<span class="sd">            we have to remove phonon modes with 0 energy.</span>
+<span class="sd">            The displacements for phonon modes with an absolute energy below `atol` will</span>
+<span class="sd">            be 0.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        numpy.ndarray</span>
-<span class="sd">            displacements per mode with final dimension ``(3, mode.shape[0])``, displacements are in Ang</span>
+<span class="sd">            displacements per mode with final dimension ``(len(self), self.parent.na, 3)``, displacements are in Ang</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># get indices for the zero modes</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">atol</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
         <span class="n">U</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">U</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="c1"># Now create the remaining displacements</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">idx</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">idx</span><span class="p">)</span>
 
         <span class="c1"># Generate displacement factor</span>
         <span class="n">factor</span> <span class="o">=</span> <span class="n">_displacement_const</span> <span class="o">/</span> <span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
@@ -505,7 +504,6 @@
         <span class="n">U</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
         <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">U</span></div>
 </div>
 

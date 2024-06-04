@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -34,7 +34,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -72,7 +72,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -179,12 +178,15 @@
 
 <span class="k">def</span> <span class="nf">_toF</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">array</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">dtype</span> <span class="ow">and</span> <span class="n">array</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">f_contiguous</span><span class="p">:</span>
-        <span class="c1"># no need to copy since the order is correct</span>
-        <span class="k">return</span> <span class="n">array</span> <span class="o">*</span> <span class="n">scale</span>
+        <span class="c1"># we won&#39;t force the fortran order, f2py,</span>
+        <span class="c1"># will handle this anyways. So we might as</span>
+        <span class="c1"># well let that machinery deal with the</span>
+        <span class="c1"># details.</span>
+        <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="c1"># We have to handle cases</span>
+    <span class="c1"># As we are writing to Fortran, we might as well</span>
+    <span class="c1"># do the proper copy to F-contiguous.</span>
+    <span class="c1"># This will save a 2nd copy!</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
     <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out</span>
@@ -339,12 +341,12 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_geometry">[docs]</a>
     <span class="nd">@deprecate_argument</span><span class="p">(</span>
         <span class="s2">&quot;geometry&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;basis&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;use basis=geometry.atoms instead of geometry=&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;use atoms=geometry.atoms instead of geometry=&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Atoms</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns Geometry object from a TranSiesta file&quot;&quot;&quot;</span>
 
         <span class="c1"># Read supercell</span>
@@ -363,17 +365,17 @@
         <span class="c1"># geometry which contains the correct atomic numbers etc.</span>
         <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">lasto</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
-            <span class="n">basis</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbs</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_geometry &quot;</span>
                     <span class="s2">&quot;got a basis set (Atoms object) with incorrect &quot;</span>
                     <span class="s2">&quot;number of atoms.&quot;</span>
                 <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Create all different atoms...</span>
             <span class="c1"># The TSHS file does not contain the</span>
             <span class="c1"># atomic numbers, so we will just</span>
@@ -381,6 +383,7 @@
 
             <span class="c1"># Get unique orbitals</span>
             <span class="n">uorb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">orbs</span><span class="p">)</span>
+
             <span class="c1"># Create atoms</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">Z</span><span class="p">,</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uorb</span><span class="p">):</span>
@@ -396,12 +399,9 @@
                 <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_atom</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">orb</span><span class="p">))</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
-                <span class="n">basis</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">atoms</span>
-
             <span class="c1"># Create a new geometry with the correct atomic numbers</span>
             <span class="n">atom</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">no</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">no</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">no</span> <span class="o">==</span> <span class="n">no</span><span class="p">:</span>
                     <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -545,9 +545,11 @@
         <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">orthogonal</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;read orthogonal hamiltonian&quot;</span><span class="p">)</span>
             <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">([</span><span class="n">nnz</span><span class="p">,</span> <span class="n">spin</span><span class="p">])</span>
             <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dH</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;read non-orthogonal hamiltonian&quot;</span><span class="p">)</span>
             <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">([</span><span class="n">nnz</span><span class="p">,</span> <span class="n">spin</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
             <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:</span><span class="n">spin</span><span class="p">]</span> <span class="o">=</span> <span class="n">dH</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
             <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">spin</span><span class="p">]</span> <span class="o">=</span> <span class="n">dS</span><span class="p">[:]</span>
@@ -564,7 +566,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of orbitals: </span><span class="si">{</span><span class="n">no</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_hamiltonian could not assert &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_hamiltonian could not assert &quot;</span>
                 <span class="s2">&quot;the supercell connections in the primary unit-cell.&quot;</span>
             <span class="p">)</span>
 
@@ -582,7 +584,7 @@
         <span class="n">csr</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.write_hamiltonian cannot write &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.write_hamiltonian cannot write &quot;</span>
                 <span class="s2">&quot;a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
@@ -599,6 +601,7 @@
 
         <span class="c1"># Get H and S</span>
         <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;writing orthogonal hamiltonian&quot;</span><span class="p">)</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">s</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">keep_nnz</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">s</span> <span class="o">+=</span> <span class="n">s</span><span class="o">.</span><span class="n">diags</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -616,6 +619,7 @@
             <span class="n">h</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">_D</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;writing non-orthogonal hamiltonian&quot;</span><span class="p">)</span>
             <span class="n">h</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:</span> <span class="n">H</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">H</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span>
 
@@ -629,8 +633,8 @@
             <span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">nsc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">nsc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-            <span class="n">cell</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">,</span>
-            <span class="n">xyz</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">,</span>
+            <span class="n">_toF</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">),</span>
+            <span class="n">_toF</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">),</span>
             <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">firsto</span><span class="p">,</span>
             <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span>
             <span class="n">csr</span><span class="o">.</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
@@ -684,7 +688,7 @@
 
         <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">!=</span> <span class="n">no</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_density_matrix could not use the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_density_matrix could not use the &quot;</span>
                 <span class="s2">&quot;passed geometry as the number of atoms or orbitals is &quot;</span>
                 <span class="s2">&quot;inconsistent with DM file.&quot;</span>
             <span class="p">)</span>
@@ -710,7 +714,7 @@
         <span class="k">if</span> <span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span> <span class="o">&gt;=</span> <span class="n">col</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
             <span class="n">_csr_from_siesta</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_density_matrix may result in a wrong sparse pattern!&quot;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_density_matrix may result in a wrong sparse pattern!&quot;</span><span class="p">)</span>
 
         <span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
         <span class="n">_add_overlap</span><span class="p">(</span>
@@ -729,7 +733,7 @@
         <span class="c1"># This ensures that we don&quot;t have any *empty* elements</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.write_density_matrix cannot write &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.write_density_matrix cannot write &quot;</span>
                 <span class="s2">&quot;a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
@@ -796,7 +800,7 @@
 
         <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">!=</span> <span class="n">no</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_energy_density_matrix could &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_energy_density_matrix could &quot;</span>
                 <span class="s2">&quot;not use the passed geometry as the number of atoms or orbitals &quot;</span>
                 <span class="s2">&quot;is inconsistent with DM file.&quot;</span>
             <span class="p">)</span>
@@ -825,7 +829,7 @@
             <span class="n">_csr_from_siesta</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_energy_density_matrix may result in a wrong sparse pattern!&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_energy_density_matrix may result in a wrong sparse pattern!&quot;</span>
             <span class="p">)</span>
 
         <span class="n">EDM</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
@@ -873,7 +877,7 @@
 
         <span class="k">if</span> <span class="n">DMcsr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.write_density_matrices cannot write &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.write_density_matrices cannot write &quot;</span>
                 <span class="s2">&quot;a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
@@ -890,7 +894,7 @@
             <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">DMcsr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">EDMcsr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">DMcsr</span><span class="o">.</span><span class="n">col</span><span class="p">,</span> <span class="n">EDMcsr</span><span class="o">.</span><span class="n">col</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.write_density_matrices got non compatible &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.write_density_matrices got non compatible &quot;</span>
                 <span class="s2">&quot;DM and EDM matrices.&quot;</span>
             <span class="p">)</span>
 
@@ -943,7 +947,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The version of the file&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_xij2system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xij</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_xij2system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xij</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new geometry with *correct* nsc and somewhat correct xyz</span>
 
 <span class="sd">        Parameters</span>
@@ -955,7 +959,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">get_geom_handle</span><span class="p">(</span><span class="n">xij</span><span class="p">):</span>
-            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_basis</span><span class="p">()</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_basis</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">),</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">atoms</span><span class="p">)</span>
 
@@ -1241,12 +1245,19 @@
             <span class="c1"># TODO check that geometry and xyz are the same!</span>
             <span class="n">geometry</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">=</span> <span class="n">atms</span>
 
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">_geometry_align</span><span class="p">(</span>
+            <span class="n">geometry</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="s2">&quot;read_geometry&quot;</span>
+        <span class="p">)</span>
+
         <span class="k">return</span> <span class="n">geometry</span>
 
 <div class="viewcode-block" id="hsxSileSiesta.read_basis">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_basis">[docs]</a>
     <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads basis set and geometry information from the HSX file&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+            <span class="s2">&quot;basis </span><span class="si">%r</span><span class="s2"> </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">no</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nspecies</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_species_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_basis&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read specie sizes.&quot;</span><span class="p">)</span>
@@ -1322,35 +1333,55 @@
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">isa</span><span class="p">])</span>
 
         <span class="n">base</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atoms</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">atoms</span>
 
         <span class="c1"># Now compare the atoms such that we select the best one</span>
         <span class="k">def</span> <span class="nf">get_best</span><span class="p">(</span><span class="n">aF</span><span class="p">,</span> <span class="n">aI</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">aF</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">aI</span><span class="p">):</span>
                 <span class="c1"># the file has the correct number of orbitals</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;basis file atom=</span><span class="si">%r</span><span class="s2"> better than input </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">aF</span><span class="p">,</span> <span class="n">aI</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">aF</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aF</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">aF</span><span class="o">.</span><span class="n">Z</span> <span class="o">!=</span> <span class="n">aI</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+                        <span class="s2">&quot;basis file atom=</span><span class="si">%r</span><span class="s2"> has different Z than input </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">aF</span><span class="p">,</span> <span class="n">aI</span>
+                    <span class="p">)</span>
                     <span class="k">return</span> <span class="n">aF</span>
 
             <span class="c1"># check for orbitals being atomicorbital</span>
             <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">aI</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orb</span><span class="p">,</span> <span class="n">AtomicOrbital</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+                        <span class="s2">&quot;basis file, input atom=</span><span class="si">%r</span><span class="s2"> does not use AtomicOrbital&quot;</span><span class="p">,</span> <span class="n">aI</span>
+                    <span class="p">)</span>
                     <span class="k">return</span> <span class="n">aF</span>
 
             <span class="k">for</span> <span class="n">oF</span><span class="p">,</span> <span class="n">oI</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">aF</span><span class="p">,</span> <span class="n">aI</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;zeta&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">):</span>
+                <span class="c1"># we can&#39;t check polarization, not stored in the HSX file format</span>
+                <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;zeta&quot;</span><span class="p">):</span>
                     <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">oF</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">oI</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+                            <span class="s2">&quot;basis file atom, orbital </span><span class="si">%r</span><span class="s2">,</span><span class="si">%r</span><span class="s2"> property </span><span class="si">%s</span><span class="s2"> cannot be matched with input atom, orbital </span><span class="si">%r</span><span class="s2">,</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">aF</span><span class="p">,</span>
+                            <span class="n">oF</span><span class="p">,</span>
+                            <span class="n">prop</span><span class="p">,</span>
+                            <span class="n">aI</span><span class="p">,</span>
+                            <span class="n">oI</span><span class="p">,</span>
+                        <span class="p">)</span>
                         <span class="k">return</span> <span class="n">aF</span>
 
             <span class="c1"># the atoms are the same, so we select the input atom</span>
             <span class="c1"># since it likely contains the spherical functions</span>
             <span class="c1"># and the charge</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;basis file, choose input atom=</span><span class="si">%r</span><span class="s2"> over file atom </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">aI</span><span class="p">,</span> <span class="n">aF</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">aI</span>
 
-        <span class="n">atoms</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_best</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_best</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">base</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">atoms</span></div>
 
 
@@ -1384,12 +1415,17 @@
 <span class="sd">        This will always work on new files Siesta &gt;=5, but only sometimes on older</span>
 <span class="sd">        versions of the HSX file format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;lattice v1&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_r_geometry_v0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the geometry from the old file version&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+            <span class="s2">&quot;geometry v0 </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span>
         <span class="n">spin</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read geometry sizes.&quot;</span><span class="p">)</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dxij</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_hsx0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
@@ -1398,10 +1434,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read Hamiltonian.&quot;</span><span class="p">)</span>
         <span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">ncol</span><span class="p">)</span>
         <span class="n">xij</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="p">((</span><span class="n">dxij</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">ptr</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">))</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xij2system</span><span class="p">(</span><span class="n">xij</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)))</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xij2system</span><span class="p">(</span><span class="n">xij</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">geom</span>
 
     <span class="k">def</span> <span class="nf">_r_geometry_v1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+            <span class="s2">&quot;geometry v1 </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span>
         <span class="c1"># first read the atoms object</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_basis</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -1421,8 +1462,7 @@
 <span class="sd">        This will always work on new files Siesta &gt;=5, but only sometimes on older</span>
 <span class="sd">        versions of the HSX file format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_geometry_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_geometry_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="hsxSileSiesta.read_fermi_level">
@@ -1432,12 +1472,12 @@
 
 <span class="sd">        Only valid for files created by Siesta &gt;=5.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># It isn&#39;t implemented in the old file format.</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2"> does not contain the fermi-level (too old version file).&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
         <span class="n">Ef</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_ef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span>
-            <span class="s2">&quot;read_fermi_level&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read Fermi-level&quot;</span><span class="p">,</span> <span class="n">ret_msg</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">msg</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_fermi_level&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read Fermi-level&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Ef</span> <span class="o">*</span> <span class="n">_Ry2eV</span></div>
 
 
@@ -1453,7 +1493,7 @@
 
         <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">!=</span> <span class="n">no</span> <span class="ow">or</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span> <span class="o">!=</span> <span class="n">no_s</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_hamiltonian could not use the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_hamiltonian could not use the &quot;</span>
                 <span class="s2">&quot;passed geometry as the number of atoms or orbitals is &quot;</span>
                 <span class="s2">&quot;inconsistent with HSX file.&quot;</span>
             <span class="p">)</span>
@@ -1492,7 +1532,7 @@
 
         <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">!=</span> <span class="n">no</span> <span class="ow">or</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span> <span class="o">!=</span> <span class="n">no_s</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_hamiltonian could not use the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_hamiltonian could not use the &quot;</span>
                 <span class="s2">&quot;passed geometry as the number of atoms or orbitals is &quot;</span>
                 <span class="s2">&quot;inconsistent with HSX file.&quot;</span>
             <span class="p">)</span>
@@ -1517,14 +1557,17 @@
         <span class="c1"># Convert the supercells to sisl supercells</span>
         <span class="n">_csr_from_sc_off</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">isc</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
 
+        <span class="c1"># Correct the fermi-level here</span>
+        <span class="n">Ef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_fermi_level</span><span class="p">()</span>
+        <span class="n">H</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="n">Ef</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
 
 <div class="viewcode-block" id="hsxSileSiesta.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_hamiltonian">[docs]</a>
     <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the electronic structure from the siesta.TSHS file&quot;&quot;&quot;</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hamiltonian_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_hamiltonian_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_r_overlap_v0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1540,7 +1583,7 @@
 
         <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">!=</span> <span class="n">no</span> <span class="ow">or</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span> <span class="o">!=</span> <span class="n">no_s</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_overlap could not use the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_overlap could not use the &quot;</span>
                 <span class="s2">&quot;passed geometry as the number of atoms or orbitals is &quot;</span>
                 <span class="s2">&quot;inconsistent with HSX file.&quot;</span>
             <span class="p">)</span>
@@ -1578,7 +1621,7 @@
 
         <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">!=</span> <span class="n">no</span> <span class="ow">or</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span> <span class="o">!=</span> <span class="n">no_s</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_overlap could not use the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_overlap could not use the &quot;</span>
                 <span class="s2">&quot;passed geometry as the number of atoms or orbitals is &quot;</span>
                 <span class="s2">&quot;inconsistent with HSX file.&quot;</span>
             <span class="p">)</span>
@@ -1605,8 +1648,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_overlap">[docs]</a>
     <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the electronic structure from the siesta.TSHS file&quot;&quot;&quot;</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_overlap_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_overlap_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 
@@ -2061,7 +2103,16 @@
 
 <div class="viewcode-block" id="wfsxSileSiesta.read_eigenstate">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_eigenstate">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ktol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenstateElectron</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;ktol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;use atol instead of ktol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_eigenstate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenstateElectron</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a specific eigenstate from the file.</span>
 
 <span class="sd">        This method iterates over the states until it finds a match. Do not call</span>
@@ -2071,10 +2122,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        k: array-like of shape (3,), optional</span>
 <span class="sd">            The k point of the state you want to find.</span>
-<span class="sd">        spin: integer, optional</span>
+<span class="sd">        spin:</span>
 <span class="sd">            The spin index of the state you want to find. Only meaningful for polarized</span>
 <span class="sd">            calculations.</span>
-<span class="sd">        ktol: float, optional</span>
+<span class="sd">        atol:</span>
 <span class="sd">            The threshold value for considering two k-points the same (i.e. to match</span>
 <span class="sd">            the query k point with the states k point).</span>
 
@@ -2086,16 +2137,21 @@
 <span class="sd">        -------</span>
 <span class="sd">        EigenstateElectron or None:</span>
 <span class="sd">            If found, the state that was queried.</span>
-<span class="sd">            If not found, returns `None`. NOTE this may change to an exception in the future</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LookupError :</span>
+<span class="sd">            in case the requested k-point can not be found in the file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Iterate over all eigenstates in the file</span>
         <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">yield_eigenstate</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">spin</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
-                <span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">],</span> <span class="n">k</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">ktol</span>
-            <span class="p">):</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">info</span>
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">spin</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">],</span> <span class="n">k</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">):</span>
                 <span class="c1"># This is the state that the user requested</span>
                 <span class="k">return</span> <span class="n">state</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_eigenstate could not find k-point: </span><span class="si">{</span><span class="n">k</span><span class="si">!s}</span><span class="s2"> eigenstate&quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="wfsxSileSiesta.read_info">
@@ -2227,6 +2283,36 @@
         <span class="c1">#       and thus the first axis is the fast (x, y, z) is retained</span>
         <span class="n">g</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_unit</span>
         <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">grids</span><span class="p">:</span> <span class="n">Grid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the grid to the file&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+        <span class="n">_siesta</span><span class="o">.</span><span class="n">write_grid_header</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">grids</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">grids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+            <span class="n">_toF</span><span class="p">(</span><span class="n">grids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">grid</span> <span class="ow">in</span> <span class="n">grids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">grids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_grid got grids with different shapes.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+                <span class="n">_siesta</span><span class="o">.</span><span class="n">write_grid_sp</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span>
+                    <span class="n">_toF</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_unit</span><span class="p">),</span>
+                    <span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_grid can only write real-valued grids.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_close</span><span class="p">()</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>

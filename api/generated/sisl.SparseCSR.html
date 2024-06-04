@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SparseCSR &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl.SparseCSR &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -35,7 +35,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -59,7 +59,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -77,7 +77,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -119,7 +118,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
 </ul>
 </li>
@@ -158,21 +156,21 @@
 <dt class="sig sig-object py" id="sisl.SparseCSR">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">SparseCSR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nnzpr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nnz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseCSR" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lib.mixins.NDArrayOperatorsMixin.html#numpy.lib.mixins.NDArrayOperatorsMixin" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NDArrayOperatorsMixin</span></code></a></p>
-<p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p>
+<p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p>
 <p>This class holds all required information regarding the CSR matrix format.</p>
 <p>Note that this sparse matrix of data does not retain the number of columns
 in the matrix, i.e. it has no way of determining whether the input is
 correct.</p>
 <p>This sparse matrix class tries to resemble the
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> as much as possible with
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> as much as possible with
 the difference of this class being multi-dimensional.</p>
 <p>Creating a new sparse matrix is much similar to the
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy</span></code></a> equivalent.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.13.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy</span></code></a> equivalent.</p>
 <p><a class="reference internal" href="#sisl.SparseCSR.nnz" title="sisl.SparseCSR.nnz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nnz</span></code></a> is only used if <code class="docutils literal notranslate"><span class="pre">nnz</span> <span class="pre">&gt;</span> <span class="pre">nr</span> <span class="pre">*</span> <span class="pre">nnzpr</span></code>.</p>
 <p>This class may be instantiated by verious means.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">SparseCSR(S)</span></code>
-where <code class="docutils literal notranslate"><span class="pre">S</span></code> is a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> matrix</p></li>
+where <code class="docutils literal notranslate"><span class="pre">S</span></code> is a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.13.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> matrix</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SparseCSR((M,N)[,</span> <span class="pre">dtype])</span></code>
 the shape of the sparse matrix (equivalent
 to <code class="docutils literal notranslate"><span class="pre">SparseCSR((M,N,1)[,</span> <span class="pre">dtype])</span></code>.</p></li>
@@ -184,7 +182,7 @@ creating a sparse matrix with <code class="docutils literal notranslate"><span c
 and <code class="docutils literal notranslate"><span class="pre">K</span></code> elements per sparse element.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SparseCSR((data,</span> <span class="pre">ptr,</span> <span class="pre">indices),</span> <span class="pre">[shape,</span> <span class="pre">dtype])</span></code>
 creating a sparse matrix with specific data as would
-be used when creating <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>.</p></li>
+be used when creating <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>.</p></li>
 </ul>
 <p>Additionally these parameters control the
 creation of the sparse matrix.</p>
@@ -259,7 +257,7 @@ This quantity has precedence over <em class="xref py py-obj">nnzpr</em></p></li>
 <td><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.tocsr" title="sisl.SparseCSR.tocsr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocsr</span></code></a>([dim])</p></td>
-<td><p>Convert dimension <a class="reference internal" href="#sisl.SparseCSR.dim" title="sisl.SparseCSR.dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dim</span></code></a> into a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> format</p></td>
+<td><p>Convert dimension <a class="reference internal" href="#sisl.SparseCSR.dim" title="sisl.SparseCSR.dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dim</span></code></a> into a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> format</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.todense" title="sisl.SparseCSR.todense"><code class="xref py py-obj docutils literal notranslate"><span class="pre">todense</span></code></a>()</p></td>
 <td><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p></td>
@@ -461,7 +459,7 @@ matrix from an old sparse matrix</p>
 <dd><p>Finalizes the sparse matrix by removing all non-set elements</p>
 <p>One may still interact with the sparse matrix as one would previously.</p>
 <p>NOTE: This is mainly an internal used routine to ensure data structure
-when converting to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a></p>
+when converting to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – sort the column indices for each row</p>
@@ -483,7 +481,7 @@ when converting to <a class="reference external" href="https://docs.scipy.org/do
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*sps</strong> (<em>sparse-matrix</em>) – any sparse matrix which can convert to a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> matrix</p></li>
+<li><p><strong>*sps</strong> (<em>sparse-matrix</em>) – any sparse matrix which can convert to a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> matrix</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><em>dtype</em></a><em>, </em><em>optional</em>) – data-type to store in the matrix, default to largest <code class="docutils literal notranslate"><span class="pre">dtype</span></code> for the
 passed sparse matrices</p></li>
 </ul>
@@ -640,12 +638,12 @@ By default the first given spmat decides the dimension.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseCSR.tocsr">
 <span class="sig-name descname"><span class="pre">tocsr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.tocsr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.tocsr" title="Link to this definition"></a></dt>
-<dd><p>Convert dimension <a class="reference internal" href="#sisl.SparseCSR.dim" title="sisl.SparseCSR.dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dim</span></code></a> into a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> format</p>
+<dd><p>Convert dimension <a class="reference internal" href="#sisl.SparseCSR.dim" title="sisl.SparseCSR.dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dim</span></code></a> into a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> format</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – dimension of the data returned in a scipy sparse matrix format</p></li>
-<li><p><strong>**kwargs</strong> – arguments passed to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> routine</p></li>
+<li><p><strong>**kwargs</strong> – arguments passed to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> routine</p></li>
 </ul>
 </dd>
 </dl>

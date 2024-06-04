@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.PeriodicTable &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl.PeriodicTable &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -35,7 +35,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/js/theme.js"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -75,7 +75,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -120,7 +119,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
 </ul>
 </li>
@@ -167,9 +165,9 @@ from &lt;<a class="reference external" href="https://en.wikipedia.org/wiki/Atomi
 <p>The following values are accessible:</p>
 <ul class="simple">
 <li><p>atomic mass (in atomic units)</p></li>
-<li><p>empirical atomic radii (in Ang)</p></li>
-<li><p>calculated atomic radii (in Ang)</p></li>
-<li><p>van der Waals atomic radii (in Ang)</p></li>
+<li><p>empirical atomic radius (in Ang)</p></li>
+<li><p>calculated atomic radius (in Ang)</p></li>
+<li><p>van der Waals atomic radius (in Ang)</p></li>
 </ul>
 <p>For certain species the above quantities are not available
 and a negative number is returned.</p>
@@ -190,13 +188,13 @@ and a negative number is returned.</p>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mf">12.0107</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">atomic_mass</span><span class="p">(</span><span class="s1">&#39;Carbon&#39;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">.67</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="s1">&#39;Carbon&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">.67</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="s1">&#39;Carbon&#39;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">.67</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;calc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">.67</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;calc&#39;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">.7</span>  <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;empirical&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">.7</span>  <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;empirical&#39;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">1.7</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;vdw&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">1.7</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;vdw&#39;</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -218,11 +216,8 @@ and a negative number is returned.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.atomic_mass" title="sisl.PeriodicTable.atomic_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_mass</span></code></a>(key)</p></td>
 <td><p>Atomic mass of the corresponding atom</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.radii" title="sisl.PeriodicTable.radii"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radii</span></code></a>(key[, method])</p></td>
-<td><p>Atomic radii using different methods</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.radius" title="sisl.PeriodicTable.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></a>(key[, method])</p></td>
-<td><p>Atomic radii using different methods</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.radius" title="sisl.PeriodicTable.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></a>(key[, method])</p></td>
+<td><p>Atomic radius using different methods</p></td>
 </tr>
 </tbody>
 </table>
@@ -345,40 +340,10 @@ if <em class="xref py py-obj">key</em> is array_like, so will the returned value
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.PeriodicTable.radii">
-<span class="sig-name descname"><span class="pre">radii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.PeriodicTable.radii" title="Link to this definition"></a></dt>
-<dd><p>Atomic radii using different methods</p>
-<p>Return the atomic radii.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Uses value to lookup the atomic mass in the
-<a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p></li>
-<li><p><strong>method</strong> (<em>{'calc'</em><em>, </em><em>'empirical'</em><em>, </em><em>'vdw'}</em>) – <p>There are 3 different radii stored:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">calc</span></code>, the calculated atomic radii</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">empirical</span></code>, the empirically found values</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vdw</span></code>, the van-der-Waals found values</p></li>
-</ol>
-</div></blockquote>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>atomic radius in <em class="xref py py-obj">Ang</em></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="sisl.PeriodicTable.radius">
-<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/atom.html#PeriodicTable.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.radius" title="Link to this definition"></a></dt>
-<dd><p>Atomic radii using different methods</p>
-<p>Return the atomic radii.</p>
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'calc'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'empirical'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'vdw'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/atom.html#PeriodicTable.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.radius" title="Link to this definition"></a></dt>
+<dd><p>Atomic radius using different methods</p>
+<p>Return the atomic radius.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -387,7 +352,7 @@ if <em class="xref py py-obj">key</em> is array_like, so will the returned value
 <li><p><strong>method</strong> (<em>{'calc'</em><em>, </em><em>'empirical'</em><em>, </em><em>'vdw'}</em>) – <p>There are 3 different radii stored:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">calc</span></code>, the calculated atomic radii</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calc</span></code>, the calculated atomic radius</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">empirical</span></code>, the empirically found values</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">vdw</span></code>, the van-der-Waals found values</p></li>
 </ol>

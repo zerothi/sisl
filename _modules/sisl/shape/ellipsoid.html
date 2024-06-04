@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.ellipsoid &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl.shape.ellipsoid &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -34,7 +34,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -72,7 +72,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -134,7 +133,7 @@
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_in_sphere</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">product3</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">expand</span><span class="p">,</span> <span class="n">fnorm</span><span class="p">,</span> <span class="n">fnorm2</span><span class="p">,</span> <span class="n">orthogonalize</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">PureShape</span><span class="p">,</span> <span class="n">ShapeToDispatch</span>
@@ -205,7 +204,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the volume of the shape&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">product3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
 
@@ -305,14 +304,21 @@
 
 <div class="viewcode-block" id="Ellipsoid.within_index">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.within_index">[docs]</a>
-    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-8</span><span class="p">):</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rtol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of rtol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return indices of the points that are within the shape</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        other : array_like</span>
 <span class="sd">           the object that is checked for containment</span>
-<span class="sd">        tol : float, optional</span>
+<span class="sd">        rtol : float, optional</span>
 <span class="sd">           absolute tolerance for boundaries</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -324,7 +330,7 @@
         <span class="c1"># Get indices where we should do the more</span>
         <span class="c1"># expensive exact check of being inside shape</span>
         <span class="c1"># I.e. this reduces the search space to the box</span>
-        <span class="k">return</span> <span class="n">indices_in_sphere</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">tol</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">indices_in_sphere</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">rtol</span><span class="p">)</span></div>
 
 
 
@@ -398,7 +404,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the volume of the sphere&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">**</span><span class="mi">3</span>
 

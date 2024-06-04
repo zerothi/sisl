@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.xvSileSiesta &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl.io.siesta.xvSileSiesta &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -35,7 +35,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -75,7 +75,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -146,7 +145,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../wannier90.html">Wannier90</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../nodes.html">Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing</a></li>
 </ul>
 </li>
@@ -205,7 +203,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.xvSileSiesta.read_data" title="sisl.io.siesta.xvSileSiesta.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>()</p></td>
 <td><p>Returns an array with the velocities from the XV file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.xvSileSiesta.read_geometry" title="sisl.io.siesta.xvSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([ret_velocity, species_as_Z])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.xvSileSiesta.read_geometry" title="sisl.io.siesta.xvSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([ret_velocity, atoms, ...])</p></td>
 <td><p>Returns a <em class="xref py py-obj">Geometry</em> object from the XV file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.xvSileSiesta.read_lattice" title="sisl.io.siesta.xvSileSiesta.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
@@ -297,14 +295,15 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.xvSileSiesta.read_geometry">
-<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species_as_Z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/xv.html#xvSileSiesta.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.xvSileSiesta.read_geometry" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><span class="pre">Atoms</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species_as_Z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/xv.html#xvSileSiesta.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.xvSileSiesta.read_geometry" title="Link to this definition"></a></dt>
 <dd><p>Returns a <em class="xref py py-obj">Geometry</em> object from the XV file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ret_velocity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – also return the velocities in the file</p></li>
-<li><p><strong>species_as_Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> the atomic numbers are the species indices (useful when
-reading the ChemicalSpeciesLabel block simultaneously).</p></li>
+<li><p><strong>atoms</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a><em>, </em><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>]</em>) – an object containing the basis information, is useful to overwrite
+the atoms object contained in the geometry.</p></li>
+<li><p><strong>species_as_Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Deprecated, it does nothing!</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

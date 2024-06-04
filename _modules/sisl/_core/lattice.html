@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.lattice &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl._core.lattice &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -34,7 +34,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -72,7 +72,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -149,7 +148,7 @@
 <span class="kn">from</span> <span class="nn">sisl.shape.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
 <span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">CellAxes</span><span class="p">,</span> <span class="n">CellAxis</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
-<span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">direction</span>
+<span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">direction</span><span class="p">,</span> <span class="n">listify</span>
 
 <span class="kn">from</span> <span class="nn">._lattice</span> <span class="kn">import</span> <span class="n">cell_invert</span><span class="p">,</span> <span class="n">cell_reciprocal</span>
 
@@ -283,10 +282,64 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of each lattice vector&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Lattice.lengthf">
+<a class="viewcode-back" href="../../../api/generated/sisl.Lattice.html#sisl.Lattice.lengthf">[docs]</a>
+    <span class="k">def</span> <span class="nf">lengthf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">:</span> <span class="n">CellAxes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of specific lattice vectors (as a function)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axes:</span>
+<span class="sd">            only calculate the volume based on a subset of axes</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Only get lengths of two lattice vectors:</span>
+
+<span class="sd">        &gt;&gt;&gt; lat = Lattice(1)</span>
+<span class="sd">        &gt;&gt;&gt; lat.lengthf([0, 1])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
+        <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">])</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Volume of cell&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">volumef</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Lattice.volumef">
+<a class="viewcode-back" href="../../../api/generated/sisl.Lattice.html#sisl.Lattice.volumef">[docs]</a>
+    <span class="k">def</span> <span class="nf">volumef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">:</span> <span class="n">CellAxes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Volume of cell (as a function)</span>
+
+<span class="sd">        Default to the 3D volume.</span>
+<span class="sd">        For `axes` with only 2 elements, it corresponds to an area.</span>
+<span class="sd">        For `axes` with only 1 element, it corresponds to a length.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axes:</span>
+<span class="sd">            only calculate the volume based on a subset of axes</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Only get the volume of the periodic directions:</span>
+
+<span class="sd">        &gt;&gt;&gt; lat = Lattice(1)</span>
+<span class="sd">        &gt;&gt;&gt; lat.pbc = (True, False, True)</span>
+<span class="sd">        &gt;&gt;&gt; lat.volumef(lat.pbc.nonzero()[0])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
+
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">cross3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]])))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cross3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">])</span>
+        <span class="k">return</span> <span class="mf">0.0</span></div>
+
 
 <div class="viewcode-block" id="Lattice.area">
 <a class="viewcode-back" href="../../../api/generated/sisl.Lattice.html#sisl.Lattice.area">[docs]</a>
@@ -294,7 +347,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the area spanned by the two axis `ax0` and `ax1`&quot;&quot;&quot;</span>
         <span class="n">axis1</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">axis1</span><span class="p">)</span>
         <span class="n">axis2</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">axis2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis2</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span></div>
+        <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis2</span><span class="p">]))</span></div>
 
 
     <span class="nd">@property</span>
@@ -313,6 +366,25 @@
         <span class="c1"># set_boundary_condition does not allow to have PERIODIC and non-PERIODIC</span>
         <span class="c1"># along the same lattice vector. So checking one should suffice</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">PERIODIC</span>
+
+    <span class="nd">@pbc</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">pbc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Boolean array to specify whether the boundary conditions are periodic`&quot;&quot;&quot;</span>
+        <span class="c1"># set_boundary_condition does not allow to have PERIODIC and non-PERIODIC</span>
+        <span class="c1"># along the same lattice vector. So checking one should suffice</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">pbc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+
+        <span class="n">PERIODIC</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">PERIODIC</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">bc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pbc</span><span class="p">):</span>
+
+            <span class="c1"># Simply skip those that are not T|F</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">bc</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">PERIODIC</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">PERIODIC</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="o">.</span><span class="n">UNKNOWN</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -617,7 +689,14 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">axes</span><span class="p">:</span> <span class="n">CellAxes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">axes</span><span class="p">:</span> <span class="n">CellAxes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions</span>
 
 <span class="sd">        The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations</span>
@@ -635,9 +714,14 @@
 <span class="sd">           the coordinates that we will wish to encompass and analyze.</span>
 <span class="sd">        axes :</span>
 <span class="sd">           only the cell-vectors along the provided axes will be used</span>
-<span class="sd">        tol : float</span>
+<span class="sd">        atol :</span>
 <span class="sd">           tolerance (in Angstrom) of the positions. I.e. we neglect coordinates</span>
 <span class="sd">           which are not within the radius of this magnitude</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError :</span>
+<span class="sd">            when the cell-parameters does not fit within the given tolerance (`atol`).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># In case the passed coordinates are from a Geometry</span>
         <span class="kn">from</span> <span class="nn">.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
@@ -658,11 +742,11 @@
         <span class="c1"># Then reduce search space by removing those coordinates</span>
         <span class="c1"># that are more than the tolerance.</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">dot</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">ix</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">atol</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s2">&quot;Could not fit the cell parameters to the coordinates &quot;</span>
-                <span class="s2">&quot;due to insufficient accuracy (try increase the tolerance)&quot;</span>
+                <span class="s2">&quot;due to insufficient accuracy (try to increase the tolerance)&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># Reduce problem to allowed values below the tolerance</span>
@@ -671,13 +755,9 @@
         <span class="c1"># Reduce to total repetitions</span>
         <span class="n">ireps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 
-        <span class="c1"># Only repeat the axis requested</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
-
         <span class="c1"># Reduce the non-set axis</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">axes</span><span class="p">))</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">ax</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
                     <span class="n">ireps</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -748,6 +828,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">axis1</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">axis1</span><span class="p">)</span>
         <span class="n">axis2</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">axis2</span><span class="p">)</span>
+
         <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">cross3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">axis1</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="n">axis2</span><span class="p">])</span>
         <span class="c1"># Normalize</span>
@@ -828,9 +909,7 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">             cell-vectors with prescribed length, same order as `axes`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">axes</span><span class="p">))</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
 
         <span class="n">length</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">length</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
@@ -841,6 +920,7 @@
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cell2length length parameter should be a single &quot;</span>
                     <span class="s2">&quot;float, or an array of values according to axes argument.&quot;</span>
                 <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">axes</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
@@ -1061,42 +1141,61 @@
 
 <div class="viewcode-block" id="Lattice.is_orthogonal">
 <a class="viewcode-back" href="../../../api/generated/sisl.Lattice.html#sisl.Lattice.is_orthogonal">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rtol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of rtol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">is_orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns true if the cell vectors are orthogonal.</span>
 
+<span class="sd">        Internally this will be done on the normalized lattice vectors</span>
+<span class="sd">        to ensure no numerical instability.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        tol: float, optional</span>
-<span class="sd">            the threshold above which the scalar product of two cell vectors will be considered non-zero.</span>
+<span class="sd">        rtol: float, optional</span>
+<span class="sd">            the threshold above which the scalar product of two normalized cell</span>
+<span class="sd">            vectors will be considered non-zero.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Convert to unit-vector cell</span>
-        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span>
         <span class="n">cl</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
         <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">cl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">cl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">cl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tol</span>
-        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">i_s</span>
-        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">i_s</span>
+        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">rtol</span>
+        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">rtol</span> <span class="ow">and</span> <span class="n">i_s</span>
+        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">rtol</span> <span class="ow">and</span> <span class="n">i_s</span>
         <span class="k">return</span> <span class="n">i_s</span></div>
 
 
 <div class="viewcode-block" id="Lattice.is_cartesian">
 <a class="viewcode-back" href="../../../api/generated/sisl.Lattice.html#sisl.Lattice.is_cartesian">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">is_cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        tol: float, optional</span>
+<span class="sd">        atol: float, optional</span>
 <span class="sd">            the threshold above which an off diagonal term will be considered non-zero.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get the off diagonal terms of the cell</span>
         <span class="n">off_diagonal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">:]</span>
-        <span class="c1"># Check if any of them are above the threshold tolerance</span>
-        <span class="k">return</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">off_diagonal</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">)</span></div>
+
+        <span class="c1"># Check if all are bolew the threshold tolerance</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">off_diagonal</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">atol</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.parallel">
@@ -1111,9 +1210,8 @@
 <span class="sd">        axes :</span>
 <span class="sd">           only check the specified axes (default to all)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
-        <span class="n">axis</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">axes</span><span class="p">))</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span>
+
         <span class="c1"># Convert to unit-vector cell</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -1171,21 +1269,28 @@
 
 <div class="viewcode-block" id="Lattice.equal">
 <a class="viewcode-back" href="../../../api/generated/sisl.Lattice.html#sisl.Lattice.equal">[docs]</a>
-    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether two lattices are equivalent</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        other : Lattice</span>
 <span class="sd">           the other object to check whether the lattice is equivalent</span>
-<span class="sd">        tol : float, optional</span>
+<span class="sd">        atol : float, optional</span>
 <span class="sd">            tolerance value for the cell vectors and origin</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Lattice</span><span class="p">,</span> <span class="n">LatticeChild</span><span class="p">)):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">same</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
         <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
-        <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">same</span></div>
 
 
@@ -1268,7 +1373,16 @@
 
 <span class="k">class</span> <span class="nc">LatticeNewLatticeDispatch</span><span class="p">(</span><span class="n">LatticeNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># for sanitation purposes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Lattice as-is, for sanitization purposes&quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="o">!=</span> <span class="n">lattice</span><span class="o">.</span><span class="vm">__class__</span><span class="p">:</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+                <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">nsc</span><span class="o">=</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">origin</span><span class="o">=</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">boundary_condition</span><span class="o">=</span><span class="n">lattice</span><span class="o">.</span><span class="n">boundary_condition</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="p">)</span>
+            <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">lattice</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">lattice</span>

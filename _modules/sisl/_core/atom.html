@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.atom &mdash; sisl 0.1-005c5ba</title>
+  <title>sisl._core.atom &mdash; sisl 0.1-1d3f4da</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=20e68a22"></script>
+        <script src="../../../_static/documentation_options.js?v=7bd2ecbf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -34,7 +34,7 @@
         <script>let toggleOpenOnPrint = 'true';</script>
         <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=36754332"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-005c5ba
+                0.1-1d3f4da
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -72,7 +72,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
 <ul>
@@ -129,6 +128,7 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Real</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -160,9 +160,9 @@
 <span class="sd">    The following values are accessible:</span>
 
 <span class="sd">    * atomic mass (in atomic units)</span>
-<span class="sd">    * empirical atomic radii (in Ang)</span>
-<span class="sd">    * calculated atomic radii (in Ang)</span>
-<span class="sd">    * van der Waals atomic radii (in Ang)</span>
+<span class="sd">    * empirical atomic radius (in Ang)</span>
+<span class="sd">    * calculated atomic radius (in Ang)</span>
+<span class="sd">    * van der Waals atomic radius (in Ang)</span>
 
 <span class="sd">    For certain species the above quantities are not available</span>
 <span class="sd">    and a negative number is returned.</span>
@@ -185,13 +185,13 @@
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; 12.0107 == PeriodicTable().atomic_mass(&#39;Carbon&#39;)</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; .67 == PeriodicTable().radii(&#39;Carbon&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; .67 == PeriodicTable().radius(&#39;Carbon&#39;)</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; .67 == PeriodicTable().radii(6,&#39;calc&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; .67 == PeriodicTable().radius(6,&#39;calc&#39;)</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; .7  == PeriodicTable().radii(6,&#39;empirical&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; .7  == PeriodicTable().radius(6,&#39;empirical&#39;)</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; 1.7 == PeriodicTable().radii(6,&#39;vdw&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; 1.7 == PeriodicTable().radius(6,&#39;vdw&#39;)</span>
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1015,10 +1015,10 @@
 
 <div class="viewcode-block" id="PeriodicTable.radius">
 <a class="viewcode-back" href="../../../api/generated/sisl.PeriodicTable.html#sisl.PeriodicTable.radius">[docs]</a>
-    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;calc&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Atomic radii using different methods</span>
+    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;calc&quot;</span><span class="p">,</span> <span class="s2">&quot;empirical&quot;</span><span class="p">,</span> <span class="s2">&quot;vdw&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;calc&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Atomic radius using different methods</span>
 
-<span class="sd">        Return the atomic radii.</span>
+<span class="sd">        Return the atomic radius.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1028,7 +1028,7 @@
 <span class="sd">        method : {&#39;calc&#39;, &#39;empirical&#39;, &#39;vdw&#39;}</span>
 <span class="sd">            There are 3 different radii stored:</span>
 
-<span class="sd">             1. ``calc``, the calculated atomic radii</span>
+<span class="sd">             1. ``calc``, the calculated atomic radius</span>
 <span class="sd">             2. ``empirical``, the empirically found values</span>
 <span class="sd">             3. ``vdw``, the van-der-Waals found values</span>
 
@@ -1043,8 +1043,6 @@
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
         <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">fromiterd</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">Z</span><span class="p">))</span> <span class="o">/</span> <span class="mi">100</span></div>
 
-
-    <span class="n">radii</span> <span class="o">=</span> <span class="n">radius</span>
 
 
 <span class="c1"># Create a local instance of the periodic table to</span>
@@ -1223,6 +1221,9 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orbitals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="c1"># radius has been given</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span> <span class="o">=</span> <span class="p">[</span><span class="n">Orbital</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orbitals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="c1"># likely a radiuse + tag</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span> <span class="o">=</span> <span class="p">[</span><span class="n">Orbital</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">R</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="n">orb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="p">):</span>
                 <span class="n">orbitals</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -1249,14 +1250,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span> <span class="o">=</span> <span class="n">mass</span>
 
-        <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="n">tag</span></div>
+        <span class="c1"># self.tag will return self.symbol if not set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="n">tag</span></div>
 
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_orbitals</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -1276,6 +1275,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tag for atom&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span>
 
     <span class="nd">@property</span>
@@ -1301,8 +1302,8 @@
 
 <div class="viewcode-block" id="Atom.radius">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atom.html#sisl.Atom.radius">[docs]</a>
-    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;calc&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the atomic radii of the atom (in Ang)</span>
+    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;calc&quot;</span><span class="p">,</span> <span class="s2">&quot;empirical&quot;</span><span class="p">,</span> <span class="s2">&quot;vdw&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;calc&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the atomic radius of the atom (in Ang)</span>
 
 <span class="sd">        See `PeriodicTable.radius` for details on the argument.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1345,7 +1346,7 @@
 
 <div class="viewcode-block" id="Atom.iter">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atom.html#sisl.Atom.iter">[docs]</a>
-    <span class="k">def</span> <span class="nf">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Loop on all orbitals in this atom</span>
 
 <span class="sd">        Parameters</span>
@@ -1470,7 +1471,7 @@
 
 <div class="viewcode-block" id="Atom.equal">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atom.html#sisl.Atom.equal">[docs]</a>
-    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if `other` is the same as this atomic species</span>
 
 <span class="sd">        Parameters</span>
@@ -1478,7 +1479,7 @@
 <span class="sd">        other : Atom</span>
 <span class="sd">           the other object to check againts</span>
 <span class="sd">        R : bool, optional</span>
-<span class="sd">           if True the equality check also checks the orbital radii, else they are not compared</span>
+<span class="sd">           if True the equality check also checks the orbital radius, else they are not compared</span>
 <span class="sd">        psi : bool, optional</span>
 <span class="sd">           if True, also check the wave-function component of the orbitals, see `Orbital.psi`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1745,7 +1746,7 @@
 
 <div class="viewcode-block" id="Atoms.maxR">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atoms.html#sisl.Atoms.maxR">[docs]</a>
-    <span class="k">def</span> <span class="nf">maxR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">maxR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The maximum radius of the atoms</span>
 
 <span class="sd">        Parameters</span>
@@ -2122,7 +2123,7 @@
 
 <div class="viewcode-block" id="Atoms.replace_atom">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atoms.html#sisl.Atoms.replace_atom">[docs]</a>
-    <span class="k">def</span> <span class="nf">replace_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_from</span><span class="p">,</span> <span class="n">atom_to</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">replace_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_from</span><span class="p">:</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">atom_to</span><span class="p">:</span> <span class="n">Atom</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace all atoms equivalent to `atom_from` with `atom_to` (in-place)</span>
 
 <span class="sd">        I.e. this is the preferred way of adapting all atoms of a specific type</span>
