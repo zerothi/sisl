@@ -1,13 +1,15 @@
-netCDF4
+xarray>=0.20
 matplotlib
-ipykernel
-nbsphinx
 dill>=0.3.2
 pathos
 scikit-image
 tqdm
 plotly>=5.12.0
+nodify
+netCDF4
 # actual documentation requirements
+ipykernel
+nbsphinx
 sphinx-rtd-theme
 sphinx-design
 sphinx-gallery
