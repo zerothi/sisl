@@ -281,9 +281,6 @@ class Listify:
         """Allow piping of function calls (on the right side)"""
         return self(arg)
 
-    def __getattr__(self, attr):
-        raise RuntimeError(f"{self.__class__.__name__} can not be used with {attr}.")
-
 
 listify = Listify()
 
