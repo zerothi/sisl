@@ -22,7 +22,8 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :maxdepth: 2
 
    basic
-   geom
+   geom/building
+   geom/neighbors
    physics
    mixing
    viz/index

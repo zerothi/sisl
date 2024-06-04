@@ -3,4 +3,5 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from ._finder import NeighborFinder
+from ._finder import *
+from ._neighborlists import *

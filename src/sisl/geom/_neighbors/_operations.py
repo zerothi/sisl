@@ -418,10 +418,8 @@ def get_all_unique_pairs(
                 # If neigh_at is smaller than at, we already stored
                 # this pair when performing the search for neigh_at.
                 # The following atoms will have even lower indices
-                # So we can just move to the next bin. However, if
-                # we are checking a neighboring cell, this connection
-                # will always be unique.
-                if not not_unit_cell and neigh_at <= at:
+                # So we can just move to the next bin.
+                if neigh_at <= at:
                     break
 
                 # Calculate the distance between the atom and the potential
