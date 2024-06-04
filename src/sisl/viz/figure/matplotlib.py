@@ -248,6 +248,7 @@ class MatplotlibFigure(Figure):
         line={},
         marker={},
         text=None,
+        showlegend=True,
         row=None,
         col=None,
         _axes=None,
@@ -257,6 +258,10 @@ class MatplotlibFigure(Figure):
         marker_color = marker.get("color")
 
         axes = _axes or self._get_subplot_axes(row=row, col=col)
+
+        # Matplotlib doesn't show lines on the legend if their name starts
+        # with an underscore, so prepend the name with "_" if showlegend is False.
+        name = name if showlegend else f"_{name}"
 
         return axes.plot(
             x,
@@ -279,6 +284,7 @@ class MatplotlibFigure(Figure):
         line={},
         marker={},
         text=None,
+        showlegend=True,
         row=None,
         col=None,
         _axes=None,
@@ -288,6 +294,10 @@ class MatplotlibFigure(Figure):
         # https://matplotlib.org/stable/gallery/lines_bars_and_markers/multicolored_line.html
 
         color = line.get("color")
+
+        # Matplotlib doesn't show lines on the legend if their name starts
+        # with an underscore, so prepend the name with "_" if showlegend is False.
+        name = name if showlegend else f"_{name}"
 
         if not np.issubdtype(np.array(color).dtype, np.number):
             return self.draw_multicolor_scatter(
@@ -358,6 +368,7 @@ class MatplotlibFigure(Figure):
         y,
         line={},
         name=None,
+        showlegend=True,
         dependent_axis=None,
         row=None,
         col=None,
@@ -370,6 +381,10 @@ class MatplotlibFigure(Figure):
         spacing = width / 2
 
         axes = _axes or self._get_subplot_axes(row=row, col=col)
+
+        # Matplotlib doesn't show lines on the legend if their name starts
+        # with an underscore, so prepend the name with "_" if showlegend is False.
+        name = name if showlegend else f"_{name}"
 
         if dependent_axis in ("y", None):
             axes.fill_between(
@@ -392,6 +407,7 @@ class MatplotlibFigure(Figure):
         marker={},
         text=None,
         zorder=2,
+        showlegend=True,
         row=None,
         col=None,
         _axes=None,
@@ -399,6 +415,11 @@ class MatplotlibFigure(Figure):
         **kwargs,
     ):
         axes = _axes or self._get_subplot_axes(row=row, col=col)
+
+        # Matplotlib doesn't show lines on the legend if their name starts
+        # with an underscore, so prepend the name with "_" if showlegend is False.
+        name = name if showlegend else f"_{name}"
+
         try:
             return axes.scatter(
                 x,

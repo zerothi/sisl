@@ -12,9 +12,6 @@ import numpy as np
 import xarray as xr
 from xarray import DataArray, Dataset
 
-from sisl import Geometry
-from sisl.messages import SislError
-
 
 class XarrayData:
     @singledispatchmethod
