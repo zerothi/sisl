@@ -643,10 +643,10 @@ class PlotlyFigure(Figure):
                 size=sp_size,
                 color=sp_color,
                 opacity=sp_opacity,
-                name=f"{name}_{i}",
+                name=name,
                 legendgroup=name,
                 showlegend=showlegend,
-                meta=meta,
+                meta={**meta, f"{name}_i": i},
             )
             showlegend = False
 

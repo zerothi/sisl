@@ -84,6 +84,7 @@ def pdos_plot(
         x=x,
         y=y,
         width="size",
+        name="group",
         what=line_mode,
         dependent_axis=dependent_axis,
     )
