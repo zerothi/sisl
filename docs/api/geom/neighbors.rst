@@ -1,4 +1,4 @@
-.. _geom:
+.. _geom-neighbors:
 
 *****************
 Finding neighbors
@@ -23,6 +23,12 @@ as you want. You can ask for all neighbors or only the neighbors of atoms that y
    :toctree: generated/
 
    NeighborFinder
+   FullNeighborList
+   UniqueNeighborList
+   PartialNeighborList
+   AtomNeighborList
+   PointsNeighborList
+   PointNeighborList
 
 
 Neighbor lists
