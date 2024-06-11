@@ -590,7 +590,7 @@ class PlotlyFigure(Figure):
         )
 
     def draw_scatter(self, x, y, name=None, marker={}, **kwargs):
-        marker.pop("dash", None)
+        marker = {k: v for k, v in marker.items() if k != "dash"}
         self.draw_line(x, y, name, marker=marker, mode="markers", **kwargs)
 
     def draw_multicolor_scatter(self, *args, **kwargs):
@@ -606,8 +606,9 @@ class PlotlyFigure(Figure):
 
         super().draw_multicolor_line_3D(x, y, z, **kwargs)
 
-    def draw_scatter_3D(self, *args, **kwargs):
-        self.draw_line_3D(*args, mode="markers", **kwargs)
+    def draw_scatter_3D(self, *args, marker={}, **kwargs):
+        marker = {k: v for k, v in marker.items() if k != "dash"}
+        self.draw_line_3D(*args, mode="markers", marker=marker, **kwargs)
 
     def draw_multicolor_scatter_3D(self, *args, **kwargs):
         kwargs["marker"] = self._handle_multicolor_scatter(kwargs["marker"], kwargs)

@@ -240,6 +240,29 @@ class MatplotlibFigure(Figure):
             "dot": "dotted",
         }.get(dash, dash)
 
+    def _sanitize_colorscale(self, colorscale):
+        """Makes sure that a colorscale is either a string or a colormap."""
+        if isinstance(colorscale, str):
+            return colorscale
+        elif isinstance(colorscale, list):
+
+            def _sanitize_scale_item(item):
+                # Plotly uses rgb colors as a string like "rgb(r,g,b)",
+                # while matplotlib uses tuples
+                # Also plotly's range goes from 0 to 255 while matplotlib's goes from 0 to 1
+                if isinstance(item, (tuple, list)) and len(item) == 2:
+                    return (item[0], _sanitize_scale_item(item[1]))
+                elif isinstance(item, str) and item.startswith("rgb("):
+                    return tuple(float(x) / 255 for x in item[4:-1].split(","))
+
+            colorscale = [_sanitize_scale_item(item) for item in colorscale]
+
+            return matplotlib.colors.LinearSegmentedColormap.from_list(
+                "custom", colorscale
+            )
+        else:
+            return colorscale
+
     def draw_line(
         self,
         x,
@@ -426,7 +449,7 @@ class MatplotlibFigure(Figure):
                 y,
                 c=marker.get("color"),
                 s=marker.get("size", 1),
-                cmap=marker.get("colorscale"),
+                cmap=self._sanitize_colorscale(marker.get("colorscale")),
                 alpha=marker.get("opacity"),
                 label=name,
                 zorder=zorder,
@@ -442,7 +465,7 @@ class MatplotlibFigure(Figure):
                     y,
                     c=marker.get("color"),
                     s=marker.get("size", 1),
-                    cmap=marker.get("colorscale"),
+                    cmap=self._sanitize_colorscale(marker.get("colorscale")),
                     label=name,
                     zorder=zorder,
                     **kwargs,
@@ -481,7 +504,7 @@ class MatplotlibFigure(Figure):
         axes = _axes or self._get_subplot_axes(row=row, col=col)
 
         coloraxis = self._coloraxes.get(coloraxis, {})
-        colorscale = coloraxis.get("colorscale")
+        colorscale = self._sanitize_colorscale(coloraxis.get("colorscale"))
         vmin = coloraxis.get("cmin")
         vmax = coloraxis.get("cmax")
 
