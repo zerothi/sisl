@@ -16,7 +16,7 @@ The algorithm is based on the **partition of space into bins**. This partition l
 neighbors of a certain atom only within the bins adjacent to the bin the atom is in.
 
 Since the bins must be created only once, there is a `NeighborFinder` class which **on initialization
-creates the bin grid**. Once the finder is can created, you can query it for neighbors as many times
+creates the bin grid**. Once the finder is created, you can query it for neighbors as many times
 as you want. You can ask for all neighbors or only the neighbors of atoms that you are interested in.
 
 .. autosummary::
@@ -52,5 +52,6 @@ The following table summarizes the properties of each type of neighbor list:
 
 Where:
 
-- `i < j` indicates whether the list only contains one direction of the interaction.
+- `i < j` indicates whether the list only contains one direction of the interaction, i.e. by omitting
+  the transposed interaction.
 - `Items` indicates the type that you get when you iterate or index (e.g. ``neighbors[0]``) the list.

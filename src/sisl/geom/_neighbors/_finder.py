@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from functools import cached_property
 from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
@@ -14,10 +13,8 @@ from sisl.utils import size_to_elements
 
 from . import _operations
 from ._neighborlists import (
-    AtomNeighborList,
     FullNeighborList,
     PartialNeighborList,
-    PointNeighborList,
     PointsNeighborList,
     UniqueNeighborList,
 )
