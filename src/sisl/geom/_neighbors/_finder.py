@@ -12,12 +12,22 @@ from sisl.typing import AtomsIndex
 from sisl.utils import size_to_elements
 
 from . import _operations
+from ._neighborlists import (
+    FullNeighborList,
+    PartialNeighborList,
+    PointsNeighborList,
+    UniqueNeighborList,
+)
+
+__all__ = [
+    "NeighborFinder",
+]
 
 
 class NeighborFinder:
-    """Efficient linear scaling finding of neighbors.
+    """Fast and linear scaling finding of neighbors.
 
-    Once this class is instantiated, a table is build. Then,
+    Once this class is instantiated, a table is built. Then,
     the neighbor finder can be queried as many times as wished
     as long as the geometry doesn't change.
 
@@ -54,19 +64,69 @@ class NeighborFinder:
         Hence, this value can be used to fine-tune the memory requirement by
         decreasing number of bins, at the cost of a bit more run-time searching
         bins.
+
+    Examples
+    --------
+
+    You need to initialize it with a geometry and the cutoff radius. Then,
+    you can call the ``find_neighbors``, ``find_unique_pairs`` or ``find_close``
+    methods to query the finder for neighbors. These methods will return a neighbors
+    list (e.g ``find_neighbors`` returns a ``FullNeighborList``).
+
+    Here is an example of how to find all neighbors on a graphene structure with
+    a vacancy:
+
+    .. code-block:: python
+
+        import sisl
+
+        # Build a graphene supercell with a vacancy
+        graphene = sisl.geom.graphene().tile(2, 0).tile(2, 1)
+        graphene = graphene.remove(2).translate2uc()
+
+        # Initialize a finder for neighbors that are within 1.5 Angstrom
+        finder = sisl.geom.NeighborFinder(graphene, R=1.5)
+
+        # Find all neighbors
+        neighbors = finder.find_neighbors()
+
+        # You can get the neighbor pairs (i,j) from the i and j attributes
+        # The supercell index of atom J is in the isc attribute.
+        print("ATOM I SHAPE:", neighbors.i.shape)
+        print("ATOM J (NEIGHBOR) SHAPE:", neighbors.j.shape)
+        print("NEIGHBORS ISC:", neighbors.isc.shape)
+
+        # You can also loop through atoms to get their neighbors
+        for at_neighs in neighbors:
+            print()
+            print(f"NEIGHBORS OF ATOM {at_neighs.atom} ({at_neighs.n_neighbors} neighbors): ")
+            print("J", at_neighs.j)
+            print("ISC", at_neighs.isc)
+
+        # Or get the neighbors of a particular atom:
+        neighbors[0].j
+
+    See Also
+    --------
+    FullNeighborList, UniqueNeighborList, PartialNeighborList, PointsNeighborList
+        The neighbor lists returned by this class when neighbors are requested.
+
     """
 
     #: Memory control of the finder
     memory: Tuple[str, float] = ("200MB", 1.5)
+    #: Number of bins along each cell direction
+    nbins: Tuple[int, int, int]
+    #: Total number of bins
+    total_nbins: int
 
+    #: The geometry associated with the finder
     geometry: Geometry
     # Geometry actually used for binning. Can be the provided geometry
     # or a tiled geometry if the search radius is too big (compared to the lattice size).
     _bins_geometry: Geometry
 
-    nbins: Tuple[int, int, int]
-    total_nbins: int
-
+    #: The cutoff radius for each atom in the geometry.
     R: np.ndarray
     _aux_R: np.ndarray
     _overlap: bool
@@ -93,6 +153,11 @@ class NeighborFinder:
         bin_size: Union[float, Tuple[float, float, float]] = 2,
     ):
         """Prepares everything for neighbor finding.
+
+        **You don't need to call this method after initializing the finder**,
+        this is called internally already!
+
+        This method migh be used to reset the finder with new parameters.
 
         Parameters
         ----------
@@ -127,6 +192,17 @@ class NeighborFinder:
         """
         # Set the geometry. Copy it because we may need to modify the supercell size.
         if geometry is not None:
+
+            # Warn that we do not support atoms outside the unit cell just yet.
+            fxyz = geometry.fxyz
+            if np.any((fxyz < -1e-8) | (fxyz > (1 + 1e-8))):
+                raise ValueError(
+                    f"Coordinates outside the unit cell are not supported by {self.__class__.__name__} for now. "
+                    "You can do geometry.translate2uc() to move atoms to the unit cell, but note that "
+                    "this will change the supercell indices of the connections and might not be compatible "
+                    "with the indices of your sparse matrices, for example."
+                )
+
             self.geometry = geometry.copy()
 
         # If R was not provided, build an array of Rs
@@ -282,6 +358,10 @@ class NeighborFinder:
             The bin indices. If `cartesian=True`, the shape of the array is (N, 3),
             otherwise it is (N,).
         """
+        # Avoid numerical errors in coordinates
+        fxyz[(fxyz <= 0) & (fxyz > -1e-8)] = 1e-8
+        fxyz[(fxyz >= 1) & (fxyz < 1 + 1e-8)] = 1 - 1e-8
+
         bin_indices = ((fxyz) % 1) * self.nbins
         # Atoms that are exactly at the limit of the cell might have fxyz = 1
         # which would result in a bin index outside of range.
@@ -409,9 +489,8 @@ class NeighborFinder:
     def find_neighbors(
         self,
         atoms: AtomsIndex = None,
-        as_pairs: bool = False,
         self_interaction: bool = False,
-    ):
+    ) -> Union[FullNeighborList, PartialNeighborList]:
         """Find neighbors as specified in the finder.
 
         This routine only executes the action of finding neighbors,
@@ -425,22 +504,15 @@ class NeighborFinder:
             be sanitized by `sisl.Geometry` is a valid value.
 
             If not provided, neighbors for all atoms are searched.
-        as_pairs: bool, optional
-            If `True` pairs of atoms are returned. Otherwise a list containing
-            the neighbors for each atom is returned.
         self_interaction: bool, optional
             whether to consider an atom a neighbor of itself.
 
         Returns
         ----------
-        np.ndarray or list:
-            If `as_pairs=True`:
-                A `np.ndarray` of shape (n_pairs, 5) is returned.
-                Each pair `ij` means that `j` is a neighbor of `i`.
-                The three extra columns are the supercell indices of atom `j`.
-            If `as_pairs=False`:
-                A list containing a numpy array of shape (n_neighs, 4) for each atom.
+        neighbors
+            The neighbors list. It will be a partial list if `atoms` is provided.
         """
+        unsanitized_atoms = atoms
         # Sanitize atoms
         atoms = self.geometry._sanitize_atoms(atoms)
 
@@ -489,23 +561,24 @@ class NeighborFinder:
                 neighbor_pairs, split_ind
             )
 
-        if as_pairs:
-            # Just return the neighbor pairs
-            return neighbor_pairs[: split_ind[-1]]
-
-        # Split to get the neighbors of each atom
-        return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
+        if unsanitized_atoms is None:
+            return FullNeighborList(
+                self.geometry, neighbor_pairs, split_indices=split_ind
+            )
+        else:
+            return PartialNeighborList(
+                self.geometry, neighbor_pairs, atoms=atoms, split_indices=split_ind
+            )
 
     def find_unique_pairs(
         self,
         self_interaction: bool = False,
-    ):
+    ) -> UniqueNeighborList:
         """Find unique neighbor pairs within the geometry.
 
-        A pair of atoms is considered unique if atoms have the same index
-        and correspond to the same unit cell. As an example, the connection
-        atom 0 (unit cell) to atom 5 (1, 0, 0) is not the same as the
-        connection atom 5 (unit cell) to atom 0 (-1, 0, 0).
+        This function only returns one direction of a given connection
+        between atoms i and j. In particular, it returns the connection
+        where i < j.
 
         Note that this routine can not be called if `overlap` is
         set to `False` and the radius is not a single float. In that case,
@@ -524,12 +597,6 @@ class NeighborFinder:
             the neighbors for each atom is returned.
         self_interaction: bool, optional
             whether to consider an atom a neighbor of itself.
-
-        Returns
-        ----------
-        np.ndarray of shape (n_pairs, 5):
-            Each pair `ij` means that `j` is a neighbor of `i`.
-            The three extra columns are the supercell indices of atom `j`.
         """
         if not self._overlap and self._aux_R.ndim == 1:
             raise ValueError(
@@ -541,20 +608,9 @@ class NeighborFinder:
         # just find all neighbors and then drop duplicate connections. Otherwise it is a bit of a mess.
         if self._R_too_big:
             # Find all neighbors
-            all_neighbors = self.find_neighbors(
-                as_pairs=True, self_interaction=self_interaction
-            )
+            all_neighbors = self.find_neighbors(self_interaction=self_interaction)
 
-            # Find out which of the pairs are uc connections
-            is_uc_neigh = ~np.any(all_neighbors[:, 2:], axis=1)
-
-            # Create an array with unit cell connections where duplicates are removed
-            unique_uc = np.unique(np.sort(all_neighbors[is_uc_neigh][:, :2]), axis=0)
-            uc_neighbors = np.zeros((len(unique_uc), 5), dtype=int)
-            uc_neighbors[:, :2] = unique_uc
-
-            # Concatenate the uc connections with the rest of the connections.
-            return np.concatenate((uc_neighbors, all_neighbors[~is_uc_neigh]))
+            return all_neighbors.to_unique()
 
         # Cast R into array of appropiate shape and type.
         thresholds = np.full(self.geometry.na, self.R, dtype=np.float64)
@@ -593,13 +649,12 @@ class NeighborFinder:
             self.memory[1],
         )
 
-        return neighbor_pairs
+        return UniqueNeighborList(self.geometry, neighbor_pairs)
 
     def find_close(
         self,
         xyz: Sequence,
-        as_pairs: bool = False,
-    ):
+    ) -> PointsNeighborList:
         """Find all atoms that are close to some coordinates in space.
 
         This routine only executes the action of finding neighbors,
@@ -614,21 +669,11 @@ class NeighborFinder:
             If `True` pairs are returned, where the first item is the index
             of the point and the second one is the atom index.
             Otherwise a list containing the neighbors for each point is returned.
-
-        Returns
-        ----------
-        np.ndarray or list:
-            If `as_pairs=True`:
-                A `np.ndarray` of shape (n_pairs, 5) is returned.
-                Each pair `ij` means that `j` is a neighbor of `i`.
-                The three extra columns are the supercell indices of atom `j`.
-            If `as_pairs=False`:
-                A list containing a numpy array of shape (n_neighs, 4) for each atom.
         """
         # Cast R into array of appropiate shape and type.
         thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)
 
-        xyz = np.atleast_2d(xyz)
+        xyz = np.atleast_2d(xyz).astype(float)
         # Get search indices
         search_indices, isc = self._get_search_indices(
             xyz.dot(self._bins_geometry.icell.T) % 1, cartesian=False
@@ -667,8 +712,6 @@ class NeighborFinder:
                 neighbor_pairs, split_ind
             )
 
-        if as_pairs:
-            # Just return the neighbor pairs
-            return neighbor_pairs[: split_ind[-1]]
-
-        return np.split(neighbor_pairs[:, 1:], split_ind, axis=0)[:-1]
+        return PointsNeighborList(
+            self.geometry, xyz, neighbor_pairs[: split_ind[-1]], split_indices=split_ind
+        )
