@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>bcc &mdash; sisl 0.1-1d3f4da</title>
+  <title>Finding neighbors &mdash; sisl 0.1-255efb1</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=7bd2ecbf"></script>
+        <script src="../../_static/documentation_options.js?v=9a31d19a"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -41,8 +41,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="fcc" href="sisl.geom.fcc.html" />
-    <link rel="prev" title="sc" href="sisl.geom.sc.html" /> 
+    <link rel="next" title="sisl.geom.NeighborFinder" href="generated/sisl.geom.NeighborFinder.html" />
+    <link rel="prev" title="sisl.geom.CompositeGeometrySection" href="generated/sisl.geom.CompositeGeometrySection.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-1d3f4da
+                0.1-255efb1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -96,21 +96,10 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../geom.html">Common geometries</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../geom.html#bulk">Bulk</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.sc.html">sc</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">bcc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.fcc.html">fcc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.hcp.html">hcp</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.diamond.html">diamond</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.rocksalt.html">rocksalt</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../geom.html#surfaces-slabs">Surfaces (slabs)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geom.html#d-materials">0D materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geom.html#id1">1D materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geom.html#id2">2D materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../geom.html#helpers">Helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Common geometries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Finding neighbors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.NeighborFinder.html">sisl.geom.NeighborFinder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
@@ -141,10 +130,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
-          <li class="breadcrumb-item"><a href="../geom.html">Common geometries</a></li>
-      <li class="breadcrumb-item active">bcc</li>
+      <li class="breadcrumb-item active">Finding neighbors</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/api/generated/sisl.geom.bcc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api/geom/neighbors.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -152,34 +140,85 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="bcc">
-<h1>bcc<a class="headerlink" href="#bcc" title="Link to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="sisl.geom.bcc">
-<span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">bcc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sisl.typing.AtomsLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></span><a class="headerlink" href="#sisl.geom.bcc" title="Link to this definition"></a></dt>
-<dd><p>Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>alat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – lattice parameter</p></li>
-<li><p><strong>atoms</strong> (<em>sisl.typing.AtomsLike</em>) – the atom(s) in the BCC lattice</p></li>
-<li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – whether the lattice is orthogonal (2 atoms)</p></li>
+  <section id="module-sisl.geom">
+<span id="finding-neighbors"></span><span id="geom"></span><h1>Finding neighbors<a class="headerlink" href="#module-sisl.geom" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> implements an <strong>algorithm to find neighbors in a geometry</strong>. It has two main properties:</p>
+<p><span class="fas fa-truck-fast"></span> <strong>It is very fast</strong>. It can compute all the neighbors for a system of 3 million atoms in around 6 seconds.</p>
+<p><span class="fas fa-maximize"></span> <strong>It scales linearly</strong> with the number of atoms in the system.</p>
+<p>The algorithm is based on the <strong>partition of space into bins</strong>. This partition limits the search for
+neighbors of a certain atom only within the bins adjacent to the bin the atom is in.</p>
+<p>Since the bins must be created only once, there is a <a class="reference internal" href="generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder" title="sisl.geom.NeighborFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NeighborFinder</span></code></a> class which <strong>on initialization
+creates the bin grid</strong>. Once the finder is created, you can query it for neighbors as many times
+as you want. You can ask for all neighbors or only the neighbors of atoms that you are interested in.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder" title="sisl.geom.NeighborFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NeighborFinder</span></code></a>(geometry[, R, overlap, bin_size])</p></td>
+<td><p>Fast and linear scaling finding of neighbors.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="neighbor-lists">
+<h2>Neighbor lists<a class="headerlink" href="#neighbor-lists" title="Link to this heading"></a></h2>
+<p>Once created, a neighbor finder can be queried to get the neighbors. It will return a neighbor list.
+Depending on which type of query you make to the neighbor finder, it will return a different type of
+neighbor list.</p>
+<p>The following table summarizes the properties of each type of neighbor list:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Class</p></th>
+<th class="head"><p>Neighbors for</p></th>
+<th class="head"><p><em class="xref py py-obj">i</em> &lt; <em class="xref py py-obj">j</em></p></th>
+<th class="head"><p>Items</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">FullNeighborList</span></code></p></td>
+<td><p>All atoms</p></td>
+<td><p>No</p></td>
+<td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniqueNeighborList</span></code></p></td>
+<td><p>All atoms</p></td>
+<td><p>Yes</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartialNeighborList</span></code></p></td>
+<td><p>Selected atoms</p></td>
+<td><p>No</p></td>
+<td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></p></td>
+<td><p>One atom</p></td>
+<td><p>No</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></p></td>
+<td><p>Points in space</p></td>
+<td><p>No</p></td>
+<td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></p></td>
+<td><p>One point in space</p></td>
+<td><p>No</p></td>
+<td><p>N/A</p></td>
+</tr>
+</tbody>
+</table>
+<p>Where:</p>
+<ul class="simple">
+<li><p><em class="xref py py-obj">i &lt; j</em> indicates whether the list only contains one direction of the interaction, i.e. by omitting
+the transposed interaction.</p></li>
+<li><p><em class="xref py py-obj">Items</em> indicates the type that you get when you iterate or index (e.g. <code class="docutils literal notranslate"><span class="pre">neighbors[0]</span></code>) the list.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.geom.sc.html" class="btn btn-neutral float-left" title="sc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.geom.fcc.html" class="btn btn-neutral float-right" title="fcc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="generated/sisl.geom.CompositeGeometrySection.html" class="btn btn-neutral float-left" title="sisl.geom.CompositeGeometrySection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/sisl.geom.NeighborFinder.html" class="btn btn-neutral float-right" title="sisl.geom.NeighborFinder" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
