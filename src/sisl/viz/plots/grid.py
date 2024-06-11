@@ -33,7 +33,7 @@ from ..processors.grid import (
     sub_grid,
     tile_grid,
 )
-from ..types import Axes
+from ..types import Axes, Colorscale
 from .geometry import geometry_plot
 
 
@@ -69,7 +69,7 @@ def grid_plot(
     interp: Tuple[int, int, int] = (1, 1, 1),
     isos: Sequence[dict] = [],
     smooth: bool = False,
-    colorscale: Optional[str] = None,
+    colorscale: Optional[Colorscale] = None,
     crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
     show_cell: Literal["box", "axes", False] = "box",
@@ -219,7 +219,7 @@ def wavefunction_plot(
     interp: Tuple[int, int, int] = (1, 1, 1),
     isos: Sequence[dict] = [],
     smooth: bool = False,
-    colorscale: Optional[str] = None,
+    colorscale: Optional[Colorscale] = None,
     crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
     show_cell: Literal["box", "axes", False] = "box",

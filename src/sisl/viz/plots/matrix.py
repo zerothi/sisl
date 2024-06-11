@@ -22,6 +22,7 @@ from ..processors.matrix import (
     matrix_as_array,
     sanitize_matrix_arrows,
 )
+from ..types import Colorscale
 
 
 def atomic_matrix_plot(
@@ -36,7 +37,7 @@ def atomic_matrix_plot(
     orbital_lines: Union[bool, Dict] = False,
     sc_lines: Union[bool, Dict] = False,
     color_pixels: bool = True,
-    colorscale: Optional[str] = "RdBu",
+    colorscale: Optional[Colorscale] = "RdBu",
     crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
     text: Optional[str] = None,

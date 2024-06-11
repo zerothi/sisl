@@ -7,7 +7,7 @@ from typing import Dict, Literal, Optional, Sequence, Tuple
 
 import numpy as np
 
-from sisl.viz.types import OrbitalQueries, StyleSpec
+from sisl.viz.types import Colorscale, OrbitalQueries, StyleSpec
 
 from ..data.bands import BandsData
 from ..figure import Figure, get_figure
@@ -64,7 +64,7 @@ def bands_plot(
         "dash": "solid",
     },
     spindown_style: StyleSpec = {"color": "blue", "width": 1},
-    colorscale: Optional[str] = None,
+    colorscale: Optional[Colorscale] = None,
     gap: bool = False,
     gap_tol: float = 0.01,
     gap_color: str = "red",

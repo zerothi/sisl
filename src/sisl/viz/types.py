@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, NewType, Optional, Sequence, TypedDict, Union
+from typing import Any, Literal, NewType, Optional, Sequence, Tuple, TypedDict, Union
 
 import numpy as np
 
@@ -18,6 +18,10 @@ from sisl.typing import AtomsIndex, npt
 PathLike = Union[str, Path, BaseSile]
 
 Color = NewType("Color", str)
+
+# A colorscale can be a scale name, a sequence of colors or a sequence of
+# (value, color) tuples.
+Colorscale = Union[str, Sequence[Color], Sequence[Tuple[float, Color]]]
 
 GeometryLike = Union[sisl.Geometry, Any]
 
