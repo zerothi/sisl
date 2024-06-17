@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """Phonon related functions and classes
 =======================================
 
@@ -293,42 +295,42 @@ class EigenmodePhonon(ModeCPhonon):
         """
         return PDOS(E, self.mode, self.hw, distribution)
 
-    def displacement(self):
+    def displacement(self, atol: float = 1e-9):
         r"""Calculate real-space displacements for a given mode (in units of the characteristic length)
 
         The displacements per mode may be written as:
 
         .. math::
 
-            \mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}
+            \mathbf{u}_{I\alpha} = \epsilon_{I\alpha}\sqrt{\frac{\hbar}{m_I \omega}}
 
-        where :math:`i` is the atomic index.
+        where :math:`I` is the atomic index.
 
         Even for negative frequencies the characteristic length is calculated for use of non-equilibrium
         modes.
 
         Parameters
         ----------
-        mode : array_like
-            vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
-            modes the vectors *may* be rotated upon return.
-        hw : array_like
-            frequencies of the modes, for any negative frequency the returned displacement will be 0.
-        mass : array_like
-            masses for the atoms (has to have length ``mode.shape[1] // 3``
+        atol :
+            absolute tolerance for whether a phonon is 0 or not.
+            Since the phonon energy is used in the calculation of the displacement vector
+            we have to remove phonon modes with 0 energy.
+            The displacements for phonon modes with an absolute energy below `atol` will
+            be 0.
 
         Returns
         -------
         numpy.ndarray
-            displacements per mode with final dimension ``(3, mode.shape[0])``, displacements are in Ang
+            displacements per mode with final dimension ``(len(self), self.parent.na, 3)``, displacements are in Ang
         """
-        idx = (self.c == 0).nonzero()[0]
+        # get indices for the zero modes
+        idx = (np.fabs(self.c) <= atol).nonzero()[0]
         mode = self.mode
         U = mode.copy()
         U[idx, :] = 0.0
 
         # Now create the remaining displacements
-        idx = delete(_a.arangei(U.shape[0]), idx)
+        idx = delete(_a.arange(U.shape[0]), idx)
 
         # Generate displacement factor
         factor = _displacement_const / fabs(self.c[idx]).reshape(-1, 1) ** 0.5
@@ -337,5 +339,4 @@ class EigenmodePhonon(ModeCPhonon):
         U[idx] = (mode[idx, :] * factor).reshape(
             len(idx), -1, 3
         ) / self._geometry().mass.reshape(1, -1, 1) ** 0.5
-        U = np.swapaxes(U, 0, 2)
         return U

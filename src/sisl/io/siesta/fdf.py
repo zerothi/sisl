@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import gzip
 import itertools as itools
 import logging
@@ -93,54 +95,8 @@ def _order_remove_netcdf(order):
     return order
 
 
-def _parse_output_order(order, output, order_True, order_False):
-    """Parses the correct order of files by examining the kwargs["order"].
-
-    If it is not present, it will use `order_{output}` to retrieve the default list.
-
-    If any elements in `order` is ^name, then all `name` will be removed from the order list.
-    This enables one to remove some from the default order elements.
-
-    For instance:
-
-    read_geometry(order="^fdf", True) with default order = [fdf, TSHS, nc] will only retain [TSHS nc]
-    """
-    order_True = _listify_str(order_True)
-    order_False = _listify_str(order_False)
-    if order is None:
-        if output:
-            return _order_remove_netcdf(order_True)
-        return _order_remove_netcdf(order_False)
-
-    # now handle the cases where the users wants to not use something
-    order = _listify_str(order)
-    rem = []
-
-    positive_list = False
-    for el in order:
-        if el.startswith("^"):
-            rem.append(el)
-            rem.append(el[1:])
-        else:
-            positive_list = True
-
-    if positive_list:
-        # don't manipulate the order list
-        pass
-    elif output:
-        order.extend(order_True)
-    else:
-        order.extend(order_False)
-
-    order = [el for el in order if el not in rem]
-
-    return _order_remove_netcdf(order)
-
-
-def _listify_str(arg):
-    if isinstance(arg, str):
-        return [arg]
-    return arg
+def _parse_order(*args, **kwargs):
+    return _order_remove_netcdf(parse_order(*args, **kwargs))
 
 
 def _track(method, msg):
@@ -204,7 +160,7 @@ class fdfSileSiesta(SileSiesta):
             self.fh = gzip.open(self.dir_file(f"{f}.gz"), mode="rt")
         else:
             warn(
-                f"{self!s} is trying to include file: {f} but the file seems not to exist? Will disregard file!"
+                f"{self!r} is trying to include file: {f} but the file seems not to exist? Will disregard file!"
             )
 
     def _popfile(self):
@@ -602,9 +558,7 @@ class fdfSileSiesta(SileSiesta):
         return s
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice: Lattice, fmt: str = ".8f", *args, **kwargs):
         """Writes the supercell
 
@@ -711,7 +665,7 @@ class fdfSileSiesta(SileSiesta):
                 idx = list2str(geometry.names[n] + 1).replace("-", " -- ")
                 if len(idx) > 200:
                     info(
-                        f"{self!s}.write_geometry will not write the constraints for {n} (too long line)."
+                        f"{self!r}.write_geometry will not write the constraints for {n} (too long line)."
                     )
                 else:
                     _write_block = write_block(idx, append, _write_block)
@@ -762,9 +716,7 @@ class fdfSileSiesta(SileSiesta):
         SislWarning
             if none of the files can be read
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "ORB_INDX"], []
-        )
+        order = _parse_order(kwargs.pop("order", None), ["nc", "ORB_INDX"])
         for f in order:
             v = getattr(self, f"_r_lattice_nsc_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -800,11 +752,11 @@ class fdfSileSiesta(SileSiesta):
         Parameters
         ----------
         output:
-            whether to read supercell from output files (default to read from
-            the fdf file).
+            whether to read supercell from output files (True), or
+            form the fdf file (False).
         order: list of str, optional
             the order of which to try and read the supercell.
-            By default this is ``["XV", "nc", "fdf"]`` if `output` is true.
+            By default this is ``[XV, nc, TSHS, STRUCT, HSX, fdf]`` if `output` is true
             If `order` is present `output` is disregarded.
 
         Examples
@@ -815,8 +767,10 @@ class fdfSileSiesta(SileSiesta):
         >>> fdf.read_lattice(order=["nc"]) # read from [nc]
         >>> fdf.read_lattice(True, order=["nc"]) # read from [nc]
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), output, "nc XV TSHS fdf".split(), "fdf"
+        order = _parse_order(
+            kwargs.pop("order", None),
+            {True: ["XV", "nc", "TSHS", "STRUCT", "HSX", "fdf"], False: "fdf"},
+            output,
         )
         for f in order:
             v = getattr(self, f"_r_lattice_{f.lower()}")(*args, **kwargs)
@@ -877,7 +831,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_lattice_struct(self, *args, **kwargs):
         """Returns `Lattice` object from the STRUCT files"""
-        for end in ["STRUCT_NEXT_ITER", "STRUCT_OUT", "STRUCT_IN"]:
+        for end in ("STRUCT_NEXT_ITER", "STRUCT_OUT", "STRUCT_IN"):
             f = self.dir_file(self.get("SystemLabel", default="siesta") + f".{end}")
             _track_file(self._r_lattice_struct, f)
             if f.is_file():
@@ -894,6 +848,13 @@ class fdfSileSiesta(SileSiesta):
             return tshsSileSiesta(f).read_lattice()
         return None
 
+    def _r_lattice_hsx(self, *args, **kwargs):
+        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".HSX")
+        _track_file(self._r_lattice_hsx, f, inputs=[("HS.Save", "True")])
+        if f.is_file():
+            return hsxSileSiesta(f).read_lattice()
+        return None
+
     def _r_lattice_onlys(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".onlyS")
         _track_file(self._r_lattice_onlys, f, inputs=[("TS.S.Save", "True")])
@@ -901,7 +862,7 @@ class fdfSileSiesta(SileSiesta):
             return onlysSileSiesta(f).read_lattice()
         return None
 
-    def read_force(self, *args, **kwargs):
+    def read_force(self, *args, **kwargs) -> np.ndarray:
         """Read forces from the output of the calculation (forces are not defined in the input)
 
         Parameters
@@ -913,7 +874,7 @@ class fdfSileSiesta(SileSiesta):
         -------
         numpy.ndarray : vector with forces for each of the atoms, along each Cartesian direction
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["FA", "nc"], [])
+        order = _parse_order(kwargs.pop("order", None), ["FA", "nc"])
         for f in order:
             v = getattr(self, f"_r_force_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -970,7 +931,7 @@ class fdfSileSiesta(SileSiesta):
         M : numpy.ndarray
             vector ``[*, 3, 2, *, 3]``  with Hessian/force constant element for each of the atomic displacements
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["nc", "FC"], [])
+        order = _parse_order(kwargs.pop("order", None), ["nc", "FC"])
         for f in order:
             v = getattr(self, f"_r_hessian_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -980,7 +941,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     read_force_constant = deprecation(
-        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+        "read_force_constant is deprecated in favor of read_hessian", "0.15", "0.16"
     )(read_hessian)
 
     def _r_hessian_nc(self, *args, **kwargs):
@@ -1001,7 +962,7 @@ class fdfSileSiesta(SileSiesta):
             return fcSileSiesta(f).read_hessian(na=na)
         return None
 
-    def read_fermi_level(self, *args, **kwargs):
+    def read_fermi_level(self, *args, **kwargs) -> float:
         """Read fermi-level from output of the calculation
 
         Parameters
@@ -1012,11 +973,11 @@ class fdfSileSiesta(SileSiesta):
 
         Returns
         -------
-        Ef : float
-            fermi-level
+        float
+            the fermi-level
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ("nc", "TSDE", "TSHS", "EIG", "bands"), []
+        order = _parse_order(
+            kwargs.pop("order", None), ["nc", "TSDE", "TSHS", "EIG", "bands"]
         )
         for f in order:
             v = getattr(self, f"_r_fermi_level_{f.lower()}")(*args, **kwargs)
@@ -1099,7 +1060,7 @@ class fdfSileSiesta(SileSiesta):
         dynamic_matrix : DynamicalMatrix
             the dynamical matrix
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["nc", "FC"], [])
+        order = _parse_order(kwargs.pop("order", None), ["nc", "FC"])
         for f in order:
             v = getattr(self, f"_r_dynamical_matrix_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -1266,7 +1227,7 @@ class fdfSileSiesta(SileSiesta):
                 daxis = geom_tile.xyz[:, ax] - geom.xyz[:, ax]
                 if not np.allclose(daxis, daxis[0], rtol=0.0, atol=0.01):
                     raise SislError(
-                        f"{self!s}.read_dynamical_matrix(FC) could "
+                        f"{self!r}.read_dynamical_matrix(FC) could "
                         "not figure out the tiling method for the supercell"
                     )
 
@@ -1432,6 +1393,7 @@ class fdfSileSiesta(SileSiesta):
                             ia * 3 : (ia + 1) * 3, joff + ja * 3 : joff + (ja + 1) * 3
                         ] += FC[ia, :, x, y, z, ja, :]
 
+        # The mass-scaling wass added to the FC components
         D = D.tocsr()
         # Remove all zeros
         D.eliminate_zeros()
@@ -1455,7 +1417,7 @@ class fdfSileSiesta(SileSiesta):
             the fdf file).
         order: list of str, optional
             the order of which to try and read the geometry.
-            By default this is ``["XV", "nc", "fdf", "TSHS", "HSX", "STRUCT"]`` if `output` is true
+            By default this is ``[XV, nc, TSHS, STRUCT, HSX, fdf]`` if `output` is true
             If `order` is present `output` is disregarded.
 
         Examples
@@ -1471,17 +1433,23 @@ class fdfSileSiesta(SileSiesta):
         # When adding more capabilities please check the read_geometry(order=...) in this
         # code to correct.
         ##
-        order = _parse_output_order(
+        order = _parse_order(
             kwargs.pop("order", None),
+            {True: ["XV", "nc", "TSHS", "STRUCT", "HSX", "fdf"], False: "fdf"},
             output,
-            "XV nc TSHS STRUCT fdf HSX".split(),
-            "fdf",
         )
         for f in order:
             v = getattr(self, f"_r_geometry_{f.lower()}")(*args, **kwargs)
             if v is not None:
                 return v
         return None
+
+    def _r_geometry_species(self):
+        species = self.get("AtomicCoordinatesAndAtomicSpecies", default=[])
+        if species:
+            na = self.get("NumberOfAtoms", default=len(species))
+            species = _a.fromiteri(map(lambda x: x.split()[3], species[:na])) - 1
+        return species
 
     def _r_geometry_xv(self, *args, **kwargs):
         """Returns `Geometry` object from the XV file"""
@@ -1490,15 +1458,7 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_geometry_xv, f)
         if f.is_file():
             basis = self.read_basis()
-            if basis is None:
-                geom = xvSileSiesta(f).read_geometry(species_Z=False)
-            else:
-                geom = xvSileSiesta(f).read_geometry(species_Z=True)
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    for atom, _ in geom.atoms.iter(True):
-                        geom.atoms.replace(atom, basis[atom.Z - 1])
-                    geom.reduce()
+            geom = xvSileSiesta(f).read_geometry(atoms=basis)
             nsc = self.read_lattice_nsc()
             geom.set_nsc(nsc)
         return geom
@@ -1511,15 +1471,7 @@ class fdfSileSiesta(SileSiesta):
             _track_file(self._r_geometry_struct, f)
             if f.is_file():
                 basis = self.read_basis()
-                if basis is None:
-                    geom = structSileSiesta(f).read_geometry(species_Z=False)
-                else:
-                    geom = structSileSiesta(f).read_geometry(species_Z=True)
-                    with warnings.catch_warnings():
-                        warnings.simplefilter("ignore")
-                        for atom, _ in geom.atoms.iter(True):
-                            geom.atoms.replace(atom, basis[atom.Z - 1])
-                        geom.reduce()
+                geom = structSileSiesta(f).read_geometry(atoms=basis)
                 nsc = self.read_lattice_nsc()
                 geom.set_nsc(nsc)
                 break
@@ -1539,7 +1491,7 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_geometry_tshs, f, inputs=[("TS.HS.Save", "True")])
         if f.is_file():
             # Default to a geometry with the correct atomic numbers etc.
-            return tshsSileSiesta(f).read_geometry(geometry=self.read_geometry(False))
+            return tshsSileSiesta(f).read_geometry(atoms=self.read_basis())
         return None
 
     def _r_geometry_hsx(self):
@@ -1548,7 +1500,9 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_geometry_hsx, f, inputs=[("Save.HS", "True")])
         if f.is_file():
             # Default to a geometry with the correct atomic numbers etc.
-            return hsxSileSiesta(f).read_geometry(geometry=self.read_geometry(False))
+            return hsxSileSiesta(f).read_geometry(
+                geometry=self.read_geometry(order="^hsx")
+            )
         return None
 
     def _r_geometry_fdf(self, *args, **kwargs):
@@ -1627,14 +1581,13 @@ class fdfSileSiesta(SileSiesta):
         atoms = self.read_basis()
         if atoms is None:
             warn(
-                "Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all Hydrogen)."
+                "Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all will be their species indices)."
             )
+            # the following call will then make use of this object
+            atoms = species
 
-            # Default atom (hydrogen)
-            atoms = Atom(1)
-        else:
-            atoms = [atoms[i] for i in species]
-        atoms = Atoms(atoms, na=len(xyz))
+        # Default atoms are the species indices... Basically unknown
+        atoms = _fill_basis_empty(species, atoms)
 
         if isinstance(origin, str):
             opt = origin
@@ -1698,7 +1651,7 @@ class fdfSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        name : str
+        name :
             name of data to read. The list of names correspond to the
             Siesta output manual (Rho, TotalPotential, etc.), the strings are
             case insensitive.
@@ -1706,9 +1659,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the geometry.
             By default this is ``["nc", "grid.nc", "bin"]`` (bin refers to the binary files)
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "grid.nc", "bin"], []
-        )
+        order = _parse_order(kwargs.pop("order", None), ["nc", "grid.nc", "bin"])
         for f in order:
             v = getattr(self, f"_r_grid_{f.lower().replace('.', '_')}")(
                 name, *args, **kwargs
@@ -1823,10 +1774,10 @@ class fdfSileSiesta(SileSiesta):
         ----------
         order: list of str, optional
             the order of which to try and read the basis information.
-            By default this is ``["nc", "ion", "ORB_INDX", "fdf"]``
+            By default this is ``["nc", "ion", "ORB_INDX", "HSX", "fdf"]``
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "ion", "ORB_INDX", "fdf"], []
+        order = _parse_order(
+            kwargs.pop("order", None), ["nc", "ion", "ORB_INDX", "HSX", "fdf"]
         )
         for f in order:
             v = getattr(self, f"_r_basis_{f.lower()}")(*args, **kwargs)
@@ -1871,8 +1822,10 @@ class fdfSileSiesta(SileSiesta):
 
             # now try and read the basis
             for ext in exts:
-                if f.with_suffix(f".{ext}").is_file():
-                    atoms[idx] = ion_files[ext](f.with_suffix(f".{ext}")).read_basis()
+                ion = f.with_suffix(f".{ext}")
+                _track_file(self._r_basis_ion, ion)
+                if ion.is_file():
+                    atoms[idx] = ion_files[ext](ion).read_basis()
                     found_one = True
                     break
             else:
@@ -1887,7 +1840,14 @@ class fdfSileSiesta(SileSiesta):
             )
         elif not found_one:
             return None
-        return atoms
+
+        species = self._r_geometry_species()
+        if len(species) > 0:
+            return _fill_basis_empty(species, Atoms(atoms))
+        warn(
+            f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
+        )
+        return Atoms(atoms)
 
     def _r_basis_orb_indx(self):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".ORB_INDX")
@@ -1897,6 +1857,16 @@ class fdfSileSiesta(SileSiesta):
                 f"Siesta basis information is read from '{f}'; radial functions are not accessible."
             )
             return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
+        return None
+
+    def _r_basis_hsx(self, *args, **kwargs):
+        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".HSX")
+        _track_file(self._r_basis_hsx, f, inputs=[("Save.HS", "True")])
+        if f.is_file():
+            if "atoms" not in kwargs:
+                # to ensure we get the correct orbital count
+                kwargs["atoms"] = self.read_basis(order="^hsx")
+            return hsxSileSiesta(f).read_basis(*args, **kwargs)
         return None
 
     def _r_basis_fdf(self):
@@ -1909,7 +1879,7 @@ class fdfSileSiesta(SileSiesta):
 
         # We create a dictionary with the different atomic species
         # and create defaults with another dictionary.
-        atoms = [{} for _ in spcs]
+        atoms = [None for _ in spcs]
 
         pao_basis = self.get("PAO.Basis", default=[])
 
@@ -1919,10 +1889,10 @@ class fdfSileSiesta(SileSiesta):
 
         # Now spcs contains the block of the chemicalspecieslabel
         for spc in spcs:
-            idx, Z, lbl = spc.split()[:3]
+            idx, Z, tag = spc.split()[:3]
             idx = int(idx) - 1  # F-indexing
             Z = int(Z)
-            lbl = lbl.strip()
+            tag = tag.strip()
 
             if len(all_mass) > 0:
                 for mass_line in all_mass:
@@ -1933,23 +1903,30 @@ class fdfSileSiesta(SileSiesta):
                 else:
                     mass = None
 
-            atoms[idx]["Z"] = Z
-            atoms[idx]["mass"] = mass
-            atoms[idx]["tag"] = lbl
+            atom = {"Z": Z, "mass": mass, "tag": tag}
             try:
                 # Only in some cases can we parse the PAO.Basis block.
                 # There are many corner cases where we can't parse it
                 # And the we just don't do anything...
                 # We don't even warn the user...
-                atoms[idx]["orbitals"] = self._parse_pao_basis(pao_basis, lbl)
+                atom["orbitals"] = self._parse_pao_basis(pao_basis, tag)
             except Exception:
                 pass
 
-        # Now check if we can find the orbitals
-        return [Atom(**atom) for atom in atoms]
+            atoms[idx] = Atom(**atom)
+
+        # retrieve the atomic species (from the AtomicCoordinatesAndSpecies block)
+        species = self._r_geometry_species()
+        if len(species) > 0:
+            return _fill_basis_empty(species, Atoms(atoms))
+
+        warn(
+            f"{self!r} does not contain the AtomicCoordinatesAndAtomicSpecies block, basis set definition may not contain all atoms."
+        )
+        return Atoms(atoms)
 
     @classmethod
-    def _parse_pao_basis(cls, block, specie=None):
+    def _parse_pao_basis(cls, block, species=None):
         """Parse the full PAO.Basis block with *optionally* only a single specie
 
         Notes
@@ -1961,15 +1938,15 @@ class fdfSileSiesta(SileSiesta):
         ----------
         block : list of str or str
            the entire PAO.Basis block as read by ``self.get("PAO.Basis")``
-        specie : str, optional
-           which specie to parse
+        species : str, optional
+           which species to parse
 
         Returns
         -------
         orbitals : list of AtomicOrbital
-            only if requested `specie` is not None
+            only if requested `species` is not None
         tag_orbitals : dict
-            if `specie` is None then a dictionary is returned
+            if `species` is None then a dictionary is returned
         """
         if isinstance(block, str):
             block = block.splitlines()
@@ -2076,15 +2053,15 @@ class fdfSileSiesta(SileSiesta):
 
             return tag, orbs
 
-        atoms = {}
+        tag_orbs = {}
         ret = parse_next()
         while ret is not None:
-            atoms[ret[0]] = ret[1]
+            tag_orbs[ret[0]] = ret[1]
             ret = parse_next()
 
-        if specie is None:
-            return atoms
-        return atoms.get(specie, None)
+        if species is None:
+            return tag_orbs
+        return tag_orbs.get(species, None)
 
     def _r_add_overlap(self, parent_call, M):
         """Internal routine to ensure that the overlap matrix is read and added to the matrix `M`"""
@@ -2097,10 +2074,10 @@ class fdfSileSiesta(SileSiesta):
                 raise ValueError
         except Exception:
             warn(
-                f"{self!s} could not succesfully read the overlap matrix in {parent_call}."
+                f"{self!r} could not succesfully read the overlap matrix in {parent_call}."
             )
 
-    def read_density_matrix(self, *args, **kwargs):
+    def read_density_matrix(self, *args, **kwargs) -> DensityMatrix:
         """Try and read density matrix by reading the <>.nc, <>.TSDE files, <>.DM (in that order)
 
         One can limit the tried files to only one file by passing
@@ -2112,9 +2089,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the density matrix
             By default this is ``["nc", "TSDE", "DM"]``.
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "TSDE", "DM"], []
-        )
+        order = _parse_order(kwargs.pop("order", None), ["nc", "TSDE", "DM"])
         for f in order:
             DM = getattr(self, f"_r_density_matrix_{f.lower()}")(*args, **kwargs)
             if DM is not None:
@@ -2157,7 +2132,7 @@ class fdfSileSiesta(SileSiesta):
             self._r_add_overlap("_r_density_matrix_dm", DM)
         return DM
 
-    def read_energy_density_matrix(self, *args, **kwargs):
+    def read_energy_density_matrix(self, *args, **kwargs) -> EnergyDensityMatrix:
         """Try and read energy density matrix by reading the <>.nc or <>.TSDE files (in that order)
 
         One can limit the tried files to only one file by passing
@@ -2169,7 +2144,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the density matrix
             By default this is ``["nc", "TSDE"]``.
         """
-        order = _parse_output_order(kwargs.pop("order", None), True, ["nc", "TSDE"], [])
+        order = _parse_order(kwargs.pop("order", None), ["nc", "TSDE"])
         for f in order:
             EDM = getattr(self, f"_r_energy_density_matrix_{f.lower()}")(
                 *args, **kwargs
@@ -2201,7 +2176,7 @@ class fdfSileSiesta(SileSiesta):
             self._r_add_overlap("_r_energy_density_matrix_tsde", EDM)
         return EDM
 
-    def read_overlap(self, *args, **kwargs):
+    def read_overlap(self, *args, **kwargs) -> Overlap:
         """Try and read the overlap matrix by reading the <>.nc, <>.TSHS files, <>.HSX, <>.onlyS (in that order)
 
         One can limit the tried files to only one file by passing
@@ -2213,9 +2188,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the overlap matrix
             By default this is ``["nc", "TSHS", "HSX", "onlyS"]``.
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "TSHS", "HSX", "onlyS"], []
-        )
+        order = _parse_order(kwargs.pop("order", None), ["nc", "TSHS", "HSX", "onlyS"])
         for f in order:
             v = getattr(self, f"_r_overlap_{f.lower()}")(*args, **kwargs)
             if v is not None:
@@ -2266,7 +2239,7 @@ class fdfSileSiesta(SileSiesta):
             S = onlysSileSiesta(f).read_overlap(*args, **kwargs)
         return S
 
-    def read_hamiltonian(self, *args, **kwargs):
+    def read_hamiltonian(self, *args, **kwargs) -> Hamiltonian:
         """Try and read the Hamiltonian by reading the <>.nc, <>.TSHS files, <>.HSX (in that order)
 
         One can limit the tried files to only one file by passing
@@ -2278,9 +2251,7 @@ class fdfSileSiesta(SileSiesta):
             the order of which to try and read the Hamiltonian.
             By default this is ``["nc", "TSHS", "HSX"]``.
         """
-        order = _parse_output_order(
-            kwargs.pop("order", None), True, ["nc", "TSHS", "HSX"], []
-        )
+        order = _parse_order(kwargs.pop("order", None), ["nc", "TSHS", "HSX"])
         for f in order:
             H = getattr(self, f"_r_hamiltonian_{f.lower()}")(*args, **kwargs)
             if H is not None:
@@ -2313,18 +2284,19 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_hamiltonian_hsx, f, inputs=[("Save.HS", "True")])
         H = None
         if f.is_file():
-            if hsxSileSiesta(f).version == 0:
-                if "geometry" not in kwargs:
-                    # to ensure we get the correct orbital count
-                    kwargs["geometry"] = self.read_geometry(True)
-            H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
-            Ef = self.read_fermi_level()
-            if Ef is None:
-                info(
-                    f"{self!s}.read_hamiltonian from HSX file failed shifting to the Fermi-level."
-                )
-            else:
-                H.shift(-Ef)
+            hsx = hsxSileSiesta(f)
+            _track_file(self._r_hamiltonian_hsx, f, f"  got version = {hsx.version}")
+            if "atoms" not in kwargs:
+                kwargs["atoms"] = self.read_basis(order="^hsx")
+            H = hsx.read_hamiltonian(*args, **kwargs)
+            if hsx.version == 0:
+                Ef = self.read_fermi_level()
+                if Ef is None:
+                    info(
+                        f"{self!r}.read_hamiltonian from HSX file failed shifting to the Fermi-level."
+                    )
+                else:
+                    H.shift(-Ef)
         return H
 
     @default_ArgumentParser(description="Manipulate a FDF file.")

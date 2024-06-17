@@ -24,7 +24,7 @@ build-backend = "scikit_build_core.build"
 
 # Top most items are probably changed the most
 [project]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 name = "sisl"
 description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
@@ -65,7 +65,6 @@ classifiers = [
     "Programming Language :: C",
     "Programming Language :: Fortran",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -140,35 +139,36 @@ analysis = [
 ]
 
 viz = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "plotly",
     "matplotlib",
     "ase",
 ]
 
 viz-plotly = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "plotly",
 ]
 
 viz-matplotlib = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "matplotlib",
 ]
 
 viz-blender = [
+    "nodify",
     "netCDF4",
     "dill >= 0.3.2",
     "pathos",
@@ -180,24 +180,37 @@ viz-ase = [
     "dill >= 0.3.2",
     "pathos",
     "scikit-image",
-
     "ase",
 ]
 
 test = [
-    "pytest",
-    "coverage",
+    "pytest>=7",
+    "coverage[toml]",
     "pytest-cov",
     "pytest-env",
     "pytest-faulthandler",
-    "netCDF4",
-    "tqdm>=4.36.0",
-    "dill >= 0.3.2",
-    "pathos",
-    "scikit-image",
-    "matplotlib",
-    "plotly",
-    "ase"
+]
+
+docs = [
+    "nbsphinx",
+    "sphinx-rtd-theme",
+    "sphinx-design",
+    "sphinx-gallery",
+    "sphinx-copybutton",
+    "sphinx-togglebutton",
+    "sphinx-inline-tabs",
+    "sphinxcontrib-bibtex",
+    "importlib-metadata",
+    "ipykernel",
+    "ipywidgets",
+    "jupyterlab-widgets",
+    "kaleido",
+    "pytz",
+    # Visualizing nodes
+    "networkx",
+    "pyvis",
+    "pybtex",
+    "pandoc",
 ]
 
 
@@ -225,7 +238,11 @@ include_namespace_packages = true
 exclude_also = [
     "raise NotImplementedError",
 ]
-
+exclude_lines = [
+  "@overload",
+  'if __name__ == "__main":',
+  "if TYPE_CHECKING:",
+]
 
 [tool.pylint]
 [tool.pylint.master]
@@ -320,8 +337,7 @@ skip = [
     "*musllinux*",
 ]
 
-# The netCDF package does not have a wheel for 312 (yet!)
-test-skip = "cp312-* *-macosx_arm64 *-macosx_universal2:arm64 *"
+test-skip = ""
 
 # Instead of running pytest directly, we use a bash script that will set up
 # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
@@ -329,21 +345,12 @@ test-skip = "cp312-* *-macosx_arm64 *-macosx_universal2:arm64 *"
 test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 
 [tool.cibuildwheel.linux]
-archs = [
-    "x86_64",
-#    "aarch64",
-]
 
 [tool.cibuildwheel.windows]
-archs = [
-    "AMD64",
-    "x86",
-]
+
+before-build = "pip install delvewheel"
+repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
 
 test-command = "pytest --pyargs sisl -m 'not slow'"
 
 [tool.cibuildwheel.macos]
-archs = [
-#    "universal2",
-    "x86_64",
-]

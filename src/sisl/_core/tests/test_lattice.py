@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import math as m
 
 import numpy as np
@@ -241,7 +243,7 @@ class TestLattice:
         assert np.allclose(tmp1.cell, tmp3.cell)
         assert np.allclose(tmp1.cell, tmp4.cell)
 
-    def test_creation2(self, setup):
+    def test_creation_latticechild_dispatch(self, setup):
         # full cell
         class P(LatticeChild):
             def copy(self):
@@ -251,6 +253,22 @@ class TestLattice:
 
         tmp1 = P()
         tmp1.set_lattice([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+        # test dispatch method
+        tmp2 = Lattice.new(tmp1)
+        assert tmp1 == tmp2
+
+    def test_creation_latticechild(self, setup):
+        # full cell
+        class P(LatticeChild):
+            def copy(self):
+                a = P()
+                a.set_lattice(setup.lattice)
+                return a
+
+        tmp1 = P()
+        tmp1.set_lattice([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
         # diagonal cell
         tmp2 = P()
         tmp2.set_lattice([1, 1, 1])
@@ -345,7 +363,7 @@ class TestLattice:
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        lattice = g.lattice.fit(gbig, axis=0)
+        lattice = g.lattice.fit(gbig, axes=0)
         assert np.allclose(lattice.cell[0, :], gbig.cell[0, :])
         assert np.allclose(lattice.cell[1:, :], g.cell[1:, :])
 
@@ -353,7 +371,7 @@ class TestLattice:
         g = graphene(orthogonal=True)
         gbig = g.repeat(40, 0).repeat(40, 1)
         gbig.xyz[:, :] += (np.random.rand(len(gbig), 3) - 0.5) * 0.01
-        lattice = g.lattice.fit(gbig, axis=[0, 1])
+        lattice = g.lattice.fit(gbig, axes=[0, 1])
         assert np.allclose(lattice.cell[0:2, :], gbig.cell[0:2, :])
         assert np.allclose(lattice.cell[2, :], g.cell[2, :])
 
@@ -497,6 +515,13 @@ def test_tocuboid_complex():
     assert np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))
 
 
+def test_fortran_contiguous():
+    # for #748
+    abc = np.zeros([3, 3], order="F")
+    latt = Lattice(abc)
+    assert latt.cell.flags.c_contiguous
+
+
 def test_lattice_indices():
     lattice = Lattice([1] * 3, nsc=[3, 5, 7])
     for i in range(lattice.n_s):
@@ -561,9 +586,35 @@ def test_lattice_bc_fail():
         lat.set_boundary_condition(b="eusoatuhesoau")
 
 
+def test_new_inherit_class():
+    l = Lattice(1, boundary_condition=Lattice.BC.NEUMANN)
+
+    class MyClass(Lattice):
+        pass
+
+    l2 = MyClass.new(l)
+    assert l2.__class__ == MyClass
+    assert l2 == l
+    l2 = Lattice.new(l)
+    assert l2.__class__ == Lattice
+    assert l2 == l
+
+
 def test_lattice_info():
     lat = Lattice(1, nsc=[3, 3, 3])
     with pytest.warns(sisl.SislWarning) as record:
         lat.set_boundary_condition(b=Lattice.BC.DIRICHLET)
         lat.set_boundary_condition(c=Lattice.BC.PERIODIC)
         assert len(record) == 1
+
+
+def test_lattice_pbc_setter():
+    lat = Lattice(1, nsc=[3, 3, 3])
+    assert np.all(lat.pbc)
+    pbc = [True, False, True]
+    lat.pbc = pbc
+    assert np.all(lat.pbc == pbc)
+    # check that None won't change anything
+    pbc = [False, None, None]
+    lat.pbc = pbc
+    assert np.all(lat.pbc == [False, False, True])

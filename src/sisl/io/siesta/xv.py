@@ -1,12 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
-from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Geometry, Lattice
+from sisl import Atom, AtomGhost, Atoms, Geometry, Lattice
 from sisl._internal import set_module
+from sisl.messages import deprecate_argument
 from sisl.unit.siesta import unit_convert
 
+from .._help import _fill_basis_empty
 from ..sile import SileError, add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
@@ -79,23 +83,51 @@ class xvSileSiesta(SileSiesta):
         return Lattice(cell)
 
     @sile_fh_open()
+    @deprecate_argument(
+        "velocity",
+        "ret_velocity",
+        "use ret_velocity= instead of velocity=",
+        "0.15",
+        "0.16",
+    )
+    @deprecate_argument(
+        "species_Z",
+        "species_as_Z",
+        "species_ arguments (species_Z and species_as_Z) are deprecated in favor of atoms=",
+        "0.15",
+        "0.16",
+    )
+    @deprecate_argument(
+        "species_as_Z",
+        None,
+        "species_as_Z= is deprecated, please pass an Atoms object with the basis information as atoms=",
+        "0.15",
+        "0.16",
+    )
     def read_geometry(
-        self, velocity: bool = False, species_Z: bool = False
+        self,
+        ret_velocity: bool = False,
+        atoms: Optional[Atoms, Geometry] = None,
+        species_as_Z: bool = False,
     ) -> Geometry:
         """Returns a `Geometry` object from the XV file
 
         Parameters
         ----------
-        species_Z :
-           if ``True`` the atomic numbers are the species indices (useful when
-           reading the ChemicalSpeciesLabel block simultaneously).
-        velocity :
-           also return the velocities in the file
+        ret_velocity :
+            also return the velocities in the file
+        atoms :
+            an object containing the basis information, is useful to overwrite
+            the atoms object contained in the geometry.
+        species_as_Z :
+            Deprecated, it does nothing!
 
         Returns
         -------
-        Geometry
-        velocity : only if `velocity` is true.
+        geometry: Geometry
+            the geometry in the XV file
+        velocity: numpy.ndarray
+            only if `ret_velocity` is true.
         """
         lattice = self.read_lattice()
 
@@ -106,12 +138,12 @@ class xvSileSiesta(SileSiesta):
         atms = [None] * na
         sp = np.empty([na], np.int32)
         for ia in range(na):
-            line = list(map(float, self.readline().split()[:8]))
+            line = self.readline().split()
             sp[ia] = int(line[0])
-            if species_Z:
-                atms[ia] = Atom(sp[ia])
-            else:
-                atms[ia] = Atom(int(line[1]))
+            Z = int(line[1])
+
+            atms[ia] = Atom(Z)
+
             xyz[ia, :] = line[2:5]
             vel[ia, :] = line[5:8]
 
@@ -119,30 +151,27 @@ class xvSileSiesta(SileSiesta):
         vel *= Bohr2Ang
 
         # Ensure correct sorting
-        max_s = sp.max()
-        sp -= 1
-        # Ensure we can remove the atom after having aligned them
-        atms2 = Atoms(AtomUnknown(1000), na=na)
-        for i in range(max_s):
-            idx = (sp[:] == i).nonzero()[0]
-            if len(idx) == 0:
-                # Always ensure we have "something" for the unoccupied places
-                atms2[idx] = AtomUnknown(1000 + i)
-            else:
-                atms2[idx] = atms[idx[0]]
+        # This is important when users creates geometries with
+        # basis information for atoms that are not present.
+        # E.g. a graphene flake with a H basis information as the first species
 
-        geom = Geometry(xyz, atms2.reduce(), lattice=lattice)
-        if velocity:
+        if atoms is None:
+            atoms = atms
+        # ensure correct sorting
+        atms2 = _fill_basis_empty(sp - 1, atoms)
+
+        geom = Geometry(xyz, atms2, lattice=lattice)
+        if ret_velocity:
             return geom, vel
         return geom
 
     @sile_fh_open()
-    def read_velocity(self):
+    def read_velocity(self) -> np.ndarray:
         """Returns an array with the velocities from the XV file
 
         Returns
         -------
-        velocity :
+        numpy.ndarray
         """
         self.read_lattice()
         na = int(self.readline())

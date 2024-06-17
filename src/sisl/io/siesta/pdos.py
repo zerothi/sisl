@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
 from sisl._array import arrayd, arrayi, asarrayi
@@ -36,12 +38,12 @@ class pdosSileSiesta(SileSiesta):
     Data file containing the PDOS as calculated by Siesta.
     """
 
-    def read_geometry(self):
+    def read_geometry(self) -> Geometry:
         """Read the geometry with coordinates and correct orbital counts"""
         return self.read_data()[0]
 
     @sile_fh_open(True)
-    def read_fermi_level(self):
+    def read_fermi_level(self) -> float:
         """Returns the fermi-level"""
         # Get the element-tree
         root = xml_parse(self.fh).getroot()
@@ -69,10 +71,14 @@ class pdosSileSiesta(SileSiesta):
 
         Returns
         -------
-        geom : Geometry instance with positions, atoms and orbitals.
-        E : the energies at which the PDOS has been evaluated at (if Fermi-level present in file energies are shifted to :math:`E - E_F = 0`).
-        PDOS : an array of DOS with dimensions ``(nspin, geom.no, len(E))`` (with different spin-components) or ``(geom.no, len(E))`` (spin-symmetric).
-        DataArray : if `as_dataarray` is True, only this data array is returned, in this case all data can be post-processed using the `xarray` selection routines.
+        geom : Geometry
+            instance with positions, atoms and orbitals.
+        E : numpy.ndarray
+            the energies at which the PDOS has been evaluated at (if Fermi-level present in file energies are shifted to :math:`E - E_F = 0`).
+        PDOS : numpy.ndarray
+            an array of DOS with dimensions ``(nspin, geom.no, len(E))`` (with different spin-components) or ``(geom.no, len(E))`` (spin-symmetric).
+        all : xarray.DataArray
+            if `as_dataarray` is True, only this data array is returned, in this case all data can be post-processed using the `xarray` selection routines.
         """
         # Get the element-tree
         root = xml_parse(self.fh).getroot()

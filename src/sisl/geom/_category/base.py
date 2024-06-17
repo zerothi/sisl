@@ -8,14 +8,14 @@ from typing import Optional
 
 from sisl._category import Category, NullCategory
 from sisl._core import AtomCategory, Geometry
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 
 __all__ = ["NullCategory", "AtomCategory"]
 
 
 def _sanitize_loop(func):
     @wraps(func)
-    def loop_func(self, geometry: Geometry, atoms: Optional[AtomsArgument] = None):
+    def loop_func(self, geometry: Geometry, atoms: AtomsIndex = None):
         if atoms is None:
             return [func(self, geometry, ia) for ia in geometry]
 

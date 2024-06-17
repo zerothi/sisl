@@ -1,12 +1,17 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from typing import Callable, Literal, Optional, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 
 from sisl import BrillouinZone, Geometry
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 from sisl.viz.figure import Figure, get_figure
 from sisl.viz.plotters import plot_actions as plot_actions
-from sisl.viz.types import AtomArrowSpec, AtomsStyleSpec, Axes, StyleSpec
+from sisl.viz.types import AtomArrowSpec, AtomsStyleSpec, Axes, Colorscale, StyleSpec
 
 from ..plot import Plot
 from ..plotters.cell import cell_plot_actions, get_ndim, get_z
@@ -92,16 +97,16 @@ def _sanitize_scale(
 def geometry_plot(
     geometry: Geometry,
     axes: Axes = ["x", "y", "z"],
-    atoms: AtomsArgument = None,
+    atoms: AtomsIndex = None,
     atoms_style: Sequence[AtomsStyleSpec] = [],
     atoms_scale: float = 1.0,
-    atoms_colorscale: Optional[str] = None,
+    atoms_colorscale: Optional[Colorscale] = None,
     drawing_mode: Literal["scatter", "balls", None] = None,
     bind_bonds_to_ats: bool = True,
     points_per_bond: int = 20,
     bonds_style: StyleSpec = {},
     bonds_scale: float = 1.0,
-    bonds_colorscale: Optional[str] = None,
+    bonds_colorscale: Optional[Colorscale] = None,
     show_atoms: bool = True,
     show_bonds: bool = True,
     show_cell: Literal["box", "axes", False] = "box",
@@ -281,11 +286,11 @@ def _sites_specs_to_atoms_specs(sites_specs: _T) -> _T:
 def sites_plot(
     sites_obj: BrillouinZone,
     axes: Axes = ["x", "y", "z"],
-    sites: AtomsArgument = None,
+    sites: AtomsIndex = None,
     sites_style: Sequence[AtomsStyleSpec] = [],
     sites_scale: float = 1.0,
     sites_name: str = "Sites",
-    sites_colorscale: Optional[str] = None,
+    sites_colorscale: Optional[Colorscale] = None,
     drawing_mode: Literal["scatter", "balls", "line", None] = None,
     show_cell: Literal["box", "axes", False] = False,
     cell_style: StyleSpec = {},

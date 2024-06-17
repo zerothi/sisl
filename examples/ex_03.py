@@ -9,6 +9,8 @@
 # and afterward it can write the dynamical matrix to be processed by
 # PHtrans for transport properties.
 
+from __future__ import annotations
+
 import sisl
 
 with open("zz.gin", "w") as f:
@@ -17,7 +19,7 @@ with open("zz.gin", "w") as f:
 output she
 cutd 3.0
 
-cell 
+cell
 17.04 19.67609717 15. 90 90 90
 
 cartesian 128

@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import re
 
 import numpy as np
@@ -230,6 +232,15 @@ class tableSile(Sile):
             also return the header information (if queried)
         comment : str, optional
             lines starting with this are discarded as comments
+
+        Returns
+        -------
+        data : numpy.ndarray
+            the contained data in the file
+        comment : list of str
+            comment lines in the file (only if `ret_comment` is true)
+        header : str
+            header line defining data columns (only if `ret_header` is true)
         """
         # Override the comment in the file
         self._comment = [kwargs.get("comment", self._comment[0])]

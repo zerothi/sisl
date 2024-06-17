@@ -1,9 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from collections import deque, namedtuple
 from itertools import product
 from numbers import Integral
+from typing import Optional, Tuple
 
 import numpy as np
 
@@ -27,7 +30,7 @@ from sisl import (
 )
 from sisl._core.sparse import _ncol_to_indptr
 from sisl._internal import set_module
-from sisl.messages import SislError, info, warn
+from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.physics import BrillouinZone, DensityMatrix, EnergyDensityMatrix, Hamiltonian
 from sisl.physics.electron import EigenstateElectron
 from sisl.physics.overlap import Overlap
@@ -53,12 +56,15 @@ _eV2Ry = unit_convert("eV", "Ry")
 
 def _toF(array, dtype, scale=None):
     if scale is None:
-        return array.astype(dtype, order="F", copy=False)
-    elif array.dtype == dtype and array.flags.f_contiguous:
-        # no need to copy since the order is correct
-        return array * scale
+        # we won't force the fortran order, f2py,
+        # will handle this anyways. So we might as
+        # well let that machinery deal with the
+        # details.
+        return array.astype(dtype, copy=False)
 
-    # We have to handle cases
+    # As we are writing to Fortran, we might as well
+    # do the proper copy to F-contiguous.
+    # This will save a 2nd copy!
     out = np.empty_like(array, dtype, order="F")
     np.multiply(array, scale, out=out)
     return out
@@ -158,13 +164,23 @@ def _add_overlap(M, S, str_method):
     if S is None:
         return
 
-    if M.spsame(S):
+    fail = True
+
+    if isinstance(S, np.ndarray):
+        if len(S) == len(M._csr._D):
+            fail = False
+            M._csr._D[:, M.S_idx] = S[:]
+
+    elif M.spsame(S):
         if isinstance(S, Overlap):
+            fail = False
             M._csr._D[:, M.S_idx] = S._csr._D[:, 0]
         elif isinstance(S, SparseOrbitalBZ):
-            if S.non_orthogonal:
+            if not S.orthogonal:
+                fail = False
                 M._csr._D[:, M.S_idx] = S._csr._D[:, S.S_idx]
-    else:
+
+    if fail:
         raise NotImplementedError(
             f"{str_method} could not paste overlap matrix into the "
             "matrix due to non-conforming sparse elements."
@@ -180,7 +196,7 @@ class onlysSileSiesta(SileBinSiesta):
         """The version of the file"""
         return _siesta.read_tshs_version(self.file)
 
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Returns a Lattice object from a TranSiesta file"""
         n_s = _siesta.read_tshs_sizes(self.file)[3]
         self._fortran_check("read_lattice", "could not read sizes.")
@@ -196,7 +212,14 @@ class onlysSileSiesta(SileBinSiesta):
         cell = arr[1].T * _Bohr2Ang
         return Lattice(cell, nsc=nsc)
 
-    def read_geometry(self, geometry=None):
+    @deprecate_argument(
+        "geometry",
+        "atoms",
+        "use atoms=geometry.atoms instead of geometry=",
+        "0.15",
+        "0.16",
+    )
+    def read_geometry(self, atoms: Optional[Union[Atoms, Geometry]] = None):
         """Returns Geometry object from a TranSiesta file"""
 
         # Read supercell
@@ -214,7 +237,18 @@ class onlysSileSiesta(SileBinSiesta):
         # and/or other stuff we *can* reuse an existing
         # geometry which contains the correct atomic numbers etc.
         orbs = np.diff(lasto)
-        if geometry is None:
+
+        if isinstance(atoms, Geometry):
+            atoms = atoms.atoms
+        if isinstance(atoms, Atoms):
+            if len(atoms) != len(orbs):
+                raise ValueError(
+                    f"{self.__class__.__name__}.read_geometry "
+                    "got a basis set (Atoms object) with incorrect "
+                    "number of atoms."
+                )
+
+        if atoms is None:
             # Create all different atoms...
             # The TSHS file does not contain the
             # atomic numbers, so we will just
@@ -222,6 +256,7 @@ class onlysSileSiesta(SileBinSiesta):
 
             # Get unique orbitals
             uorb = np.unique(orbs)
+
             # Create atoms
             atoms = []
             for Z, orb in enumerate(uorb):
@@ -239,8 +274,7 @@ class onlysSileSiesta(SileBinSiesta):
         else:
             # Create a new geometry with the correct atomic numbers
             atom = []
-            for ia, no in zip(geometry, orbs):
-                a = geometry.atoms[ia]
+            for a, no in zip(atoms, orbs):
                 if a.no == no:
                     atom.append(a)
                 else:
@@ -254,7 +288,7 @@ class onlysSileSiesta(SileBinSiesta):
         # Create and return geometry object
         return Geometry(xyz, atom, lattice=lattice)
 
-    def read_overlap(self, **kwargs):
+    def read_overlap(self, **kwargs) -> Overlap:
         """Returns the overlap matrix from the TranSiesta file"""
         tshs_g = self.read_geometry()
         geom = _geometry_align(
@@ -294,12 +328,13 @@ class onlysSileSiesta(SileBinSiesta):
         # to get it to correct layout.
         return S.transpose(sort=kwargs.get("sort", True))
 
-    def read_fermi_level(self):
+    def read_fermi_level(self) -> float:
         r"""Query the Fermi-level contained in the file
 
         Returns
         -------
-        Ef : fermi-level of the system
+        float
+            fermi-level of the system
         """
         Ef = _siesta.read_tshs_ef(self.file) * _Ry2eV
         self._fortran_check("read_fermi_level", "could not read fermi-level.")
@@ -310,7 +345,7 @@ class onlysSileSiesta(SileBinSiesta):
 class tshsSileSiesta(onlysSileSiesta):
     """Geometry, Hamiltonian and overlap matrix file"""
 
-    def read_hamiltonian(self, geometry=None, **kwargs):
+    def read_hamiltonian(self, geometry=None, **kwargs) -> Hamiltonian:
         """Electronic structure from the siesta.TSHS file
 
         The TSHS file format does *not* contain exact orbital information.
@@ -374,9 +409,11 @@ class tshsSileSiesta(onlysSileSiesta):
         H._csr._nnz = len(col)
 
         if orthogonal:
+            self._log("read orthogonal hamiltonian")
             H._csr._D = _a.emptyd([nnz, spin])
             H._csr._D[:, :] = dH[:, :] * _Ry2eV
         else:
+            self._log("read non-orthogonal hamiltonian")
             H._csr._D = _a.emptyd([nnz, spin + 1])
             H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
             H._csr._D[:, spin] = dS[:]
@@ -393,7 +430,7 @@ class tshsSileSiesta(onlysSileSiesta):
             print(f"Number of orbitals: {no}")
             print(idx)
             raise SileError(
-                f"{self!s}.read_hamiltonian could not assert "
+                f"{self!r}.read_hamiltonian could not assert "
                 "the supercell connections in the primary unit-cell."
             )
 
@@ -408,7 +445,7 @@ class tshsSileSiesta(onlysSileSiesta):
         csr = H.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
             raise SileError(
-                f"{self!s}.write_hamiltonian cannot write "
+                f"{self!r}.write_hamiltonian cannot write "
                 "a zero element sparse matrix!"
             )
 
@@ -425,6 +462,7 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # Get H and S
         if H.orthogonal:
+            self._log("writing orthogonal hamiltonian")
             s = csr.copy(dims=0)
             s.empty(keep_nnz=True)
             s += s.diags(1)
@@ -442,6 +480,7 @@ class tshsSileSiesta(onlysSileSiesta):
             h = csr._D
             s = s._D
         else:
+            self._log("writing non-orthogonal hamiltonian")
             h = csr._D[:, : H.S_idx]
             s = csr._D[:, H.S_idx]
 
@@ -455,8 +494,8 @@ class tshsSileSiesta(onlysSileSiesta):
             nsc[0],
             nsc[1],
             nsc[2],
-            cell.T / _Bohr2Ang,
-            xyz.T / _Bohr2Ang,
+            _toF(cell.T, np.float64, 1 / _Bohr2Ang),
+            _toF(xyz.T, np.float64, 1 / _Bohr2Ang),
             H.geometry.firsto,
             csr.ncol,
             csr.col + 1,
@@ -473,7 +512,7 @@ class tshsSileSiesta(onlysSileSiesta):
 class dmSileSiesta(SileBinSiesta):
     """Density matrix file"""
 
-    def read_density_matrix(self, **kwargs):
+    def read_density_matrix(self, **kwargs) -> DensityMatrix:
         """Returns the density matrix from the siesta.DM file
 
         Parameters
@@ -507,7 +546,7 @@ class dmSileSiesta(SileBinSiesta):
 
         if geom.no != no:
             raise SileError(
-                f"{self!s}.read_density_matrix could not use the "
+                f"{self!r}.read_density_matrix could not use the "
                 "passed geometry as the number of atoms or orbitals is "
                 "inconsistent with DM file."
             )
@@ -533,7 +572,7 @@ class dmSileSiesta(SileBinSiesta):
         if nsc[0] != 0 or geom.no_s >= col.max():
             _csr_from_siesta(geom, DM._csr)
         else:
-            warn(f"{self!s}.read_density_matrix may result in a wrong sparse pattern!")
+            warn(f"{self!r}.read_density_matrix may result in a wrong sparse pattern!")
 
         DM = DM.transpose(spin=False, sort=kwargs.get("sort", True))
         _add_overlap(
@@ -549,7 +588,7 @@ class dmSileSiesta(SileBinSiesta):
         # This ensures that we don"t have any *empty* elements
         if csr.nnz == 0:
             raise SileError(
-                f"{self!s}.write_density_matrix cannot write "
+                f"{self!r}.write_density_matrix cannot write "
                 "a zero element sparse matrix!"
             )
 
@@ -578,7 +617,7 @@ class dmSileSiesta(SileBinSiesta):
 class tsdeSileSiesta(dmSileSiesta):
     """Non-equilibrium density matrix and energy density matrix file"""
 
-    def read_energy_density_matrix(self, **kwargs):
+    def read_energy_density_matrix(self, **kwargs) -> EnergyDensityMatrix:
         """Returns the energy density matrix from the siesta.TSDE file
 
         Parameters
@@ -613,7 +652,7 @@ class tsdeSileSiesta(dmSileSiesta):
 
         if geom.no != no:
             raise SileError(
-                f"{self!s}.read_energy_density_matrix could "
+                f"{self!r}.read_energy_density_matrix could "
                 "not use the passed geometry as the number of atoms or orbitals "
                 "is inconsistent with DM file."
             )
@@ -642,7 +681,7 @@ class tsdeSileSiesta(dmSileSiesta):
             _csr_from_siesta(geom, EDM._csr)
         else:
             warn(
-                f"{self!s}.read_energy_density_matrix may result in a wrong sparse pattern!"
+                f"{self!r}.read_energy_density_matrix may result in a wrong sparse pattern!"
             )
 
         EDM = EDM.transpose(spin=False, sort=kwargs.get("sort", True))
@@ -653,12 +692,13 @@ class tsdeSileSiesta(dmSileSiesta):
         )
         return EDM
 
-    def read_fermi_level(self):
+    def read_fermi_level(self) -> float:
         r"""Query the Fermi-level contained in the file
 
         Returns
         -------
-        Ef : fermi-level of the system
+        float :
+            fermi-level of the system
         """
         Ef = _siesta.read_tsde_ef(self.file) * _Ry2eV
         self._fortran_check("read_fermi_level", "could not read fermi-level.")
@@ -683,7 +723,7 @@ class tsdeSileSiesta(dmSileSiesta):
 
         if DMcsr.nnz == 0:
             raise SileError(
-                f"{self!s}.write_density_matrices cannot write "
+                f"{self!r}.write_density_matrices cannot write "
                 "a zero element sparse matrix!"
             )
 
@@ -700,7 +740,7 @@ class tsdeSileSiesta(dmSileSiesta):
             np.allclose(DMcsr.ncol, EDMcsr.ncol) and np.allclose(DMcsr.col, EDMcsr.col)
         ):
             raise ValueError(
-                f"{self!s}.write_density_matrices got non compatible "
+                f"{self!r}.write_density_matrices got non compatible "
                 "DM and EDM matrices."
             )
 
@@ -752,7 +792,7 @@ class hsxSileSiesta(SileBinSiesta):
         """The version of the file"""
         return _siesta.read_hsx_version(self.file)
 
-    def _xij2system(self, xij, geometry=None):
+    def _xij2system(self, xij, geometry=None, **kwargs):
         """Create a new geometry with *correct* nsc and somewhat correct xyz
 
         Parameters
@@ -764,7 +804,7 @@ class hsxSileSiesta(SileBinSiesta):
         """
 
         def get_geom_handle(xij):
-            atoms = self.read_basis()
+            atoms = self.read_basis(geometry=geometry, **kwargs)
             if not atoms is None:
                 return Geometry(np.zeros([len(atoms), 3]), atoms)
 
@@ -1050,15 +1090,22 @@ class hsxSileSiesta(SileBinSiesta):
             # TODO check that geometry and xyz are the same!
             geometry._atoms = atms
 
+        geometry = _geometry_align(
+            geometry, kwargs.get("geometry", geometry), self.__class__, "read_geometry"
+        )
+
         return geometry
 
-    def read_basis(self, **kwargs):
+    def read_basis(self, **kwargs) -> Atoms:
         """Reads basis set and geometry information from the HSX file"""
+        self._log(
+            "basis %r %r", kwargs.get("atoms", None), kwargs.get("geometry", None)
+        )
         # Now read the sizes used...
-        no, na, nspecies = _siesta.read_hsx_specie_sizes(self.file)
+        no, na, nspecies = _siesta.read_hsx_species_sizes(self.file)
         self._fortran_check("read_basis", "could not read specie sizes.")
         # Read specie information
-        labels, val_q, norbs, isa = _siesta.read_hsx_species(
+        labels, val_q, norbs, isa = _siesta.read_hsx_species_info(
             self.file, nspecies, no, na
         )
         # convert to proper string
@@ -1107,7 +1154,7 @@ class hsxSileSiesta(SileBinSiesta):
         # Read in orbital information
         atoms = []
         for ispecie in range(nspecies):
-            n_l_zeta = _siesta.read_hsx_specie(self.file, ispecie + 1, norbs[ispecie])
+            n_l_zeta = _siesta.read_hsx_species(self.file, ispecie + 1, norbs[ispecie])
             self._fortran_check("read_basis", f"could not read specie {ispecie}.")
             # create orbital
             # since the n, l, zeta is unique per atomic orbital (before expanding to
@@ -1129,39 +1176,59 @@ class hsxSileSiesta(SileBinSiesta):
         atoms = Atoms([atoms[ia] for ia in isa])
 
         base = kwargs.get("geometry", kwargs.get("geom", None))
+        base = kwargs.get("atoms", base)
         if base is None:
             return atoms
+        if isinstance(base, Geometry):
+            base = base.atoms
 
         # Now compare the atoms such that we select the best one
         def get_best(aF, aI):
             if len(aF) != len(aI):
                 # the file has the correct number of orbitals
+                self._log("basis file atom=%r better than input %r", aF, aI)
                 return aF
 
             if not isinstance(aF, AtomUnknown):
                 if aF.Z != aI.Z:
+                    self._log(
+                        "basis file atom=%r has different Z than input %r", aF, aI
+                    )
                     return aF
 
             # check for orbitals being atomicorbital
             for orb in aI:
                 if not isinstance(orb, AtomicOrbital):
+                    self._log(
+                        "basis file, input atom=%r does not use AtomicOrbital", aI
+                    )
                     return aF
 
             for oF, oI in zip(aF, aI):
-                for prop in ("n", "l", "m", "zeta", "P"):
+                # we can't check polarization, not stored in the HSX file format
+                for prop in ("n", "l", "m", "zeta"):
                     if getattr(oF, prop) != getattr(oI, prop):
+                        self._log(
+                            "basis file atom, orbital %r,%r property %s cannot be matched with input atom, orbital %r,%r",
+                            aF,
+                            oF,
+                            prop,
+                            aI,
+                            oI,
+                        )
                         return aF
 
             # the atoms are the same, so we select the input atom
             # since it likely contains the spherical functions
             # and the charge
+            self._log("basis file, choose input atom=%r over file atom %r", aI, aF)
             return aI
 
-        atoms = Atoms(map(get_best, atoms, base.atoms))
+        atoms = Atoms(map(get_best, atoms, base))
         return atoms
 
-    def _r_geometry_v0(self, **kwargs):
-        """Read the geometry from the old file version"""
+    def _r_lattice_v0(self, **kwargs):
+        """Read the Lattice from the old file version"""
         spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_geometry", "could not read geometry sizes.")
         ncol, col, _, _, dxij = _siesta.read_hsx_hsx0(self.file, spin, no, no_s, nnz)
@@ -1171,9 +1238,50 @@ class hsxSileSiesta(SileBinSiesta):
         ptr = _ncol_to_indptr(ncol)
         xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
         geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
+        lattice = geom.lattice
+        del geom
+        return lattice
+
+    def _r_lattice_v1(self, **kwargs):
+        _, na, _, _, _ = _siesta.read_hsx_sizes(self.file)
+
+        cell, nsc, _, _ = _siesta.read_hsx_geom1(self.file, na)
+
+        return Lattice(cell.T * _Bohr2Ang, nsc=nsc)
+
+    def read_lattice(self, **kwargs) -> Lattice:
+        """Read the lattice from the file
+
+        This will always work on new files Siesta >=5, but only sometimes on older
+        versions of the HSX file format.
+        """
+        self._log("lattice v1")
+        return getattr(self, f"_r_lattice_v{self.version}")(**kwargs)
+
+    def _r_geometry_v0(self, **kwargs):
+        """Read the geometry from the old file version"""
+        self._log(
+            "geometry v0 %r, %r",
+            kwargs.get("atoms", None),
+            kwargs.get("geometry", None),
+        )
+        spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        self._fortran_check("read_geometry", "could not read geometry sizes.")
+        ncol, col, _, _, dxij = _siesta.read_hsx_hsx0(self.file, spin, no, no_s, nnz)
+        dxij = dxij.T * _Bohr2Ang
+        col -= 1
+        self._fortran_check("read_geometry", "could not read Hamiltonian.")
+        ptr = _ncol_to_indptr(ncol)
+        xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
+        geom = self._xij2system(xij, **kwargs)
         return geom
 
     def _r_geometry_v1(self, **kwargs):
+        self._log(
+            "geometry v1 %r, %r",
+            kwargs.get("atoms", None),
+            kwargs.get("geometry", None),
+        )
         # first read the atoms object
         atoms = self.read_basis(**kwargs)
 
@@ -1185,26 +1293,25 @@ class hsxSileSiesta(SileBinSiesta):
         lattice = Lattice(cell.T * _Bohr2Ang, nsc=nsc)
         return Geometry(xa.T * _Bohr2Ang, atoms, lattice=lattice)
 
-    def read_geometry(self, **kwargs):
+    def read_geometry(self, **kwargs) -> Geometry:
         """Read the geometry from the file
 
         This will always work on new files Siesta >=5, but only sometimes on older
         versions of the HSX file format.
         """
-        version = _siesta.read_hsx_version(self.file)
-        return getattr(self, f"_r_geometry_v{version}")(**kwargs)
+        return getattr(self, f"_r_geometry_v{self.version}")(**kwargs)
 
-    def read_fermi_level(self, **kwargs):
+    def read_fermi_level(self, **kwargs) -> float:
         """Reads the fermi level in the file
 
         Only valid for files created by Siesta >=5.
         """
+        if self.version == 0:
+            # It isn't implemented in the old file format.
+            warn(f"{self!r} does not contain the fermi-level (too old version file).")
+            return None
         Ef = _siesta.read_hsx_ef(self.file)
-        msg = self._fortran_check(
-            "read_fermi_level", "could not read Fermi-level", ret_msg=True
-        )
-        if msg:
-            warn(msg)
+        self._fortran_check("read_fermi_level", "could not read Fermi-level")
         return Ef * _Ry2eV
 
     def _r_hamiltonian_v0(self, **kwargs):
@@ -1219,7 +1326,7 @@ class hsxSileSiesta(SileBinSiesta):
 
         if geom.no != no or geom.no_s != no_s:
             raise SileError(
-                f"{self!s}.read_hamiltonian could not use the "
+                f"{self!r}.read_hamiltonian could not use the "
                 "passed geometry as the number of atoms or orbitals is "
                 "inconsistent with HSX file."
             )
@@ -1258,7 +1365,7 @@ class hsxSileSiesta(SileBinSiesta):
 
         if geom.no != no or geom.no_s != no_s:
             raise SileError(
-                f"{self!s}.read_hamiltonian could not use the "
+                f"{self!r}.read_hamiltonian could not use the "
                 "passed geometry as the number of atoms or orbitals is "
                 "inconsistent with HSX file."
             )
@@ -1283,12 +1390,15 @@ class hsxSileSiesta(SileBinSiesta):
         # Convert the supercells to sisl supercells
         _csr_from_sc_off(H.geometry, isc.T, H._csr)
 
+        # Correct the fermi-level here
+        Ef = self.read_fermi_level()
+        H.shift(-Ef)
+
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
-    def read_hamiltonian(self, **kwargs):
+    def read_hamiltonian(self, **kwargs) -> Hamiltonian:
         """Returns the electronic structure from the siesta.TSHS file"""
-        version = _siesta.read_hsx_version(self.file)
-        return getattr(self, f"_r_hamiltonian_v{version}")(**kwargs)
+        return getattr(self, f"_r_hamiltonian_v{self.version}")(**kwargs)
 
     def _r_overlap_v0(self, **kwargs):
         """Returns the overlap matrix from the siesta.HSX file"""
@@ -1303,7 +1413,7 @@ class hsxSileSiesta(SileBinSiesta):
 
         if geom.no != no or geom.no_s != no_s:
             raise SileError(
-                f"{self!s}.read_overlap could not use the "
+                f"{self!r}.read_overlap could not use the "
                 "passed geometry as the number of atoms or orbitals is "
                 "inconsistent with HSX file."
             )
@@ -1341,7 +1451,7 @@ class hsxSileSiesta(SileBinSiesta):
 
         if geom.no != no or geom.no_s != no_s:
             raise SileError(
-                f"{self!s}.read_overlap could not use the "
+                f"{self!r}.read_overlap could not use the "
                 "passed geometry as the number of atoms or orbitals is "
                 "inconsistent with HSX file."
             )
@@ -1364,10 +1474,9 @@ class hsxSileSiesta(SileBinSiesta):
         # not really necessary with Hermitian transposing, but for consistency
         return S.transpose(sort=kwargs.get("sort", True))
 
-    def read_overlap(self, **kwargs):
+    def read_overlap(self, **kwargs) -> Overlap:
         """Returns the electronic structure from the siesta.TSHS file"""
-        version = _siesta.read_hsx_version(self.file)
-        return getattr(self, f"_r_overlap_v{version}")(**kwargs)
+        return getattr(self, f"_r_overlap_v{self.version}")(**kwargs)
 
 
 @set_module("sisl.io.siesta")
@@ -1743,7 +1852,7 @@ class wfsxSileSiesta(SileBinSiesta):
 
         # Build the info dictionary for the eigenstate to know how it was calculated
         # We include the spin index if needed.
-        info = dict(k=self._convert_k(k), weight=weight, gauge="r", index=idx - 1)
+        info = dict(k=self._convert_k(k), weight=weight, gauge="orbital", index=idx - 1)
         if self._sizes.nspin == 2:
             info["spin"] = ispin
 
@@ -1766,7 +1875,7 @@ class wfsxSileSiesta(SileBinSiesta):
         self._close_wfsx()
         return sizes
 
-    def read_basis(self):
+    def read_basis(self) -> Atoms:
         """Reads the basis contained in the WFSX file.
 
         The WFSX file only contains information about the atom labels, which atom
@@ -1810,7 +1919,16 @@ class wfsxSileSiesta(SileBinSiesta):
             # The loop in which the generator was used has been broken.
             self._close_wfsx()
 
-    def read_eigenstate(self, k=(0, 0, 0), spin=0, ktol=1e-4):
+    @deprecate_argument(
+        "ktol",
+        "atol",
+        "use atol instead of ktol",
+        "0.15",
+        "0.16",
+    )
+    def read_eigenstate(
+        self, k=(0, 0, 0), spin: int = 0, atol: float = 1e-4
+    ) -> EigenstateElectron:
         """Reads a specific eigenstate from the file.
 
         This method iterates over the states until it finds a match. Do not call
@@ -1820,10 +1938,10 @@ class wfsxSileSiesta(SileBinSiesta):
         ----------
         k: array-like of shape (3,), optional
             The k point of the state you want to find.
-        spin: integer, optional
+        spin:
             The spin index of the state you want to find. Only meaningful for polarized
             calculations.
-        ktol: float, optional
+        atol:
             The threshold value for considering two k-points the same (i.e. to match
             the query k point with the states k point).
 
@@ -1835,16 +1953,21 @@ class wfsxSileSiesta(SileBinSiesta):
         -------
         EigenstateElectron or None:
             If found, the state that was queried.
-            If not found, returns `None`. NOTE this may change to an exception in the future
+
+        Raises
+        ------
+        LookupError :
+            in case the requested k-point can not be found in the file.
         """
         # Iterate over all eigenstates in the file
         for state in self.yield_eigenstate():
-            if state.info.get("spin", 0) == spin and np.allclose(
-                state.info["k"], k, atol=ktol
-            ):
+            info = state.info
+            if info.get("spin", 0) == spin and np.allclose(info["k"], k, atol=atol):
                 # This is the state that the user requested
                 return state
-        return None
+        raise LookupError(
+            f"{self.__class__.__name__}.read_eigenstate could not find k-point: {k!s} eigenstate"
+        )
 
     def read_info(self):
         """Reads the information for all the k points contained in the file
@@ -1881,7 +2004,7 @@ class wfsxSileSiesta(SileBinSiesta):
         self._fortran_check("read_info", "could not read file information.")
         return self._convert_k(k), kw, nwf
 
-    def read_brillouinzone(self):
+    def read_brillouinzone(self) -> BrillouinZone:
         """Read the brillouin zone object"""
         k, weight, _ = self.read_info()
         return BrillouinZone(self._parent, k=k, weight=weight)
@@ -1895,7 +2018,7 @@ class _gridSileSiesta(SileBinSiesta):
     units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
     """
 
-    def read_lattice(self, *args, **kwargs):
+    def read_lattice(self, *args, **kwargs) -> Lattice:
         r"""Return the cell contained in the file"""
 
         cell = _siesta.read_grid_cell(self.file).T * _Bohr2Ang
@@ -1917,7 +2040,7 @@ class _gridSileSiesta(SileBinSiesta):
         self._fortran_check("read_grid_size", "could not read grid sizes.")
         return nspin, mesh
 
-    def read_grid(self, index=0, dtype=np.float64, *args, **kwargs):
+    def read_grid(self, index=0, dtype=np.float64, *args, **kwargs) -> Grid:
         """Read grid contained in the Grid file
 
         Parameters
@@ -1969,6 +2092,36 @@ class _gridSileSiesta(SileBinSiesta):
         #       and thus the first axis is the fast (x, y, z) is retained
         g.grid = grid * self.grid_unit
         return g
+
+    def write_grid(self, *grids: Grid) -> None:
+        """Write the grid to the file"""
+        self._fortran_open("w")
+
+        _siesta.write_grid_header(
+            self._iu,
+            len(grids),
+            *grids[0].shape,
+            _toF(grids[0].cell.T, np.float64, 1.0 / _Bohr2Ang),
+        )
+
+        for grid in grids:
+            if grid.shape != grids[0].shape:
+                raise ValueError(
+                    f"{self.__class__.__name__}.write_grid got grids with different shapes."
+                )
+
+            if grid.dtype in (np.float32, np.float64):
+                _siesta.write_grid_sp(
+                    self._iu,
+                    _toF(grid.grid, np.float32, 1.0 / self.grid_unit),
+                    *grid.shape,
+                )
+            else:
+                raise ValueError(
+                    f"{self.__class__.__name__}.write_grid can only write real-valued grids."
+                )
+
+        self._fortran_close()
 
 
 @set_module("sisl.io.siesta")
@@ -2280,7 +2433,7 @@ class _gfSileSiesta(SileBinSiesta):
 
         return mem
 
-    def read_hamiltonian(self):
+    def read_hamiltonian(self) -> Tuple[np.ndarray, np.ndarray]:
         """Return current Hamiltonian and overlap matrix from the GF file
 
         Returns
@@ -2296,7 +2449,7 @@ class _gfSileSiesta(SileBinSiesta):
         # we don't convert to C order!
         return H * _Ry2eV, S
 
-    def read_self_energy(self):
+    def read_self_energy(self) -> np.ndarray:
         r"""Read the currently reached bulk self-energy
 
         The returned self-energy is:
@@ -2314,7 +2467,7 @@ class _gfSileSiesta(SileBinSiesta):
         # we don't convert to C order!
         return SE * _Ry2eV
 
-    def HkSk(self, k=(0, 0, 0), spin=0):
+    def HkSk(self, k=(0, 0, 0), spin: int = 0) -> Tuple[np.ndarray, np.ndarray]:
         """Retrieve H and S for the given k-point
 
         Parameters
@@ -2323,7 +2476,7 @@ class _gfSileSiesta(SileBinSiesta):
            k-point to read the corresponding Hamiltonian and overlap matrices
            for. If a specific k-point is passed `kindex` will be used to find
            the corresponding index.
-        spin : int, optional
+        spin :
            spin-index for the Hamiltonian and overlap matrices
         """
         if not self._fortran_is_open():
@@ -2355,7 +2508,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._is_read = 0  # signal this is to be read
         return self.read_hamiltonian()
 
-    def self_energy(self, E, k=0, spin=0):
+    def self_energy(self, E, k=0, spin: int = 0) -> np.ndarray:
         """Retrieve self-energy for a given energy-point and k-point
 
         Parameters
@@ -2364,7 +2517,7 @@ class _gfSileSiesta(SileBinSiesta):
            energy to retrieve self-energy at
         k : int or array_like of float, optional
            k-point to retrieve k-point at
-        spin : int, optional
+        spin :
            spin-index to retrieve self-energy at
         """
         if not self._fortran_is_open():
@@ -2396,7 +2549,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._is_read = 0  # signal this is to be read
         return self.read_self_energy()
 
-    def write_header(self, bz, E, mu=0.0, obj=None):
+    def write_header(self, bz, E, mu: float = 0.0, obj=None):
         """Write to the binary file the header of the file
 
         Parameters
@@ -2407,7 +2560,7 @@ class _gfSileSiesta(SileBinSiesta):
            the energy points. If `obj` is an instance of `SelfEnergy` where an
            associated ``eta`` is defined then `E` may be float, otherwise
            it *has* to be a complex array.
-        mu : float, optional
+        mu :
            chemical potential in the file
         obj : ..., optional
            an object that contains the Hamiltonian definitions, defaults to ``bz.parent``

@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # isort: skip_file
+from __future__ import annotations
+
 """
 sisl
 ====
@@ -39,7 +41,6 @@ Advanced classes
    SparseCSR
    SparseAtom
    SparseOrbital
-   Selector
 
 """
 import logging
@@ -71,11 +72,20 @@ del _version, year, datetime
 
 import sisl._environ as _environ
 
+# Immediately check if the file is logable
+log_file = _environ.get_environ_variable("SISL_LOG_FILE")
+if not log_file.is_dir():
+    # Create the logging
+    log_lvl = _environ.get_environ_variable("SISL_LOG_LEVEL")
+
+    # Start the logging to the file
+    logging.basicConfig(filename=str(log_file), level=getattr(logging, log_lvl))
+    del log_lvl
+del log_file
+
+
 # import the common options used
 from ._common import *
-
-# Import plot routine
-from ._plot import plot as plot
 
 # Import warning classes
 # We currently do not import warn and info
@@ -88,22 +98,22 @@ from .messages import SislDeprecation
 # The unit contain the SI standard conversions using
 # all digits (not program specific)
 from .unit import unit_group, unit_convert, unit_default, units
-import sisl.unit as unit
+from . import unit
 
 # Import numerical constants (they required unit)
-import sisl.constant as constant
+from . import constant
 
 # To make it easier to type ;)
 C = constant
 
 # Specific linear algebra
-import sisl.linalg as linalg
+from . import linalg
 
 # Utilities
-import sisl.utils as utils
+from . import utils
 
 # Mixing
-import sisl.mixing as mixing
+from . import mixing
 
 # Below are sisl-specific imports
 from .shape import *
@@ -122,7 +132,7 @@ from .physics import *
 #  sisl.get_sile
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
-import sisl.io as io
+from . import io
 from .io.sile import (
     add_sile,
     get_sile_class,
@@ -154,7 +164,9 @@ Lattice.to.register("Sile", Lattice.to._dispatchs[str])
 # This enables:
 # import sisl
 # sisl.geom.graphene
-import sisl.geom as geom
+from . import geom
+
+from ._nodify import on_nodify as __nodify__
 
 # Set all the placeholders for the plot attribute
 # of sisl classes

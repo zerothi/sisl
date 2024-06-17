@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import reduce
 from numbers import Integral
-from typing import List, Optional, Tuple, Union
+from typing import Callable, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 
@@ -13,8 +13,9 @@ import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument, warn
 from sisl.typing import (
-    AtomsArgument,
-    Axis,
+    AnyAxes,
+    AtomsIndex,
+    CellAxis,
     Coord,
     CoordOrScalar,
     GeometryLike,
@@ -74,6 +75,95 @@ def write(geometry: Geometry, sile: SileLike, *args, **kwargs) -> None:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
+def apply(
+    geometry: Geometry,
+    data,
+    func,
+    mapper: Union[Callable[[int], int], str],
+    axis: int = 0,
+    segments: Union[Literal["atoms", "orbitals", "all"], Iterator[int]] = "atoms",
+) -> ndarray:
+    r"""Apply a function `func` to the data along axis `axis` using the method specified
+
+    This can be useful for applying conversions from orbital data to atomic data through
+    sums or other functions.
+
+    The data may be of any shape but it is expected the function can handle arguments as
+    ``func(data, axis=axis)``.
+
+    Parameters
+    ----------
+    data : array_like
+        the data to be converted
+    func : callable or str
+        a callable function that transforms the data in some way.
+        If a `str`, will use ``getattr(numpy, func)``.
+    mapper : func, optional
+        a function transforming the `segments` into some other segments that
+        is present in `data`.
+        It can accept anything the `segments` returns.
+        If a `str`, it will be equivalent to ``getattr(geometry, mapper)``
+    axis :
+        axis selector for `data` along which `func` will be applied
+    segments :
+        which segments the `mapper` will recieve, if atoms, each atom
+        index will be passed to the `mapper(ia)`.
+        If ``'all'``, it will be ``range(data.shape[axis])``.
+
+    Examples
+    --------
+    Convert orbital data into summed atomic data
+
+    >>> g = sisl.geom.diamond(atoms=sisl.Atom(6, R=(1, 2)))
+    >>> orbital_data = np.random.rand(10, g.no, 3)
+    >>> atomic_data = g.apply(orbital_data, np.sum, mapper=partial(g.a2o, all=True), axis=1)
+
+    The same can be accomblished by passing an explicit segment iterator,
+    note that ``iter(g) == range(g.na)``
+
+    >>> atomic_data = g.apply(orbital_data, np.sum, mapper=partial(g.a2o, all=True), axis=1,
+    ...                       segments=g)
+
+    To only take out every 2nd orbital:
+
+    >>> alternate_data = g.apply(orbital_data, np.sum, mapper=lambda idx: idx[::2], axis=1,
+    ...                          segments="all")
+
+    """
+    if isinstance(segments, str):
+        segment = segments.lower().rstrip("s")
+        if segment == "atom":
+            segments = range(geometry.na)
+        elif segment in ("orbital", "none"):
+            segments = range(geometry.no)
+        elif segment == "all":
+            segments = range(data.shape[axis])
+        else:
+            raise ValueError(
+                f"{geometry.__class__}.apply got wrong argument 'segments'={segments}"
+            )
+
+    if isinstance(func, str):
+        func = getattr(np, func)
+
+    if isinstance(mapper, str):
+        # an internal mapper
+        mapper = getattr(geometry, mapper)
+
+    take = np.take
+    atleast_1d = np.atleast_1d
+    new_data = [
+        func(take(data, atleast_1d(mapper(segment)), axis), axis=axis)
+        for segment in segments
+    ]
+
+    new_data = np.stack(new_data, axis=axis)
+    if new_data.ndim != data.ndim:
+        new_data = np.expand_dims(new_data, axis=axis)
+    return new_data
+
+
+@register_sisl_dispatch(Geometry, module="sisl")
 def sort(
     geometry: Geometry, **kwargs
 ) -> Union[Geometry, Tuple[Geometry, List[List[int]]]]:
@@ -95,7 +185,7 @@ def sort(
 
     Parameters
     ----------
-    atoms : AtomsArgument, optional
+    atoms : AtomsIndex, optional
        only perform sorting algorithm for subset of atoms. This is *NOT* a positional dependent
        argument. All sorting algorithms will _only_ be performed on these atoms.
        Default, all atoms will be sorted.
@@ -122,7 +212,7 @@ def sort(
        For ``'Z'`` atoms will be grouped in atomic number
        For ``'symbol'`` atoms will be grouped by their atomic symbol.
        For ``'tag'`` atoms will be grouped by their atomic tag.
-       For ``'species'`` atoms will be sorted according to their specie index.
+       For ``'species'`` atoms will be sorted according to their species index.
        If a tuple/list is passed the first item is described. All subsequent items are a
        list of groups, where each group comprises elements that should be sorted on an
        equal footing. If one of the groups is None, that group will be replaced with all
@@ -482,7 +572,7 @@ def sort(
 
         symbol: order by symbol (most cases same as Z)
         Z: order by atomic number
-        tag: order by atom tag (should be the same as specie)
+        tag: order by atom tag (should be the same as species)
         specie/species: order by specie (in order of contained in the Geometry)
         """
         # Create new list
@@ -512,9 +602,9 @@ def sort(
             return nl
 
         # See if the attribute exists for the atoms
-        if method.lower() == "species":
+        if method.lower().startswith("specie"):
             # this one has two spelling options!
-            method = "specie"
+            method = "species"
 
         # now get them through `getattr`
         if hasattr(geometry.atoms[0], method):
@@ -594,7 +684,7 @@ def sort(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def swap(geometry: Geometry, atoms1: AtomsArgument, atoms2: AtomsArgument) -> Geometry:
+def swap(geometry: Geometry, atoms1: AtomsIndex, atoms2: AtomsIndex) -> Geometry:
     """Swap a set of atoms in the geometry and return a new one
 
     This can be used to reorder elements of a geometry.
@@ -619,7 +709,7 @@ def swap(geometry: Geometry, atoms1: AtomsArgument, atoms2: AtomsArgument) -> Ge
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def insert(geometry: Geometry, atom: AtomsArgument, other: GeometryLike) -> Geometry:
+def insert(geometry: Geometry, atom: AtomsIndex, other: GeometryLike) -> Geometry:
     """Inserts other atoms right before index
 
     We insert the `geometry` `Geometry` before `atom`.
@@ -651,7 +741,7 @@ def insert(geometry: Geometry, atom: AtomsArgument, other: GeometryLike) -> Geom
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def tile(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
+def tile(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
     """Tile the geometry to create a bigger one
 
     The atomic indices are retained for the base structure.
@@ -698,6 +788,7 @@ def tile(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
         raise ValueError(
             f"{geometry.__class__.__name__}.tile requires a repetition above 0"
         )
+    axis = direction(axis)
 
     lattice = geometry.lattice.tile(reps, axis)
 
@@ -721,7 +812,7 @@ def tile(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
 def untile(
     geometry: Geometry,
     reps: int,
-    axis: Axis,
+    axis: CellAxis,
     segment: int = 0,
     rtol: float = 1e-4,
     atol: float = 1e-4,
@@ -778,6 +869,8 @@ def untile(
             f"cannot be cut into {reps} different "
             "pieces. Please check your geometry and input."
         )
+    axis = direction(axis)
+
     # Truncate to the correct segments
     lseg = segment % reps
     # Cut down cell
@@ -796,7 +889,7 @@ def untile(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def repeat(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
+def repeat(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
     """Create a repeated geometry
 
     The atomic indices are *NOT* retained from the base structure.
@@ -855,6 +948,7 @@ def repeat(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
         raise ValueError(
             f"{geometry.__class__.__name__}.repeat requires a repetition above 0"
         )
+    axis = direction(axis)
 
     lattice = geometry.lattice.repeat(reps, axis)
 
@@ -875,7 +969,9 @@ def repeat(geometry: Geometry, reps: int, axis: Axis) -> Geometry:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def unrepeat(geometry: Geometry, reps: int, axis: Axis, *args, **kwargs) -> Geometry:
+def unrepeat(
+    geometry: Geometry, reps: int, axis: CellAxis, *args, **kwargs
+) -> Geometry:
     """Unrepeats the geometry similarly as `untile`
 
     This is the opposite of `Geometry.repeat`.
@@ -896,10 +992,11 @@ def unrepeat(geometry: Geometry, reps: int, axis: Axis, *args, **kwargs) -> Geom
 def translate(
     geometry: Geometry,
     v: CoordOrScalar,
-    atoms: Optional[AtomsArgument] = None,
-    cell: bool = False,
+    atoms: AtomsIndex = None,
 ) -> Geometry:
     """Translates the geometry by `v`
+
+    `move` is a shorthand for this function.
 
     One can translate a subset of the atoms by supplying `atoms`.
 
@@ -913,25 +1010,23 @@ def translate(
     atoms :
          only displace the given atomic indices, if not specified, all
          atoms will be displaced
-    cell :
-         If True the supercell also gets enlarged by the vector
     """
     g = geometry.copy()
     if atoms is None:
         g.xyz += np.asarray(v, g.xyz.dtype)
     else:
         g.xyz[geometry._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)
-    if cell:
-        g.set_lattice(g.lattice.translate(v))
     return g
 
 
-# simple copy...
-Geometry.move = Geometry.translate
+@register_sisl_dispatch(Geometry, module="sisl")
+def move(geometry: Geometry, *args, **kwargs) -> Geometry:
+    """See `translate` for details"""
+    return translate(geometry, *args, **kwargs)
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
+def sub(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     """Create a new `Geometry` with a subset of this `Geometry`
 
     Indices passed *MUST* be unique.
@@ -948,7 +1043,7 @@ def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     Lattice.fit : update the supercell according to a reference supercell
     Geometry.remove : the negative of this routine, i.e. remove a subset of atoms
     """
-    atoms = geometry.sc2uc(atoms)
+    atoms = geometry.asc2uc(atoms)
     return geometry.__class__(
         geometry.xyz[atoms, :].copy(),
         atoms=geometry.atoms.sub(atoms),
@@ -957,7 +1052,7 @@ def sub(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
+def remove(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     """Remove atoms from the geometry.
 
     Indices passed *MUST* be unique.
@@ -973,7 +1068,7 @@ def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     --------
     Geometry.sub : the negative of this routine, i.e. retain a subset of atoms
     """
-    atoms = geometry.sc2uc(atoms)
+    atoms = geometry.asc2uc(atoms)
     if atoms.size == 0:
         return geometry.copy()
     atoms = np.delete(_a.arangei(geometry.na), atoms)
@@ -986,15 +1081,16 @@ def remove(geometry: Geometry, atoms: AtomsArgument) -> Geometry:
     "what",
     "argument only has been deprecated in favor of what, please update your code.",
     "0.14",
+    "0.16",
 )
 def rotate(
     geometry: Geometry,
     angle: float,
     v: Union[str, int, Coord],
     origin: Optional[Union[int, Coord]] = None,
-    atoms: Optional[AtomsArgument] = None,
+    atoms: AtomsIndex = None,
     rad: bool = False,
-    what: Optional[str] = None,
+    what: Optional[Literal["xyz", "abc", "abc+xyz", "x", "a", ...]] = None,
 ) -> Geometry:
     r"""Rotate geometry around vector and return a new geometry
 
@@ -1059,7 +1155,7 @@ def rotate(
         if what is None:
             what = "xyz"
         # Only rotate the unique values
-        atoms = geometry.sc2uc(atoms, unique=True)
+        atoms = geometry.asc2uc(atoms, unique=True)
 
     if isinstance(v, Integral):
         v = direction(v, abc=geometry.cell, xyz=np.diag([1, 1, 1]))
@@ -1101,9 +1197,9 @@ def rotate(
 @register_sisl_dispatch(Geometry, module="sisl")
 def swapaxes(
     geometry: Geometry,
-    axes1: Union[Axis, str],
-    axes2: Union[Axis, str],
-    what: str = "abc",
+    axes1: AnyAxes,
+    axes2: AnyAxes,
+    what: Literal["abc", "xyz", "abc+xyz"] = "abc",
 ) -> Geometry:
     """Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
 
@@ -1121,7 +1217,7 @@ def swapaxes(
     axes2 :
        the new axis indices, same as `axes1`
        old axis indices (or labels)
-    what : {'abc', 'xyz', 'abc+xyz'}
+    what :
        what to swap, lattice vectors (abc) or Cartesian components (xyz),
        or both.
        Neglected for integer axes arguments.
@@ -1181,7 +1277,16 @@ def swapaxes(
 
 @register_sisl_dispatch(Geometry, module="sisl")
 def center(
-    geometry: Geometry, atoms: Optional[AtomsArgument] = None, what: str = "xyz"
+    geometry: Geometry,
+    atoms: AtomsIndex = None,
+    what: Literal[
+        "COP|xyz|position",
+        "mm:xyz",
+        "mm:lattice|mm:cell",
+        "COM|mass",
+        "COMM:pbc|mass:pbc",
+        "COU|lattice|cell",
+    ] = "xyz",
 ) -> np.ndarray:
     """Returns the center of the geometry
 
@@ -1247,8 +1352,8 @@ def center(
 def append(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
-    axis: Axis,
-    offset: Union[str, Coord] = "none",
+    axis: CellAxis,
+    offset: Union[Literal["none", "min"], Coord] = "none",
 ) -> Geometry:
     """Appends two structures along `axis`
 
@@ -1289,6 +1394,7 @@ def append(
     Geometry.attach : attach a geometry
     Geometry.insert : insert a geometry
     """
+    axis = direction(axis)
     if isinstance(other, Lattice):
         # Only extend the supercell.
         xyz = np.copy(geometry.xyz)
@@ -1335,8 +1441,8 @@ def append(
 def prepend(
     geometry: Geometry,
     other: LatticeOrGeometryLike,
-    axis: Axis,
-    offset: Union[str, Coord] = "none",
+    axis: CellAxis,
+    offset: Union[Literal["none", "min"], Coord] = "none",
 ) -> Geometry:
     """Prepend two structures along `axis`
 
@@ -1377,6 +1483,7 @@ def prepend(
     Geometry.attach : attach a geometry
     Geometry.insert : insert a geometry
     """
+    axis = direction(axis)
     if isinstance(other, Lattice):
         # Only extend the supercell.
         xyz = np.copy(geometry.xyz)
@@ -1470,11 +1577,18 @@ def add(
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
+@deprecate_argument(
+    "scale_atoms",
+    "scale_basis",
+    "argument scale_atoms has been deprecated in favor of scale_basis, please update your code.",
+    "0.15",
+    "0.16",
+)
 def scale(
     geometry: Geometry,
     scale: CoordOrScalar,
-    what: str = "abc",
-    scale_atoms: bool = True,
+    what: Literal["abc", "xyz"] = "abc",
+    scale_basis: bool = True,
 ) -> Geometry:
     """Scale coordinates and unit-cell to get a new geometry with proper scaling
 
@@ -1484,14 +1598,19 @@ def scale(
        the scale factor for the new geometry (lattice vectors, coordinates
        and the atomic radii are scaled).
     what: {"abc", "xyz"}
+
        ``abc``
          Is applied on the corresponding lattice vector and the fractional coordinates.
+
        ``xyz``
-         Is applied only to the atomic coordinates.
+         Is applied *only* to the atomic coordinates.
+
        If three different scale factors are provided, each will correspond to the
        Cartesian direction/lattice vector.
-    scale_atoms :
-       whether atoms (basis) should be scaled as well.
+    scale_basis :
+       if true, the atoms basis-sets will be also be scaled.
+       The scaling of the basis-sets will be done based on the largest
+       scaling factor.
     """
     # Ensure we are dealing with a numpy array
     scale = np.asarray(scale)
@@ -1499,6 +1618,7 @@ def scale(
     # Scale the supercell
     lattice = geometry.lattice.scale(scale, what=what)
 
+    what = what.lower()
     if what == "xyz":
         # It is faster to rescale coordinates by simply multiplying them by the scale
         xyz = geometry.xyz * scale
@@ -1508,7 +1628,7 @@ def scale(
         # Scale the coordinates by keeping fractional coordinates the same
         xyz = geometry.fxyz @ lattice.cell
 
-        if scale_atoms:
+        if scale_basis:
             # To rescale atoms, we need to know the span of each cartesian coordinate before and
             # after the scaling, and scale the atoms according to the coordinate that has
             # been scaled by the largest factor.
@@ -1522,7 +1642,7 @@ def scale(
             f"{geometry.__class__.__name__}.scale got wrong what argument, must be one of abc|xyz"
         )
 
-    if scale_atoms:
+    if scale_basis:
         # Atoms are rescaled to the maximum scale factor
         atoms = geometry.atoms.scale(max_scale)
     else:

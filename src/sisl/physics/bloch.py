@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 r"""Bloch's theorem
 ===================
 
@@ -86,6 +88,12 @@ class Bloch:
         """Representation of the Bloch model"""
         B = self._bloch
         return f"{self.__class__.__name__}{{{B[0]}, {B[1]}, {B[2]}}}"
+
+    def __repr__(self):
+        """Representation of the Bloch model"""
+        B = self._bloch
+        cls = self.__class__
+        return f"<{cls.__module__}.{cls.__name__}{{{B[0]}, {B[1]}, {B[2]}}}>"
 
     @property
     def bloch(self):

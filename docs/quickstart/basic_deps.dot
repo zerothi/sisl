@@ -1,0 +1,17 @@
+# Currently creates a nice graphics with:
+#   sfdp -Tsvg ...
+digraph basic_dep {
+  "Orbital"
+  "Orbital" -> {"Atom", "Sile"}
+  "Atom"
+  "Atom" -> {"Atoms"}
+  "Atoms"
+  "Atoms" -> {"Geometry", "Sile"}
+  "Lattice"
+  "Lattice" -> {"Geometry", "Sile", "Grid"}
+  "Geometry"
+  "Geometry" -> {"Grid", "Sile"}
+  "Grid"
+  "Grid" -> {"Sile"}
+  "Sile"
+}

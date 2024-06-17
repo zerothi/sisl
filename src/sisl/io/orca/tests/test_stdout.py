@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 import sys
 
@@ -15,7 +17,7 @@ _dir = osp.join("sisl", "io", "orca")
 
 
 def test_tags(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
     assert out.info.na == 2
     assert out.info.no == 62
@@ -23,7 +25,7 @@ def test_tags(sisl_files):
 
 
 def test_read_electrons(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     N = out.read_electrons[:]()
@@ -36,14 +38,14 @@ def test_read_electrons(sisl_files):
 
 
 def test_charge_name(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
     for name in ["mulliken", "MULLIKEN", "loewdin", "Lowdin", "LÖWDIN"]:
         assert out.read_charge(name=name) is not None
 
 
 def test_charge_mulliken_atom(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="mulliken", projection="atom")
@@ -67,7 +69,7 @@ def test_charge_mulliken_atom(sisl_files):
 
 
 def test_lowedin_atom(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="loewdin", projection="atom")
@@ -91,7 +93,7 @@ def test_lowedin_atom(sisl_files):
 
 
 def test_charge_mulliken_reduced(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="mulliken", projection="orbital")
@@ -138,7 +140,7 @@ def test_charge_mulliken_reduced(sisl_files):
 
 
 def test_charge_loewdin_reduced(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="loewdin", projection="orbital")
@@ -167,7 +169,7 @@ def test_charge_loewdin_reduced(sisl_files):
 
 
 def test_charge_mulliken_full(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="mulliken", projection="orbital", reduced=False)
@@ -191,7 +193,7 @@ def test_charge_mulliken_full(sisl_files):
 
 
 def test_charge_loewdin_full(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="loewdin", projection="orbital", reduced=False)
@@ -215,7 +217,7 @@ def test_charge_loewdin_full(sisl_files):
 
 
 def test_charge_atom_unpol(sisl_files):
-    f = sisl_files(_dir, "molecule2.output")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="mulliken", projection="atom")
@@ -236,7 +238,7 @@ def test_charge_atom_unpol(sisl_files):
 
 
 def test_charge_orbital_reduced_unpol(sisl_files):
-    f = sisl_files(_dir, "molecule2.output")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[:](name="mulliken", projection="orbital")
@@ -272,7 +274,7 @@ def test_charge_orbital_reduced_unpol(sisl_files):
 
 
 def test_charge_orbital_full_unpol(sisl_files):
-    f = sisl_files(_dir, "molecule2.output")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     C = out.read_charge[-1](name="mulliken", projection="orbital", reduced=False)
@@ -284,7 +286,7 @@ def test_charge_orbital_full_unpol(sisl_files):
 
 
 def test_read_energy(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     E = out.read_energy[:]()
@@ -296,7 +298,7 @@ def test_read_energy(sisl_files):
 
 
 def test_read_energy_vdw(sisl_files):
-    f = sisl_files(_dir, "molecule2.output")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     E = out.read_energy[-1]()
@@ -305,7 +307,7 @@ def test_read_energy_vdw(sisl_files):
 
 
 def test_read_orbital_energies(sisl_files):
-    f = sisl_files(_dir, "molecule.output")
+    f = sisl_files(_dir, "nitric_oxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     E = out.read_orbital_energies[:]()
@@ -324,7 +326,7 @@ def test_read_orbital_energies(sisl_files):
 
 
 def test_read_orbital_energies_unpol(sisl_files):
-    f = sisl_files(_dir, "molecule2.output")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     E = out.read_orbital_energies[:]()
@@ -340,7 +342,7 @@ def test_read_orbital_energies_unpol(sisl_files):
 
 
 def test_multiple_calls(sisl_files):
-    f = sisl_files(_dir, "molecule2.output")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule.output")
     out = stdoutSileORCA(f)
 
     N = out.read_electrons[:]()

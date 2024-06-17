@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from functools import lru_cache
 from numbers import Integral
 
@@ -56,8 +58,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
         # Create list with correct number of orbitals
         lasto = _a.arrayi(np.copy(self.lasto) + 1)
-        nos = np.append([lasto[0]], np.diff(lasto))
-        nos = _a.arrayi(nos)
+        nos = np.diff(lasto, prepend=0)
 
         if "atom" in kwargs:
             # The user "knows" which atoms are present
@@ -93,6 +94,8 @@ class _ncSileTBtrans(SileCDFTBtrans):
         """Same as `geometry`, but deprecated"""
         deprecate(
             f"{self.__class__.__name__}.geom is deprecated, please use '.geometry'."
+            "0.14",
+            "0.16",
         )
         return self.geometry
 

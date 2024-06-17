@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from numpy import (
     arccos,
     arctan2,
@@ -25,7 +27,7 @@ from sisl._indices import indices_le
 
 __all__ = ["fnorm", "fnorm2", "expand", "orthogonalize"]
 __all__ += ["spher2cart", "cart2spher", "spherical_harm"]
-__all__ += ["curl"]
+__all__ += ["curl", "close"]
 
 
 def fnorm(array, axis=-1):
@@ -60,7 +62,7 @@ def expand(vector, length):
     The expansion of the vector can be written as:
 
     .. math::
-        V' = V + \hat V l
+        \mathbf v' = \mathbf v + \hat{\mathbf v} l
 
     Parameters
     ----------
@@ -85,9 +87,9 @@ def orthogonalize(ref, vector):
     The orthogonalization is performed by:
 
     .. math::
-       V_{\perp} = V - \hat R (\hat R \cdot V)
+        \mathbf v_{\perp} = \mathbf v - \hat{\mathbf r}(\hat{\mathbf r} \cdot\mathbf v)
 
-    which is subtracting the projected part from :math:`V`.
+    which is subtracting the projected part from :math:`\mathbf v`.
 
     Parameters
     ----------
@@ -124,7 +126,7 @@ def spher2cart(r, theta, phi):
     r : array_like
        radius
     theta : array_like
-       azimuthal angle in the :math:`x-y` plane
+       azimuthal angle in the :math:`xy` plane
     phi : array_like
        polar angle from the :math:`z` axis
     """
@@ -166,7 +168,7 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
     r : numpy.ndarray
        radius in spherical coordinates, only for `maxR` different from ``None``
     theta : numpy.ndarray
-       angle in the :math:`x-y` plane from :math:`x` (azimuthal)
+       angle in the :math:`xy` plane from :math:`x` (azimuthal)
        Only calculated if input `theta` is ``True``, otherwise None is returned.
     phi : numpy.ndarray
        If `cos_phi` is ``True`` this is :math:`\cos(\phi)`, otherwise
@@ -205,7 +207,7 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
 
 
 def spherical_harm(m, l, theta, phi):
-    r"""Calculate the spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
+    r"""Calculate the spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf r\to \{r, \theta, \varphi\}`.
 
     .. math::
         Y^m_l(\theta,\varphi) = (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
@@ -220,7 +222,7 @@ def spherical_harm(m, l, theta, phi):
     l : int
        degree of the spherical harmonics
     theta : array_like
-       angle in :math:`x-y` plane (azimuthal)
+       angle in :math:`xy` plane (azimuthal)
     phi : array_like
        angle from :math:`z` axis (polar)
     """
@@ -230,8 +232,8 @@ def spherical_harm(m, l, theta, phi):
     return sph_harm(m, l, theta, phi) * (-1) ** m
 
 
-def curl(m, axis=-2, axisv=-1):
-    r""" Determine the curl of a matrix `m` where `m` contains the differentiated quantites along `axisv`.
+def curl(M, axis=-2, axisv=-1):
+    r""" Determine the curl of a matrix `M` where `M` contains the differentiated quantites along `axisv`.
 
     The curl is calculated as:
 
@@ -246,7 +248,7 @@ def curl(m, axis=-2, axisv=-1):
 
     Parameters
     ----------
-    m : numpy.ndarray
+    M : numpy.ndarray
        matrix to calculate the curl of
     axis : int, optional
        axis that contains the direction vectors, this dimension is removed from the returned curl
@@ -257,19 +259,19 @@ def curl(m, axis=-2, axisv=-1):
     -------
     curl : the curl of the matrix shape of `m` without axis `axis`
     """
-    if m.shape[axis] != 3:
+    if M.shape[axis] != 3:
         raise ValueError("curl requires 3 vectors to calculate the curl of!")
-    elif m.shape[axisv] != 3:
+    elif M.shape[axisv] != 3:
         raise ValueError("curl requires the vectors to have 3 components!")
 
     # Check that no two axis are used for the same thing
-    axis %= m.ndim
-    axisv %= m.ndim
+    axis %= M.ndim
+    axisv %= M.ndim
     if axis == axisv:
         raise ValueError("curl requires axis and axisv to be different axes")
 
     # Create lists for correct slices
-    slx = [slice(None) for _ in m.shape]
+    slx = [slice(None) for _ in M.shape]
     sly = slx[:]
     slz = slx[:]
     vx = slx[:]
@@ -295,11 +297,16 @@ def curl(m, axis=-2, axisv=-1):
     vz = tuple(vz)
 
     # Create curl by removing the v dimension
-    curl = empty(delete(m.shape, axis), dtype=m.dtype)
-    curl[vx] = m[sly][vz] - m[slz][vy]
-    curl[vy] = m[slz][vx] - m[slx][vz]
-    curl[vz] = m[slx][vy] - m[sly][vx]
+    curl = empty(delete(M.shape, axis), dtype=M.dtype)
+    curl[vx] = M[sly][vz] - M[slz][vy]
+    curl[vy] = M[slz][vx] - M[slx][vz]
+    curl[vz] = M[slx][vy] - M[sly][vx]
     return curl
+
+
+def close(a, b, /, rtol: float = 1e-5, atol: float = 1e-8) -> bool:
+    """Equivalent to `numpy.allclose` for scalars"""
+    return abs(a - b) <= (atol + rtol * abs(b))
 
 
 def intersect_and_diff_sets(a, b):

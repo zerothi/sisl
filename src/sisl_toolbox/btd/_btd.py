@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """ Eigenchannel calculator for any number of electrodes
 
 Developer: Nick Papior
@@ -482,7 +484,7 @@ class DeviceGreen:
     along the 3rd lattice vector. Then the following example may
     be used to calculate the eigen-channels:
 
-    .. code::
+    .. code-block:: python
 
        import sisl
        from sisl_toolbox.btd import *
@@ -518,7 +520,7 @@ class DeviceGreen:
     To make this easier there exists a short-hand version that does the
     above:
 
-    .. code::
+    .. code-block:: python
 
        G = DeviceGreen.from_fdf("RUN.fdf")
 

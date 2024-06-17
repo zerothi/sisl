@@ -1,21 +1,27 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, NewType, Optional, Sequence, TypedDict, Union
+from typing import Any, Literal, NewType, Optional, Sequence, Tuple, TypedDict, Union
 
 import numpy as np
-import numpy.typing as npt
 
 import sisl
 from sisl._core.geometry import AtomCategory, Geometry
 from sisl._core.lattice import Lattice, LatticeChild
 from sisl.io.sile import BaseSile
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex, npt
 
 PathLike = Union[str, Path, BaseSile]
 
 Color = NewType("Color", str)
+
+# A colorscale can be a scale name, a sequence of colors or a sequence of
+# (value, color) tuples.
+Colorscale = Union[str, Sequence[Color], Sequence[Tuple[float, Color]]]
 
 GeometryLike = Union[sisl.Geometry, Any]
 
@@ -40,12 +46,12 @@ class StyleSpec:
 
 @dataclass
 class AtomsStyleSpec(StyleSpec):
-    atoms: AtomsArgument = None
+    atoms: AtomsIndex = None
     vertices: Optional[float] = 15
 
 
 class AtomsStyleSpecDict(TypedDict):
-    atoms: AtomsArgument
+    atoms: AtomsIndex
     color: Optional[Color]
     size: Optional[float]
     opacity: Optional[float]
@@ -68,7 +74,7 @@ SpinIndex = NewType("SpinIndex", Optional[Sequence[Literal[0, 1]]])
 
 @dataclass
 class OrbitalQuery(Query):
-    atoms: AtomsArgument = None
+    atoms: AtomsIndex = None
     species: SpeciesSpec = None
     orbitals: OrbitalsNames = None
     n: Optional[Sequence[int]] = None
@@ -87,7 +93,7 @@ class OrbitalStyleQuery(StyleSpec, OrbitalQuery): ...
 OrbitalQueries = Sequence[OrbitalQuery]
 OrbitalStyleQueries = Sequence[OrbitalStyleQuery]
 
-CellLike = Union[npt.NDArray[np.float_], Lattice, LatticeChild]
+CellLike = Union[npt.NDArray[Union[np.float32, np.float64]], Lattice, LatticeChild]
 
 
 @dataclass
@@ -105,7 +111,7 @@ class ArrowSpec:
 @dataclass
 class AtomArrowSpec:
     data: Any
-    atoms: AtomsArgument = None
+    atoms: AtomsIndex = None
     scale: float = 1.0
     color: Any = None
     width: float = 1.0

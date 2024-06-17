@@ -1,12 +1,25 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from functools import partial
 
 import numpy as np
 import pytest
 
-from sisl import Geometry
+from sisl import Geometry, Lattice
 from sisl.geom import NeighborFinder
+from sisl.geom._neighbors import (
+    AtomNeighborList,
+    FullNeighborList,
+    PartialNeighborList,
+    PointNeighborList,
+    PointsNeighborList,
+    UniqueNeighborList,
+)
 
-pytestmark = [pytest.mark.neighbor]
+pytestmark = [pytest.mark.geometry, pytest.mark.geom, pytest.mark.neighbor]
 
 
 tr_fixture = partial(pytest.fixture, scope="module", params=[True, False])
@@ -23,9 +36,17 @@ post_setup = tr_fixture()(request_param)
 pbc = tr_fixture()(request_param)
 
 
+def set_pbc(geom, _pbc):
+    if _pbc:
+        geom.lattice.set_boundary_condition(Lattice.BC.PERIODIC)
+    else:
+        geom.lattice.set_boundary_condition(Lattice.BC.UNKNOWN)
+
+
 @pytest.fixture(scope="module")
-def neighfinder(sphere_overlap, multiR):
+def neighfinder(sphere_overlap, multiR, pbc):
     geom = Geometry([[0, 0, 0], [1.2, 0, 0], [9, 0, 0]], lattice=[10, 10, 7])
+    set_pbc(geom, pbc)
 
     R = np.array([1.1, 1.5, 1.2]) if multiR else 1.5
 
@@ -114,122 +135,137 @@ def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
     assert finder._counts.sum() == 2
 
 
-def test_neighbor_pairs(neighfinder, self_interaction, pbc, expected_neighs):
-    neighs = neighfinder.find_neighbors(
-        as_pairs=True, self_interaction=self_interaction, pbc=pbc
-    )
+def test_neighbor_pairs(neighfinder, self_interaction, expected_neighs):
+    neighs = neighfinder.find_neighbors(self_interaction=self_interaction)
 
-    assert isinstance(neighs, np.ndarray)
+    assert isinstance(neighs, FullNeighborList)
 
-    first_at_neighs, second_at_neighs, third_at_neighs = expected_neighs
+    n_neighs = [len(at_neighs) for at_neighs in expected_neighs]
+    assert np.all(neighs.n_neighbors == n_neighs)
 
-    n_neighs = len(first_at_neighs) + len(second_at_neighs) + len(third_at_neighs)
-
-    assert neighs.shape == (n_neighs, 5)
-
-    assert np.all(neighs == [*first_at_neighs, *second_at_neighs, *third_at_neighs])
-
-
-def test_neighbors_lists(neighfinder, self_interaction, pbc, expected_neighs):
-    neighs = neighfinder.find_neighbors(
-        as_pairs=False, self_interaction=self_interaction, pbc=pbc
-    )
-
-    assert isinstance(neighs, list)
-    assert len(neighs) == 3
-
-    assert all(isinstance(n, np.ndarray) for n in neighs)
-
-    first_at_neighs, second_at_neighs, third_at_neighs = expected_neighs
-
-    # Check shapes
-    for i, i_at_neighs in enumerate(
-        [first_at_neighs, second_at_neighs, third_at_neighs]
-    ):
-        assert neighs[i].shape == (
-            len(i_at_neighs),
-            4,
-        ), f"Wrong shape for neighbors of atom {i}"
-
-    # Check values
-    for i, i_at_neighs in enumerate(
-        [first_at_neighs, second_at_neighs, third_at_neighs]
-    ):
-        if len(neighs[i]) == 0:
-            continue
-
-        assert np.all(
-            neighs[i] == i_at_neighs[:, 1:]
-        ), f"Wrong values for neighbors of atom {i}"
+    for i, (at_neighs, expected_at_neighs) in enumerate(zip(neighs, expected_neighs)):
+        assert isinstance(at_neighs, AtomNeighborList)
+        assert at_neighs.atom == i
+        assert len(expected_at_neighs) == at_neighs.n_neighbors
+        if at_neighs.n_neighbors > 0:
+            assert np.all(at_neighs.i == expected_at_neighs[:, 0])
+            assert np.all(at_neighs.j == expected_at_neighs[:, 1])
+            assert np.all(at_neighs.isc == expected_at_neighs[:, 2:])
 
 
-def test_all_unique_pairs(neighfinder, self_interaction, pbc, expected_neighs):
+def test_partial_neighbor_pairs(neighfinder, self_interaction, expected_neighs):
+    neighs = neighfinder.find_neighbors(self_interaction=self_interaction, atoms=[1, 2])
+
+    assert isinstance(neighs, PartialNeighborList)
+
+    expected_neighs = expected_neighs[1:]
+
+    n_neighs = [len(at_neighs) for at_neighs in expected_neighs]
+    assert np.all(neighs.n_neighbors == n_neighs)
+
+    for i, (at_neighs, expected_at_neighs) in enumerate(zip(neighs, expected_neighs)):
+        assert isinstance(at_neighs, AtomNeighborList)
+        assert at_neighs.atom == i + 1
+        assert len(expected_at_neighs) == at_neighs.n_neighbors
+        if at_neighs.n_neighbors > 0:
+            assert np.all(at_neighs.i == expected_at_neighs[:, 0])
+            assert np.all(at_neighs.j == expected_at_neighs[:, 1])
+            assert np.all(at_neighs.isc == expected_at_neighs[:, 2:])
+
+
+def test_unique_pairs(
+    neighfinder, self_interaction, expected_neighs, sphere_overlap, multiR, pbc
+):
+    # It shouldn't work if you are not requesting sphere overlap and there are
+    # multiple cutoff radius.
     if neighfinder.R.ndim == 1 and not neighfinder._overlap:
         with pytest.raises(ValueError):
-            neighfinder.find_all_unique_pairs(
-                self_interaction=self_interaction, pbc=pbc
-            )
+            neighfinder.find_unique_pairs(self_interaction=self_interaction)
         return
 
-    neighs = neighfinder.find_all_unique_pairs(
-        self_interaction=self_interaction, pbc=pbc
-    )
+    neighs = neighfinder.find_unique_pairs(self_interaction=self_interaction)
 
-    first_at_neighs, second_at_neighs, third_at_neighs = expected_neighs
+    assert isinstance(neighs, UniqueNeighborList)
 
-    all_expected_neighs = np.array(
-        [*first_at_neighs, *second_at_neighs, *third_at_neighs]
-    )
+    # Convert to a full neighbor list and check that everything is correct.
+    full_neighs = neighs.to_full()
 
-    unique_neighs = []
-    for neigh_pair in all_expected_neighs:
-        if not np.all(neigh_pair[2:] == 0):
-            unique_neighs.append(neigh_pair)
-        else:
-            for others in unique_neighs:
-                if np.all(others == [neigh_pair[1], neigh_pair[0], *neigh_pair[2:]]):
-                    break
-            else:
-                unique_neighs.append(neigh_pair)
+    expected_neighs = [
+        at_neighs[np.lexsort(at_neighs[:, [1, 0]].T)] if len(at_neighs) > 0 else []
+        for at_neighs in expected_neighs
+    ]
 
-    assert neighs.shape == (len(unique_neighs), 5)
+    assert isinstance(full_neighs, FullNeighborList)
+
+    for at_neighs, expected_at_neighs in zip(full_neighs, expected_neighs):
+        assert isinstance(at_neighs, AtomNeighborList)
+        print(at_neighs._finder_results, expected_at_neighs)
+        assert len(expected_at_neighs) == at_neighs.n_neighbors
+        if at_neighs.n_neighbors > 0:
+            assert np.all(at_neighs.i == expected_at_neighs[:, 0])
+            assert np.all(at_neighs.j == expected_at_neighs[:, 1])
+            assert np.all(at_neighs.isc == expected_at_neighs[:, 2:])
 
 
 def test_close(neighfinder, pbc):
-    neighs = neighfinder.find_close([0.3, 0, 0], as_pairs=True, pbc=pbc)
+    neighs = neighfinder.find_close([0.3, 0, 0])
 
-    expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
+    assert isinstance(neighs, PointsNeighborList)
+
+    first_point_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
+
     if pbc and neighfinder.R.ndim == 0:
-        expected_neighs.append([0, 2, -1, 0, 0])
+        first_point_neighs.append([0, 2, -1, 0, 0])
 
-    assert neighs.shape == (len(expected_neighs), 5)
-    assert np.all(neighs == expected_neighs)
+    expected_neighs = [
+        np.array(first_point_neighs),
+    ]
+
+    for point_neighs, expected_point_neighs in zip(neighs, expected_neighs):
+        assert isinstance(point_neighs, PointNeighborList)
+        assert len(expected_point_neighs) == point_neighs.n_neighbors
+        if point_neighs.n_neighbors > 0:
+            assert np.all(point_neighs.i == expected_point_neighs[:, 0])
+            assert np.all(point_neighs.j == expected_point_neighs[:, 1])
+            assert np.all(point_neighs.isc == expected_point_neighs[:, 2:])
+
+
+def test_close_intcoords(neighfinder):
+    """Test the case when the input coordinates are integers.
+
+    (cython routine needs floats)
+    """
+    neighfinder.find_close([0, 0, 0])
 
 
 def test_no_neighbors(pbc):
     """Test the case where there are no neighbors, to see that it doesn't crash."""
 
     geom = Geometry([[0, 0, 0]])
+    set_pbc(geom, pbc)
 
     finder = NeighborFinder(geom, R=1.5)
 
-    neighs = finder.find_neighbors(as_pairs=True, pbc=pbc)
+    neighs = finder.find_neighbors()
 
-    assert isinstance(neighs, np.ndarray)
-    assert neighs.shape == (0, 5)
+    assert isinstance(neighs, FullNeighborList)
 
-    neighs = finder.find_neighbors(as_pairs=False, pbc=pbc)
+    for i, at_neighs in enumerate(neighs):
+        assert isinstance(at_neighs, AtomNeighborList)
+        assert at_neighs.atom == i
+        assert at_neighs.n_neighbors == 0
 
-    assert isinstance(neighs, list)
-    assert len(neighs) == 1
+    neighs = finder.find_unique_pairs()
 
-    assert isinstance(neighs[0], np.ndarray)
-    assert neighs[0].shape == (0, 4)
+    assert isinstance(neighs, UniqueNeighborList)
+    neighs = neighs.to_full()
 
-    neighs = finder.find_all_unique_pairs(pbc=pbc)
+    assert isinstance(neighs, FullNeighborList)
 
-    assert isinstance(neighs, np.ndarray)
-    assert neighs.shape == (0, 5)
+    for i, at_neighs in enumerate(neighs):
+        assert isinstance(at_neighs, AtomNeighborList)
+        assert at_neighs.atom == i
+        assert at_neighs.n_neighbors == 0
 
 
 def test_R_too_big(pbc):
@@ -237,29 +273,52 @@ def test_R_too_big(pbc):
     than the unit cell."""
 
     geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=[2, 10, 10])
+    set_pbc(geom, pbc)
 
     neighfinder = NeighborFinder(geom, R=1.5)
 
-    neighs = neighfinder.find_all_unique_pairs(pbc=pbc)
+    neighs = neighfinder.find_unique_pairs()
 
-    expected_neighs = [[0, 1, 0, 0, 0]]
+    assert isinstance(neighs, UniqueNeighborList)
+    print(neighs._finder_results)
+
+    neighs = neighs.to_full()
+    print(neighs._finder_results)
+
+    first_at_neighs = [[0, 1, 0, 0, 0]]
+    second_at_neighs = [[1, 0, 0, 0, 0]]
+
     if pbc:
-        expected_neighs.append([0, 1, -1, 0, 0])
-        expected_neighs.append([1, 0, 1, 0, 0])
+        first_at_neighs.insert(0, [0, 1, -1, 0, 0])
+        second_at_neighs.insert(0, [1, 0, 1, 0, 0])
 
-    assert neighs.shape == (len(expected_neighs), 5)
-    assert np.all(neighs == expected_neighs)
+    expected_neighs = [np.array(first_at_neighs), np.array(second_at_neighs)]
+
+    for at_neighs, expected_at_neighs in zip(neighs, expected_neighs):
+        assert isinstance(at_neighs, AtomNeighborList)
+        assert len(expected_at_neighs) == at_neighs.n_neighbors
+        if at_neighs.n_neighbors > 0:
+            assert np.all(at_neighs.i == expected_at_neighs[:, 0])
+            assert np.all(at_neighs.j == expected_at_neighs[:, 1])
+            assert np.all(at_neighs.isc == expected_at_neighs[:, 2:])
 
     neighfinder = NeighborFinder(geom, R=[0.6, 2.2], overlap=True)
 
-    neighs = neighfinder.find_close([[0.5, 0, 0]], as_pairs=True, pbc=pbc)
+    neighs = neighfinder.find_close([[0.5, 0, 0]])
+    assert isinstance(neighs, PointsNeighborList)
 
     expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
     if pbc:
         expected_neighs.insert(0, [0, 1, -1, 0, 0])
+    expected_neighs = [np.array(expected_neighs)]
 
-    assert neighs.shape == (len(expected_neighs), 5)
-    assert np.all(neighs == expected_neighs)
+    for point_neighs, expected_point_neighs in zip(neighs, expected_neighs):
+        assert isinstance(point_neighs, PointNeighborList)
+        assert len(expected_point_neighs) == point_neighs.n_neighbors
+        if point_neighs.n_neighbors > 0:
+            assert np.all(point_neighs.i == expected_point_neighs[:, 0])
+            assert np.all(point_neighs.j == expected_point_neighs[:, 1])
+            assert np.all(point_neighs.isc == expected_point_neighs[:, 2:])
 
 
 def test_bin_sizes():
@@ -283,3 +342,13 @@ def test_bin_sizes():
     assert n3.nbins[0] == n4.nbins[0]
     assert n3.nbins[1] > n4.nbins[1]
     assert n3.nbins[2] > n4.nbins[2]
+
+
+def test_outside_box():
+    geom = Geometry([[0, 0, 0], [3, 0, 0]], lattice=[2, 10, 10])
+
+    # The neighbor finder should raise an error if an atom is outside the box
+    # of the unit cell, because it is not supported for now.
+    # IT SHOULD BE SUPPORTED IN THE FUTURE
+    with pytest.raises(ValueError):
+        n = NeighborFinder(geom, R=1.1)

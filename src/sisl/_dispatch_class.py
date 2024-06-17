@@ -1,6 +1,19 @@
-""" Internal class used for subclassing.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
 
-This class implements the 
+import logging
+from collections import namedtuple
+from typing import Any, Optional, Sequence, Union
+
+from sisl.utils._search_mro import find_implementation
+
+from ._dispatcher import AbstractDispatcher, ClassDispatcher, TypeDispatcher
+
+"""Internal class used for subclassing.
+
+This class implements the
 
 __init_subclass__ method to ensure that classes automatically
 create the `to`/`new` methods.
@@ -19,19 +32,11 @@ A.new.register ..
 A.hello.register ..
 """
 
-import logging
-from collections import namedtuple
-from typing import Any, Optional, Sequence, Union
-
-from ._dispatcher import ClassDispatcher, TypeDispatcher
-
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 
 class _Dispatchs:
-    """Subclassable for creating the new/to arguments"""
+    """Subclassable for creating the dispatch arguments"""
 
     def __init_subclass__(
         cls,
@@ -44,22 +49,27 @@ class _Dispatchs:
         super().__init_subclass__(**kwargs)
 
         # Get the allowed actions for subclassing
-        prefix = "_tonew"
+        prefix = "_cls_dispatchs"
         allowed_subclassing = ("keep", "new", "copy")
 
         def find_base(cls, attr):
-            for base in cls.__bases__:
+            # The order of execution, since the implementation search
+            # is based on MRO, we should search in that order.
+            for base in cls.__mro__:
                 if hasattr(base, attr):
                     return base
             return None
 
         if dispatchs is None:
+            # Copy dispatch names when subclassing.
+            # I.e. we will search through all the previous ones
+            # and copy them.
             dispatchs = []
-            for base in cls.__bases__:
+            for base in cls.__mro__:
                 if hasattr(base, f"{prefix}_dispatchs"):
                     dispatchs.extend(getattr(base, f"{prefix}_dispatchs"))
 
-        if isinstance(dispatchs, str):
+        elif not isinstance(dispatchs, (list, tuple)):
             dispatchs = [dispatchs]
 
         loop = []
@@ -69,10 +79,11 @@ class _Dispatchs:
             #       ("new", "keep"),
             #       "to"
             #  ]
+            obj = None
             if isinstance(attr, (list, tuple)):
                 attr, obj = attr
-            else:
-                obj = None
+            elif hasattr(attr, "_attr_name"):
+                attr, obj = getattr(attr, "_attr_name"), attr
 
             if attr in cls.__dict__:
                 raise ValueError(f"The attribute {attr} already exists on {cls!r}")

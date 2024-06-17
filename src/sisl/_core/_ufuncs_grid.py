@@ -10,7 +10,9 @@ import numpy as np
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import SislError
-from sisl.typing import Axis, GridLike, SileLike
+from sisl.typing import CellAxes, CellAxis, GridLike, SileLike
+from sisl.utils import import_attr
+from sisl.utils.misc import direction
 
 from .grid import Grid
 
@@ -61,7 +63,46 @@ def write(grid: Grid, sile: SileLike, *args, **kwargs) -> None:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def swapaxes(grid: Grid, axis1: Axis, axis2: Axis) -> Grid:
+def apply(grid: Grid, function_, *args, **kwargs):
+    """Applies a function to the grid and returns a new grid
+
+    You can also apply a function that does not return a grid (maybe you want to do
+    some measurement). In that case, you will get the result instead of a `Grid`.
+
+    Parameters
+    -----------
+    function_: str or function
+        for a string the full module path to the function should be given.
+        The function that will be called should have the grid as the first argument in its
+        interface.
+    *args and **kwargs:
+        arguments that go directly to the function call
+
+    Notes
+    -----
+    The function argument name `function_` is named so that `function` can be an eligible
+    keyword argument for the function.
+    """
+    if isinstance(function_, str):
+        function_ = import_attr(function_)
+
+    result = function_(grid.grid, *args, **kwargs)
+
+    # Maybe the result is not a grid, because there are methods that actually
+    # do measurements of the grid
+    # TODO what to do about functions that squeeze shape == 1 dimensions?
+    if not isinstance(result, np.ndarray) or result.ndim != 3:
+        return result
+
+    # If the result is a grid, we will generate a copy of this one with the new grid values
+    grid = grid.copy()
+    grid.grid = result
+
+    return grid
+
+
+@register_sisl_dispatch(Grid, module="sisl")
+def swapaxes(grid: Grid, axis1: CellAxis, axis2: CellAxis) -> Grid:
     """Swap two axes in the grid (also swaps axes in the lattice)
 
     If ``swapaxes(0, 1)`` it returns the 0 in the 1 values.
@@ -71,6 +112,8 @@ def swapaxes(grid: Grid, axis1: Axis, axis2: Axis) -> Grid:
     axis1, axis2 :
         axes indices to be swapped
     """
+    axis1 = direction(axis1)
+    axis2 = direction(axis2)
     # Create index vector
     idx = _a.arangei(3)
     idx[axis2] = axis1
@@ -86,7 +129,7 @@ def swapaxes(grid: Grid, axis1: Axis, axis2: Axis) -> Grid:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: Axis) -> Grid:
+def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: CellAxis) -> Grid:
     """Retains certain indices from a specified axis.
 
     Works exactly opposite to `remove`.
@@ -98,6 +141,7 @@ def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: Axis) -> Grid:
     axis :
        the axis segment from which we retain the indices `idx`
     """
+    axis = direction(axis)
     idx = _a.asarrayi(idx).ravel()
     shift_geometry = False
     if len(idx) > 1:
@@ -116,18 +160,13 @@ def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: Axis) -> Grid:
 
     # Remove the indices
     # First create the opposite, index
-    if axis == 0:
-        out.grid[:, :, :] = grid.grid[idx, :, :]
-    elif axis == 1:
-        out.grid[:, :, :] = grid.grid[:, idx, :]
-    elif axis == 2:
-        out.grid[:, :, :] = grid.grid[:, :, idx]
+    out.grid[:, :, :] = np.take(grid.grid, idx, axis)
 
     return out
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: Axis) -> Grid:
+def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: CellAxis) -> Grid:
     """Removes certain indices from a specified axis.
 
     Works exactly opposite to `sub`.
@@ -139,13 +178,15 @@ def remove(grid: Grid, idx: Union[int, Sequence[int]], axis: Axis) -> Grid:
     axis :
        the axis segment from which we remove all indices `idx`
     """
+    axis = direction(axis)
     ret_idx = np.delete(_a.arangei(grid.shape[axis]), _a.asarrayi(idx))
     return grid.sub(ret_idx, axis)
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def append(grid: Grid, other: GridLike, axis: Axis) -> Grid:
+def append(grid: Grid, other: GridLike, axis: CellAxis) -> Grid:
     """Appends other `Grid` to this grid along axis"""
+    axis = direction(axis)
     shape = list(grid.shape)
     other = grid.new(other)
     shape[axis] += other.shape[axis]
@@ -161,7 +202,7 @@ def append(grid: Grid, other: GridLike, axis: Axis) -> Grid:
 
 
 @register_sisl_dispatch(Grid, module="sisl")
-def tile(grid: Grid, reps: int, axis: Axis) -> Grid:
+def tile(grid: Grid, reps: int, axis: CellAxis) -> Grid:
     """Tile grid to create a bigger one
 
     The atomic indices for the base Geometry will be retained.
@@ -186,6 +227,7 @@ def tile(grid: Grid, reps: int, axis: Axis) -> Grid:
             f"{grid.__class__.__name__} cannot tile the grid since the contained"
             " Geometry and Lattice are not commensurate."
         )
+    axis = direction(axis)
     out = grid.copy()
     out.grid = None
     reps_all = [1, 1, 1]

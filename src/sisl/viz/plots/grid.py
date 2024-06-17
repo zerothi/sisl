@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from typing import Callable, ChainMap, Literal, Optional, Sequence, Tuple, Union
 
 from sisl._core import Geometry, Grid
@@ -28,7 +33,7 @@ from ..processors.grid import (
     sub_grid,
     tile_grid,
 )
-from ..types import Axes
+from ..types import Axes, Colorscale
 from .geometry import geometry_plot
 
 
@@ -64,7 +69,7 @@ def grid_plot(
     interp: Tuple[int, int, int] = (1, 1, 1),
     isos: Sequence[dict] = [],
     smooth: bool = False,
-    colorscale: Optional[str] = None,
+    colorscale: Optional[Colorscale] = None,
     crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
     show_cell: Literal["box", "axes", False] = "box",
@@ -214,7 +219,7 @@ def wavefunction_plot(
     interp: Tuple[int, int, int] = (1, 1, 1),
     isos: Sequence[dict] = [],
     smooth: bool = False,
-    colorscale: Optional[str] = None,
+    colorscale: Optional[Colorscale] = None,
     crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
     show_cell: Literal["box", "axes", False] = "box",

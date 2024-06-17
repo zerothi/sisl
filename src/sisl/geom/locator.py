@@ -3,5 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 
+from __future__ import annotations
+
+
 def locator(geom1, idx1, geom2):
     pass

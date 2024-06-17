@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 This file provides tools to handle plotability of objects
 """
@@ -109,7 +111,7 @@ def _get_plotting_func(plot_cls, setting_key):
         return plot_cls(*args, **{setting_key: obj, **kwargs})
 
     _plot.__doc__ = f"""Builds a {plot_cls.__name__} by setting the value of "{setting_key}" to the current object.
-    
+
     Documentation for {plot_cls.__name__}
     ===========
     {inspect.cleandoc(plot_cls.__doc__) if plot_cls.__doc__ is not None else None}

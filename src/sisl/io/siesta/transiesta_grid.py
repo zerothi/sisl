@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
 from sisl import Grid
@@ -30,7 +32,7 @@ class tsvncSileSiesta(gridncSileSiesta):
     Grid.topyamg : intrinsic grid conversion to the Poisson equation
     """
 
-    def read_grid(self, *args, **kwargs):
+    def read_grid(self, *args, **kwargs) -> Grid:
         """Reads the TranSiesta potential input grid"""
         lattice = self.read_lattice().swapaxes(0, 2)
 
@@ -42,7 +44,8 @@ class tsvncSileSiesta(gridncSileSiesta):
         v = self._variable("V")
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nc, nb, na], bc=Grid.PERIODIC, lattice=lattice, dtype=v.dtype)
+        lattice.set_boundary_condition(Grid.PERIODIC)
+        grid = Grid([nc, nb, na], lattice=lattice, dtype=v.dtype)
 
         grid.grid[:, :, :] = v[:, :, :] * _Ry2eV
 

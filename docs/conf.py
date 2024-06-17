@@ -14,10 +14,15 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from __future__ import annotations
+
+import logging
 import os
 import pathlib
 import sys
 from datetime import date
+
+_log = logging.getLogger("sisl_doc")
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -61,8 +66,14 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
+    # allows to view code directly in the homepage
     "sphinx.ext.viewcode",
+    # toggle-button on info/warning/...
+    "sphinx_togglebutton",
+    # allow copybutton on code-blocks
     "sphinx_copybutton",
+    # design, grids etc.
+    "sphinx_design",
     "sphinxcontrib.jquery",  # a bug in 4.1.0 means search didn't work without explicit extension
     "sphinx_inline_tabs",
     # plotting and advanced usage
@@ -104,7 +115,56 @@ rst_prolog = """
 """
 # Insert the links into the epilog (globally)
 # This means that every document has access to the links
-rst_epilog = "".join(open("epilog.dummy").readlines())
+rst_epilog = """
+.. Internal links:
+.. _sisl-git: https://github.com/zerothi/sisl/
+.. _pr: https://github.com/zerothi/sisl/pulls
+.. _issue: https://github.com/zerothi/sisl/issues
+.. _sisl-discord: https://discord.gg/5XnFXFdkv2
+.. _gh-releases: https://github.com/zerothi/sisl/releases
+.. _pypi-releases: https://pypi.org/project/sisl
+.. _conda-releases: https://anaconda.org/conda-forge/sisl
+.. _sisl-doi: https://doi.org/10.5281/zenodo.597181
+.. _sisl-files: https://github.com/zerothi/sisl-files
+
+.. These are external links:
+.. _MPL: https://www.mozilla.org/en-US/MPL/2.0/
+.. _Cython: https://cython.org/
+.. _Python: https://www.python.org/
+.. _NetCDF: https://www.unidata.ucar.edu/netcdf
+.. _cmake: https://cmake.org
+.. _scikit-build-core: https://scikit-build-core.readthedocs.io/en/latest/
+.. _netcdf4-py: https://github.com/Unidata/netcdf4-python
+.. _numpy: https://www.numpy.org/
+.. _scipy: https://docs.scipy.org/doc/scipy
+.. _pyparsing: https://github.com/pyparsing/pyparsing
+.. _matplotlib: https://matplotlib.org/
+.. _pytest: https://docs.pytest.org/en/stable/
+.. _pathos: https://github.com/uqfoundation/pathos
+.. _tqdm: https://github.com/tqdm/tqdm
+.. _xarray: https://xarray.pydata.org/en/stable/index.html
+.. _workshop: https://github.com/zerothi/ts-tbt-sisl-tutorial
+.. _plotly: https://plotly.com/python/
+
+.. DFT codes
+.. _atom: https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html
+.. _Siesta: https://siesta-project.org
+.. _TranSiesta: https://siesta-project.org
+.. _TBtrans: https://siesta-project.org
+.. _BigDFT: http://www.bigdft.org
+.. _OpenMX: http://www.openmx-square.org
+.. _VASP: https://www.vasp.at
+.. _ScaleUp: https://www.secondprinciples.unican.es
+.. _GULP: https://nanochemistry.curtin.edu.au/gulp/news.cfm
+
+.. Other programs heavily used
+.. _ASE: https://wiki.fysik.dtu.dk/ase
+.. _kwant: https://kwant-project.org
+.. _XCrySDen: http://www.xcrysden.org
+.. _VMD: https://www.ks.uiuc.edu/Research/vmd
+.. _Molden: http://www.cmbi.ru.nl/molden
+.. _Wannier90: http://www.wannier.org
+"""
 
 autosummary_generate = True
 
@@ -119,6 +179,7 @@ else:
 # built documents.
 version = str(sisl.__version__)
 if "dev" in version:
+    _log.info("got {version=}")
     v_pre, v_suf = version.split("+")
     # remove dev (we don't need step)
     v_pre = v_pre.split(".dev")[0]
@@ -141,6 +202,30 @@ autodoc_default_options = {
     "show-inheritance": True,
 }
 
+# typehints only shows the minimal class, instead
+# of full module paths
+# The linkage is still problematic, and a known issue:
+#  https://github.com/sphinx-doc/sphinx/issues/10455
+# autodoc will likely get a rewrite. Until then..
+autodoc_typehints_format = "short"
+
+# Show type-hints in both the signature
+# and in the variable list
+autodoc_typehints = "both"
+
+# Automatically create the autodoc_type_aliases
+autodoc_type_aliases = dict()
+_type_aliases_skip = set(dir(sisl.typing._numpy))
+_type_aliases_skip.add("npt")
+
+for name in dir(sisl.typing):
+    if name.startswith("_"):
+        continue
+    if name in _type_aliases_skip:
+        continue
+
+    autodoc_type_aliases[name] = f"sisl.typing.{name}"
+
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -160,6 +245,9 @@ for _venv in pathlib.Path(".").glob("*venv*"):
 # documents.
 default_role = "autolink"
 
+# prefer to use the smallest name, always
+python_use_unqualified_type_names = True
+
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = False
 
@@ -171,7 +259,7 @@ show_authors = False
 modindex_common_prefix = ["sisl."]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
+todo_include_todos = False
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -204,6 +292,7 @@ else:
 # Add any extra style files that we need
 html_css_files = [
     "css/custom_styles.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css",
 ]
 
 # If false, no index is generated.
@@ -249,7 +338,35 @@ plot_include_source = True
 plot_formats = [("png", 90)]
 plot_pre_code = """\
 import numpy as np
+import matplotlib.pyplot as plt
 import sisl as si"""
+
+
+# Define header content
+header = f"""\
+.. currentmodule:: sisl
+
+.. ipython:: python
+   :suppress:
+
+   import numpy as np
+   import sisl as si
+   import matplotlib.pyplot as plt
+
+   np.random.seed(123987)
+   np.set_printoptions(precision=4, suppress=True)
+"""
+
+# IPython executables
+ipython_execlines = [
+    "import numpy as np",
+    "import sisl as si",
+    "import matplotlib.pyplot as plt",
+]
+
+html_context = {
+    "header": header,
+}
 
 # -----------------------------------------------------------------------------
 # Intersphinx configuration
@@ -260,6 +377,7 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "ase": ("https://wiki.fysik.dtu.dk/ase/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "xarray": ("https://docs.xarray.dev/en/stable/", None),
     "plotly": ("https://plotly.com/python-api-reference/", None),
@@ -274,13 +392,6 @@ intersphinx_mapping = {
 bibtex_bibfiles = ["references.bib", "sisl_uses.bib"]
 bibtex_default_style = "plain"
 bibtex_tooltips = True
-
-
-# IPython executables
-ipython_execlines = [
-    "import numpy as np",
-    "import sisl as si",
-]
 
 
 # Allow a year-month-author sorting
@@ -332,12 +443,13 @@ nbsphinx_timeout = 600
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base="docs") %}
+{% set docname = "docs/" + env.doc2path(env.docname, base=False) %}
 
 .. raw:: html
 
      <div align="right">
-     <a href="https://raw.githubusercontent.com/zerothi/sisl/main/{{ docname }}"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>.
+     <a href="https://raw.githubusercontent.com/zerothi/sisl/main/{{ docname }}"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>
+     &nbsp;
      <a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
      </div>
 
@@ -390,9 +502,13 @@ def sisl_skip(app, what, name, obj, skip, options):
             "isRoot",
             "isVariable",
         ]:
+            _log.info(f"skip: {obj=} {what=} {name=}")
             return True
     # elif what == "attribute":
     #    return True
+    if "InfoAttr" in name:
+        _log.info(f"skip: {what=} {name=}")
+        return True
 
     # check for special methods (we don't want all)
     if name.startswith("_") and name not in autodoc_default_options.get(
@@ -426,6 +542,7 @@ def sisl_skip(app, what, name, obj, skip, options):
             "orbital_COHP",
             "atom_COHP",
         ]:
+            _log.info(f"skip: {obj=} {what=} {name=}")
             return True
     if "SilePHtrans" in cls.__name__:
         if name in [
@@ -437,8 +554,9 @@ def sisl_skip(app, what, name, obj, skip, options):
             "shot_noise",
             "noise_power",
         ]:
+            _log.info(f"skip: {obj=} {what=} {name=}")
             return True
-    return None
+    return skip
 
 
 def setup(app):

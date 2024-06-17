@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import math as m
 
 import numpy as np
@@ -188,19 +190,19 @@ def test_sparse_orbital_sub_orbital():
         assert spo_rem.spsame(spo_sub)
         atoms = spo_rem.geometry.atoms
         assert atoms == spo_sub.geometry.atoms
-        assert atoms.nspecie == 3
-        assert (atoms.specie == 0).sum() == 2
-        assert (atoms.specie == 1).sum() == 3
-        assert (atoms.specie == 2).sum() == 1
+        assert atoms.nspecies == 3
+        assert (atoms.species == 0).sum() == 2
+        assert (atoms.species == 1).sum() == 3
+        assert (atoms.species == 2).sum() == 1
 
         spo_rem = spo.remove_orbital(a0, rem)
         spo_sub = spo.sub_orbital(a0, sub)
         assert spo_rem.spsame(spo_sub)
         atoms = spo_rem.geometry.atoms
         assert atoms == spo_sub.geometry.atoms
-        assert atoms.nspecie == 2
-        assert (atoms.specie == 0).sum() == 3
-        assert (atoms.specie == 1).sum() == 3
+        assert atoms.nspecies == 2
+        assert (atoms.species == 0).sum() == 3
+        assert (atoms.species == 1).sum() == 3
 
     # orbitals on second atom (a1)
     rem_sub = [
@@ -214,19 +216,19 @@ def test_sparse_orbital_sub_orbital():
         assert spo_rem.spsame(spo_sub)
         atoms = spo_rem.geometry.atoms
         assert atoms == spo_sub.geometry.atoms
-        assert atoms.nspecie == 3
-        assert (atoms.specie == 0).sum() == 3
-        assert (atoms.specie == 1).sum() == 2
-        assert (atoms.specie == 2).sum() == 1
+        assert atoms.nspecies == 3
+        assert (atoms.species == 0).sum() == 3
+        assert (atoms.species == 1).sum() == 2
+        assert (atoms.species == 2).sum() == 1
 
         spo_rem = spo.remove_orbital(a1, rem)
         spo_sub = spo.sub_orbital(a1, sub)
         assert spo_rem.spsame(spo_sub)
         atoms = spo_rem.geometry.atoms
         assert atoms == spo_sub.geometry.atoms
-        assert atoms.nspecie == 2
-        assert (atoms.specie == 0).sum() == 3
-        assert (atoms.specie == 1).sum() == 3
+        assert atoms.nspecies == 2
+        assert (atoms.species == 0).sum() == 3
+        assert (atoms.species == 1).sum() == 3
 
     spo_rem = spo.remove_orbital([0, 1], 0)
     spo_sub = spo.sub_orbital(0, [1, 2]).sub_orbital(1, 1)
@@ -258,18 +260,18 @@ def test_sparse_orbital_sub_orbital_nested():
     # Ensure we have a Hermitian matrix
     spo = spo + spo.transpose()
 
-    assert spo.geometry.atoms.nspecie == 2
+    assert spo.geometry.atoms.nspecies == 2
     sub0 = spo.remove_orbital(0, 1)
-    assert sub0.geometry.atoms.nspecie == 3
-    # this will *replace* since we take all atoms of a given specie
+    assert sub0.geometry.atoms.nspecies == 3
+    # this will *replace* since we take all atoms of a given species
     sub01 = sub0.remove_orbital(0, 1)
-    assert sub01.geometry.atoms.nspecie == 3
+    assert sub01.geometry.atoms.nspecies == 3
 
     # while this creates the same atom as the above two steps
     # it cannot recognize it as the same atom due
     # to different tag names
     sub = sub01.sub_orbital(1, 0)
-    assert sub.geometry.atoms.nspecie == 4
+    assert sub.geometry.atoms.nspecies == 4
 
 
 def test_sparse_orbital_replace_simple():
@@ -312,7 +314,7 @@ def test_sparse_orbital_replace_simple():
         assert np.fabs((new - spo44)._csr._D).sum() == 0.0
 
 
-def test_sparse_orbital_replace_specie_warn():
+def test_sparse_orbital_replace_species_warn():
     """
     Replacing an atom with another one but retaining couplings.
     """

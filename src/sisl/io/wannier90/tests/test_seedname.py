@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 
 import numpy as np
@@ -32,7 +34,7 @@ end
                 unit
             )
         )
-    g = winSileWannier90(f).read_geometry()
+    g = winSileWannier90(f).read_geometry(order=["win"])
 
     if len(unit) == 0:
         unit = "ang"
@@ -62,7 +64,7 @@ end
                 unit_sc, unit
             )
         )
-    g = winSileWannier90(f).read_geometry()
+    g = winSileWannier90(f).read_geometry(order=["win"])
 
     if len(unit) == 0:
         unit = "ang"
@@ -82,6 +84,24 @@ def test_seedname_write_read(sisl_tmp, sisl_system, frac):
     sile = winSileWannier90(f, "w")
     sile.write_geometry(sisl_system.g, frac=frac)
 
-    g = winSileWannier90(f).read_geometry()
+    g = winSileWannier90(f).read_geometry(order=["win"])
     assert np.allclose(g.cell, sisl_system.g.cell)
     assert np.allclose(g.xyz, sisl_system.g.xyz)
+
+
+def test_seedname_read_ham(sisl_files):
+    f = winSileWannier90(sisl_files(_dir, "read_ham", "read_ham.win"))
+
+    ham = {}
+    for key in ["hr", "tb"]:
+        ham[key] = f.read_hamiltonian(cutoff=1e-4, order=[key])
+        if not key == "hr":
+            assert ham["hr"].spsame(ham[key])
+
+
+def test_seedname_read_lattice(sisl_files):
+    f = winSileWannier90(sisl_files(_dir, "read_ham", "read_ham.win"))
+
+    lat1 = f.read_lattice(order="tb")
+    lat2 = f.read_lattice(order="win")
+    assert np.allclose(lat1.cell, lat2.cell)

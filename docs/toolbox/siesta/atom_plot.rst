@@ -21,7 +21,7 @@ Command line tool
 
 It may be called using
 
-.. code:: bash
+.. code-block:: console
 
    stoolbox atom-plot <atom-output-directory>
 
@@ -39,7 +39,7 @@ By default the program will output details regarding the core-charge and valence
 overlap (use full for determining whether core-corrections should be used).
 
 
-.. code:: bash
+.. code-block:: console
 
    Total charge in atom: 82.00213
    Core-correction r_pc [2.0, 1.5, 1]: [0.8656676967, 0.9330918445, 1.0573356051] Bohr
@@ -66,7 +66,7 @@ input files from ``INP`` files, one may also define a specific `Atom` object whi
 will be used to generate the input file.
 
 
-.. code:: python
+.. code-block::
 
    from sisl import *
    from sisl_toolbox.siesta.atom import *
@@ -86,6 +86,6 @@ will be used to generate the input file.
 
 
 .. autosummary::
-   :toctree: generated/
+   :toctree: ../generated/
 
    AtomInput

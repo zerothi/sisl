@@ -4,12 +4,14 @@
 """
 Sile object for reading/writing XYZ files
 """
+from __future__ import annotations
+
 from typing import Optional
 
 import numpy as np
 
 import sisl._array as _a
-from sisl import BoundaryCondition, Geometry, Lattice
+from sisl import Atoms, BoundaryCondition, Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
 
@@ -68,15 +70,15 @@ class xyzSile(Sile):
     def write_geometry(
         self, geometry: Geometry, fmt: str = ".8f", comment: Optional[str] = None
     ):
-        """Writes the geometry to the contained file
+        """Writes the geometry to the contained file in `extxyz` format
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            the geometry to be written
-        fmt : str, optional
+        fmt :
            used format for the precision of the data
-        comment : str, optional
+        comment :
            if None, a sisl made comment that can be used for parsing the unit-cell is used
            else this comment will be written at the 2nd line.
         """
@@ -112,7 +114,33 @@ class xyzSile(Sile):
             s = {"fa": "Ds"}.get(s, s)
             self._write(fmt_str.format(s, *geometry.xyz[ia, :]))
 
-    def _r_geometry_skip(self, *args, **kwargs):
+    @SileBinder()
+    def read_basis(self) -> Atoms:
+        """Returns a Atoms object from the XYZ file"""
+        line = self.readline()
+        if line == "":
+            return None
+
+        # Read number of atoms
+        na = int(line)
+
+        # Read header, and try and convert to dictionary
+        self.readline()
+
+        # Read atoms and coordinates
+        sp = [None] * na
+        line = self.readline
+        for ia in range(na):
+            sp[ia] = line().split(maxsplit=1)[0]
+
+        return Atoms(sp)
+
+    @SileBinder()
+    def read_lattice(self) -> Lattice:
+        """Returns a Lattice object from the XYZ file"""
+        return self.read_geometry().lattice
+
+    def _r_geometry_skip(self, *args, **kwargs) -> int:
         """Read the geometry for a generic xyz file (not sisl, nor ASE)"""
         line = self.readline()
         if line == "":
@@ -126,10 +154,8 @@ class xyzSile(Sile):
 
     @SileBinder(skip_func=_r_geometry_skip)
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
-    def read_geometry(self, atoms=None, lattice: Optional[Lattice] = None):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    def read_geometry(self, atoms=None, lattice: Optional[Lattice] = None) -> Geometry:
         """Returns Geometry object from the XYZ file
 
         Parameters

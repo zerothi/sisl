@@ -1,18 +1,23 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from functools import singledispatchmethod
 from numbers import Real
+from typing import Literal
 
 import numpy as np
 from numpy import bool_, einsum, exp, ndarray
+from scipy.sparse import csr_matrix
 
 import sisl._array as _a
 from sisl._core import Geometry
 from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
-from sisl.messages import warn
+from sisl.messages import deprecate_argument, warn
+from sisl.typing import GaugeType
 
 __all__ = ["degenerate_decouple", "Coefficient", "State", "StateC"]
 
@@ -86,6 +91,23 @@ class _FakeMatrix:
         except Exception:
             pass
         return v
+
+    def __getitem__(self, key):
+        n, m = self.n, self.m
+        if isinstance(key, tuple):
+            if key[0] == slice(None, None, 2):
+                n = n // 2
+            else:
+                raise RuntimeError
+            if key[1] == slice(None, None, 2):
+                m = m // 2
+            else:
+                raise RuntimeError
+        else:
+            if key == slice(None, None, 2):
+                n = n // 2
+
+        return self.__class__(n, m)
 
     @property
     def T(self):
@@ -197,12 +219,19 @@ coefficients retained in this object
         """Returns the shape of the coefficients"""
         return self.c.shape
 
-    def degenerate(self, eps=1e-8):
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol",
+        "0.15",
+        "0.16",
+    )
+    def degenerate(self, atol: float = 1e-8):
         """Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
-        eps : float, optional
+        atol : float, optional
            the precision above which coefficients are not considered degenerate
 
         Returns
@@ -215,7 +244,7 @@ coefficients retained in this object
         dc = np.diff(self.c[sidx])
 
         # Degenerate indices
-        idx = (np.absolute(dc) <= eps).nonzero()[0]
+        idx = (np.absolute(dc) <= atol).nonzero()[0]
         if len(idx) == 0:
             # There are no degenerate coefficients
             return deg
@@ -404,23 +433,32 @@ state coefficients
         """
         return self.norm2() ** 0.5
 
-    def norm2(self, sum=True):
+    @deprecate_argument(
+        "sum",
+        "projection",
+        "argument sum has been deprecated in favor of projection",
+        "0.15",
+        "0.16",
+    )
+    def norm2(self, projection: Literal["sum", "atoms", "basis"] = "sum"):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
         ----------
-        sum : bool, optional
-           for true only a single number per state will be returned, otherwise the norm
-           per basis element will be returned.
+        projection :
+           whether to compute the norm per state as a single number, atom-resolved or per
+           basis dimension.
+
+        See Also
+        --------
+        inner: used method for calculating the squared norm.
 
         Returns
         -------
         numpy.ndarray
             the squared norm for each state
         """
-        if sum:
-            return self.inner()
-        return np.conj(self.state) * self.state
+        return self.inner(projection=projection)
 
     def ipr(self, q=2):
         r""" Calculate the inverse participation ratio (IPR) for arbitrary `q` values
@@ -428,10 +466,10 @@ state coefficients
         The inverse participation ratio is defined as
 
         .. math::
-            I_{q,i} = \frac{\sum_\nu |\psi_{i\nu}|^{2q}}{
-               \big[\sum_\nu |\psi_{i\nu}|^2\big]^q}
+            I_{q,\alpha} = \frac{\sum_i |\psi_{\alpha,i}|^{2q}}{
+               \big[\sum_i |\psi_{\alpha,i}|^2\big]^q}
 
-        where :math:`i` is the band index and :math:`\nu` is the orbital.
+        where :math:`\alpha` is the band index and :math:`i` is the orbital.
         The order of the IPR is defaulted to :math:`q=2`, see :eq:`ipr2` for details.
         The IPR may be used to distinguish Anderson localization and extended
         states:
@@ -441,7 +479,7 @@ state coefficients
            :nowrap:
 
             \begin{align}
-             \lim_{L\to\infty} I_{2,i} = \left\{
+             \lim_{L\to\infty} I_{2,\alpha} = \left\{
                \begin{aligned}
                 1/L^d &\quad \text{extended state}
                 \\
@@ -452,7 +490,7 @@ state coefficients
         For further details see :cite:`Murphy2011`. Note that for eigen states the IPR reduces to:
 
         .. math::
-            I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}
+            I_{q,\alpha} = \sum_i |\psi_{\alpha,i}|^{2q}
 
         since the denominator is :math:`1^{q} = 1`.
 
@@ -462,7 +500,7 @@ state coefficients
           order parameter for the IPR
         """
         # This *has* to be a real value C * C^* == real
-        state_abs2 = self.norm2(sum=False).real
+        state_abs2 = self.norm2(projection="basis").real
         assert q >= 2, f"{self.__class__.__name__}.ipr requires q>=2"
         # abs2 is already having the exponent 2
         return (state_abs2**q).sum(-1) / state_abs2.sum(-1) ** q
@@ -491,13 +529,13 @@ state coefficients
         return s
 
     def outer(self, ket=None, matrix=None):
-        r"""Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
+        r"""Return the outer product by :math:`\sum_\alpha|\psi_\alpha\rangle\langle\psi'_\alpha|`
 
         Parameters
         ----------
         ket : State, optional
            the ket object to calculate the outer product of, if not passed it will do the outer
-           product with itself. The object itself will always be the bra :math:`|\psi_i\rangle`
+           product with itself. The object itself will always be the bra :math:`|\psi_\alpha\rangle`
         matrix : array_like, optional
            whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
            1D arrays will be treated as a diagonal matrix.
@@ -561,8 +599,39 @@ state coefficients
             Aij = einsum("ij,ik->jk", ket * M, np.conj(bra))
         return Aij
 
-    def inner(self, ket=None, matrix=None, diag=True):
+    @deprecate_argument(
+        "diag",
+        "projection",
+        "argument diag has been deprecated in favor of projection",
+        "0.15",
+        "0.16",
+    )
+    def inner(
+        self,
+        ket=None,
+        matrix=None,
+        projection: Literal["diag", "atoms", "basis", "matrix"] = "diag",
+    ):
         r"""Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
+
+        Inner product calculation allows for a variety of things.
+
+        * for ``matrix`` it will compute off-diagonal elements as well
+
+        .. math::
+            \mathbf A_{\alpha\beta} = \langle\psi_\alpha|\mathbf M|\psi'_\beta\rangle
+
+        * for ``diag`` only the diagonal components will be returned
+
+        .. math::
+            \mathbf a_\alpha = \langle\psi_\alpha|\mathbf M|\psi_\alpha\rangle
+
+        * for ``basis``, only do inner products for individual states, but return them basis-resolved
+
+        .. math::
+            \mathbf A_{\alpha\beta} = \psi^*_{\alpha,\beta} \mathbf M|\psi_\alpha\rangle_\beta
+
+        * for ``atoms``, only do inner products for individual states, but return them atom-resolved
 
         Parameters
         ----------
@@ -572,17 +641,26 @@ state coefficients
         matrix : array_like, optional
            whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
            1D arrays will be treated as a diagonal matrix.
-        diag : bool, optional
-           only return the diagonal matrix :math:`\mathbf A_{ii}`.
+        projection:
+            how to perform the final projection.
+            This can be used to sum specific sub-elements, return the diagonal, or the
+            full matrix.
+
+            * ``diag`` only return the diagonal of the inner product
+            * ``matrix`` a matrix with diagonals and the off-diagonals
+            * ``basis`` only do inner products for individual states, but return them basis-resolved
+            * ``atoms`` only do inner products for individual states, but return them atom-resolved
 
         Notes
         -----
-        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
+        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used. One have to add the overlap matrix in the `matrix` argument, if needed.
 
         Raises
         ------
         ValueError
             if the number of state coefficients are different for the bra and ket
+        RuntimeError
+            if the matrix shapes are incompatible with an atomic resolution conversion
 
         Returns
         -------
@@ -608,12 +686,12 @@ state coefficients
             # non-orthogonal basis. That would be non-ideal
             ket = ket.state
         if len(ket.shape) == 1:
-            ket.shape = (1, -1)
+            ket = ket.reshape(1, -1)
 
         # check that the shapes matches (ket should be transposed)
         #  bra M ket
         if ndim == 0:
-            # M,N @ N, L
+            # M, N @ N, L
             if bra.shape[1] != ket.shape[1]:
                 raise ValueError(
                     f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}"
@@ -631,7 +709,16 @@ state coefficients
                     f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}"
                 )
 
-        if diag:
+        projection = {
+            # temporary work-around for older codes where project/diag=T|F were allowed
+            True: "diag",
+            False: "matrix",
+            "sum": "diag",  # still allowed here (for bypass options)
+            "atoms": "atom",  # plural s allowed
+            "orbitals": "orbital",  # still allowed here (for bypass options)
+        }.get(projection, projection)
+
+        if projection in ("diag", "diagonal"):
             if bra.shape[0] != ket.shape[0]:
                 raise ValueError(
                     f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors."
@@ -642,12 +729,48 @@ state coefficients
                 Aij = einsum("ij,j,ij->i", np.conj(bra), M, ket)
             elif ndim == 0:
                 Aij = einsum("ij,ij->i", np.conj(bra), ket) * M
-        elif ndim == 2:
-            Aij = np.conj(bra) @ M.dot(ket.T)
-        elif ndim == 1:
-            Aij = einsum("ij,j,kj->ik", np.conj(bra), M, ket)
-        elif ndim == 0:
-            Aij = einsum("ij,kj->ik", np.conj(bra), ket) * M
+
+        elif projection in ("matrix", "none"):
+            if ndim == 2:
+                Aij = np.conj(bra) @ M.dot(ket.T)
+            elif ndim == 1:
+                Aij = einsum("ij,j,kj->ik", np.conj(bra), M, ket)
+            elif ndim == 0:
+                Aij = einsum("ij,kj->ik", np.conj(bra), ket) * M
+
+        elif projection in ("atom", "basis", "orbital"):
+            if ndim == 2:
+                Aij = np.conj(bra) * M.dot(ket.T).T
+            else:
+                Aij = np.conj(bra) * ket * M
+
+            # Now do the projection
+            if projection == "atom":
+                # Now we need to convert it
+                geom = self._geometry()
+                if Aij.shape[1] == geom.no * 2:
+                    # We have some kind of spin-configuration (hidden)
+                    def mapper(atom):
+                        return np.arange(
+                            geom.firsto[atom] * 2, geom.firsto[atom + 1] * 2
+                        )
+
+                elif Aij.shape[1] == geom.no:
+
+                    def mapper(atom):
+                        return np.arange(geom.firsto[atom], geom.firsto[atom + 1])
+
+                else:
+                    raise RuntimeError(
+                        f"{self.__class__.__name__}.inner could not determine "
+                        "the correct atom conversions."
+                    )
+                Aij = geom.apply(Aij, np.sum, mapper, axis=1)
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.inner got unknown argument 'projection'={projection}"
+            )
+
         return Aij
 
     def phase(self, method="max", ret_index=False):
@@ -747,11 +870,12 @@ state coefficients
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm = self.norm2(False).real
-        onorm = other.norm2(False).real
+        snorm = self.norm2(projection="basis").real
+        onorm = other.norm2(projection="basis").real
 
         # Now find new orderings
         show_warn = False
+
         sidx = _a.fulli(len(self), -1)
         oidx = _a.emptyi(len(self))
         for i in range(len(self)):
@@ -781,24 +905,26 @@ state coefficients
         else:
             return self.sub(oidx)
 
-    def change_gauge(self, gauge, offset=(0, 0, 0)):
+    def change_gauge(self, gauge: GaugeType, offset=(0, 0, 0)):
         r"""In-place change of the gauge of the state coefficients
 
         The two gauges are related through:
 
         .. math::
 
-            \tilde C_j = e^{i\mathbf k\mathbf r_j} C_j
+            \tilde C_\alpha = e^{i\mathbf k\mathbf r_\alpha} C_\alpha
 
-        where :math:`C_j` and :math:`\tilde C_j` belongs to the ``r`` and ``R`` gauge, respectively.
+        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``orbital`` and ``cell`` gauge, respectively.
 
         Parameters
         ----------
-        gauge : {'R', 'r'}
+        gauge : {'cell', 'orbital'}
             specify the new gauge for the mode coefficients
         offset : array_like, optional
             whether the coordinates should be offset by another phase-factor
         """
+        gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
         if self.info.get("gauge", gauge) == gauge:
@@ -828,10 +954,10 @@ state coefficients
             if self.shape[1] == g.no * 2:
                 phase = np.repeat(phase, 2)
 
-        if gauge == "r":
+        if gauge == "orbital":
             # R -> r gauge tranformation.
             self.state *= exp(-1j * phase).reshape(1, -1)
-        elif gauge == "R":
+        elif gauge == "cell":
             # r -> R gauge tranformation.
             self.state *= exp(1j * phase).reshape(1, -1)
 
@@ -1315,12 +1441,19 @@ coefficients assigned to each state
             return ret[0]
         return ret
 
-    def degenerate(self, eps):
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol",
+        "0.15",
+        "0.16",
+    )
+    def degenerate(self, atol: float):
         """Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
-        eps : float
+        atol :
            the precision above which coefficients are not considered degenerate
 
         Returns
@@ -1329,11 +1462,13 @@ coefficients assigned to each state
             a list of indices
         """
         deg = list()
+
+        # Sort them in ascending order
         sidx = np.argsort(self.c)
         dc = np.diff(self.c[sidx])
 
         # Degenerate indices
-        idx = (dc < eps).nonzero()[0]
+        idx = (dc < atol).nonzero()[0]
         if len(idx) == 0:
             # There are no degenerate coefficients
             return deg

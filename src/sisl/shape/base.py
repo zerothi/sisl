@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from math import sqrt as msqrt
 from typing import Sequence
 
@@ -29,9 +31,7 @@ __all__ = [
 @set_module("sisl.shape")
 class Shape(
     _Dispatchs,
-    dispatchs=[
-        ("to", ClassDispatcher("to", type_dispatcher=None, obj_getattr="error"))
-    ],
+    dispatchs=[ClassDispatcher("to", type_dispatcher=None, obj_getattr="error")],
     when_subclassing="copy",
 ):
     """Baseclass for all shapes. Logical operations are implemented on this class.
@@ -121,7 +121,7 @@ class Shape(
         return copy
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.16"
     )
     def toSphere(self, *args, **kwargs):
         """Create a sphere which is surely encompassing the *full* shape"""
@@ -130,14 +130,16 @@ class Shape(
         )
 
     @deprecation(
-        "toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.", "0.15"
+        "toEllipsoid is deprecated, use shape.to.Ellipsoid(...) instead.",
+        "0.15",
+        "0.16",
     )
     def toEllipsoid(self, *args, **kwargs):
         """Create an ellipsoid which is surely encompassing the *full* shape"""
         return self.to.Sphere().to.Ellipsoid(*args, **kwargs)
 
     @deprecation(
-        "toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15"
+        "toCuboid is deprecated, use shape.to.Cuboid(...) instead.", "0.15", "0.16"
     )
     def toCuboid(self, *args, **kwargs):
         """Create a cuboid which is surely encompassing the *full* shape"""
@@ -281,7 +283,7 @@ class CompositeShape(Shape):
         return -1.0
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.16"
     )
     def toSphere(self, *args, **kwargs):
         """Create a sphere which is surely encompassing the *full* shape"""
@@ -380,7 +382,7 @@ class AndShape(CompositeShape, composite_name="&"):
     """Boolean ``A & B`` shape"""
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.16"
     )
     def toSphere(self, *args, **kwargs):
         """Create a sphere which is surely encompassing the *full* shape"""
@@ -510,21 +512,23 @@ class NullShape(PureShape, dispatchs=[("to", "copy")]):
         return np.empty(0, dtype=np.int32)
 
     @deprecation(
-        "toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.", "0.15"
+        "toEllipsoid is deprecated, use shape.to.Ellipsoid(...) instead.",
+        "0.15",
+        "0.16",
     )
     def toEllipsoid(self, *args, **kwargs):
         """Return an ellipsoid with radius of size 1e-64"""
         return self.to.Ellipsoid(*args, **kwargs)
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.16"
     )
     def toSphere(self, *args, **kwargs):
         """Return a sphere with radius of size 1e-64"""
         return self.to.Sphere(*args, **kwargs)
 
     @deprecation(
-        "toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15"
+        "toCuboid is deprecated, use shape.to.Cuboid(...) instead.", "0.15", "0.16"
     )
     def toCuboid(self, *args, **kwargs):
         """Return a cuboid with side-lengths 1e-64"""

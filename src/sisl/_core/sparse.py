@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from functools import reduce, singledispatchmethod
 from numbers import Integral
 
@@ -802,7 +804,7 @@ column indices of the sparse elements
         This will multiply all values with certain column values with `scale`
 
         .. math::
-            M[rows, cols] *= scale
+            \mathbf M\[\mathrm{rows}, \mathrm{cols}\] *= \mathrm{scale}
 
         This is an in-place operation.
 
@@ -1577,7 +1579,10 @@ column indices of the sparse elements
         matrix = np.asarray(matrix)
 
         if dtype is None:
-            dtype = np.find_common_type([self.dtype, matrix.dtype], [])
+            # no need for result_type
+            # result_type differs from promote_types, only in the case
+            # where the input arguments mixes scalars and arrays (not the case here)
+            dtype = np.promote_types(self.dtype, matrix.dtype)
 
         if matrix.shape[1] != self.shape[2]:
             raise ValueError(

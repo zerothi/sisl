@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import math as m
 
 import numpy as np
@@ -110,9 +112,9 @@ class TestDynamicalMatrix:
         D.construct(setup.func)
         em = D.eigenmode(k=(0.2, 0.2, 0.2))
         em2 = em.copy()
-        em2.change_gauge("r")
+        em2.change_gauge("orbital")
         assert not np.allclose(em.mode, em2.mode)
-        em2.change_gauge("R")
+        em2.change_gauge("cell")
         assert np.allclose(em.mode, em2.mode)
 
     @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
@@ -122,6 +124,12 @@ class TestDynamicalMatrix:
         E = np.linspace(0, 0.5, 10)
         em = D.eigenmode()
         assert np.allclose(em.DOS(E), em.PDOS(E).sum(0))
+
+    def test_displacement(self, setup):
+        D = setup.D.copy()
+        D.construct(setup.func)
+        em = D.eigenmode()
+        assert em.displacement().shape == (len(em), D.geometry.na, 3)
 
     def test_pickle(self, setup):
         import pickle as p

@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Unit conversion
 ===============
@@ -45,4 +47,4 @@ will use the unit definitions in `Siesta`_.
 """
 # Enable the siesta unit-conversion
 from . import siesta
-from .base import unit_convert, unit_default, unit_group, units
+from .base import serialize_units_arg, unit_convert, unit_default, unit_group, units

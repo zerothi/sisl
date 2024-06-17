@@ -13,9 +13,10 @@ import numpy as np
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import deprecate_argument
-from sisl.typing import Coord, CoordOrScalar, SileLike
+from sisl.typing import AnyAxes, CellAxes, CellAxis, Coord, CoordOrScalar, SileLike
 from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
+from sisl.utils.misc import direction
 
 from .lattice import Lattice
 from .quaternion import Quaternion
@@ -25,31 +26,31 @@ __all__ = []
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def copy(lattice: Lattice, cell=None, origin: Optional[Coord] = None) -> Lattice:
+def copy(lattice: Lattice, cell=None, **kwargs) -> Lattice:
     """A deepcopy of the object
 
     Parameters
     ----------
     cell : array_like
        the new cell parameters
-    origin : array_like
-       the new origin
     """
     d = dict()
-    d["nsc"] = lattice.nsc.copy()
-    d["boundary_condition"] = lattice.boundary_condition.copy()
-    if origin is None:
-        d["origin"] = lattice.origin.copy()
-    else:
-        d["origin"] = origin
+    for key in ("nsc", "boundary_condition", "origin"):
+        if key in kwargs:
+            d[key] = kwargs.pop(key)
+        else:
+            d[key] = getattr(lattice, key).copy()
     if cell is None:
         d["cell"] = lattice.cell.copy()
     else:
         d["cell"] = np.array(cell)
+    assert len(kwargs) == 0, f"Unknown arguments passed to Lattice.copy {kwargs.keys()}"
 
     copy = lattice.__class__(**d)
     # Ensure that the correct super-cell information gets carried through
-    if not np.allclose(copy.sc_off, lattice.sc_off):
+    if np.allclose(copy.nsc, lattice.nsc) and not np.allclose(
+        copy.sc_off, lattice.sc_off
+    ):
         copy.sc_off = lattice.sc_off
     return copy
 
@@ -85,9 +86,9 @@ def write(lattice: Lattice, sile: SileLike, *args, **kwargs) -> None:
 @register_sisl_dispatch(Lattice, module="sisl")
 def swapaxes(
     lattice: Lattice,
-    axes1: Union[int, str],
-    axes2: Union[int, str],
-    what: str = "abc",
+    axes1: AnyAxes,
+    axes2: AnyAxes,
+    what: Literal["abc", "xyz", "abc+xyz"] = "abc",
 ) -> Lattice:
     r"""Swaps axes `axes1` and `axes2`
 
@@ -106,7 +107,7 @@ def swapaxes(
        If `str`, then `what` is not used.
     axes2 :
        the new axis indices, same as `axes1`
-    what : {"abc", "xyz", "abc+xyz"}
+    what :
        which elements to swap, lattice vectors (``abc``), or
        Cartesian coordinates (``xyz``), or both.
        This argument is only used if the axes arguments are
@@ -194,7 +195,7 @@ def swapaxes(
             origin = origin[idx]
             bc = bc[idx]
 
-    return lattice.__class__(
+    return lattice.copy(
         cell.copy(), nsc=nsc.copy(), origin=origin.copy(), boundary_condition=bc
     )
 
@@ -205,13 +206,14 @@ def swapaxes(
     "what",
     "argument only has been deprecated in favor of what, please update your code.",
     "0.14",
+    "0.16",
 )
 def rotate(
     lattice: Lattice,
     angle: float,
     v: Union[str, int, Coord],
     rad: bool = False,
-    what: str = "abc",
+    what: Literal["abc", "a", ...] = "abc",
 ) -> Lattice:
     """Rotates the supercell, in-place by the angle around the vector
 
@@ -225,10 +227,10 @@ def rotate(
     v     :
          the vector around the rotation is going to happen
          ``[1, 0, 0]`` will rotate in the ``yz`` plane
-    what : combination of ``"abc"``, str, optional
-         only rotate the designated cell vectors.
-    rad : bool, optional
+    rad :
          Whether the angle is in radians (True) or in degrees (False)
+    what :
+         only rotate the designated cell vectors.
     """
     if isinstance(v, Integral):
         v = direction(v, abc=lattice.cell, xyz=np.diag([1, 1, 1]))
@@ -267,11 +269,11 @@ def add(lattice: Lattice, other) -> Lattice:
     cell = lattice.cell + other.cell
     origin = lattice.origin + other.origin
     nsc = np.where(lattice.nsc > other.nsc, lattice.nsc, other.nsc)
-    return lattice.__class__(cell, nsc=nsc, origin=origin)
+    return lattice.copy(cell, nsc=nsc, origin=origin)
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
+def tile(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
     """Extend the unit-cell `reps` times along the `axis` lattice vector
 
     Notes
@@ -285,9 +287,9 @@ def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
     axis :
         the lattice vector along which the repetition is performed
     """
+    axis = direction(axis)
     cell = np.copy(lattice.cell)
     nsc = np.copy(lattice.nsc)
-    origin = np.copy(lattice.origin)
     cell[axis] *= reps
     # Only reduce the size if it is larger than 5
     if nsc[axis] > 3 and reps > 1:
@@ -295,11 +297,11 @@ def tile(lattice: Lattice, reps: int, axis: int) -> Lattice:
         h_nsc = nsc[axis] // 2
         # The new number of supercells will then be
         nsc[axis] = max(1, int(math.ceil(h_nsc / reps))) * 2 + 1
-    return lattice.__class__(cell, nsc=nsc, origin=origin)
+    return lattice.copy(cell, nsc=nsc)
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def repeat(lattice: Lattice, reps: int, axis: int) -> Lattice:
+def repeat(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
     """Extend the unit-cell `reps` times along the `axis` lattice vector
 
     Notes
@@ -317,7 +319,7 @@ def repeat(lattice: Lattice, reps: int, axis: int) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def untile(lattice: Lattice, reps: int, axis: int) -> Lattice:
+def untile(lattice: Lattice, reps: int, axis: CellAxis) -> Lattice:
     """Reverses a `Lattice.tile` and returns the segmented version
 
     Notes
@@ -329,6 +331,7 @@ def untile(lattice: Lattice, reps: int, axis: int) -> Lattice:
     --------
     Lattice.tile : opposite of this method
     """
+    axis = direction(axis)
     cell = np.copy(lattice.cell)
     cell[axis] /= reps
     return lattice.copy(cell)
@@ -338,8 +341,9 @@ Lattice.unrepeat = untile
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def append(lattice: Lattice, other, axis: int) -> Lattice:
+def append(lattice: Lattice, other, axis: CellAxis) -> Lattice:
     """Appends other `Lattice` to this grid along axis"""
+    axis = direction(axis)
     cell = np.copy(lattice.cell)
     cell[axis] += other.cell[axis]
     # TODO fix nsc here
@@ -347,7 +351,7 @@ def append(lattice: Lattice, other, axis: int) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def prepend(lattice: Lattice, other, axis: int) -> Lattice:
+def prepend(lattice: Lattice, other, axis: CellAxis) -> Lattice:
     """Prepends other `Lattice` to this grid along axis
 
     For a `Lattice` object this is equivalent to `append`.
@@ -356,15 +360,20 @@ def prepend(lattice: Lattice, other, axis: int) -> Lattice:
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def center(lattice: Lattice, axis: Optional[int] = None) -> np.ndarray:
-    """Returns center of the `Lattice`, possibly with respect to an axis"""
-    if axis is None:
+def center(lattice: Lattice, axes: CellAxes = (0, 1, 2)) -> np.ndarray:
+    """Returns center of the `Lattice`, possibly with respect to axes"""
+    if axes is None:
         return lattice.cell.sum(0) * 0.5
-    return lattice.cell[axis] * 0.5
+    if isinstance(axes, Integral):
+        axes = [axes]
+    axes = list(map(direction, axes))
+    return lattice.cell[axes].sum(0) * 0.5
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def scale(lattice: Lattice, scale: CoordOrScalar, what: str = "abc") -> Lattice:
+def scale(
+    lattice: Lattice, scale: CoordOrScalar, what: Literal["abc", "xyz"] = "abc"
+) -> Lattice:
     """Scale lattice vectors
 
     Does not scale `origin`.
@@ -373,11 +382,12 @@ def scale(lattice: Lattice, scale: CoordOrScalar, what: str = "abc") -> Lattice:
     ----------
     scale :
        the scale factor for the new lattice vectors.
-    what: {"abc", "xyz"}
+    what:
        If three different scale factors are provided, whether each scaling factor
        is to be applied on the corresponding lattice vector ("abc") or on the
        corresponding cartesian coordinate ("xyz").
     """
+    what = what.lower()
     if what == "abc":
         return lattice.copy((lattice.cell.T * scale).T)
     if what == "xyz":

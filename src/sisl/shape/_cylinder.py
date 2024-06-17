@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from math import pi
 
 import numpy as np
@@ -8,7 +10,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._indices import indices_in_cylinder
 from sisl._internal import set_module
-from sisl.messages import deprecation, warn
+from sisl.messages import deprecate_argument, deprecation, warn
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
 from .base import PureShape, ShapeToDispatch
@@ -94,12 +96,12 @@ class EllipticalCylinder(PureShape):
         return self.__class__(self.radial_vector, self.height, self.center)
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Return the volume of the shape"""
         return pi * np.product(self.radius) * self.height
 
     @property
-    def height(self):
+    def height(self) -> float:
         """Height of the cylinder"""
         return self._h
 
@@ -159,15 +161,22 @@ class EllipticalCylinder(PureShape):
             )
         return self.__class__([v0, v1], h, self.center)
 
-    def within_index(self, other, tol=1.0e-8):
+    @deprecate_argument(
+        "tol",
+        "rtol",
+        "argument tol has been deprecated in favor of rtol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def within_index(self, other, rtol: float = 1.0e-8):
         r"""Return indices of the points that are within the shape
 
         Parameters
         ----------
         other : array_like
            the object that is checked for containment
-        tol : float, optional
-           absolute tolerance for boundaries
+        rtol :
+           relative tolerance for boundaries.
         """
         other = _a.asarrayd(other)
         other.shape = (-1, 3)
@@ -178,10 +187,10 @@ class EllipticalCylinder(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        return indices_in_cylinder(tmp, 1.0 + tol, 1.0 + tol)
+        return indices_in_cylinder(tmp, 1.0 + rtol, 1.0 + rtol)
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.16"
     )
     def toSphere(self):
         """Convert to a sphere"""
@@ -196,7 +205,7 @@ class EllipticalCylinder(PureShape):
         return Sphere(r, self.center.copy())
 
     @deprecation(
-        "toCuboid is deprecated, please use shape.to.Cuboid(...) instead.", "0.15"
+        "toCuboid is deprecated, use shape.to.Cuboid(...) instead.", "0.15", "0.16"
     )
     def toCuboid(self):
         """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""

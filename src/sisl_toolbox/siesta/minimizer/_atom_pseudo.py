@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import logging
 from functools import partial
 
@@ -11,7 +13,7 @@ from ._yaml_reader import parse_variable, read_yaml
 __all__ = ["AtomPseudo"]
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.minimize")
+_log = logging.getLogger(__name__)
 _spdfgh = "spdfgh"
 
 

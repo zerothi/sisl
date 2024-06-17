@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """Distribution functions
 =========================
 
@@ -78,7 +80,7 @@ def gaussian(x, sigma=0.1, x0=0.0):
     r"""Gaussian distribution function
 
     .. math::
-        G(x,\sigma,x_0) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x - x_0)^2}{2\sigma^2}\Big]
+        G(x,\sigma,x_0) = \frac1{\sqrt{2\pi\sigma^2}}\exp\Big[\frac{- (x - x_0)^2}{2\sigma^2}\Big]
 
     Parameters
     ----------
@@ -103,7 +105,7 @@ def lorentzian(x, gamma=0.1, x0=0.0):
     r"""Lorentzian distribution function
 
     .. math::
-        L(x,\gamma,x_0) = \frac{1}{\pi}\frac{\gamma}{(x-x_0)^2 + \gamma^2}
+        L(x,\gamma,x_0) = \frac1\pi\frac{\gamma}{(x-x_0)^2 + \gamma^2}
 
     Parameters
     ----------
@@ -127,7 +129,7 @@ def fermi_dirac(E, kT=0.1, mu=0.0):
     r"""Fermi-Dirac distribution function
 
     .. math::
-        n_F(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] + 1}
+        n_F(E,k_BT,\mu) = \frac1{\exp\Big[\frac{E - \mu}{k_BT}\Big] + 1}
 
     Parameters
     ----------
@@ -151,7 +153,7 @@ def bose_einstein(E, kT=0.1, mu=0.0):
     r"""Bose-Einstein distribution function
 
     .. math::
-        n_B(E,k_BT,\mu) = \frac{1}{\exp\Big[\frac{E - \mu}{k_BT}\Big] - 1}
+        n_B(E,k_BT,\mu) = \frac1{\exp\Big[\frac{E - \mu}{k_BT}\Big] - 1}
 
     Parameters
     ----------

@@ -1,5 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 import sys
 
@@ -14,13 +17,13 @@ _dir = osp.join("sisl", "io", "orca")
 
 
 def test_tags(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.info.na == 2
 
 
 def test_read_electrons(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     N = out.read_electrons[:]()
     assert N[0, 0] == 7.9999985377
@@ -31,7 +34,7 @@ def test_read_electrons(sisl_files):
 
 
 def test_read_energy(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     E = out.read_energy[:]()
     assert len(E) == 2
@@ -40,7 +43,7 @@ def test_read_energy(sisl_files):
 
 
 def test_read_energy_vdw(sisl_files):
-    f = sisl_files(_dir, "molecule2_property.txt")
+    f = sisl_files(_dir, "carbon_monoxide", "molecule_property.txt")
     out = txtSileORCA(f)
     E = out.read_energy[:]()
     assert len(E) == 2
@@ -53,7 +56,7 @@ def test_read_energy_vdw(sisl_files):
 
 
 def test_read_geometry(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     G = out.read_geometry[:]()
     assert G[0].xyz[0, 0] == 0.421218019838
@@ -70,7 +73,7 @@ def test_read_geometry(sisl_files):
 
 
 def test_multiple_calls(sisl_files):
-    f = sisl_files(_dir, "molecule_property.txt")
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
     out = txtSileORCA(f)
     N = out.read_electrons[:]()
     assert len(N) == 2
@@ -83,6 +86,71 @@ def test_multiple_calls(sisl_files):
 
 
 def test_info_no(sisl_files):
-    f = sisl_files(_dir, "molecule3_property.txt")
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
     out = txtSileORCA(f)
     assert out.info.no == 284
+
+
+def test_gtensor(sisl_files):
+    # file without g-tensor
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
+    out = txtSileORCA(f)
+    assert out.read_gtensor() is None
+
+    # file with g-tensor
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
+    out = txtSileORCA(f)
+    G = out.read_gtensor()
+
+    assert G.multiplicity == 2
+    assert G.tensor[0, 0] == 2.002750
+    assert G.vectors[0, 1] == -0.009799
+    for i in range(3):
+        v = G.vectors[i]
+        assert v.dot(v) == pytest.approx(1)
+    assert G.eigenvalues[0] == 2.002127
+
+
+def test_hyperfine_coupling(sisl_files):
+    # file without hyperfine_coupling tensors
+    f = sisl_files(_dir, "nitric_oxide", "molecule_property.txt")
+    out = txtSileORCA(f)
+    assert out.read_hyperfine_coupling(units="MHz") is None
+
+    # file with hyperfine_coupling tensors
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
+    out = txtSileORCA(f)
+    A = out.read_hyperfine_coupling(units="MHz")
+    assert len(A) == 22
+    assert A[0].iso == -23.380794
+    assert A[1].ia == 1
+    assert A[1].species == "C"
+    assert A[1].isotope == 13
+    assert A[1].spin == 0.5
+    assert A[1].prefactor == 134.190303
+    assert A[1].tensor[0, 1] == -0.320129
+    assert A[1].tensor[2, 2] == 68.556557
+    assert A[1].vectors[1, 0] == 0.407884
+    for i in range(3):
+        v = A[1].vectors[i]
+        assert v.dot(v) == pytest.approx(1)
+    assert A[1].eigenvalues[1] == 5.523380
+    assert A[1].iso == 26.247902
+    assert A[12].species == "C"
+    assert A[13].species == "H"
+
+
+def test_hyperfine_coupling_units(sisl_files):
+    f = sisl_files(_dir, "phenalenyl", "molecule_property.txt")
+    out = txtSileORCA(f)
+    A = out.read_hyperfine_coupling()
+    B = out.read_hyperfine_coupling(units="eV")
+    C = out.read_hyperfine_coupling(units={"energy": "eV"})
+
+    assert A[0].iso == B[0].iso == C[0].iso
+
+    A = out.read_hyperfine_coupling(units=("MHz", "Ang"))
+    B = out.read_hyperfine_coupling(units={"energy": "MHz"})
+
+    assert A[0].iso == B[0].iso
+    assert A[0].iso != C[0].iso

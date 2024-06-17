@@ -9,7 +9,7 @@ import numpy as np
 
 from sisl import _array as _a
 from sisl._ufuncs import register_sisl_dispatch
-from sisl.typing import IndexArgument
+from sisl.typing import SimpleIndex
 
 from .atom import Atom, Atoms
 
@@ -18,18 +18,18 @@ __all__ = []
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def sub(atom: Atoms, atoms: IndexArgument) -> Atoms:
+def sub(atom: Atoms, atoms: SimpleIndex) -> Atoms:
     """Return a subset of the list"""
     atoms = _a.asarray(atoms).ravel()
     new_atoms = Atoms()
     new_atoms._atom = atom._atom[:]
-    new_atoms._specie = atom._specie[atoms]
+    new_atoms._species = atom._species[atoms]
     new_atoms._update_orbitals()
     return new_atoms
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def remove(atom: Atoms, atoms: IndexArgument) -> Atoms:
+def remove(atom: Atoms, atoms: SimpleIndex) -> Atoms:
     """Remove a set of atoms"""
     atoms = _a.asarray(atoms).ravel()
     idx = np.setdiff1d(np.arange(len(atom)), atoms, assume_unique=True)
@@ -40,7 +40,7 @@ def remove(atom: Atoms, atoms: IndexArgument) -> Atoms:
 def tile(atom: Atoms, reps: int) -> Atoms:
     """Tile this atom object"""
     atoms = atom.copy()
-    atoms._specie = np.tile(atoms._specie, reps)
+    atoms._species = np.tile(atoms.species, reps)
     atoms._update_orbitals()
     return atoms
 
@@ -49,20 +49,20 @@ def tile(atom: Atoms, reps: int) -> Atoms:
 def repeat(atom: Atoms, reps: int) -> Atoms:
     """Repeat this atom object"""
     atoms = atom.copy()
-    atoms._specie = np.repeat(atoms._specie, reps)
+    atoms._species = np.repeat(atoms.species, reps)
     atoms._update_orbitals()
     return atoms
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def swap(atom: Atoms, atoms1: IndexArgument, atoms2: IndexArgument) -> Atoms:
+def swap(atom: Atoms, atoms1: SimpleIndex, atoms2: SimpleIndex) -> Atoms:
     """Swaps atoms by index"""
     a = _a.asarray(atoms1)
     b = _a.asarray(atoms2)
     atoms = atom.copy()
-    spec = np.copy(atoms._specie)
-    atoms._specie[a] = spec[b]
-    atoms._specie[b] = spec[a]
+    spec = np.copy(atoms.species)
+    atoms._species[a] = spec[b]
+    atoms._species[b] = spec[a]
     atoms._update_orbitals()
     return atoms
 
@@ -85,15 +85,15 @@ def append(atom: Atoms, other: Union[Atom, Atoms]) -> Atoms:
         other = Atoms(other)
 
     atoms = atom.copy()
-    spec = np.copy(other._specie)
+    spec = np.copy(other.species)
     for i, atom in enumerate(other.atom):
         try:
-            s = atoms.specie_index(atom)
+            s = atoms.species_index(atom)
         except KeyError:
             s = len(atoms.atom)
             atoms._atom.append(atom)
-        spec = np.where(other._specie == i, s, spec)
-    atoms._specie = np.concatenate((atoms._specie, spec))
+        spec = np.where(other.species == i, s, spec)
+    atoms._species = np.concatenate((atoms.species, spec))
     atoms._update_orbitals()
     return atoms
 
@@ -111,7 +111,7 @@ def prepend(atom: Atoms, other: Union[Atom, Atoms]) -> Atoms:
 
 
 @register_sisl_dispatch(Atoms, module="sisl")
-def insert(atom: Atoms, index: IndexArgument, other: Union[Atom, Atoms]) -> Atoms:
+def insert(atom: Atoms, index: SimpleIndex, other: Union[Atom, Atoms]) -> Atoms:
     """Insert other atoms into the list of atoms at index"""
     if isinstance(other, Atom):
         other = Atoms(other)
@@ -121,15 +121,15 @@ def insert(atom: Atoms, index: IndexArgument, other: Union[Atom, Atoms]) -> Atom
     # Create a copy for insertion
     atoms = atom.copy()
 
-    spec = other._specie[:]
+    spec = other.species
     for i, atom in enumerate(other.atom):
         if atom not in atoms:
             s = len(atoms.atom)
             atoms._atom.append(atom)
         else:
-            s = atoms.specie_index(atom)
+            s = atoms.species_index(atom)
         spec = np.where(spec == i, s, spec)
-    atoms._specie = np.insert(atoms._specie, index, spec)
+    atoms._species = np.insert(atoms.species, index, spec)
     atoms._update_orbitals()
     return atoms
 
@@ -145,7 +145,7 @@ def scale(atoms: Atoms, scale: float) -> Atoms:
     """
     out = Atoms()
     out._atom = [a.scale(scale) for a in atoms.atom]
-    out._specie = np.copy(atoms._specie)
+    out._species = np.copy(atoms.species)
     return out
 
 
@@ -154,13 +154,13 @@ def copy(atoms: Atoms) -> Atoms:
     """Return a copy of this atom"""
     out = Atoms()
     out._atom = [a.copy() for a in atoms._atom]
-    out._specie = np.copy(atoms._specie)
+    out._species = np.copy(atoms.species)
     out._update_orbitals()
     return out
 
 
 @register_sisl_dispatch(Atom, module="sisl")
-def sub(atom: Atom, orbitals: IndexArgument) -> Atom:
+def sub(atom: Atom, orbitals: SimpleIndex) -> Atom:
     """Return the same atom with only a subset of the orbitals present
 
     Parameters
@@ -193,7 +193,7 @@ def sub(atom: Atom, orbitals: IndexArgument) -> Atom:
 
 
 @register_sisl_dispatch(Atom, module="sisl")
-def remove(atom: Atom, orbitals: IndexArgument) -> Atom:
+def remove(atom: Atom, orbitals: SimpleIndex) -> Atom:
     """Return the same atom without a specific set of orbitals
 
     Parameters

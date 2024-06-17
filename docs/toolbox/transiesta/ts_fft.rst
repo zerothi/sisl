@@ -8,7 +8,7 @@ TranSiesta Hartree correction for FFT Poisson solver
 ====================================================
 
 `TranSiesta`_ calculations based on the NEGF formalism is based on solving the
-Poisson equation for an open-boundary condition.  
+Poisson equation for an open-boundary condition.
 For 2 electrodes (left/right) a potential drop between the electrodes.
 
 In `Siesta`_ the Poisson equation is solved using Fourier transforms which
@@ -34,7 +34,7 @@ Command line tool
 
 It may be called using
 
-.. code:: bash
+.. code-block:: console
 
    stoolbox ts-fft --help
 
@@ -56,7 +56,7 @@ of point 4.
 An example command line for a bulk system with transport along third lattice vector
 would look something like:
 
-.. code:: bash
+.. code-block:: console
 
    stoolbox ts-fft --geometry siesta.TBT.nc -V Left 0.5 -V Right -0.5 \
 	  --shape 300 200 100 --out fft-fix.TSV.nc \
@@ -67,7 +67,7 @@ Note the boundary conditions along the transport direction; here ``d`` means Dir
 For systems where there is no periodicity one can use Neumann boundaries. For a 1D chain
 one would do:
 
-.. code:: bash
+.. code-block:: console
 
    stoolbox ts-fft --geometry siesta.TBT.nc -V Left 0.5 -V Right -0.5 \
 	  --shape 300 200 100 --out fft-fix.TSV.nc \
@@ -101,6 +101,6 @@ you are encouraged to use that instead.
 
 
 .. autosummary::
-   :toctree: generated/
+   :toctree: ../generated/
 
    solve_poisson

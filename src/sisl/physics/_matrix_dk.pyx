@@ -21,16 +21,17 @@ __all__ = ["matrix_dk", "matrik_dk_nc", "matrik_dk_nc_diag", "matrik_dk_so"]
 
 def _phase_dk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype):
     # dtype *must* be passed through phase_dtype
+    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
 
     # This is the differentiated matrix with respect to k
     # See _phase.pyx, we are using exp(i k.R/r)
     #  i R
-    if gauge == 'R':
+    if gauge == 'cell':
         iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
         iRs = (1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
         p_opt = 1
 
-    elif gauge == 'r':
+    elif gauge == 'orbital':
         M.finalize()
         rij = M.Rij()._csr._D
         iRs = (1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
@@ -54,7 +55,7 @@ def _matrix_dk(csr, const int idx, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
 
         # Default must be something else.
@@ -62,7 +63,7 @@ def _matrix_dk(csr, const int idx, iRs, dtype, format, p_opt):
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         d1, d2, d3 = _phase3_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
@@ -84,7 +85,7 @@ def _matrix_dk_nc(csr, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_nc_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
 
         # Default must be something else.
@@ -92,7 +93,7 @@ def _matrix_dk_nc(csr, iRs, dtype, format, p_opt):
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_nc_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         d1, d2, d3 = _phase3_nc_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
@@ -124,14 +125,14 @@ def _matrix_dk_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_diag_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
 
         # Default must be something else.
         return _phase_nc_diag_csr_c128(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase_nc_diag_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
         return _phase_nc_diag_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
@@ -152,7 +153,7 @@ def _matrix_dk_so(csr, iRs, dtype, format, p_opt):
 
     if dtype == np.complex128:
 
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_so_array_c128(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
 
         # Default must be something else.
@@ -160,7 +161,7 @@ def _matrix_dk_so(csr, iRs, dtype, format, p_opt):
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
     elif dtype == np.complex64:
-        if format in ["array", "matrix", "dense"]:
+        if format in ("array", "matrix", "dense"):
             return _phase3_so_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         d1, d2, d3 = _phase3_so_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, iRs, p_opt)
         return d1.asformat(format), d2.asformat(format), d3.asformat(format)

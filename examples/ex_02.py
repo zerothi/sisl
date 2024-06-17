@@ -8,6 +8,8 @@
 # -2.7 eV using a simpler method to construct the
 # Hamiltonian.
 
+from __future__ import annotations
+
 import sisl
 
 bond = 1.42

@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import itertools
 from typing import Optional, Sequence
 
@@ -143,6 +148,8 @@ class PlotlyFigure(Figure):
     _multi_axis = None
 
     _layout_defaults = {}
+
+    figure: Optional[go.Figure] = None
 
     def _init_figure(self, *args, **kwargs):
         self.figure = go.Figure()
@@ -306,6 +313,7 @@ class PlotlyFigure(Figure):
                         **action["kwargs"].get("meta", {}),
                         "i_plot": i,
                     }
+                sanitized_section_actions.append(action)
 
             yield sanitized_section_actions
 
@@ -395,6 +403,10 @@ class PlotlyFigure(Figure):
         ]
 
         self.update_layout(sliders=[slider], updatemenus=updatemenus)
+
+    @classmethod
+    def fig_has_attr(cls, key: str) -> bool:
+        return hasattr(go.Figure, key)
 
     def __getattr__(self, key):
         if key != "figure":
@@ -578,7 +590,7 @@ class PlotlyFigure(Figure):
         )
 
     def draw_scatter(self, x, y, name=None, marker={}, **kwargs):
-        marker.pop("dash", None)
+        marker = {k: v for k, v in marker.items() if k != "dash"}
         self.draw_line(x, y, name, marker=marker, mode="markers", **kwargs)
 
     def draw_multicolor_scatter(self, *args, **kwargs):
@@ -594,8 +606,9 @@ class PlotlyFigure(Figure):
 
         super().draw_multicolor_line_3D(x, y, z, **kwargs)
 
-    def draw_scatter_3D(self, *args, **kwargs):
-        self.draw_line_3D(*args, mode="markers", **kwargs)
+    def draw_scatter_3D(self, *args, marker={}, **kwargs):
+        marker = {k: v for k, v in marker.items() if k != "dash"}
+        self.draw_line_3D(*args, mode="markers", marker=marker, **kwargs)
 
     def draw_multicolor_scatter_3D(self, *args, **kwargs):
         kwargs["marker"] = self._handle_multicolor_scatter(kwargs["marker"], kwargs)
@@ -631,10 +644,10 @@ class PlotlyFigure(Figure):
                 size=sp_size,
                 color=sp_color,
                 opacity=sp_opacity,
-                name=f"{name}_{i}",
+                name=name,
                 legendgroup=name,
                 showlegend=showlegend,
-                meta=meta,
+                meta={**meta, f"{name}_i": i},
             )
             showlegend = False
 

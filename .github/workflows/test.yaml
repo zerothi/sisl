@@ -65,7 +65,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.8', '3.11']
+        python-version: ['3.9', '3.12']
+        full: [true]
+        include:
+          # Run a minimal dependency check for 3.9
+          # This is not per-see a minimal dependency check.
+          # However, it checks that sisl can run without viz
+          # and those dependencies.
+          - python-version: '3.9'
+            os: ubuntu-latest
+            full: false
 
     steps:
     - name: Checkout sisl
@@ -73,9 +82,9 @@ jobs:
       with:
         ref: '${{ github.event.inputs.branch }}'
         # The files submodule is required for tests purposes
-        submodules: true
+        submodules: ${{ matrix.full }}
         # the 'files' submodule uses lfs
-        lfs: true
+        lfs: ${{ matrix.full }}
 
     - name: Print-out commit information
       run: |
@@ -99,9 +108,16 @@ jobs:
         SKBUILD_CMAKE_ARGS: -DWITH_COVERAGE:bool=true;-DWITH_LINE_DIRECTIVES:bool=true
       run: |
         python -m pip install --progress-bar=off --upgrade pip
-        python -m pip install --progress-bar=off Cython "scikit-build-core[pyproject]"
-        python -m pip install --progress-bar=off -r ci/requirements.txt -r ci/requirements-viz.txt
-        CC=gcc FC=gfortran python -m pip install -vvv .
+        if [[ "${{ matrix.full }}" == "true" ]]; then
+          CC=gcc FC=gfortran python -m pip install --progress-bar=off -vvv .[test,viz]
+        else
+          CC=gcc FC=gfortran python -m pip install --progress-bar=off -vvv .[test]
+        fi
+
+    - name: Running sisl import test
+      run: |
+        sgeom --help
+        stoolbox atom-plot --help
 
     - name: Running sisl tests
       env:

@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from collections import ChainMap
 from typing import Any, Dict, Literal, Optional, Tuple
 
@@ -37,6 +42,8 @@ class Figure:
     _SUBPLOTS = 3
     _ANIMATION = 4
 
+    plot_actions: list = []
+
     def __init__(self, plot_actions, *args, **kwargs):
         self.plot_actions = plot_actions
         self._build(plot_actions, *args, **kwargs)
@@ -62,6 +69,17 @@ class Figure:
                 )
 
         return fig
+
+    @classmethod
+    def fig_has_attr(cls, key: str) -> bool:
+        """Whether the figure that this class generates has a given attribute.
+
+        Parameters
+        -----------
+        key
+            the attribute to check for.
+        """
+        return False
 
     @staticmethod
     def _sanitize_plot_actions(plot_actions):

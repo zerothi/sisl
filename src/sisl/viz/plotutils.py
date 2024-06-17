@@ -1,9 +1,9 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import itertools
+from __future__ import annotations
+
 import os
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -21,11 +21,9 @@ try:
 except Exception:
     tqdm_avail = False
 
-from copy import deepcopy
-
-from sisl._environ import get_environ_variable
 from sisl.io.sile import get_sile_rules, get_siles
-from sisl.messages import info
+
+from .types import Colorscale
 
 __all__ = [
     "running_in_notebook",
@@ -33,19 +31,14 @@ __all__ = [
     "get_plot_classes",
     "get_plotable_siles",
     "get_plotable_variables",
-    "get_session_classes",
     "get_avail_presets",
     "get_nested_key",
     "modify_nested_dict",
     "dictOfLists2listOfDicts",
     "get_avail_presets",
     "random_color",
-    "load",
     "find_files",
     "find_plotable_siles",
-    "shift_trace",
-    "normalize_trace",
-    "swap_trace_axes",
 ]
 
 # -------------------------------------
@@ -444,7 +437,7 @@ def random_color():
     return "#" + "%06x" % random.randint(0, 0xFFFFFF)
 
 
-def values_to_colors(values, scale):
+def values_to_colors(values, scale: Colorscale):
     """Maps an array of numbers to colors using a colorscale.
 
     Parameters
@@ -464,23 +457,11 @@ def values_to_colors(values, scale):
     list
         the corresponding colors in "rgb(r,g,b)" format.
     """
-    import matplotlib
-    import plotly
 
-    v_min = np.min(values)
-    values = (values - v_min) / (np.max(values) - v_min)
+    from plotly.colors import sample_colorscale
 
-    scale_colors = plotly.colors.convert_colors_to_same_type(scale, colortype="tuple")[
-        0
-    ]
+    # Normalize values
+    min_value = np.min(values)
+    values = (np.array(values) - min_value) / (np.max(values) - min_value)
 
-    if not scale_colors and isinstance(scale, str):
-        scale_colors = plotly.colors.convert_colors_to_same_type(
-            scale[0].upper() + scale[1:], colortype="tuple"
-        )[0]
-
-    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
-        "my color map", scale_colors
-    )
-
-    return plotly.colors.convert_colors_to_same_type([cmap(c) for c in values])[0]
+    return sample_colorscale(scale, values)

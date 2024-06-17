@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 r""" Hartree correction for FFT-Poisson solver for arbitrary electrode positions
 
 Developer: Nick Papior
@@ -596,6 +598,12 @@ def fftpoisson_fix_run(args):
         for out in args.out:
             print(f"Writing to file: {out}...")
             V.write(out)
+
+
+# Import object holding all the CLI
+from sisl_toolbox.cli import register_toolbox_cli
+
+register_toolbox_cli(fftpoisson_fix_cli)
 
 
 if __name__ == "__main__":

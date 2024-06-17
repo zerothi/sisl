@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
 from .base import eigh
@@ -22,13 +24,13 @@ def signsqrt(a):
 
 
 def sqrth(a, overwrite_a=False):
-    r""":math:`H^{1/2}` for a Hermitian matrix `A`.
+    r""":math:`\mathbf H^{1/2}` for a Hermitian matrix `a`.
 
     This method is not exactly equivalent to `scipy.linalg.sqrtm` since the latter
     is general, whereas this one is for Hermitian matrices.
 
     In the Hermitian case the :math:`\sqrt{\mbox{}}` of the eigenvalues are a bit
-    more precise. E.g. when comparing H12 @ H12 vs. H12 @ H12.T.conj(). The latter is what
+    more precise. E.g. when comparing ``H12 @ H12`` vs. ``H12 @ H12.T.conj()``. The latter is what
     we need.
     """
     eig, ev = eigh(a, overwrite_a=overwrite_a)
@@ -37,12 +39,12 @@ def sqrth(a, overwrite_a=False):
 
 
 def invsqrth(a, overwrite_a=False):
-    """Calculate the inverse sqrt of the Hermitian matrix `H`
+    """Calculate the inverse sqrt of the Hermitian matrix `a`
 
     We do this by using eigh and taking the sqrt of the eigenvalues.
 
-    This yields a slightly better value compared to scipy.linalg.sqrtm
-    when comparing H12 @ H12 vs. H12 @ H12.T.conj(). The latter is what
+    This yields a slightly better value compared to `scipy.linalg.sqrtm`
+    when comparing ``H12 @ H12`` vs. ``H12 @ H12.T.conj()``. The latter is what
     we need.
     """
     eig, ev = eigh(a, overwrite_a=overwrite_a)

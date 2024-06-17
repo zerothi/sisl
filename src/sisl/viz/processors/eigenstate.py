@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from typing import Optional, Tuple, Union
 
 import numpy as np
@@ -173,8 +178,8 @@ def project_wavefunction(
     """
     grid = create_wf_grid(eigenstate, grid_prec=grid_prec, grid=grid, geometry=geometry)
 
-    # Ensure we are dealing with the R gauge
-    eigenstate.change_gauge("R")
+    # Ensure we are dealing with the cell gauge
+    eigenstate.change_gauge("cell")
 
     # Finally, insert the wavefunction values into the grid.
     sisl.physics.electron.wavefunction(

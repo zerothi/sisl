@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import math as m
 
 import numpy as np
@@ -97,6 +99,20 @@ def test_str_spec1():
     a = str_spec("foo{bar}")
     assert a[0] == "foo"
     assert a[1] == "bar"
+
+
+def test_listify():
+    assert isinstance(listify([1, 2]), list)
+    assert isinstance(1 | listify, list)
+    a = np.ones(2)
+    assert isinstance(listify(a), list)
+    assert isinstance(a | listify, list)
+
+
+def test_listify_as_index():
+    idx = 1 | listify
+    a = np.arange(2)
+    assert a[idx] == 1
 
 
 def test_merge_instances1():

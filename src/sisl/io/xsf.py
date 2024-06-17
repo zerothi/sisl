@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 from numbers import Integral
 from typing import Optional
@@ -99,9 +101,7 @@ class xsfSile(Sile):
             self._write(f"ANIMSTEPS {self._geometry_max}\n")
 
     @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice: Lattice, fmt: str = ".8f"):
         """Writes the supercell to the contained file
 
@@ -122,11 +122,12 @@ class xsfSile(Sile):
             "# File created by: sisl {}\n#\n".format(strftime("%Y-%m-%d", gmtime()))
         )
 
-        if all(lattice.nsc == 1):
+        pbc = lattice.pbc
+        if pbc.sum() == 0:
             self._write_once("MOLECULE\n#\n")
-        elif all(lattice.nsc[:2] > 1):
+        elif all(pbc == (True, True, False)):
             self._write_once("SLAB\n#\n")
-        elif lattice.nsc[0] > 1:
+        elif all(pbc == (True, False, False)):
             self._write_once("POLYMER\n#\n")
         else:
             self._write_once("CRYSTAL\n#\n")
@@ -192,7 +193,7 @@ class xsfSile(Sile):
     @sile_fh_open()
     def _r_geometry_next(
         self, lattice: Optional[Lattice] = None, atoms=None, ret_data: bool = False
-    ):
+    ) -> Geometry:
         if lattice is None:
             # fetch the prior read cell value
             lattice = self._r_cell
@@ -327,6 +328,14 @@ class xsfSile(Sile):
         return geom
 
     @SileBinder(postprocess=postprocess_tuple(list))
+    def read_basis(self) -> Atoms:
+        """Basis set (`Atoms`) contained in file"""
+        ret = self._r_geometry_next()
+        if ret is None:
+            return ret
+        return ret.atoms
+
+    @SileBinder(postprocess=postprocess_tuple(list))
     def read_lattice(self) -> Lattice:
         """Lattice contained in file"""
         ret = self._r_geometry_next()
@@ -335,12 +344,10 @@ class xsfSile(Sile):
         return ret.lattice
 
     @SileBinder(postprocess=postprocess_tuple(list))
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def read_geometry(
         self, lattice: Optional[Lattice] = None, atoms=None, ret_data: bool = False
-    ):
+    ) -> Geometry:
         """Geometry contained in file, and optionally the associated data
 
         Parameters

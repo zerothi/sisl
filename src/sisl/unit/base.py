@@ -1,11 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import pyparsing as pp
 
 from sisl._internal import set_module
 
-__all__ = ["unit_group", "unit_convert", "unit_default", "units"]
+__all__ = ["unit_group", "unit_convert", "unit_default", "units", "serialize_units_arg"]
 
 
 # We do not import anything as it depends on the package.
@@ -49,6 +51,15 @@ unit_table = {
         "mHa": 4.3597447222071e-21,
         "Ry": 2.1798723611035e-18,
         "mRy": 2.1798723611035e-21,
+        "Hz": 6.62607015000000e-34,
+        "MHz": 6.62607015000000e-28,
+        "GHz": 6.62607015000000e-25,
+        "THz": 6.62607015000000e-22,
+        "invcm": 1.98644585714893e-23,
+        # these won't work when using the class
+        # at least for now
+        "cm**-1": 1.98644585714893e-23,
+        "cm^-1": 1.98644585714893e-23,
     },
     "force": {
         "DEFAULT": "eV/Ang",
@@ -415,3 +426,28 @@ class UnitParser:
 
 # Create base sisl unit conversion object
 units = UnitParser(unit_table)
+
+
+@set_module("sisl.unit")
+def serialize_units_arg(units):
+    "Parse units arguments into a dictionary"
+
+    if isinstance(units, str):
+        return {unit_group(units): units}
+
+    elif isinstance(units, (list, tuple)):
+        new_units_arg = {}
+        for u in units:
+            g = unit_group(u)
+            if g not in new_units_arg:
+                # add new quantity to dictionary
+                new_units_arg[g] = u
+            else:
+                raise ValueError(
+                    f"Two units for the same quantity was specified. This is not allowed."
+                )
+        return new_units_arg
+
+    else:
+
+        return units

@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import logging
 from math import pi
 from numbers import Real
@@ -36,8 +38,6 @@ from .lattice import BoundaryCondition, Lattice, LatticeChild
 
 __all__ = ["Grid", "sgrid"]
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 
@@ -46,13 +46,8 @@ class Grid(
     LatticeChild,
     _Dispatchs,
     dispatchs=[
-        (
-            "new",
-            ClassDispatcher(
-                "new", obj_getattr="error", instance_dispatcher=TypeDispatcher
-            ),
-        ),
-        ("to", ClassDispatcher("to", obj_getattr="error", type_dispatcher=None)),
+        ClassDispatcher("new", obj_getattr="error", instance_dispatcher=TypeDispatcher),
+        ClassDispatcher("to", obj_getattr="error", type_dispatcher=None),
     ],
     when_subclassing="copy",
 ):
@@ -112,12 +107,14 @@ class Grid(
         "lattice",
         "argument sc has been deprecated in favor of lattice, please update your code.",
         "0.15",
+        "0.16",
     )
     @deprecate_argument(
         "bc",
         None,
         "argument bc has been deprecated (removed) in favor of the boundary conditions in Lattice, please update your code.",
         "0.15",
+        "0.16",
     )
     def __init__(
         self,
@@ -148,22 +145,25 @@ class Grid(
             self.lattice.set_boundary_condition(bc)
 
     @deprecation(
-        "Grid.set_bc is deprecated since boundary conditions are moved to Lattice (see github issue #626",
+        "Grid.set_bc is deprecated since boundary conditions are moved to Lattice (see github issue #626)",
         "0.15",
+        "0.16",
     )
     def set_bc(self, bc):
         self.lattice.set_boundary_condition(bc)
 
     @deprecation(
-        "Grid.set_boundary is deprecated since boundary conditions are moved to Lattice (see github issue #626",
+        "Grid.set_boundary is deprecated since boundary conditions are moved to Lattice (see github issue #626)",
         "0.15",
+        "0.16",
     )
     def set_boundary(self, bc):
         self.lattice.set_boundary_condition(bc)
 
     @deprecation(
-        "Grid.set_boundary_condition is deprecated since boundary conditions are moved to Lattice (see github issue #626",
+        "Grid.set_boundary_condition is deprecated since boundary conditions are moved to Lattice (see github issue #626)",
         "0.15",
+        "0.16",
     )
     def set_boundary_condition(self, bc):
         self.lattice.set_boundary_condition(bc)
@@ -366,38 +366,6 @@ class Grid(
         func = import_attr(f"scipy.ndimage.{method}_filter")
         return self.apply(func, mode=mode, **kwargs)
 
-    def apply(self, function_, *args, **kwargs):
-        """Applies a function to the grid and returns a new grid
-
-        You can also apply a function that does not return a grid (maybe you want to do
-        some measurement). In that case, you will get the result instead of a `Grid`.
-
-        Parameters
-        -----------
-        function_: str or function
-            for a string the full module path to the function should be given.
-            The function that will be called should have the grid as the first argument in its
-            interface.
-        args and kwargs:
-            arguments that go directly to the function call
-        """
-        if isinstance(function_, str):
-            function_ = import_attr(function_)
-
-        result = function_(self.grid, *args, **kwargs)
-
-        # Maybe the result is not a grid, because there are methods that actually
-        # do measurements of the grid
-        # TODO what to do about functions that squeeze shape == 1 dimensions?
-        if not isinstance(result, np.ndarray) or result.ndim != 3:
-            return result
-
-        # If the result is a grid, we will generate a copy of this one with the new grid values
-        grid = self.copy()
-        grid.grid = result
-
-        return grid
-
     @property
     def size(self):
         """Total number of elements in the grid"""
@@ -405,7 +373,7 @@ class Grid(
 
     @property
     def shape(self):
-        r"""Grid shape in :math:`x`, :math:`y`, :math:`z` directions"""
+        r"""Grid shape along the lattice vectors"""
         return self.grid.shape
 
     @property
@@ -907,7 +875,7 @@ class Grid(
         return not (self == other)
 
     def __abs__(self):
-        r"""Take the absolute value of the grid :math:`|grid|`"""
+        r"""Take the absolute value of the grid :math:`|\mathrm{grid}|`"""
         dtype = dtype_complex_to_real(self.dtype)
         a = self.copy()
         a.grid = np.absolute(self.grid).astype(dtype, copy=False)
@@ -1086,7 +1054,7 @@ class Grid(
         Parameters
         ----------
         b : numpy.ndarray
-           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
         pyamg_indices : list of int
            the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
            correspond to returned quantities from `pyamg_indices`.
@@ -1101,7 +1069,7 @@ class Grid(
         A : `~scipy.sparse.csr_matrix`/`~scipy.sparse.csc_matrix`
            sparse matrix describing the LHS for the linear system of equations
         b : numpy.ndarray
-           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
         pyamg_indices : list of int
            the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
            correspond to returned quantities from `pyamg_indices`.
@@ -1145,7 +1113,7 @@ class Grid(
         A : scipy.sparse.csr_matrix
            sparse matrix describing the grid
         b : numpy.ndarray
-           a vector containing RHS of :math:`A x = b` for the solution of the grid stencil
+           a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
         """
 
         def Neumann(idx_bc, idx_p1):
@@ -1215,6 +1183,7 @@ class Grid(
 
     @deprecation(
         "Grid.topyamg is deprecated in favor of Grid.to.pyamg",
+        "0.15",
         "0.16",
     )
     def topyamg(self, dtype=None):
@@ -1653,7 +1622,13 @@ class GridNewDispatch(AbstractDispatch):
 
 class GridNewGridDispatch(GridNewDispatch):
     def dispatch(self, grid, copy=False):
-        """Return grid as-is (no copy), for sanitization purposes"""
+        """Return Grid, for sanitization purposes"""
+        cls = self._get_class()
+        if cls != grid.__class__:
+            out = cls(shape=grid.shape, lattice=grid.lattice, geometry=grid.geometry)
+            out.grid = grid.grid.copy()
+            grid = out
+            copy = False
         if copy:
             return grid.copy()
         return grid

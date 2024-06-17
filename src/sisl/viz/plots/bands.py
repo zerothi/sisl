@@ -1,8 +1,13 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from typing import Dict, Literal, Optional, Sequence, Tuple
 
 import numpy as np
 
-from sisl.viz.types import OrbitalQueries, StyleSpec
+from sisl.viz.types import Colorscale, OrbitalQueries, StyleSpec
 
 from ..data.bands import BandsData
 from ..figure import Figure, get_figure
@@ -17,6 +22,34 @@ from ..processors.xarray import scale_variable
 from .orbital_groups_plot import OrbitalGroupsPlot
 
 
+def _default_random_color(x):
+    return x.get("color") or random_color()
+
+
+def _group_traces(actions, group_legend: bool = True):
+
+    if not group_legend:
+        return actions
+
+    seen_groups = []
+
+    new_actions = []
+    for action in actions:
+        if action["method"].startswith("draw_"):
+            group = action["kwargs"].get("name")
+            action = action.copy()
+            action["kwargs"]["legendgroup"] = group
+
+            if group in seen_groups:
+                action["kwargs"]["showlegend"] = False
+            else:
+                seen_groups.append(group)
+
+        new_actions.append(action)
+
+    return new_actions
+
+
 def bands_plot(
     bands_data: BandsData,
     Erange: Optional[Tuple[float, float]] = None,
@@ -24,9 +57,14 @@ def bands_plot(
     E_axis: Literal["x", "y"] = "y",
     bands_range: Optional[Tuple[int, int]] = None,
     spin: Optional[Literal[0, 1]] = None,
-    bands_style: StyleSpec = {"color": "black", "width": 1, "opacity": 1},
+    bands_style: StyleSpec = {
+        "color": "black",
+        "width": 1,
+        "opacity": 1,
+        "dash": "solid",
+    },
     spindown_style: StyleSpec = {"color": "blue", "width": 1},
-    colorscale: Optional[str] = None,
+    colorscale: Optional[Colorscale] = None,
     gap: bool = False,
     gap_tol: float = 0.01,
     gap_color: str = "red",
@@ -34,6 +72,7 @@ def bands_plot(
     direct_gaps_only: bool = False,
     custom_gaps: Sequence[Dict] = [],
     line_mode: Literal["line", "scatter", "area_line"] = "line",
+    group_legend: bool = True,
     backend: str = "plotly",
 ) -> Figure:
     """Plots band structure energies, with plentiful of customization options.
@@ -77,6 +116,10 @@ def bands_plot(
         List of custom gaps to display. See the showcase notebooks for examples.
     line_mode:
         The method used to draw the band lines.
+    group_legend:
+        Whether to group all bands in the legend to show a single legend item.
+
+        If the bands are spin polarized, bands are grouped by spin channel.
     backend:
         The backend to use to generate the figure.
     """
@@ -85,12 +128,19 @@ def bands_plot(
 
     # Filter the bands
     filtered_bands = filter_bands(
-        bands_data, Erange=Erange, E0=E0, bands_range=bands_range, spin=spin
+        bands_data,
+        Erange=Erange,
+        E0=E0,
+        bands_range=bands_range,
+        spin=spin,
     )
 
     # Add the styles
     styled_bands = style_bands(
-        filtered_bands, bands_style=bands_style, spindown_style=spindown_style
+        filtered_bands,
+        bands_style=bands_style,
+        spindown_style=spindown_style,
+        group_legend=group_legend,
     )
 
     # Determine what goes on each axis
@@ -104,9 +154,11 @@ def bands_plot(
         y=y,
         set_axrange=True,
         what=line_mode,
+        name="line_name",
         colorscale=colorscale,
         dependent_axis=E_axis,
     )
+    grouped_bands_plottings = _group_traces(bands_plottings, group_legend=group_legend)
 
     # Gap calculation
     gap_info = calculate_gap(filtered_bands)
@@ -123,33 +175,11 @@ def bands_plot(
         E_axis=E_axis,
     )
 
-    all_plottings = combined(bands_plottings, gaps_plottings, composite_method=None)
+    all_plottings = combined(
+        grouped_bands_plottings, gaps_plottings, composite_method=None
+    )
 
     return get_figure(backend=backend, plot_actions=all_plottings)
-
-
-def _default_random_color(x):
-    return x.get("color") or random_color()
-
-
-def _group_traces(actions):
-    seen_groups = []
-
-    new_actions = []
-    for action in actions:
-        if action["method"].startswith("draw_"):
-            group = action["kwargs"].get("name")
-            action = action.copy()
-            action["kwargs"]["legendgroup"] = group
-
-            if group in seen_groups:
-                action["kwargs"]["showlegend"] = False
-            else:
-                seen_groups.append(group)
-
-        new_actions.append(action)
-
-    return new_actions
 
 
 # I keep the fatbands plot here so that one can see how similar they are.
@@ -170,6 +200,7 @@ def fatbands_plot(
     direct_gaps_only: bool = False,
     custom_gaps: Sequence[Dict] = [],
     bands_mode: Literal["line", "scatter", "area_line"] = "line",
+    bands_group_legend: bool = True,
     # Fatbands inputs
     groups: OrbitalQueries = [],
     fatbands_var: str = "norm2",
@@ -215,6 +246,10 @@ def fatbands_plot(
         List of custom gaps to display. See the showcase notebooks for examples.
     bands_mode:
         The method used to draw the band lines.
+    bands_group_legend:
+        Whether to group all bands in the legend to show a single legend item.
+
+        If the bands are spin polarized, bands are grouped by spin channel.
     groups:
         Orbital groups to plots. See showcase notebook for examples.
     fatbands_var:
@@ -236,7 +271,10 @@ def fatbands_plot(
 
     # Add the styles
     styled_bands = style_bands(
-        filtered_bands, bands_style=bands_style, spindown_style=spindown_style
+        filtered_bands,
+        bands_style=bands_style,
+        spindown_style=spindown_style,
+        group_legend=bands_group_legend,
     )
 
     # Process fatbands
@@ -289,7 +327,11 @@ def fatbands_plot(
         y=y,
         set_axrange=True,
         what=bands_mode,
+        name="line_name",
         dependent_axis=E_axis,
+    )
+    grouped_bands_plottings = _group_traces(
+        bands_plottings, group_legend=bands_group_legend
     )
 
     # Gap calculation
@@ -309,7 +351,7 @@ def fatbands_plot(
 
     all_plottings = combined(
         grouped_fatbands_plottings,
-        bands_plottings,
+        grouped_bands_plottings,
         gaps_plottings,
         composite_method=None,
     )

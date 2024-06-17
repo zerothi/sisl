@@ -18,22 +18,20 @@ import numpy as np
 from numpy import dot, ndarray
 
 import sisl._array as _a
-import sisl._plot as plt
 from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
-from sisl.messages import SislError, deprecate, deprecation, warn
+from sisl.messages import SislError, deprecate, deprecate_argument, deprecation, warn
 from sisl.shape.prism4 import Cuboid
-from sisl.typing import Axes, Axies, Axis
+from sisl.typing import CellAxes, CellAxis
 from sisl.utils.mathematics import fnorm
+from sisl.utils.misc import direction, listify
 
 from ._lattice import cell_invert, cell_reciprocal
 
 __all__ = ["Lattice", "SuperCell", "LatticeChild", "BoundaryCondition"]
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 
@@ -83,8 +81,8 @@ SeqBoundaryConditionType = Union[BoundaryConditionType, Sequence[BoundaryConditi
 class Lattice(
     _Dispatchs,
     dispatchs=[
-        ("new", ClassDispatcher("new", instance_dispatcher=TypeDispatcher)),
-        ("to", ClassDispatcher("to", type_dispatcher=None)),
+        ClassDispatcher("new", instance_dispatcher=TypeDispatcher),
+        ClassDispatcher("to", type_dispatcher=None),
     ],
     when_subclassing="copy",
 ):
@@ -153,14 +151,64 @@ class Lattice(
         """Length of each lattice vector"""
         return fnorm(self.cell)
 
+    def lengthf(self, axes: CellAxes = (0, 1, 2)) -> ndarray:
+        """Length of specific lattice vectors (as a function)
+        Parameters
+        ----------
+        axes:
+            only calculate the volume based on a subset of axes
+
+        Examples
+        --------
+        Only get lengths of two lattice vectors:
+
+        >>> lat = Lattice(1)
+        >>> lat.lengthf([0, 1])
+        """
+        axes = map(direction, listify(axes)) | listify
+        return fnorm(self.cell[axes])
+
     @property
     def volume(self) -> float:
         """Volume of cell"""
-        return abs(dot3(self.cell[0], cross3(self.cell[1], self.cell[2])))
+        return self.volumef((0, 1, 2))
 
-    def area(self, ax0: Axis, ax1: Axis) -> float:
+    def volumef(self, axes: CellAxes = (0, 1, 2)) -> float:
+        """Volume of cell (as a function)
+
+        Default to the 3D volume.
+        For `axes` with only 2 elements, it corresponds to an area.
+        For `axes` with only 1 element, it corresponds to a length.
+
+        Parameters
+        ----------
+        axes:
+            only calculate the volume based on a subset of axes
+
+        Examples
+        --------
+        Only get the volume of the periodic directions:
+
+        >>> lat = Lattice(1)
+        >>> lat.pbc = (True, False, True)
+        >>> lat.volumef(lat.pbc.nonzero()[0])
+        """
+        axes = map(direction, listify(axes)) | listify
+
+        cell = self.cell
+        if len(axes) == 3:
+            return abs(dot3(cell[axes[0]], cross3(cell[axes[1]], cell[axes[2]])))
+        if len(axes) == 2:
+            return fnorm(cross3(cell[axes[0]], cell[axes[1]]))
+        if len(axes) == 1:
+            return fnorm(cell[axes])
+        return 0.0
+
+    def area(self, axis1: CellAxis, axis2: CellAxis) -> float:
         """Calculate the area spanned by the two axis `ax0` and `ax1`"""
-        return (cross3(self.cell[ax0], self.cell[ax1]) ** 2).sum() ** 0.5
+        axis1 = direction(axis1)
+        axis2 = direction(axis2)
+        return fnorm(cross3(self.cell[axis1], self.cell[axis2]))
 
     @property
     def boundary_condition(self) -> np.ndarray:
@@ -179,6 +227,25 @@ class Lattice(
         # along the same lattice vector. So checking one should suffice
         return self._bc[:, 0] == BoundaryCondition.PERIODIC
 
+    @pbc.setter
+    def pbc(self, pbc) -> None:
+        """Boolean array to specify whether the boundary conditions are periodic`"""
+        # set_boundary_condition does not allow to have PERIODIC and non-PERIODIC
+        # along the same lattice vector. So checking one should suffice
+        assert len(pbc) == 3
+
+        PERIODIC = BoundaryCondition.PERIODIC
+        for axis, bc in enumerate(pbc):
+
+            # Simply skip those that are not T|F
+            if not isinstance(bc, bool):
+                continue
+
+            if bc:
+                self._bc[axis] = PERIODIC
+            elif self._bc[axis, 0] == PERIODIC:
+                self._bc[axis] = BoundaryCondition.UNKNOWN
+
     @property
     def origin(self) -> ndarray:
         """Origin for the cell"""
@@ -192,6 +259,7 @@ class Lattice(
     @deprecation(
         "toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.",
         "0.15",
+        "0.16",
     )
     def toCuboid(self, *args, **kwargs):
         """A cuboid with vectors as this unit-cell and center with respect to its origin
@@ -288,7 +356,7 @@ class Lattice(
         -----
         Since we return the length and angles between vectors it may not be possible to
         recreate the same cell. Only in the case where the first lattice vector *only*
-        has a Cartesian :math:`x` component will this be the case
+        has a Cartesian :math:`x` component will this be the case.
 
         Parameters
         ----------
@@ -460,7 +528,21 @@ class Lattice(
         """Iterate the supercells and the indices of the supercells"""
         yield from enumerate(self.sc_off)
 
-    def fit(self, xyz, axis: Optional[Axies] = None, tol: float = 0.05) -> Lattice:
+    @deprecate_argument(
+        "axis",
+        "axes",
+        "argument axis has been deprecated in favor of axes, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def fit(self, xyz, axes: CellAxes = (0, 1, 2), atol: float = 0.05) -> Lattice:
         """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
 
         The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations
@@ -476,12 +558,16 @@ class Lattice(
         ----------
         xyz : array_like ``shape(*, 3)``
            the coordinates that we will wish to encompass and analyze.
-        axis :
-           if ``None`` equivalent to ``[0, 1, 2]``, else only the cell-vectors
-           along the provided axis will be used
-        tol : float
+        axes :
+           only the cell-vectors along the provided axes will be used
+        atol :
            tolerance (in Angstrom) of the positions. I.e. we neglect coordinates
            which are not within the radius of this magnitude
+
+        Raises
+        ------
+        RuntimeError :
+            when the cell-parameters does not fit within the given tolerance (`atol`).
         """
         # In case the passed coordinates are from a Geometry
         from .geometry import Geometry
@@ -502,11 +588,11 @@ class Lattice(
         # Then reduce search space by removing those coordinates
         # that are more than the tolerance.
         dist = np.sqrt((dot(cell.T, (x - ix).T) ** 2).sum(0))
-        idx = (dist <= tol).nonzero()[0]
+        idx = (dist <= atol).nonzero()[0]
         if len(idx) == 0:
-            raise ValueError(
+            raise RuntimeError(
                 "Could not fit the cell parameters to the coordinates "
-                "due to insufficient accuracy (try increase the tolerance)"
+                "due to insufficient accuracy (try to increase the tolerance)"
             )
 
         # Reduce problem to allowed values below the tolerance
@@ -515,14 +601,11 @@ class Lattice(
         # Reduce to total repetitions
         ireps = np.amax(ix, axis=0) - np.amin(ix, axis=0) + 1
 
-        # Only repeat the axis requested
-        if isinstance(axis, Integral):
-            axis = [axis]
-
         # Reduce the non-set axis
-        if not axis is None:
+        if not axes is None:
+            axes = map(direction, listify(axes))
             for ax in (0, 1, 2):
-                if ax not in axis:
+                if ax not in axes:
                     ireps[ax] = 1
 
         # Enlarge the cell vectors
@@ -533,15 +616,15 @@ class Lattice(
         return self.copy(cell)
 
     def plane(
-        self, axis1: Axis, axis2: Axis, origin: bool = True
+        self, axis1: CellAxis, axis2: CellAxis, origin: bool = True
     ) -> Tuple[ndarray, ndarray]:
         """Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
         ----------
-        axis1 : int
+        axis1 :
            the first axis vector
-        axis2 : int
+        axis2 :
            the second axis vector
         origin : bool, optional
            whether the plane intersects the origin or the opposite corner of the
@@ -586,6 +669,9 @@ class Lattice(
         ``p2``, ``p4`` and ``p6`` are always ``uc``.
         Hence this may be used to further reduce certain computations.
         """
+        axis1 = direction(axis1)
+        axis2 = direction(axis2)
+
         cell = self.cell
         n = cross3(cell[axis1], cell[axis2])
         # Normalize
@@ -647,7 +733,7 @@ class Lattice(
         """
         return cell_reciprocal(self.cell)
 
-    def cell2length(self, length, axes: Axies = (0, 1, 2)) -> ndarray:
+    def cell2length(self, length, axes: CellAxes = (0, 1, 2)) -> ndarray:
         """Calculate cell vectors such that they each have length `length`
 
         Parameters
@@ -655,7 +741,7 @@ class Lattice(
         length : float or array_like
             length for cell vectors, if an array it corresponds to the individual
             vectors and it must have length equal to `axes`
-        axes : int or array_like, optional
+        axes :
             which axes the `length` variable refers too.
 
         Returns
@@ -663,11 +749,7 @@ class Lattice(
         numpy.ndarray
              cell-vectors with prescribed length, same order as `axes`
         """
-        if isinstance(axes, Integral):
-            # ravel
-            axes = [axes]
-        else:
-            axes = list(axes)
+        axes = map(direction, listify(axes)) | listify
 
         length = _a.asarray(length).ravel()
         if len(length) != len(axes):
@@ -678,6 +760,7 @@ class Lattice(
                     f"{self.__class__.__name__}.cell2length length parameter should be a single "
                     "float, or an array of values according to axes argument."
                 )
+
         return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
     def offset(self, isc=None) -> Tuple[float, float, float]:
@@ -692,7 +775,7 @@ class Lattice(
     __radd__ = __add__
 
     def add_vacuum(
-        self, vacuum: float, axis: Axis, orthogonal_to_plane: bool = False
+        self, vacuum: float, axis: CellAxis, orthogonal_to_plane: bool = False
     ) -> Lattice:
         """Returns a new object with vacuum along the `axis` lattice vector
 
@@ -700,12 +783,13 @@ class Lattice(
         ----------
         vacuum : float
            amount of vacuum added, in Ang
-        axis : int
+        axis :
            the lattice vector to add vacuum along
         orthogonal_to_plane : bool, optional
            whether the lattice vector should be elongated so that it is `vacuum` longer
            when projected onto the normal vector of the other two axis.
         """
+        axis = direction(axis)
         cell = np.copy(self.cell)
         d = cell[axis].copy()
         d /= fnorm(d)
@@ -809,7 +893,7 @@ class Lattice(
           the diagonal components of a Cartesian unit-cell
 
         6 arguments
-          the cell parameters give by :math:`a`, :math:`b`, :math:`c`,
+          the cell parameters given by :math:`a`, :math:`b`, :math:`c`,
           :math:`\alpha`, :math:`\beta` and :math:`\gamma` (angles
           in degrees).
 
@@ -830,7 +914,7 @@ class Lattice(
         >>> cell_1_2_3 = Lattice.tocell([1., 2., 3.]) # same as above
         """
         # Convert into true array (flattened)
-        args = _a.asarrayd(args).ravel()
+        args = _a.arrayd(args, order="C").ravel()
         nargs = len(args)
 
         # A square-box
@@ -873,57 +957,77 @@ class Lattice(
 
         # A complete cell
         if nargs == 9:
-            return args.copy().reshape(3, 3)
+            return args.reshape(3, 3)
 
         raise ValueError(
-            "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct."
+            f"Creating a unit cell has to have 1, 3, 6 or 9 arguments, got {nargs}."
         )
 
-    def is_orthogonal(self, tol: float = 0.001) -> bool:
+    @deprecate_argument(
+        "tol",
+        "rtol",
+        "argument tol has been deprecated in favor of rtol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def is_orthogonal(self, rtol: float = 0.001) -> bool:
         """
         Returns true if the cell vectors are orthogonal.
 
+        Internally this will be done on the normalized lattice vectors
+        to ensure no numerical instability.
+
         Parameters
         -----------
-        tol: float, optional
-            the threshold above which the scalar product of two cell vectors will be considered non-zero.
+        rtol: float, optional
+            the threshold above which the scalar product of two normalized cell
+            vectors will be considered non-zero.
         """
         # Convert to unit-vector cell
-        cell = np.copy(self.cell)
+        cell = self.cell
         cl = fnorm(cell)
         cell[0] = cell[0] / cl[0]
         cell[1] = cell[1] / cl[1]
         cell[2] = cell[2] / cl[2]
-        i_s = dot3(cell[0], cell[1]) < tol
-        i_s = dot3(cell[0], cell[2]) < tol and i_s
-        i_s = dot3(cell[1], cell[2]) < tol and i_s
+        i_s = dot3(cell[0], cell[1]) < rtol
+        i_s = dot3(cell[0], cell[2]) < rtol and i_s
+        i_s = dot3(cell[1], cell[2]) < rtol and i_s
         return i_s
 
-    def is_cartesian(self, tol: float = 0.001) -> bool:
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def is_cartesian(self, atol: float = 0.001) -> bool:
         """
         Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)
 
         Parameters
         -----------
-        tol: float, optional
+        atol: float, optional
             the threshold above which an off diagonal term will be considered non-zero.
         """
         # Get the off diagonal terms of the cell
         off_diagonal = self.cell.ravel()[:-1].reshape(2, 4)[:, 1:]
-        # Check if any of them are above the threshold tolerance
-        return ~np.any(np.abs(off_diagonal) > tol)
 
-    def parallel(self, other, axis: Axies = (0, 1, 2)) -> bool:
+        # Check if all are bolew the threshold tolerance
+        return np.all(np.abs(off_diagonal) <= atol)
+
+    def parallel(self, other, axes: CellAxes = (0, 1, 2)) -> bool:
         """Returns true if the cell vectors are parallel to `other`
 
         Parameters
         ----------
         other : Lattice
            the other object to check whether the axis are parallel
-        axis : int or array_like
-           only check the specified axis (default to all)
+        axes :
+           only check the specified axes (default to all)
         """
-        axis = _a.asarrayi(axis).ravel()
+        axis = map(direction, listify(axes))
+
         # Convert to unit-vector cell
         for i in axis:
             a = self.cell[i] / fnorm(self.cell[i])
@@ -932,18 +1036,20 @@ class Lattice(
                 return False
         return True
 
-    def angle(self, axis1: Axis, axis2: Axis, rad: bool = False) -> float:
+    def angle(self, axis1: CellAxis, axis2: CellAxis, rad: bool = False) -> float:
         """The angle between two of the cell vectors
 
         Parameters
         ----------
-        axis1 : int
+        axis1 :
            the first cell vector
-        axis2 : int
+        axis2 :
            the second cell vector
         rad : bool, optional
            whether the returned value is in radians
         """
+        axis1 = direction(axis1)
+        axis2 = direction(axis2)
         n = fnorm(self.cell[[axis1, axis2]])
         ang = math.acos(dot3(self.cell[axis1], self.cell[axis2]) / (n[0] * n[1]))
         if rad:
@@ -970,21 +1076,28 @@ class Lattice(
             with get_sile(sile, mode="r") as fh:
                 return fh.read_lattice(*args, **kwargs)
 
-    def equal(self, other, tol: float = 1e-4) -> bool:
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def equal(self, other, atol: float = 1e-4) -> bool:
         """Check whether two lattices are equivalent
 
         Parameters
         ----------
         other : Lattice
            the other object to check whether the lattice is equivalent
-        tol : float, optional
+        atol : float, optional
             tolerance value for the cell vectors and origin
         """
         if not isinstance(other, (Lattice, LatticeChild)):
             return False
-        same = np.allclose(self.cell, other.cell, atol=tol)
+        same = np.allclose(self.cell, other.cell, atol=atol)
         same = same and np.allclose(self.nsc, other.nsc)
-        same = same and np.allclose(self.origin, other.origin, atol=tol)
+        same = same and np.allclose(self.origin, other.origin, atol=atol)
         return same
 
     def __str__(self) -> str:
@@ -1048,72 +1161,6 @@ class Lattice(
         self.__init__(d["cell"], d["nsc"], d["origin"])
         self.sc_off = d["sc_off"]
 
-    def __plot__(self, axis=None, axes=False, *args, **kwargs):
-        """Plot the supercell in a specified ``matplotlib.Axes`` object.
-
-        Parameters
-        ----------
-        axis : array_like, optional
-           only plot a subset of the axis, defaults to all axis
-        axes : bool or matplotlib.Axes, optional
-           the figure axes to plot in (if ``matplotlib.Axes`` object).
-           If ``True`` it will create a new figure to plot in.
-           If ``False`` it will try and grap the current figure and the current axes.
-        """
-        # Default dictionary for passing to newly created figures
-        d = dict()
-
-        # Try and default the color and alpha
-        if "color" not in kwargs and len(args) == 0:
-            kwargs["color"] = "k"
-        if "alpha" not in kwargs:
-            kwargs["alpha"] = 0.5
-
-        if axis is None:
-            axis = [0, 1, 2]
-
-        # Ensure we have a new 3D Axes3D
-        if len(axis) == 3:
-            d["projection"] = "3d"
-
-        axes = plt.get_axes(axes, **d)
-
-        # Create vector objects
-        o = self.origin
-        v = []
-        for a in axis:
-            v.append(np.vstack((o[axis], o[axis] + self.cell[a, axis])))
-        v = np.array(v)
-
-        if axes.__class__.__name__.startswith("Axes3D"):
-            # We should plot in 3D plots
-            for vv in v:
-                axes.plot(vv[:, 0], vv[:, 1], vv[:, 2], *args, **kwargs)
-
-            v0, v1 = v[0], v[1] - o
-            axes.plot(
-                v0[1, 0] + v1[:, 0],
-                v0[1, 1] + v1[:, 1],
-                v0[1, 2] + v1[:, 2],
-                *args,
-                **kwargs,
-            )
-
-            axes.set_zlabel("Ang")
-
-        else:
-            for vv in v:
-                axes.plot(vv[:, 0], vv[:, 1], *args, **kwargs)
-
-            v0, v1 = v[0], v[1] - o[axis]
-            axes.plot(v0[1, 0] + v1[:, 0], v0[1, 1] + v1[:, 1], *args, **kwargs)
-            axes.plot(v1[1, 0] + v0[:, 0], v1[1, 1] + v0[:, 1], *args, **kwargs)
-
-        axes.set_xlabel("Ang")
-        axes.set_ylabel("Ang")
-
-        return axes
-
 
 new_dispatch = Lattice.new
 to_dispatch = Lattice.to
@@ -1132,7 +1179,16 @@ class LatticeNewDispatch(AbstractDispatch):
 
 class LatticeNewLatticeDispatch(LatticeNewDispatch):
     def dispatch(self, lattice, copy=False):
-        # for sanitation purposes
+        """Return Lattice as-is, for sanitization purposes"""
+        cls = self._get_class()
+        if cls != lattice.__class__:
+            lattice = cls(
+                lattice.cell.copy(),
+                nsc=lattice.nsc.copy(),
+                origin=lattice.origin.copy(),
+                boundary_condition=lattice.boundary_condition.copy(),
+            )
+            copy = False
         if copy:
             return lattice.copy()
         return lattice
@@ -1157,8 +1213,10 @@ try:
     from ase import Cell as ase_Cell
 
     new_dispatch.register(ase_Cell, LatticeNewAseDispatch)
+
     # ensure we don't pollute name-space
     del ase_Cell
+
 except Exception:
     pass
 
@@ -1166,8 +1224,8 @@ except Exception:
 class LatticeNewFileDispatch(LatticeNewDispatch):
     def dispatch(self, *args, **kwargs):
         """Defer the `Lattice.read` method by passing down arguments"""
-        # can work either on class or instance
-        return self._obj.read(*args, **kwargs)
+        cls = self._get_class()
+        return cls.read(*args, **kwargs)
 
 
 new_dispatch.register(str, LatticeNewFileDispatch)
@@ -1240,10 +1298,7 @@ to_dispatch.register("Cuboid", LatticeToCuboidDispatch)
 to_dispatch.register(Cuboid, LatticeToCuboidDispatch)
 
 
-# Remove references
-del new_dispatch, to_dispatch
-
-
+@set_module("sisl")
 class SuperCell(Lattice):
     """Deprecated class, please use `Lattice` instead"""
 
@@ -1251,10 +1306,12 @@ class SuperCell(Lattice):
         deprecate(
             f"{self.__class__.__name__} is deprecated; please use 'Lattice' class instead",
             "0.15",
+            "0.16",
         )
         super().__init__(*args, **kwargs)
 
 
+@set_module("sisl")
 class LatticeChild:
     """Class to be inherited by using the ``self.lattice`` as a `Lattice` object
 
@@ -1268,6 +1325,7 @@ class LatticeChild:
         deprecate(
             f"{self.__class__.__name__}.sc is deprecated; please use 'lattice' instead",
             "0.15",
+            "0.16",
         )
         return self.lattice
 
@@ -1297,7 +1355,7 @@ class LatticeChild:
             self.lattice = Lattice(lattice)
 
     set_supercell = deprecation(
-        "set_sc is deprecated; please use set_lattice instead", "0.15"
+        "set_sc is deprecated; please use set_lattice instead", "0.15", "0.16"
     )(set_lattice)
 
     @property
@@ -1374,3 +1432,17 @@ class LatticeChild:
     def pbc(self) -> np.ndarray:
         f"""{Lattice.pbc.__doc__}"""
         return self.lattice.pbc
+
+
+class LatticeNewLatticeChildDispatch(LatticeNewDispatch):
+    def dispatch(self, obj, copy=False):
+        # for sanitation purposes
+        if copy:
+            return obj.lattice.copy()
+        return obj.lattice
+
+
+new_dispatch.register(LatticeChild, LatticeNewLatticeChildDispatch)
+
+# Remove references
+del new_dispatch, to_dispatch

@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from collections import namedtuple
 from collections.abc import Iterable
 from functools import partial
@@ -11,25 +13,24 @@ from numbers import Integral, Real
 from typing import Callable, Optional, Tuple
 
 import numpy as np
-import numpy.typing as npt
 import scipy
 from numpy import cos, sin, sqrt, square, take
 from scipy.special import eval_genlaguerre, factorial, lpmv
 
-if scipy.__version__ < "0.16":
-    from scipy.integrate import cumtrapz as cumulative_trapezoid
-else:
+try:
     from scipy.integrate import cumulative_trapezoid
+except ImportError:
+    from scipy.integrate import cumtrapz as cumulative_trapezoid
 
 from scipy.interpolate import UnivariateSpline
 
 import sisl._array as _a
-import sisl._plot as plt
 from sisl._internal import set_module
 from sisl.constant import a0
 from sisl.messages import warn
 from sisl.shape import Sphere
-from sisl.utils.mathematics import cart2spher
+from sisl.typing import npt
+from sisl.utils.mathematics import cart2spher, close
 
 __all__ = [
     "Orbital",
@@ -66,7 +67,7 @@ del _rfact
 
 
 def _rspherical_harm(m, l, theta, cos_phi):
-    r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf R\to \{r, \theta, \varphi\}`.
+    r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf r\to \{r, \theta, \varphi\}`.
 
     These real spherical harmonics are via these equations:
 
@@ -84,7 +85,7 @@ def _rspherical_harm(m, l, theta, cos_phi):
     l : int
        degree of the spherical harmonics
     theta : array_like
-       angle in :math:`x-y` plane (azimuthal)
+       angle in :math:`xy` plane (azimuthal)
     cos_phi : array_like
        cos(phi) to angle from :math:`z` axis (polar)
     """
@@ -140,7 +141,7 @@ class Orbital:
     >>> orbq.q0
     1.
 
-    Optimizing the R range for the radial function integral :math:`\int dr radial(r)^2 r ^2`
+    Optimizing the R range for the radial function integral :math:`\int\mathrm dr radial(r)^2 r ^2`
     >>> R = {
     ...    "contains": 0.9999,
     ...    "func": lambda radial, r: (radial(r) * r)**2,
@@ -152,6 +153,14 @@ class Orbital:
     ``dict(contains=0.9999, func=lambda radial, r: abs(radial(r)), maxR=100)``
     The optimization problem depends heavily on the ``func`` since the tails are
     important for real-space quantities.
+
+    See also
+    --------
+    SphericalOrbital : orbitals with a spherical basis set
+    AtomicOrbital : specification of n, m, l quantum numbers + a spherical basis set
+    HydrogenicOrbital : simplistic orbital model of Hydrogenic-like basis sets
+    GTOrbital : Gaussian-type orbitals
+    STOrbital : Slater-type orbitals
     """
 
     __slots__ = ("_R", "_tag", "_q0")
@@ -202,7 +211,7 @@ class Orbital:
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             return f"{self.__class__.__name__}{{R: {self.R:.5f}, q0: {self.q0}, tag: {self.tag}}}"
         return f"{self.__class__.__name__}{{R: {self.R:.5f}, q0: {self.q0}}}"
 
@@ -216,7 +225,7 @@ class Orbital:
         return self.tag
 
     def psi(self, r, *args, **kwargs):
-        r"""Calculate :math:`\phi(\mathbf R)` for Cartesian coordinates"""
+        r"""Calculate :math:`\phi(\mathbf r)` for Cartesian coordinates"""
         raise NotImplementedError
 
     def toSphere(self, center=None):
@@ -250,70 +259,26 @@ class Orbital:
         elif not isinstance(other, Orbital):
             return False
 
-        same = abs(self.R - other.R) <= 1e-4 and abs(self.q0 - other.q0) < 1e-4
+        same = self.tag == other.tag
+        same &= close(self.R, other.R, atol=1e-4)
+        same &= close(self.q0, other.q0, atol=1e-4)
         if not same:
             # Quick return
             return False
 
         if same and radial:
             # Ensure they also have the same fill-values
-            r = np.linspace(0, self.R * 2, 500)
+            r = np.linspace(0, self.R + 1, 500)
             same &= np.allclose(self.radial(r), other.radial(r))
 
         if same and psi:
             xyz = np.linspace(0, self.R * 2, 999).reshape(-1, 3)
             same &= np.allclose(self.psi(xyz), other.psi(xyz))
 
-        return same and self.tag == other.tag
+        return same
 
     def __eq__(self, other):
         return self.equal(other)
-
-    def __plot__(self, harmonics: bool = False, axes=False, *args, **kwargs):
-        """Plot the orbital radial/spherical harmonics
-
-        Parameters
-        ----------
-        harmonics : bool, optional
-           if `True` the spherical harmonics will be plotted in a 3D only plot a subset of the axis, defaults to all axis
-        axes : bool or matplotlib.Axes, optional
-           the figure axes to plot in (if ``matplotlib.Axes`` object).
-           If ``True`` it will create a new figure to plot in.
-           If ``False`` it will try and grap the current figure and the current axes.
-        """
-        d = dict()
-
-        if harmonics:
-            # We are plotting the harmonic part
-            d["projection"] = "polar"
-
-        axes = plt.get_axes(axes, **d)
-
-        # Add plots
-        if harmonics:
-            # Calculate the spherical harmonics
-            theta, phi = np.meshgrid(np.arange(360), np.arange(180) - 90)
-            s = self.spher(np.radians(theta), np.radians(phi))
-
-            # Plot data
-            cax = axes.contourf(theta, phi, s, *args, **kwargs)
-            cax.set_clim(s.min(), s.max())
-            axes.get_figure().colorbar(cax)
-            axes.set_title(r"${}$".format(self.name(True)))
-            # I don't know how exactly to handle this...
-            # axes.set_xlabel(r"Azimuthal angle $\theta$")
-            # axes.set_ylabel(r"Polar angle $\phi$")
-
-        else:
-            # Plot the radial function and 5% above 0 value
-            r = np.linspace(0, self.R * 1.05, 1000)
-            f = self.radial(r)
-            axes.plot(r, f, *args, **kwargs)
-            axes.set_xlim(left=0)
-            axes.set_xlabel("Radius [Ang]")
-            axes.set_ylabel(r"$f(r)$ [1/Ang$^{3/2}$]")
-
-        return axes
 
     def toGrid(
         self, precision: float = 0.05, c: float = 1.0, R=None, dtype=np.float64, atom=1
@@ -522,11 +487,11 @@ def _set_radial(self, *args, **kwargs) -> None:
     >>> r = np.linspace(0, 4, 300)
     >>> f = np.exp(-r)
     >>> def i_univariate(r, f):
-    ...    return interp.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)
+        ...    return interp.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)
     >>> def i_interp1d(r, f):
-    ...    return interp.interp1d(r, f, kind="cubic", fill_value=(f[0], 0.), bounds_error=False)
+        ...    return interp.interp1d(r, f, kind="cubic", fill_value=(f[0], 0.), bounds_error=False)
     >>> def i_spline(r, f):
-    ...    from functools import partial
+        ...    from functools import partial
     ...    tck = interp.splrep(r, f, k=3, s=0)
     ...    return partial(interp.splev, tck=tck, der=0, ext=1)
     >>> R = np.linspace(0, 4, 400)
@@ -647,6 +612,8 @@ class SphericalOrbital(Orbital):
        initial charge
     tag : str, optional
        user defined tag
+    **kwargs:
+       arguments passed directly to ``set_radial(rf_or_func, **kwargs)``
 
     Attributes
     ----------
@@ -706,7 +673,7 @@ class SphericalOrbital(Orbital):
         Parameters
         -----------
         theta : array_like
-            azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+            azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
             polar angle from :math:`z` axis
         m :
@@ -725,7 +692,7 @@ class SphericalOrbital(Orbital):
         return _rspherical_harm(m, self.l, theta, cos(phi))
 
     def psi(self, r, m: int = 0):
-        r"""Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
+        r"""Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -754,7 +721,7 @@ class SphericalOrbital(Orbital):
         return p
 
     def psi_spher(self, r, theta, phi, m: int = 0, cos_phi: bool = False):
-        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -763,7 +730,7 @@ class SphericalOrbital(Orbital):
         r : array_like
            the radius from the orbital origin
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         m :
@@ -800,7 +767,7 @@ class SphericalOrbital(Orbital):
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             return f"{self.__class__.__name__}{{l: {self.l}, R: {self.R}, q0: {self.q0}, tag: {self.tag}}}"
         return f"{self.__class__.__name__}{{l: {self.l}, R: {self.R}, q0: {self.q0}}}"
 
@@ -827,7 +794,7 @@ class SphericalOrbital(Orbital):
         m : int or list or None
            if ``None`` it defaults to ``-l:l``, else only for the requested `m`
         zeta :
-           the specified zeta-shell
+           the specified :math:`\zeta`-shell
         n :
            specify the :math:`n` quantum number
         P :
@@ -886,7 +853,7 @@ class AtomicOrbital(Orbital):
         Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
              e^{i m \theta} P^m_l(\cos(\varphi))
         \\
-        \phi_{lmn}(\mathbf r) &= R(|\mathbf r|) Y^m_l(\theta, \varphi)
+                \phi_{lmn}(\mathbf r) &= R(|\mathbf r|) Y^m_l(\theta, \varphi)
 
     where the function :math:`R(|\mathbf r|)` is user-defined.
 
@@ -1103,6 +1070,12 @@ class AtomicOrbital(Orbital):
             # Determine the correct R if requested a sub-set
             self._orb = SphericalOrbital(l, s, q0=q0, R=R)
 
+        if isinstance(self._orb, SphericalOrbital):
+            if self._orb.l != self.l:
+                raise ValueError(
+                    f"{self.__class__.__name__} got a spherical argument with l={self._orb.l} which is different from this objects l={self.l}."
+                )
+
         super().__init__(self._orb.R, q0=q0, tag=kwargs.get("tag", ""))
 
     def __hash__(self):
@@ -1237,7 +1210,7 @@ class AtomicOrbital(Orbital):
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             return f"{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, tag: {self.tag}, {self.orb!s}}}"
         return (
             f"{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, {self.orb!s}}}"
@@ -1258,7 +1231,7 @@ class AtomicOrbital(Orbital):
         return self.orb.set_radial(*args, **kwargs)
 
     def radial(self, r, *args, **kwargs):
-        r"""Calculate the radial part of the wavefunction :math:`f(\mathbf R)`
+        r"""Calculate the radial part of the wavefunction :math:`f(\mathbf r)`
 
         The position `r` is a vector from the origin of this orbital.
 
@@ -1297,7 +1270,7 @@ class AtomicOrbital(Orbital):
         Parameters
         -----------
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :
@@ -1312,7 +1285,7 @@ class AtomicOrbital(Orbital):
         return self.orb.spher(theta, phi, self.m, cos_phi)
 
     def psi_spher(self, r, theta, phi, cos_phi: bool = False):
-        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -1321,7 +1294,7 @@ class AtomicOrbital(Orbital):
         r : array_like
            the radius from the orbital origin
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :
@@ -1535,7 +1508,7 @@ class _ExponentialOrbital(Orbital):
 
     def __str__(self):
         """A string representation of the object"""
-        if len(self.tag) > 0:
+        if self.tag:
             s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}, tag: {self.tag}"
         else:
             s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}"
@@ -1547,7 +1520,7 @@ class _ExponentialOrbital(Orbital):
     def __repr__(self):
         if self.tag:
             return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}, tag={self.tag}>"
-        return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}, >"
+        return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}>"
 
     def __hash__(self):
         return hash(
@@ -1614,7 +1587,7 @@ class _ExponentialOrbital(Orbital):
         Parameters
         -----------
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :
@@ -1631,7 +1604,7 @@ class _ExponentialOrbital(Orbital):
         return _rspherical_harm(self.m, self.l, theta, cos(phi))
 
     def psi_spher(self, r, theta, phi, cos_phi: bool = False):
-        r"""Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+        r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)
 
         This is equivalent to `psi` however, the input is given in spherical coordinates.
 
@@ -1640,7 +1613,7 @@ class _ExponentialOrbital(Orbital):
         r : array_like
            the radius from the orbital origin
         theta : array_like
-           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+           azimuthal angle in the :math:`xy` plane (from :math:`x`)
         phi : array_like
            polar angle from :math:`z` axis
         cos_phi :

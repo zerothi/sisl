@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from sisl._internal import set_module
-from sisl._typing_ext.numpy import NDArray
+from sisl.typing import NDArray
 
 from .base import BaseHistoryWeightMixer, T
 
@@ -22,7 +22,7 @@ class LinearMixer(BaseHistoryWeightMixer):
 
     .. math::
 
-        f^{i+1} = f^i + w \delta f^i
+        \mathbf f^{i+1} = \mathbf f^i + w \delta \mathbf f^i
 
     Parameters
     ----------
@@ -33,7 +33,7 @@ class LinearMixer(BaseHistoryWeightMixer):
     __slots__ = ()
 
     def __call__(self, f: T, df: T, append: bool = True) -> T:
-        r"""Calculate a new variable :math:`f'` using input and output of the functional
+        r"""Calculate a new variable :math:`\mathbf f'` using input and output of the functional
 
         Parameters
         ----------
@@ -52,7 +52,7 @@ class AndersonMixer(BaseHistoryWeightMixer):
     r""" Anderson mixing
 
     The Anderson mixing assumes that the mixed input/output are linearly
-    related. Hence 
+    related. Hence
 
     .. math::
 
@@ -64,10 +64,10 @@ class AndersonMixer(BaseHistoryWeightMixer):
 
     .. math::
 
-       \delta_i &= F_i^{\mathrm{out}} - F_i^{\mathrm{in}}
+       \boldsymbol\delta_i &= \mathbf f_i^{\mathrm{out}} - \mathbf f_i^{\mathrm{in}}
        \\
-       \beta &= \frac{\langle \delta_i | \delta_i - \delta_{i-1}\rangle}
-         {\langle \delta_i - \delta_{i-1}| \delta_i - \delta_{i-1} \rangle}
+       \beta &= \frac{\langle \boldsymbol\delta_i | \boldsymbol\delta_i - \boldsymbol\delta_{i-1}\rangle}
+         {\langle \boldsymbol\delta_i - \boldsymbol\delta_{i-1}| \boldsymbol\delta_i - \boldsymbol\delta_{i-1} \rangle}
 
     Finally the resulting output becomes:
 
@@ -96,7 +96,7 @@ class AndersonMixer(BaseHistoryWeightMixer):
     def __call__(
         self, f: T, df: T, delta: Optional[Any] = None, append: bool = True
     ) -> T:
-        r"""Calculate a new variable :math:`f'` using input and output of the functional
+        r"""Calculate a new variable :math:`\mathbf f'` using input and output of the functional
 
         Parameters
         ----------

@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Import sile objects
 # Import the geometry object
+from __future__ import annotations
+
 from sisl import Atom, Atoms
 
 from ..sile import *
@@ -15,7 +17,7 @@ class orboccSileScaleUp(SileScaleUp):
     """orbocc file object for ScaleUp"""
 
     @sile_fh_open()
-    def read_atom(self):
+    def read_basis(self) -> Atoms:
         """Reads a the atoms and returns an `Atoms` object"""
         self.readline()
         _, ns = map(int, self.readline().split()[:2])

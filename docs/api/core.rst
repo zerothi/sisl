@@ -1,8 +1,8 @@
 .. _core:
 
-**********
-Functional
-**********
+**********************
+Functional programming
+**********************
 
 .. currentmodule:: sisl
 
@@ -19,6 +19,7 @@ sisl objects.
 
    add
    append
+   apply
    center
    copy
    insert

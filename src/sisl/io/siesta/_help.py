@@ -1,6 +1,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
+import warnings
+
 import numpy as np
 
 import sisl._array as _a
@@ -137,8 +141,8 @@ def _mat_spin_convert(M, spin=None):
 def _geom2hsx(geometry):
     """Convert the geometry into the correct lists of species and lists"""
     atoms = geometry.atoms
-    nspecie = atoms.nspecie
-    isa = atoms.specie
+    nspecies = atoms.nspecies
+    isa = atoms.species
     label, Z, no = [], [], []
     n, l, zeta = [], [], []
     for atom in atoms.atom:

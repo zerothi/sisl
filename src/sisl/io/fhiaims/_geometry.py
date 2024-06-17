@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Sile object for reading/writing FHI-aims geometry files
 """
@@ -21,17 +23,15 @@ class inSileFHIaims(SileFHIaims):
     """FHI-aims ``geometry.in`` file object"""
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
-    def write_lattice(self, lattice, fmt=".8f"):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    def write_lattice(self, lattice: Lattice, fmt: str = ".8f"):
         """Writes the supercell to the contained file
 
         Parameters
         ----------
-        lattice : Lattice
+        lattice :
            the supercell to be written
-        fmt : str, optional
+        fmt :
            used format for the precision of the data
         """
         sile_raise_write(self)
@@ -42,17 +42,22 @@ class inSileFHIaims(SileFHIaims):
 
     @sile_fh_open()
     def write_geometry(
-        self, geometry, fmt=".8f", as_frac=False, velocity=None, moment=None
+        self,
+        geometry: Geometry,
+        fmt: str = ".8f",
+        as_frac: bool = False,
+        velocity=None,
+        moment=None,
     ):
         """Writes the geometry to the contained file
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            the geometry to be written
-        fmt : str, optional
+        fmt :
            used format for the precision of the data
-        as_frac : bool, optional
+        as_frac :
            whether coordinates are written as fractional coordinates
         velocity: array_like, optional
            also write the velocity fields in [Ang/ps]
@@ -83,7 +88,7 @@ class inSileFHIaims(SileFHIaims):
                 self._write(_fmtm.format(moment[ia]))
 
     @sile_fh_open()
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Reads supercell object from the file"""
         self.fh.seek(0)
 
@@ -96,27 +101,42 @@ class inSileFHIaims(SileFHIaims):
         return Lattice(cell)
 
     @sile_fh_open()
-    def read_geometry(self, velocity=False, moment=False):
+    @deprecate_argument(
+        "velocity",
+        "ret_velocity",
+        "use ret_velocity= instead of veloticy=",
+        "0.15",
+        "0.16",
+    )
+    @deprecate_argument(
+        "moment",
+        "ret_moment",
+        "use ret_moment= instead of moment=",
+        "0.15",
+        "0.16",
+    )
+    def read_geometry(
+        self, ret_velocity: bool = False, ret_moment: bool = False
+    ) -> Geometry:
         """Reads Geometry object from the file
 
         Parameters
         ----------
-        velocity: bool, optional
+        ret_velocity: bool, optional
            also return the velocities in the file, if not present, it will
            return a 0 array
-        moment: bool, optional
+        ret_moment: bool, optional
            also return the moments specified in the file, if not present, it will
            return a 0 array
 
-
         Returns
         -------
-        Geometry :
+        geometry : Geometry
             geometry found in file
-        velocity : array_like
-            array of velocities in Ang/ps for each atom, will only be returned if `velocity` is true
-        moment : array_like
-            array of initial moments of each atom, will only be returned if `moment` is true
+        velocity : numpy.ndarray
+            array of velocities in Ang/ps for each atom, will only be returned if `ret_velocity` is true
+        moment : numpy.ndarray
+            array of initial moments of each atom, will only be returned if `ret_moment` is true
         """
         lattice = self.read_lattice()
 
@@ -157,22 +177,22 @@ class inSileFHIaims(SileFHIaims):
             sp.append(line[4])
 
         ret = (Geometry(xyz, atoms=sp, lattice=lattice),)
-        if not velocity and not moment:
+        if not ret_velocity and not ret_moment:
             return ret[0]
 
-        if velocity:
+        if ret_velocity:
             ret = ret + (np.array(v),)
-        if moment:
+        if ret_moment:
             ret = ret + (np.array(m),)
         return ret
 
-    def read_velocity(self):
+    def read_velocity(self) -> np.ndarray:
         """Reads velocity in the file"""
-        return self.read_geometry(velocity=True)[1]
+        return self.read_geometry(ret_velocity=True)[1]
 
-    def read_moment(self):
+    def read_moment(self) -> np.ndarray:
         """Reads initial moment in the file"""
-        return self.read_geometry(moment=True)[1]
+        return self.read_geometry(ret_moment=True)[1]
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """Returns the arguments that is available for this Sile"""

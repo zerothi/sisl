@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from collections import defaultdict
 from typing import Any, Callable, Optional, Sequence, TypedDict, Union
 
@@ -47,7 +52,7 @@ def reduce_atom_data(
         If not provided, it will be searched in the ``geometry`` attribute of the ``atom_data`` object.
     reduce_func : Callable, optional
         The function that will compute the reduction along the atoms dimension once the selection is done.
-        This could be for example ``numpy.mean`` or ``numpy.sum``.
+        This could be for example `numpy.mean` or `numpy.sum`.
         Notice that this will only be used in case the group specification doesn't specify a particular function
         in its "reduce_func" field, which will take preference.
     spin_reduce: Callable, optional

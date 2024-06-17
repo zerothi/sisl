@@ -1,9 +1,11 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
 from typing import Callable, List, Literal, Optional, Sequence, Tuple, Union
 
 import numpy as np
-import numpy.typing as npt
 from scipy.ndimage import affine_transform
 from xarray import DataArray
 
@@ -11,6 +13,7 @@ import sisl
 from sisl import _array as _a
 from sisl._core import Geometry, Grid
 from sisl._core._lattice import cell_invert
+from sisl.typing import npt
 
 from .cell import infer_cell_axes, is_1D_cartesian, is_cartesian_unordered
 
@@ -26,7 +29,7 @@ def get_grid_representation(
 
     Parameters
     ------------
-    grid: sisl.Grid
+    grid:
         the grid for which we want return
     represent: {"real", "imag", "mod", "phase", "deg_phase", "rad_phase"}
         the type of representation. "phase" is equivalent to "rad_phase"
@@ -36,8 +39,11 @@ def get_grid_representation(
     sisl.Grid
     """
 
+    # note we have removed the typing of np.float_ etc since numpy 2.0.0
+    # removed this. One should be explicit, and this would mean writing
+    # all possibilities, it is not worth the effort here.
     def _func(
-        values: npt.NDArray[Union[np.int_, np.float_, np.complex_]]
+        values: npt.NDArray,  # *any* data type, int, float, complex
     ) -> npt.NDArray:
         if represent == "real":
             new_values = values.real
@@ -66,7 +72,7 @@ def tile_grid(grid: Grid, nsc: Tuple[int, int, int] = (1, 1, 1)) -> Grid:
 
 def transform_grid_cell(
     grid: Grid,
-    cell: npt.NDArray[np.float_] = np.eye(3),
+    cell: npt.NDArray[np.float64] = np.eye(3),
     output_shape: Optional[Tuple[int, int, int]] = None,
     mode: str = "constant",
     order: int = 1,
@@ -497,7 +503,7 @@ def get_ax_vals(
     grid: Grid,
     ax: Literal[0, 1, 2, "a", "b", "c", "x", "y", "z"],
     nsc: Tuple[int, int, int],
-) -> npt.NDArray[np.float_]:
+) -> npt.NDArray[np.float64]:
     """Returns the values of a given axis on all grid points.
 
     These can be used for example as axes ticks on a plot.

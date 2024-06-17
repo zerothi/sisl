@@ -1,10 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
 import sisl._array as _a
 from sisl._internal import set_module
+from sisl.typing import GaugeType
 
 from .distribution import get_distribution
 from .electron import EigenstateElectron, EigenvalueElectron
@@ -100,7 +103,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
         self._def_dim = self.UP
         return self
 
-    def Hk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def Hk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the Hamiltonian for a given k-point
 
         Creation and return of the Hamiltonian for a given k-point (default to Gamma).
@@ -111,16 +122,16 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \mathbf H(k) = \mathbf H_{\nu\mu} e^{i k R}
+           \mathbf H(\mathbf k) = \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \mathbf H(k) = \mathbf H_{\nu\mu} e^{i k r}
+           \mathbf H(\mathbf k) = \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -130,11 +141,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -153,11 +164,19 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Returns
         -------
         matrix : numpy.ndarray or scipy.sparse.*_matrix
-            the Hamiltonian matrix at :math:`k`. The returned object depends on `format`.
+            the Hamiltonian matrix at :math:`\mathbf k`. The returned object depends on `format`.
         """
         pass
 
-    def dHk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dHk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the Hamiltonian derivative for a given k-point
 
         Creation and return of the Hamiltonian derivative for a given k-point (default to Gamma).
@@ -168,17 +187,17 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k \mathbf H_\alpha(k) = i R_\alpha \mathbf H_{\nu\mu} e^{i k R}
+           \nabla_{\mathbf k} \mathbf H_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` is one of the Cartesian directions.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \nabla_k \mathbf H_\alpha(k) = i r_\alpha \mathbf H_{\nu\mu} e^{i k r}
+           \nabla_{\mathbf k} \mathbf H_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -188,11 +207,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -208,11 +227,19 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Returns
         -------
         tuple
-            for each of the Cartesian directions a :math:`\partial \mathbf H(k)/\partial k_\alpha` is returned.
+            for each of the Cartesian directions a :math:`\partial \mathbf H(\mathbf k)/\partial \mathbf k_\alpha` is returned.
         """
         pass
 
-    def ddHk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def ddHk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the Hamiltonian double derivative for a given k-point
 
         Creation and return of the Hamiltonian double derivative for a given k-point (default to Gamma).
@@ -223,17 +250,17 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k^2 \mathbf H_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf H_{\nu\mu} e^{i k R}
+           \nabla_{\mathbf k^2} \mathbf H_{\alpha\beta}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \nabla_k^2 \mathbf H_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf H_{\nu\mu} e^{i k r}
+           \nabla_{\mathbf k^2} \mathbf H_{\alpha\beta}(\mathbf k) = -\mathbf r_\alpha\mathbf r_\beta \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -243,11 +270,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -302,7 +329,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             for i in range(self.spin.spinor):
                 self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E[i]
 
-    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):
         """Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`
 
         Parameters
@@ -318,12 +345,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             see `eigh` for details, this will be passed to the EigenstateElectron
             instance to be used in subsequent calls, may speed up post-processing.
         **kwargs : dict, optional
-            passed arguments to the `eigh` routine
+            passed arguments to the eigenvalue calculator routine
 
         See Also
         --------
-        eigh : eigenvalue routine
-        eigsh : eigenvalue routine
+        eigh : dense eigenvalue routine
+        eigsh : sparse eigenvalue routine
 
         Returns
         -------
@@ -342,7 +369,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             info["format"] = format
         return EigenvalueElectron(e, self, **info)
 
-    def eigenstate(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenstate(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):
         """Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates
 
         Parameters
@@ -358,12 +385,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             see `eigh` for details, this will be passed to the EigenstateElectron
             instance to be used in subsequent calls, may speed up post-processing.
         **kwargs : dict, optional
-            passed arguments to the `eigh`/`eighs` routine
+            passed arguments to the eigenvalue calculator routine
 
         See Also
         --------
-        eigh : eigenvalue routine
-        eigsh : eigenvalue routine
+        eigh : dense eigenvalue routine
+        eigsh : sparse eigenvalue routine
 
         Returns
         -------

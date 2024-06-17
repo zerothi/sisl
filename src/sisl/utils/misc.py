@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import ast
 import functools
 import importlib
@@ -8,11 +10,12 @@ import inspect
 import operator as op
 import re
 import sys
+from collections.abc import Callable, Iterable, Iterator
 from math import pi
 from numbers import Integral
-from typing import Union
+from typing import Any, Union
 
-__all__ = ["merge_instances", "str_spec", "direction", "angle"]
+__all__ = ["merge_instances", "str_spec", "direction", "listify", "angle"]
 __all__ += ["iter_shape", "math_eval", "allow_kwargs"]
 __all__ += ["import_attr", "lazy_import"]
 __all__ += ["PropertyDict", "NotNonePropertyDict"]
@@ -218,9 +221,73 @@ def str_spec(name):
     return "{".join(lname[:-1]), lname[-1]
 
 
+IterableAny = Iterator[Any]
+IterableInstantiation = Callable[..., IterableAny]
+
+
+class Listify:
+    """Convert arguments to an iterable-like (any iterable, default to `list`)
+
+    It provides also an easy mechanism for "piping" content to
+    a function call (for better readability).
+
+    Parameters
+    ----------
+    cls:
+        the default list-like object to cast it to
+
+    Examples
+    --------
+    >>> listify = Listify()
+    >>> 1 | listify
+    [1]
+    >>> Listify(tuple)(1)
+    (1,)
+
+    It can greatly improve readability with `map` constructs:
+    >>> map(lambda x, [1]) | listify
+    [1]
+
+    Notes
+    -----
+    If using this to convert to `tuple` instances ``Listify(tuple)``,
+    please do note the problems of using a tuple as indices for
+    `numpy.ndarray` objects.
+
+    This is partly inspired by `pip <https://pypi.org/project/pipe/>`_.
+    """
+
+    __slots__ = ("_cls",)
+
+    # Ensures that numpy function calls won't happen!
+    # Just a higher priority than *any* numpy arrays and subclasses.
+    __array_priority__ = 1000000
+
+    def __init__(self, cls: IterableInstantiation = list):
+        self._cls = cls
+
+    def __call__(
+        self, arg: Any, cls: Optional[IterableInstantiation] = None
+    ) -> IterableAny:
+        if cls is None:
+            cls = self._cls
+        if isinstance(arg, Iterable):
+            if isinstance(arg, cls):
+                return arg
+            return cls(arg)
+        return cls([arg])
+
+    def __ror__(self, arg: Any) -> IterableAny:
+        """Allow piping of function calls (on the right side)"""
+        return self(arg)
+
+
+listify = Listify()
+
+
 # Transform a string to a Cartesian direction
 def direction(d, abc=None, xyz=None):
-    """Index coordinate corresponding to the Cartesian coordinate system.
+    """Index coordinate transformation from int/str to an integer
 
     Parameters
     ----------
@@ -475,6 +542,10 @@ def lazy_import(name, package=None):
     util.LazyLoader(spec.loader).exec_module(module)
 
     return module
+
+
+# This class is very much like the addict type
+# However, a much reduced usage
 
 
 class PropertyDict(dict):

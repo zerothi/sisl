@@ -152,10 +152,12 @@ from sisl._core.oplist import oplist
 from sisl._core.quaternion import Quaternion
 from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
+from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
 from sisl.unit import units
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm
+from sisl.utils.misc import direction, listify
 
 __all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure", "linspace_bz"]
 
@@ -389,10 +391,18 @@ class BrillouinZone:
 
         return BrillouinZone(parent, np.concatenate(k), np.concatenate(w))
 
-    def volume(self, ret_dim: bool = False, periodic=None):
-        """Calculate the volume of the full Brillouin zone of the parent
+    @deprecate_argument(
+        "periodic",
+        "axes",
+        "argument 'periodic' has been deprecated in favor of 'axes', please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def volume(self, ret_dim: bool = False, axes: Optional[CellAxes] = None):
+        """Calculate the volume of the BrillouinZone, optionally only on some axes `axes`
 
-        This will return the volume depending on the dimensions of the system.
+        This will return the volume of the Brillouin zone,
+        depending on the dimensions of the system.
         Here the dimensions of the system is determined by how many dimensions
         have auxilliary supercells that can contribute to Brillouin zone integrals.
         Therefore the returned value will have differing units depending on
@@ -400,33 +410,37 @@ class BrillouinZone:
 
         Parameters
         ----------
-        ret_dim:
+        ret_dim :
            also return the dimensionality of the system
-        periodic : array_like of int, optional
+        axes :
            estimate the volume using only the directions indexed by this array.
-           The default value is `(self.parent.nsc > 1).nonzero()[0]`.
+           The default axes are only the periodic ones (``self.parent.pbc.nonzero()[0]``).
+           Hence the units might not necessarily be 1/Ang^3.
 
         Returns
         -------
         vol :
-           the volume of the Brillouin zone. Units are Ang^D with D being the dimensionality.
+           the volume of the Brillouin zone. Units are 1/Ang^D with D being the dimensionality.
            For 0D it will return 0.
         dimensionality : int
            the dimensionality of the volume
         """
-        # default periodic array
-        if periodic is None:
-            periodic = (self.parent.nsc > 1).nonzero()[0]
+        lattice = self._parent_lattice()
+        if axes is None:
+            axes = lattice.pbc.nonzero()[0]
+        else:
+            axes = map(direction, listify(axes)) | listify
 
-        dim = len(periodic)
+        cell = lattice.rcell
+
+        dim = len(axes)
         vol = 0.0
         if dim == 3:
-            vol = self.parent.volume
-        elif dim == 2:
-            vol = self.parent.area(*periodic)
-        elif dim == 1:
-            vol = self.parent.length[periodic[0]]
-
+            vol = abs(dot3(cell[axes[0]], cross3(cell[axes[1]], cell[axes[2]])))
+        if dim == 2:
+            vol = fnorm(cross3(cell[axes[0]], cell[axes[1]]))
+        if dim == 1:
+            vol = fnorm(cell[axes])
         if ret_dim:
             return vol, dim
         return vol
@@ -764,8 +778,8 @@ class MonkhorstPack(BrillouinZone):
         if trs:
             # Figure out which direction to TRS
             nmax = 0
-            for i in [0, 1, 2]:
-                if displacement[i] in [0.0, 0.5] and Dn[i] > nmax:
+            for i in (0, 1, 2):
+                if displacement[i] in (0.0, 0.5) and Dn[i] > nmax:
                     nmax = Dn[i]
                     i_trs = i
             if nmax == 1:
@@ -1233,6 +1247,7 @@ class BandStructure(BrillouinZone):
         "names",
         "argument 'name' has been deprecated in favor of 'names', please update your code.",
         "0.15",
+        "0.16",
     )
     def __init__(self, parent, *args, **kwargs):
         # points, divisions, names=None):

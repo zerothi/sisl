@@ -21,7 +21,7 @@ atom_Al:
   # *mass: 20.
   pseudo:
      # Optional flags are:
-     # log-radii: 1. # [length]
+     # log-radius: 1. # [length]
      # core-correction: 1. # [length]
      # libxc: int
      define:
@@ -61,7 +61,7 @@ atom_Al:
         ri: {initial: -0.8, bounds: [-0.95, -0.5], delta: 0.08}
       zeta1: {initial: 2.4, bounds: [1., 5.5], delta: 0.5}
       zeta2: {initial: 1.6, bounds: [1., 5.5], delta: 0.5}
-  3p:      
+  3p:
     pseudo:
       cutoff: {initial: 1.1, bounds: [0.8, 2.3], delta: 0.1}
       charge: 1.

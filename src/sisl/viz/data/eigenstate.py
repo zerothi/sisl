@@ -1,3 +1,9 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# TODO when forward refs with local variables
+# from __future__ import annotations
+
 from pathlib import Path
 from typing import Literal, Tuple
 

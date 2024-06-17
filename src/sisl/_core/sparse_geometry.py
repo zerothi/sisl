@@ -32,8 +32,9 @@ from sisl import _array as _a
 from sisl._array import array_arange
 from sisl._core import Atom, Geometry, Orbital
 from sisl._internal import set_module
-from sisl.messages import SislError, SislWarning, progressbar, warn
-from sisl.typing import AtomsArgument, Axies, Coord, SeqOrScalarFloat
+from sisl.messages import SislError, SislWarning, deprecate_argument, progressbar, warn
+from sisl.typing import AtomsIndex, CellAxes, Coord, SeqOrScalarFloat
+from sisl.utils.misc import direction
 from sisl.utils.ranges import list2str
 
 from .sparse import SparseCSR, _ncol_to_indptr, issparse
@@ -159,9 +160,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Number of non-zero elements"""
         return self._csr.nnz
 
-    def translate2uc(
-        self, atoms: Optional[AtomsArgument] = None, axes: Optional[Axies] = None
-    ):
+    def translate2uc(self, atoms: AtomsIndex = None, axes: Optional[CellAxes] = None):
         """Translates all primary atoms to the unit cell.
 
         With this, the coordinates of the geometry are translated to the unit cell
@@ -173,7 +172,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             only translate the specified atoms. If not specified, all
             atoms will be translated.
         axes :
-            only translate certain lattice directions, `None` species
+            only translate certain lattice directions, `None` specifies
             only the periodic directions
 
         Returns
@@ -183,7 +182,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """
         # Sanitize the axes argument
         if axes is None:
-            axes = (self.lattice.nsc > 1).nonzero()[0]
+            axes = self.lattice.pbc.nonzero()[0]
+
         elif isinstance(axes, bool):
             if axes:
                 axes = (0, 1, 2)
@@ -191,6 +191,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
                 raise ValueError(
                     "translate2uc with a bool argument can only be True to signal all axes"
                 )
+        else:
+            axes = list(map(direction, axes))
 
         # Sanitize also the atoms argument
         if atoms is None:
@@ -333,7 +335,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new = array_arange(new * no, n=n)
         self._csr.translate_columns(old, new)
 
-    def edges(self, atoms: AtomsArgument, exclude: Optional[AtomsArgument] = None):
+    def edges(self, atoms: AtomsIndex, exclude: AtomsIndex = None):
         """Retrieve edges (connections) for all `atoms`
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
@@ -380,7 +382,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """Check whether a sparse index is non-zero"""
         return key in self._csr
 
-    def set_nsc(self, size, *args, **kwargs):
+    def set_nsc(self, base_size, *args, **kwargs):
         """Reset the number of allowed supercells in the sparse geometry
 
         If one reduces the number of supercells, *any* sparse element
@@ -426,7 +428,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         # Check that we will translate all indices in the old
         # sparsity pattern to the new one
-        if len(old) not in [self.n_s, lattice.n_s]:
+        if len(old) not in (self.n_s, lattice.n_s):
             raise SislError("Not all supercells are accounted for")
 
         old = _a.arrayi(old)
@@ -448,10 +450,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             new = new[keep]
 
             # Create the translation tables
-            n = tile([size], len(old))
+            n = tile([base_size], len(old))
 
-            old = array_arange(old * size, n=n)
-            new = array_arange(new * size, n=n)
+            old = array_arange(old * base_size, n=n)
+            new = array_arange(new * base_size, n=n)
 
             # Move data to new positions
             self._csr.translate_columns(old, new, clean=False)
@@ -460,13 +462,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         else:
             max_n = 0
         # Make sure we delete all column values where we have put fake values
-        delete = _a.arangei(lattice.n_s * size, max(max_n, self.shape[1]))
+        delete = _a.arangei(lattice.n_s * base_size, max(max_n, self.shape[1]))
         if len(delete) > 0:
             self._csr.delete_columns(delete, keep_shape=True)
 
         # Ensure the shape is correct
         shape = list(self._csr.shape)
-        shape[1] = size * lattice.n_s
+        shape[1] = base_size * lattice.n_s
         self._csr._shape = tuple(shape)
         self._csr._clean_columns()
 
@@ -1153,7 +1155,7 @@ class SparseAtom(_SparseGeometry):
                 # We guess it is the supercell index
                 off = self.geometry.sc_index(key[-1]) * self.na
                 key = [el for el in key[:-1]]
-                key[1] = self.geometry.sc2uc(key[1]) + off
+                key[1] = self.geometry.asc2uc(key[1]) + off
         if dd >= 0:
             key = tuple(key) + (dd,)
             self._def_dim = -1
@@ -1172,7 +1174,7 @@ class SparseAtom(_SparseGeometry):
                 # We guess it is the supercell index
                 off = self.geometry.sc_index(key[-1]) * self.na
                 key = [el for el in key[:-1]]
-                key[1] = self.geometry.sc2uc(key[1]) + off
+                key[1] = self.geometry.asc2uc(key[1]) + off
         key = tuple(
             self.geometry._sanitize_atoms(k) if i < 2 else k for i, k in enumerate(key)
         )
@@ -1186,7 +1188,7 @@ class SparseAtom(_SparseGeometry):
     def _size(self):
         return self.geometry.na
 
-    def nonzero(self, atoms: Optional[AtomsArgument] = None, only_cols: bool = False):
+    def nonzero(self, atoms: AtomsIndex = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
@@ -1203,7 +1205,7 @@ class SparseAtom(_SparseGeometry):
         atoms = self.geometry._sanitize_atoms(atoms)
         return self._csr.nonzero(rows=atoms, only_cols=only_cols)
 
-    def iter_nnz(self, atoms: Optional[AtomsArgument] = None):
+    def iter_nnz(self, atoms: AtomsIndex = None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1405,8 +1407,8 @@ class SparseOrbital(_SparseGeometry):
 
     def edges(
         self,
-        atoms: Optional[AtomsArgument] = None,
-        exclude: Optional[AtomsArgument] = None,
+        atoms: AtomsIndex = None,
+        exclude: AtomsIndex = None,
         orbitals=None,
     ):
         """Retrieve edges (connections) for all `atoms`
@@ -1443,7 +1445,7 @@ class SparseOrbital(_SparseGeometry):
         orbitals = self.geometry._sanitize_orbs(orbitals)
         return self._csr.edges(orbitals, exclude)
 
-    def nonzero(self, atoms: Optional[AtomsArgument] = None, only_cols: bool = False):
+    def nonzero(self, atoms: AtomsIndex = None, only_cols: bool = False):
         """Indices row and column indices where non-zero elements exists
 
         Parameters
@@ -1463,7 +1465,7 @@ class SparseOrbital(_SparseGeometry):
         rows = self.geometry.a2o(atoms, all=True)
         return self._csr.nonzero(rows=rows, only_cols=only_cols)
 
-    def iter_nnz(self, atoms: Optional[AtomsArgument] = None, orbitals=None):
+    def iter_nnz(self, atoms: AtomsIndex = None, orbitals=None):
         """Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1505,7 +1507,7 @@ class SparseOrbital(_SparseGeometry):
         """
         super().set_nsc(self.no, *args, **kwargs)
 
-    def remove_orbital(self, atoms: AtomsArgument, orbitals):
+    def remove_orbital(self, atoms: AtomsIndex, orbitals):
         """Remove a subset of orbitals on `atoms` according to `orbitals`
 
         For more detailed examples, please see the equivalent (but opposite) method
@@ -1526,13 +1528,13 @@ class SparseOrbital(_SparseGeometry):
         atoms = self.geometry._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
-        specie = self.geometry.atoms.specie[atoms]
-        uniq_specie, indices = unique(specie, return_inverse=True)
-        if len(uniq_specie) > 1:
+        species = self.geometry.atoms.species[atoms]
+        uniq_species, indices = unique(species, return_inverse=True)
+        if len(uniq_species) > 1:
             # In case there are multiple different species but one wishes to
             # retain the same orbital index, then we loop on the unique species
             new = self
-            for i in range(uniq_specie.size):
+            for i in range(uniq_species.size):
                 idx = (indices == i).nonzero()[0]
                 # now determine whether it is the whole atom
                 # or only part of the geometry
@@ -1552,7 +1554,7 @@ class SparseOrbital(_SparseGeometry):
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
-    def sub_orbital(self, atoms: AtomsArgument, orbitals):
+    def sub_orbital(self, atoms: AtomsIndex, orbitals):
         r"""Retain only a subset of the orbitals on `atoms` according to `orbitals`
 
         This allows one to retain only a given subset of the sparse matrix elements.
@@ -1569,7 +1571,7 @@ class SparseOrbital(_SparseGeometry):
         -----
         Future implementations may allow one to re-arange orbitals using this method.
 
-        When using this method the internal species list will be populated by another specie
+        When using this method the internal species list will be populated by another species
         that is named after the orbitals removed. This is to distinguish different atoms.
 
         Examples
@@ -1614,13 +1616,13 @@ class SparseOrbital(_SparseGeometry):
         atoms = self.geometry._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
-        specie = self.geometry.atoms.specie[atoms]
-        uniq_specie, indices = unique(specie, return_inverse=True)
-        if len(uniq_specie) > 1:
+        species = self.geometry.atoms.species[atoms]
+        uniq_species, indices = unique(species, return_inverse=True)
+        if len(uniq_species) > 1:
             # In case there are multiple different species but one wishes to
             # retain the same orbital index, then we loop on the unique species
             new = self
-            for i in range(uniq_specie.size):
+            for i in range(uniq_species.size):
                 idx = (indices == i).nonzero()[0]
                 # now determine whether it is the whole atom
                 # or only part of the geometry
@@ -1636,7 +1638,7 @@ class SparseOrbital(_SparseGeometry):
             orbitals = [old_atom.index(orb) for orb in orbitals]
         orbitals = np.sort(orbitals)
 
-        # At this point we are sure that uniq_specie is *only* one specie!
+        # At this point we are sure that uniq_species is *only* one species!
         geom = self.geometry.sub_orbital(atoms, orbitals)
 
         # Now create the new sparse orbital class
@@ -1783,7 +1785,7 @@ class SparseOrbital(_SparseGeometry):
                 coln = unique(o2a(col[ptr[io] : ptr[io] + ncol[io]]))
                 R[ia, coln] = Rij(ia, coln)
 
-        elif what in ["orbital", "orb"]:
+        elif what in ("orbital", "orb"):
             # We create an *exact* copy of the Rij
             R = SparseOrbital(geom, 3, dtype, nnzpr=1)
             Rij = geom.oRij
@@ -1943,18 +1945,34 @@ class SparseOrbital(_SparseGeometry):
 
         return full
 
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol.",
+        "0.15",
+        "0.16",
+    )
     def prepend(
-        self, other, axis: int, eps: float = 0.005, scale: SeqOrScalarFloat = 1
+        self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
     ):
         r"""See `append` for details
 
         This is currently equivalent to:
 
-        >>> other.append(self, axis, eps, scale)
+        >>> other.append(self, axis, atol, scale)
         """
-        return other.append(self, axis, eps, scale)
+        return other.append(self, axis, atol, scale)
 
-    def append(self, other, axis: int, eps: float = 0.005, scale: SeqOrScalarFloat = 1):
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol.",
+        "0.15",
+        "0.16",
+    )
+    def append(
+        self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
+    ):
         r"""Append `other` along `axis` to construct a new connected sparse matrix
 
         This method tries to append two sparse geometry objects together by
@@ -1965,7 +1983,7 @@ class SparseOrbital(_SparseGeometry):
            This *may* cause problems if the coupling atoms are not exactly equi-positioned.
            If the coupling coordinates and the coordinates in `other` differ by more than
            0.01 Ang, a warning will be issued.
-           If this difference is above `eps` the couplings will be removed.
+           If this difference is above `atol` the couplings will be removed.
 
         When appending sparse matrices made up of atoms, this method assumes that
         the orbitals on the overlapping atoms have the same orbitals, as well as the
@@ -2003,11 +2021,11 @@ class SparseOrbital(_SparseGeometry):
             must be an object of the same type as `self`
         axis :
             axis to append the two sparse geometries along
-        eps :
+        atol :
             tolerance that all coordinates *must* be within to allow an append.
             It is important that this value is smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
-            equivalent atoms. An internal stricter eps is used as a baseline, see above.
+            equivalent atoms. An internal stricter tolerance is used as a baseline, see above.
         scale : float or array_like, optional
             the scale used for the overlapping region. For scalar values it corresponds
             to passing: ``(scale, scale)``.
@@ -2119,10 +2137,10 @@ class SparseOrbital(_SparseGeometry):
         # both these sparsity patterns to the correct elements.
 
         # 1. find overlapping atoms along axis
-        idx_s_first, idx_o_first = self.geometry.overlap(other.geometry, eps=eps)
+        idx_s_first, idx_o_first = self.geometry.overlap(other.geometry, atol=atol)
         idx_s_last, idx_o_last = self.geometry.overlap(
             other.geometry,
-            eps=eps,
+            atol=atol,
             offset=-self.geometry.lattice.cell[axis, :],
             offset_other=-other.geometry.lattice.cell[axis, :],
         )
@@ -2168,7 +2186,7 @@ class SparseOrbital(_SparseGeometry):
             edges_sc = geom.o2a(
                 spgeom.edges(orbitals=_a.arangei(geom.no), exclude=exclude), True
             )
-            edges_uc = geom.sc2uc(edges_sc, True)
+            edges_uc = geom.asc2uc(edges_sc, True)
             edges_valid = np.isin(edges_uc, atoms, assume_unique=True)
             if not np.all(edges_valid):
                 edges_uc = edges_sc % geom.na
@@ -2292,12 +2310,19 @@ class SparseOrbital(_SparseGeometry):
         full._csr.translate_columns(col_from, col_to)
         return full
 
+    @deprecate_argument(
+        "eps",
+        "atol",
+        "argument eps has been deprecated in favor of atol",
+        "0.15",
+        "0.16",
+    )
     def replace(
         self,
-        atoms: AtomsArgument,
+        atoms: AtomsIndex,
         other,
-        other_atoms: Optional[AtomsArgument] = None,
-        eps: float = 0.005,
+        other_atoms: AtomsIndex = None,
+        atol: float = 0.005,
         scale: SeqOrScalarFloat = 1.0,
     ):
         r"""Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them
@@ -2353,7 +2378,7 @@ class SparseOrbital(_SparseGeometry):
 
         Algorithms that utilizes atomic indices should be careful.
 
-        When the tolerance `eps` is high, the elements may be more prone to differences in the
+        When the tolerance `atol` is high, the elements may be more prone to differences in the
         symmetry elements. A good idea would be to check the difference between the couplings.
         The below variable ``diff`` will contain the difference ``(self -> other) - (other -> self)``
 
@@ -2369,7 +2394,7 @@ class SparseOrbital(_SparseGeometry):
         other_atoms :
             to select a subset of atoms in `other` that are taken out.
             Defaults to all atoms in `other`.
-        eps :
+        atol :
             coordinate tolerance for allowing replacement.
             It is important that this value is at least smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
@@ -2486,13 +2511,13 @@ class SparseOrbital(_SparseGeometry):
         # We need to get a 1-1 correspondance between the two connecting geometries
         # For instance `self` may be ordered differently than `other`.
         # So we need to figure out how the atoms are arranged in *both* regions.
-        # This is where `eps` comes into play since we have to ensure that the
+        # This is where `atol` comes into play since we have to ensure that the
         # connecting regions are within some given tolerance.
 
         def create_geometry(geom, atoms):
             """Create the supercell geometry with coordinates as given"""
             xyz = geom.axyz(atoms)
-            uc_atoms = geom.sc2uc(atoms)
+            uc_atoms = geom.asc2uc(atoms)
             return Geometry(xyz, atoms=geom.atoms[uc_atoms])
 
         # We know that the *IN* connections are in the primary unit-cell
@@ -2502,7 +2527,7 @@ class SparseOrbital(_SparseGeometry):
         ogeom_in = ogeom.sub(o_info.atom_connect.uc.IN)
         soverlap_in, ooverlap_in = sgeom_in.overlap(
             ogeom_in,
-            eps=eps,
+            atol=atol,
             offset=-sgeom_in.xyz.min(0),
             offset_other=-ogeom_in.xyz.min(0),
         )
@@ -2513,7 +2538,7 @@ class SparseOrbital(_SparseGeometry):
         ogeom_out = create_geometry(ogeom, o_info.atom_connect.sc.OUT)
         soverlap_out, ooverlap_out = sgeom_out.overlap(
             ogeom_out,
-            eps=eps,
+            atol=atol,
             offset=-sgeom_out.xyz.min(0),
             offset_other=-ogeom_out.xyz.min(0),
         )
@@ -2736,11 +2761,10 @@ depending on your use case. Note indices in the following are supercell indices.
         # 3: couplings from *inside* to *inside* (no scale)
         # 4: couplings from *inside* to *outside* (scaled)
         convert = [[], []]
-        conc = np.concatenate
 
         def assert_unique(old, new):
-            old = conc(old)
-            new = conc(new)
+            old = concatenate(old)
+            new = concatenate(new)
             assert len(unique(old)) == len(old)
             assert len(unique(new)) == len(new)
             return old, new
@@ -2793,7 +2817,7 @@ depending on your use case. Note indices in the following are supercell indices.
         old = o_info.atom_connect.sc.OUT
         new = _a.emptyi(len(old))
         for i, atom in enumerate(old):
-            idx = geom.close(ogeom.axyz(atom) + offset, R=eps)
+            idx = geom.close(ogeom.axyz(atom) + offset, R=atol)
             assert (
                 len(idx) == 1
             ), f"More than 1 atom {idx} for atom {atom} = {ogeom.axyz(atom)}, {geom.axyz(idx)}"
@@ -2866,7 +2890,7 @@ depending on your use case. Note indices in the following are supercell indices.
             ptr[ia + 1] = ptr[ia] + len(acol)
 
         # Now we can create the sparse atomic
-        col = np.concatenate(col, axis=0).astype(int32, copy=False)
+        col = concatenate(col, axis=0).astype(int32, copy=False)
         spAtom = SparseAtom(geom, dim=dim, dtype=dtype, nnzpr=0)
         spAtom._csr.ptr[:] = ptr[:]
         spAtom._csr.ncol[:] = diff(ptr)

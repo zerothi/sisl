@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Import sile objects
+from __future__ import annotations
+
 from sisl import Geometry
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
@@ -16,9 +18,7 @@ class moldenSile(Sile):
     """Molden file object"""
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice):
         """Writes the supercell to the contained file"""
         # Check that we can write to the file

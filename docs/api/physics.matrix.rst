@@ -20,6 +20,15 @@ Spin
 Matrices
 --------
 
+.. we need this to ensure
+   we can link back to the sources of the methods
+
+.. autosummary::
+   :toctree: generated/
+   :hidden:
+
+   densitymatrix._densitymatrix
+
 .. autosummary::
    :toctree: generated/
 
@@ -50,7 +59,7 @@ out semi-infinite regions.
 Bloch's theorem
 ---------------
 
-Bloch's theorem is a very powerful proceduce that enables one to utilize
+Bloch's theorem is a very powerful procedure that enables one to utilize
 the periodicity of a given direction to describe the complete system.
 
 .. autosummary::

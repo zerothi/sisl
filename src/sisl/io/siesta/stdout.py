@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os
 from functools import lru_cache
 from typing import Optional
@@ -8,7 +10,7 @@ from typing import Optional
 import numpy as np
 
 import sisl._array as _a
-from sisl import Atom, Geometry, Lattice
+from sisl import Atom, Atoms, Geometry, Lattice
 from sisl._common import Opt
 from sisl._help import voigt_matrix
 from sisl._internal import set_module
@@ -110,6 +112,18 @@ class stdoutSileSiesta(SileSiesta):
 
     _info_attributes_ = [
         _A(
+            "na",
+            r"^initatomlists: Number of atoms",
+            lambda attr, match: int(match.string.split()[-3]),
+            not_found="warn",
+        ),
+        _A(
+            "no",
+            r"^initatomlists: Number of atoms",
+            lambda attr, match: int(match.string.split()[-2]),
+            not_found="warn",
+        ),
+        _A(
             "completed",
             r".*Job completed",
             lambda attr, match: lambda: True,
@@ -131,6 +145,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @deprecation(
         "stdoutSileSiesta.completed is deprecated in favor of stdoutSileSiesta.info.completed",
+        "0.15",
         "0.16",
     )
     def completed(self):
@@ -139,7 +154,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @lru_cache(1)
     @sile_fh_open(True)
-    def read_basis(self):
+    def read_basis(self) -> Atoms:
         """Reads the basis as found in the output file
 
         This parses 3 things:
@@ -189,7 +204,7 @@ class stdoutSileSiesta(SileSiesta):
         for atom, orbs in atom_orbs.items():
             atoms[atom]["orbitals"] = orbs
 
-        return [Atom(**atoms[tag]) for tag in order]
+        return Atoms([Atom(**atoms[tag]) for tag in order])
 
     def _r_lattice_outcell(self):
         """Wrapper for reading the unit-cell from the outcoor block"""
@@ -298,7 +313,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder()
     @sile_fh_open()
-    def read_geometry(self, skip_input: bool = True):
+    def read_geometry(self, skip_input: bool = True) -> Geometry:
         """Reads the geometry from the Siesta output file
 
         Parameters
@@ -416,7 +431,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder(postprocess=_a.arrayd)
     @sile_fh_open()
-    def read_stress(self, key: str = "static", skip_final: bool = True):
+    def read_stress(self, key: str = "static", skip_final: bool = True) -> np.ndarray:
         """Reads the stresses from the Siesta output file
 
         Parameters
@@ -469,7 +484,7 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder(postprocess=_a.arrayd)
     @sile_fh_open()
-    def read_moment(self, orbitals=False, quantity="S"):
+    def read_moment(self, orbitals=False, quantity="S") -> np.ndarray:
         """Reads the moments from the Siesta output file
 
         These will only be present in case of spin-orbit coupling.
@@ -542,7 +557,7 @@ class stdoutSileSiesta(SileSiesta):
         return _a.arrayd(moments)
 
     @sile_fh_open(True)
-    def read_energy(self):
+    def read_energy(self) -> PropertyDict:
         """Reads the final energy distribution
 
         Currently the energies translated are:
@@ -1578,7 +1593,7 @@ class stdoutSileSiesta(SileSiesta):
 
 
 outSileSiesta = deprecation(
-    "outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15"
+    "outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15", "0.16"
 )(stdoutSileSiesta)
 
 add_sile("siesta.out", stdoutSileSiesta, case=False, gzip=True)

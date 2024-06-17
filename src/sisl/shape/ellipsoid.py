@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from math import pi
 
 import numpy as np
@@ -9,7 +11,7 @@ import sisl._array as _a
 from sisl._indices import indices_in_sphere
 from sisl._internal import set_module
 from sisl._math_small import product3
-from sisl.messages import deprecation, warn
+from sisl.messages import deprecate_argument, deprecation, warn
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
 from .base import PureShape, ShapeToDispatch
@@ -74,7 +76,7 @@ class Ellipsoid(PureShape):
         return self.__class__(self._v, self.center)
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Return the volume of the shape"""
         return 4.0 / 3.0 * pi * product3(self.radius)
 
@@ -132,15 +134,16 @@ class Ellipsoid(PureShape):
         return self.__class__([v0, v1, v2], self.center)
 
     @deprecation(
-        "toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.",
+        "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
+        "0.16",
     )
     def toEllipsoid(self):
         """Return an ellipsoid that encompass this shape (a copy)"""
         return self.copy()
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.16"
     )
     def toSphere(self):
         """Return a sphere with a radius equal to the largest radial vector"""
@@ -148,7 +151,7 @@ class Ellipsoid(PureShape):
         return Sphere(r, self.center)
 
     @deprecation(
-        "toCuboid is deprecated, please use shape.to['cuboid'](...) instead.", "0.15"
+        "toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15", "0.16"
     )
     def toCuboid(self):
         """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""
@@ -156,14 +159,21 @@ class Ellipsoid(PureShape):
 
         return Cuboid(self._v * 2, self.center)
 
-    def within_index(self, other, tol=1.0e-8):
+    @deprecate_argument(
+        "tol",
+        "rtol",
+        "argument tol has been deprecated in favor of rtol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def within_index(self, other, rtol: float = 1.0e-8):
         r"""Return indices of the points that are within the shape
 
         Parameters
         ----------
         other : array_like
            the object that is checked for containment
-        tol : float, optional
+        rtol : float, optional
            absolute tolerance for boundaries
         """
         other = _a.asarrayd(other)
@@ -175,7 +185,7 @@ class Ellipsoid(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        return indices_in_sphere(tmp, 1.0 + tol)
+        return indices_in_sphere(tmp, 1.0 + rtol)
 
 
 to_dispatch = Ellipsoid.to
@@ -242,7 +252,7 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
         return self.__class__(self.radius, self.center)
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Return the volume of the sphere"""
         return 4.0 / 3.0 * pi * self.radius**3
 
@@ -272,15 +282,16 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
         return self.__class__(self.radius + radius, self.center)
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.16"
     )
     def toSphere(self):
         """Return a copy of it-self"""
         return self.copy()
 
     @deprecation(
-        "toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.",
+        "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
+        "0.16",
     )
     def toEllipsoid(self):
         """Convert this sphere into an ellipsoid"""

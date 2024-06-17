@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 from itertools import zip_longest
 
@@ -20,6 +22,28 @@ def test_default(sisl_tmp):
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
     assert grid.geometry is None
+
+
+@pytest.mark.parametrize(
+    "pbc",
+    [
+        (True, True, True),
+        (True, True, False),
+        (True, False, False),
+        (False, False, False),
+    ],
+)
+def test_pbc(sisl_tmp, pbc):
+    f = sisl_tmp("GRID_default.xsf", _dir)
+    geom = Geometry(
+        np.random.rand(10, 3),
+        np.random.randint(1, 70, 10),
+        lattice=[10, 10, 10, 45, 60, 90],
+    )
+    geom.lattice.pbc = pbc
+    geom.write(f)
+    geom2 = geom.read(f)
+    assert all(geom.pbc == geom2.pbc)
 
 
 def test_default_size(sisl_tmp):

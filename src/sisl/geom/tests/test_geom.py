@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import itertools
 import math as m
 from functools import partial
@@ -43,11 +45,14 @@ def test_basic():
     a = rocksalt(5.64, [Atom("Na", R=3), Atom("Cl", R=4)], orthogonal=True)
 
 
-def test_flat():
-    a = graphene()
+@pytest.mark.parametrize(
+    "func, orthogonal",
+    itertools.product([graphene, goldene], [True, False]),
+)
+def test_flat(func, orthogonal):
+    a = func(orthogonal=orthogonal)
     assert is_right_handed(a)
-    graphene(atoms="C")
-    a = graphene(orthogonal=True)
+    a = func(atoms="C", orthogonal=orthogonal)
     assert is_right_handed(a)
 
 
@@ -76,7 +81,7 @@ def test_triangulene():
     g = triangulene(3)
     assert g.na == 22
     g = triangulene(3, atoms=["B", "N"])
-    assert g.atoms.nspecie == 2
+    assert g.atoms.nspecies == 2
     g = triangulene(3, bond=1.6)
 
 

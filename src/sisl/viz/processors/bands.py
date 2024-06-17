@@ -1,6 +1,9 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# TODO when forward refs work with annotations
+# from __future__ import annotations
+
 import itertools
 from typing import List, Literal, Optional, Sequence, Tuple, Union
 
@@ -74,20 +77,25 @@ def style_bands(
     bands_data: xr.Dataset,
     bands_style: dict = {"color": "black", "width": 1},
     spindown_style: dict = {"color": "blue", "width": 1},
+    group_legend: bool = True,
 ) -> xr.Dataset:
     """Returns the bands dataset, with the style information added to it.
 
     Parameters
     ------------
-    bands_data: xr.Dataset
+    bands_data:
         The dataset containing bands energy information.
-    bands_style: dict
+    bands_style:
         Dictionary containing the style information for the bands.
-    spindown_style: dict
+    spindown_style:
         Dictionary containing the style information for the spindown bands.
         Any style that is not present in this dictionary will be taken from
         the "bands_style" dictionary.
+    group_legend:
+        Whether the bands will be grouped in the legend. This will determine
+        how the names of each band are set
     """
+
     # If the user provided a styler function, apply it.
     if bands_style.get("styler") is not None:
         if callable(bands_style["styler"]):
@@ -95,7 +103,7 @@ def style_bands(
 
     # Include default styles in bands_style, only if they are not already
     # present in the bands dataset (e.g. because the styler included them)
-    default_styles = {"color": "black", "width": 1, "opacity": 1}
+    default_styles = {"color": "black", "width": 1, "opacity": 1, "dash": "solid"}
     for key in default_styles:
         if key not in bands_data.data_vars and key not in bands_style:
             bands_style[key] = default_styles[key]
@@ -109,7 +117,7 @@ def style_bands(
     if "spin" in bands_data.dims:
         spindown_style = {**bands_style, **spindown_style}
         style_arrays = {}
-        for key in ["color", "width", "opacity"]:
+        for key in ["color", "width", "opacity", "dash"]:
             if isinstance(bands_style[key], xr.DataArray):
                 if not isinstance(spindown_style[key], xr.DataArray):
                     down_style = bands_style[key].copy(deep=True)
@@ -123,10 +131,36 @@ def style_bands(
                 style_arrays[key] = xr.DataArray(
                     [bands_style[key], spindown_style[key]], dims=["spin"]
                 )
+
+        # Determine the names of the bands
+        if group_legend:
+            style_arrays["line_name"] = xr.DataArray(
+                ["Spin up Bands", "Spin down Bands"], dims=["spin"]
+            )
+        else:
+            names = []
+            for s in bands_data.spin:
+                spin_string = "UP" if s == 0 else "DOWN"
+                for iband in bands_data.band.values:
+                    names.append(f"{spin_string}_{iband}")
+
+            style_arrays["line_name"] = xr.DataArray(
+                np.array(names).reshape(2, -1),
+                coords=[
+                    ("spin", bands_data.spin.values),
+                    ("band", bands_data.band.values),
+                ],
+            )
     else:
         style_arrays = {}
-        for key in ["color", "width", "opacity"]:
+        for key in ["color", "width", "opacity", "dash"]:
             style_arrays[key] = xr.DataArray(bands_style[key])
+
+        # Determine the names of the bands
+        if group_legend:
+            style_arrays["line_name"] = xr.DataArray("Bands")
+        else:
+            style_arrays["line_name"] = bands_data.band
 
     # Merge the style arrays with the bands dataset and return the styled dataset
     return bands_data.assign(style_arrays)
@@ -248,7 +282,7 @@ def get_gap_coords(
         bands_data.E.sel(spin=spin) if "spin" in bands_data.coords else bands_data.E
     )
     Es = [
-        spin_bands.dropna("k", "all").sel(k=k, band=band, method="nearest")
+        spin_bands.dropna("k", how="all").sel(k=k, band=band, method="nearest")
         for k, band in zip(ks, (VB, CB))
     ]
     # Get the real values of ks that have been obtained

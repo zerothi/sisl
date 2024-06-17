@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 import re
 
@@ -95,6 +97,9 @@ def test_si_pdos_kgrid_hsx_versions(sisl_files, sisl_tmp):
 
     HS0 = HSX0.read_hamiltonian()
     HS1 = HSX1.read_hamiltonian()
+    Ef = HSX1.read_fermi_level()
+    # HSX0 does not shift, whereas HSX1 does shift
+    HS1.shift(Ef)
     assert HS0._csr.spsame(HS1._csr)
     assert np.allclose(HS0._csr._D, HS1._csr._D)
 

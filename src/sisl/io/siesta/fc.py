@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from typing import Optional
 
 import numpy as np
@@ -22,7 +24,7 @@ class fcSileSiesta(SileSiesta):
     @sile_fh_open()
     def read_force(
         self, displacement: Optional[float] = None, na: Optional[int] = None
-    ):
+    ) -> np.ndarray:
         """Reads all displacement forces by multiplying with the displacement value
 
         Since the force constant file does not contain the non-displaced configuration
@@ -115,7 +117,7 @@ class fcSileSiesta(SileSiesta):
         return fc
 
     read_force_constant = deprecation(
-        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+        "read_force_constant is deprecated in favor of read_hessian", "0.15", "0.16"
     )(read_hessian)
 
 

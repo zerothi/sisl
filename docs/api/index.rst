@@ -8,8 +8,8 @@ API documentation
 :Date: |today|
 
 
-.. module:: sisl
-       
+.. currentmodule:: sisl
+
 This reference manual describes in detail how the modules, classes
 and functions can be used and how their API's are defined.
 
@@ -22,17 +22,18 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :maxdepth: 2
 
    basic
-   default_geom
+   geom/building
+   geom/neighbors
    physics
    mixing
    viz/index
    unit_constant
    utilities
-   core
 
 .. toctree::
    :maxdepth: 1
 
+   core
    io/index
 
 .. toctree::

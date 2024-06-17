@@ -1,3 +1,9 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# TODO when forward refs work with annotations
+# from __future__ import annotations
+
 from collections import defaultdict
 from functools import singledispatchmethod
 from typing import Any, Callable, Optional, Sequence, Tuple, TypedDict, Union
@@ -5,9 +11,6 @@ from typing import Any, Callable, Optional, Sequence, Tuple, TypedDict, Union
 import numpy as np
 import xarray as xr
 from xarray import DataArray, Dataset
-
-from sisl import Geometry
-from sisl.messages import SislError
 
 
 class XarrayData:
@@ -56,13 +59,13 @@ def group_reduce(
     data : DataArray or Dataset
         The xarray object to reduce.
     groups : Sequence[Group]
-        A sequence containing the specifications for each group of orbitals. See ``Group``.
+        A sequence containing the specifications for each group of orbitals. See `Group`.
     reduce_func : Callable or tuple of Callable, optional
         The function that will compute the reduction along the reduced dimension once the selection is done.
-        This could be for example ``numpy.mean`` or ``numpy.sum``.
+        This could be for example `numpy.mean` or `numpy.sum`.
         Notice that this will only be used in case the group specification doesn't specify a particular function
         in its "reduce_func" field, which will take preference.
-        If ``reduce_dim`` is a tuple, this can also be a tuple to indicate different reducing methods for each
+        If `reduce_dim` is a tuple, this can also be a tuple to indicate different reducing methods for each
         dimension.
     reduce_dim: str or tuple of str, optional
         Name of the dimension that should be reduced. If a tuple is provided, multiple dimensions will be reduced.

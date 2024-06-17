@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os
 import os.path as osp
 import sys
@@ -22,6 +24,7 @@ from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
 from sisl.io.vasp import chgSileVASP
+from sisl.io.wannier90 import winSileWannier90
 from sisl.io.xsf import xsfSile
 
 pytestmark = pytest.mark.io
@@ -299,14 +302,14 @@ class TestObject:
         try:
             with sile(f, mode="r") as s:
                 l = s.read_lattice()
-            assert l.equal(L, tol=1e-3)  # pdb files have 8.3 for atomic coordinates
+            assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
             with sile(f, mode="r") as s:
                 l = Lattice.read(s)
-            assert l.equal(L, tol=1e-3)
+            assert l.equal(L, atol=1e-3)
         except UnicodeDecodeError as e:
             pass
 
@@ -333,7 +336,7 @@ class TestObject:
         try:
             with sile(f, mode="r") as s:
                 l = s.read_lattice()
-            assert l.equal(L, tol=1e-3)  # pdb files have 8.3 for atomic coordinates
+            assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
 
@@ -348,7 +351,7 @@ class TestObject:
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
 
-        if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
+        if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans, winSileWannier90)):
             pytest.skip(
                 "does not have a proper writing of the atomic species (no direct comparison available)"
             )
@@ -367,7 +370,7 @@ class TestObject:
                 if isinstance(g, list):
                     g = g[0]
             assert g.equal(
-                G, R=False, tol=1e-3
+                G, R=False, atol=1e-3
             )  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
@@ -377,7 +380,7 @@ class TestObject:
                 g = Geometry.read(s)
                 if isinstance(g, list):
                     g = g[0]
-            assert g.equal(G, R=False, tol=1e-3)
+            assert g.equal(G, R=False, atol=1e-3)
         except UnicodeDecodeError as e:
             pass
 

@@ -1,3 +1,9 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# TODO when forward refs work with annotations
+# from __future__ import annotations
+
 from collections import ChainMap, defaultdict
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
@@ -10,7 +16,7 @@ from xarray import DataArray, Dataset
 import sisl
 from sisl import Geometry, Spin
 from sisl.messages import SislError
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex
 from sisl.viz.types import OrbitalStyleQuery
 
 from .._single_dispatch import singledispatchmethod
@@ -574,29 +580,29 @@ def reduce_orbital_data(
     orbital_data : DataArray or Dataset
         The xarray object to reduce.
     groups : Sequence[OrbitalGroup]
-        A sequence containing the specifications for each group of orbitals. See ``OrbitalGroup``.
+        A sequence containing the specifications for each group of orbitals. See `OrbitalGroup`.
     geometry : Geometry, optional
         The geometry object that will be used to parse orbital specifications into actual orbital indices. Knowing the
         geometry therefore allows you to specify more complex selections.
-        If not provided, it will be searched in the ``geometry`` attribute of the ``orbital_data`` object and
+        If not provided, it will be searched in the ``geometry`` attribute of the `orbital_data` object and
         afterwards in the ``parent`` attribute, under ``parent.geometry``.
     reduce_func : Callable, optional
         The function that will compute the reduction along the orbitals dimension once the selection is done.
-        This could be for example ``numpy.mean`` or ``numpy.sum``.
+        This could be for example `numpy.mean` or `numpy.sum`.
         Notice that this will only be used in case the group specification doesn't specify a particular function
         in its "reduce_func" field, which will take preference.
     spin_reduce: Callable, optional
         The function that will compute the reduction along the spin dimension once the selection is done.
     orb_dim: str, optional
-        Name of the dimension that contains the orbital indices in ``orbital_data``.
+        Name of the dimension that contains the orbital indices in `orbital_data`.
     spin_dim: str, optional
-        Name of the dimension that contains the spin components in ``orbital_data``.
+        Name of the dimension that contains the spin components in `orbital_data`.
     groups_dim: str, optional
         Name of the new dimension that will be created for the groups.
     sanitize_group: Union[Callable, OrbitalQueriesManager], optional
         A function that will be used to sanitize the group specification before it is used.
         If a ``OrbitalQueriesManager`` is passed, its `sanitize_query` method will be used.
-        If not provided and a geometry is found in the attributes of the ``orbital_data`` object,
+        If not provided and a geometry is found in the attributes of the `orbital_data` object,
         an `OrbitalQueriesManager` will be automatically created from it.
     group_vars: Sequence[str], optional
         If set, this argument specifies extra variables that depend on the group and the user would like to
@@ -768,7 +774,7 @@ def split_orbitals(
 
 def atom_data_from_orbital_data(
     orbital_data,
-    atoms: AtomsArgument = None,
+    atoms: AtomsIndex = None,
     request_kwargs: Dict = {},
     geometry: Optional[Geometry] = None,
     reduce_func: Callable = np.mean,

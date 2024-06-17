@@ -9,6 +9,23 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- added `vectorsSileSiesta` to read vibra eigenmode output
+- added `dihedral` to `Geometry`, #773
+- ability to retain sub-classes through `<class>.new` calls
+- added `Listify` to ensure arguments behaves as *iterables*
+- setter for `Lattice.pbc` to specify it through an array
+- `Lattice.volumef` to calculate a subset volume based on axes
+- added `write_grid` to Siesta binary grid files
+- added the `goldene` 2D lattice, a `hexagonal` Gold 2D structure
+- added the `hexagonal` 2D lattice, close-packed FCC(111) surface
+- improved `atom` projections of states, #750
+- improved typing system
+- `units` to `read_*` for some `Sile`s, #726
+- enabled reading the Hamiltonian from the Wannier90 _tb.dat file, #727
+- "Hz", "MHz", "GHz", "THz", and "invcm" as valid energy units, #725
+- added `read_gtensor` and `read_hyperfine_coupling` to `txtSileORCA`, #722
+- enabled `AtomsArgument` and `OrbitalsArgument` to accept `bool` for *all* or *none*
+- enabled `winSileWannier90.read_hamiltonian` to read the ``_tb.dat`` files
 - `atoms` argument to `DensityMatrix.spin_align` to align a subset of atoms
   (only diagonal elements between the atoms orbitals)
 - added an efficient neighbor finder, #393
@@ -37,6 +54,18 @@ we hit release version 1.0.0.
 - Parsing of total Mulliken charges in `stdoutSileSiesta`, #691
 
 ### Fixed
+- reading XV/STRUCT files from fdf siles could cause problems, #778
+- `Geometry.[ao][us]c2[su]c` methods now retains the input shapes (unless `unique=True`)
+- lots of `Lattice` methods did not consistently copy over BC
+- `BrillouinZone.volume` fixed to actually return BZ volume
+  use `Lattice.volume` for getting the lattice volume.
+- xsf files now only respect `lattice.pbc` for determining PBC, #764
+- fixed `CHGCAR` spin-polarized density reads, #754
+- dispatch methods now searches the mro for best matches, #721
+- all `eps` arguments has changed to `atol`
+- methods with `axis` arguments now accepts the str equivalent 0==a
+- documentation links to external resources
+- fixed `chgSileVASP.read_grid` for spinful calculations
 - `txtSileOrca.info.no` used a wrong regex, added a test
 - raises error when requesting isosurface for complex valued grids, #709
 - some attributes associated with `Sile.info.*` will now warn instead of raising information
@@ -63,9 +92,25 @@ we hit release version 1.0.0.
   be done for assigning matrix elements (it fills with 0's).
 
 ### Removed
+- `xvSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
+- `structSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
+- `Atom.radii` is removed, `Atom.radius` is the correct invocation
+- `sisl.plot` is removed (`sisl.viz` is replacing it!)
+- `cell` argument for `Geometry.translate/move` (it never worked)
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- `hsxSileSiesta.read_hamiltonian` now implicitly shifts Fermi-level to 0 (for newer HSX versions)
+- deprecated `periodic` to `axes` argument in `BrillouinZone.volume`
+- changed `Eigenmode.displacement` shape, please read the documentation
+- bumped minimal Python version to 3.9, #640
+- documentation build system on RTD is updated, #745
+- `gauge` arguments now accept 'cell' and 'orbital' in replacements for 'R' and 'r', respectively
+- `siesta.*.read_basis` now defaults to read an `Atoms` object with all atoms
+- `atoms.specie` changed to `atoms.species`, generally species is the singular form
+- `in_place` arguments changed to `inplace`
+- renamed `stdoutSileVASP` to `outcarSileVASP`, #719
+- deprecated scale_atoms in favor of scale_basis in `Geometry.scale`
 - changed default number of eigenvalues calculated in sparse `eigsh`, from 10 to 1
 - `stdoutSileSiesta.read_*` now defaults to read the *next* entry, and not the last
 - `stdoutSileSiesta.read_*` changed MD output functionality, see #586 for details

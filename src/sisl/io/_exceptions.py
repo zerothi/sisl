@@ -1,9 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import warnings
 from functools import wraps
-from typing import Callable, List, Tuple, Union
+from typing import Callable, List, Optional, Tuple, Union
 
 from sisl._internal import set_module
 from sisl.messages import SislError, SislException, SislInfo, SislWarning, info, warn
@@ -48,7 +50,7 @@ class SileInfo(SislInfo):
     """Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning."""
 
 
-InputsType = Union[List[Tuple[str, str]], List[str]]
+InputsType = Optional[Union[List[Tuple[str, str]], List[str], str]]
 
 
 class MissingInputSileException(SislException):
@@ -70,12 +72,17 @@ class MissingInputSileException(SislException):
         except AttributeError:
             name = f"{method.__name__}"
 
+        if isinstance(inputs, str):
+            inputs = [inputs]
+
         def parse(v):
             if isinstance(v, str):
                 return f"  * {v}"
             return f"  * {' '.join(v)}"
 
-        str_except = "\n".join(map(parse, inputs))
+        str_except = ""
+        if inputs is not None:
+            str_except = "\n".join(map(parse, inputs))
 
         super().__init__(
             f"{msg}\nData from method '{name}' failed due to missing output values.\n\n"

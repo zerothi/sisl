@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
 from sisl import Atom, Geometry, Grid, Lattice, SislError
@@ -27,9 +29,7 @@ class cubeSile(Sile):
     """
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(
         self,
         lattice: Lattice,
@@ -227,19 +227,30 @@ class cubeSile(Sile):
         header["unit"] = unit_convert(header.get("unit", "Bohr"), "Ang")
         return header
 
+    def read_basis(self) -> Atoms:
+        """Reads the `Atoms` object from the CUBE file"""
+        return self.read_geometry().atoms
+
     @sile_fh_open()
-    def read_lattice(self, na: bool = False):
+    def read_lattice(self, ret_na: bool = False) -> Lattice:
         """Returns `Lattice` object from the CUBE file
 
         Parameters
         ----------
-        na : bool, optional
+        ret_na : bool, optional
            whether to also return the number of atoms in the geometry
+
+        Returns
+        -------
+        lattice: Lattice
+            the lattice object
+        na : int
+            number of atoms (only if `ret_na`)
         """
         unit2Ang = self._r_header_dict()["unit"]
 
         origin = self.readline().split()  # origin
-        lna = int(origin[0])
+        na = int(origin[0])
         origin = np.fromiter(map(float, origin[1:]), np.float64)
 
         cell = np.empty([3, 3], np.float64)
@@ -252,15 +263,15 @@ class cubeSile(Sile):
 
         cell = cell * unit2Ang
         origin = origin * unit2Ang
-        if na:
-            return lna, Lattice(cell, origin=origin)
+        if ret_na:
+            return Lattice(cell, origin=origin), na
         return Lattice(cell, origin=origin)
 
     @sile_fh_open()
-    def read_geometry(self):
+    def read_geometry(self) -> Geometry:
         """Returns `Geometry` object from the CUBE file"""
         unit2Ang = self._r_header_dict()["unit"]
-        na, lattice = self.read_lattice(na=True)
+        lattice, na = self.read_lattice(ret_na=True)
 
         if na == 0:
             return None
@@ -278,7 +289,7 @@ class cubeSile(Sile):
         return Geometry(xyz * unit2Ang, atom, lattice=lattice)
 
     @sile_fh_open()
-    def read_grid(self, imag=None):
+    def read_grid(self, imag=None) -> Grid:
         """Returns `Grid` object from the CUBE file
 
         Parameters

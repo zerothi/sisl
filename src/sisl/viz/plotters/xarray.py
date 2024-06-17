@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import itertools
 import typing
 
@@ -83,6 +88,8 @@ def _process_xarray_data(data, x=None, y=None, z=False, style={}):
     for key, value in style.items():
         if value in data:
             styles[key] = data[value]
+        elif key == "name":
+            styles[key] = DataArray(value)
         else:
             styles[key] = None
 
@@ -128,7 +135,13 @@ def draw_xarray_xy(
         x=x,
         y=y,
         z=z,
-        style={"color": color, "width": width, "opacity": opacity, "dash": dash},
+        style={
+            "color": color,
+            "width": width,
+            "opacity": opacity,
+            "dash": dash,
+            "name": name,
+        },
     )
 
     if plot_data is None:
@@ -180,7 +193,7 @@ def _draw_xarray_lines(
     # Get the lines styles
     lines_style = {}
     extra_style_dims = False
-    for key in ("color", "width", "opacity", "dash"):
+    for key in ("color", "width", "opacity", "dash", "name"):
         lines_style[key] = style.get(key)
 
         if lines_style[key] is not None:
@@ -257,27 +270,13 @@ def _draw_xarray_lines(
         lines_style["width"],
         lines_style["opacity"],
         lines_style["dash"],
+        lines_style["name"],
     )
 
     fixed_coords_values = {k: arr.values for k, arr in fixed_coords.items()}
 
-    single_line = len(data.iterate_dim) == 1
-    if name in data.iterate_dim.coords:
-        name_prefix = ""
-    else:
-        name_prefix = f"{name}_" if name and not single_line else name
-
     # Now just iterate over each line and plot it.
     for values, *styles in iterator:
-        names = values.iterate_dim.values[()]
-        if name in values.iterate_dim.coords:
-            line_name = f"{name_prefix}{values.iterate_dim.coords[name].values[()]}"
-        elif single_line and not isinstance(names[0], str):
-            line_name = name_prefix
-        elif len(names) == 1:
-            line_name = f"{name_prefix}{names[0]}"
-        else:
-            line_name = f"{name_prefix}{names}"
 
         parsed_styles = []
         for style in styles:
@@ -287,7 +286,7 @@ def _draw_xarray_lines(
                     style = style[()]
             parsed_styles.append(style)
 
-        line_color, line_width, line_opacity, line_dash = parsed_styles
+        line_color, line_width, line_opacity, line_dash, line_name = parsed_styles
         line_style = {
             "color": line_color,
             "width": line_width,
@@ -302,7 +301,7 @@ def _draw_xarray_lines(
         }
 
         if not extra_style_dims:
-            drawing_function(**coords, line=line, name=line_name)
+            drawing_function(**coords, line=line, name=str(line_name))
         else:
             for k, v in line_style.items():
                 if v is None or v.ndim == 0:
@@ -320,7 +319,7 @@ def _draw_xarray_lines(
                     "opacity": l_opacity,
                     "dash": l_dash,
                 }
-                drawing_function(**coords, line=line_style, name=line_name)
+                drawing_function(**coords, line=line_style, name=str(line_name))
 
     return to_plot
 

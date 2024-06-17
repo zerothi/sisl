@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os
 from contextlib import contextmanager
 from pathlib import Path
@@ -98,6 +100,18 @@ try:
 except Exception:
     _nprocs = 1
 
+
+register_environ_variable(
+    "SISL_LOG_FILE", "", "Log file to write into. If empty, do not log.", process=Path
+)
+
+register_environ_variable(
+    "SISL_LOG_LEVEL",
+    "INFO",
+    "Define the log level used when writing to the file. Should be importable from logging module.",
+    lambda x: x.upper(),
+)
+
 register_environ_variable(
     "SISL_NUM_PROCS",
     min(1, _nprocs),
@@ -132,7 +146,7 @@ register_environ_variable(
     "SISL_SHOW_PROGRESS",
     "false",
     "Whether routines which can enable progress bars should show them by default or not.",
-    process=lambda val: val and val.lower().strip() in ["1", "t", "true"],
+    process=lambda val: val and val.lower().strip() in ("1", "t", "true"),
 )
 
 register_environ_variable(

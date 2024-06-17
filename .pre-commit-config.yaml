@@ -34,3 +34,13 @@ repos:
       stages: [commit]
       language: system
       entry: jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace
+#License header
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.5
+  hooks:
+    - id: insert-license
+      files: \.py$
+      args:
+        - --license-filepath
+        - .LICENSE_header
+        - --no-extra-eol

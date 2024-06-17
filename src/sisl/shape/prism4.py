@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
 import sisl._array as _a
@@ -8,7 +10,7 @@ from sisl._indices import indices_gt_le
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.linalg import inv
-from sisl.messages import deprecation
+from sisl.messages import deprecate_argument, deprecation
 from sisl.utils.mathematics import expand, fnorm
 
 from .base import PureShape, ShapeToDispatch
@@ -78,7 +80,7 @@ class Cuboid(PureShape):
         )
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Return volume of Cuboid"""
         return abs(dot3(self._v[0, :], cross3(self._v[1, :], self._v[2, :])))
 
@@ -135,8 +137,9 @@ class Cuboid(PureShape):
         return self.__class__([v0, v1, v2], self.center)
 
     @deprecation(
-        "toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.",
+        "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
+        "0.16",
     )
     def toEllipsoid(self):
         """Return an ellipsoid that encompass this cuboid"""
@@ -146,7 +149,7 @@ class Cuboid(PureShape):
         return Ellipsoid(self._v / 2 * 3**0.5, self.center.copy())
 
     @deprecation(
-        "toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15"
+        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.16"
     )
     def toSphere(self):
         """Return a sphere that encompass this cuboid"""
@@ -155,32 +158,39 @@ class Cuboid(PureShape):
         return Sphere(self.edge_length.max() / 2 * 3**0.5, self.center.copy())
 
     @deprecation(
-        "toCuboid is deprecated, please use shape.to['cuboid'](...) instead.", "0.15"
+        "toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15", "0.16"
     )
     def toCuboid(self):
         """Return a copy of itself"""
         return self.copy()
 
-    def within_index(self, other, tol=1.0e-8):
+    @deprecate_argument(
+        "tol",
+        "rtol",
+        "argument tol has been deprecated in favor of rtol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def within_index(self, other, rtol: float = 1.0e-8):
         """Return indices of the `other` object which are contained in the shape
 
         Parameters
         ----------
         other : array_like
            the object that is checked for containment
-        tol : float, optional
-           absolute tolerance for boundaries
+        rtol : float, optional
+           relative tolerance for boundaries.
         """
         other = _a.asarrayd(other).reshape(-1, 3)
 
         # Offset origin
-        tmp = np.dot(other - self.origin[None, :], self._iv)
+        tmp = np.dot(other - self.origin, self._iv)
 
         # First reject those that are definitely not inside
         # The proximity is 1e-12 of the inverse cell.
         # So, sadly, the bigger the cell the bigger the tolerance
         # However due to numerics this is probably best anyway
-        return indices_gt_le(tmp, -tol, 1.0 + tol)
+        return indices_gt_le(tmp, -rtol, 1.0 + rtol)
 
 
 to_dispatch = Cuboid.to

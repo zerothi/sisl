@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Sile object for reading/writing GULP in/output
 """
@@ -11,6 +13,7 @@ from sisl._internal import set_module
 from sisl.messages import deprecate_argument, deprecation, info, warn
 from sisl.physics import DynamicalMatrix
 
+from .._help import parse_order
 from ..sile import add_sile, sile_fh_open
 from .fc import fcSileGULP
 from .sile import SileGULP
@@ -50,7 +53,7 @@ class gotSileGULP(SileGULP):
         self.set_key("lattice", key)
 
     set_supercell_key = deprecation(
-        "set_supercell_key is deprecated in favor of set_lattice_key", "0.15"
+        "set_supercell_key is deprecated in favor of set_lattice_key", "0.15", "0.16"
     )(set_lattice_key)
 
     @sile_fh_open()
@@ -70,7 +73,7 @@ class gotSileGULP(SileGULP):
         return np.array(nsc[:3], np.int32)
 
     @sile_fh_open()
-    def read_lattice(self, key=None, **kwargs):
+    def read_lattice(self, key=None, **kwargs) -> Lattice:
         """Reads a `Lattice` and creates the GULP cell"""
         self.set_lattice_key(key)
 
@@ -97,7 +100,7 @@ class gotSileGULP(SileGULP):
         self.set_key("geometry", key)
 
     @sile_fh_open()
-    def read_geometry(self, **kwargs):
+    def read_geometry(self, **kwargs) -> Geometry:
         """Reads a geometry and creates the GULP dynamical geometry"""
         # create default supercell
         lattice = Lattice([1, 1, 1])
@@ -182,7 +185,7 @@ class gotSileGULP(SileGULP):
 
     set_dyn_key = set_dynamical_matrix_key
 
-    def read_dynamical_matrix(self, **kwargs):
+    def read_dynamical_matrix(self, **kwargs) -> DynamicalMatrix:
         """Returns a GULP dynamical matrix model for the output of GULP
 
         Parameters
@@ -200,21 +203,21 @@ class gotSileGULP(SileGULP):
         """
         geom = self.read_geometry(**kwargs)
 
-        order = kwargs.pop("order", ["got", "FC"])
+        order = parse_order(kwargs.pop("order", None), ["got", "FC"])
         for f in order:
             v = getattr(self, "_r_dynamical_matrix_{}".format(f.lower()))(
                 geom, **kwargs
             )
-            if v is not None:
-                # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
-                scale = (
-                    constant.hbar / units("Ang", "m") / units("eV amu", "J kg") ** 0.5
-                )
-                v.data *= scale**2
-                v = DynamicalMatrix.fromsp(geom, v)
-                if kwargs.get("hermitian", True):
-                    v = (v + v.transpose()) * 0.5
-                return v
+            if v is None:
+                continue
+
+            # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
+            scale = constant.hbar / units("Ang", "m") / units("eV amu", "J kg") ** 0.5
+            v.data *= scale**2
+            v = DynamicalMatrix.fromsp(geom, v)
+            if kwargs.get("hermitian", True):
+                v = (v + v.transpose()) * 0.5
+            return v
 
         return None
 

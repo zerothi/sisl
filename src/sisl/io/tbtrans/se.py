@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 try:
     from StringIO import StringIO
 except Exception:
@@ -29,7 +31,7 @@ Ry2eV = unit_convert("Ry", "eV")
 class tbtsencSileTBtrans(_devncSileTBtrans):
     r"""TBtrans self-energy file object with downfolded self-energies to the device region
 
-    The :math:`\Sigma` object contains all self-energies on the specified k- and energy grid projected
+    The :math:`\boldsymbol\Sigma` object contains all self-energies on the specified k- and energy grid projected
     into the device region.
 
     This is mainly an output file object from TBtrans and can be used as a post-processing utility for
@@ -110,7 +112,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         The broadening matrix is calculated as:
 
         .. math::
-            \Gamma(E) = i [\Sigma(E) - \Sigma^\dagger(E)]
+            \boldsymbol \Gamma(E) = i [\boldsymbol\Sigma(E) - \boldsymbol\Sigma^\dagger(E)]
 
         Parameters
         ----------

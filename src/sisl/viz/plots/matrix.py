@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -17,6 +22,7 @@ from ..processors.matrix import (
     matrix_as_array,
     sanitize_matrix_arrows,
 )
+from ..types import Colorscale
 
 
 def atomic_matrix_plot(
@@ -31,7 +37,7 @@ def atomic_matrix_plot(
     orbital_lines: Union[bool, Dict] = False,
     sc_lines: Union[bool, Dict] = False,
     color_pixels: bool = True,
-    colorscale: Optional[str] = "RdBu",
+    colorscale: Optional[Colorscale] = "RdBu",
     crange: Optional[Tuple[float, float]] = None,
     cmid: Optional[float] = None,
     text: Optional[str] = None,

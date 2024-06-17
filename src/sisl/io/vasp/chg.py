@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from numbers import Integral
 
 import numpy as np
@@ -24,25 +26,42 @@ class chgSileVASP(carSileVASP):
     """
 
     @sile_fh_open(True)
-    def read_grid(self, index=0, dtype=np.float64, **kwargs):
-        """Reads the charge density from the file and returns with a grid (plus geometry)
+    def read_grid(self, index=0, dtype=np.float64, **kwargs) -> Grid:
+        r"""Reads the charge density from the file and returns with a grid (plus geometry)
 
         Parameters
         ----------
         index : int or array_like, optional
-           the index of the grid to read. For a spin-polarized VASP calculation 0 and 1 are
-           allowed, UP/DOWN. For non-collinear 0, 1, 2 or 3 is allowed which equals,
+           the index of the grid to read.
+           For spin-polarized calculations, 0 and 1 refer to the charge (spin-up plus spin-down) and
+           magnetitization (spin-up minus spin-down), respectively.
+           For non-collinear calculations, 0 refers to the charge while 1, 2 and 3 to
+           the magnetization in the :math:`\sigma_1`, :math:`\sigma_2`, and :math:`\sigma_3` directions, respectively.
+           The directions are related via the VASP input option ``SAXIS``.
            TOTAL, x, y, z charge density with the Cartesian directions equal to the charge
-           magnetization. For array-like they refer to the fractional
-           contributions for each corresponding index.
+           magnetization.
+           For array-like they refer to the fractional contributions for each corresponding index.
         dtype : numpy.dtype, optional
            grid stored dtype
         spin : optional
            same as `index` argument. `spin` argument has precedence.
 
+        Examples
+        --------
+        Read the spin polarization from a spin-polarized CHGCAR file
+
+        >>> fh = sisl.get_sile('CHGCAR')
+        >>> charge = fh.read_grid()
+        >>> spin = fh.read_grid(1)
+        >>> up_density = fh.read_grid([0.5, 0.5])
+        >>> assert np.allclose((charge + spin).grid / 2, up_density.grid)
+        >>> down_density = fh.read_grid([0.5, -0.5])
+        >>> assert np.allclose((charge - spin).grid / 2, down_density.grid)
+
         Returns
         -------
-        Grid : charge density grid with associated geometry
+        Grid
+            charge density grid with associated geometry
         """
         index = kwargs.get("spin", index)
         geom = self.read_geometry()
@@ -66,19 +85,33 @@ class chgSileVASP(carSileVASP):
         vals = []
         vext = vals.extend
 
+        is_chgcar = True
         i = 0
         while i < n * max_index:
-            vext(rl().split())
+            line = rl().split()
+            # CHG: 10 columns, CHGCAR: 5 columns
+            if is_chgcar and len(line) > 5:
+                # we have a data line with more than 5 columns, must be a CHG file
+                is_chgcar = False
+            vext(line)
             i = len(vals)
 
             if i % n == 0 and i < n * max_index:
-                # Each time a new spin-index is present, we need to read the coordinates
-                j = 0
-                while j < geom.na:
-                    j += len(rl().split())
-
+                if is_chgcar:
+                    # Read over augmentation occupancies
+                    line = rl()
+                    while "augmentation" in line:
+                        occ = int(line.split()[-1])
+                        j = 0
+                        while j < occ:
+                            j += len(rl().split())
+                        line = rl()
+                    # read over an additional block with geom.na entries???
+                    j = len(line.split())
+                    while j < geom.na:
+                        j += len(rl().split())
                 # one line of nx, ny, nz
-                rl()
+                assert np.allclose(list(map(int, rl().split())), [nx, ny, nz])
 
         # Cut size before proceeding (otherwise it *may* fail)
         vals = np.array(vals).astype(dtype, copy=False)

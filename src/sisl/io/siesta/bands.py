@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import sisl._array as _a
 from sisl._internal import set_module
 from sisl.utils import strmap
@@ -17,7 +19,7 @@ class bandsSileSiesta(SileSiesta):
     """Bandstructure information"""
 
     @sile_fh_open(True)
-    def read_fermi_level(self):
+    def read_fermi_level(self) -> float:
         """Returns the Fermi level in the bands file"""
         # Luckily the data is in eV
         return float(self.readline())

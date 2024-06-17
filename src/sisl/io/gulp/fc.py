@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Sile object for reading the force constant matrix written by GULP
 """
@@ -79,7 +81,7 @@ class fcSileGULP(SileGULP):
         return fc
 
     read_force_constant = deprecation(
-        "read_force_constant is deprecated in favor of read_hessian", "0.16"
+        "read_force_constant is deprecated in favor of read_hessian", "0.15", "0.16"
     )(read_hessian)
 
 

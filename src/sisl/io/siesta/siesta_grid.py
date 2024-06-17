@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 from numbers import Integral
 
@@ -29,7 +31,7 @@ class gridncSileSiesta(SileCDFSiesta):
     The grid sile will automatically convert the units from Siesta units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
     """
 
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Returns a Lattice object from a Siesta.grid.nc file"""
         cell = np.array(self._value("cell"), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
@@ -38,9 +40,7 @@ class gridncSileSiesta(SileCDFSiesta):
 
         return Lattice(cell)
 
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def write_lattice(self, lattice):
         """Write a supercell to the grid.nc file"""
         sile_raise_write(self)
@@ -54,7 +54,7 @@ class gridncSileSiesta(SileCDFSiesta):
         v.unit = "Bohr"
         v[:, :] = lattice.cell[:, :] / Bohr2Ang
 
-    def read_grid(self, index=0, name="gridfunc", *args, **kwargs):
+    def read_grid(self, index=0, name="gridfunc", *args, **kwargs) -> Grid:
         """Reads a grid in the current Siesta.grid.nc file
 
         Enables the reading and processing of the grids created by Siesta
@@ -124,9 +124,9 @@ class gridncSileSiesta(SileCDFSiesta):
             v = self._variable(name)
 
         # Create the grid, Siesta uses periodic, always
+        lattice.set_boundary_condition(Grid.PERIODIC)
         grid = Grid(
             [nz, ny, nx],
-            bc=Grid.PERIODIC,
             lattice=lattice,
             dtype=v.dtype,
             geometry=kwargs.get("geometry", None),

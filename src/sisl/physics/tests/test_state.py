@@ -1,17 +1,19 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 import pytest
 
-from sisl import Coefficient, State, StateC, geom
+from sisl import Atom, Coefficient, State, StateC, geom
 
 pytestmark = [pytest.mark.physics, pytest.mark.state]
 
 
 def ar(*args):
     l = np.prod(args)
-    return np.arange(l, dtype=np.float64).reshape(args)
+    return np.arange(l, dtype=np.float64).reshape(*args)
 
 
 def ortho_matrix(n, m=None):
@@ -123,23 +125,23 @@ def test_state_norm():
 
 def test_state_change_gauge():
     g = geom.graphene(1.42)
-    state = State(ar(2, 2).astype(np.complex128), g, gauge="r", k=(0.1, 0.2, 0.4))
+    state = State(ar(2, 2).astype(np.complex128), g, gauge="orbital", k=(0.1, 0.2, 0.4))
     assert len(state) == 2
     old = state.state.copy()
-    state.change_gauge("R")
+    state.change_gauge("cell")
     assert not np.allclose(old, state.state)
-    state.change_gauge("r")
+    state.change_gauge("orbital")
     assert np.allclose(old, state.state)
 
 
 def test_state_change_gauge_nc():
     g = geom.graphene(1.42)
-    state = State(ar(2, 4).astype(np.complex128), g, gauge="r", k=(0.1, 0.2, 0.4))
+    state = State(ar(2, 4).astype(np.complex128), g, gauge="orbital", k=(0.1, 0.2, 0.4))
     assert len(state) == 2
     old = state.state.copy()
-    state.change_gauge("R")
+    state.change_gauge("cell")
     assert not np.allclose(old, state.state)
-    state.change_gauge("r")
+    state.change_gauge("orbital")
     assert np.allclose(old, state.state)
 
 
@@ -196,7 +198,7 @@ def test_state_inner():
     state = ar(10, 10)
     state = State(state)
     inner = state.inner(diag=False)
-    assert np.allclose(inner, state.inner(state, diag=False))
+    assert np.allclose(inner, state.inner(state, projection="matrix"))
     inner_diag = state.inner()
     assert np.allclose(np.diag(inner), inner_diag)
 
@@ -206,7 +208,9 @@ def test_state_inner_matrix():
     M = ar(10)
     state = State(state)
     inner = state.inner(matrix=M, diag=False)
-    assert np.allclose(inner, state.inner(state, matrix=np.diag(M), diag=False))
+    assert np.allclose(
+        inner, state.inner(state, matrix=np.diag(M), projection="matrix")
+    )
     inner_diag = state.inner(matrix=M)
     assert np.allclose(np.diag(inner), inner_diag)
     inner_diag = state.inner(matrix=np.diag(M))
@@ -217,8 +221,40 @@ def test_state_inner_differing_size():
     state1 = State(ar(8, 10))
     state2 = State(ar(4, 10))
 
-    inner = state1.inner(state2, diag=False)
+    inner = state1.inner(state2, projection="matrix")
     assert inner.shape == (8, 4)
+
+
+def test_state_inner_projections():
+    g = geom.graphene(atoms=Atom(6, R=(1, 2))) * (2, 2, 1)
+    n = g.no + 1
+    state = State(ar(n, g.no), parent=g)
+
+    for projs, shape in (
+        (("diag", "diagonal", "sum", True), (n,)),
+        (("matrix", False), (n, n)),
+        (("basis", "orbitals", "orbital"), (n, g.no)),
+        (("atoms", "atom"), (n, g.na)),
+    ):
+        for proj in projs:
+            data = state.inner(projection=proj)
+            assert data.shape == shape
+
+
+def test_state_norm_projections():
+    g = geom.graphene(atoms=Atom(6, R=(1, 2))) * (2, 2, 1)
+    n = g.no + 1
+    state = State(ar(n, g.no), parent=g)
+    assert state.shape[0] != state.shape[1]
+
+    for projs, shape in (
+        (("sum", True), (n,)),
+        (("basis", "orbitals", "orbital"), (n, g.no)),
+        (("atoms", "atom"), (n, g.na)),
+    ):
+        for proj in projs:
+            data = state.norm2(projection=proj)
+            assert data.shape == shape
 
 
 def test_state_phase_max():
@@ -257,9 +293,9 @@ def test_state_align_phase():
 
 
 def test_state_ipr():
-    state = State(ortho_matrix(15))
+    state = State(ortho_matrix(10))
     ipr = state.ipr()
-    assert ipr.shape == (15,)
+    assert ipr.shape == (10,)
 
 
 def test_state_align_norm():
@@ -280,7 +316,7 @@ def test_state_align_norm():
 
 
 def test_state_align_norm2():
-    state = ortho_matrix(15)
+    state = ortho_matrix(10)
     state1 = State(state)
     idx = np.arange(len(state))
     np.random.shuffle(idx)

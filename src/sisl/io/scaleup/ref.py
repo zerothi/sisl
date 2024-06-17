@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Import sile objects
+from __future__ import annotations
+
 import numpy as np
 
 # Import the geometry object
@@ -22,7 +24,7 @@ class refSileScaleUp(SileScaleUp):
     """REF file object for ScaleUp"""
 
     @sile_fh_open()
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Reads a supercell from the Sile"""
         # 1st line is number of supercells
         nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
@@ -34,14 +36,14 @@ class refSileScaleUp(SileScaleUp):
         return Lattice(cell * Bohr2Ang, nsc=nsc)
 
     @sile_fh_open()
-    def read_geometry(self, primary=False, **kwargs):
+    def read_geometry(self, primary: bool = False, **kwargs) -> Geometry:
         """Reads a geometry from the Sile"""
         # 1st line is number of supercells
         nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
         na, ns = map(int, self.readline().split()[:2])
         # Convert species to atom objects
         try:
-            species = get_sile(str(self.file).replace(".REF", ".orbocc")).read_atom()
+            species = get_sile(str(self.file).replace(".REF", ".orbocc")).read_basis()
         except Exception:
             species = [Atom(s) for s in self.readline().split()[:ns]]
 
@@ -89,7 +91,7 @@ class refSileScaleUp(SileScaleUp):
         return Geometry(xyz * Bohr2Ang, atoms, lattice=lattice)
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt="18.8e"):
+    def write_geometry(self, geometry: Geometry, fmt: str = "18.8e"):
         """Writes the geometry to the contained file"""
         # Check that we can write to the file
         sile_raise_write(self)
@@ -123,7 +125,7 @@ class refSileScaleUp(SileScaleUp):
                 args[1] = isc[1]
                 args[2] = isc[2]
                 args[3] = ia + 1
-                args[4] = geometry.atoms.specie[ia] + 1
+                args[4] = geometry.atoms.species[ia] + 1
                 args[5] = geometry.xyz[ia, 0] * Ang2Bohr
                 args[6] = geometry.xyz[ia, 1] * Ang2Bohr
                 args[7] = geometry.xyz[ia, 2] * Ang2Bohr
@@ -139,8 +141,9 @@ class refSileScaleUp(SileScaleUp):
 
 # The restart file is _equivalent_ but with displacements
 class restartSileScaleUp(refSileScaleUp):
+
     @sile_fh_open()
-    def read_geometry(self, *args, **kwargs):
+    def read_geometry(self, *args, **kwargs) -> Geometry:
         """Read geometry of the restart file
 
         This will also try and read the corresponding .REF file

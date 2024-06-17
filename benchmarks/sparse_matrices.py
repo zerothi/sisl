@@ -14,6 +14,8 @@
 #
 #  python stats.py $0.profile
 #
+from __future__ import annotations
+
 import cProfile
 import io
 import pstats

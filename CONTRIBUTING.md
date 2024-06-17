@@ -9,12 +9,6 @@ We love your input! We want to make contributing to this project as easy and tra
 ## We Develop with GitHub
 We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
-Our repository uses a filter on Jupyter notebooks. So if you are planning on changing notebook content,
-you should add this change to your `.git/config`, or in your global `.gitconfig` file:
-
-    [filter "strip-notebook-output"]
-        clean = "jupyter nbconvert --ClearOutputPreprocessor.enabled=True --to=notebook --stdin --stdout --log-level=ERROR"
-
 We run some tools such as `isort` and `black` to keep our code style consistent throughout the package.
 These are ran by `pre-commit`, which you can set up with:
 
@@ -29,10 +23,12 @@ Then, whenever you commit changes, `pre-commit` will check that everything is fi
 style inconsistencies, it will modify your code accordingly. You can add those modifications and commit again.
 
 However, don't feel intimidated by this! If you are confused with how it works, you can just submit
-contributions without it. Our bots will notice and we will kindly solve it.
+contributions without it. Our bots will notice and we will guide you to, or help you, solve it.
+
 
 ## First-time contributors
 Add a comment on the issue and wait for the issue to be assigned before you start working on it. This helps to avoid multiple people working on similar issues.
+
 
 ## We Use [GitHub Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
 Pull requests are the best way to propose changes to the codebase (we use [Git-Flow](https://nvie.com/posts/a-successful-git-branching-model/)). We actively welcome your pull requests:
@@ -43,8 +39,10 @@ Pull requests are the best way to propose changes to the codebase (we use [Git-F
 4. Ensure the test suite passes.
 5. Issue that pull request!
 
+
 ## Any contributions you make will be under the MPL v2 License
 In short, when you submit code changes, your submissions are understood to be under the same [MPL v2 License](https://www.mozilla.org/en-US/MPL/2.0) that covers the project.
+
 
 ## Report bugs using GitHub's [issues](https://github.com/zerothi/sisl/issues)
 We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/zerothi/sisl/issues/new/choose). It's that easy!
@@ -59,8 +57,10 @@ We use GitHub issues to track public bugs. Report a bug by [opening a new issue]
 - What actually happens
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
+
 ## License
 By contributing, you agree that your contributions will be licensed under its MPL v2 License.
 
-## Questions? 
-Contact us on discord [Discord](https://discord.gg/5XnFXFdkv2).
+
+## Questions?
+Contact us on [Discord](https://discord.gg/5XnFXFdkv2).

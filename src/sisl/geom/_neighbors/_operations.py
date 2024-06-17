@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 """File meant to be compiled with Cython so that operations are much faster."""
 
 from __future__ import annotations
@@ -415,10 +418,8 @@ def get_all_unique_pairs(
                 # If neigh_at is smaller than at, we already stored
                 # this pair when performing the search for neigh_at.
                 # The following atoms will have even lower indices
-                # So we can just move to the next bin. However, if
-                # we are checking a neighboring cell, this connection
-                # will always be unique.
-                if not not_unit_cell and neigh_at <= at:
+                # So we can just move to the next bin.
+                if neigh_at <= at:
                     break
 
                 # Calculate the distance between the atom and the potential

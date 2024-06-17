@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
 import itertools
@@ -5,19 +8,18 @@ from dataclasses import asdict
 from typing import Any, List, Optional, Sequence, Tuple, TypedDict, Union
 
 import numpy as np
-import numpy.typing as npt
 from xarray import Dataset
 
 from sisl import BrillouinZone, Geometry, PeriodicTable
 from sisl.messages import warn
-from sisl.typing import AtomsArgument
+from sisl.typing import AtomsIndex, npt
 from sisl.utils.mathematics import fnorm
 from sisl.viz.types import AtomArrowSpec
 
 from ..data_sources.atom_data import AtomIsGhost, AtomPeriodicTable, JMolAtomColors
 from .coords import CoordsDataset, projected_1Dcoords, projected_2Dcoords
 
-# from ...types import AtomsArgument, GeometryLike, PathLike
+# from ...types import AtomsIndex, GeometryLike, PathLike
 
 GeometryDataset = CoordsDataset
 AtomsDataset = GeometryDataset
@@ -116,7 +118,7 @@ def get_atoms_bonds(
 
 
 def sanitize_atoms(
-    geometry: Geometry, atoms: AtomsArgument = None
+    geometry: Geometry, atoms: AtomsIndex = None
 ) -> npt.NDArray[np.int32]:
     """Sanitizes the atoms argument to a np.ndarray of shape (natoms,).
 
@@ -127,7 +129,7 @@ def sanitize_atoms(
     -----------
     geometry: sisl.Geometry
         geometry that will sanitize the atoms
-    atoms: AtomsArgument
+    atoms: AtomsIndex
         anything that `Geometry` can sanitize.
     """
     atoms = geometry._sanitize_atoms(atoms)
@@ -283,7 +285,7 @@ def parse_atoms_style(
 def sanitize_arrows(
     geometry: Geometry,
     arrows: Sequence[AtomArrowSpec],
-    atoms: AtomsArgument,
+    atoms: AtomsIndex,
     ndim: int,
     axes: Sequence[str],
 ) -> List[dict]:
@@ -298,7 +300,7 @@ def sanitize_arrows(
         the geometry for which the arrows are sanitized.
     arrows: Sequence[AtomArrowSpec]
         unsanitized arrow specifications.
-    atoms: AtomsArgument
+    atoms: AtomsIndex
         atoms for which we want the data. This means that data
         will be filtered to only contain the atoms in this argument.
     ndim: int

@@ -1,18 +1,22 @@
-from __future__ import annotations
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# TODO when forward refs work with annotations
+# from __future__ import annotations
 
 import itertools
 from typing import Any, List, Literal, TypedDict, Union
 
 import numpy as np
-import numpy.typing as npt
 from xarray import Dataset
 
 from sisl._core.lattice import Lattice, LatticeChild
+from sisl.typing import npt
+from sisl.viz.types import CellLike
 
-# from ...types import CellLike
-# from .coords import project_to_axes, CoordsDataset
+from .coords import CoordsDataset
 
-# CellDataset = CoordsDataset
+CellDataset = CoordsDataset
 
 
 def is_cartesian_unordered(cell: CellLike, tol: float = 1e-3) -> bool:

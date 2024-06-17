@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 from typing import Optional, Union
 
 import numpy as np
@@ -26,9 +28,7 @@ class kpSileSiesta(SileSiesta):
     """k-points file in 1/Bohr units"""
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
     def read_data(self, lattice: TLattice = None):
         """Returns K-points from the file (note that these are in reciprocal units)
 
@@ -81,10 +81,8 @@ class kpSileSiesta(SileSiesta):
             self._write(_fmt.format(i + 1, kk[0], kk[1], kk[2], w))
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
-    def read_brillouinzone(self, lattice: TLattice):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
         """Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
@@ -149,10 +147,8 @@ class rkpSileSiesta(kpSileSiesta):
         return k, w
 
     @sile_fh_open()
-    @deprecate_argument(
-        "sc", "lattice", "use lattice= instead of sc=", from_version="0.15"
-    )
-    def read_brillouinzone(self, lattice: TLattice):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
         """Returns K-points from the file
 
         Parameters

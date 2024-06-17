@@ -7,6 +7,8 @@
 # for graphene with on-site energy 0, and hopping energy
 # -2.7 eV.
 
+from __future__ import annotations
+
 import sisl
 
 bond = 1.42

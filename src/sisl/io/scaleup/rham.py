@@ -1,8 +1,15 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
+from typing import Optional
+
 import numpy as np
 from scipy.sparse import lil_matrix
+
+from sisl import Geometry
+from sisl.physics import Hamiltonian
 
 from ..sile import *
 
@@ -19,9 +26,8 @@ class rhamSileScaleUp(SileScaleUp):
     """
 
     @sile_fh_open()
-    def read_hamiltonian(self, geometry=None):
+    def read_hamiltonian(self, geometry: Geometry) -> Hamiltonian:
         """Reads a Hamiltonian from the Sile"""
-        from sisl import Hamiltonian
 
         # Create a copy as we may change the
         # internal atoms (due to wrong orbital values)
@@ -60,7 +66,7 @@ class rhamSileScaleUp(SileScaleUp):
             try:
                 species = get_sile(
                     str(self.file).replace(".rham", ".orbocc")
-                ).read_atom()
+                ).read_basis()
                 for i, atom in enumerate(species.atom):
                     g.atoms._atom[i] = atom
             except Exception:

@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import math as m
 from numbers import Integral
 from typing import Optional
@@ -19,8 +21,8 @@ from sisl._core.sparse_geometry import SparseAtom, SparseOrbital
 from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
-from sisl.messages import progressbar, warn
-from sisl.typing import AtomsArgument, SeqFloat
+from sisl.messages import deprecate_argument, progressbar, warn
+from sisl.typing import AtomsIndex, GaugeType, SeqFloat
 
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
@@ -203,7 +205,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out
 
-    def spin_align(self, vec: SeqFloat, atoms: Optional[AtomsArgument] = None):
+    def spin_align(self, vec: SeqFloat, atoms: AtomsIndex = None):
         r"""Aligns *all* spin along the vector `vec`
 
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned
@@ -213,7 +215,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         ----------
         vec : (3,)
            vector to align the spin boxes against
-        atoms : AtomsArgument, optional
+        atoms : AtomsIndex, optional
            only perform alignment for matrix elements on atoms.
            If multiple atoms are specified, the off-diagonal elements between the
            atoms will also be aligned.
@@ -349,8 +351,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
     def mulliken(self, projection="orbital"):
         r""" Calculate Mulliken charges from the density matrix
 
-        In the following :math:`\nu` and :math:`\mu` are orbital indices.
-        Atomic indices noted by :math:`\alpha`, :math:`\beta`.
+        See `math_convention`_ for details on the mathematical notation.
         Matrices :math:`\boldsymbol\rho` and :math:`\mathbf S` are density
         and overlap matrices, respectively.
 
@@ -359,24 +360,24 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         .. math::
 
-             M_{\nu} &= \sum_{\mu} [\boldsymbol\rho_{\nu\mu} \mathbf S_{\nu\mu}]
+             \mathbf m_i &= \sum_{i} [\boldsymbol\rho_{ij} \mathbf S_{ij}]
              \\
-             M_{\alpha} &= \sum_{\nu\in\alpha} M_{\nu}
+             \mathbf m_I &= \sum_{i\in I} \mathbf m_i
 
         For non-colinear calculations (including spin-orbit) they are calculated
         as above but using the spin-box per orbital (:math:`\sigma` is spin)
 
         .. math::
-             M_{\nu} &= \sum_\sigma\sum_{\mu} [\boldsymbol\rho_{\nu\mu,\sigma\sigma} \mathbf S_{\nu\mu,\sigma\sigma}]
+             \mathbf m_i &= \sum_\sigma\sum_j [\boldsymbol\rho_{ij,\sigma\sigma} \mathbf S_{ij,\sigma\sigma}]
              \\
-             S_{\nu}^x &= \sum_{\mu} \Re [\boldsymbol\rho_{\nu\mu,\uparrow\downarrow} \mathbf S_{\nu\mu,\uparrow\downarrow}] +
-                          \Re [\boldsymbol\rho_{\nu\mu,\downarrow\uparrow} \mathbf S_{\nu\mu,\downarrow\uparrow}]
+             \mathbf m^{S^x}_i &= \sum_j \Re [\boldsymbol\rho_{ij,\uparrow\downarrow} \mathbf S_{ij,\uparrow\downarrow}] +
+                          \Re [\boldsymbol\rho_{ij,\downarrow\uparrow} \mathbf S_{ij,\downarrow\uparrow}]
              \\
-             S_{\nu}^y &= \sum_{\mu} \Im [\boldsymbol\rho_{\nu\mu,\uparrow\downarrow} \mathbf S_{\nu\mu,\uparrow\downarrow}] -
-                          \Im [\boldsymbol\rho_{\nu\mu,\downarrow\uparrow} \mathbf S_{\nu\mu,\downarrow\uparrow}]
+             \mathbf m^{S^y}_i &= \sum_j \Im [\boldsymbol\rho_{ij,\uparrow\downarrow} \mathbf S_{ij,\uparrow\downarrow}] -
+                          \Im [\boldsymbol\rho_{ij,\downarrow\uparrow} \mathbf S_{ij,\downarrow\uparrow}]
              \\
-             S_{\nu}^z &= \sum_{\mu} \Re [\boldsymbol\rho_{\nu\mu,\uparrow\uparrow} \mathbf S_{\nu\mu,\uparrow\uparrow}] -
-                          \Re [\boldsymbol\rho_{\nu\mu,\downarrow\downarrow} \mathbf S_{\nu\mu,\downarrow\downarrow}]
+             \mathbf m^{S^z}_i &= \sum_{j} \Re [\boldsymbol\rho_{ij,\uparrow\uparrow} \mathbf S_{ij,\uparrow\uparrow}] -
+                          \Re [\boldsymbol\rho_{ij,\downarrow\downarrow} \mathbf S_{ij,\downarrow\downarrow}]
 
         Parameters
         ----------
@@ -460,23 +461,22 @@ class _densitymatrix(SparseOrbitalBZSpin):
         For ``method='wiberg'``, the bond-order is calculated as:
 
         .. math::
-            B_{\nu\mu}^{\mathrm{Wiberg}} &= D_{\nu\mu}^2
-            \\
-            B_{\alpha\beta}^{\mathrm{Wiberg}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
+            \mathbf B_{ij}^{\mathrm{Wiberg}} &= \mathbf D_{ij}^2
 
         For ``method='mayer'``, the bond-order is calculated as:
 
         .. math::
-            B_{\nu\mu}^{\mathrm{Mayer}} &= (DS)_{\nu\mu}(DS)_{\mu\nu}
-            \\
-            B_{\alpha\beta}^{\mathrm{Mayer}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
+            \mathbf B_{ij}^{\mathrm{Mayer}} &= (\mathbf D\mathbf S)_{ij} (\mathbf D\mathbf S)_{ji}
 
         For ``method='mulliken'``, the bond-order is calculated as:
 
         .. math::
-            B_{\nu\mu}^{\mathrm{Mulliken}} &= 2D_{\nu\mu}S_{\nu\mu}
-            \\
-            B_{\alpha\beta}^{\mathrm{Mulliken}} &= \sum_{\nu\in\alpha}\sum_{\mu\in\beta} B_{\nu\mu}
+            \mathbf B_{ij}^{\mathrm{Mulliken}} &= 2\mathbf D_{ij}\mathbf S_{ij}
+
+        The bond order will then be using the above notation for the summation for atoms:
+
+        .. math::
+            \mathbf B_{IJ}^{\langle\rangle} &= \sum_{i\in I}\sum_{j\in J} \mathbf B^{\langle\rangle}_{ij}
 
         The Mulliken bond-order is closely related to the COOP interpretation.
         The COOP is generally an energy resolved Mulliken bond-order. So if the
@@ -681,27 +681,34 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out_cls.fromsp(geom, BO)
 
-    def density(self, grid, spinor=None, tol: float = 1e-7, eta=None):
+    @deprecate_argument(
+        "tol",
+        "atol",
+        "argument tol has been deprecated in favor of atol, please update your code.",
+        "0.15",
+        "0.16",
+    )
+    def density(self, grid, spinor=None, atol: float = 1e-7, eta=None):
         r"""Expand the density matrix to the charge density on a grid
 
         This routine calculates the real-space density components on a specified grid.
 
         This is an *in-place* operation that *adds* to the current values in the grid.
 
-        Note: To calculate :math:`\rho(\mathbf r)` in a unit-cell different from the
+        Note: To calculate :math:`\boldsymbol\rho(\mathbf r)` in a unit-cell different from the
         originating geometry, simply pass a grid with a unit-cell different than the originating
         supercell.
 
         The real-space density is calculated as:
 
         .. math::
-            \rho(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) D_{\nu\mu}
+            \boldsymbol\rho(\mathbf r) = \sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \mathbf D_{ij}
 
         While for non-collinear/spin-orbit calculations the density is determined from the
         spinor component (`spinor`) by
 
         .. math::
-           \rho_{\boldsymbol\sigma}(\mathbf r) = \sum_{\nu\mu}\phi_\nu(\mathbf r)\phi_\mu(\mathbf r) \sum_\alpha [\boldsymbol\sigma \mathbf \rho_{\nu\mu}]_{\alpha\alpha}
+           \boldsymbol\rho_{\boldsymbol\sigma}(\mathbf r) = \sum_{ij}\phi_i(\mathbf r)\phi_j(\mathbf r) \sum_\alpha [\boldsymbol\sigma \boldsymbol \rho_{ij}]_{\alpha\alpha}
 
         Here :math:`\boldsymbol\sigma` corresponds to a spinor operator to extract relevant quantities. By passing the identity matrix the total charge is added. By using the Pauli matrix :math:`\boldsymbol\sigma_x`
         only the :math:`x` component of the density is added to the grid (see `Spin.X`).
@@ -715,7 +722,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
            this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
            length 2 (defaults to total density).
            For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
-        tol : float, optional
+        atol : float, optional
            DM tolerance for accepted values. For all density matrix elements with absolute values below
            the tolerance, they will be treated as strictly zeros.
         eta : bool, optional
@@ -833,7 +840,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         del csr, csr_sum
 
         # Remove all zero elements (note we use the tolerance here!)
-        csrDM.data = np.where(np.fabs(csrDM.data) > tol, csrDM.data, 0.0)
+        csrDM.data = np.where(np.fabs(csrDM.data) > atol, csrDM.data, 0.0)
 
         # Eliminate zeros and sort indices etc.
         csrDM.eliminate_zeros()
@@ -1203,9 +1210,9 @@ class DensityMatrix(_densitymatrix):
 
         1. Same atom
         2. :math:`l>0`
-        3. :math:`l_\nu \equiv l_\mu`
-        4. :math:`m_\nu \neq m_\mu`
-        5. :math:`\zeta_\nu \equiv \zeta_\mu`
+        3. :math:`l_i \equiv l_j`
+        4. :math:`m_i \neq m_j`
+        5. :math:`\zeta_i \equiv \zeta_j`
 
         This allows one to sum the orbital angular moments on a per atom site.
 
@@ -1420,7 +1427,15 @@ class DensityMatrix(_densitymatrix):
             f"{self.__class__.__name__}.orbital_momentum only allows projection [orbital, atom]"
         )
 
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def Dk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the density matrix for a given k-point
 
         Creation and return of the density matrix for a given k-point (default to Gamma).
@@ -1431,16 +1446,16 @@ class DensityMatrix(_densitymatrix):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k R}
+           \mathbf D(\mathbf k) = \mathbf D_{ij} e^{i \mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}
+           \mathbf D(\mathbf k) = \mathbf D_{ij} e^{i \mathbf k\cdot\mathb r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -1450,11 +1465,11 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -1472,11 +1487,19 @@ class DensityMatrix(_densitymatrix):
         Returns
         -------
         matrix : numpy.ndarray or scipy.sparse.*_matrix
-            the density matrix at :math:`k`. The returned object depends on `format`.
+            the density matrix at :math:`\mathbf k`. The returned object depends on `format`.
         """
         pass
 
-    def dDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the density matrix derivative for a given k-point
 
         Creation and return of the density matrix derivative for a given k-point (default to Gamma).
@@ -1487,17 +1510,17 @@ class DensityMatrix(_densitymatrix):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k \mathbf D_\alpha(k) = i R_\alpha \mathbf D_{\nu\mu} e^{i k R}
+           \nabla_k \mathbf D_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf D_{ij} e^{i \mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` is one of the Cartesian directions.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \nabla_k \mathbf D_\alpha(k) = i r_\alpha \mathbf D_{\nu\mu} e^{i k r}
+           \nabla_k \mathbf D_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf D_{ij} e^{i \mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -1507,11 +1530,11 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -1527,11 +1550,19 @@ class DensityMatrix(_densitymatrix):
         Returns
         -------
         tuple
-             for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k` is returned.
+             for each of the Cartesian directions a :math:`\partial \mathbf D(\mathbf k)/\partial\mathbf k` is returned.
         """
         pass
 
-    def ddDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def ddDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the density matrix double derivative for a given k-point
 
         Creation and return of the density matrix double derivative for a given k-point (default to Gamma).
@@ -1542,17 +1573,17 @@ class DensityMatrix(_densitymatrix):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k^2 \mathbf D_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf D_{\nu\mu} e^{i k R}
+           \nabla_k^2 \mathbf D^{(alpha\beta)}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf D_{ij} e^{i \mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
 
         Another possible gauge is the orbital distance which can be written as
 
         .. math::
-           \nabla_k^2 \mathbf D_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf D_{\nu\mu} e^{i k r}
+           \nabla_k^2 \mathbf D^{(\alpha\beta)}(\mathbf k) = - \mathbf r^{(i)} \mathbf r^{\beta} \mathbf D_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the orbitals.
 
         Parameters
         ----------
@@ -1562,11 +1593,11 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional

@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Sile object for reading/writing ascii files from BigDFT
 """
@@ -30,7 +32,7 @@ class asciiSileBigDFT(SileBigDFT):
         self._comment = ["#", "!"]
 
     @sile_fh_open()
-    def read_geometry(self):
+    def read_geometry(self) -> Geometry:
         """Reads a supercell from the Sile"""
 
         # 1st line is arbitrary
@@ -128,7 +130,7 @@ class asciiSileBigDFT(SileBigDFT):
         return Geometry(xyz, spec, lattice=lattice)
 
     @sile_fh_open()
-    def write_geometry(self, geom, fmt=".8f"):
+    def write_geometry(self, geometry: Geometry, fmt: str = ".8f"):
         """Writes the geometry to the contained file"""
         # Check that we can write to the file
         sile_raise_write(self)
@@ -137,22 +139,26 @@ class asciiSileBigDFT(SileBigDFT):
         self._write("# Created by sisl\n")
         # We write the cell coordinates as the cell coordinates
         fmt_str = f"{{:{fmt}}} " * 3 + "\n"
-        self._write(fmt_str.format(geom.cell[0, 0], geom.cell[1, 0], geom.cell[1, 1]))
-        self._write(fmt_str.format(*geom.cell[2, :]))
+        self._write(
+            fmt_str.format(
+                geometry.cell[0, 0], geometry.cell[1, 0], geometry.cell[1, 1]
+            )
+        )
+        self._write(fmt_str.format(*geometry.cell[2, :]))
 
         # This also denotes
         self._write("#keyword: angstroem\n")
 
-        self._write("# Geometry containing: " + str(len(geom)) + " atoms\n")
+        self._write("# Geometry containing: " + str(len(geometry)) + " atoms\n")
 
         f1_str = "{{1:{0}}}  {{2:{0}}}  {{3:{0}}} {{0:2s}}\n".format(fmt)
         f2_str = "{{2:{0}}}  {{3:{0}}}  {{4:{0}}} {{0:2s}} {{1:s}}\n".format(fmt)
 
-        for ia, a, _ in geom.iter_species():
+        for ia, a, _ in geometry.iter_species():
             if a.symbol != a.tag:
-                self._write(f2_str.format(a.symbol, a.tag, *geom.xyz[ia, :]))
+                self._write(f2_str.format(a.symbol, a.tag, *geometry.xyz[ia, :]))
             else:
-                self._write(f1_str.format(a.symbol, *geom.xyz[ia, :]))
+                self._write(f1_str.format(a.symbol, *geometry.xyz[ia, :]))
         # Add a single new line
         self._write("\n")
 

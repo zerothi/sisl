@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import math as m
 
 import numpy as np
@@ -25,13 +27,13 @@ def test_import_simple():
     sisl.io.xyzSile
 
 
-def test_import_only_in_io():
+def test_import_in_io():
     # The imports should only be visible in the io module
     with pytest.raises(AttributeError):
         sisl.xyzSile
 
 
-def test_import_only_in_io_from():
+def test_import_in_io_from():
     # The imports should only be visible in the io module
     with pytest.raises(ImportError):
         from sisl import xyzSile

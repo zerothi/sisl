@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 r""" Atom input/output writer
 
 Developer: Nick Papior
@@ -23,12 +25,15 @@ which will show 4 plots for different sections. A command-line tool is also
 made available through the `stoolbox`.
 """
 import sys
-from collections.abc import Iterable
 from functools import reduce
 from pathlib import Path
 
 import numpy as np
-from scipy.integrate import trapezoid
+
+try:
+    from scipy.integrate import trapezoid
+except ImportError:
+    from scipy.integrate import trapz as trapezoid
 from scipy.interpolate import interp1d
 
 import sisl as si
@@ -343,7 +348,7 @@ class AtomInput:
         # get default options for pseudo
         opts = NotNonePropertyDict()
         pseudo = dic["pseudo"]
-        opts["logr"] = parse_variable(pseudo.get("log-radii"), unit="Ang").value
+        opts["logr"] = parse_variable(pseudo.get("log-radius"), unit="Ang").value
         opts["rcore"] = parse_variable(pseudo.get("core-correction"), unit="Ang").value
         opts["xc"] = pseudo.get("xc")
         opts["equation"] = pseudo.get("equation")
@@ -839,6 +844,12 @@ def atom_plot_cli(subp=None):
         p.set_defaults(runner=atom_plot)
     else:
         atom_plot(p.parse_args())
+
+
+# Import object holding all the CLI
+from sisl_toolbox.cli import register_toolbox_cli
+
+register_toolbox_cli(atom_plot_cli)
 
 
 def atom_plot(args):

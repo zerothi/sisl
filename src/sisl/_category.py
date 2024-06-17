@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, defaultdict
@@ -13,8 +15,6 @@ __all__ = ["Category", "CompositeCategory", "NullCategory"]
 __all__ += ["AndCategory", "OrCategory", "XOrCategory"]
 __all__ += ["InstanceCache"]
 
-_log = logging.getLogger("sisl")
-_log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
 
 

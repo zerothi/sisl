@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Define a common VASP Sile
 """
@@ -20,6 +22,7 @@ def _geometry_group(geometry, ret_index=False):
     in blocks.
 
     I.e. for a geometry like this:
+
     .. code::
 
         [Atom(6), Atom(4), Atom(6)]
@@ -37,7 +40,8 @@ def _geometry_group(geometry, ret_index=False):
 
     Returns
     -------
-    geometry: reordered geometry
+    geometry : Geometry
+        reordered geometry
     """
     na = len(geometry)
     idx = _a.emptyi(na)

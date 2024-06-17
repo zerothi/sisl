@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 
 import sisl._array as _a
@@ -18,7 +20,7 @@ __all__ = ["carSileVASP"]
 
 @set_module("sisl.io.vasp")
 class carSileVASP(SileVASP):
-    """CAR VASP files for defining geomtries
+    """CAR VASP files for defining geometries
 
     This file-object handles both POSCAR and CONTCAR files
     """
@@ -29,18 +31,20 @@ class carSileVASP(SileVASP):
         self._scale = 1.0
 
     @sile_fh_open()
-    def write_geometry(self, geometry, dynamic=True, group_species=False):
+    def write_geometry(
+        self, geometry: Geometry, dynamic=True, group_species: bool = False
+    ):
         r"""Writes the geometry to the contained file
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            geometry to be written to the file
         dynamic : None, bool or list, optional
            define which atoms are dynamic in the VASP run (default is True,
            which means all atoms are dynamic).
            If None, the resulting file will not contain any dynamic flags
-        group_species: bool, optional
+        group_species:
            before writing `geometry` first re-order species to
            have species in consecutive blocks (see `geometry_group`)
 
@@ -82,8 +86,8 @@ class carSileVASP(SileVASP):
         ia = 0
         while ia < geometry.na:
             atom = geometry.atoms[ia]
-            # specie = geometry.atoms.specie[ia]
-            ia_end = (np.diff(geometry.atoms.specie[ia:]) != 0).nonzero()[0]
+            # species = geometry.atoms.species[ia]
+            ia_end = (np.diff(geometry.atoms.species[ia:]) != 0).nonzero()[0]
             if len(ia_end) == 0:
                 # remaining atoms
                 ia_end = geometry.na
@@ -123,8 +127,8 @@ class carSileVASP(SileVASP):
             self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(dynamic[idx[ia]]))
 
     @sile_fh_open(True)
-    def read_lattice(self):
-        """Returns `Lattice` object from the CONTCAR/POSCAR file"""
+    def read_lattice(self) -> Lattice:
+        """Returns `Lattice` object from this Sile"""
 
         # read first line
         self.readline()  # LABEL
@@ -140,8 +144,8 @@ class carSileVASP(SileVASP):
         return Lattice(cell)
 
     @sile_fh_open()
-    def read_geometry(self, ret_dynamic=False):
-        r"""Returns Geometry object from the CONTCAR/POSCAR file
+    def read_geometry(self, ret_dynamic: bool = False) -> Geometry:
+        r"""Returns Geometry object from this Sile
 
         Possibly also return the dynamics (if present).
 
@@ -150,6 +154,13 @@ class carSileVASP(SileVASP):
         ret_dynamic : bool, optional
            also return selective dynamics (if present), if not, None will
            be returned.
+
+        Returns
+        -------
+        Geometry
+            the contained geometry
+        numpy.ndarray
+            which Cartesian directions are allowed to move (only if `ret_dynamic`)
         """
         lattice = self.read_lattice()
 

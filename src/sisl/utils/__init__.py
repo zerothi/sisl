@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Utility routines
 ================
@@ -10,7 +12,6 @@ Several utility functions are used throughout sisl.
 Range routines
 ==============
 
-   array_arange - fast creation of sub-aranges
    strmap
    strseq
    lstranges
@@ -24,6 +25,7 @@ Miscellaneous routines
    str_spec
    direction - abc/012 -> 012
    angle - radian to degree
+   listify
    iter_shape
    math_eval
    batched_indices

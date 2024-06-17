@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import os.path as osp
 import sys
 
@@ -106,11 +108,14 @@ def test_md_nose_out_data(sisl_files):
     assert e["kinetic"] == pytest.approx(2293.584862)
 
 
-def test_md_nose_out_completed(sisl_files):
+def test_md_nose_out_info(sisl_files):
     f = sisl_files(_dir, "md_nose.out")
     out = stdoutSileSiesta(f)
-    out.info.completed
-    out.info.spin
+    assert out.info.completed
+    assert out.info.spin.is_unpolarized
+    geom = out.read_geometry()
+    assert out.info.na == geom.na
+    assert out.info.no == geom.no
 
 
 def test_md_nose_out_dataframe(sisl_files):

@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 """
 Visualization utilities
 =======================
@@ -8,6 +10,19 @@ Visualization utilities
 """
 
 import os
+
+try:
+    import nodify as _
+except ModuleNotFoundError as e:
+    raise ModuleNotFoundError(
+        """\
+sisl.viz requires additional packages.
+Install them with pip:
+   pip install sisl[viz]
+Or conda (only possible if inside a conda environment):
+   conda install nodify plotly netCDF4 scikit-image pathos
+"""
+    ) from e
 
 # Placeholders for 'plot' attributes are set in the classes while
 # sisl.viz is not loaded. Now we are loading it, so just remove those
@@ -28,6 +43,8 @@ register_environ_variable(
 )
 
 clear_viz_placeholders()
+
+del os, register_environ_variable, clear_viz_placeholders
 
 from . import _xarray_accessor
 from ._plotables import register_plotable

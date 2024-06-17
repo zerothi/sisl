@@ -8,4 +8,4 @@ env
 echo "### mybinder environment^^^"
 
 # Manually install the necessary stuff for sisl
-python3 -m pip install -vv Cython tqdm matplotlib xarray plotly .
+python3 -m pip install -vv tqdm matplotlib netCDF4 plotly .

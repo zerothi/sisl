@@ -1,10 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
+
 import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
+from sisl.typing import GaugeType
 
 from .phonon import EigenmodePhonon, EigenvaluePhonon
 from .sparse import SparseOrbitalBZ
@@ -23,7 +26,18 @@ def _correct_hw(hw):
 
 @set_module("sisl.physics")
 class DynamicalMatrix(SparseOrbitalBZ):
-    """Dynamical matrix of a geometry"""
+    r"""Dynamical matrix of a geometry
+
+    The dynamical matrix is defined as the mass-reduced quantity.
+    Hence the quantities stored in this matrix are expected to contain
+    a factor:
+
+    .. math::
+        \frac1{\sqrt{M_IM_J}}
+
+    for the elements that contains couplings between atoms :math:`I`
+    and :math:`J`.
+    """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
@@ -41,7 +55,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
         self._def_dim = 0
         return self
 
-    def Dk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def Dk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the dynamical matrix for a given k-point
 
         Creation and return of the dynamical matrix for a given k-point (default to Gamma).
@@ -52,16 +74,16 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \mathbf D(k) = \mathbf D_{i_\alpha j_\beta} e^{i q R}
+           \mathbf D(\mathbf k) = \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
 
         Another possible gauge is the atomic distance which can be written as
 
         .. math::
-           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}
+           \mathbf D(\mathbf k) = \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the atoms.
+        where :math:`\mathbf r` is the distance between the atoms.
 
         Parameters
         ----------
@@ -71,11 +93,11 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -89,11 +111,19 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Returns
         -------
         matrix : numpy.ndarray or scipy.sparse.*_matrix
-            the dynamical matrix at :math:`k`. The returned object depends on `format`.
+            the dynamical matrix at :math:`\mathbf k`. The returned object depends on `format`.
         """
         pass
 
-    def dDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def dDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the dynamical matrix derivative for a given k-point
 
         Creation and return of the dynamical matrix derivative for a given k-point (default to Gamma).
@@ -104,17 +134,17 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k \mathbf D_\gamma(k) = i R_\gamma \mathbf D_{i_\alpha j_\beta} e^{i q R}
+           \nabla_{\mathbf k} \mathbf D_\gamma(\mathbf k) = i \mathbf R_\gamma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are atomic indices.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are atomic indices.
         And :math:`\gamma` is one of the Cartesian directions.
 
         Another possible gauge is the atomic distance which can be written as
 
         .. math::
-          \nabla_k \mathbf D_\gamma(k) = i r_\gamma \mathbf D_{i_\alpha j_\beta} e^{i k r}
+          \nabla_{\mathbf k} \mathbf D_\gamma(\mathbf k) = i \mathbf r_\gamma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is the distance between the atoms.
+        where :math:`\mathbf r` is the distance between the atoms.
 
         Parameters
         ----------
@@ -124,11 +154,11 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
 
@@ -140,11 +170,19 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Returns
         -------
         tuple
-            for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k_\gamma` is returned.
+            for each of the Cartesian directions a :math:`\partial \mathbf D(\mathbf k)/\partial \mathbf k_\gamma` is returned.
         """
         pass
 
-    def ddDk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs):
+    def ddDk(
+        self,
+        k=(0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format="csr",
+        *args,
+        **kwargs,
+    ):
         r"""Setup the dynamical matrix double derivative for a given k-point
 
         Creation and return of the dynamical matrix double derivative for a given k-point (default to Gamma).
@@ -155,17 +193,17 @@ class DynamicalMatrix(SparseOrbitalBZ):
         Currently the implemented gauge for the k-point is the cell vector gauge:
 
         .. math::
-           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - R_\gamma R_\sigma \mathbf D_{i_\alpha j_\beta} e^{i q R}
+           \nabla_{\mathbf k^2} \mathbf D_{\gamma\sigma}(\mathbf k) = - \mathbf R_\gamma \mathbf R_\sigma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf R}
 
-        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
+        where :math:`\mathbf R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.
         And :math:`\gamma`, :math:`\sigma` are one of the Cartesian directions.
 
         Another possible gauge is the atomic distance which can be written as
 
         .. math::
-           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - r_\gamma r_\sigma \mathbf D_{i_\alpha j_\beta} e^{i k r}
+           \nabla_{\mathbf k^2} \mathbf D_{\gamma\sigma}(\mathbf k) = - \mathbf r_\gamma \mathbf r_\sigma \mathbf D_{I_\alpha J_\beta} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`r` is atomic distance.
+        where :math:`\mathbf r` is atomic distance.
 
         Parameters
         ----------
@@ -175,11 +213,11 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'R', 'r'}
-           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance
+        gauge : {'cell', 'orbital'}
+           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
 
@@ -195,12 +233,16 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         pass
 
-    def apply_newton(self):
+    def apply_newton(self) -> None:
         """Sometimes the dynamical matrix does not obey Newtons 3rd law.
 
         We correct the dynamical matrix by imposing zero force.
 
         Correcting for Newton forces the matrix to be finalized.
+
+        Notes
+        -----
+        This is an in-place operation.
         """
         # Create UC dynamical matrix
         dyn_sc = self.tocsr(0)
@@ -248,7 +290,9 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         del d_uc
 
-    def eigenvalue(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenvalue(
+        self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs
+    ) -> EigenvaluePhonon:
         """Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
 
         Parameters
@@ -261,12 +305,12 @@ class DynamicalMatrix(SparseOrbitalBZ):
             if ``True``, `eigsh` will be called, else `eigh` will be
             called (default).
         **kwargs : dict, optional
-            passed arguments to the `eigh` routine
+            passed arguments to the eigenvalue calculator routine
 
         See Also
         --------
-        eigh : eigenvalue routine
-        eigsh : eigenvalue routine
+        eigh : dense eigenvalue routine
+        eigsh : sparse eigenvalue routine
 
         Returns
         -------
@@ -279,10 +323,14 @@ class DynamicalMatrix(SparseOrbitalBZ):
         info = {"k": k, "gauge": gauge}
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
-    def eigenmode(self, k=(0, 0, 0), gauge="R", **kwargs):
+    def eigenmode(
+        self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs
+    ) -> EigenmodePhonon:
         r"""Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
 
-        Note that the phonon modes are _not_ mass-scaled.
+        Notes
+        -----
+        Note that the phonon modes are *not* mass-scaled.
 
         Parameters
         ----------
@@ -294,12 +342,12 @@ class DynamicalMatrix(SparseOrbitalBZ):
             if ``True``, `eigsh` will be called, else `eigh` will be
             called (default).
         **kwargs : dict, optional
-            passed arguments to the `eigh`/`eighs` routine
+            passed arguments to the eigenvalue calculator routine
 
         See Also
         --------
-        eigh : eigenvalue routine (returns hw ** 2)
-        eigsh : eigenvalue routine
+        eigh : dense eigenvalue routine (returns hw ** 2)
+        eigsh : sparse eigenvalue routine (returns hw ** 2)
 
         Returns
         -------
@@ -314,7 +362,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         return EigenmodePhonon(v.T, _correct_hw(hw), self, **info)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> DynamicalMatrix:
         """Reads dynamical matrix from `Sile` using `read_dynamical_matrix`.
 
         Parameters
