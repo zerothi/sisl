@@ -17,8 +17,11 @@ except ModuleNotFoundError as e:
     raise ModuleNotFoundError(
         """\
 sisl.viz requires additional packages.
- - conda install nodify plotly netCDF4 scikit-image pathos
- - pip install sisl[viz]"""
+Install them with pip:
+   pip install sisl[viz]
+Or conda (only possible if inside a conda environment):
+   conda install nodify plotly netCDF4 scikit-image pathos
+"""
     ) from e
 
 # Placeholders for 'plot' attributes are set in the classes while
