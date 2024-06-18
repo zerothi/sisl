@@ -467,10 +467,7 @@ class TestMonkhorstPack:
             assert np.allclose(ds1.data_vars[var].values, data)
         assert len(ds1.coords) < len(ds0.coords)
 
-    def test_pathos(self):
-        pytest.skip(
-            "BrillouinZone.apply(pool=True|int) scales extremely bad and may cause stall"
-        )
+    def test_bz_parallel_pathos(self):
         pytest.importorskip("pathos", reason="pathos not available")
 
         from sisl import Hamiltonian, geom
@@ -489,7 +486,8 @@ class TestMonkhorstPack:
 
             nprocs = len(psutil.Process().cpu_affinity()) // 2
         except Exception:
-            nprocs = os.cpu_count() // 2
+            nprocs = len(os.sched_getaffinity(0)) // 2
+        nprocs = max(2, nprocs)
         omp_num_threads = os.environ.get("OMP_NUM_THREADS")
 
         # Check that the ObjectDispatcher works

@@ -121,6 +121,8 @@ jobs:
 
     - name: Running sisl tests
       env:
+        SISL_NUM_PROCS: 1
+        OMP_NUM_THREADS: 1
         SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
       run: |
         ls -al
