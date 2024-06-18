@@ -1056,7 +1056,9 @@ class RealSpaceSE(SelfEnergy):
             - self._calc["P0"](k, dtype=dtype, **kwargs)
         ).toarray() - inv(G, True)
 
-    def green(self, E: complex, k=(0, 0, 0), dtype=None, **kwargs):
+    def green(
+        self, E: complex, k=(0, 0, 0), dtype=None, *, apply_kwargs=None, **kwargs
+    ):
         r"""Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -1073,6 +1075,8 @@ class RealSpaceSE(SelfEnergy):
            I.e. this would correspond to a circular real-space Green function
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
+        apply_kwargs : dict, optional
+           keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
@@ -1088,6 +1092,8 @@ class RealSpaceSE(SelfEnergy):
 
         if dtype is None:
             dtype = complex128
+        if apply_kwargs is None:
+            apply_kwargs = {}
 
         # Now we are to calculate the real-space self-energy
         if E.imag == 0:
@@ -1271,7 +1277,9 @@ class RealSpaceSE(SelfEnergy):
         no = len(self.parent)
 
         # calculate the Green function
-        G = bz.apply.average(_func_bloch)(dtype=dtype, no=no, tile=tile, idx0=idx0)
+        G = bz.apply(**apply_kwargs).average(_func_bloch)(
+            dtype=dtype, no=no, tile=tile, idx0=idx0
+        )
 
         if is_k:
             # Revert k-points

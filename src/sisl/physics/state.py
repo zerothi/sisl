@@ -56,7 +56,7 @@ def degenerate_decouple(state, M):
         state.state = degenerate_decouple(state.state, M)
     else:
         # since M may be a sparse matrix, we cannot use __matmul__
-        p = np.conj(state) @ M.dot(state.T)
+        p = np.conj(state) @ (M @ state.T)
         state = eigh_destroy(p)[1].T @ state
     return state
 
@@ -79,6 +79,10 @@ class _FakeMatrix:
 
     @staticmethod
     def dot(v):
+        return v
+
+    @staticmethod
+    def __matmul__(v):
         return v
 
     def multiply(self, v):
@@ -592,7 +596,7 @@ state coefficients
                 )
 
         if ndim == 2:
-            Aij = ket.T @ M.dot(np.conj(bra))
+            Aij = ket.T @ (M @ np.conj(bra))
         elif ndim == 1:
             Aij = einsum("ij,i,ik->jk", ket, M, np.conj(bra))
         elif ndim == 0:
@@ -685,7 +689,7 @@ state coefficients
             # check whether this, and ket are both originating from
             # non-orthogonal basis. That would be non-ideal
             ket = ket.state
-        if len(ket.shape) == 1:
+        if ket.ndim == 1:
             ket = ket.reshape(1, -1)
 
         # check that the shapes matches (ket should be transposed)
@@ -724,7 +728,7 @@ state coefficients
                     f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors."
                 )
             if ndim == 2:
-                Aij = einsum("ij,ji->i", np.conj(bra), M.dot(ket.T))
+                Aij = einsum("ij,ji->i", np.conj(bra), M @ ket.T)
             elif ndim == 1:
                 Aij = einsum("ij,j,ij->i", np.conj(bra), M, ket)
             elif ndim == 0:
@@ -732,7 +736,7 @@ state coefficients
 
         elif projection in ("matrix", "none"):
             if ndim == 2:
-                Aij = np.conj(bra) @ M.dot(ket.T)
+                Aij = np.conj(bra) @ (M @ ket.T)
             elif ndim == 1:
                 Aij = einsum("ij,j,kj->ik", np.conj(bra), M, ket)
             elif ndim == 0:
@@ -740,7 +744,7 @@ state coefficients
 
         elif projection in ("atom", "basis", "orbital"):
             if ndim == 2:
-                Aij = np.conj(bra) * M.dot(ket.T).T
+                Aij = np.conj(bra) * (M @ ket.T).T
             else:
                 Aij = np.conj(bra) * ket * M
 
@@ -773,7 +777,7 @@ state coefficients
 
         return Aij
 
-    def phase(self, method="max", ret_index=False):
+    def phase(self, method: Literal["max", "all"] = "max", ret_index: bool = False):
         r"""Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
 
         Parameters
@@ -781,7 +785,7 @@ state coefficients
         method : {'max', 'all'}
            for max, the phase for the element which has the largest absolute magnitude is returned,
            for all, all phases are calculated
-        ret_index : bool, optional
+        ret_index :
            return indices for the elements used when ``method=='max'``
         """
         if method == "max":
@@ -795,7 +799,7 @@ state coefficients
             f"{self.__class__.__name__}.phase only accepts method in [max, all]"
         )
 
-    def align_phase(self, other, ret_index=False, inplace=False):
+    def align_phase(self, other, ret_index: bool = False, inplace: bool = False):
         r"""Align `self` with the phases for `other`, a copy may be returned
 
         States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
@@ -804,9 +808,9 @@ state coefficients
         ----------
         other : State
            the other state to align onto this state
-        ret_index : bool, optional
+        ret_index :
            return which indices got swapped
-        inplace : bool, optional
+        inplace :
            rotate the states in-place
 
         See Also
@@ -834,7 +838,7 @@ state coefficients
             return out, idx
         return out
 
-    def align_norm(self, other, ret_index=False, inplace=False):
+    def align_norm(self, other, ret_index: bool = False, inplace: bool = False):
         r"""Align `self` with the site-norms of `other`, a copy may optionally be returned
 
         To determine the new ordering of `self` first calculate the residual norm of the site-norms.
@@ -850,9 +854,9 @@ state coefficients
         ----------
         other : State
            the other state to align against
-        ret_index : bool, optional
+        ret_index :
            also return indices for the swapped indices
-        inplace : bool, optional
+        inplace :
            swap states in-place
 
         Returns
@@ -1068,12 +1072,12 @@ coefficients assigned to each state
         s.info = self.info
         return s
 
-    def sort(self, ascending=True):
+    def sort(self, ascending: bool = True):
         """Sort and return a new `StateC` by sorting the coefficients (default to ascending)
 
         Parameters
         ----------
-        ascending : bool, optional
+        ascending :
             sort the contained elements ascending, else they will be sorted descending
         """
         if ascending:
@@ -1083,7 +1087,11 @@ coefficients assigned to each state
         return self.sub(idx)
 
     def derivative(
-        self, order=1, degenerate=1e-5, degenerate_dir=(1, 1, 1), matrix=False
+        self,
+        order: Literal[1, 2] = 1,
+        degenerate=1e-5,
+        degenerate_dir=(1, 1, 1),
+        matrix: bool = False,
     ):
         r"""Calculate the derivative with respect to :math:`\mathbf k` for a set of states up to a given order
 
@@ -1120,7 +1128,7 @@ coefficients assigned to each state
 
         Parameters
         ----------
-        order : {1, 2}
+        order :
            an integer specifying which order of the derivative is being calculated.
         degenerate : float or list of array_like, optional
            If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
@@ -1129,7 +1137,7 @@ coefficients assigned to each state
            is required to decouple them. See `degenerate_dir` for the sum of directions.
         degenerate_dir : (3,), optional
            a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
-        matrix : bool, optional
+        matrix :
            whether the full matrix or only the diagonal components are returned
 
         See Also
@@ -1238,9 +1246,9 @@ coefficients assigned to each state
             if matrix or order > 1:
                 # calculate the full matrix
                 v = np.empty([3, nstate, nstate], dtype=opt["dtype"])
-                v[0] = (cstate @ dPk[0].dot(state.T)).T
-                v[1] = (cstate @ dPk[1].dot(state.T)).T
-                v[2] = (cstate @ dPk[2].dot(state.T)).T
+                v[0] = cstate @ dPk[0] @ state.T
+                v[1] = cstate @ dPk[1] @ state.T
+                v[2] = cstate @ dPk[2] @ state.T
 
                 if matrix:
                     ret = (v,)
@@ -1251,9 +1259,9 @@ coefficients assigned to each state
                 # calculate projections on states
                 v = np.empty([3, nstate], dtype=opt["dtype"])
 
-                v[0] = einsum("ij,ji->i", cstate, dPk[0].dot(state.T))
-                v[1] = einsum("ij,ji->i", cstate, dPk[1].dot(state.T))
-                v[2] = einsum("ij,ji->i", cstate, dPk[2].dot(state.T))
+                v[0] = einsum("ij,ji->i", cstate, dPk[0] @ state.T)
+                v[1] = einsum("ij,ji->i", cstate, dPk[1] @ state.T)
+                v[2] = einsum("ij,ji->i", cstate, dPk[2] @ state.T)
 
                 ret = (v,)
 
@@ -1273,23 +1281,17 @@ coefficients assigned to each state
 
                         # calculate 2nd derivative
                         # xx
-                        vv[0, s] = cstate @ ddPk[0].dot(state[s]) - de * absv[0] ** 2
+                        vv[0, s] = cstate @ ddPk[0] @ state[s] - de * absv[0] ** 2
                         # yy
-                        vv[1, s] = cstate @ ddPk[1].dot(state[s]) - de * absv[1] ** 2
+                        vv[1, s] = cstate @ ddPk[1] @ state[s] - de * absv[1] ** 2
                         # zz
-                        vv[2, s] = cstate @ ddPk[2].dot(state[s]) - de * absv[2] ** 2
+                        vv[2, s] = cstate @ ddPk[2] @ state[s] - de * absv[2] ** 2
                         # yz
-                        vv[3, s] = (
-                            cstate @ ddPk[3].dot(state[s]) - de * absv[1] * absv[2]
-                        )
+                        vv[3, s] = cstate @ ddPk[3] @ state[s] - de * absv[1] * absv[2]
                         # xz
-                        vv[4, s] = (
-                            cstate @ ddPk[4].dot(state[s]) - de * absv[0] * absv[2]
-                        )
+                        vv[4, s] = cstate @ ddPk[4] @ state[s] - de * absv[0] * absv[2]
                         # xy
-                        vv[5, s] = (
-                            cstate @ ddPk[5].dot(state[s]) - de * absv[0] * absv[1]
-                        )
+                        vv[5, s] = cstate @ ddPk[5] @ state[s] - de * absv[0] * absv[1]
 
                 else:
                     vv = np.empty([6, nstate], dtype=opt["dtype"])
@@ -1303,21 +1305,21 @@ coefficients assigned to each state
 
                         # calculate 2nd derivative
                         # xx
-                        vv[0, s] = cstate[s] @ ddPk[0].dot(state[s]) - de @ absv[0] ** 2
+                        vv[0, s] = cstate[s] @ ddPk[0] @ state[s] - de @ absv[0] ** 2
                         # yy
-                        vv[1, s] = cstate[s] @ ddPk[1].dot(state[s]) - de @ absv[1] ** 2
+                        vv[1, s] = cstate[s] @ ddPk[1] @ state[s] - de @ absv[1] ** 2
                         # zz
-                        vv[2, s] = cstate[s] @ ddPk[2].dot(state[s]) - de @ absv[2] ** 2
+                        vv[2, s] = cstate[s] @ ddPk[2] @ state[s] - de @ absv[2] ** 2
                         # yz
-                        vv[3, s] = cstate[s] @ ddPk[3].dot(state[s]) - de @ (
+                        vv[3, s] = cstate[s] @ ddPk[3] @ state[s] - de @ (
                             absv[1] * absv[2]
                         )
                         # xz
-                        vv[4, s] = cstate[s] @ ddPk[4].dot(state[s]) - de @ (
+                        vv[4, s] = cstate[s] @ ddPk[4] @ state[s] - de @ (
                             absv[0] * absv[2]
                         )
                         # xy
-                        vv[5, s] = cstate[s] @ ddPk[5].dot(state[s]) - de @ (
+                        vv[5, s] = cstate[s] @ ddPk[5] @ state[s] - de @ (
                             absv[0] * absv[1]
                         )
 
@@ -1329,9 +1331,9 @@ coefficients assigned to each state
                 # calculate the full matrix
                 v = np.empty([3, nstate, nstate], dtype=opt["dtype"])
                 for s, e in enumerate(energy):
-                    v[0, s] = cstate @ (dPk[0] - e * dSk[0]).dot(state[s])
-                    v[1, s] = cstate @ (dPk[1] - e * dSk[1]).dot(state[s])
-                    v[2, s] = cstate @ (dPk[2] - e * dSk[2]).dot(state[s])
+                    v[0, s] = cstate @ (dPk[0] - e * dSk[0]) @ state[s]
+                    v[1, s] = cstate @ (dPk[1] - e * dSk[1]) @ state[s]
+                    v[2, s] = cstate @ (dPk[2] - e * dSk[2]) @ state[s]
 
                 if matrix:
                     ret = (v,)
@@ -1344,9 +1346,9 @@ coefficients assigned to each state
                 # calculate diagonal components on states
                 v = np.empty([3, nstate], dtype=opt["dtype"])
                 for s, e in enumerate(energy):
-                    v[0, s] = cstate[s] @ (dPk[0] - e * dSk[0]).dot(state[s])
-                    v[1, s] = cstate[s] @ (dPk[1] - e * dSk[1]).dot(state[s])
-                    v[2, s] = cstate[s] @ (dPk[2] - e * dSk[2]).dot(state[s])
+                    v[0, s] = cstate[s] @ (dPk[0] - e * dSk[0]) @ state[s]
+                    v[1, s] = cstate[s] @ (dPk[1] - e * dSk[1]) @ state[s]
+                    v[2, s] = cstate[s] @ (dPk[2] - e * dSk[2]) @ state[s]
 
                 ret = (v,)
 
@@ -1367,32 +1369,32 @@ coefficients assigned to each state
                         # calculate 2nd derivative
                         # xx
                         vv[0, s] = (
-                            cstate @ (ddPk[0] - e * ddSk[0]).dot(state[s])
+                            cstate @ (ddPk[0] - e * ddSk[0]) @ state[s]
                             - de * absv[0] ** 2
                         )
                         # yy
                         vv[1, s] = (
-                            cstate @ (ddPk[1] - e * ddSk[1]).dot(state[s])
+                            cstate @ (ddPk[1] - e * ddSk[1]) @ state[s]
                             - de * absv[1] ** 2
                         )
                         # zz
                         vv[2, s] = (
-                            cstate @ (ddPk[2] - e * ddSk[2]).dot(state[s])
+                            cstate @ (ddPk[2] - e * ddSk[2]) @ state[s]
                             - de * absv[2] ** 2
                         )
                         # yz
                         vv[3, s] = (
-                            cstate @ (ddPk[3] - e * ddSk[3]).dot(state[s])
+                            cstate @ (ddPk[3] - e * ddSk[3]) @ state[s]
                             - de * absv[1] * absv[2]
                         )
                         # xz
                         vv[4, s] = (
-                            cstate @ (ddPk[4] - e * ddSk[4]).dot(state[s])
+                            cstate @ (ddPk[4] - e * ddSk[4]) @ state[s]
                             - de * absv[0] * absv[2]
                         )
                         # xy
                         vv[5, s] = (
-                            cstate @ (ddPk[5] - e * ddSk[5]).dot(state[s])
+                            cstate @ (ddPk[5] - e * ddSk[5]) @ state[s]
                             - de * absv[0] * absv[1]
                         )
 
@@ -1409,31 +1411,31 @@ coefficients assigned to each state
                         # calculate 2nd derivative
                         # xx
                         vv[0, s] = (
-                            cstate[s] @ (ddPk[0] - e * ddSk[0]).dot(state[s])
+                            cstate[s] @ (ddPk[0] - e * ddSk[0]) @ state[s]
                             - de @ absv[0] ** 2
                         )
                         # yy
                         vv[1, s] = (
-                            cstate[s] @ (ddPk[1] - e * ddSk[1]).dot(state[s])
+                            cstate[s] @ (ddPk[1] - e * ddSk[1]) @ state[s]
                             - de @ absv[1] ** 2
                         )
                         # zz
                         vv[2, s] = (
-                            cstate[s] @ (ddPk[2] - e * ddSk[2]).dot(state[s])
+                            cstate[s] @ (ddPk[2] - e * ddSk[2]) @ state[s]
                             - de @ absv[2] ** 2
                         )
                         # yz
-                        vv[3, s] = cstate[s] @ (ddPk[3] - e * ddSk[3]).dot(
-                            state[s]
-                        ) - de @ (absv[1] * absv[2])
+                        vv[3, s] = cstate[s] @ (ddPk[3] - e * ddSk[3]) @ state[
+                            s
+                        ] - de @ (absv[1] * absv[2])
                         # xz
-                        vv[4, s] = cstate[s] @ (ddPk[4] - e * ddSk[4]).dot(
-                            state[s]
-                        ) - de @ (absv[0] * absv[2])
+                        vv[4, s] = cstate[s] @ (ddPk[4] - e * ddSk[4]) @ state[
+                            s
+                        ] - de @ (absv[0] * absv[2])
                         # xy
-                        vv[5, s] = cstate[s] @ (ddPk[5] - e * ddSk[5]).dot(
-                            state[s]
-                        ) - de @ (absv[0] * absv[1])
+                        vv[5, s] = cstate[s] @ (ddPk[5] - e * ddSk[5]) @ state[
+                            s
+                        ] - de @ (absv[0] * absv[1])
 
                 ret += (vv,)
 

@@ -23,13 +23,6 @@ from ..data_sources import FileDataSIESTA, HamiltonianDataSource
 from .xarray import XarrayData
 
 try:
-    import pathos
-
-    _do_parallel_calc = True
-except:
-    _do_parallel_calc = False
-
-try:
     from aiida import orm
 
     Aiida_node = orm.Node
@@ -374,7 +367,7 @@ class BandsData(XarrayData):
             if not spin.is_diagonal:
                 spin_kwarg = {}
 
-            with bz.apply(pool=_do_parallel_calc, zip=True) as parallel:
+            with bz.apply(zip=True) as parallel:
                 spin_bands = parallel.dataarray.eigenstate(
                     wrap=partial(bands_wrapper, spin_index=spin_index),
                     **spin_kwarg,
