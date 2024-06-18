@@ -21,13 +21,6 @@ from ..data_sources import FileDataSIESTA
 from ..processors.spin import get_spin_options
 from .xarray import OrbitalData
 
-try:
-    import pathos
-
-    _do_parallel_calc = True
-except:
-    _do_parallel_calc = False
-
 
 class PDOSData(OrbitalData):
     """Holds PDOS Data in a custom xarray DataArray.
@@ -334,7 +327,7 @@ class PDOSData(OrbitalData):
         # Calculate the PDOS for all available spins
         PDOS = []
         for spin in spin_indices:
-            with bz.apply(pool=_do_parallel_calc) as parallel:
+            with bz.apply as parallel:
                 spin_PDOS = parallel.average.eigenstate(
                     spin=spin, wrap=lambda eig: eig.PDOS(E, distribution=distribution)
                 )

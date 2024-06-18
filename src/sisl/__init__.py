@@ -70,13 +70,13 @@ __bibtex__ = f"""# BibTeX information if people wish to cite
 # do not expose this helper package
 del _version, year, datetime
 
-import sisl._environ as _environ
+from sisl._environ import get_environ_variable
 
 # Immediately check if the file is logable
-log_file = _environ.get_environ_variable("SISL_LOG_FILE")
+log_file = get_environ_variable("SISL_LOG_FILE")
 if not log_file.is_dir():
     # Create the logging
-    log_lvl = _environ.get_environ_variable("SISL_LOG_LEVEL")
+    log_lvl = get_environ_variable("SISL_LOG_LEVEL")
 
     # Start the logging to the file
     logging.basicConfig(filename=str(log_file), level=getattr(logging, log_lvl))

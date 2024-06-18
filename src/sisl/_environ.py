@@ -94,13 +94,6 @@ def get_environ_variable(name: str):
     return variable["process"](variable["value"])
 
 
-# We register a few variables that may be used several places
-try:
-    _nprocs = len(os.sched_getaffinity(0))
-except Exception:
-    _nprocs = 1
-
-
 register_environ_variable(
     "SISL_LOG_FILE", "", "Log file to write into. If empty, do not log.", process=Path
 )
@@ -112,11 +105,28 @@ register_environ_variable(
     lambda x: x.upper(),
 )
 
+
 register_environ_variable(
     "SISL_NUM_PROCS",
-    min(1, _nprocs),
-    "Maximum number of CPU's used for parallel computing",
+    1,
+    "Maximum number of CPU's used for parallel computing (len(os.sched_getaffinity(0)) is a good guess)",
     process=int,
+)
+
+
+def _float_or_int(value):
+    value = float(value)
+    # See if it is an integer
+    if value == int(value):
+        value = int(value)
+    return value
+
+
+register_environ_variable(
+    "SISL_PAR_CHUNKSIZE",
+    0.1,
+    "Default chunksize for parallel processing, can severely impact performance.",
+    process=_float_or_int,
 )
 
 register_environ_variable(

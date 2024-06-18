@@ -64,6 +64,7 @@ from numpy import (
     floor,
     int32,
     log,
+    matmul,
     ogrid,
     pi,
     sin,
@@ -221,14 +222,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
 
     # Figure out whether we are dealing with a non-colinear calculation
     if S is None:
-
-        class S:
-            __slots__ = []
-            shape = (state.shape[1], state.shape[1])
-
-            @staticmethod
-            def dot(v):
-                return v
+        S = _FakeMatrix(state.shape[1])
 
     if spin is None:
         if S.shape[1] == state.shape[1] // 2:
@@ -258,7 +252,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
 
         d = distribution(E - eig[0]).reshape(1, -1)
         cs = conj(state[0]).reshape(-1, 2)
-        v = S.dot(state[0].reshape(-1, 2))
+        v = S @ state[0].reshape(-1, 2)
         D1 = (cs * v).real  # uu,dd PDOS
         PDOS[0, :, :] = D1.sum(1).reshape(-1, 1) * d  # total DOS
         PDOS[3, :, :] = (D1[:, 0] - D1[:, 1]).reshape(-1, 1) * d  # z-dos
@@ -269,7 +263,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
         for i in range(1, len(eig)):
             d = distribution(E - eig[i]).reshape(1, -1)
             cs = conj(state[i]).reshape(-1, 2)
-            v = S.dot(state[i].reshape(-1, 2))
+            v = S @ state[i].reshape(-1, 2)
             D1 = (cs * v).real
             PDOS[0, :, :] += D1.sum(1).reshape(-1, 1) * d
             PDOS[3, :, :] += (D1[:, 0] - D1[:, 1]).reshape(-1, 1) * d
@@ -279,12 +273,12 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
             PDOS[2, :, :] += (D2.imag - D1.imag) * d
 
     else:
-        PDOS = (conj(state[0]) * S.dot(state[0])).real.reshape(-1, 1) * distribution(
+        PDOS = (conj(state[0]) * (S @ state[0])).real.reshape(-1, 1) * distribution(
             E - eig[0]
         ).reshape(1, -1)
 
         for i in range(1, len(eig)):
-            PDOS += (conj(state[i]) * S.dot(state[i])).real.reshape(
+            PDOS += (conj(state[i]) * (S @ state[i])).real.reshape(
                 -1, 1
             ) * distribution(E - eig[i]).reshape(1, -1)
         PDOS.shape = (1, *PDOS.shape)
@@ -491,14 +485,7 @@ def spin_moment(state, S=None, project: bool = False):
         return spin_moment(state.reshape(1, -1), S, project)[0]
 
     if S is None:
-
-        class S:
-            __slots__ = []
-            shape = (state.shape[1] // 2, state.shape[1] // 2)
-
-            @staticmethod
-            def dot(v):
-                return v
+        S = _FakeMatrix(state.shape[1] // 2, state.shape[1] // 2)
 
     if S.shape[1] == state.shape[1]:
         S = S[::2, ::2]
@@ -513,7 +500,7 @@ def spin_moment(state, S=None, project: bool = False):
 
         for i in range(len(state)):
             cs = conj(state[i]).reshape(-1, 2)
-            Sstate = S.dot(state[i].reshape(-1, 2))
+            Sstate = S @ state[i].reshape(-1, 2)
             D1 = (cs * Sstate).real
             s[2, i] = D1[:, 0] - D1[:, 1]
             D1 = cs[:, 1] * Sstate[:, 0]
@@ -530,7 +517,7 @@ def spin_moment(state, S=None, project: bool = False):
         # TODO but also way more memory demanding!
         for i in range(len(state)):
             cs = conj(state[i]).reshape(-1, 2)
-            Sstate = S.dot(state[i].reshape(-1, 2))
+            Sstate = S @ state[i].reshape(-1, 2)
             D = cs.T @ Sstate
             s[2, i] = D[0, 0].real - D[1, 1].real
             s[0, i] = D[1, 0].real + D[0, 1].real
@@ -603,7 +590,7 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
     if S is None:
         S_state_beta = state_beta.T
     else:
-        S_state_beta = S.dot(state_beta.T)
+        S_state_beta = S @ state_beta.T
 
     if sum:
 
@@ -667,9 +654,9 @@ def _velocity_matrix_non_ortho(
     for s, e in enumerate(energy):
         # Since dHk *may* be a csr_matrix or sparse, we have to do it like
         # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        v[0, s] = cs @ (dHk[0] - e * dSk[0]).dot(state[s])
-        v[1, s] = cs @ (dHk[1] - e * dSk[1]).dot(state[s])
-        v[2, s] = cs @ (dHk[2] - e * dSk[2]).dot(state[s])
+        v[0, s] = cs @ (dHk[0] - e * dSk[0]) @ state[s]
+        v[1, s] = cs @ (dHk[1] - e * dSk[1]) @ state[s]
+        v[2, s] = cs @ (dHk[2] - e * dSk[2]) @ state[s]
 
     v *= _velocity_const
     return v
@@ -696,9 +683,9 @@ def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
 
     cs = conj(state)
     for s in range(n):
-        v[0, s] = cs @ dHk[0].dot(state[s])
-        v[1, s] = cs @ dHk[1].dot(state[s])
-        v[2, s] = cs @ dHk[2].dot(state[s])
+        v[0, s] = cs @ dHk[0] @ state[s]
+        v[1, s] = cs @ dHk[1] @ state[s]
+        v[2, s] = cs @ dHk[2] @ state[s]
 
     v *= _velocity_const
     return v
@@ -812,6 +799,7 @@ def conductivity(
     degenerate_dir=(1, 1, 1),
     *,
     eigenstate_kwargs=None,
+    apply_kwargs=None,
 ):
     r"""Electronic conductivity for a given `BrillouinZone` integral
 
@@ -843,6 +831,8 @@ def conductivity(
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
        already used.
+    apply_kwargs : dict, optional
+       keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
 
     Returns
     -------
@@ -867,6 +857,8 @@ def conductivity(
 
     if eigenstate_kwargs is None:
         eigenstate_kwargs = {}
+    if apply_kwargs is None:
+        apply_kwargs = {}
 
     method = method.lower()
     if method == "ahc":
@@ -885,9 +877,9 @@ def conductivity(
                 f"conductivity: found a dimensionality of 0 which is non-physical"
             )
 
-        cond = bz.apply.average.eigenstate(**eigenstate_kwargs, wrap=_ahc) * (
-            -constant.G0 / (4 * np.pi)
-        )
+        cond = bz.apply(**apply_kwargs).average.eigenstate(
+            **eigenstate_kwargs, wrap=_ahc
+        ) * (-constant.G0 / (4 * np.pi))
 
         # Convert the dimensions from S/m^D to S/cm^D
         cond /= vol * units(f"Ang^{dim}", f"cm^{dim}")
@@ -909,8 +901,9 @@ def berry_phase(
     closed: bool = True,
     method="berry",
     *,
-    eigenstate_kwargs=None,
     ret_overlap: bool = False,
+    eigenstate_kwargs=None,
+    apply_kwargs=None,
 ):
     r""" Calculate the Berry-phase on a loop path
 
@@ -950,11 +943,16 @@ def berry_phase(
        a closed loop integration, see :cite:`Zak1989`.
        Additionally, one may do the Berry-phase calculation using the SVD method of the
        overlap matrices. Simply append ":svd" to the chosen method, e.g. "berry:svd".
+    ret_overlap:
+       optionally return the overlap matrix :math:`\mathbf S`
     eigenstate_kwargs : dict, optional
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass ``k`` as that is already used.
-    ret_overlap:
-       optionally return the overlap matrix :math:`\mathbf S`
+    eigenstate_kwargs : dict, optional
+       keyword arguments passed directly to the ``contour.eigenstate`` method.
+       One should *not* pass ``k`` as that is already used.
+    apply_kwargs : dict, optional
+       keyword arguments passed directly to ``contour.apply(**apply_kwargs)``.
 
     Notes
     -----
@@ -986,18 +984,13 @@ def berry_phase(
     >>> kR = 0.01
     >>> normal = [0, 0, 1]
     >>> origin = [1/3, 2/3, 0]
-    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
-    >>> phase = berry_phase(bz, sub=0)
+    >>> contour = BrillouinZone.param_circle(H, N, kR, normal, origin)
+    >>> phase = berry_phase(contour, sub=0)
 
     Calculate the multi-band Berry-phase using the SVD method, thus
     ensuring removal of singular vectors.
 
-    >>> N = 30
-    >>> kR = 0.01
-    >>> normal = [0, 0, 1]
-    >>> origin = [1/3, 2/3, 0]
-    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
-    >>> phase = berry_phase(bz, method="berry:svd")
+    >>> phase = berry_phase(contour, method="berry:svd")
     """
     from .hamiltonian import Hamiltonian
 
@@ -1009,6 +1002,8 @@ def berry_phase(
 
     if eigenstate_kwargs is None:
         eigenstate_kwargs = {}
+    if apply_kwargs is None:
+        apply_kwargs = {}
 
     if contour.parent.orthogonal:
 
@@ -1042,6 +1037,7 @@ def berry_phase(
 
         def _process(prd, overlap):
             U, _, V = svd_destroy(overlap)
+            # We have to use dot, since @ does not allow scalars
             return dot(prd, U @ V)
 
     if sub is None:
@@ -1087,7 +1083,7 @@ def berry_phase(
                 prd = _process(prd, prev.inner(first, projection="matrix"))
             return prd
 
-    S = _berry(contour.apply.iter.eigenstate(**eigenstate_kwargs))
+    S = _berry(contour.apply(**apply_kwargs).iter.eigenstate(**eigenstate_kwargs))
 
     # Get the angle of the berry-phase
     # When using np.angle the returned value is in ]-pi; pi]
@@ -1262,7 +1258,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # Convert the geometry (hosting the wavefunction coefficients) coordinates into
     # grid-fractionals X grid-shape to get index-offsets in the grid for the geometry
     # supercell.
-    geom_shape = dot(geometry.cell, ic_shape.T)
+    geom_shape = geometry.cell @ ic_shape.T
 
     # In the following we don't care about division
     # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
@@ -1310,7 +1306,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     rxyz[..., 2] = cphi
     # Reshape
     rxyz.shape = (-1, 3)
-    idx = dot(rxyz, ic_shape.T)
+    idx = rxyz @ ic_shape.T
     idxm = idx.min(0)
     idxM = idx.max(0)
     del ctheta_sphi, stheta_sphi, cphi, idx, rxyz, nrxyz
@@ -1329,7 +1325,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
         # the atoms
         # The coordinates are relative to origin, so we need to shift (when writing a grid
         # it is with respect to origin)
-        idx = dot(geometry.xyz[ia, :] - origin, ic_shape.T)
+        idx = (geometry.xyz[ia, :] - origin) @ ic_shape.T
 
         # Get min-max for all atoms
         idx_mm[ia, 0, :] = idxm * R + idx

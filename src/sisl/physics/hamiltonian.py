@@ -432,7 +432,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
             with get_sile(sile, mode="r") as fh:
                 return fh.read_hamiltonian(*args, **kwargs)
 
-    def fermi_level(self, bz=None, q=None, distribution="fermi_dirac", q_tol=1e-10):
+    def fermi_level(
+        self,
+        bz=None,
+        q=None,
+        distribution="fermi_dirac",
+        q_tol: float = 1e-10,
+        *,
+        apply_kwargs=None,
+    ):
         """Calculate the Fermi-level using a Brillouinzone sampling and a target charge
 
         The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues
@@ -451,6 +459,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
             used distribution, must accept the keyword ``mu`` as parameter for the Fermi-level
         q_tol : float, optional
             tolerance of charge for finding the Fermi-level
+        apply_kwargs : dict, optional
+           keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
 
         Returns
         -------
@@ -465,6 +475,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             # Overwrite the parent in bz
             bz.set_parent(self)
+
+        if apply_kwargs is None:
+            apply_kwargs = {}
 
         if q is None:
             if self.spin.is_unpolarized:
@@ -512,7 +525,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             return Ef
 
         # Retrieve dispatcher for averaging
-        eigh = bz.apply.array.eigh
+        eigh = bz.apply(**apply_kwargs).array.eigh
 
         if self.spin.is_polarized and q.size == 2:
             if np.any(q >= len(self)):

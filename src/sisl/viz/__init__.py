@@ -30,14 +30,9 @@ Or conda (only possible if inside a conda environment):
 from sisl._environ import register_environ_variable
 from sisl._lazy_viz import clear_viz_placeholders
 
-try:
-    _nprocs = len(os.sched_getaffinity(0))
-except Exception:
-    _nprocs = 1
-
 register_environ_variable(
     "SISL_VIZ_NUM_PROCS",
-    min(1, _nprocs),
+    1,
     description="Maximum number of processors used for parallel plotting",
     process=int,
 )

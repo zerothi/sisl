@@ -9,6 +9,10 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- added `apply_kwargs` to methods which uses a `BrillouinZone` object.
+  This enables one to leverage parallel processing for calculations.
+- `SISL_PAR_CHUNKSIZE=25`, new default parameter for parallel processing.
+  Can greatly improve parallel processing of BZ integrations
 - added `vectorsSileSiesta` to read vibra eigenmode output
 - added `dihedral` to `Geometry`, #773
 - ability to retain sub-classes through `<class>.new` calls
@@ -99,6 +103,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- BZ apply methods are now by default parallel (if ``SISL_NUM_PROCS>1``)
 - `hsxSileSiesta.read_hamiltonian` now implicitly shifts Fermi-level to 0 (for newer HSX versions)
 - deprecated `periodic` to `axes` argument in `BrillouinZone.volume`
 - changed `Eigenmode.displacement` shape, please read the documentation

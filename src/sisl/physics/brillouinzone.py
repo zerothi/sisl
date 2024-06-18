@@ -127,7 +127,11 @@ will be used for the parallel processing.
 
 The ``Pool`` should implement some standard methods that are
 existing in the ``pathos`` enviroment such as ``Pool.restart`` and ``Pool.terminate``
-and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis.
+and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for details.
+
+Finally, the performance of the parallel pools are generally very dependent
+on the chunksize of the jobs. By default the chunksize is controlled by
+``SISL_PAR_CHUNKSIZE``, and playing with this can heavily impact performance.
 
 
    BrillouinZone
