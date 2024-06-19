@@ -13,12 +13,7 @@ requires = [
     "setuptools_scm[toml]>=6.2",
     "scikit-build-core[pyproject]>=0.8",
     "Cython>=3",
-    # see https://github.com/scipy/oldest-supported-numpy/
-    # should fix #310
-    "oldest-supported-numpy; sys_platform != 'win32'",
-    # TODO work-arounds for windows installations where -mno-cygwin is passed
-    "numpy==1.19.5 ; sys_platform == 'win32' and python_version <= '3.9'",
-    "numpy==1.21.5 ; sys_platform == 'win32' and python_version >= '3.10'",
+    "numpy>=2.0.0rc1"
 ]
 build-backend = "scikit_build_core.build"
 
@@ -39,10 +34,7 @@ keywords = [
 ]
 
 dependencies = [
-    # TODO work-arounds for windows installations
-    "numpy>=1.20,<2 ; sys_platform == 'win32' and python_version <= '3.9'",
-    "numpy>=1.21.5,<2 ; sys_platform == 'win32' and python_version >= '3.10'",
-    "numpy>=1.20,<2 ; sys_platform != 'win32'",
+    "numpy>=1.20",
     "scipy>=1.5",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
@@ -293,7 +285,7 @@ disable = [
 legacy_tox_ini = """
 [tox]
 minversion = 3.3.0
-envlist = py38,py39,py310,py311
+envlist = py39,py310,py311,py312
 isolated_build = True
 
 [testenv]
@@ -318,7 +310,7 @@ multi_line_output = "VERTICAL_HANGING_INDENT"
 
 [tool.black]
 line-length = 88
-target-version = ["py38", "py39", "py310", "py311", "py312"]
+target-version = ["py39", "py310", "py311", "py312"]
 extend-exclude = """
 (
  ^/files/*
@@ -330,6 +322,10 @@ extend-exclude = """
 
 [tool.cibuildwheel]
 build-verbosity = 3
+archs = ["auto"]
+
+before-test = "bash {project}/tools/build_tools/cibw_before_test.sh"
+test-requires = ["pytest", "joblib"]
 test-extras = "test"
 
 skip = [
@@ -342,15 +338,17 @@ test-skip = ""
 # Instead of running pytest directly, we use a bash script that will set up
 # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
 # the sisl-files directory, which contains files for testing.
-test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
+test-command = "bash {project}/tools/build_tools/test_wheels.sh"
 
 [tool.cibuildwheel.linux]
 
+
+[[tool.cibuildwheel.overrides]]
+# basically adding to test-requires for windows
+select = "*win*"
+inherit.test-requires = "prepend"
+test-requires = "delvewheel"
+
 [tool.cibuildwheel.windows]
-
-before-build = "pip install delvewheel"
-repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
-
-test-command = "pytest --pyargs sisl -m 'not slow'"
 
 [tool.cibuildwheel.macos]

@@ -1544,10 +1544,10 @@ class Atoms:
         return self._species
 
     @property
-    def no(self):
+    def no(self) -> int:
         """Total number of orbitals in this list of atoms"""
         uorbs = _a.arrayi([a.no for a in self.atom])
-        return uorbs[self.species].sum()
+        return int(uorbs[self.species].sum())
 
     @property
     def orbitals(self):

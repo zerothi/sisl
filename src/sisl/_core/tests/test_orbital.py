@@ -9,6 +9,11 @@ import numpy as np
 import pytest
 from scipy import interpolate as interp
 
+try:
+    from scipy.integrate import trapezoid
+except ImportError:
+    from scipy.integrate import trapz as trapezoid
+
 from sisl._core.orbital import (
     AtomicOrbital,
     GTOrbital,
@@ -421,7 +426,7 @@ class Test_hydrogenicorbital:
                 orb = HydrogenicOrbital(n, l, 0, zeff)
                 x = np.linspace(0, orb.R, 1000, endpoint=True)
                 Rnl = orb.radial(x)
-                I = np.trapz(x**2 * Rnl**2, x=x)
+                I = trapezoid(x**2 * Rnl**2, x=x)
                 assert abs(I - 1) < 1e-4
 
     def test_togrid(self):

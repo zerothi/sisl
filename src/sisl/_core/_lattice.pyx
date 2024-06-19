@@ -8,7 +8,6 @@ import numpy as np
 # This enables Cython enhanced compatibilities
 
 cimport numpy as np
-cimport numpy.math as npmath
 
 
 @cython.boundscheck(False)
@@ -57,7 +56,7 @@ cpdef cell_reciprocal(np.ndarray[np.float64_t, ndim=2] cell):
     rcell[2, 0] = cell[0, 1] * cell[1, 2] - cell[0, 2] * cell[1, 1]
     rcell[2, 1] = cell[0, 2] * cell[1, 0] - cell[0, 0] * cell[1, 2]
     rcell[2, 2] = cell[0, 0] * cell[1, 1] - cell[0, 1] * cell[1, 0]
-    cdef double twopi = 2 * npmath.PI
+    cdef double twopi = 2 * np.pi
     cdef double f
     f = twopi / (rcell[0, 0] * cell[0, 0] + rcell[0, 1] * cell[0, 1] + rcell[0, 2] * cell[0, 2])
     rcell[0, 0] = rcell[0, 0] * f

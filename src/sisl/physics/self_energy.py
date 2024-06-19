@@ -329,14 +329,14 @@ class RecursiveSI(SemiInfinite):
         numpy.ndarray
             the self-energy corresponding to the semi-infinite direction
         """
-        if E.imag == 0.0:
-            E = E.real + 1j * self.eta
-
         # Get k-point
         k = _a.asarrayd(k)
 
         if dtype is None:
             dtype = complex128
+        if E.imag == 0.0:
+            E = E.real + 1j * self.eta
+        E = dtype(E)
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -450,14 +450,14 @@ class RecursiveSI(SemiInfinite):
         numpy.ndarray
             the self-energy corresponding to the semi-infinite direction
         """
-        if E.imag == 0.0:
-            E = E.real + 1j * self.eta
-
         # Get k-point
         k = _a.asarrayd(k)
 
         if dtype is None:
             dtype = complex128
+        if E.imag == 0.0:
+            E = E.real + 1j * self.eta
+        E = dtype(E)
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
