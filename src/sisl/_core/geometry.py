@@ -3618,6 +3618,10 @@ class Geometry(
         ----------
         grid_shape:
            the grid shape (i.e. resolution) in which to calculate the orbital values.
+
+        Notes
+        -----
+        This method does not belong on this geometry. It will be removed eventually.
         """
         # We need to import these here to avoid circular imports.
         from sisl import Grid
