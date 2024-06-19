@@ -3662,21 +3662,14 @@ class Geometry(
 
             corners_i = grid.index(corners)
 
-            ix = np.arange(
-                max(corners_i[:, 0].min(), 0),
-                min(corners_i[:, 0].max() + 1, grid.shape[0]),
-            )
-            iy = np.arange(
-                max(corners_i[:, 1].min(), 0),
-                min(corners_i[:, 1].max() + 1, grid.shape[1]),
-            )
-            iz = np.arange(
-                max(corners_i[:, 2].min(), 0),
-                min(corners_i[:, 2].max() + 1, grid.shape[2]),
-            )
+            cmin = np.maximum(corners_i.min(axis=0), 0)
+            cmax = np.maximum(corners_i.max(axis=0) + 1, 0)
 
-            indices = np.meshgrid(ix, iy, iz)
-            indices = np.array(indices).T.reshape(-1, 3)
+            rx = slice(cmin[0], min(cmax[0], grid.shape[0]))
+            ry = slice(cmin[1], min(cmax[1], grid.shape[1]))
+            rz = slice(cmin[2], min(cmax[2], grid.shape[2]))
+
+            indices = np.mgrid[rx, ry, rz].reshape(3, -1).T
 
             return indices
 
