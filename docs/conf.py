@@ -23,6 +23,7 @@ import pathlib
 import sys
 from datetime import date
 from functools import wraps
+from typing import Literal
 
 _log = logging.getLogger("sisl_doc")
 
@@ -144,11 +145,54 @@ numpydoc_attributes_as_param_list = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
-# Short-hand for :doi:
+
+class GHFormat:
+
+    def __init__(self, type: Literal["issues", "discussions", "pull"]):
+        self._type = type
+
+    def is_valid(self, number: str) -> bool:
+        try:
+            int(number)
+            return True
+        except ValueError:
+            return False
+
+    def format(self, number: str) -> str:
+        if not self.is_valid(number):
+            return ""  # no formatting, explicitly requesting no output
+
+        prefix = {
+            "issues": "GH",
+            "pull": "PR",
+            "discussions": "D",
+        }[self._type]
+
+        return f"{prefix}{number}"
+
+    def __mod__(self, arg):
+        return self.format(arg)
+
+
+class GHLink(GHFormat):
+    url = "https://github.com/zerothi/sisl"
+
+    def format(self, number: str) -> str:
+        if not self.is_valid(number):
+            return f"{self.url}/{self._type}"  # no formatting, explicitly requesting no output
+
+        return f"{self.url}/{self._type}/{number}"
+
+
+def _link_constructor(type):
+    return GHLink(type), GHFormat(type)
+
+
 extlinks = {
-    "issue": ("https://github.com/zerothi/sisl/issues/%s", "GH%s"),
-    "pull": ("https://github.com/zerothi/sisl/pull/%s", "PR%s"),
-    "discussion": ("https://github.com/zerothi/sisl/discussions/%s", "D%s"),
+    # If these are changed, please update pyproject.toml under towncrier section
+    "issue": _link_constructor("issues"),
+    "pull": _link_constructor("pull"),
+    "discussion": _link_constructor("discussions"),
     "doi": ("https://doi.org/%s", "%s"),
 }
 
@@ -323,6 +367,7 @@ napoleon_type_aliases = autodoc_type_aliases
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = [
+    "docs/release/template.rst",
     "build",
     "_build",
     "**/setupegg.py",

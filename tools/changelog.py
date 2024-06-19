@@ -20,7 +20,7 @@ Usage::
 
     $ ./tools/changelog.py <token> <revision range>
 
-The output is utf8 rst.
+The output is utf8 rst or md.
 
 Dependencies
 ------------
@@ -42,6 +42,7 @@ import datetime
 import os
 import re
 import sys
+from typing import Literal
 
 from git import Repo
 from github import Github
@@ -49,7 +50,7 @@ from github import Github
 if sys.version_info[:2] < (3, 6):
     raise RuntimeError("Python version must be >= 3.6")
 
-DISCARD_AUTHORS = ("Homu", "lgtm-com[bot]", "dependabot[bot]")
+DISCARD_AUTHORS = {"Homu", "lgtm-com[bot]", "dependabot[bot]", "dependabot-preview"}
 
 this_repo = Repo(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -62,157 +63,74 @@ pull_request_msg = """
 A total of %d pull requests were merged for this release.
 """
 
+FormatType = Literal["md", "rst"]
+
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def get_authors(revision_range):
-    pat = "^.*\\t(.*)$"
-    lst_release, cur_release = [r.strip() for r in revision_range.split("..")]
+def get_authors(revision_range: str):
+    lst_release, _ = [r.strip() for r in revision_range.split("..")]
 
-    # authors, in current release and previous to current release.
-    cur = set(re.findall(pat, this_repo.git.shortlog("-s", revision_range), re.M))
-    pre = set(re.findall(pat, this_repo.git.shortlog("-s", lst_release), re.M))
+    def rev_authors(rev: str) -> set[str]:
+        # authors, in current release and previous to current release.
+        authors_pat = "^.*\\t(.*)$"
+        grp1 = "--group=author"
+        grp2 = "--group=trailer:co-authored-by"
+        logs = this_repo.git.shortlog("-s", grp1, grp2, rev)
+        authors = set(re.findall(authors_pat, logs, re.M)) - DISCARD_AUTHORS
+        return authors
 
-    # Homu is the author of auto merges, clean him out.
-    for discard_author in DISCARD_AUTHORS:
-        cur.discard(discard_author)
-        pre.discard(discard_author)
+    authors_cur = rev_authors(revision_range)
+    authors_pre = rev_authors(lst_release)
 
     # Append '+' to new authors.
-    authors = [s + " +" for s in cur - pre] + [s for s in cur & pre]
+    authors_new = [s + " +" for s in authors_cur - authors_pre]
+    authors_old = list(authors_cur & authors_pre)
+    authors = authors_new + authors_old
     authors.sort()
     return authors
 
 
-def get_commit_date(repo, rev):
-    """Retrive the object that defines the revision"""
+def get_commit_date(repo, rev: str) -> datetime.datetime:
+    """Retrieve the object that defines the revision"""
     return datetime.datetime.fromtimestamp(repo.commit(rev).committed_date)
 
 
-def get_pull_requests(repo, revision_range):
+def get_pull_requests(repo, revision_range: str):
     prnums = []
 
     # From regular merges
     merges = this_repo.git.log("--oneline", "--merges", revision_range)
-    issues = re.findall("Merge pull request \\#(\\d*)", merges)
+    issues = re.findall(r"Merge pull request \#(\d*)", merges)
     prnums.extend(int(s) for s in issues)
 
     # From Homu merges (Auto merges)
-    issues = re.findall("Auto merge of \\#(\\d*)", merges)
+    issues = re.findall(r"Auto merge of \#(\d*)", merges)
     prnums.extend(int(s) for s in issues)
 
     # From fast forward squash-merges
     commits = this_repo.git.log(
         "--oneline", "--no-merges", "--first-parent", revision_range
     )
-    issues = re.findall("^.*\\(\\#(\\d+)\\)$", commits, re.M)
+    issues = re.findall(r"^.*(\#|gh-|gh-\#)\((\d+)\)$", commits, re.M)
     prnums.extend(int(s) for s in issues)
 
     # get PR data from github repo
-    prnums.sort()
+    prnums = set(prnums)
+    prnums = sorted(list(prnums))
     if 1 in prnums:
         # there is a problem in the repo about referencing the first
-        # pr (which is actually an issue). So we jush let it go.
-        del prnums[0]
+        # pr (which is actually an issue). So we just let it go.
+        del prnums[prnums.index(1)]
 
-    prs = []
-    for n in prnums:
-        import pprint
-
-        try:
-            prs.append(repo.get_pull(n))
-        except Exception:
-            pass
+    prs = [repo.get_pull(n) for n in prnums]
 
     return prs
 
 
-def rst_change_links(line):
-
-    # find matches, and convert to links
-    reps = []
-    for m in re.finditer(r"#\d+", line):
-        s, e = m.span(0)
-        num = m.group(0)[1:]
-        reps.append((s, e, num))
-
-    for s, e, num in reps[::-1]:
-        line = line[:s] + f":pull:`#{num} <{num}>`" + line[e:]
-    return line
-
-
-def read_changelog(prior_rel, current_rel, format="md"):
-    # rst search for item
-    md_item = re.compile(r"^\s*-")
-
-    # when to capture the content
-    is_first = True
-    is_head = current_rel == "HEAD"
-    print_out = False
-    # for getting the date
-    date = None
-    out = []
-    for line in open("../CHANGELOG.md", "r"):
-        # ensure no tabs are present
-        line = line.replace("\t", "  ")
-
-        # Also ensure lines have no spaces for empty lines
-        if len(line.strip()) == 0:
-            line = "\n"
-
-        if is_head and line.startswith("##") and is_first:
-            is_first = False
-            print_out = True
-            date = line.split("-", 1)[1].strip()
-            continue
-
-        elif f"## [{current_rel}]" in line:
-            is_first = False
-            print_out = True
-            date = line.split("-", 1)[1].strip()
-            continue
-        elif f"## [{prior_rel}]" in line:
-            is_first = False
-            break
-        elif not print_out:
-            continue
-
-        header = 0
-        if format == "md":
-            # no change in header lines
-            pass
-        elif format == "rst":
-            if line.startswith("###"):
-                header = 3
-            elif line.startswith("##"):
-                header = 2
-            elif line.startswith("#"):
-                header = 1
-            elif md_item.search(line):
-                line = line.replace("-", "*", 1)
-
-            if header > 0:
-                line = line[header:].lstrip()
-                out.append(heading(line, header, format) + "\n")
-                continue
-
-            line = rst_change_links(line)
-
-        out.append(line)
-
-    # parse the date into an iso date
-    if date is not None:
-        try:
-            date = date2format(datetime.date(*[int(x) for x in date.split("-")]))
-        except ValueError:
-            pass
-
-    return "".join(out).strip(), date
-
-
-def date2format(date):
+def date2format(date) -> str:
     """Convert the date to the output format we require"""
     date = date.strftime("%d of %B %Y")
     if date[0] == "0":
@@ -220,7 +138,7 @@ def date2format(date):
     return date
 
 
-def heading(heading, lvl, format):
+def heading(heading: str, lvl: int, format: FormatType) -> str:
     """Convert to proper heading"""
     if format == "rst":
         heading = heading.strip()
@@ -229,13 +147,16 @@ def heading(heading, lvl, format):
     return f"{'#'*lvl} {heading}"
 
 
-def main(token, revision_range, format="md"):
+def main(token: str, revision_range: str, format: FormatType = "md") -> None:
     prior_rel, current_rel = [r.strip() for r in revision_range.split("..")]
+    if not current_rel:
+        # default to HEAD as eo-commits
+        current_rel = "HEAD"
 
     prior_rel_date = get_commit_date(this_repo, prior_rel)
     current_rel_date = get_commit_date(this_repo, current_rel)
 
-    # Also add the CHANGELOG.md information
+    prior_version = prior_rel
     if prior_rel.startswith("v"):
         prior_rel = prior_rel[1:]
 
@@ -246,76 +167,90 @@ def main(token, revision_range, format="md"):
     elif current_rel == "HEAD":
         current_version = "TBD"
 
-    changelog, date = read_changelog(prior_rel, current_rel, format=format)
-
-    # overwrite the date with the actual date of the commit
-    date = date2format(current_rel_date)
-
-    if format == "rst" and current_version != "TBD":
-        print("*" * len(current_version))
-        print(current_version)
-        print("*" * len(current_version))
-
-    # print date
-    if date is not None:
-        print(f"\nReleased {date}.\n")
-
     github = Github(token)
     github_repo = github.get_repo("zerothi/sisl")
 
     # document authors
-    authors = get_authors(revision_range)
+    print()
     print(heading("Contributors", 1, format))
+
+    authors = get_authors(revision_range)
     print(author_msg % len(authors))
 
-    for s in authors:
-        print("* " + s)
+    for author in authors:
+        print("* " + author)
 
     # document pull requests
     pull_requests = get_pull_requests(github_repo, revision_range)
     if format == "rst":
-        pull_msg = "* :pull:`#{0} <{0}>`: {2}"
+        pull_msg = "* :pull:`{0}`"
     else:
-        pull_msg = "* #{0}: {2}"
+        pull_msg = "* [#{0}]({1}): {2}"
 
     # split into actual and maintenance PR's
     code_pull_requests = filter(
         lambda pr: pr.user.login not in DISCARD_AUTHORS, pull_requests
     )
     code_pull_requests = list(code_pull_requests)
+
     maint_pull_requests = filter(
         lambda pr: pr.user.login in DISCARD_AUTHORS, pull_requests
     )
     maint_pull_requests = list(maint_pull_requests)
 
-    def shorten(string, max_len: int = 80):
-        if len(string) > max_len:
-            remainder = re.sub("\\s.*$", "...", string[max_len - 20 :])
-            if len(remainder) > 20:
-                return string[:max_len] + "..."
-            else:
-                return string[: max_len - 20] + remainder
+    def sanitize_whitespace(string: str) -> str:
+        return re.sub(r"\s+", " ", string.strip())
+
+    def sanitize_backtick(string: str) -> str:
+        # Courtesy of numpy! See numpy/tools/changelog.py
+        # substitute any single backtick not adjacent to a backtick
+        # for a double backtick
+        string = re.sub(
+            "(?P<pre>(?:^|(?<=[^`])))`(?P<post>(?=[^`]|$))",
+            r"\g<pre>``\g<post>",
+            string,
+        )
         return string
 
-    print()
-    print(heading("Pull requests merged", 1, format))
-    print(pull_request_msg % len(code_pull_requests))
+    def shorten(string: str, max_len: int = 80) -> str:
+        remainder = re.sub(r"\s.*$", "...", string[max_len - 20 :])
+        if len(string) > max_len:
+            remainder = re.sub(r"\s.*$", "...", string[max_len - 20 :])
+            if len(remainder) > 20:
+                string = string[:max_len] + "..."
+            else:
+                string = string[: max_len - 20] + remainder
 
-    for pull in code_pull_requests:
-        title = shorten(re.sub("\\s+", " ", pull.title.strip()))
-        print(pull_msg.format(pull.number, pull.html_url, title))
+            # check if there is a cut in a code-block
+            nticks = 4
+            # if we will change to two backticks, then this only needs
+            # changing
+            if abundance_ticks := string.count("`") % nticks != 0:
+                string = string[:-3] + "`" * (nticks - abundance_ticks) + "..."
 
-    print()
-    print(heading("Maintenance pull requests merged", 2, format))
-    print(pull_request_msg % len(maint_pull_requests))
-    for pull in maint_pull_requests:
-        title = shorten(re.sub("\\s+", " ", pull.title.strip()))
-        print(pull_msg.format(pull.number, pull.html_url, title))
+        return string
 
-    if len(changelog) > 0:
+    def sanitize_title(string):
+        string = sanitize_whitespace(string)
+        string = sanitize_backtick(string)
+        return shorten(string)
+
+    if code_pull_requests:
         print()
-        print(heading("Changelog", 1, format))
-        print(changelog)
+        print(heading("Pull requests merged", 1, format))
+        print(pull_request_msg % len(code_pull_requests))
+
+        for pull in code_pull_requests:
+            title = sanitize_title(pull.title.strip())
+            print(pull_msg.format(pull.number, pull.html_url, title))
+
+    if maint_pull_requests:
+        print()
+        print(heading("Maintenance pull requests merged", 2, format))
+        print()
+        for pull in maint_pull_requests:
+            title = sanitize_title(pull.title.strip())
+            print(pull_msg.format(pull.number, pull.html_url, title))
 
 
 if __name__ == "__main__":
