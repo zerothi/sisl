@@ -32,6 +32,7 @@ from numpy import (
     tile,
     unique,
 )
+from scipy.sparse import csr_array
 
 import sisl._array as _a
 from sisl._category import Category, GenericCategory
@@ -45,7 +46,7 @@ from sisl._indices import (
     list_index_le,
 )
 from sisl._internal import set_module
-from sisl._math_small import cross3, is_ascending
+from sisl._math_small import cross3, is_ascending, xyz_to_spherical_cos_phi
 from sisl._namedindex import NamedIndex
 from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
 from sisl.shape import Cube, Shape, Sphere
@@ -3609,6 +3610,210 @@ class Geometry(
         # Convert indices to unit-cell indices and also return coordinates and
         # infinite supercell indices
         return self.asc2uc(idx), xyz, isc
+
+    def _orbital_values(self, grid_shape: Tuple[int, int, int]):
+        r"""Calculates orbital values for a given grid.
+
+        Parameters
+        ----------
+        grid_shape:
+           the grid shape (i.e. resolution) in which to calculate the orbital values.
+
+        Notes
+        -----
+        This method does not belong on this geometry. It will be removed eventually.
+        """
+        # We need to import these here to avoid circular imports.
+        from sisl import Grid
+        from sisl._sparse_grid import SparseGridOrbitalBZ
+
+        # In the following we don't care about division
+        # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
+        old_err = np.seterr(divide="ignore", invalid="ignore")
+
+        # Instead of looping all atoms in the supercell we find the exact atoms
+        # and their supercell indices.
+        add_R = _a.fulld(3, self.maxR())
+        # Calculate the required additional vectors required to increase the fictitious
+        # supercell by add_R in each direction.
+        # For extremely skewed lattices this will be way too much, hence we make
+        # them square.
+        o = self.lattice.to.Cuboid(True)
+        lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
+
+        # Retrieve all atoms within the grid supercell
+        # (and the neighbours that connect into the cell)
+        IA, XYZ, ISC = self.within_inf(lattice, periodic=self.pbc)
+        XYZ -= self.lattice.origin.reshape(1, 3)
+
+        # within_inf translates atoms to the unit cell to compute
+        # supercell indices. Here we revert that
+        ISC -= np.floor(self.fxyz[IA]).astype(int32)
+
+        def xyz2spherical(xyz, offset):
+            """Calculate the spherical coordinates from indices"""
+            rx = xyz[:, 0] - offset[0]
+            ry = xyz[:, 1] - offset[1]
+            rz = xyz[:, 2] - offset[2]
+
+            xyz_to_spherical_cos_phi(rx, ry, rz)
+            return rx, ry, rz
+
+        def sphere_grid_index(grid, center, R):
+
+            corners = np.mgrid[-1:2:2, -1:2:2, -1:2:2].T * R + center
+            corners = corners.reshape(-1, 3)
+
+            corners_i = grid.index(corners)
+
+            cmin = np.maximum(corners_i.min(axis=0), 0)
+            cmax = np.maximum(corners_i.max(axis=0) + 1, 0)
+
+            rx = slice(cmin[0], min(cmax[0], grid.shape[0]))
+            ry = slice(cmin[1], min(cmax[1], grid.shape[1]))
+            rz = slice(cmin[2], min(cmax[2], grid.shape[2]))
+
+            indices = np.mgrid[rx, ry, rz].reshape(3, -1).T
+
+            return indices
+
+        # Get the size of the auxiliary supercell needed to store orbital values.
+        nsc = abs(ISC).max(axis=0) * 2 + 1
+        sp_grid_geom = self.copy()
+        sp_grid_geom.set_nsc(nsc)
+
+        # Initialize a fake grid to compute some quantities related to the grid distribution
+        grid = Grid(grid_shape, geometry=self)
+
+        # Estimate a top limit on how many values we need to store. We estimate it by expecting
+        # each orbital to fill a sphere of radius R, being R the radius of the orbital. We also
+        # add a margin of 1 voxel so that we don't underestimate because of rounding.
+        dvolume = grid.dvolume
+        margin_R = np.linalg.norm(grid.dcell.sum(axis=0))
+        vol = 0.0
+        for atom, indices in self.sub(IA).atoms.iter(species=True):
+            vol += (4 / 3 * np.pi * (atom.R + margin_R) ** 3).sum() * len(indices)
+
+        max_vals = int(vol / dvolume)
+
+        # Array storing all the grid values
+        grid_values = np.zeros(max_vals, dtype=np.float64)
+        # Orbital indices for each orbital that has a nonzero value in the grid.
+        orbital_indices = np.full(max_vals, -1, dtype=np.int32)
+        # For each value, its index of the grid. Even if the grid is 3 dimensional,
+        # we store the raveled index. That is, a single integer representing the position
+        # of the point. One can always unravel the index if needed.
+        grid_indices = np.zeros(max_vals, dtype=np.int32)
+
+        # print(
+        #     f"Estimated memory required:",
+        #     (orbital_indices.size * 32 + grid_values.size * 64 + grid_indices.size * 32) / 8 / 1024 / 1024,
+        #     "MB"
+        # )
+
+        # Temporal variables that will help us keep track of the construction of the arrays.
+        i_value = 0
+        first_orbs = self.firsto
+        isc_off = sp_grid_geom.isc_off
+
+        # Loop over all atoms in the grid-cell
+        for ia, ia_xyz, isc in zip(IA, XYZ, ISC):
+            # Get current atom
+            atom = self.atoms[ia]
+
+            # Get the index of the cell where this atom is in the auxiliary supercell
+            index_sc = isc_off[isc[0], isc[1], isc[2]]
+            # And use it to calculate the offset on the orbital index.
+            io_offset = self.no * index_sc
+
+            # Extract maximum R
+            R = atom.maxR()
+
+            if R <= 0.0:
+                warn(f"Atom '{atom}' does not have a wave-function, skipping atom.")
+                continue
+
+            idx = sphere_grid_index(grid, ia_xyz, R)
+
+            if len(idx) == 0:
+                continue
+
+            # Get real-space coordinates for the atom
+            grid_xyz = dot(idx, grid.dcell)
+            # Convert them to spherical coordinates
+            at_r, at_theta, at_cos_phi = xyz2spherical(grid_xyz, ia_xyz)
+
+            del grid_xyz
+            # Merge the three components of spherical coordinates into one array.
+            at_spherical = np.array([at_r, at_theta, at_cos_phi]).T
+
+            # Filter out points where the distance to the atom is less than its max R.
+            at_nonzero = at_spherical[:, 0] < R
+            idx = idx[at_nonzero]
+            at_spherical = at_spherical[at_nonzero]
+
+            if len(idx) == 0:
+                continue
+
+            # Ravel multi index to save space. That is, convert the 3D grid index
+            # into a single integer. One can always unravel them if needed.
+            idx = (
+                idx[:, 0] * grid.shape[1] * grid.shape[2]
+                + idx[:, 1] * grid.shape[2]
+                + idx[:, 2]
+            )
+
+            # Loop over the orbitals
+            for io, orb in enumerate(atom.orbitals):
+                # Get the index of this orbital
+                uc_io = first_orbs[ia] + io
+
+                orb_spherical = at_spherical
+                orb_indices = idx
+
+                # The orbital's R might not be the maximum R of the atom. In that case,
+                # we don't need to calculate the values for all the grid points that are within
+                # the atom's range.
+                if R - orb.R > 1e-6:
+                    # Check which coordinates are not within this orbital's range (the radius is bigger than orbital radius)
+                    orb_nonzero = orb_spherical[:, 0] < orb.R
+
+                    orb_spherical = orb_spherical[orb_nonzero]
+                    orb_indices = orb_indices[orb_nonzero]
+
+                # Number of grid values that we are going to compute for this orbital
+                orb_nvals = orb_spherical.shape[0]
+
+                # If there are no values to add, go to the next orbital
+                if orb_nvals == 0:
+                    continue
+
+                # Compute the psi values for the grid points we are interested in
+                psi = orb.psi_spher(*orb_spherical.T, cos_phi=True)
+
+                # Update the data structure
+                values_i = slice(i_value, i_value + orb_nvals)
+                grid_values[values_i] = psi
+                grid_indices[values_i] = orb_indices
+                orbital_indices[values_i] = uc_io + io_offset
+
+                # Update the index where new values should be stored
+                i_value += orb_nvals
+
+        # Reset the error code for division
+        np.seterr(**old_err)
+
+        # Cut the arrays to return only the parts that have been filled
+        grid_values = grid_values[:i_value]
+        grid_indices = grid_indices[:i_value]
+        orbital_indices = orbital_indices[:i_value]
+
+        psi_values = csr_array(
+            (grid_values, (grid_indices, orbital_indices)),
+            shape=(np.prod(grid.shape), sp_grid_geom.no_s),
+        )
+
+        return SparseGridOrbitalBZ(grid.shape, psi_values, geometry=sp_grid_geom)
 
     # Create pickling routines
     def __getstate__(self):

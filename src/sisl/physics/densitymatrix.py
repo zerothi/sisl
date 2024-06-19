@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import math as m
 from numbers import Integral
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 from numpy import add, dot, logical_and, repeat, subtract, unique
@@ -15,7 +15,7 @@ from scipy.sparse import tril, triu
 
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
-from sisl import Geometry, Lattice
+from sisl import Geometry, Grid, Lattice
 from sisl._core.sparse import SparseCSR, _ncol_to_indptr, _to_coo
 from sisl._core.sparse_geometry import SparseAtom, SparseOrbital
 from sisl._indices import indices_fabs_le, indices_le
@@ -688,7 +688,15 @@ class _densitymatrix(SparseOrbitalBZSpin):
         "0.15",
         "0.16",
     )
-    def density(self, grid, spinor=None, atol: float = 1e-7, eta=None):
+    def density(
+        self,
+        grid: Grid,
+        spinor=None,
+        atol: float = 1e-7,
+        eta: Optional[bool] = False,
+        method: Literal["pre-compute", "direct"] = "pre-compute",
+        **kwargs,
+    ):
         r"""Expand the density matrix to the charge density on a grid
 
         This routine calculates the real-space density components on a specified grid.
@@ -727,29 +735,23 @@ class _densitymatrix(SparseOrbitalBZSpin):
            the tolerance, they will be treated as strictly zeros.
         eta : bool, optional
            show a progressbar on stdout
+        method:
+           It determines if the orbital values are computed on the fly (direct) or they are all pre-computed
+           on the grid at the beginning(pre-compute).
+           Pre computing orbitals results in a faster computation, but it requires more memory.
+
+        Notes
+        -----
+
+        The `method` argument may change at will since this is an experimental feature.
         """
-        geometry = self.geometry
-        # Check that the atomic coordinates, really are all within the intrinsic supercell.
-        # If not, it may mean that the DM does not conform to the primary unit-cell paradigm
-        # of matrix elements. It complicates things.
-        fxyz = geometry.fxyz
-        f_min = fxyz.min()
-        f_max = fxyz.max()
-        del fxyz, f_min, f_max
+        # Translate the density matrix to have all the unit cell atoms actually inside
+        # the unit cell, since this will facilitate things greatly and it gives the
+        # same result.
+        uc_dm = self.translate2uc()
 
-        # Extract sub variables used throughout the loop
-        shape = _a.asarrayi(grid.shape)
-        dcell = grid.dcell
-
-        # Sparse matrix data
-        csr = self._csr
-
-        # In the following we don't care about division
-        # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
-        old_err = np.seterr(divide="ignore", invalid="ignore")
-
-        # Placeholder for the resulting coefficients
-        DM = None
+        # Get the DM components with which we want to compute the density
+        csr = uc_dm._csr
         if self.spin.kind > Spin.POLARIZED:
             if spinor is None:
                 # Default to the total density
@@ -779,6 +781,15 @@ class _densitymatrix(SparseOrbitalBZSpin):
             # Perform dot-product with spinor, and take out the diagonal real part
             DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
 
+            # Create the DM csr matrix.
+            csrDM = csr_matrix(
+                (DM, csr.col[idx], _ncol_to_indptr(csr.ncol)),
+                shape=(self.shape[:2]),
+                dtype=DM.dtype,
+            )
+
+            del idx, DM
+
         elif self.spin.kind == Spin.POLARIZED:
             if spinor is None:
                 spinor = _a.onesd(2)
@@ -797,22 +808,50 @@ class _densitymatrix(SparseOrbitalBZSpin):
                     "argument as an integer, or a vector of length 2"
                 )
 
-            idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
-            DM = csr._D[idx, 0] * spinor[0] + csr._D[idx, 1] * spinor[1]
+            csrDM = csr.tocsr(dim=0) * spinor[0] + csr.tocsr(dim=1) * spinor[1]
 
         else:
-            idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
-            DM = csr._D[idx, 0]
+            csrDM = csr.tocsr(dim=0)
 
-        # Create the DM csr matrix.
-        csrDM = csr_matrix(
-            (DM, csr.col[idx], _ncol_to_indptr(csr.ncol)),
-            shape=(self.shape[:2]),
-            dtype=DM.dtype,
-        )
+        if method == "pre-compute":
+            # Compute orbital values on the grid
+            psi_values = uc_dm.geometry._orbital_values(grid.shape)
 
-        # Clean-up
-        del idx, DM
+            psi_values.reduce_orbital_products(
+                csrDM, uc_dm.lattice, out=grid.grid, **kwargs
+            )
+        elif method == "direct":
+            self._density_direct(grid, csrDM, atol=atol, eta=eta)
+
+    def _density_direct(
+        self, grid: Grid, csrDM, atol: float = 1e-7, eta: Optional[bool] = None
+    ):
+        r"""Compute the density by calculating the orbital values on the fly.
+
+        Parameters
+        ----------
+        grid : Grid
+           the grid on which to add the density (the density is in ``e/Ang^3``)
+        spinor : (2,) or (2, 2), optional
+           the spinor matrix to obtain the diagonal components of the density. For un-polarized density matrices
+           this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
+           length 2 (defaults to total density).
+           For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
+        atol : float, optional
+           DM tolerance for accepted values. For all density matrix elements with absolute values below
+           the tolerance, they will be treated as strictly zeros.
+        eta : bool, optional
+           show a progressbar on stdout
+        """
+        geometry = self.geometry
+
+        # Extract sub variables used throughout the loop
+        shape = _a.asarrayi(grid.shape)
+        dcell = grid.dcell
+
+        # In the following we don't care about division
+        # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
+        old_err = np.seterr(divide="ignore", invalid="ignore")
 
         # To heavily speed up the construction of the density we can recreate
         # the sparse csrDM matrix by summing the lower and upper triangular part.
