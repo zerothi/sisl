@@ -75,7 +75,7 @@ echo " CC: $CC"
 echo " CXX: $CXX"
 
 # Ensure we can use a compiler
-conda install $conda_gfortran
+conda install -y $conda_gfortran
 export FC=$(which gfortran)
 echo " FC: $FC"
 
