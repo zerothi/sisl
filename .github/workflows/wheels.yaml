@@ -8,10 +8,6 @@ on:
      - 'v*'
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Which branch to build wheels for'
-        required: false
-        default: 'main'
       release:
         description: 'Release the wheels?'
         type: boolean
@@ -99,13 +95,20 @@ jobs:
           #  platform_id: macosx_arm64
 
     steps:
+
+      - name: Create full python version
+        id: python
+        run: |
+          PV=${{ matrix.python }}
+          echo "::set-output name=version::${PV:0:1}.${PV:1}"
+
       - name: Checkout sisl
         uses: actions/checkout@v4
 
       - name: Ensure conda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: ${{ matrix.python }}
+          python-version: ${{ steps.python.outputs.version }}
 
       - name: Build and test wheels
         env:
