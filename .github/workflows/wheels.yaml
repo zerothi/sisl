@@ -110,10 +110,11 @@ jobs:
       - name: Install conda for macos arm64
         if: ${{ matrix.platform_id == 'macosx_arm64' }}
         run: |
+          test_path=$(dirname $(which conda))
           set -ex
-          if [ -d /usr/local/miniconda ]; then
+          if [ -d $test_path ]; then
             # Found a CONDA installation (it might come)
-            echo "CONDA_HOME=/usr/local/miniconda" >> $GITHUB_ENV
+            echo "CONDA_HOME=$test_path" >> $GITHUB_ENV
             exit 0
           fi
 
@@ -139,7 +140,8 @@ jobs:
         if: ${{ matrix.platform_id != 'macosx_arm64' }}
         run: |
           # Non-macos arm64 envrionments already have conda installed
-          echo "CONDA_HOME=/usr/local/miniconda" >> $GITHUB_ENV
+          test_path=$(dirname $(which conda))
+          echo "CONDA_HOME=$test_path" >> $GITHUB_ENV
 
       - name: Build and test wheels
         env:
