@@ -155,7 +155,7 @@ jobs:
           CIBW_TEST_COMMAND_WINDOWS: bash {project}/tools/build_tools/test_windows_wheels.sh ${{ matrix.python }}
           CIBW_BUILD_VERBOSITY: 1
 
-        run: bash tools/build/wheels/build_wheels.sh
+        run: bash tools/build_tools/build_wheels.sh
 
       # Upload the wheel to the action's artifact.
       - name: Store artifacts
