@@ -15,6 +15,15 @@ set -x
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 export PYTHONHASHSEED=0
 
+function install_arm_flags() {
+  SKBUILD_CMAKE_ARGS="$SKBUILD_CMAKE_ARGS -DCMAKE_SYSTEM_NAME=Generic"
+  SKBUILD_CMAKE_ARGS="$SKBUILD_CMAKE_ARGS -DCMAKE_SYSTEM_PROCESSOR=arm"
+  SKBUILD_CMAKE_ARGS="$SKBUILD_CMAKE_ARGS -DCMAKE_CROSSCOMPILING=1"
+}
+
+echo "CONDA_HOME = $CONDA_HOME"
+ls -l $CONDA_HOME
+
 # List current conda packages
 conda list
 
@@ -34,6 +43,11 @@ if [[ $(uname) == "Darwin" ]]; then
     export MACOSX_DEPLOYMENT_TARGET=12.0
     OPENMP_URL="https://anaconda.org/conda-forge/llvm-openmp/11.1.0/download/osx-arm64/llvm-openmp-11.1.0-hf3c4609_1.tar.bz2"
 
+    # Check for the actual host
+    if [[ $(uname -m) == x86_64 ]]; then
+      install_arm_flags
+    fi
+
   else
     export MACOSX_DEPLOYMENT_TARGET=10.9
     OPENMP_URL="https://anaconda.org/conda-forge/llvm-openmp/11.1.0/download/osx-64/llvm-openmp-11.1.0-hda6cdc1_1.tar.bz2"
@@ -50,13 +64,24 @@ if [[ $(uname) == "Darwin" ]]; then
   export FFLAGS="$FFLAGS -I$PREFIX/include"
   export CXXFLAGS="$CXXFLAGS -I$PREFIX/include"
   export LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib -L$PREFIX/lib -lomp"
+
 elif [[ $(uname) == "Linux" ]]; then
-  if [[ $(uname -m) == "x86_64" ]]; then
-    conda_gfortran=gfortran_linux-64
-  else
-    conda_gfortran=gfortran_linux-aarch64
+
+  # Generic compiler
+  conda_gfortran=gfortran_linux-64
+
+  if [[ "$CIBW_BUILD" == *-linux_aarch64 ]]; then
+    # Check for the actual host
+    if [[ $(uname -m) == x86_64 ]]; then
+      install_arm_flags
+    else
+      conda_gfortran=gfortran_linux-aarch64
+    fi
   fi
+
 fi
+
+export SKBUILD_CMAKE_ARGS
 
 
 if [[ "$GITHUB_EVENT_NAME" == "schedule" \
@@ -71,6 +96,7 @@ if [[ "$GITHUB_EVENT_NAME" == "schedule" \
 fi
 
 echo "Found:"
+echo " SKBUILD_CMAKE_ARGS: $SKBUILD_CMAKE_ARGS"
 echo " CC: $CC ($($CC --version))"
 echo " CXX: $CXX ($($CXX --version))"
 
