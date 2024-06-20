@@ -814,12 +814,19 @@ class _densitymatrix(SparseOrbitalBZSpin):
             csrDM = csr.tocsr(dim=0)
 
         if method == "pre-compute":
-            # Compute orbital values on the grid
-            psi_values = uc_dm.geometry._orbital_values(grid.shape)
+            try:
+                # Compute orbital values on the grid
+                psi_values = uc_dm.geometry._orbital_values(grid.shape)
 
-            psi_values.reduce_orbital_products(
-                csrDM, uc_dm.lattice, out=grid.grid, **kwargs
-            )
+                psi_values.reduce_orbital_products(
+                    csrDM, uc_dm.lattice, out=grid.grid, **kwargs
+                )
+            except MemoryError:
+                raise MemoryError(
+                    "Ran out of memory while computing the density with the 'pre-compute'"
+                    " method. Try using method='direct', which is slower but requires much"
+                    " less memory."
+                )
         elif method == "direct":
             self._density_direct(grid, csrDM, atol=atol, eta=eta)
 
