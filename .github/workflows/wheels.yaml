@@ -38,9 +38,9 @@ jobs:
           #- os: windows-latest
           #  python: 39
           #  platform_id: win_amd64
-          - os: windows-latest
-            python: 310
-            platform_id: win_amd64
+          #- os: windows-latest
+          #  python: 310
+          #  platform_id: win_amd64
           #- os: windows-latest
           #  python: 311
           #  platform_id: win_amd64
@@ -99,7 +99,8 @@ jobs:
       - name: Create full python version
         id: python
         run: |
-          bash 'PV=${{ matrix.python }} ; echo "::set-output name=version::${PV:0:1}.${PV:1}"'
+          PV=${{ matrix.python }}
+          echo "::set-output name=version::${PV:0:1}.${PV:1}"
 
       - name: Checkout sisl
         uses: actions/checkout@v4
