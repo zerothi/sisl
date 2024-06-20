@@ -71,13 +71,13 @@ if [[ "$GITHUB_EVENT_NAME" == "schedule" \
 fi
 
 echo "Found:"
-echo " CC: $CC"
-echo " CXX: $CXX"
+echo " CC: $CC ($($CC --version))"
+echo " CXX: $CXX ($($CXX --version))"
 
 # Ensure we can use a compiler
 conda install -y $conda_gfortran
 export FC=$(which gfortran)
-echo " FC: $FC"
+echo " FC: $FC ($($FC --version))"
 
 conda list
 
