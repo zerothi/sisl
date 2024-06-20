@@ -7,6 +7,11 @@ import warnings
 from functools import partial
 
 import numpy as np
+
+if np.lib.NumpyVersion(np.__version__) >= "2.0.0b1":
+    from numpy.exceptions import ComplexWarning
+else:
+    from numpy import ComplexWarning
 import pytest
 from scipy.linalg import block_diag
 from scipy.sparse import SparseEfficiencyWarning, issparse
@@ -190,7 +195,7 @@ class TestHamiltonian:
         assert nnz == 1
         setup.HS.empty()
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_Hk1(self, setup):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
@@ -956,7 +961,7 @@ class TestHamiltonian:
         ie2 = H.eigenstate(k, gauge="orbital").berry_curvature(degenerate_dir=(1, 1, 0))
         assert np.allclose(ie1, ie2)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_conductivity(self, setup):
         R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -966,7 +971,7 @@ class TestHamiltonian:
         mp = MonkhorstPack(H, [11, 11, 1])
         cond = conductivity(mp)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_conductivity_spin(self, setup):
         R, param = [0.1, 1.5], [[1.0, 2.0], [0.1, 0.2]]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -1054,7 +1059,7 @@ class TestHamiltonian:
             vsub = es.sub([0]).velocity()[:, 0]
             assert np.allclose(v[:, 0], vsub)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_velocity_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
@@ -1075,7 +1080,7 @@ class TestHamiltonian:
             vsub = es.sub([0, 1]).velocity(matrix=True)
             assert np.allclose(v[:, :2, :2], vsub)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_velocity_matrix_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
