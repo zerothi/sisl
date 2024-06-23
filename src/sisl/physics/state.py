@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import singledispatchmethod
 from numbers import Real
-from typing import Any, Callable, Literal, Optional
+from typing import Callable, Literal, Optional
 
 import numpy as np
 from numpy import bool_, einsum, exp, ndarray

@@ -74,7 +74,6 @@ import sisl._array as _a
 from sisl import BoundaryCondition as BC
 from sisl import Geometry, Grid, Lattice, constant, units
 from sisl._core.oplist import oplist
-from sisl._help import dtype_real_to_complex
 from sisl._indices import indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
