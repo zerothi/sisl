@@ -963,17 +963,26 @@ class TestHamiltonian:
             berry_phase(bz, method="unknown")
 
     def test_berry_curvature(self, setup):
-        R, param = [0.1, 1.5], [1.0, 0.1]
+        R, param = [0.1, 1.5], [[1.0, 0.1, 0, 0], [0.4, 0.2, 0.3, 0.2]]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g)
+        H = Hamiltonian(g, spin=Spin.NONCOLINEAR)
         H.construct((R, param))
 
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge="cell").berry_curvature()
-        ie2 = H.eigenstate(k, gauge="orbital").berry_curvature(
-            derivative_kwargs={"degenerate_dir": (1, 1, 0)}
-        )
+        ie2 = H.eigenstate(k, gauge="orbital").berry_curvature()
         assert np.allclose(ie1, ie2)
+
+    def test_spin_berry_curvature(self, setup):
+        R, param = [0.1, 1.5], [[1.0, 0.1, 0, 0], [0.4, 0.2, 0.3, 0.2]]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, spin=Spin.NONCOLINEAR)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        ie1 = H.eigenstate(k, gauge="cell").spin_berry_curvature()
+        ie2 = H.eigenstate(k, gauge="orbital").spin_berry_curvature()
+        assert not np.allclose(ie1, ie2)
 
     @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_ahc(self, setup):
@@ -994,6 +1003,8 @@ class TestHamiltonian:
 
         mp = MonkhorstPack(H, [5, 5, 1])
         cond = ahc(mp)
+        cond2 = ahc(mp, sum=False)
+        assert np.allclose(cond, cond2.sum(-1))
 
     @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_shc(self, setup):
@@ -1004,6 +1015,8 @@ class TestHamiltonian:
 
         mp = MonkhorstPack(H, [5, 5, 1])
         cond = shc(mp)
+        cond2 = shc(mp, sum=False)
+        assert np.allclose(cond, cond2.sum(-1))
 
     @pytest.mark.xfail(reason="Gauges make different decouplings")
     def test_gauge_eff(self, setup):

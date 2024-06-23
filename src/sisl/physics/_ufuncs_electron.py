@@ -290,7 +290,7 @@ def spin_berry_curvature(
 
     dtype = np.result_type(state.dtype, state.info.get("dtype", np.complex128))
 
-    m = _create_sigma(H.no, spin_axis, dtype, eigenstate_kwargs.get("format", "csr"))
+    m = _create_sigma(parent.no, spin_axis, dtype, state.info.get("format", "csr"))
 
     def J(M, d):
         nonlocal m, J_axis
