@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.geometry &mdash; sisl 0.1-255efb1</title>
+  <title>sisl._core.geometry &mdash; sisl 0.1-b0feb0c</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=9a31d19a"></script>
+        <script src="../../../_static/documentation_options.js?v=81cd38e2"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-255efb1
+                0.1-b0feb0c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -154,6 +154,7 @@
     <span class="n">tile</span><span class="p">,</span>
     <span class="n">unique</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_array</span>
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl._category</span> <span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">GenericCategory</span>
@@ -167,7 +168,7 @@
     <span class="n">list_index_le</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">is_ascending</span>
+<span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">is_ascending</span><span class="p">,</span> <span class="n">xyz_to_spherical_cos_phi</span>
 <span class="kn">from</span> <span class="nn">sisl._namedindex</span> <span class="kn">import</span> <span class="n">NamedIndex</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.shape</span> <span class="kn">import</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Shape</span><span class="p">,</span> <span class="n">Sphere</span>
@@ -3893,6 +3894,210 @@
         <span class="c1"># infinite supercell indices</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">isc</span></div>
 
+
+    <span class="k">def</span> <span class="nf">_orbital_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates orbital values for a given grid.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        grid_shape:</span>
+<span class="sd">           the grid shape (i.e. resolution) in which to calculate the orbital values.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method does not belong on this geometry. It will be removed eventually.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We need to import these here to avoid circular imports.</span>
+        <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Grid</span>
+        <span class="kn">from</span> <span class="nn">sisl._sparse_grid</span> <span class="kn">import</span> <span class="n">SparseGridOrbitalBZ</span>
+
+        <span class="c1"># In the following we don&#39;t care about division</span>
+        <span class="c1"># So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state</span>
+        <span class="n">old_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Instead of looping all atoms in the supercell we find the exact atoms</span>
+        <span class="c1"># and their supercell indices.</span>
+        <span class="n">add_R</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxR</span><span class="p">())</span>
+        <span class="c1"># Calculate the required additional vectors required to increase the fictitious</span>
+        <span class="c1"># supercell by add_R in each direction.</span>
+        <span class="c1"># For extremely skewed lattices this will be way too much, hence we make</span>
+        <span class="c1"># them square.</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Cuboid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">_v</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">add_R</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="n">add_R</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve all atoms within the grid supercell</span>
+        <span class="c1"># (and the neighbours that connect into the cell)</span>
+        <span class="n">IA</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">ISC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">within_inf</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="p">)</span>
+        <span class="n">XYZ</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="c1"># within_inf translates atoms to the unit cell to compute</span>
+        <span class="c1"># supercell indices. Here we revert that</span>
+        <span class="n">ISC</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fxyz</span><span class="p">[</span><span class="n">IA</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">xyz2spherical</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Calculate the spherical coordinates from indices&quot;&quot;&quot;</span>
+            <span class="n">rx</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ry</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">rz</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">xyz_to_spherical_cos_phi</span><span class="p">(</span><span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span>
+
+        <span class="k">def</span> <span class="nf">sphere_grid_index</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+
+            <span class="n">corners</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">R</span> <span class="o">+</span> <span class="n">center</span>
+            <span class="n">corners</span> <span class="o">=</span> <span class="n">corners</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+            <span class="n">corners_i</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
+
+            <span class="n">cmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">corners_i</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">cmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">corners_i</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">rx</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">cmin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">min</span><span class="p">(</span><span class="n">cmax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">ry</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">cmin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">min</span><span class="p">(</span><span class="n">cmax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">rz</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">cmin</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">min</span><span class="p">(</span><span class="n">cmax</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+            <span class="k">return</span> <span class="n">indices</span>
+
+        <span class="c1"># Get the size of the auxiliary supercell needed to store orbital values.</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ISC</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">sp_grid_geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">sp_grid_geom</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
+
+        <span class="c1"># Initialize a fake grid to compute some quantities related to the grid distribution</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Estimate a top limit on how many values we need to store. We estimate it by expecting</span>
+        <span class="c1"># each orbital to fill a sphere of radius R, being R the radius of the orbital. We also</span>
+        <span class="c1"># add a margin of 1 voxel so that we don&#39;t underestimate because of rounding.</span>
+        <span class="n">dvolume</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">dvolume</span>
+        <span class="n">margin_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">dcell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">IA</span><span class="p">)</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">vol</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">R</span> <span class="o">+</span> <span class="n">margin_R</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+        <span class="n">max_vals</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vol</span> <span class="o">/</span> <span class="n">dvolume</span><span class="p">)</span>
+
+        <span class="c1"># Array storing all the grid values</span>
+        <span class="n">grid_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">max_vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="c1"># Orbital indices for each orbital that has a nonzero value in the grid.</span>
+        <span class="n">orbital_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">max_vals</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="c1"># For each value, its index of the grid. Even if the grid is 3 dimensional,</span>
+        <span class="c1"># we store the raveled index. That is, a single integer representing the position</span>
+        <span class="c1"># of the point. One can always unravel the index if needed.</span>
+        <span class="n">grid_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">max_vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="c1"># print(</span>
+        <span class="c1">#     f&quot;Estimated memory required:&quot;,</span>
+        <span class="c1">#     (orbital_indices.size * 32 + grid_values.size * 64 + grid_indices.size * 32) / 8 / 1024 / 1024,</span>
+        <span class="c1">#     &quot;MB&quot;</span>
+        <span class="c1"># )</span>
+
+        <span class="c1"># Temporal variables that will help us keep track of the construction of the arrays.</span>
+        <span class="n">i_value</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">first_orbs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firsto</span>
+        <span class="n">isc_off</span> <span class="o">=</span> <span class="n">sp_grid_geom</span><span class="o">.</span><span class="n">isc_off</span>
+
+        <span class="c1"># Loop over all atoms in the grid-cell</span>
+        <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">ia_xyz</span><span class="p">,</span> <span class="n">isc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">IA</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">ISC</span><span class="p">):</span>
+            <span class="c1"># Get current atom</span>
+            <span class="n">atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span>
+
+            <span class="c1"># Get the index of the cell where this atom is in the auxiliary supercell</span>
+            <span class="n">index_sc</span> <span class="o">=</span> <span class="n">isc_off</span><span class="p">[</span><span class="n">isc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">isc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">isc</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+            <span class="c1"># And use it to calculate the offset on the orbital index.</span>
+            <span class="n">io_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="n">index_sc</span>
+
+            <span class="c1"># Extract maximum R</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">maxR</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">R</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atom &#39;</span><span class="si">{</span><span class="n">atom</span><span class="si">}</span><span class="s2">&#39; does not have a wave-function, skipping atom.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">sphere_grid_index</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">ia_xyz</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Get real-space coordinates for the atom</span>
+            <span class="n">grid_xyz</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">dcell</span><span class="p">)</span>
+            <span class="c1"># Convert them to spherical coordinates</span>
+            <span class="n">at_r</span><span class="p">,</span> <span class="n">at_theta</span><span class="p">,</span> <span class="n">at_cos_phi</span> <span class="o">=</span> <span class="n">xyz2spherical</span><span class="p">(</span><span class="n">grid_xyz</span><span class="p">,</span> <span class="n">ia_xyz</span><span class="p">)</span>
+
+            <span class="k">del</span> <span class="n">grid_xyz</span>
+            <span class="c1"># Merge the three components of spherical coordinates into one array.</span>
+            <span class="n">at_spherical</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">at_r</span><span class="p">,</span> <span class="n">at_theta</span><span class="p">,</span> <span class="n">at_cos_phi</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+            <span class="c1"># Filter out points where the distance to the atom is less than its max R.</span>
+            <span class="n">at_nonzero</span> <span class="o">=</span> <span class="n">at_spherical</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">R</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">at_nonzero</span><span class="p">]</span>
+            <span class="n">at_spherical</span> <span class="o">=</span> <span class="n">at_spherical</span><span class="p">[</span><span class="n">at_nonzero</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Ravel multi index to save space. That is, convert the 3D grid index</span>
+            <span class="c1"># into a single integer. One can always unravel them if needed.</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="o">+</span> <span class="n">idx</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="o">+</span> <span class="n">idx</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Loop over the orbitals</span>
+            <span class="k">for</span> <span class="n">io</span><span class="p">,</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">):</span>
+                <span class="c1"># Get the index of this orbital</span>
+                <span class="n">uc_io</span> <span class="o">=</span> <span class="n">first_orbs</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">+</span> <span class="n">io</span>
+
+                <span class="n">orb_spherical</span> <span class="o">=</span> <span class="n">at_spherical</span>
+                <span class="n">orb_indices</span> <span class="o">=</span> <span class="n">idx</span>
+
+                <span class="c1"># The orbital&#39;s R might not be the maximum R of the atom. In that case,</span>
+                <span class="c1"># we don&#39;t need to calculate the values for all the grid points that are within</span>
+                <span class="c1"># the atom&#39;s range.</span>
+                <span class="k">if</span> <span class="n">R</span> <span class="o">-</span> <span class="n">orb</span><span class="o">.</span><span class="n">R</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+                    <span class="c1"># Check which coordinates are not within this orbital&#39;s range (the radius is bigger than orbital radius)</span>
+                    <span class="n">orb_nonzero</span> <span class="o">=</span> <span class="n">orb_spherical</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">orb</span><span class="o">.</span><span class="n">R</span>
+
+                    <span class="n">orb_spherical</span> <span class="o">=</span> <span class="n">orb_spherical</span><span class="p">[</span><span class="n">orb_nonzero</span><span class="p">]</span>
+                    <span class="n">orb_indices</span> <span class="o">=</span> <span class="n">orb_indices</span><span class="p">[</span><span class="n">orb_nonzero</span><span class="p">]</span>
+
+                <span class="c1"># Number of grid values that we are going to compute for this orbital</span>
+                <span class="n">orb_nvals</span> <span class="o">=</span> <span class="n">orb_spherical</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># If there are no values to add, go to the next orbital</span>
+                <span class="k">if</span> <span class="n">orb_nvals</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Compute the psi values for the grid points we are interested in</span>
+                <span class="n">psi</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">psi_spher</span><span class="p">(</span><span class="o">*</span><span class="n">orb_spherical</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cos_phi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># Update the data structure</span>
+                <span class="n">values_i</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">i_value</span><span class="p">,</span> <span class="n">i_value</span> <span class="o">+</span> <span class="n">orb_nvals</span><span class="p">)</span>
+                <span class="n">grid_values</span><span class="p">[</span><span class="n">values_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">psi</span>
+                <span class="n">grid_indices</span><span class="p">[</span><span class="n">values_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">orb_indices</span>
+                <span class="n">orbital_indices</span><span class="p">[</span><span class="n">values_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">uc_io</span> <span class="o">+</span> <span class="n">io_offset</span>
+
+                <span class="c1"># Update the index where new values should be stored</span>
+                <span class="n">i_value</span> <span class="o">+=</span> <span class="n">orb_nvals</span>
+
+        <span class="c1"># Reset the error code for division</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">old_err</span><span class="p">)</span>
+
+        <span class="c1"># Cut the arrays to return only the parts that have been filled</span>
+        <span class="n">grid_values</span> <span class="o">=</span> <span class="n">grid_values</span><span class="p">[:</span><span class="n">i_value</span><span class="p">]</span>
+        <span class="n">grid_indices</span> <span class="o">=</span> <span class="n">grid_indices</span><span class="p">[:</span><span class="n">i_value</span><span class="p">]</span>
+        <span class="n">orbital_indices</span> <span class="o">=</span> <span class="n">orbital_indices</span><span class="p">[:</span><span class="n">i_value</span><span class="p">]</span>
+
+        <span class="n">psi_values</span> <span class="o">=</span> <span class="n">csr_array</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">grid_values</span><span class="p">,</span> <span class="p">(</span><span class="n">grid_indices</span><span class="p">,</span> <span class="n">orbital_indices</span><span class="p">)),</span>
+            <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">sp_grid_geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">SparseGridOrbitalBZ</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">psi_values</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">sp_grid_geom</span><span class="p">)</span>
 
     <span class="c1"># Create pickling routines</span>
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

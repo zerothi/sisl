@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Environment variables &mdash; sisl 0.1-255efb1</title>
+  <title>Environment variables &mdash; sisl 0.1-b0feb0c</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=9a31d19a"></script>
+        <script src="_static/documentation_options.js?v=81cd38e2"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-255efb1
+                0.1-b0feb0c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -140,12 +140,59 @@ Currently only certain Brillouin zone operations has this enabled.</p>
 of performance. Especially in conjunction with the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code>
 flag for OpenMP in linear algebra libraries.
 Benchmark and see if it actually improves (certain combinations will
-severly hurt performance).</p>
+severly hurt performance, while others will greatly improve performance).
+This value together with <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> and <code class="docutils literal notranslate"><span class="pre">SISL_PAR_CHUNKSIZE</span></code>
+should be tuned for your case study.</p>
+<p>It is <em>very</em> easy to encounter deadlocks when using parallel processing in
+<a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>. The main problem is the interplay between the BLAS library and the
+threading in the multiprocessing library. Always try first by maximizing
+<code class="docutils literal notranslate"><span class="pre">SISL_NUM_PROCS</span></code> and set <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=1</span></code> to test whether it works
+on your machine, then further tuning can be done by ensuring that
+<code class="docutils literal notranslate"><span class="pre">SISL_NUM_PROCS</span> <span class="pre">*</span> <span class="pre">OMP_NUM_THREADS</span> <span class="pre">&lt;=</span> <span class="pre">CORES</span></code>.</p>
+<p>Generally one can get the maximum number of cores by:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">nprocs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sched_getaffinity</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="c1"># If your CPU has hyper-threads, then you have to divide by 2:</span>
+<span class="n">nprocs</span> <span class="o">=</span> <span class="n">nprocs</span> <span class="o">//</span> <span class="mi">2</span>
+</pre></div>
+</div>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">SISL_VIZ_AUTOLOAD</span> <span class="pre">=</span> <span class="pre">false</span></code></dt><dd><p>whether or not to autoload the visualization module.
-The visualization module imports many dependent modules.
-If you run small scripts that does not use the <a class="reference internal" href="api/viz/index.html#module-sisl.viz" title="sisl.viz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code></a> module, then
-it is recommended to keep this to be false.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_PAR_CHUNKSIZE</span> <span class="pre">=</span> <span class="pre">0.2</span></code></dt><dd><p>Default size of chunk for each processor when running parallel things.</p>
+<p>The chunksize can be an <em class="xref py py-obj">int</em>, in which case it is directly determining
+the chunksize.
+If it is a <em class="xref py py-obj">float</em>, it is understood as the fraction of chunks each
+processor will get, so a chunksize of <code class="docutils literal notranslate"><span class="pre">0.5</span></code> means that each processor
+gets 2 chunks (the actual chunksize will be adjusted depending on the number
+of iterations). For <code class="docutils literal notranslate"><span class="pre">0.1</span></code>, it results in 10 chunks per processor.</p>
+<p>When doing parallel jobs the chunksize can greatly improve efficiency.
+For example a chunksize of 1 and 2 processors for a brillouinzone object
+means an execution like this:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&lt;initialization&gt;
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">0</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">1</span><span class="o">]</span>
+&lt;collection<span class="w"> </span>of<span class="w"> </span>results&gt;
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">2</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">3</span><span class="o">]</span>
+&lt;collection<span class="w"> </span>of<span class="w"> </span>results&gt;
+...
+</pre></div>
+</div>
+<p>With a chunksize of 2 it will look like:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&lt;initialization&gt;
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">0</span><span class="o">]</span>
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">1</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">2</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">3</span><span class="o">]</span>
+&lt;collection<span class="w"> </span>of<span class="w"> </span>results&gt;
+...
+</pre></div>
+</div>
+<p>this can greatly improve performance, however, a too high chunksize can
+hurt performance, as well as a too low.
+A rule-of-thumb would be to select a chunksize such that
+the number of iterations is divisible by the chunksize.
+For <em class="xref py py-obj">BrillouinZone</em> objects, the number of iterations is equivalent to the number
+of k-points.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">SISL_SHOW_PROGRESS</span> <span class="pre">=</span> <span class="pre">false</span></code></dt><dd><p>Certain sisl routines has a builtin progress bar. This variable can default
 whether or not those will be shown. It can be nice for <em>slow</em> brillouinzone calculations

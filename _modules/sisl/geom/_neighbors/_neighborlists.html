@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.geom._neighbors._neighborlists &mdash; sisl 0.1-b0feb0c</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-b0feb0c
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Similar solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.geom._neighbors._neighborlists</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.geom._neighbors._neighborlists</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;UniqueNeighborList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FullNeighborList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PartialNeighborList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AtomNeighborList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PointsNeighborList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PointNeighborList&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">Neighbors</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span>
+        <span class="n">finder_results</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">split_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span> <span class="o">=</span> <span class="n">finder_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="o">=</span> <span class="n">split_indices</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (i, j), the first index.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">j</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (i, j), the second index.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (i, j), the supercell indices of `j`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">min_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The minimum nsc for an auxiliary supercell to contain all neighbors in this object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">split_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Indices to split the interactions of each atom.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">AtomsNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for interactions between atoms.&quot;&quot;&quot;</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors that each atom has.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">n_neighbors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
+            <span class="k">return</span> <span class="n">n_neighbors</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="UniqueNeighborList">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList">[docs]</a>
+<span class="k">class</span> <span class="nc">UniqueNeighborList</span><span class="p">(</span><span class="n">AtomsNeighborList</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Full neighbors list of a system, but **containing only the upper triangle of the adjacency matrix**.</span>
+
+<span class="sd">    What this means, is that the the object only contains one direction of each interaction.</span>
+
+<span class="sd">    This is only possible if the interaction is symmetric (there is no directionality and</span>
+<span class="sd">    thresholds for interaction do not depend on direction).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    You can get a unique neighbors list from the `find_unique_pairs` method of a `NeighborFinder` object.</span>
+<span class="sd">    Then, you can retreive the neighbors from it:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import sisl</span>
+
+<span class="sd">        # Build a graphene supercell with a vacancy</span>
+<span class="sd">        graphene = sisl.geom.graphene().tile(2, 0).tile(2, 1)</span>
+<span class="sd">        graphene = graphene.remove(2).translate2uc()</span>
+
+<span class="sd">        # Initialize a finder for neighbors that are within 1.5 Angstrom</span>
+<span class="sd">        finder = sisl.geom.NeighborFinder(graphene, R=1.5)</span>
+
+<span class="sd">        # Get the list of unique neighbor pairs</span>
+<span class="sd">        neighbors = finder.find_unique_pairs()</span>
+
+<span class="sd">        # You can get the neighbor pairs (i,j) from the i and j attributes</span>
+<span class="sd">        # The supercell index of atom J is in the isc attribute.</span>
+<span class="sd">        print(&quot;ATOM I&quot;, neighbors.i)</span>
+<span class="sd">        print(&quot;ATOM J (NEIGHBOR)&quot;, neighbors.j)</span>
+<span class="sd">        print(&quot;NEIGHBORS ISC:&quot;, neighbors.isc)</span>
+
+<span class="sd">        # Notice that I is always smaller than J. Each connection is only</span>
+<span class="sd">        # stored once.</span>
+<span class="sd">        # You can convert to a full neighbors list, which will contain both</span>
+<span class="sd">        # directions.</span>
+<span class="sd">        full_neighbors = neighbors.to_full()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors that each atom has.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">],</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">n_neighbors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
+            <span class="k">return</span> <span class="n">n_neighbors</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="UniqueNeighborList.to_full">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.to_full">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_full</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FullNeighborList</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the unique neighbors list to a full neighbors list.&quot;&quot;&quot;</span>
+        <span class="n">upper_tri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span>
+        <span class="n">lower_tri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
+        <span class="p">)</span>
+
+        <span class="n">self_interactions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">lower_tri</span> <span class="o">=</span> <span class="n">lower_tri</span><span class="p">[</span><span class="o">~</span><span class="n">self_interactions</span><span class="p">]</span>
+
+        <span class="c1"># Concatenate the lower triangular with the upper triangular part</span>
+        <span class="n">all_finder_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">upper_tri</span><span class="p">,</span> <span class="n">lower_tri</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Sort by i and then by j</span>
+        <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">(</span><span class="n">all_finder_results</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">all_finder_results</span> <span class="o">=</span> <span class="n">all_finder_results</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">FullNeighborList</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+            <span class="n">all_finder_results</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FullNeighborList">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList">[docs]</a>
+<span class="k">class</span> <span class="nc">FullNeighborList</span><span class="p">(</span><span class="n">AtomsNeighborList</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Full neighbors list of a system.</span>
+
+<span class="sd">    This class, contrary to `UniqueNeighborList`, (possibly) contains the two directions</span>
+<span class="sd">    of an interaction between two given atoms. Notice that it is possible that there is</span>
+<span class="sd">    a connection from atom `i` to atom `j` but not the other way around.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    You can get a full neighbors list from the `find_neighbors` method of a `NeighborFinder` object.</span>
+<span class="sd">    Then, you can retreive the neighbors from it:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import sisl</span>
+
+<span class="sd">        # Build a graphene supercell with a vacancy</span>
+<span class="sd">        graphene = sisl.geom.graphene().tile(2, 0).tile(2, 1)</span>
+<span class="sd">        graphene = graphene.remove(2).translate2uc()</span>
+
+<span class="sd">        # Initialize a finder for neighbors that are within 1.5 Angstrom</span>
+<span class="sd">        finder = sisl.geom.NeighborFinder(graphene, R=1.5)</span>
+
+<span class="sd">        # Get the full neighbors list</span>
+<span class="sd">        neighbors = finder.find_neighbors()</span>
+
+<span class="sd">        # You can loop through atoms to get their neighbors</span>
+<span class="sd">        for at_neighs in neighbors:</span>
+<span class="sd">            print()</span>
+<span class="sd">            print(f&quot;NEIGHBORS OF ATOM {at_neighs.atom} ({at_neighs.n_neighbors} neighbors): &quot;)</span>
+<span class="sd">            print(&quot;J&quot;, at_neighs.j)</span>
+<span class="sd">            print(&quot;ISC&quot;, at_neighs.isc)</span>
+
+<span class="sd">        # Or get the neighbors of a particular atom:</span>
+<span class="sd">        neighbors[0].j</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    AtomNeighborList</span>
+<span class="sd">        The object returned by this list when iterating or indexing.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtomNeighborList</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the interactions of a given atom.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">AtomNeighborList</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span>
+                <span class="n">atom</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only integer indexing is supported.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FullNeighborList.to_unique">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.to_unique">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_unique</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UniqueNeighborList</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the full neighbors list to a unique neighbors list.&quot;&quot;&quot;</span>
+
+        <span class="n">full_finder_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span>
+        <span class="n">unique_finder_results</span> <span class="o">=</span> <span class="n">full_finder_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="c1"># Concatenate the uc connections with the rest of the connections.</span>
+        <span class="k">return</span> <span class="n">UniqueNeighborList</span><span class="p">(</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="o">=</span><span class="n">unique_finder_results</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PartialNeighborList">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList">[docs]</a>
+<span class="k">class</span> <span class="nc">PartialNeighborList</span><span class="p">(</span><span class="n">AtomsNeighborList</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Neighbors list containing only the neighbors of some atoms.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    You can get a partial neighbors list from the `find_neighbors` method of a</span>
+<span class="sd">    `NeighborFinder` object if you pass the `atoms` argument. Then, you can</span>
+<span class="sd">    retreive the neighbors from it:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import sisl</span>
+
+<span class="sd">        # Build a graphene supercell with a vacancy</span>
+<span class="sd">        graphene = sisl.geom.graphene().tile(2, 0).tile(2, 1)</span>
+<span class="sd">        graphene = graphene.remove(2).translate2uc()</span>
+
+<span class="sd">        # Initialize a finder for neighbors that are within 1.5 Angstrom</span>
+<span class="sd">        finder = sisl.geom.NeighborFinder(graphene, R=1.5)</span>
+
+<span class="sd">        # Get a partial neighbors list</span>
+<span class="sd">        neighbors = finder.find_neighbors(atoms=[2, 4])</span>
+
+<span class="sd">        # You can loop through atoms to get their neighbors</span>
+<span class="sd">        # In this case, the loop will go through atoms 2 and 4</span>
+<span class="sd">        for at_neighs in neighbors:</span>
+<span class="sd">            print()</span>
+<span class="sd">            print(f&quot;NEIGHBORS OF ATOM {at_neighs.atom} ({at_neighs.n_neighbors} neighbors): &quot;)</span>
+<span class="sd">            print(&quot;J&quot;, at_neighs.j)</span>
+<span class="sd">            print(&quot;ISC&quot;, at_neighs.isc)</span>
+
+<span class="sd">        # Or get the neighbors of a particular atom</span>
+<span class="sd">        neighbors[0].atom # This will be 2</span>
+<span class="sd">        neighbors[0].j</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    AtomNeighborList</span>
+<span class="sd">        The object returned by this list when iterating or indexing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The atoms for which the neighbors are stored.</span>
+    <span class="n">atoms</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+
+<div class="viewcode-block" id="PartialNeighborList.__init__">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">split_indices</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">split_indices</span><span class="p">)</span></div>
+
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors that each atom has.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">==</span> <span class="n">at</span><span class="p">)</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtomNeighborList</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the interactions of a given atom.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">AtomNeighborList</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span>
+                <span class="n">atom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">item</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only integer indexing is supported.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AtomNeighborList">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList">[docs]</a>
+<span class="k">class</span> <span class="nc">AtomNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of atoms that are close to a given atom.</span>
+
+<span class="sd">    The usual way to get an `AtomNeighborList` object is by iterating over a</span>
+<span class="sd">    `FullNeighborList` or a `PartialNeighborList`. See their documentation for</span>
+<span class="sd">    examples.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    FullNeighborList, PartialNeighborList</span>
+<span class="sd">        The lists that, when iterated, return `AtomNeighborList` objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The atom for which the neighbors are stored.</span>
+    <span class="n">atom</span><span class="p">:</span> <span class="nb">int</span>
+
+<div class="viewcode-block" id="AtomNeighborList.__init__">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">atom</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">)</span></div>
+
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors of the atom.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PointsNeighborList">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList">[docs]</a>
+<span class="k">class</span> <span class="nc">PointsNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of atoms that are close to a set of points in space.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    You can get a points neighbors list from the `find_close` method of a</span>
+<span class="sd">    `NeighborFinder` object. Then, you can retreive the neighbors from it:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import sisl</span>
+
+<span class="sd">        # Build a graphene supercell with a vacancy</span>
+<span class="sd">        graphene = sisl.geom.graphene().tile(2, 0).tile(2, 1)</span>
+<span class="sd">        graphene = graphene.remove(2).translate2uc()</span>
+
+<span class="sd">        # Initialize a finder for neighbors that are within 1.5 Angstrom</span>
+<span class="sd">        finder = sisl.geom.NeighborFinder(graphene, R=1.5)</span>
+
+<span class="sd">        # Get the full neighbors list</span>
+<span class="sd">        points = [[0, 0, 0], [2, 0, 0]]</span>
+<span class="sd">        neighbors = finder.find_close(points)</span>
+
+<span class="sd">        # You can loop through points to get their neighbors</span>
+<span class="sd">        for point_neighs in neighbors:</span>
+<span class="sd">            print()</span>
+<span class="sd">            print(f&quot;NEIGHBORS OF POINT {point_neighs.point} ({point_neighs.n_neighbors} neighbors): &quot;)</span>
+<span class="sd">            print(&quot;J&quot;, point_neighs.j)</span>
+<span class="sd">            print(&quot;ISC&quot;, point_neighs.isc)</span>
+
+<span class="sd">        # Or get the neighbors of a particular point:</span>
+<span class="sd">        neighbors[0].j</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    PointNeighborList</span>
+<span class="sd">        The object returned by this list when iterating or indexing.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PointsNeighborList.__init__">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">split_indices</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">split_indices</span><span class="p">)</span></div>
+
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of atoms that are close to each point&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">n_neighbors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
+            <span class="k">return</span> <span class="n">n_neighbors</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the interactions of a given point.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">PointNeighborList</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">item</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only integer indexing is supported.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PointNeighborList">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList">[docs]</a>
+<span class="k">class</span> <span class="nc">PointNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of atoms that are close to a point in space.</span>
+
+<span class="sd">    The usual way to get a `PointNeighborList` object is by iterating over a</span>
+<span class="sd">    `PointsNeighborList`. See its documentation for examples.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    PointsNeighborList</span>
+<span class="sd">        The list that, when iterated, returns `PointNeighborList` objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The point for which the neighbors are stored.</span>
+    <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+
+<div class="viewcode-block" id="PointNeighborList.__init__">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">)</span></div>
+
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors of the point.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finding neighbors &mdash; sisl 0.1-255efb1</title>
+  <title>Finding neighbors &mdash; sisl 0.1-b0feb0c</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=9a31d19a"></script>
+        <script src="../../_static/documentation_options.js?v=81cd38e2"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-255efb1
+                0.1-b0feb0c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -99,6 +99,12 @@
 <li class="toctree-l2"><a class="reference internal" href="building.html">Common geometries</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Finding neighbors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.NeighborFinder.html">sisl.geom.NeighborFinder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.FullNeighborList.html">sisl.geom.FullNeighborList</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
@@ -141,7 +147,7 @@
            <div itemprop="articleBody">
              
   <section id="module-sisl.geom">
-<span id="finding-neighbors"></span><span id="geom"></span><h1>Finding neighbors<a class="headerlink" href="#module-sisl.geom" title="Link to this heading"></a></h1>
+<span id="finding-neighbors"></span><span id="geom-neighbors"></span><h1>Finding neighbors<a class="headerlink" href="#module-sisl.geom" title="Link to this heading"></a></h1>
 <p><a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> implements an <strong>algorithm to find neighbors in a geometry</strong>. It has two main properties:</p>
 <p><span class="fas fa-truck-fast"></span> <strong>It is very fast</strong>. It can compute all the neighbors for a system of 3 million atoms in around 6 seconds.</p>
 <p><span class="fas fa-maximize"></span> <strong>It scales linearly</strong> with the number of atoms in the system.</p>
@@ -154,6 +160,24 @@ as you want. You can ask for all neighbors or only the neighbors of atoms that y
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder" title="sisl.geom.NeighborFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NeighborFinder</span></code></a>(geometry[, R, overlap, bin_size])</p></td>
 <td><p>Fast and linear scaling finding of neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList" title="sisl.geom.FullNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FullNeighborList</span></code></a>(geometry, finder_results[, ...])</p></td>
+<td><p>Full neighbors list of a system.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom.UniqueNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniqueNeighborList</span></code></a>(geometry, finder_results)</p></td>
+<td><p>Full neighbors list of a system, but <strong>containing only the upper triangle of the adjacency matrix</strong>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList" title="sisl.geom.PartialNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartialNeighborList</span></code></a>(geometry, ...[, ...])</p></td>
+<td><p>Neighbors list containing only the neighbors of some atoms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a>(geometry, finder_results, atom)</p></td>
+<td><p>List of atoms that are close to a given atom.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></a>(geometry, points, ...[, ...])</p></td>
+<td><p>List of atoms that are close to a set of points in space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a>(geometry, point, ...)</p></td>
+<td><p>List of atoms that are close to a point in space.</p></td>
 </tr>
 </tbody>
 </table>
@@ -172,32 +196,32 @@ neighbor list.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">FullNeighborList</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList" title="sisl.geom.FullNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FullNeighborList</span></code></a></p></td>
 <td><p>All atoms</p></td>
 <td><p>No</p></td>
-<td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></p></td>
+<td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniqueNeighborList</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom.UniqueNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniqueNeighborList</span></code></a></p></td>
 <td><p>All atoms</p></td>
 <td><p>Yes</p></td>
 <td><p>N/A</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartialNeighborList</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList" title="sisl.geom.PartialNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartialNeighborList</span></code></a></p></td>
 <td><p>Selected atoms</p></td>
 <td><p>No</p></td>
-<td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></p></td>
+<td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a></p></td>
 <td><p>One atom</p></td>
 <td><p>No</p></td>
 <td><p>N/A</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></a></p></td>
 <td><p>Points in space</p></td>
 <td><p>No</p></td>
-<td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></p></td>
+<td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a></p></td>
 <td><p>One point in space</p></td>
 <td><p>No</p></td>
 <td><p>N/A</p></td>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.plots.geometry &mdash; sisl 0.1-255efb1</title>
+  <title>sisl.viz.plots.geometry &mdash; sisl 0.1-b0feb0c</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=9a31d19a"></script>
+        <script src="../../../../_static/documentation_options.js?v=81cd38e2"></script>
         <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-255efb1
+                0.1-b0feb0c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -133,7 +133,7 @@
 <span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">AtomsIndex</span>
 <span class="kn">from</span> <span class="nn">sisl.viz.figure</span> <span class="kn">import</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">get_figure</span>
 <span class="kn">from</span> <span class="nn">sisl.viz.plotters</span> <span class="kn">import</span> <span class="n">plot_actions</span> <span class="k">as</span> <span class="n">plot_actions</span>
-<span class="kn">from</span> <span class="nn">sisl.viz.types</span> <span class="kn">import</span> <span class="n">AtomArrowSpec</span><span class="p">,</span> <span class="n">AtomsStyleSpec</span><span class="p">,</span> <span class="n">Axes</span><span class="p">,</span> <span class="n">StyleSpec</span>
+<span class="kn">from</span> <span class="nn">sisl.viz.types</span> <span class="kn">import</span> <span class="n">AtomArrowSpec</span><span class="p">,</span> <span class="n">AtomsStyleSpec</span><span class="p">,</span> <span class="n">Axes</span><span class="p">,</span> <span class="n">Colorscale</span><span class="p">,</span> <span class="n">StyleSpec</span>
 
 <span class="kn">from</span> <span class="nn">..plot</span> <span class="kn">import</span> <span class="n">Plot</span>
 <span class="kn">from</span> <span class="nn">..plotters.cell</span> <span class="kn">import</span> <span class="n">cell_plot_actions</span><span class="p">,</span> <span class="n">get_ndim</span><span class="p">,</span> <span class="n">get_z</span>
@@ -222,13 +222,13 @@
     <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">atoms_style</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">AtomsStyleSpec</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
     <span class="n">atoms_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">atoms_colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">atoms_colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Colorscale</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">drawing_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;scatter&quot;</span><span class="p">,</span> <span class="s2">&quot;balls&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">bind_bonds_to_ats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">points_per_bond</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="n">bonds_style</span><span class="p">:</span> <span class="n">StyleSpec</span> <span class="o">=</span> <span class="p">{},</span>
     <span class="n">bonds_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">bonds_colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bonds_colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Colorscale</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">show_atoms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">show_bonds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">show_cell</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span>
@@ -415,7 +415,7 @@
     <span class="n">sites_style</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">AtomsStyleSpec</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
     <span class="n">sites_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">sites_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Sites&quot;</span><span class="p">,</span>
-    <span class="n">sites_colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sites_colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Colorscale</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">drawing_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;scatter&quot;</span><span class="p">,</span> <span class="s2">&quot;balls&quot;</span><span class="p">,</span> <span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">show_cell</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">cell_style</span><span class="p">:</span> <span class="n">StyleSpec</span> <span class="o">=</span> <span class="p">{},</span>

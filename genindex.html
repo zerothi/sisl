@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; sisl 0.1-255efb1</title>
+  <title>Index &mdash; sisl 0.1-b0feb0c</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=9a31d19a"></script>
+        <script src="_static/documentation_options.js?v=81cd38e2"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-255efb1
+                0.1-b0feb0c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -132,6 +132,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -210,9 +211,21 @@
 </li>
         <li><a href="api/geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory.__init__">(sisl.geom.AtomCategory method)</a>
 </li>
+        <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.__init__">(sisl.geom.AtomNeighborList method)</a>
+</li>
         <li><a href="api/geom/generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection.__init__">(sisl.geom.CompositeGeometrySection method)</a>
 </li>
+        <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.__init__">(sisl.geom.FullNeighborList method)</a>
+</li>
         <li><a href="api/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.__init__">(sisl.geom.NeighborFinder method)</a>, <a href="api/geom/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.__init__">[1]</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.__init__">(sisl.geom.PartialNeighborList method)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.__init__">(sisl.geom.PointNeighborList method)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.__init__">(sisl.geom.PointsNeighborList method)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.__init__">(sisl.geom.UniqueNeighborList method)</a>
 </li>
         <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.__init__">(sisl.Geometry method)</a>
 </li>
@@ -823,10 +836,10 @@
         <li><a href="api/generated/sisl.STOrbital.html#sisl.STOrbital.alpha">(sisl.STOrbital property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.mixing.AndersonMixer.html#sisl.mixing.AndersonMixer">AndersonMixer (class in sisl.mixing)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Quaternion.html#sisl.Quaternion.angle">angle (sisl.Quaternion property)</a>
 </li>
       <li><a href="api/generated/sisl.utils.angle.html#sisl.utils.angle">angle() (in module sisl.utils)</a>
@@ -958,7 +971,11 @@
       <li><a href="api/generated/sisl.Atom.html#sisl.Atom">Atom (class in sisl)</a>
 </li>
       <li><a href="api/generated/sisl.Atoms.html#sisl.Atoms.atom">atom (sisl.Atoms property)</a>
+
+      <ul>
+        <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.atom">(sisl.geom.AtomNeighborList attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.atom_ACOHP">atom_ACOHP() (sisl.io.tbtrans.phtavncSilePHtrans method)</a>
 
       <ul>
@@ -1057,10 +1074,16 @@
 </li>
       <li><a href="toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput">AtomInput (class in sisl_toolbox.siesta.atom)</a>
 </li>
+      <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList">AtomNeighborList (class in sisl.geom)</a>
+</li>
       <li><a href="api/generated/sisl.Atoms.html#sisl.Atoms">Atoms (class in sisl)</a>
 </li>
-      <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.atoms">atoms (sisl.Geometry property)</a>
+      <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.atoms">atoms (sisl.geom.PartialNeighborList attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.atoms">(sisl.Geometry property)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex">AtomsIndex (in module sisl.typing)</a>
 </li>
       <li><a href="api/generated/sisl.typing.AtomsLike.html#sisl.typing.AtomsLike">AtomsLike (in module sisl.typing)</a>
@@ -3647,6 +3670,8 @@
         <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.fromsp">(sisl.SparseOrbital class method)</a>
 </li>
       </ul></li>
+      <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList">FullNeighborList (class in sisl.geom)</a>
+</li>
       <li><a href="api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.function">function (sisl.viz.Plot attribute)</a>
 </li>
       <li><a href="api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot.function">function() (sisl.viz.BandsPlot static method)</a>
@@ -4019,6 +4044,20 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.i">i (sisl.geom.AtomNeighborList property)</a>
+
+      <ul>
+        <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.i">(sisl.geom.FullNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.i">(sisl.geom.PartialNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.i">(sisl.geom.PointNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.i">(sisl.geom.PointsNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.i">(sisl.geom.UniqueNeighborList property)</a>
+</li>
+      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.icell">icell (sisl.Geometry property)</a>
 
       <ul>
@@ -4249,6 +4288,20 @@
 </li>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.is_unpolarized">is_unpolarized (sisl.physics.Spin property)</a>
 </li>
+      <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.isc">isc (sisl.geom.AtomNeighborList property)</a>
+
+      <ul>
+        <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.isc">(sisl.geom.FullNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.isc">(sisl.geom.PartialNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.isc">(sisl.geom.PointNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.isc">(sisl.geom.PointsNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.isc">(sisl.geom.UniqueNeighborList property)</a>
+</li>
+      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.isc_off">isc_off (sisl.Geometry property)</a>
 
       <ul>
@@ -4393,6 +4446,26 @@
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.iter_species">iter_species() (sisl.Geometry method)</a>
 </li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.j">j (sisl.geom.AtomNeighborList property)</a>
+
+      <ul>
+        <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.j">(sisl.geom.FullNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.j">(sisl.geom.PartialNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.j">(sisl.geom.PointNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.j">(sisl.geom.PointsNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.j">(sisl.geom.UniqueNeighborList property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -4705,6 +4778,20 @@
 </li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.mgrid">mgrid() (sisl.Grid class method)</a>
 </li>
+      <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.min_nsc">min_nsc (sisl.geom.AtomNeighborList property)</a>
+
+      <ul>
+        <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.min_nsc">(sisl.geom.FullNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.min_nsc">(sisl.geom.PartialNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.min_nsc">(sisl.geom.PointNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.min_nsc">(sisl.geom.PointsNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.min_nsc">(sisl.geom.UniqueNeighborList property)</a>
+</li>
+      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.mirror">mirror() (sisl.Geometry method)</a>
 </li>
       <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.mix">mix() (sisl.mixing.AdaptiveDIISMixer method)</a>
@@ -4719,6 +4806,8 @@
       </ul></li>
       <li><a href="api/generated/sisl.mixing.StepMixer.html#sisl.mixing.StepMixer.mixer">mixer (sisl.mixing.StepMixer property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.mode">mode (sisl.physics.phonon.EigenmodePhonon property)</a>
 
       <ul>
@@ -4729,8 +4818,6 @@
         <li><a href="api/generated/sisl.physics.phonon.ModePhonon.html#sisl.physics.phonon.ModePhonon.mode">(sisl.physics.phonon.ModePhonon property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon">ModeCPhonon (class in sisl.physics.phonon)</a>
 </li>
       <li><a href="api/generated/sisl.physics.phonon.ModePhonon.html#sisl.physics.phonon.ModePhonon">ModePhonon (class in sisl.physics.phonon)</a>
@@ -4868,6 +4955,20 @@
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.n_btd">(sisl.io.tbtrans.tbtprojncSileTBtrans method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.n_btd">(sisl.io.tbtrans.tbtsencSileTBtrans method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.n_neighbors">n_neighbors (sisl.geom.AtomNeighborList property)</a>
+
+      <ul>
+        <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.n_neighbors">(sisl.geom.FullNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.n_neighbors">(sisl.geom.PartialNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.n_neighbors">(sisl.geom.PointNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.n_neighbors">(sisl.geom.PointsNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.n_neighbors">(sisl.geom.UniqueNeighborList property)</a>
 </li>
       </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.n_s">n_s (sisl.Geometry property)</a>
@@ -5774,6 +5875,8 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.parent">(sisl.physics.StateC attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList">PartialNeighborList (class in sisl.geom)</a>
+</li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.pbc">pbc (sisl.Geometry property)</a>
 
       <ul>
@@ -6028,6 +6131,12 @@
         <li><a href="api/viz/generated/sisl.viz.WavefunctionPlot.html#sisl.viz.WavefunctionPlot.plot_class_key">(sisl.viz.WavefunctionPlot class method)</a>
 </li>
       </ul></li>
+      <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.point">point (sisl.geom.PointNeighborList attribute)</a>
+</li>
+      <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList">PointNeighborList (class in sisl.geom)</a>
+</li>
+      <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList">PointsNeighborList (class in sisl.geom)</a>
+</li>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED">POLARIZED (sisl.physics.Spin attribute)</a>
 </li>
       <li><a href="api/generated/sisl.oplist.html#sisl.oplist.pop">pop() (sisl.oplist method)</a>
@@ -7778,8 +7887,6 @@
         <li><a href="api/physics.electron.html#module-sisl.physics.electron">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.physics.phonon
 
@@ -7787,6 +7894,8 @@
         <li><a href="api/physics.phonon.html#module-sisl.physics.phonon">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.shape
 
@@ -8109,6 +8218,20 @@
 
       <ul>
         <li><a href="api/viz/generated/sisl.viz.PdosPlot.html#sisl.viz.PdosPlot.split_groups">(sisl.viz.PdosPlot method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/geom/generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList.split_indices">split_indices (sisl.geom.AtomNeighborList property)</a>
+
+      <ul>
+        <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.split_indices">(sisl.geom.FullNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList.split_indices">(sisl.geom.PartialNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList.split_indices">(sisl.geom.PointNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList.split_indices">(sisl.geom.PointsNeighborList property)</a>
+</li>
+        <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.split_indices">(sisl.geom.UniqueNeighborList property)</a>
 </li>
       </ul></li>
       <li><a href="api/viz/generated/sisl.viz.FatbandsPlot.html#sisl.viz.FatbandsPlot.split_orbs">split_orbs() (sisl.viz.FatbandsPlot method)</a>
@@ -8442,6 +8565,10 @@
       <li><a href="api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.to">to() (sisl.viz.Figure method)</a>
 </li>
       <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.to_bytes">to_bytes() (sisl.BoundaryCondition method)</a>
+</li>
+      <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList.to_full">to_full() (sisl.geom.UniqueNeighborList method)</a>
+</li>
+      <li><a href="api/geom/generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList.to_unique">to_unique() (sisl.geom.FullNeighborList method)</a>
 </li>
       <li><a href="api/generated/sisl.SparseCSR.html#sisl.SparseCSR.toarray">toarray() (sisl.SparseCSR method)</a>
 </li>
@@ -8784,6 +8911,8 @@
       <li><a href="api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.unfold">unfold() (sisl.physics.Bloch method)</a>
 </li>
       <li><a href="api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.unfold_points">unfold_points() (sisl.physics.Bloch method)</a>
+</li>
+      <li><a href="api/geom/generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList">UniqueNeighborList (class in sisl.geom)</a>
 </li>
       <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.unit">unit (sisl.constant.PhysicalConstant property)</a>
 </li>

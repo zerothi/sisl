@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.densitymatrix &mdash; sisl 0.1-255efb1</title>
+  <title>sisl.physics.densitymatrix &mdash; sisl 0.1-b0feb0c</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=9a31d19a"></script>
+        <script src="../../../_static/documentation_options.js?v=81cd38e2"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-255efb1
+                0.1-b0feb0c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -127,7 +127,7 @@
 
 <span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">logical_and</span><span class="p">,</span> <span class="n">repeat</span><span class="p">,</span> <span class="n">subtract</span><span class="p">,</span> <span class="n">unique</span>
@@ -137,7 +137,7 @@
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">BoundaryCondition</span> <span class="k">as</span> <span class="n">BC</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Lattice</span>
 <span class="kn">from</span> <span class="nn">sisl._core.sparse</span> <span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span><span class="p">,</span> <span class="n">_to_coo</span>
 <span class="kn">from</span> <span class="nn">sisl._core.sparse_geometry</span> <span class="kn">import</span> <span class="n">SparseAtom</span><span class="p">,</span> <span class="n">SparseOrbital</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_fabs_le</span><span class="p">,</span> <span class="n">indices_le</span>
@@ -826,7 +826,15 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">grid</span><span class="p">:</span> <span class="n">Grid</span><span class="p">,</span>
+        <span class="n">spinor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+        <span class="n">eta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;pre-compute&quot;</span><span class="p">,</span> <span class="s2">&quot;direct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;pre-compute&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand the density matrix to the charge density on a grid</span>
 
 <span class="sd">        This routine calculates the real-space density components on a specified grid.</span>
@@ -865,29 +873,23 @@
 <span class="sd">           the tolerance, they will be treated as strictly zeros.</span>
 <span class="sd">        eta : bool, optional</span>
 <span class="sd">           show a progressbar on stdout</span>
+<span class="sd">        method:</span>
+<span class="sd">           It determines if the orbital values are computed on the fly (direct) or they are all pre-computed</span>
+<span class="sd">           on the grid at the beginning(pre-compute).</span>
+<span class="sd">           Pre computing orbitals results in a faster computation, but it requires more memory.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        The `method` argument may change at will since this is an experimental feature.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
-        <span class="c1"># Check that the atomic coordinates, really are all within the intrinsic supercell.</span>
-        <span class="c1"># If not, it may mean that the DM does not conform to the primary unit-cell paradigm</span>
-        <span class="c1"># of matrix elements. It complicates things.</span>
-        <span class="n">fxyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span>
-        <span class="n">f_min</span> <span class="o">=</span> <span class="n">fxyz</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-        <span class="n">f_max</span> <span class="o">=</span> <span class="n">fxyz</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="k">del</span> <span class="n">fxyz</span><span class="p">,</span> <span class="n">f_min</span><span class="p">,</span> <span class="n">f_max</span>
+        <span class="c1"># Translate the density matrix to have all the unit cell atoms actually inside</span>
+        <span class="c1"># the unit cell, since this will facilitate things greatly and it gives the</span>
+        <span class="c1"># same result.</span>
+        <span class="n">uc_dm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translate2uc</span><span class="p">()</span>
 
-        <span class="c1"># Extract sub variables used throughout the loop</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">dcell</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">dcell</span>
-
-        <span class="c1"># Sparse matrix data</span>
-        <span class="n">csr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span>
-
-        <span class="c1"># In the following we don&#39;t care about division</span>
-        <span class="c1"># So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state</span>
-        <span class="n">old_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Placeholder for the resulting coefficients</span>
-        <span class="n">DM</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Get the DM components with which we want to compute the density</span>
+        <span class="n">csr</span> <span class="o">=</span> <span class="n">uc_dm</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">spinor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Default to the total density</span>
@@ -917,6 +919,15 @@
             <span class="c1"># Perform dot-product with spinor, and take out the diagonal real part</span>
             <span class="n">DM</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">DM</span><span class="p">,</span> <span class="n">spinor</span><span class="o">.</span><span class="n">T</span><span class="p">)[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
+            <span class="c1"># Create the DM csr matrix.</span>
+            <span class="n">csrDM</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">DM</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)),</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">del</span> <span class="n">idx</span><span class="p">,</span> <span class="n">DM</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">spinor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">spinor</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">onesd</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -935,22 +946,58 @@
                     <span class="s2">&quot;argument as an integer, or a vector of length 2&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
-            <span class="n">DM</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">spinor</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">spinor</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">csrDM</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">spinor</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">csr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">spinor</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
-            <span class="n">DM</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">csrDM</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="c1"># Create the DM csr matrix.</span>
-        <span class="n">csrDM</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">DM</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)),</span>
-            <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;pre-compute&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Compute orbital values on the grid</span>
+                <span class="n">psi_values</span> <span class="o">=</span> <span class="n">uc_dm</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_orbital_values</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-        <span class="c1"># Clean-up</span>
-        <span class="k">del</span> <span class="n">idx</span><span class="p">,</span> <span class="n">DM</span>
+                <span class="n">psi_values</span><span class="o">.</span><span class="n">reduce_orbital_products</span><span class="p">(</span>
+                    <span class="n">csrDM</span><span class="p">,</span> <span class="n">uc_dm</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">MemoryError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">MemoryError</span><span class="p">(</span>
+                    <span class="s2">&quot;Ran out of memory while computing the density with the &#39;pre-compute&#39;&quot;</span>
+                    <span class="s2">&quot; method. Try using method=&#39;direct&#39;, which is slower but requires much&quot;</span>
+                    <span class="s2">&quot; less memory.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;direct&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_density_direct</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">csrDM</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_density_direct</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">:</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">csrDM</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span> <span class="n">eta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the density by calculating the orbital values on the fly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        grid : Grid</span>
+<span class="sd">           the grid on which to add the density (the density is in ``e/Ang^3``)</span>
+<span class="sd">        spinor : (2,) or (2, 2), optional</span>
+<span class="sd">           the spinor matrix to obtain the diagonal components of the density. For un-polarized density matrices</span>
+<span class="sd">           this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of</span>
+<span class="sd">           length 2 (defaults to total density).</span>
+<span class="sd">           For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).</span>
+<span class="sd">        atol : float, optional</span>
+<span class="sd">           DM tolerance for accepted values. For all density matrix elements with absolute values below</span>
+<span class="sd">           the tolerance, they will be treated as strictly zeros.</span>
+<span class="sd">        eta : bool, optional</span>
+<span class="sd">           show a progressbar on stdout</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
+
+        <span class="c1"># Extract sub variables used throughout the loop</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">dcell</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">dcell</span>
+
+        <span class="c1"># In the following we don&#39;t care about division</span>
+        <span class="c1"># So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state</span>
+        <span class="n">old_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 
         <span class="c1"># To heavily speed up the construction of the density we can recreate</span>
         <span class="c1"># the sparse csrDM matrix by summing the lower and upper triangular part.</span>
@@ -1250,7 +1297,6 @@
 
         <span class="c1"># Reset the error code for division</span>
         <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">old_err</span><span class="p">)</span></div>
-</div>
 
 
 
