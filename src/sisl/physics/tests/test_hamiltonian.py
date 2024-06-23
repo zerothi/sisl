@@ -26,7 +26,7 @@ from sisl import (
     get_distribution,
     oplist,
 )
-from sisl.physics.electron import berry_phase, conductivity, spin_contamination
+from sisl.physics.electron import ahc, berry_phase, shc, spin_contamination
 
 pytestmark = [
     pytest.mark.physics,
@@ -792,6 +792,23 @@ class TestHamiltonian:
         v = es.derivative(1)
         assert np.allclose(v1, v)
 
+    def test_derivative_orthogonal_axis(self, setup):
+        R, param = [0.1, 1.5], [1.0, 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate()
+
+        v1, vv1 = es.derivative(2, axes="x")
+        assert len(v1) == 1
+        assert len(vv1) == 1
+
+        v1, vv1 = es.derivative(2, axes="xy")
+        assert len(v1) == 2
+        assert len(vv1) == 3
+
     def test_derivative_non_orthogonal(self, setup):
         R, param = [0.1, 1.5], [(1.0, 1.0), (0.1, 0.1)]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -953,28 +970,40 @@ class TestHamiltonian:
 
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge="cell").berry_curvature()
-        ie2 = H.eigenstate(k, gauge="orbital").berry_curvature(degenerate_dir=(1, 1, 0))
+        ie2 = H.eigenstate(k, gauge="orbital").berry_curvature(
+            derivative_kwargs={"degenerate_dir": (1, 1, 0)}
+        )
         assert np.allclose(ie1, ie2)
 
     @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
-    def test_conductivity(self, setup):
+    def test_ahc(self, setup):
         R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
 
-        mp = MonkhorstPack(H, [11, 11, 1])
-        cond = conductivity(mp)
+        mp = MonkhorstPack(H, [5, 5, 1])
+        cond = ahc(mp)
 
     @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
-    def test_conductivity_spin(self, setup):
+    def test_ahc_spin(self, setup):
         R, param = [0.1, 1.5], [[1.0, 2.0], [0.1, 0.2]]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g, spin=Spin.POLARIZED)
         H.construct((R, param))
 
-        mp = MonkhorstPack(H, [11, 11, 1])
-        cond = conductivity(mp)
+        mp = MonkhorstPack(H, [5, 5, 1])
+        cond = ahc(mp)
+
+    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    def test_shc(self, setup):
+        R, param = [0.1, 1.5], [[1.0, 0.1, 0, 0], [0.4, 0.2, 0.3, 0.2]]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, spin=Spin.NONCOLINEAR)
+        H.construct((R, param))
+
+        mp = MonkhorstPack(H, [5, 5, 1])
+        cond = shc(mp)
 
     @pytest.mark.xfail(reason="Gauges make different decouplings")
     def test_gauge_eff(self, setup):

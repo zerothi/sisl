@@ -13,7 +13,9 @@ The typing types are shown below:
 .. autosummary::
    :toctree: generated/
 
+   CellAxisStrLiteral
    CellAxisLiteral
+   CartesianAxisStrLiteral
    CartesianAxisLiteral
    CellAxis
    CellAxes

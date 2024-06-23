@@ -9,6 +9,11 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- `axes` argument added to `derivative` to only calculate on a subset
+  of directions (can greatly improve performance for some systems)
+- `operator` argument added to `derivative` to apply an operator
+  to `dHk` and `dSk` matrices.
+  of directions (can greatly improve performance for some systems)
 - added `apply_kwargs` to methods which uses a `BrillouinZone` object.
   This enables one to leverage parallel processing for calculations.
 - `SISL_PAR_CHUNKSIZE=25`, new default parameter for parallel processing.
@@ -104,6 +109,8 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- `conductivity` is deprecated, use `ahc` and `shc` instead
+- `berry_curvature` has completely changed, checks it API
 - BZ apply methods are now by default parallel (if ``SISL_NUM_PROCS>1``)
 - `hsxSileSiesta.read_hamiltonian` now implicitly shifts Fermi-level to 0 (for newer HSX versions)
 - deprecated `periodic` to `axes` argument in `BrillouinZone.volume`

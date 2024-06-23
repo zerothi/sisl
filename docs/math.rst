@@ -40,3 +40,6 @@ please let us know!
   is an atomic index range and :math:`\{\alpha\}` refers
   to some *other* range which should be inferred from
   the context
+
+* the imaginary number is generally referred to as :math:`i` in
+  physics, its meaning should be implicit from the context.
