@@ -65,14 +65,14 @@ def berry_curvature(
     operator: Union[_dM_Operator, Tuple[_dM_Operator, _dM_Operator]] = lambda M, d: M,
     eta: float = 0.0,
 ) -> np.ndarray:
-    r"""Calculate the Berry curvature matrix for a set of states (using Kubo)
+    r"""Calculate the Berry curvature matrix for a set of states (Kubo)
 
     The Berry curvature is calculated using the following expression
     (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):
 
     .. math::
 
-       \boldsymbol\Omega_{\alpha\beta,i} = - 2hbar^2\Im\sum_{j\neq i}
+       \boldsymbol\Omega_{\alpha\beta,i} = 2i\hbar^2\sum_{j\neq i}
                 \frac{v^{\alpha}_{ij} v^\beta_{ji}}
                      {[\epsilon_i - \epsilon_j]^2 + i\eta^2}
 
@@ -86,6 +86,11 @@ def berry_curvature(
     For additional details on the spin Berry curvature, see Eq. (1) in
     :cite:`PhysRevB.98.21402` and Eq. (2) in :cite:`Ji2022`.
 
+    Notes
+    -----
+    There exists reports on some terms missing in the above formula, for details
+    see :cite:`gan2021calculation`.
+
     Parameters
     ----------
     state :
@@ -94,6 +99,7 @@ def berry_curvature(
     distribution:
         An optional distribution enabling one to automatically sum states
         across occupied/unoccupied states.
+        By default this is the step function with chemical potential :math:`\mu=0`.
     sum:
         only return the summed Berry curvature (over all states).
     derivative_kwargs:
@@ -114,7 +120,8 @@ def berry_curvature(
     Returns
     -------
     numpy.ndarray
-        Berry flux with final dimension ``(3, 3, state.shape[0])``
+        Berry flux with final dimension ``(3, 3, *)``. The dtype will be imaginary.
+        The Berry curvature is in the real part of the values.
     """
     # cast dtypes to *any* complex valued data-type that can be expressed
     # minimally by a complex64 object
@@ -157,16 +164,18 @@ def berry_curvature(
 
         # then it will be: [3, 3[, dist.shape]]
         shape = np.broadcast_shapes(dist_e.shape[1:], dsigma_shape)
-        sigma = np.zeros(shape, dtype=dA.real.dtype)
+        sigma = np.zeros(shape, dtype=dA.dtype)
 
         for si, ei in enumerate(energy):
-            de = (energy - ei) ** 2 + ieta2
+            de = (ei - energy) ** 2 + ieta2
             np.divide(-2, de, where=(de != 0), out=de)
-            dd = dist_e - dist_e[si]
+            # the order of this term can be found in:
+            # 10.21468/SciPostPhysCore.6.1.002 Eq. 29
+            dd = dist_e[si] - dist_e
 
             for iA in range(len(dA)):
                 for iB in range(len(dB)):
-                    dsigma = (de * dA[iA, si] * dB[iB, :, si]).imag
+                    dsigma = (-1j) * (de * dA[iA, si] * dB[iB, :, si])
 
                     sigma[iA, iB] += dsigma @ dd
 
@@ -175,16 +184,16 @@ def berry_curvature(
 
         # then it will be: [3, 3, nstates[, dist.shape]]
         shape = np.broadcast_shapes(dist_e.shape, dsigma_shape)
-        sigma = np.zeros(shape, dtype=dA.real.dtype)
+        sigma = np.zeros(shape, dtype=dA.dtype)
 
         for si, ei in enumerate(energy):
-            de = (energy - ei) ** 2 + ieta2
+            de = (ei - energy) ** 2 + ieta2
             np.divide(-2, de, where=(de != 0), out=de)
-            dd = dist_e - dist_e[si]
+            dd = dist_e[si] - dist_e
 
             for iA in range(len(dA)):
                 for iB in range(len(dB)):
-                    dsigma = (de * dA[iA, si] * dB[iB, :, si]).imag
+                    dsigma = (-1j) * (de * dA[iA, si] * dB[iB, :, si])
 
                     sigma[iA, iB, si] += dsigma @ dd
 
@@ -192,23 +201,6 @@ def berry_curvature(
     # we don't need to do anything for the units.
     # The velocity operator is 1/hbar \hat v
     # and the pre-factor of hbar ^2 means they cancel out.
-    """
-    Original implementation would be something like:
-            eig = es.eig
-            dx, dy, _ = es.derivative(1, matrix=True, degenerate=None)
-            f_nm = np.zeros_like(E)
-            for i in range(len(dx)):
-                f_nm += (
-                    np.imag(dx[:, i] * dy[i])
-                    / ((eig - eig[i]) ** 2 + gamma**2)
-                    * (
-                        fd(eig[i], x0=E).reshape(-1, 1)
-                        - fd(eig.reshape(1, -1), x0=E.reshape(-1, 1))
-                    )
-                ).real.sum(1)
-
-            return f_nm
-    """
     return sigma
 
 

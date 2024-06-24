@@ -626,7 +626,13 @@ _velocity_const = 1 / constant.hbar("eV ps")
 
 @set_module("sisl.physics.electron")
 def ahc(
-    bz, distribution="step", *, eigenstate_kwargs={}, apply_kwargs={}, **berry_kwargs
+    bz,
+    distribution="step",
+    k_average: bool = True,
+    *,
+    eigenstate_kwargs={},
+    apply_kwargs={},
+    **berry_kwargs,
 ) -> np.ndarray:
     r"""Electronic anomalous Hall conductivity for a given `BrillouinZone` integral
 
@@ -637,6 +643,8 @@ def ahc(
     for state :math:`i`.
 
     The conductivity will be averaged by volume of the periodic unit cell.
+    Hence the unit of `ahc` depends on the periodic unit cell. For 3D periodicity,
+    the unit will be ``1 / [LENGTH]``.
     See `Lattice.volumef` for details.
 
     See :cite:`Wang2006` for details on the implementation.
@@ -647,6 +655,10 @@ def ahc(
         containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
     distribution : str or func, optional
         distribution used to find occupations.
+    k_average:
+        if `True`, the returned quantity is averaged over `bz`, else all k-point
+        contributions will be collected.
+        Note, for large `bz` integrations this may explode the memory usage.
     eigenstate_kwargs :
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
@@ -659,7 +671,8 @@ def ahc(
     Returns
     -------
     cond :
-        conductivity in units [S/cm].
+        conductivity in units [S cm^2 / cm^D] (where D is the periodic dimensionality
+        of the unit cell).
 
     Examples
     --------
@@ -701,7 +714,12 @@ def ahc(
         nonlocal berry_kwargs
         return es.berry_curvature(**berry_kwargs)
 
-    cond = bz.apply(**apply_kwargs).average.eigenstate(**eigenstate_kwargs, wrap=_ahc)
+    apply = bz.apply(**apply_kwargs)
+    if k_average:
+        apply = apply.average
+    else:
+        apply = apply.ndarray
+    cond = apply.eigenstate(**eigenstate_kwargs, wrap=_ahc)
 
     geom = H.geometry
     lat = geom.lattice
@@ -743,6 +761,7 @@ def _create_sigma(n, sigma, dtype, format):
 def shc(
     bz,
     distribution="step",
+    k_average: bool = True,
     J_axis: CartesianAxisStrLiteral = "y",
     spin_axis: CartesianAxisStrLiteral = "z",
     *,
@@ -768,14 +787,18 @@ def shc(
     ----------
     bz : BrillouinZone
         containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
+    distribution : str or func, optional
+        distribution used to find occupations
+    k_average:
+        if `True`, the returned quantity is averaged over `bz`, else all k-point
+        contributions will be collected.
+        Note, for large `bz` integrations this may explode the memory usage.
     J_axis:
         the direction where the :math:`J` operator will be applied.
     spin_axis:
         the direction of the Pauli matrix.
-    distribution : str or func, optional
-        distribution used to find occupations
     eigenstate_kwargs :
-       keyword arguments passed directly to the ``contour.eigenstate`` method.
+       keyword arguments passed directly to the ``bz.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
        already used.
     apply_kwargs :
@@ -798,6 +821,10 @@ def shc(
     >>> dist = get_distribution("step", x0=E.reshape(-1, 1))
     >>> ahc_cond = shc(bz, distribution=dist)
     >>> assert ahc_cond.shape == (3, 3, len(E))
+
+    Notes
+    -----
+    Original implementation by Armando Pezo.
 
     Returns
     -------
@@ -848,7 +875,12 @@ def shc(
         nonlocal berry_kwargs
         return es.berry_curvature(**berry_kwargs)
 
-    cond = bz.apply(**apply_kwargs).average.eigenstate(**eigenstate_kwargs, wrap=_shc)
+    apply = bz.apply(**apply_kwargs)
+    if k_average:
+        apply = apply.average
+    else:
+        apply = apply.ndarray
+    cond = apply.eigenstate(**eigenstate_kwargs, wrap=_shc)
 
     """
     # G0 = 2e^2/h
@@ -875,7 +907,10 @@ def shc(
 
     shc_idx = axes.index(direction(J_axis))
     cond *= ahc_conv
-    cond[shc_idx] *= shc_conv
+    if k_average:
+        cond[shc_idx] *= shc_conv
+    else:
+        cond[:, shc_idx] *= shc_conv
 
     warn(
         "shc: be aware that the units are currently not tested, please provide feedback!"
@@ -895,7 +930,7 @@ def conductivity(
     apply_kwargs={},
     **kwargs,
 ):
-    r"""Deprecated, please see `ahc`"""
+    r"""Deprecated, use `ahc` instead"""
     return ahc(
         bz,
         distribution,
