@@ -57,6 +57,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- `BrillouinZone.tocartesian()` now defaults to `k=self.k`
 - reading XV/STRUCT files from fdf siles could cause problems, #778
 - `Geometry.[ao][us]c2[su]c` methods now retains the input shapes (unless `unique=True`)
 - lots of `Lattice` methods did not consistently copy over BC

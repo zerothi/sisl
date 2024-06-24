@@ -144,7 +144,7 @@ from __future__ import annotations
 import itertools
 from functools import reduce
 from numbers import Integral, Real
-from typing import Sequence, Union
+from typing import Sequence, Tuple, Union
 
 import numpy as np
 from numpy import argsort, dot, pi, sum
@@ -158,6 +158,7 @@ from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
+from sisl.typing import npt
 from sisl.unit import units
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm
@@ -298,7 +299,7 @@ class BrillouinZone:
         obj_getattr=lambda obj, key: getattr(obj.parent, key),
     )
 
-    def set_parent(self, parent):
+    def set_parent(self, parent) -> None:
         """Update the parent associated to this object
 
         Parameters
@@ -402,7 +403,9 @@ class BrillouinZone:
         "0.15",
         "0.16",
     )
-    def volume(self, ret_dim: bool = False, axes: Optional[CellAxes] = None):
+    def volume(
+        self, ret_dim: bool = False, axes: Optional[CellAxes] = None
+    ) -> Union[float, Tuple[float, int]]:
         """Calculate the volume of the BrillouinZone, optionally only on some axes `axes`
 
         This will return the volume of the Brillouin zone,
@@ -450,7 +453,9 @@ class BrillouinZone:
         return vol
 
     @staticmethod
-    def parametrize(parent, func, N: Union[Sequence[int], int], *args, **kwargs):
+    def parametrize(
+        parent, func, N: Union[Sequence[int], int], *args, **kwargs
+    ) -> BrillouinZone:
         """Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
@@ -615,29 +620,31 @@ class BrillouinZone:
         return self._w
 
     @property
-    def cell(self):
+    def cell(self) -> np.ndarray:
         return self.parent.cell
 
     @property
-    def rcell(self):
+    def rcell(self) -> np.ndarray:
         return self.parent.rcell
 
-    def tocartesian(self, k):
+    def tocartesian(self, k: Optional[npt.ArrayLike] = None) -> np.ndarray:
         """Transfer a k-point in reduced coordinates to the Cartesian coordinates
 
         Parameters
         ----------
-        k : list of float
-           k-point in reduced coordinates
+        k :
+           k-point in reduced coordinates, defaults to this objects k-points.
 
         Returns
         -------
         numpy.ndarray
             in units of 1/Ang
         """
+        if k is None:
+            k = self.k
         return dot(k, self.rcell)
 
-    def toreduced(self, k):
+    def toreduced(self, k: npt.ArrayLike) -> np.ndarray:
         """Transfer a k-point in Cartesian coordinates to the reduced coordinates
 
         Parameters
@@ -653,7 +660,7 @@ class BrillouinZone:
         return dot(k, self.cell.T / (2 * pi))
 
     @staticmethod
-    def in_primitive(k):
+    def in_primitive(k: npt.ArrayLike) -> np.ndarray:
         """Move the k-point into the primitive point(s) ]-0.5 ; 0.5]
 
         Parameters
