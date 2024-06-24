@@ -9,8 +9,13 @@ if [ -n "$PYTHONUSERBASE" ]; then
   export PYTHONPATH=$PYTHONUSERBASE/lib/python${v}/site-packages:$PYTHONPATH
 fi
 
-# Ensure single-core
-export SISL_NUM_PROCS=1
+# No threading
+export OMP_NUM_THREADS=1
+
+if [ -z "$SISL_NUM_PROCS" ]; then
+  # Ensure single-core
+  export SISL_NUM_PROCS=1
+fi
 
 # Now ensure everything is ready...
 make html

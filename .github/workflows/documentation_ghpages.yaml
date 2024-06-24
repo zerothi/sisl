@@ -64,9 +64,13 @@ jobs:
           python -m pip install --progress-bar=off .[viz,docs]
 
       - name: Build the documentation using the sisl-files as well
+        env:
+          SISL_NUM_PROCS=${{ os.availableParallelism() }}
+          SISL_NODES_EXPORT_VIS=t
+          SISL_FILES_TESTS=${{ github.workspace }}/files/tests
         run: |
           cd docs
-          SISL_NODES_EXPORT_VIS=t SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests make html
+          make html
           rm -rf build/html/_sources
           touch build/html/.nojekyll
           cd ..

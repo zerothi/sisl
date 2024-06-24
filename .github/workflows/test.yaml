@@ -106,12 +106,14 @@ jobs:
     - name: Install sisl + dependencies
       env:
         SKBUILD_CMAKE_ARGS: -DWITH_COVERAGE:bool=true;-DWITH_LINE_DIRECTIVES:bool=true
+        CC: gcc
+        FC: gfortran
       run: |
         python -m pip install --progress-bar=off --upgrade pip
         if [[ "${{ matrix.full }}" == "true" ]]; then
-          CC=gcc FC=gfortran python -m pip install --progress-bar=off -vvv .[test,viz]
+          python -m pip install --progress-bar=off -vvv .[test,viz]
         else
-          CC=gcc FC=gfortran python -m pip install --progress-bar=off -vvv .[test]
+          python -m pip install --progress-bar=off -vvv .[test]
         fi
 
     - name: Running sisl import test
