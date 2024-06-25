@@ -101,7 +101,7 @@ def _matrix_sc_k(csr, const int nc, const int idx, phases, dtype, format, p_opt)
         # direct conversion, should be simple (generally only at Gamma-point)
         m = csr.tocsr(idx)
         if format in ("array", "matrix", "dense"):
-            return m.A
+            return m.toarray()
         return m
 
     raise ValueError("matrix_k: (supercell format) currently only supports dtype in [float32, float64, complex64, complex128].")
