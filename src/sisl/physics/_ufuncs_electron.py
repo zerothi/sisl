@@ -72,7 +72,7 @@ def berry_curvature(
 
     .. math::
 
-       \boldsymbol\Omega_{\alpha\beta,i} = 2i\hbar^2\sum_{j\neq i}
+       \boldsymbol\Omega_{i,\alpha\beta} = 2i\hbar^2\sum_{j\neq i}
                 \frac{v^{\alpha}_{ij} v^\beta_{ji}}
                      {[\epsilon_i - \epsilon_j]^2 + i\eta^2}
 
@@ -108,8 +108,7 @@ def berry_curvature(
     operator:
         the operator to use for changing the `dPk` matrices.
         Note, that this may change the resulting units, and it will be up
-        to the user to adapt the units accordingly. The returned units are
-        by default :math:`\mathrm{Ang}^2`.
+        to the user to adapt the units accordingly.
     eta:
         direct imaginary part broadening of the Lorentzian.
 
@@ -122,6 +121,7 @@ def berry_curvature(
     numpy.ndarray
         Berry flux with final dimension ``(3, 3, *)``. The dtype will be imaginary.
         The Berry curvature is in the real part of the values.
+        The unit is :math:`\mathrm{Ang}^2`
     """
     # cast dtypes to *any* complex valued data-type that can be expressed
     # minimally by a complex64 object
@@ -157,13 +157,13 @@ def berry_curvature(
     # Hence the last dimension of distribution(energy) corresponds
     # to the states.
     # Hence we transpose it for direct usage below.
-    dist_e = distribution(energy).T
+    dist_e = distribution(energy)
 
     if sum:
         dsigma_shape = (len(dA), len(dB)) + (1,) * (dist_e.ndim - 1)
 
         # then it will be: [3, 3[, dist.shape]]
-        shape = np.broadcast_shapes(dist_e.shape[1:], dsigma_shape)
+        shape = np.broadcast_shapes(dist_e.shape[:-1], dsigma_shape)
         sigma = np.zeros(shape, dtype=dA.dtype)
 
         for si, ei in enumerate(energy):
@@ -171,31 +171,30 @@ def berry_curvature(
             np.divide(-2, de, where=(de != 0), out=de)
             # the order of this term can be found in:
             # 10.21468/SciPostPhysCore.6.1.002 Eq. 29
-            dd = dist_e[si] - dist_e
+            dd = dist_e[..., [si]] - dist_e
 
             for iA in range(len(dA)):
                 for iB in range(len(dB)):
                     dsigma = (-1j) * (de * dA[iA, si] * dB[iB, :, si])
 
-                    sigma[iA, iB] += dsigma @ dd
+                    sigma[iA, iB] += dd @ dsigma
 
     else:
-        dsigma_shape = (len(dA), len(dB)) + (1,) * dist_e.ndim
+        dsigma_shape = (len(dA), len(dB), len(energy)) + (1,) * (dist_e.ndim - 1)
 
         # then it will be: [3, 3, nstates[, dist.shape]]
-        shape = np.broadcast_shapes(dist_e.shape, dsigma_shape)
+        shape = np.broadcast_shapes(dist_e.shape[:-1], dsigma_shape)
         sigma = np.zeros(shape, dtype=dA.dtype)
 
         for si, ei in enumerate(energy):
             de = (ei - energy) ** 2 + ieta2
             np.divide(-2, de, where=(de != 0), out=de)
-            dd = dist_e[si] - dist_e
+            dd = dist_e[..., [si]] - dist_e
 
             for iA in range(len(dA)):
                 for iB in range(len(dB)):
                     dsigma = (-1j) * (de * dA[iA, si] * dB[iB, :, si])
-
-                    sigma[iA, iB, si] += dsigma @ dd
+                    sigma[iA, iB, si] += dd @ dsigma
 
     # When the operators are the simple velocity operators, then
     # we don't need to do anything for the units.
