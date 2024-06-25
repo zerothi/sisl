@@ -1710,16 +1710,19 @@ class Geometry(
             \\
             \mathbf u_2 &= \mathbf r_3 - \mathbf r_2
             \\
-            \phi &= \operatorname{atan2}\Big(\hat\mathbf u_0\dot
-                (\hat\mathbf u_1\times\hat\mathbf u_2),
-                (\hat\mathbf u_0\times\hat\mathbf u_1)\dot
-                (\hat\mathbf u_1\times\hat\mathbf u_2)
+            \phi &= \operatorname{atan2}\Big(
+                 \hat{\mathbf u}_0\dot
+                (\hat{\mathbf u}_1\times\hat{\mathbf u}_2),
+                (\hat{\mathbf u}_0\times\hat{\mathbf u}_1)\dot
+                (\hat{\mathbf u}_1\times\hat{\mathbf u}_2)
                 \Big)
+
+        Where :math:`\hat{\cdot}` means the unit-vector.
 
         Parameters
         ----------
         atoms :
-           An array of shape (4,)  or (N, 4) representing the indices of 4 atoms forming the dihedral angle
+           An array of shape `(4,)` or `(*, 4)` representing the indices of 4 atoms forming the dihedral angle
         rad :
            whether the returned value is in radians
         """
@@ -1734,11 +1737,11 @@ class Geometry(
         elif ndim == 2:
             if atoms.shape[1] != 4:
                 raise ValueError(
-                    f"{self.__class__.__name__}.dihedral requires atoms to be (N, 4) indices"
+                    f"{self.__class__.__name__}.dihedral requires atoms to be (*, 4) indices"
                 )
         else:
             raise ValueError(
-                f"{self.__class__.__name__}.dihedral requires atoms index of shape (4,) or (N, 4)"
+                f"{self.__class__.__name__}.dihedral requires atoms index of shape (4,) or (*, 4)"
             )
 
         # The 2 planes are defined by
@@ -1756,6 +1759,7 @@ class Geometry(
         # Prepare arguments for atan2
         y = (u[:, 0] * n1).sum(axis=-1)
         x = (n0 * n1).sum(axis=-1)
+
         # see https://en.wikipedia.org/wiki/Dihedral_angle
         angles = np.arctan2(y, x)
 
