@@ -115,13 +115,21 @@ def berry_curvature(
     See Also
     --------
     derivative: method for calculating the exact derivatives
+    spin_berry_curvature : calculate the spin Berry curvature
+    ahc: anomalous Hall conductivity
+    shc: spin Hall conductivity
 
     Returns
     -------
-    numpy.ndarray
-        Berry flux with final dimension ``(3, 3, *)``. The dtype will be imaginary.
-        The Berry curvature is in the real part of the values.
-        The unit is :math:`\mathrm{Ang}^2`
+    bc: numpy.ndarray
+        Berry curvature returned in certain dimensions ``bc[:, :]``.
+        If `sum` is False, it will be at least a 3D array with the 3rd dimension
+        having the contribution from state `i`.
+        If one passes `axes` to the `derivative_kwargs` argument one will get
+        dimensions according to the number of axes requested, by default all
+        axes will be used (even if they are non-periodic).
+        The dtype will be imaginary.
+        The unit is :math:`\mathrm{Ang}^2`.
     """
     # cast dtypes to *any* complex valued data-type that can be expressed
     # minimally by a complex64 object
@@ -158,6 +166,8 @@ def berry_curvature(
     # to the states.
     # Hence we transpose it for direct usage below.
     dist_e = distribution(energy)
+    # Since we are using the double counting dist_e[si] - dist_e
+    # we have to omit the factor 2 here.
 
     if sum:
         dsigma_shape = (len(dA), len(dB)) + (1,) * (dist_e.ndim - 1)
@@ -168,7 +178,7 @@ def berry_curvature(
 
         for si, ei in enumerate(energy):
             de = (ei - energy) ** 2 + ieta2
-            np.divide(-2, de, where=(de != 0), out=de)
+            np.divide(-1, de, where=(de != 0), out=de)
             # the order of this term can be found in:
             # 10.21468/SciPostPhysCore.6.1.002 Eq. 29
             dd = dist_e[..., [si]] - dist_e
@@ -188,7 +198,7 @@ def berry_curvature(
 
         for si, ei in enumerate(energy):
             de = (ei - energy) ** 2 + ieta2
-            np.divide(-2, de, where=(de != 0), out=de)
+            np.divide(-1, de, where=(de != 0), out=de)
             dd = dist_e[..., [si]] - dist_e
 
             for iA in range(len(dA)):
@@ -206,15 +216,15 @@ def berry_curvature(
 @register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
 def spin_berry_curvature(
     state: StateCElectron,
-    J_axis: CartesianAxisStrLiteral = "y",
-    spin_axis: CartesianAxisStrLiteral = "z",
+    J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
+    sigma: CartesianAxisStrLiteral = "z",
     distribution: Optional = None,
     sum: bool = True,
     *,
     derivative_kwargs: dict = {},
     eta: float = 0.0,
 ) -> np.ndarray:
-    """Calculate the spin Berry curvature
+    r"""Calculate the spin Berry curvature
 
     This is equivalent to calling `berry_curvature`
     with the spin current operator and the regular velocity
@@ -235,57 +245,78 @@ def spin_berry_curvature(
 
     .. math::
 
-        J^{\gamma\alpha} = \frac12 \{ v^\alpha, \sigma^\gamma \}
+        J^{\gamma\alpha} = \frac12 \{ v^\alpha, \hat{\sigma}^\gamma \}
 
     where :math:`\{\}` means the anticommutator.
 
-    When calling it like this the spin berry curvature is found in the
-    first index corresponding to axis the spin operator is acting on.
+    When calling it like this the spin Berry curvature is found in the
+    index corresponding to the axis the spin operator is acting on. The regular
+    spin Berry curvature is found in the
 
-    E.g. if ``J_axis = 'y', spin_axis = 'z'``, then ``shc[1, 0]`` will be the
-    spin Berry curvature using the Pauli matrix :math:`\sigma^z`,
-    and ``shc[0, 1]`` will be the *normal* Berry curvature (since only
-    the left velocity operator will be changed.
+    E.g. if ``J_axes = 'xy', sigma = 'z'``, then ``shc[[0, 1]]`` will be the
+    spin Berry curvature using the Pauli matrix
+    :math:`\hat{\sigma}^z` (not the spin-operator
+    :math:`\hat{s}^z = \dfrac\hbar2\hat{\sigma}^z`),
+    and ``shc[2]`` will be the *normal* Berry curvature (since only
+    the left velocity operator will be changed for `J_axes`.
 
     Notes
     -----
     For performance reasons, it can be very benificial to extract the
     above methods and call `berry_curvature` directly.
-    This is because ``sigma`` gets created on every call of this method.
+    This is because the :math:`\sigma` operator gets created on every
+    call of this method.
 
     This, repeated matrix creation,
-    might change in the future with `BrillouinZone` contexts.
+    might change in the future.
 
     Parameters
     ----------
-    J_axis:
-        the direction where the :math:`J` operator will be applied.
-    spin_axis:
-        the direction of the Pauli matrix.
+    J_axes:
+        the direction(s) where the :math:`J^\sigma` operator will be applied.
+    sigma:
+        which Pauli matrix is used.
     **kwargs:
         see `berry_curvature` for the remaining arguments.
 
     See Also
     --------
-    berry_curvature : the called routine
+    berry_curvature : calculate the Berry curvature (internally called)
+    derivative: method for calculating the exact derivatives
+    ahc: anomalous Hall conductivity
+    shc: spin Hall conductivity
+
+    Returns
+    -------
+    bc: numpy.ndarray
+        Spin Berry curvature + (possibly Berry curvature) returned in certain dimensions.
+        If one passes `axes` to the `derivative_kwargs` argument one will get
+        dimensions according to the number of axes requested, by default all
+        axes will be used (even if they are non-periodic).
+        The dtype will be imaginary.
+        The unit is :math:`\mathrm{Ang}^2`.
     """
-    parent = state.parent
-    spin = parent.spin
+    H = state.parent
+
+    if isinstance(J_axes, (tuple, list)):
+        J_axes = "".join(J_axes)
+    J_axes = J_axes.lower()
 
     # A spin-berry-curvature requires the objects parent
     # to have a spin associated
-    if spin.is_diagonal:
+    if H.spin.is_diagonal:
         raise ValueError(
             f"spin_berry_curvature requires 'state' to be a non-colinear matrix."
         )
 
     dtype = np.result_type(state.dtype, state.info.get("dtype", np.complex128))
 
-    m = _create_sigma(parent.no, spin_axis, dtype, state.info.get("format", "csr"))
+    # no is not including the spin-dimension
+    m = _create_sigma(H.no, sigma, dtype, state.info.get("format", "csr"))
 
     def J(M, d):
-        nonlocal m, J_axis
-        if d == J_axis:
+        nonlocal m, J_axes
+        if d in J_axes:
             return M @ m + m @ M
         return M
 
@@ -300,14 +331,5 @@ def spin_berry_curvature(
         operator=(J, noop),
         eta=eta,
     )
-
-    # For the spin Berry curvature, there is a single unit-shift for the elements
-    # corresponding to the velocity operator.
-
-    # idx = "xyz".index(J_axis)
-
-    # a factor of \hbar / 2 for the spin operator means we need this:
-    # conv = constant.hbar("eV s") / 2
-    # bc[idx] *= conv
 
     return bc

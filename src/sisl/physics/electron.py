@@ -45,7 +45,7 @@ automatically passes the correct ``S`` because it knows the states :math:`\mathb
 from __future__ import annotations
 
 from functools import reduce
-from typing import Literal, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 import numpy as np
 import scipy.sparse as scs
@@ -72,7 +72,7 @@ from scipy.sparse import csr_matrix, hstack, identity, issparse
 
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
-from sisl import Geometry, Grid, Lattice, constant, units
+from sisl import C, Geometry, Grid, Lattice, units
 from sisl._core.oplist import oplist
 from sisl._indices import indices_le
 from sisl._internal import set_module
@@ -90,6 +90,9 @@ from sisl.messages import (
 )
 from sisl.typing import CartesianAxisStrLiteral
 from sisl.utils.misc import direction
+
+if TYPE_CHECKING:
+    from .brillouinzone import BrillouinZone
 
 from .distribution import get_distribution
 from .sparse import SparseOrbitalBZSpin
@@ -621,12 +624,18 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
 
 # dHk is in [Ang eV]
 # velocity units in [Ang/ps]
-_velocity_const = 1 / constant.hbar("eV ps")
+_velocity_const = 1 / C.hbar("eV ps")
+
+# With G0 = 2e^2 / h = e^2 / (\hbar \pi)
+# AHC is
+#   \propto e^2/\hbar = G0 \pi
+# This converts \sigma into S
+_ahc_const = C.G0 * np.pi
 
 
 @set_module("sisl.physics.electron")
 def ahc(
-    bz,
+    bz: BrillouinZone,
     distribution="step",
     k_average: bool = True,
     *,
@@ -643,8 +652,7 @@ def ahc(
     for state :math:`i`.
 
     The conductivity will be averaged by volume of the periodic unit cell.
-    Hence the unit of `ahc` depends on the periodic unit cell. For 3D periodicity,
-    the unit will be ``1 / [LENGTH]``.
+    Hence the unit of `ahc` depends on the periodic unit cell.
     See `Lattice.volumef` for details.
 
     See :cite:`Wang2006` for details on the implementation.
@@ -657,7 +665,7 @@ def ahc(
         distribution used to find occupations.
     k_average:
         if `True`, the returned quantity is averaged over `bz`, else all k-point
-        contributions will be collected.
+        contributions will be collected (in the 1st dimension).
         Note, for large `bz` integrations this may explode the memory usage.
     eigenstate_kwargs :
        keyword arguments passed directly to the ``contour.eigenstate`` method.
@@ -665,14 +673,8 @@ def ahc(
        already used.
     apply_kwargs :
        keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
-    **kwargs : dict, optional
-        arguments passed directly to the underlying calculation method.
-
-    Returns
-    -------
-    cond :
-        conductivity in units [S cm^2 / cm^D] (where D is the periodic dimensionality
-        of the unit cell).
+    **berry_kwargs :
+        arguments passed directly to the `berry_curvature` method.
 
     Examples
     --------
@@ -690,8 +692,25 @@ def ahc(
 
     See Also
     --------
+    derivative: method for calculating the exact derivatives
     berry_curvature: method used to calculate the Berry curvature for calculating the conductivity
-    BrillouinZone.volume: volume calculation of the Brillouin zone
+    Lattice.volumef: volume calculation of the lattice
+    shc: spin Hall conductivity
+
+    Returns
+    -------
+    ahc: numpy.ndarray
+        Anomalous Hall conductivity returned in certain dimensions ``ahc[:, :]``.
+        If `sum` is False, it will be at least a 3D array with the 3rd dimension
+        having the contribution from state `i`.
+        If `k_average` is False, it will have a dimension prepended with
+        k-point resolved AHC.
+        If one passes `axes` to the `derivative_kwargs` argument one will get
+        dimensions according to the number of axes requested, by default all
+        axes will be used (even if they are non-periodic).
+        The dtype will be imaginary.
+        When :math:`D` is the dimensionality we find the unit to be
+        :math:`\mathrm S/\mathrm{Ang}^{D-2}`.
     """
     from .hamiltonian import Hamiltonian
 
@@ -726,12 +745,8 @@ def ahc(
     per_axes = lat.pbc.nonzero()[0]
     vol = lat.volumef(per_axes)
 
-    conv = -1 / vol
-
-    cond *= conv
-    warn(
-        "ahc: be aware that the units are currently not tested, please provide feedback!"
-    )
+    # Convert to S / Ang
+    cond *= -_ahc_const / vol
 
     return cond
 
@@ -739,7 +754,7 @@ def ahc(
 def _create_sigma(n, sigma, dtype, format):
     """This will return the Pauli matrix filled in a diagonal of the matrix
 
-    It will not return the spin operator, which has the pre-factor hbar/2
+    It will not return the spin operator, which has the pre-factor \hbar/2
     """
 
     sigma = getattr(Spin, sigma.upper()) / 2
@@ -759,11 +774,11 @@ def _create_sigma(n, sigma, dtype, format):
 
 @set_module("sisl.physics.electron")
 def shc(
-    bz,
+    bz: BrillouinZone,
     distribution="step",
     k_average: bool = True,
-    J_axis: CartesianAxisStrLiteral = "y",
-    spin_axis: CartesianAxisStrLiteral = "z",
+    J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
+    sigma: CartesianAxisStrLiteral = "z",
     *,
     eigenstate_kwargs={},
     apply_kwargs={},
@@ -785,7 +800,7 @@ def shc(
 
     Parameters
     ----------
-    bz : BrillouinZone
+    bz :
         containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
     distribution : str or func, optional
         distribution used to find occupations
@@ -793,10 +808,10 @@ def shc(
         if `True`, the returned quantity is averaged over `bz`, else all k-point
         contributions will be collected.
         Note, for large `bz` integrations this may explode the memory usage.
-    J_axis:
-        the direction where the :math:`J` operator will be applied.
-    spin_axis:
-        the direction of the Pauli matrix.
+    J_axes:
+        the direction(s) where the :math:`J` operator will be applied.
+    sigma:
+        which Pauli matrix.
     eigenstate_kwargs :
        keyword arguments passed directly to the ``bz.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
@@ -804,12 +819,17 @@ def shc(
     apply_kwargs :
        keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
     **berry_kwargs : dict, optional
-        arguments passed directly to the underlying calculation method.
+        arguments passed directly to `berry_curvature`.
+
+        Here one can pass `derivative_kwargs` to pass flags to the
+        `derivative` method. In particular ``axes`` can be used
+        to speedup the calculation (by omitting certain directions).
 
     Examples
     --------
-    For instance, ``J_axis = 'z', spin_axis = 'y'`` will result in
-    :math:`J^{\sigma^y}_z=\dfrac12\{\sigma^y, \hat v_z\}`.
+    For instance, ``J_axes = 'z', sigma = 'y'`` will result in
+    :math:`J^{\sigma^y}_z=\dfrac12\{\hat{\sigma}^y, \hat{v}_z\}`, and the rest will
+    be the AHC.
 
     To calculate the SHC for a range of energy-points.
     First create ``E`` which is the energy grid.
@@ -826,17 +846,40 @@ def shc(
     -----
     Original implementation by Armando Pezo.
 
-    Returns
-    -------
-    cond :
-        conductivity in units [S/Ang]
-
     See Also
     --------
+    derivative: method for calculating the exact derivatives
     spin_berry_curvature: method used to calculate the Berry-flux for calculating the spin conductivity
-    BrillouinZone.volume: volume calculation of the Brillouin zone
+    Lattice.volumef: volume calculation of the primary unit cell.
+    ahc: anomalous Hall conductivity
+
+    Returns
+    -------
+    shc: numpy.ndarray
+        Spin Hall conductivity returned in certain dimensions ``shc[J_axes, :]``.
+        Anomalous Hall conductivity returned in the remaining dimensions ``shc[!J_axes, :]``.
+        If `sum` is False, it will be at least a 3D array with the 3rd dimension
+        having the contribution from state `i`.
+        If `k_average` is False, it will have a dimension prepended with
+        k-point resolved AHC/SHC.
+        If one passes `axes` to the `derivative_kwargs` argument one will get
+        dimensions according to the number of axes requested, by default all
+        axes will be used (even if they are non-periodic).
+        The dtype will be imaginary.
+        When :math:`D` is the dimensionality we find the unit to be
+
+        - AHC: ``shc[!J_axes, :]`` :math:`S/\mathrm{Ang}^{D-2}`.
+        - SHC: ``shc[J_axes, :]`` :math:`\hbar/e S/\mathrm{Ang}^{D-2}`.
+
     """
     from .hamiltonian import Hamiltonian
+
+    if isinstance(J_axes, (tuple, list)):
+        J_axes = "".join(J_axes)
+    J_axes = J_axes.lower()
+
+    if isinstance(distribution, str):
+        distribution = get_distribution(distribution)
 
     H = bz.parent
 
@@ -845,27 +888,30 @@ def shc(
         raise SislError(
             "shc: requires the Brillouin zone object to contain a Hamiltonian!"
         )
-
-    if isinstance(distribution, str):
-        distribution = get_distribution(distribution)
+    # A spin-berry-curvature requires the objects parent
+    # to have a spin associated
+    if H.spin.is_diagonal:
+        raise ValueError(
+            f"spin_berry_curvature requires 'state' to be a non-colinear matrix."
+        )
 
     dtype = eigenstate_kwargs.get("dtype", np.complex128)
 
-    m = _create_sigma(H.no, spin_axis, dtype, eigenstate_kwargs.get("format", "csr"))
+    m = _create_sigma(H.no, sigma, dtype, eigenstate_kwargs.get("format", "csr"))
 
     # To reduce (heavily) the computational load, we pre-setup the
     # operators here.
     def J(M, d):
-        nonlocal m, J_axis
-        if d == J_axis:
+        nonlocal m, J_axes
+        if d in J_axes:
             return M @ m + m @ M
+        return M
+
+    def noop(M, d):
         return M
 
     axes = berry_kwargs.get("derivative_kwargs", {}).get("axes", "xyz")
     axes = [direction(axis) for axis in sorted(axes)]
-
-    def noop(M, d):
-        return M
 
     # kwargs is mutable in the method call, we have to assign a new variable
     berry_kwargs = {**berry_kwargs, "distribution": distribution, "operator": (J, noop)}
@@ -882,39 +928,39 @@ def shc(
         apply = apply.ndarray
     cond = apply.eigenstate(**eigenstate_kwargs, wrap=_shc)
 
-    """
-    # G0 = 2e^2/h
-    # hbar = h/(2pi)
-    # we want -e^2/hbar=-2e^2pi/h = 2pi G0
-    # but no matter
-    ahc_conv = -constant.G0 *2* np.pi / (bz.parent.geometry.volume * units("Ang^3", "m^3") * units("m", "cm")) * units("eV", "J")
-    print("ahc-conv", ahc_conv, -1e4 / bz.parent.geometry.volume)
-    # the SHC misses the factor -2e/hbar = -4 pi e^2/(he) = -G0 2pi/e
-    shc_conv = -constant.G0 * 2 *np.pi /constant.q * ahc_conv
-    # to convert to units:
-    #  hbar/e S/length we just multiply by: -hbar /(2e) = - he/(4pi e^2) = -e/(2pi G0)
-    print("shc-conv", shc_conv, shc_conv -1e4 / bz.parent.geometry.volume)
-
-    """
-
     geom = H.geometry
     lat = geom.lattice
     per_axes = lat.pbc.nonzero()[0]
     vol = lat.volumef(per_axes)
 
-    ahc_conv = -1 / vol
-    shc_conv = 1
+    # Convert to S / Ang
+    cond *= -_ahc_const / vol
 
-    shc_idx = axes.index(direction(J_axis))
-    cond *= ahc_conv
+    # The SHC misses a factor -2e/hbar to correct the operator change:
+    #  j_x = -e v_x, 1/2 {s_z, v_x}
+    # The s_z = \hbar / 2 \sigma_z
+    # and v = 1/\hbar \delta_k
+    #
+    # AHC:
+    #   j_x = -e / \hbar
+    # SHC:
+    #   j_x = 1/2 { \hbar/2 \sigma_z, 1/\hbar v_x } = 1/2
+    # The 1/\hbar is contained in `berry_curvature`, and hence we
+    # are left with:
+    # AHC:
+    #   j_x = -e
+    # SHC:
+    #   j_x = 1/2 \hbar
+    # Since we never use \hbar or e, it is the same as though
+    # the units are implicit. Hence at this point, the unit is:
+    #    -\hbar / (2e) S / Ang
+    # To convert to \hbar / e S / Ang
+    # simply multiply by: -1/2
+    shc_idx = [i for i in map(direction, J_axes) if i in axes]
     if k_average:
-        cond[shc_idx] *= shc_conv
+        cond[shc_idx] *= -0.5
     else:
-        cond[:, shc_idx] *= shc_conv
-
-    warn(
-        "shc: be aware that the units are currently not tested, please provide feedback!"
-    )
+        cond[:, shc_idx] *= -0.5
 
     return cond
 

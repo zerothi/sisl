@@ -109,6 +109,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- units of `conductivity` has changed to S / Ang
 - `conductivity` is deprecated, use `ahc` and `shc` instead
 - `berry_curvature` has completely changed, checks it API
 - BZ apply methods are now by default parallel (if ``SISL_NUM_PROCS>1``)
