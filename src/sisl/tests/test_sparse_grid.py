@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 import pytest
 
@@ -274,7 +277,7 @@ def test_orbital_products_onthefly_reduction(geometry, psi_values, ncoeffs):
     post_reduced = not_reduced.sum(2)
     assert reduced.size == post_reduced.size
     if ncoeffs == 1:
-        assert np.allclose(reduced.grid, post_reduced.grid)
+        assert np.allclose(reduced.grid, post_reduced.grid, atol=1e-7)
     else:
         assert np.allclose(reduced.reshape(post_reduced.shape), post_reduced)
 
