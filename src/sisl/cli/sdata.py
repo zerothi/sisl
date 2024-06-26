@@ -239,7 +239,7 @@ def add_data_group(
 
         data_group = parent_group.group(
             *group_args, invoke_without_command=True, chain=True, **group_kwargs
-        )(decorate_data_gen_function(dispatch))
+        )(decorate_data_gen_function(dispatch, func_args=(arg_sile,)))
     else:
         # The user has provided a file path, but this data class does not implement
         # a way of being created from that file. Don't include the group on the app.
