@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Tuple, Union
+from typing import Callable, Optional, Tuple, Union
 
 import numpy as np
 
@@ -55,10 +55,13 @@ def velocity(state: StateCElectron, *args, **kwargs):
     return v
 
 
+_TDist = Union[str, Callable[[npt.ArrayLike], np.ndarray]]
+
+
 @register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
 def berry_curvature(
     state: StateCElectron,
-    distribution: Optional = None,
+    distribution: _TDist = "step",
     sum: bool = True,
     *,
     derivative_kwargs: dict = {},
@@ -122,7 +125,6 @@ def berry_curvature(
     Returns
     -------
     bc: numpy.ndarray
-        Berry curvature returned in certain dimensions ``bc[:, :]``.
         If `sum` is False, it will be at least a 3D array with the 3rd dimension
         having the contribution from state `i`.
         If one passes `axes` to the `derivative_kwargs` argument one will get
@@ -133,6 +135,9 @@ def berry_curvature(
     """
     # cast dtypes to *any* complex valued data-type that can be expressed
     # minimally by a complex64 object
+
+    if isinstance(distribution, str):
+        distribution = get_distribution(distribution)
 
     if isinstance(operator, (tuple, list)):
         opA = operator[0]
@@ -152,9 +157,6 @@ def berry_curvature(
         # different operators
         dA = state.derivative(order=1, operator=opA, matrix=True, **derivative_kwargs)
         dB = state.derivative(order=1, operator=opB, matrix=True, **derivative_kwargs)
-
-    if distribution is None:
-        distribution = get_distribution("step")
 
     ieta2 = 1j * eta**2
     energy = state.c
@@ -204,6 +206,7 @@ def berry_curvature(
             for iA in range(len(dA)):
                 for iB in range(len(dB)):
                     dsigma = (-1j) * (de * dA[iA, si] * dB[iB, :, si])
+
                     sigma[iA, iB, si] += dd @ dsigma
 
     # When the operators are the simple velocity operators, then
@@ -216,13 +219,12 @@ def berry_curvature(
 @register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
 def spin_berry_curvature(
     state: StateCElectron,
-    J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
     sigma: CartesianAxisStrLiteral = "z",
-    distribution: Optional = None,
+    distribution: _TDist = "step",
     sum: bool = True,
     *,
-    derivative_kwargs: dict = {},
-    eta: float = 0.0,
+    J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
+    **berry_kwargs,
 ) -> np.ndarray:
     r"""Calculate the spin Berry curvature
 
@@ -234,7 +236,7 @@ def spin_berry_curvature(
 
         def noop(M, d): return M
         def Jz(M, d):
-            if d == "y":
+            if d in J_axes:
                 return (M @ sigma_z + sigma_z @ M) * 0.5
             return M
 
@@ -249,16 +251,16 @@ def spin_berry_curvature(
 
     where :math:`\{\}` means the anticommutator.
 
-    When calling it like this the spin Berry curvature is found in the
-    index corresponding to the axis the spin operator is acting on. The regular
-    spin Berry curvature is found in the
+    When calling it like this, the spin Berry curvature is found in the
+    index corresponding to the axes the spin operator is acting on. The regular
+    spin Berry curvature is found in all indices (`J_axes`).
 
     E.g. if ``J_axes = 'xy', sigma = 'z'``, then ``shc[[0, 1]]`` will be the
     spin Berry curvature using the Pauli matrix
     :math:`\hat{\sigma}^z` (not the spin-operator
     :math:`\hat{s}^z = \dfrac\hbar2\hat{\sigma}^z`),
     and ``shc[2]`` will be the *normal* Berry curvature (since only
-    the left velocity operator will be changed for `J_axes`.
+    the left velocity operator will be changed for `J_axes`).
 
     Notes
     -----
@@ -267,15 +269,15 @@ def spin_berry_curvature(
     This is because the :math:`\sigma` operator gets created on every
     call of this method.
 
-    This, repeated matrix creation,
-    might change in the future.
+    This, repeated matrix creation, might change in the future.
 
     Parameters
     ----------
-    J_axes:
-        the direction(s) where the :math:`J^\sigma` operator will be applied.
     sigma:
         which Pauli matrix is used.
+    J_axes:
+        the direction(s) where the :math:`J^\sigma` operator will be applied, defaults
+        to all.
     **kwargs:
         see `berry_curvature` for the remaining arguments.
 
@@ -325,11 +327,10 @@ def spin_berry_curvature(
 
     bc = berry_curvature(
         state,
-        distribution,
-        sum,
-        derivative_kwargs=derivative_kwargs,
+        distribution=distribution,
+        sum=sum,
+        **berry_kwargs,
         operator=(J, noop),
-        eta=eta,
     )
 
     return bc

@@ -636,7 +636,6 @@ _ahc_const = C.G0 * np.pi
 @set_module("sisl.physics.electron")
 def ahc(
     bz: BrillouinZone,
-    distribution="step",
     k_average: bool = True,
     *,
     eigenstate_kwargs={},
@@ -661,8 +660,6 @@ def ahc(
     ----------
     bz : BrillouinZone
         containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
-    distribution : str or func, optional
-        distribution used to find occupations.
     k_average:
         if `True`, the returned quantity is averaged over `bz`, else all k-point
         contributions will be collected (in the 1st dimension).
@@ -675,6 +672,10 @@ def ahc(
        keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
     **berry_kwargs :
         arguments passed directly to the `berry_curvature` method.
+
+        Here one can pass `derivative_kwargs` to pass flags to the
+        `derivative` method. In particular ``axes`` can be used
+        to speedup the calculation (by omitting certain directions).
 
     Examples
     --------
@@ -689,6 +690,14 @@ def ahc(
     >>> dist = get_distribution("step", x0=E.reshape(-1, 1))
     >>> ahc_cond = ahc(bz, dist)
     >>> assert ahc_cond.shape == (3, 3, len(E))
+
+    Sometimes one wishes to see the k-resolved AHC.
+    Be aware that AHC requires a dense k-grid, and hence it might
+    require a lot of memory.
+    Here it is calculated at :math:`E=0` (default energy reference).
+
+    >>> ahc_cond = ahc(bz, k_average=False)
+    >>> assert ahc_cond.shape == (len(bz), 3, 3)
 
     See Also
     --------
@@ -709,7 +718,7 @@ def ahc(
         dimensions according to the number of axes requested, by default all
         axes will be used (even if they are non-periodic).
         The dtype will be imaginary.
-        When :math:`D` is the dimensionality we find the unit to be
+        When :math:`D` is the dimensionality of the system we find the unit to be
         :math:`\mathrm S/\mathrm{Ang}^{D-2}`.
     """
     from .hamiltonian import Hamiltonian
@@ -721,12 +730,6 @@ def ahc(
         raise SislError(
             "ahc: requires the Brillouin zone object to contain a Hamiltonian!"
         )
-
-    if isinstance(distribution, str):
-        distribution = get_distribution(distribution)
-
-    # kwargs is mutable in the method call, we have to assign a new variable
-    berry_kwargs = {**berry_kwargs, "distribution": distribution}
 
     def _ahc(es, k, weight, parent):
         # the latter arguments are merely for speeding up the procedure
@@ -775,11 +778,10 @@ def _create_sigma(n, sigma, dtype, format):
 @set_module("sisl.physics.electron")
 def shc(
     bz: BrillouinZone,
-    distribution="step",
     k_average: bool = True,
-    J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
     sigma: CartesianAxisStrLiteral = "z",
     *,
+    J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
     eigenstate_kwargs={},
     apply_kwargs={},
     **berry_kwargs,
@@ -790,8 +792,8 @@ def shc(
        \sigma^\gamma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k
        \sum_i f_i\boldsymbol\Omega^\gamma_{i,\alpha\beta}(\mathbf k)
 
-    where :math:`\boldsymbol\Omega^\gamma_{i,\alpha\beta}` and :math:`f_i` are the spin Berry curvature and occupation
-    for state :math:`i`.
+    where :math:`\boldsymbol\Omega^\gamma_{i,\alpha\beta}` and :math:`f_i` are the
+    spin Berry curvature and occupation for state :math:`i`.
 
     The conductivity will be averaged by volume of the periodic unit cell.
     See `Lattice.volumef` for details.
@@ -802,16 +804,14 @@ def shc(
     ----------
     bz :
         containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
-    distribution : str or func, optional
-        distribution used to find occupations
     k_average:
         if `True`, the returned quantity is averaged over `bz`, else all k-point
         contributions will be collected.
         Note, for large `bz` integrations this may explode the memory usage.
-    J_axes:
-        the direction(s) where the :math:`J` operator will be applied.
     sigma:
-        which Pauli matrix.
+        which Pauli matrix to use.
+    J_axes:
+        the direction(s) where the :math:`J` operator will be applied (defaults to all).
     eigenstate_kwargs :
        keyword arguments passed directly to the ``bz.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
@@ -819,7 +819,7 @@ def shc(
     apply_kwargs :
        keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
     **berry_kwargs : dict, optional
-        arguments passed directly to `berry_curvature`.
+        arguments passed directly to the `berry_curvature` method.
 
         Here one can pass `derivative_kwargs` to pass flags to the
         `derivative` method. In particular ``axes`` can be used
@@ -827,20 +827,16 @@ def shc(
 
     Examples
     --------
-    For instance, ``J_axes = 'z', sigma = 'y'`` will result in
-    :math:`J^{\sigma^y}_z=\dfrac12\{\hat{\sigma}^y, \hat{v}_z\}`, and the rest will
+    For instance, ``sigma = 'x', J_axes = 'y'`` will result in
+    :math:`J^{\sigma^x}_y=\dfrac12\{\hat{\sigma}^x, \hat{v}_y\}`, and the rest will
     be the AHC.
 
-    To calculate the SHC for a range of energy-points.
-    First create ``E`` which is the energy grid.
-    In order for the internal algorithm to be able
-    to broadcast arrays correctly, we have to allow the eigenvalue
-    spectrum to be appended by reshaping.
+    >>> cond = shc(bz, J_axes="y")
+    >>> shc_y_xyz = cond[1]
+    >>> ahc_xz_xyz = cond[[0, 2]]
 
-    >>> E = np.linspace(-2, 2, 51)
-    >>> dist = get_distribution("step", x0=E.reshape(-1, 1))
-    >>> ahc_cond = shc(bz, distribution=dist)
-    >>> assert ahc_cond.shape == (3, 3, len(E))
+    For further examples, please see `ahc` which is equivalent to this
+    method.
 
     Notes
     -----
@@ -849,9 +845,10 @@ def shc(
     See Also
     --------
     derivative: method for calculating the exact derivatives
+    berry_curvature: the actual method used internally
     spin_berry_curvature: method used to calculate the Berry-flux for calculating the spin conductivity
     Lattice.volumef: volume calculation of the primary unit cell.
-    ahc: anomalous Hall conductivity
+    ahc: anomalous Hall conductivity, this is the equivalent method for the SHC.
 
     Returns
     -------
@@ -868,8 +865,8 @@ def shc(
         The dtype will be imaginary.
         When :math:`D` is the dimensionality we find the unit to be
 
-        - AHC: ``shc[!J_axes, :]`` :math:`S/\mathrm{Ang}^{D-2}`.
-        - SHC: ``shc[J_axes, :]`` :math:`\hbar/e S/\mathrm{Ang}^{D-2}`.
+        * AHC: ``shc[!J_axes, :]`` :math:`S/\mathrm{Ang}^{D-2}`.
+        * SHC: ``shc[J_axes, :]`` :math:`\hbar/e S/\mathrm{Ang}^{D-2}`.
 
     """
     from .hamiltonian import Hamiltonian
@@ -877,9 +874,6 @@ def shc(
     if isinstance(J_axes, (tuple, list)):
         J_axes = "".join(J_axes)
     J_axes = J_axes.lower()
-
-    if isinstance(distribution, str):
-        distribution = get_distribution(distribution)
 
     H = bz.parent
 
@@ -914,7 +908,7 @@ def shc(
     axes = [direction(axis) for axis in sorted(axes)]
 
     # kwargs is mutable in the method call, we have to assign a new variable
-    berry_kwargs = {**berry_kwargs, "distribution": distribution, "operator": (J, noop)}
+    berry_kwargs = {**berry_kwargs, "operator": (J, noop)}
 
     def _shc(es, k, weight, parent):
         # the latter arguments are merely for speeding up the procedure
@@ -974,14 +968,17 @@ def conductivity(
     *,
     eigenstate_kwargs={},
     apply_kwargs={},
-    **kwargs,
+    **berry_kwargs,
 ):
     r"""Deprecated, use `ahc` instead"""
+
+    if method != "ahc":
+        raise NotImplementedError("conductivity with method != ahc is not implemented")
     return ahc(
         bz,
-        distribution,
         eigenstate_kwargs=eigenstate_kwargs,
         apply_kwargs=apply_kwargs,
+        distribution=distribution,
         **kwargs,
     )
 
