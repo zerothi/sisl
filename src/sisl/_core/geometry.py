@@ -1711,9 +1711,9 @@ class Geometry(
             \mathbf u_2 &= \mathbf r_3 - \mathbf r_2
             \\
             \phi &= \operatorname{atan2}\Big(
-                 \hat{\mathbf u}_0\dot
+                 \hat{\mathbf u}_0\cdot
                 (\hat{\mathbf u}_1\times\hat{\mathbf u}_2),
-                (\hat{\mathbf u}_0\times\hat{\mathbf u}_1)\dot
+                (\hat{\mathbf u}_0\times\hat{\mathbf u}_1)\cdot
                 (\hat{\mathbf u}_1\times\hat{\mathbf u}_2)
                 \Big)
 
