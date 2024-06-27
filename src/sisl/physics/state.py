@@ -1098,7 +1098,7 @@ coefficients assigned to each state
     def derivative(
         self,
         order: Literal[1, 2] = 1,
-        degenerate=1e-5,
+        degenerate=None,
         degenerate_dir=(1, 1, 1),
         matrix: bool = False,
         axes: CartesianAxes = "xyz",

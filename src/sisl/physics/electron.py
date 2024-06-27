@@ -45,7 +45,7 @@ automatically passes the correct ``S`` because it knows the states :math:`\mathb
 from __future__ import annotations
 
 from functools import reduce
-from typing import TYPE_CHECKING, Literal, Optional
+from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
 
 import numpy as np
 import scipy.sparse as scs
@@ -88,7 +88,7 @@ from sisl.messages import (
     progressbar,
     warn,
 )
-from sisl.typing import CartesianAxisStrLiteral
+from sisl.typing import CartesianAxisStrLiteral, npt
 from sisl.utils.misc import direction
 
 if TYPE_CHECKING:
@@ -626,6 +626,9 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
 # velocity units in [Ang/ps]
 _velocity_const = 1 / C.hbar("eV ps")
 
+# Typing
+_TDist = Union[str, Callable[[npt.ArrayLike], np.ndarray]]
+
 # With G0 = 2e^2 / h = e^2 / (\hbar \pi)
 # AHC is
 #   \propto e^2/\hbar = G0 \pi
@@ -638,6 +641,7 @@ def ahc(
     bz: BrillouinZone,
     k_average: bool = True,
     *,
+    distribution: _TDist = "step",
     eigenstate_kwargs={},
     apply_kwargs={},
     **berry_kwargs,
@@ -664,6 +668,9 @@ def ahc(
         if `True`, the returned quantity is averaged over `bz`, else all k-point
         contributions will be collected (in the 1st dimension).
         Note, for large `bz` integrations this may explode the memory usage.
+    distribution :
+        An optional distribution enabling one to automatically sum states
+        across occupied/unoccupied states.
     eigenstate_kwargs :
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
@@ -731,10 +738,13 @@ def ahc(
             "ahc: requires the Brillouin zone object to contain a Hamiltonian!"
         )
 
+    if isinstance(distribution, str):
+        distribution = get_distribution(distribution)
+
     def _ahc(es, k, weight, parent):
         # the latter arguments are merely for speeding up the procedure
-        nonlocal berry_kwargs
-        return es.berry_curvature(**berry_kwargs)
+        nonlocal berry_kwargs, distribution
+        return es.berry_curvature(**berry_kwargs, distribution=distribution)
 
     apply = bz.apply(**apply_kwargs)
     if k_average:
@@ -743,8 +753,7 @@ def ahc(
         apply = apply.ndarray
     cond = apply.eigenstate(**eigenstate_kwargs, wrap=_ahc)
 
-    geom = H.geometry
-    lat = geom.lattice
+    lat = H.geometry.lattice
     per_axes = lat.pbc.nonzero()[0]
     vol = lat.volumef(per_axes)
 
@@ -755,7 +764,7 @@ def ahc(
 
 
 def _create_sigma(n, sigma, dtype, format):
-    """This will return the Pauli matrix filled in a diagonal of the matrix
+    r"""This will return the Pauli matrix filled in a diagonal of the matrix
 
     It will not return the spin operator, which has the pre-factor \hbar/2
 
@@ -769,7 +778,6 @@ def _create_sigma(n, sigma, dtype, format):
         if len(sigma) == 2:
             # only the spin-box
             sigma = sigma / 2
-            print(sigma)
         elif len(sigma) == n * 2:
             # full sigma
             sigma = sigma / 2
@@ -795,6 +803,7 @@ def shc(
     sigma: Union[CartesianAxisStrLiteral, npt.ArrayLike] = "z",
     *,
     J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
+    distribution: _TDist = "step",
     eigenstate_kwargs={},
     apply_kwargs={},
     **berry_kwargs,
@@ -826,6 +835,10 @@ def shc(
         or the full sigma.
     J_axes:
         the direction(s) where the :math:`J` operator will be applied (defaults to all).
+    distribution :
+        An optional distribution enabling one to automatically sum states
+        across occupied/unoccupied states.
+        Defaults to the step function.
     eigenstate_kwargs :
        keyword arguments passed directly to the ``bz.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
@@ -918,6 +931,7 @@ def shc(
         nonlocal m, J_axes
         if d in J_axes:
             return M @ m + m @ M
+
         return M
 
     def noop(M, d):
@@ -926,28 +940,16 @@ def shc(
     axes = berry_kwargs.get("derivative_kwargs", {}).get("axes", "xyz")
     axes = [direction(axis) for axis in sorted(axes)]
 
-    # kwargs is mutable in the method call, we have to assign a new variable
-    berry_kwargs = {**berry_kwargs, "operator": (J, noop)}
-
-    def _shc(es, k, weight, parent):
-        # the latter arguments are merely for speeding up the procedure
-        nonlocal berry_kwargs
-        return es.berry_curvature(**berry_kwargs)
-
-    apply = bz.apply(**apply_kwargs)
-    if k_average:
-        apply = apply.average
-    else:
-        apply = apply.ndarray
-    cond = apply.eigenstate(**eigenstate_kwargs, wrap=_shc)
-
-    geom = H.geometry
-    lat = geom.lattice
-    per_axes = lat.pbc.nonzero()[0]
-    vol = lat.volumef(per_axes)
-
-    # Convert to S / Ang
-    cond *= -_ahc_const / vol
+    # At this point we have the AHC (in terms of units)
+    cond = ahc(
+        bz,
+        k_average,
+        distribution=distribution,
+        eigenstate_kwargs=eigenstate_kwargs,
+        apply_kwargs=apply_kwargs,
+        **berry_kwargs,
+        operator=(J, noop),
+    )
 
     # The SHC misses a factor -2e/hbar to correct the operator change:
     #  j_x = -e v_x, 1/2 {s_z, v_x}
@@ -971,9 +973,9 @@ def shc(
     # simply multiply by: -1/2
     shc_idx = [i for i in map(direction, J_axes) if i in axes]
     if k_average:
-        cond[shc_idx] *= -0.5
+        cond[shc_idx] *= 0.5
     else:
-        cond[:, shc_idx] *= -0.5
+        cond[:, shc_idx] *= 0.5
 
     return cond
 

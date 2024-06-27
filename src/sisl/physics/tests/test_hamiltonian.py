@@ -1001,7 +1001,7 @@ class TestHamiltonian:
         H = Hamiltonian(g, spin=Spin.POLARIZED)
         H.construct((R, param))
 
-        mp = MonkhorstPack(H, [5, 5, 1])
+        mp = MonkhorstPack(H, [3, 3, 1])
         cond = ahc(mp)
         cond2 = ahc(mp, sum=False)
         assert np.allclose(cond, cond2.sum(-1))
@@ -1013,13 +1013,31 @@ class TestHamiltonian:
         H = Hamiltonian(g, spin=Spin.NONCOLINEAR)
         H.construct((R, param))
 
-        mp = MonkhorstPack(H, [5, 5, 1])
+        mp = MonkhorstPack(H, [3, 3, 1])
         cond = shc(mp)
         cond2 = shc(mp, sum=False)
         assert np.allclose(cond, cond2.sum(-1))
 
         cond2 = shc(mp, sigma=Spin.Z)
         assert np.allclose(cond, cond2)
+
+    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    def test_shc_and_ahc(self, setup):
+        R, param = [0.1, 1.5], [
+            [1.0, 0.1, 0, 0, 0, 0, 0, 0],
+            [0.4, 0.2, 0.3, 0.3, 0.5, 0.4, 0.2, 0.3],
+        ]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, spin=Spin.SPINORBIT)
+        H.construct((R, param))
+
+        mp = MonkhorstPack(H, [3, 3, 1])
+        c_ahc = ahc(mp)
+        # Ensure that shc calculates AHC in other segments
+        c_shc = shc(mp, J_axes="y")
+        assert np.allclose(c_ahc[0], c_shc[0])
+        assert not np.allclose(c_ahc[1], c_shc[1])
+        assert np.allclose(c_ahc[2], c_shc[2])
 
     @pytest.mark.xfail(reason="Gauges make different decouplings")
     def test_gauge_eff(self, setup):

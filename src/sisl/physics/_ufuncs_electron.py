@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Callable, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 import numpy as np
 
@@ -12,7 +12,7 @@ from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import SeqOrScalarFloat, npt
 
 from .distribution import get_distribution
-from .electron import StateCElectron, _create_sigma, _velocity_const
+from .electron import StateCElectron, _create_sigma, _TDist, _velocity_const
 from .state import _dM_Operator
 
 # Nothing gets exposed here
@@ -55,15 +55,12 @@ def velocity(state: StateCElectron, *args, **kwargs):
     return v
 
 
-_TDist = Union[str, Callable[[npt.ArrayLike], np.ndarray]]
-
-
 @register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
 def berry_curvature(
     state: StateCElectron,
-    distribution: _TDist = "step",
     sum: bool = True,
     *,
+    distribution: Optional[_TDist] = None,
     derivative_kwargs: dict = {},
     operator: Union[_dM_Operator, Tuple[_dM_Operator, _dM_Operator]] = lambda M, d: M,
     eta: float = 0.0,
@@ -99,12 +96,13 @@ def berry_curvature(
     state :
         the state describing the electronic states we wish to calculate the Berry curvature
         of.
-    distribution:
-        An optional distribution enabling one to automatically sum states
-        across occupied/unoccupied states.
-        By default this is the step function with chemical potential :math:`\mu=0`.
     sum:
         only return the summed Berry curvature (over all states).
+    distribution:
+        An optional distribution enabling one to automatically sum states
+        across occupied/unoccupied states. This is useful when calculating AHC/SHC
+        contributions since it can improve numerical accuracy.
+        If this is None, it will do the above equation exactly.
     derivative_kwargs:
         arguments passed to `derivative`. Since `operator` is defined here,
         one cannot have `operator` in `derivative_kwargs`.
@@ -156,58 +154,89 @@ def berry_curvature(
     else:
         # different operators
         dA = state.derivative(order=1, operator=opA, matrix=True, **derivative_kwargs)
-        dB = state.derivative(order=1, operator=opB, matrix=True, **derivative_kwargs)
+
+        dB_kwargs = {**derivative_kwargs}
+        # we shouldn't change the states *again*
+        dB_kwargs.pop("degenerate", None)
+        dB = state.derivative(order=1, operator=opB, matrix=True, **dB_kwargs)
 
     ieta2 = 1j * eta**2
     energy = state.c
 
-    # when calculating the distribution, one should always
-    # find the energy dimension along the last axis, so x0
-    # must have a shape (-1, 1) to allow b-casting!
-    # Hence the last dimension of distribution(energy) corresponds
-    # to the states.
-    # Hence we transpose it for direct usage below.
-    dist_e = distribution(energy)
-    # Since we are using the double counting dist_e[si] - dist_e
-    # we have to omit the factor 2 here.
+    ndA = len(dA)
+    ndB = len(dB)
 
-    if sum:
-        dsigma_shape = (len(dA), len(dB)) + (1,) * (dist_e.ndim - 1)
+    if distribution is None:
+        if sum:
+            sigma = np.zeros((ndA, ndB), dtype=dA.dtype)
 
-        # then it will be: [3, 3[, dist.shape]]
-        shape = np.broadcast_shapes(dist_e.shape[:-1], dsigma_shape)
-        sigma = np.zeros(shape, dtype=dA.dtype)
+            for si, ei in enumerate(energy):
+                de = (ei - energy) ** 2 + ieta2
+                np.divide(2, de, where=(de != 0), out=de)
 
-        for si, ei in enumerate(energy):
-            de = (ei - energy) ** 2 + ieta2
-            np.divide(-1, de, where=(de != 0), out=de)
-            # the order of this term can be found in:
-            # 10.21468/SciPostPhysCore.6.1.002 Eq. 29
-            dd = dist_e[..., [si]] - dist_e
+                for iA in range(ndA):
+                    for iB in range(ndB):
+                        sigma[iA, iB] += 1j * de @ (dA[iA, si] * dB[iB, :, si])
 
-            for iA in range(len(dA)):
-                for iB in range(len(dB)):
-                    dsigma = (-1j) * (de * dA[iA, si] * dB[iB, :, si])
+        else:
+            sigma = np.zeros((ndA, ndB, len(energy)), dtype=dA.dtype)
 
-                    sigma[iA, iB] += dd @ dsigma
+            for si, ei in enumerate(energy):
+                de = (ei - energy) ** 2 + ieta2
+                np.divide(2, de, where=(de != 0), out=de)
+
+                for iA in range(ndA):
+                    for iB in range(ndB):
+                        sigma[iA, iB, si] += 1j * de @ (dA[iA, si] * dB[iB, :, si])
 
     else:
-        dsigma_shape = (len(dA), len(dB), len(energy)) + (1,) * (dist_e.ndim - 1)
+        # when calculating the distribution, one should always
+        # find the energy dimension along the last axis, so x0
+        # must have a shape (-1, 1) to allow b-casting!
+        # Hence the last dimension of distribution(energy) corresponds
+        # to the states.
+        # Hence we transpose it for direct usage below.
+        dist_e = distribution(energy)
+        # Since we are using the double counting dist_e[si] - dist_e
+        # we have to omit the factor 2 here.
 
-        # then it will be: [3, 3, nstates[, dist.shape]]
-        shape = np.broadcast_shapes(dist_e.shape[:-1], dsigma_shape)
-        sigma = np.zeros(shape, dtype=dA.dtype)
+        if sum:
+            dsigma_shape = (ndA, ndB) + (1,) * (dist_e.ndim - 1)
 
-        for si, ei in enumerate(energy):
-            de = (ei - energy) ** 2 + ieta2
-            np.divide(-1, de, where=(de != 0), out=de)
-            dd = dist_e[..., [si]] - dist_e
+            # then it will be: [3, 3[, dist.shape]]
+            shape = np.broadcast_shapes(dist_e.shape[:-1], dsigma_shape)
+            sigma = np.zeros(shape, dtype=dA.dtype)
 
-            for iA in range(len(dA)):
-                for iB in range(len(dB)):
-                    dsigma = (-1j) * (de * dA[iA, si] * dB[iB, :, si])
+            for si, ei in enumerate(energy):
+                de = (ei - energy) ** 2 + ieta2
+                np.divide(1, de, where=(de != 0), out=de)
+                # the order of this term can be found in:
+                # 10.21468/SciPostPhysCore.6.1.002 Eq. 29
+                dd = dist_e[..., [si]] - dist_e
 
-                    sigma[iA, iB, si] += dd @ dsigma
+                for iA in range(ndA):
+                    for iB in range(ndB):
+                        dsigma = 1j * (de * dA[iA, si] * dB[iB, :, si])
+
+                        sigma[iA, iB] += dd @ dsigma
+
+        else:
+            dsigma_shape = (ndA, ndB, len(energy)) + (1,) * (dist_e.ndim - 1)
+
+            # then it will be: [3, 3, nstates[, dist.shape]]
+            shape = np.broadcast_shapes(dist_e.shape[:-1], dsigma_shape)
+            sigma = np.zeros(shape, dtype=dA.dtype)
+
+            for si, ei in enumerate(energy):
+                de = (ei - energy) ** 2 + ieta2
+                np.divide(1, de, where=(de != 0), out=de)
+                dd = dist_e[..., [si]] - dist_e
+
+                for iA in range(ndA):
+                    for iB in range(ndB):
+                        dsigma = 1j * (de * dA[iA, si] * dB[iB, :, si])
+
+                        sigma[iA, iB, si] += dd @ dsigma
 
     # When the operators are the simple velocity operators, then
     # we don't need to do anything for the units.
@@ -220,9 +249,9 @@ def berry_curvature(
 def spin_berry_curvature(
     state: StateCElectron,
     sigma: Union[CartesianAxisStrLiteral, npt.ArrayLike] = "z",
-    distribution: _TDist = "step",
     sum: bool = True,
     *,
+    distribution: Optional[_TDist] = None,
     J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
     **berry_kwargs,
 ) -> np.ndarray:
@@ -326,12 +355,10 @@ def spin_berry_curvature(
     def noop(M, d):
         return M
 
-    bc = berry_curvature(
+    return berry_curvature(
         state,
-        distribution=distribution,
         sum=sum,
+        distribution=distribution,
         **berry_kwargs,
         operator=(J, noop),
     )
-
-    return bc
