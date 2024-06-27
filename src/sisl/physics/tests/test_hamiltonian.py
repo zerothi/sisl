@@ -992,7 +992,7 @@ class TestHamiltonian:
         H.construct((R, param))
 
         mp = MonkhorstPack(H, [5, 5, 1])
-        cond = ahc(mp)
+        ahc(mp)
 
     @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
     def test_ahc_spin(self, setup):
@@ -1017,6 +1017,9 @@ class TestHamiltonian:
         cond = shc(mp)
         cond2 = shc(mp, sum=False)
         assert np.allclose(cond, cond2.sum(-1))
+
+        cond2 = shc(mp, sigma=Spin.Z)
+        assert np.allclose(cond, cond2)
 
     @pytest.mark.xfail(reason="Gauges make different decouplings")
     def test_gauge_eff(self, setup):

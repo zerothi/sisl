@@ -219,7 +219,7 @@ def berry_curvature(
 @register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
 def spin_berry_curvature(
     state: StateCElectron,
-    sigma: CartesianAxisStrLiteral = "z",
+    sigma: Union[CartesianAxisStrLiteral, npt.ArrayLike] = "z",
     distribution: _TDist = "step",
     sum: bool = True,
     *,
@@ -274,7 +274,8 @@ def spin_berry_curvature(
     Parameters
     ----------
     sigma:
-        which Pauli matrix is used.
+        which Pauli matrix is used, alternatively one can pass a custom spin matrix,
+        or the full sigma.
     J_axes:
         the direction(s) where the :math:`J^\sigma` operator will be applied, defaults
         to all.

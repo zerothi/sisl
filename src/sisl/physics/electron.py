@@ -758,9 +758,22 @@ def _create_sigma(n, sigma, dtype, format):
     """This will return the Pauli matrix filled in a diagonal of the matrix
 
     It will not return the spin operator, which has the pre-factor \hbar/2
-    """
 
-    sigma = getattr(Spin, sigma.upper()) / 2
+    """
+    if isinstance(sigma, str):
+        sigma = getattr(Spin, sigma.upper()) / 2
+    else:
+        # it must be an ndarray
+        sigma = np.asarray(sigma)
+        assert sigma.ndim == 2
+        if len(sigma) == 2:
+            # only the spin-box
+            sigma = sigma / 2
+            print(sigma)
+        elif len(sigma) == n * 2:
+            # full sigma
+            sigma = sigma / 2
+            return sigma
 
     if format in ("array", "matrix"):
         m = np.zeros([n, 2, n, 2], dtype=dtype)
@@ -779,7 +792,7 @@ def _create_sigma(n, sigma, dtype, format):
 def shc(
     bz: BrillouinZone,
     k_average: bool = True,
-    sigma: CartesianAxisStrLiteral = "z",
+    sigma: Union[CartesianAxisStrLiteral, npt.ArrayLike] = "z",
     *,
     J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
     eigenstate_kwargs={},
@@ -809,7 +822,8 @@ def shc(
         contributions will be collected.
         Note, for large `bz` integrations this may explode the memory usage.
     sigma:
-        which Pauli matrix to use.
+        which Pauli matrix is used, alternatively one can pass a custom spin matrix,
+        or the full sigma.
     J_axes:
         the direction(s) where the :math:`J` operator will be applied (defaults to all).
     eigenstate_kwargs :
@@ -834,6 +848,11 @@ def shc(
     >>> cond = shc(bz, J_axes="y")
     >>> shc_y_xyz = cond[1]
     >>> ahc_xz_xyz = cond[[0, 2]]
+
+    Passing an explicit :math:`\sigma` matrix is also allowed:
+
+    >>> cond = shc(bz)
+    >>> assert np.allclose(cond, shc(bz, sigma=Spin.Z))
 
     For further examples, please see `ahc` which is equivalent to this
     method.
