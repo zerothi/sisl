@@ -21,6 +21,8 @@ One may also plot real-space wavefunctions.
    COP
    berry_phase
    berry_curvature
+   ahc
+   shc
    conductivity
    wavefunction
    spin_moment

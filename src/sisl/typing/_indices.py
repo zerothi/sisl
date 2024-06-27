@@ -16,7 +16,10 @@ if TYPE_CHECKING:
     from sisl.geom.category import AtomCategory
 
 __all__ = [
+    "AxisIntLiteral",
+    "CellAxisStrLiteral",
     "CellAxisLiteral",
+    "CartesianAxisStrLiteral",
     "CartesianAxisLiteral",
     "CellAxis",
     "CellAxes",
@@ -29,12 +32,18 @@ __all__ = [
     "OrbitalsIndex",
 ]
 
+AxisIntLiteral = Literal[0, 1, 2]
+"""Defining axis specification in 3D space (int)"""
+CellAxisStrLiteral = Literal["a", "b", "c"]
+"""Defining lattice axis specification in 3D space (str)"""
+CartesianAxisStrLiteral = Literal["x", "y", "z"]
+"""Defining Cartesian axis specification in 3D space (str)"""
 
 # The literal interpretations of what an axis specification can be
 # Both for lattice vectors and cartesian vectors
-CellAxisLiteral = Literal[0, 1, 2, "a", "b", "c"]
+CellAxisLiteral = Union[AxisIntLiteral, CellAxisStrLiteral]
 """Defining lattice vector allowed arguments"""
-CartesianAxisLiteral = Literal[0, 1, 2, "x", "y", "z"]
+CartesianAxisLiteral = Union[AxisIntLiteral, CartesianAxisStrLiteral]
 """Defining Cartesian vector allowed arguments"""
 
 # Axis specifications
