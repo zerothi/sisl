@@ -464,7 +464,7 @@ state coefficients
         """
         return self.inner(projection=projection)
 
-    def ipr(self, q=2):
+    def ipr(self, q: int = 2):
         r""" Calculate the inverse participation ratio (IPR) for arbitrary `q` values
 
         The inverse participation ratio is defined as
@@ -500,7 +500,7 @@ state coefficients
 
         Parameters
         ----------
-        q : int, optional
+        q :
           order parameter for the IPR
         """
         # This *has* to be a real value C * C^* == real
@@ -799,7 +799,7 @@ state coefficients
             f"{self.__class__.__name__}.phase only accepts method in [max, all]"
         )
 
-    def align_phase(self, other, ret_index: bool = False, inplace: bool = False):
+    def align_phase(self, other: State, ret_index: bool = False, inplace: bool = False):
         r"""Align `self` with the phases for `other`, a copy may be returned
 
         States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
@@ -838,7 +838,7 @@ state coefficients
             return out, idx
         return out
 
-    def align_norm(self, other, ret_index: bool = False, inplace: bool = False):
+    def align_norm(self, other: State, ret_index: bool = False, inplace: bool = False):
         r"""Align `self` with the site-norms of `other`, a copy may optionally be returned
 
         To determine the new ordering of `self` first calculate the residual norm of the site-norms.
