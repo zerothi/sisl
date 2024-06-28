@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Geometry &mdash; sisl 0.1-b0feb0c</title>
+  <title>sisl.Geometry &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,7 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -59,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -73,7 +74,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
@@ -1212,15 +1213,17 @@ The last 3 atoms define the second.</p>
 \\
 \mathbf u_2 &amp;= \mathbf r_3 - \mathbf r_2
 \\
-\phi &amp;= \operatorname{atan2}\Big(\hat\mathbf u_0\dot
-    (\hat\mathbf u_1\times\hat\mathbf u_2),
-    (\hat\mathbf u_0\times\hat\mathbf u_1)\dot
-    (\hat\mathbf u_1\times\hat\mathbf u_2)
+\phi &amp;= \operatorname{atan2}\Big(
+     \hat{\mathbf u}_0\cdot
+    (\hat{\mathbf u}_1\times\hat{\mathbf u}_2),
+    (\hat{\mathbf u}_0\times\hat{\mathbf u}_1)\cdot
+    (\hat{\mathbf u}_1\times\hat{\mathbf u}_2)
     \Big)\end{split}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\hat{\cdot}\)</span> means the unit-vector.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>sisl.typing.AtomsIndex</em>) – An array of shape (4,)  or (N, 4) representing the indices of 4 atoms forming the dihedral angle</p></li>
+<li><p><strong>atoms</strong> (<em>sisl.typing.AtomsIndex</em>) – An array of shape <em class="xref py py-obj">(4,)</em> or <em class="xref py py-obj">(*, 4)</em> representing the indices of 4 atoms forming the dihedral angle</p></li>
 <li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – whether the returned value is in radians</p></li>
 </ul>
 </dd>
@@ -1252,7 +1255,7 @@ If this is a list, the shells will be of unequal size.</p>
 A list of distances within each shell is gathered and the equivalent
 method will be used to extract a single quantity from the list of
 distances in the shell.
-If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.13.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
+If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.14.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
 If another string is given it will correspond to <code class="docutils literal notranslate"><span class="pre">getattr(numpy,</span> <span class="pre">method)</span></code>,
 while any callable function may be passed. The passed function
 will only be passed a list of unsorted distances that needs to be

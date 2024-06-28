@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Functional programming &mdash; sisl 0.1-b0feb0c</title>
+  <title>Functional programming &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,7 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -57,7 +58,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -71,7 +72,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
@@ -107,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.add.html">add</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.append.html">append</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.apply.html">apply</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.berry_curvature.html">berry_curvature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.center.html">center</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.copy.html">copy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.insert.html">insert</a></li>
@@ -116,11 +118,13 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.rotate.html">rotate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.scale.html">scale</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.sort.html">sort</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.spin_berry_curvature.html">spin_berry_curvature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.sub.html">sub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.swap.html">swap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.swapaxes.html">swapaxes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.tile.html">tile</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.translate.html">translate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/sisl.velocity.html">velocity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.unrepeat.html">unrepeat</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.untile.html">untile</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/sisl.write.html">write</a></li>
@@ -174,35 +178,41 @@ sisl objects.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.apply.html#sisl.apply" title="sisl.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a>(-&gt; ndarray)</p></td>
 <td><p>Dispatcher for 'apply'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.center.html#sisl.center" title="sisl.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a>(-&gt; ~numpy.ndarray
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.berry_curvature.html#sisl.berry_curvature" title="sisl.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a>()</p></td>
+<td><p>Dispatcher for 'berry_curvature'</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.center.html#sisl.center" title="sisl.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a>(-&gt; ~numpy.ndarray
 ))</p></td>
 <td><p>Dispatcher for 'center'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.copy.html#sisl.copy" title="sisl.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.copy.html#sisl.copy" title="sisl.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(...)</p></td>
 <td><p>Dispatcher for 'copy'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.insert.html#sisl.insert" title="sisl.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a>(-&gt; ~sisl.Atoms)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.insert.html#sisl.insert" title="sisl.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a>(-&gt; ~sisl.Atoms)</p></td>
 <td><p>Dispatcher for 'insert'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.prepend.html#sisl.prepend" title="sisl.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(-&gt; ~sisl.Atoms
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.prepend.html#sisl.prepend" title="sisl.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(-&gt; ~sisl.Atoms
  -&gt; ~sisl.Geometry)</p></td>
 <td><p>Dispatcher for 'prepend'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.remove.html#sisl.remove" title="sisl.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.remove.html#sisl.remove" title="sisl.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(...)</p></td>
 <td><p>Dispatcher for 'remove'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.repeat.html#sisl.repeat" title="sisl.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.repeat.html#sisl.repeat" title="sisl.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(...)</p></td>
 <td><p>Dispatcher for 'repeat'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.rotate.html#sisl.rotate" title="sisl.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(-&gt; ~sisl.Geometry
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.rotate.html#sisl.rotate" title="sisl.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(-&gt; ~sisl.Geometry
  -&gt; Lattice)</p></td>
 <td><p>Dispatcher for 'rotate'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.scale.html#sisl.scale" title="sisl.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.scale.html#sisl.scale" title="sisl.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(...)</p></td>
 <td><p>Dispatcher for 'scale'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.sort.html#sisl.sort" title="sisl.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.sort.html#sisl.sort" title="sisl.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a>()</p></td>
 <td><p>Dispatcher for 'sort'</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.spin_berry_curvature.html#sisl.spin_berry_curvature" title="sisl.spin_berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_berry_curvature</span></code></a>()</p></td>
+<td><p>Dispatcher for 'spin_berry_curvature'</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.sub.html#sisl.sub" title="sisl.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(...)</p></td>
 <td><p>Dispatcher for 'sub'</p></td>
@@ -221,13 +231,16 @@ sisl objects.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.translate.html#sisl.translate" title="sisl.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>()</p></td>
 <td><p>Dispatcher for 'translate'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.unrepeat.html#sisl.unrepeat" title="sisl.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.velocity.html#sisl.velocity" title="sisl.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>()</p></td>
+<td><p>Dispatcher for 'velocity'</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.unrepeat.html#sisl.unrepeat" title="sisl.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>()</p></td>
 <td><p>Dispatcher for 'unrepeat'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.untile.html#sisl.untile" title="sisl.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(-&gt; ~sisl.Geometry)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.untile.html#sisl.untile" title="sisl.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(-&gt; ~sisl.Geometry)</p></td>
 <td><p>Dispatcher for 'untile'</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.write.html#sisl.write" title="sisl.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.write.html#sisl.write" title="sisl.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(...)</p></td>
 <td><p>Dispatcher for 'write'</p></td>
 </tr>
 </tbody>

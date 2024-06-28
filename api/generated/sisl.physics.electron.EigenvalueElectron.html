@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.EigenvalueElectron &mdash; sisl 0.1-b0feb0c</title>
+  <title>sisl.physics.electron.EigenvalueElectron &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,7 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -57,7 +58,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -71,7 +72,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
@@ -106,7 +107,8 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.COP.html">COP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_phase.html">berry_phase</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_curvature.html">berry_curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.ahc.html">ahc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.shc.html">shc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.conductivity.html">conductivity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.wavefunction.html">wavefunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_moment.html">spin_moment</a></li>
@@ -175,7 +177,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvalueElectron.copy" title="sisl.physics.electron.EigenvalueElectron.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
 <td><p>Return a copy (only the coefficients are copied).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvalueElectron.degenerate" title="sisl.physics.electron.EigenvalueElectron.degenerate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degenerate</span></code></a>([atol])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvalueElectron.degenerate" title="sisl.physics.electron.EigenvalueElectron.degenerate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degenerate</span></code></a>(atol)</p></td>
 <td><p>Find degenerate coefficients with a specified precision</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvalueElectron.iter" title="sisl.physics.electron.EigenvalueElectron.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([asarray])</p></td>
@@ -248,11 +250,11 @@ and returns the DOS.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenvalueElectron.degenerate">
-<span class="sig-name descname"><span class="pre">degenerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenvalueElectron.degenerate" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">degenerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenvalueElectron.degenerate" title="Link to this definition"></a></dt>
 <dd><p>Find degenerate coefficients with a specified precision</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – the precision above which coefficients are not considered degenerate</p>
+<dd class="field-odd"><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the precision above which coefficients are not considered degenerate</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of indices</p>

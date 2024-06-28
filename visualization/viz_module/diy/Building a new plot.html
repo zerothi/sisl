@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building a new plot &mdash; sisl 0.1-b0feb0c</title>
+  <title>Building a new plot &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -25,7 +25,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -38,6 +38,7 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -60,7 +61,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -74,7 +75,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
@@ -154,21 +155,13 @@
 <section id="The-tools">
 <h1>The tools<a class="headerlink" href="#The-tools" title="Link to this heading"></a></h1>
 <p>We provide you with a set of tools to create plots. The most basic ones are two of them: <code class="docutils literal notranslate"><span class="pre">get_figure</span></code> and <code class="docutils literal notranslate"><span class="pre">plot_actions</span></code>.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sisl.viz</span> <span class="kn">import</span> <span class="n">get_figure</span><span class="p">,</span> <span class="n">plot_actions</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-info:0: SislInfo: Please install tqdm (pip install tqdm) for better looking progress bars
-</pre></div></div>
 </div>
 <p>They are what support the multibackend framework. Let’s try them out:</p>
 <div class="nbinput docutils container">
@@ -212,9 +205,9 @@ info:0: SislInfo: Please install tqdm (pip install tqdm) for better looking prog
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div>                            <div id="0e4c47c8-3291-4922-adcc-ffb4be9f4f5b" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("0e4c47c8-3291-4922-adcc-ffb4be9f4f5b")) {                    Plotly.newPlot(                        "0e4c47c8-3291-4922-adcc-ffb4be9f4f5b",                        [{"line":{"color":"red"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+<div>                            <div id="024e6733-3e8c-4488-9753-ba009d48889a" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("024e6733-3e8c-4488-9753-ba009d48889a")) {                    Plotly.newPlot(                        "024e6733-3e8c-4488-9753-ba009d48889a",                        [{"line":{"color":"red"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
 
-var gd = document.getElementById('0e4c47c8-3291-4922-adcc-ffb4be9f4f5b');
+var gd = document.getElementById('024e6733-3e8c-4488-9753-ba009d48889a');
 var x = new MutationObserver(function (mutations, observer) {{
         var display = window.getComputedStyle(gd).display;
         if (!display || display === 'none') {{
@@ -254,7 +247,7 @@ if (outputEl) {{
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.viz.figure.matplotlib.MatplotlibFigure at 0x7f9c406524e0&gt;
+&lt;sisl.viz.figure.matplotlib.MatplotlibFigure at 0x7f7c963555e0&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -292,9 +285,9 @@ if (outputEl) {{
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div>                            <div id="3edc978d-8409-4332-b00f-4745b0b17515" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("3edc978d-8409-4332-b00f-4745b0b17515")) {                    Plotly.newPlot(                        "3edc978d-8409-4332-b00f-4745b0b17515",                        [{"line":{"color":"green"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+<div>                            <div id="4f9818d9-3cc3-4393-adb7-74d545ce43fe" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("4f9818d9-3cc3-4393-adb7-74d545ce43fe")) {                    Plotly.newPlot(                        "4f9818d9-3cc3-4393-adb7-74d545ce43fe",                        [{"line":{"color":"green"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
 
-var gd = document.getElementById('3edc978d-8409-4332-b00f-4745b0b17515');
+var gd = document.getElementById('4f9818d9-3cc3-4393-adb7-74d545ce43fe');
 var x = new MutationObserver(function (mutations, observer) {{
         var display = window.getComputedStyle(gd).display;
         if (!display || display === 'none') {{
@@ -731,9 +724,9 @@ function highlightFilter(filter) {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div>                            <div id="b99faf40-470c-400c-805a-52cca62d278c" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("b99faf40-470c-400c-805a-52cca62d278c")) {                    Plotly.newPlot(                        "b99faf40-470c-400c-805a-52cca62d278c",                        [{"line":{"color":"blue"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+<div>                            <div id="923e0a01-7a8d-4a49-bef4-1970da436c0f" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("923e0a01-7a8d-4a49-bef4-1970da436c0f")) {                    Plotly.newPlot(                        "923e0a01-7a8d-4a49-bef4-1970da436c0f",                        [{"line":{"color":"blue"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
 
-var gd = document.getElementById('b99faf40-470c-400c-805a-52cca62d278c');
+var gd = document.getElementById('923e0a01-7a8d-4a49-bef4-1970da436c0f');
 var x = new MutationObserver(function (mutations, observer) {{
         var display = window.getComputedStyle(gd).display;
         if (!display || display === 'none') {{
@@ -772,7 +765,7 @@ if (outputEl) {{
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;__main__.a_cool_plot at 0x7f9c3f9809e0&gt;
+&lt;__main__.a_cool_plot at 0x7f7c95121370&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -825,9 +818,9 @@ if (outputEl) {{
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div>                            <div id="27c15bda-deaf-4764-9f81-e50c6f54c46b" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("27c15bda-deaf-4764-9f81-e50c6f54c46b")) {                    Plotly.newPlot(                        "27c15bda-deaf-4764-9f81-e50c6f54c46b",                        [{"line":{"color":"red"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+<div>                            <div id="cbd07b20-b72c-4a06-b13b-08075738b487" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("cbd07b20-b72c-4a06-b13b-08075738b487")) {                    Plotly.newPlot(                        "cbd07b20-b72c-4a06-b13b-08075738b487",                        [{"line":{"color":"red"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
 
-var gd = document.getElementById('27c15bda-deaf-4764-9f81-e50c6f54c46b');
+var gd = document.getElementById('cbd07b20-b72c-4a06-b13b-08075738b487');
 var x = new MutationObserver(function (mutations, observer) {{
         var display = window.getComputedStyle(gd).display;
         if (!display || display === 'none') {{

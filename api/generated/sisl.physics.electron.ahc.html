@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ahc &mdash; sisl 0.1-6a1c670</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=325bdd88"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../_static/tabs.js?v=3ee01567"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="shc" href="sisl.physics.electron.shc.html" />
+    <link rel="prev" title="berry_phase" href="sisl.physics.electron.berry_phase.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-6a1c670
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Similar solutions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../physics.electron.html">Electron related functions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.DOS.html">DOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.COP.html">COP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_phase.html">berry_phase</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ahc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.shc.html">shc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.conductivity.html">conductivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.wavefunction.html">wavefunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_moment.html">spin_moment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_contamination.html">spin_contamination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.electron.html#supporting-classes">Supporting classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.distribution.html">Distribution functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.html#low-level-objects">Low level objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.electron.html">Electron related functions</a></li>
+      <li class="breadcrumb-item active">ahc</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.physics.electron.ahc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ahc">
+<h1>ahc<a class="headerlink" href="#ahc" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="sisl.physics.electron.ahc">
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">ahc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><span class="pre">BrillouinZone</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_average</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_TDist</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'step'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenstate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">berry_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#ahc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.ahc" title="Link to this definition"></a></dt>
+<dd><p>Electronic anomalous Hall conductivity for a given <em class="xref py py-obj">BrillouinZone</em> integral</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Omega_{i,\alpha\beta}\)</span> and <span class="math notranslate nohighlight">\(f_i\)</span> is the Berry curvature and occupation
+for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
+<p>The conductivity will be averaged by volume of the periodic unit cell.
+Hence the unit of <a class="reference internal" href="#sisl.physics.electron.ahc" title="sisl.physics.electron.ahc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ahc</span></code></a> depends on the periodic unit cell.
+See <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volumef</span></code> for details.</p>
+<p>See <span id="id1">[<a class="reference internal" href="../../references.html#id12" title="Xinjie Wang, Jonathan R. Yates, Ivo Souza, and David Vanderbilt. Ab initio calculation of the anomalous hall conductivity by wannier interpolation. Phys. Rev. B, November 2006. URL: https://doi.org/10.1103/physrevb.74.195118, doi:10.1103/physrevb.74.195118.">14</a>]</span> for details on the implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – containing the integration grid and has the <code class="docutils literal notranslate"><span class="pre">bz.parent</span></code> as an instance of Hamiltonian.</p></li>
+<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – if <em class="xref py py-obj">True</em>, the returned quantity is averaged over <em class="xref py py-obj">bz</em>, else all k-point
+contributions will be collected (in the 1st dimension).
+Note, for large <em class="xref py py-obj">bz</em> integrations this may explode the memory usage.</p></li>
+<li><p><strong>distribution</strong> (<em>_TDist</em>) – An optional distribution enabling one to automatically sum states
+across occupied/unoccupied states.</p></li>
+<li><p><strong>eigenstate_kwargs</strong> – keyword arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">contour.eigenstate</span></code> method.
+One should <em>not</em> pass a <code class="docutils literal notranslate"><span class="pre">k</span></code> or a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword argument as they are
+already used.</p></li>
+<li><p><strong>apply_kwargs</strong> – keyword arguments passed directly to <code class="docutils literal notranslate"><span class="pre">bz.apply(**apply_kwargs)</span></code>.</p></li>
+<li><p><strong>**berry_kwargs</strong> – <p>arguments passed directly to the <em class="xref py py-obj">berry_curvature</em> method.</p>
+<p>Here one can pass <em class="xref py py-obj">derivative_kwargs</em> to pass flags to the
+<em class="xref py py-obj">derivative</em> method. In particular <code class="docutils literal notranslate"><span class="pre">axes</span></code> can be used
+to speedup the calculation (by omitting certain directions).</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>To calculate the AHC for a range of energy-points.
+First create <code class="docutils literal notranslate"><span class="pre">E</span></code> which is the energy grid.
+In order for the internal algorithm to be able
+to broadcast arrays correctly, we have to allow the eigenvalue
+spectrum to be appended by reshaping.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">E</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ahc_cond</span> <span class="o">=</span> <span class="n">ahc</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">ahc_cond</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Sometimes one wishes to see the k-resolved AHC.
+Be aware that AHC requires a dense k-grid, and hence it might
+require a lot of memory.
+Here it is calculated at <span class="math notranslate nohighlight">\(E=0\)</span> (default energy reference).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ahc_cond</span> <span class="o">=</span> <span class="n">ahc</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">k_average</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">ahc_cond</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bz</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></dt><dd><p>method for calculating the exact derivatives</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></dt><dd><p>method used to calculate the Berry curvature for calculating the conductivity</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volumef</span></code></dt><dd><p>volume calculation of the lattice</p>
+</dd>
+<dt><a class="reference internal" href="sisl.physics.electron.shc.html#sisl.physics.electron.shc" title="sisl.physics.electron.shc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shc</span></code></a></dt><dd><p>spin Hall conductivity</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ahc</strong> – Anomalous Hall conductivity returned in certain dimensions <code class="docutils literal notranslate"><span class="pre">ahc[:,</span> <span class="pre">:]</span></code>.
+If <em class="xref py py-obj">sum</em> is False, it will be at least a 3D array with the 3rd dimension
+having the contribution from state <em class="xref py py-obj">i</em>.
+If <em class="xref py py-obj">k_average</em> is False, it will have a dimension prepended with
+k-point resolved AHC.
+If one passes <em class="xref py py-obj">axes</em> to the <em class="xref py py-obj">derivative_kwargs</em> argument one will get
+dimensions according to the number of axes requested, by default all
+axes will be used (even if they are non-periodic).
+The dtype will be imaginary.
+When <span class="math notranslate nohighlight">\(D\)</span> is the dimensionality of the system we find the unit to be
+<span class="math notranslate nohighlight">\(\mathrm S/\mathrm{Ang}^{D-2}\)</span>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>ndarray</em></a></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>)</p></li>
+<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
+<li><p><strong>distribution</strong> (<em>_TDist</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.physics.electron.berry_phase.html" class="btn btn-neutral float-left" title="berry_phase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.electron.shc.html" class="btn btn-neutral float-right" title="shc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

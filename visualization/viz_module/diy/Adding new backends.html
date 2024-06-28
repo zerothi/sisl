@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adding new backends &mdash; sisl 0.1-b0feb0c</title>
+  <title>Adding new backends &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -25,7 +25,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -38,6 +38,7 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -60,7 +61,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -74,7 +75,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
@@ -150,7 +151,7 @@
 <h1>Adding new backends<a class="headerlink" href="#Adding-new-backends" title="Link to this heading"></a></h1>
 <p>This notebook displays how to integrate a new plotting backend to <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code>.</p>
 <p>Let’s create a toy graphene band structure to illustrate the conceps throughout this notebook:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -165,14 +166,6 @@
 <span class="n">band_struct</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">BandStructure</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Gamma&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-info:0: SislInfo: Please install tqdm (pip install tqdm) for better looking progress bars
-</pre></div></div>
 </div>
 <p>The final display in the visualization module is controlled by the <code class="docutils literal notranslate"><span class="pre">Figure</span></code> class.</p>
 <div class="nbinput nblast docutils container">
@@ -686,9 +679,9 @@ class Figure(builtins.object)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div>                            <div id="6eec753f-0a34-471e-b000-58dcb5552d75" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("6eec753f-0a34-471e-b000-58dcb5552d75")) {                    Plotly.newPlot(                        "6eec753f-0a34-471e-b000-58dcb5552d75",                        [{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-8.099999999999982,-8.072607638045818,-7.990709406687042,-7.855144860176285,-7.667323911336286,-7.429245365342247,-7.143528539874381,-6.813465152136345,-6.4431033563623386,-6.037383539249426],"type":"scatter"},{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"showlegend":false,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-2.6999999999999975,-2.7808282798770527,-3.008082973902628,-3.3461469223041824,-3.7566133735920424,-4.207887035263717,-4.67653718043596,-5.145550759697494,-5.602358355124413,-6.037383539249426],"type":"scatter"},{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"showlegend":false,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[2.7000000000000117,2.7808282798770705,3.0080829739026447,3.346146922304194,3.756613373592053,4.207887035263727,4.676537180435975,5.145550759697502,5.602358355124416,6.037383539249433],"type":"scatter"},{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"showlegend":false,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[8.100000000000001,8.072607638045836,7.990709406687062,7.855144860176306,7.667323911336302,7.429245365342262,7.143528539874395,6.813465152136357,6.443103356362345,6.037383539249433],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"scene":{"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},                        {"responsive": true}                    ).then(function(){
+<div>                            <div id="6f249514-e794-4126-9f69-4fc4f57268fb" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("6f249514-e794-4126-9f69-4fc4f57268fb")) {                    Plotly.newPlot(                        "6f249514-e794-4126-9f69-4fc4f57268fb",                        [{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-8.099999999999982,-8.072607638045818,-7.990709406687042,-7.855144860176285,-7.667323911336286,-7.429245365342247,-7.143528539874381,-6.813465152136345,-6.4431033563623386,-6.037383539249426],"type":"scatter"},{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"showlegend":false,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-2.6999999999999975,-2.7808282798770527,-3.008082973902628,-3.3461469223041824,-3.7566133735920424,-4.207887035263717,-4.67653718043596,-5.145550759697494,-5.602358355124413,-6.037383539249426],"type":"scatter"},{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"showlegend":false,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[2.7000000000000117,2.7808282798770705,3.0080829739026447,3.346146922304194,3.756613373592053,4.207887035263727,4.676537180435975,5.145550759697502,5.602358355124416,6.037383539249433],"type":"scatter"},{"legendgroup":"Bands","line":{"color":"black","dash":"solid","width":1},"meta":{},"mode":"lines","name":"Bands","opacity":1,"showlegend":false,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[8.100000000000001,8.072607638045836,7.990709406687062,7.855144860176306,7.667323911336302,7.429245365342262,7.143528539874395,6.813465152136357,6.443103356362345,6.037383539249433],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"scene":{"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.100000000000001]}},                        {"responsive": true}                    ).then(function(){
 
-var gd = document.getElementById('6eec753f-0a34-471e-b000-58dcb5552d75');
+var gd = document.getElementById('6f249514-e794-4126-9f69-4fc4f57268fb');
 var x = new MutationObserver(function (mutations, observer) {{
         var display = window.getComputedStyle(gd).display;
         if (!display || display === 'none') {{

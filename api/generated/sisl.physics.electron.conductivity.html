@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>conductivity &mdash; sisl 0.1-b0feb0c</title>
+  <title>conductivity &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,14 +37,13 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="wavefunction" href="sisl.physics.electron.wavefunction.html" />
-    <link rel="prev" title="berry_curvature" href="sisl.physics.electron.berry_curvature.html" /> 
+    <link rel="prev" title="shc" href="sisl.physics.electron.shc.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,7 +58,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -73,7 +72,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
@@ -108,7 +107,8 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.COP.html">COP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_phase.html">berry_phase</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_curvature.html">berry_curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.ahc.html">ahc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.shc.html">shc</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">conductivity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.wavefunction.html">wavefunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_moment.html">spin_moment</a></li>
@@ -164,46 +164,13 @@
 <h1>conductivity<a class="headerlink" href="#conductivity" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.conductivity">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">conductivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fermi-dirac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ahc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenstate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#conductivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.conductivity" title="Link to this definition"></a></dt>
-<dd><p>Electronic conductivity for a given <em class="xref py py-obj">BrillouinZone</em> integral</p>
-<p>Currently the <em>only</em> implemented method is the anomalous Hall conductivity (AHC, see <span id="id1">[<a class="reference internal" href="../../references.html#id9" title="Xinjie Wang, Jonathan R. Yates, Ivo Souza, and David Vanderbilt. Ab initio calculation of the anomalous hall conductivity by wannier interpolation. Phys. Rev. B, November 2006. URL: https://doi.org/10.1103/physrevb.74.195118, doi:10.1103/physrevb.74.195118.">11</a>]</span>)
-which may be calculated as:</p>
-<div class="math notranslate nohighlight">
-\[\sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)\]</div>
-<p>where <span class="math notranslate nohighlight">\(\Omega_{i,\alpha\beta}\)</span> and <span class="math notranslate nohighlight">\(f_i\)</span> is the Berry curvature and occupation
-for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
-<p>The conductivity will be averaged by the Brillouin zone volume of the parent. See <em class="xref py py-obj">BrillouinZone.volume</em> for details.
-Hence for 1D the returned unit will be S/Ang, 2D it will be S/Ang^2 and 3D it will be S/Ang^3.</p>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">conductivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fermi-dirac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'ahc'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ahc'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenstate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">berry_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#conductivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.conductivity" title="Link to this definition"></a></dt>
+<dd><p>Deprecated, use <a class="reference internal" href="sisl.physics.electron.ahc.html#sisl.physics.electron.ahc" title="sisl.physics.electron.ahc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ahc</span></code></a> instead</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – containing the integration grid and has the <code class="docutils literal notranslate"><span class="pre">bz.parent</span></code> as an instance of Hamiltonian.</p></li>
-<li><p><strong>distribution</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><em>func</em><em>, </em><em>optional</em>) – distribution used to find occupations</p></li>
-<li><p><strong>method</strong> (<em>{&quot;ahc&quot;}</em>) – “ahc” calculates the dc anomalous Hall conductivity</p></li>
-<li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – de-couple degenerate states within the given tolerance (in eV)</p></li>
-<li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – along which direction degenerate states are decoupled.</p></li>
-<li><p><strong>eigenstate_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – keyword arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">contour.eigenstate</span></code> method.
-One should <em>not</em> pass a <code class="docutils literal notranslate"><span class="pre">k</span></code> or a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword argument as they are
-already used.</p></li>
-<li><p><strong>apply_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – keyword arguments passed directly to <code class="docutils literal notranslate"><span class="pre">bz.apply(**apply_kwargs)</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>cond</strong> – conductivity in units [S/cm^D]. The D is the dimensionality of the system.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a></p>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a><em>[</em><em>'ahc'</em><em>]</em>)</p>
 </dd>
 </dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a></dt><dd><p>method used to calculate the Berry-flux for calculating the conductivity</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone.volume</span></code></dt><dd><p>volume calculation of the Brillouin zone</p>
-</dd>
-</dl>
-</div>
 </dd></dl>
 
 </section>
@@ -212,7 +179,7 @@ already used.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.physics.electron.berry_curvature.html" class="btn btn-neutral float-left" title="berry_curvature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.electron.shc.html" class="btn btn-neutral float-left" title="shc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="sisl.physics.electron.wavefunction.html" class="btn btn-neutral float-right" title="wavefunction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

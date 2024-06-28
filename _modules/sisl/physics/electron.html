@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1-b0feb0c</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -36,6 +36,7 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -54,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -68,7 +69,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
@@ -123,12 +124,6 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
-
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
-
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Electron related functions and classes</span>
 <span class="sd">==========================================</span>
 
@@ -144,8 +139,8 @@
 <span class="sd">   PDOS</span>
 <span class="sd">   COP</span>
 <span class="sd">   berry_phase</span>
-<span class="sd">   berry_curvature</span>
-<span class="sd">   conductivity</span>
+<span class="sd">   ahc</span>
+<span class="sd">   shc</span>
 <span class="sd">   wavefunction</span>
 <span class="sd">   spin_moment</span>
 <span class="sd">   spin_contamination</span>
@@ -170,10 +165,13 @@
 <span class="sd">   EigenstateElectron</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">scs</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">add</span><span class="p">,</span>
     <span class="n">ceil</span><span class="p">,</span>
@@ -197,16 +195,27 @@
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">BoundaryCondition</span> <span class="k">as</span> <span class="n">BC</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">constant</span><span class="p">,</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">C</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">sisl._core.oplist</span> <span class="kn">import</span> <span class="n">oplist</span>
-<span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_le</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">det</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigvals</span> <span class="k">as</span> <span class="n">la_eigvals</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">sqrth</span><span class="p">,</span> <span class="n">svd_destroy</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SislError</span><span class="p">,</span>
+    <span class="n">deprecate_argument</span><span class="p">,</span>
+    <span class="n">deprecation</span><span class="p">,</span>
+    <span class="n">info</span><span class="p">,</span>
+    <span class="n">progressbar</span><span class="p">,</span>
+    <span class="n">warn</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">CartesianAxisStrLiteral</span><span class="p">,</span> <span class="n">npt</span>
+<span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">direction</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.brillouinzone</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
 
 <span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
 <span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZSpin</span>
@@ -216,7 +225,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DOS&quot;</span><span class="p">,</span> <span class="s2">&quot;PDOS&quot;</span><span class="p">,</span> <span class="s2">&quot;COP&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;spin_moment&quot;</span><span class="p">,</span> <span class="s2">&quot;spin_contamination&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;berry_phase&quot;</span><span class="p">,</span> <span class="s2">&quot;berry_curvature&quot;</span><span class="p">]</span>
-<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;conductivity&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;ahc&quot;</span><span class="p">,</span> <span class="s2">&quot;shc&quot;</span><span class="p">,</span> <span class="s2">&quot;conductivity&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;wavefunction&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;CoefficientElectron&quot;</span><span class="p">,</span> <span class="s2">&quot;StateElectron&quot;</span><span class="p">,</span> <span class="s2">&quot;StateCElectron&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;EigenvalueElectron&quot;</span><span class="p">,</span> <span class="s2">&quot;EigenvectorElectron&quot;</span><span class="p">,</span> <span class="s2">&quot;EigenstateElectron&quot;</span><span class="p">]</span>
@@ -367,9 +376,7 @@
             <span class="n">S</span> <span class="o">=</span> <span class="n">S</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span>
 
         <span class="c1"># Initialize data</span>
-        <span class="n">PDOS</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span>
-            <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">PDOS</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># Do spin-box calculations:</span>
         <span class="c1">#  PDOS[0] = total DOS (diagonal)</span>
@@ -486,7 +493,7 @@
     <span class="p">),</span> <span class="s2">&quot;COP: number of eigenvalues and states are not consistent&quot;</span>
 
     <span class="c1"># get default dtype</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span>
 
     <span class="c1"># initialize the COP values</span>
     <span class="n">no</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -628,7 +635,7 @@
     <span class="k">if</span> <span class="n">project</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span>
             <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">],</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)):</span>
@@ -642,7 +649,7 @@
             <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># TODO consider doing this all in a few lines</span>
         <span class="c1"># TODO Since there are no energy dependencies here we can actually do all</span>
@@ -739,7 +746,7 @@
 
     <span class="k">else</span><span class="p">:</span>
 
-        <span class="n">Sa</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="n">n_alpha</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state_alpha</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">Sa</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="n">n_alpha</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">state_alpha</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">Sb</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">([</span><span class="n">n_beta</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">Sa</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># Loop alpha...</span>
@@ -755,198 +762,31 @@
 
 <span class="c1"># dHk is in [Ang eV]</span>
 <span class="c1"># velocity units in [Ang/ps]</span>
-<span class="n">_velocity_const</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">hbar</span><span class="p">(</span><span class="s2">&quot;eV ps&quot;</span><span class="p">)</span>
+<span class="n">_velocity_const</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">C</span><span class="o">.</span><span class="n">hbar</span><span class="p">(</span><span class="s2">&quot;eV ps&quot;</span><span class="p">)</span>
+
+<span class="c1"># Typing</span>
+<span class="n">_TDist</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span>
+
+<span class="c1"># With G0 = 2e^2 / h = e^2 / (\hbar \pi)</span>
+<span class="c1"># AHC is</span>
+<span class="c1">#   \propto e^2/\hbar = G0 \pi</span>
+<span class="c1"># This converts \sigma into S</span>
+<span class="n">_ahc_const</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">G0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
 
-<span class="k">def</span> <span class="nf">_velocity_matrix_non_ortho</span><span class="p">(</span>
-    <span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;For states in a non-orthogonal basis&quot;&quot;&quot;</span>
-
-    <span class="c1"># All matrix elements along the 3 directions</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-    <span class="c1"># Decouple the degenerate states</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">degenerate_dir</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">)</span>
-        <span class="n">degenerate_dir</span> <span class="o">/=</span> <span class="p">(</span><span class="n">degenerate_dir</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">deg_dHk</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">dh</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">dh</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dHk</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="c1"># Set the average energy</span>
-            <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">])</span>
-            <span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
-
-            <span class="c1"># Now diagonalize to find the contributions from individual states</span>
-            <span class="c1"># then re-construct the seperated degenerate states</span>
-            <span class="c1"># Since we do this for all directions we should decouple them all</span>
-            <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span>
-                <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span>
-                <span class="n">deg_dHk</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ds</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dSk</span><span class="p">)),</span>
-            <span class="p">)</span>
-        <span class="k">del</span> <span class="n">deg_dHk</span>
-
-    <span class="c1"># Since they depend on the state energies and dSk we have to loop them individually.</span>
-    <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
-        <span class="c1"># Since dHk *may* be a csr_matrix or sparse, we have to do it like</span>
-        <span class="c1"># this. A sparse matrix cannot be re-shaped with an extra dimension.</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-
-    <span class="n">v</span> <span class="o">*=</span> <span class="n">_velocity_const</span>
-    <span class="k">return</span> <span class="n">v</span>
-
-
-<span class="k">def</span> <span class="nf">_velocity_matrix_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;For states in an orthogonal basis&quot;&quot;&quot;</span>
-
-    <span class="c1"># All matrix elements along the 3 directions</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-    <span class="c1"># Decouple the degenerate states</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">degenerate_dir</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">)</span>
-        <span class="n">degenerate_dir</span> <span class="o">/=</span> <span class="p">(</span><span class="n">degenerate_dir</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">deg_dHk</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">dh</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">dh</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dHk</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="c1"># Now diagonalize to find the contributions from individual states</span>
-            <span class="c1"># then re-construct the seperated degenerate states</span>
-            <span class="c1"># Since we do this for all directions we should decouple them all</span>
-            <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="n">deg_dHk</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">deg_dHk</span>
-
-    <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-
-    <span class="n">v</span> <span class="o">*=</span> <span class="n">_velocity_const</span>
-    <span class="k">return</span> <span class="n">v</span>
-
-
-<div class="viewcode-block" id="berry_curvature">
-<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature">[docs]</a>
+<div class="viewcode-block" id="ahc">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.ahc.html#sisl.physics.electron.ahc">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span>
-    <span class="n">state</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Berry curvature matrix for a set of states (using Kubo)</span>
-
-<span class="sd">    The Berry curvature is calculated using the following expression</span>
-<span class="sd">    (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \boldsymbol\Omega_{\alpha\beta,i} = - \frac2{\hbar^2}\Im\sum_{j\neq i}</span>
-<span class="sd">                \frac{v^\alpha_{ij} v^\beta_{ji}}</span>
-<span class="sd">                     {[\epsilon_j - \epsilon_i]^2}</span>
-
-<span class="sd">    For details see Eq. (11) in :cite:`Wang2006` or Eq. (2.59) in :cite:`TopInvCourse`.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    state : array_like</span>
-<span class="sd">       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate</span>
-<span class="sd">       states the vectors *may* be rotated upon return.</span>
-<span class="sd">    energy : array_like, optional</span>
-<span class="sd">       energies of the states. In case of degenerate</span>
-<span class="sd">       states the eigenvalues of the states will be averaged in the degenerate sub-space.</span>
-<span class="sd">    dHk : list of array_like</span>
-<span class="sd">       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or</span>
-<span class="sd">       list of the Hamiltonian derivative along the 3 Cartesian directions.</span>
-<span class="sd">    dSk : list of array_like, optional</span>
-<span class="sd">       :math:`\delta \mathbf S_{\mathbf k}` matrix required for non-orthogonal basis.</span>
-<span class="sd">       Same derivative as `dHk`.</span>
-<span class="sd">       NOTE: Using non-orthogonal basis sets are not tested.</span>
-<span class="sd">    degenerate : list of array_like, optional</span>
-<span class="sd">       a list containing the indices of degenerate states. In that case a prior diagonalization</span>
-<span class="sd">       is required to decouple them.</span>
-<span class="sd">    degenerate_dir : (3,), optional</span>
-<span class="sd">       along which direction degenerate states are decoupled.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    velocity : calculate state velocities</span>
-<span class="sd">    velocity_matrix : calculate state velocities between all states</span>
-<span class="sd">    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)</span>
-<span class="sd">    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        Berry flux with final dimension ``(3, 3, state.shape[0])``</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">berry_curvature</span><span class="p">(</span>
-            <span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span>
-        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="c1"># cast dtypes to *any* complex valued data-type that can be expressed</span>
-    <span class="c1"># minimally by a complex64 object</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">dSk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">v_matrix</span> <span class="o">=</span> <span class="n">_velocity_matrix_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">v_matrix</span> <span class="o">=</span> <span class="n">_velocity_matrix_non_ortho</span><span class="p">(</span>
-            <span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span>
-        <span class="p">)</span>
-        <span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!&quot;</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v_matrix</span><span class="p">,</span> <span class="n">energy</span><span class="p">)</span></div>
-
-
-
-<span class="c1"># This reverses the velocity unit (squared since Berry curvature is v.v)</span>
-<span class="n">_berry_curvature_const</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">_velocity_const</span><span class="o">**</span><span class="mi">2</span>
-
-
-<span class="k">def</span> <span class="nf">_berry_curvature</span><span class="p">(</span><span class="n">v_M</span><span class="p">,</span> <span class="n">energy</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate Berry curvature for a given velocity matrix&quot;&quot;&quot;</span>
-
-    <span class="c1"># All matrix elements along the 3 directions</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="n">v_M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># For cases where all states are degenerate then we would not be able</span>
-    <span class="c1"># to calculate anything. Hence we need to initialize as zero</span>
-    <span class="c1">#   \Omega_{\alpha \beta, n}</span>
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">N</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">v_M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-
-    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
-        <span class="n">de</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="c1"># add factor 2 here, but omit the minus sign until later</span>
-        <span class="c1"># where we are forced to use the constant upon return anyways</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">de</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">de</span><span class="p">)</span>
-
-        <span class="c1"># Calculate the berry-curvature</span>
-        <span class="n">sigma</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">de</span> <span class="o">*</span> <span class="n">v_M</span><span class="p">[:,</span> <span class="n">s</span><span class="p">])</span> <span class="o">@</span> <span class="n">v_M</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">imag</span>
-
-    <span class="c1"># negative here</span>
-    <span class="n">sigma</span> <span class="o">*=</span> <span class="o">-</span><span class="n">_berry_curvature_const</span>
-    <span class="k">return</span> <span class="n">sigma</span>
-
-
-<div class="viewcode-block" id="conductivity">
-<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity">[docs]</a>
-<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span>
-    <span class="n">bz</span><span class="p">,</span>
-    <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi-dirac&quot;</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ahc&quot;</span><span class="p">,</span>
-    <span class="n">degenerate</span><span class="o">=</span><span class="mf">1.0e-5</span><span class="p">,</span>
-    <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="k">def</span> <span class="nf">ahc</span><span class="p">(</span>
+    <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span>
+    <span class="n">k_average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">apply_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Electronic conductivity for a given `BrillouinZone` integral</span>
-
-<span class="sd">    Currently the *only* implemented method is the anomalous Hall conductivity (AHC, see :cite:`Wang2006`)</span>
-<span class="sd">    which may be calculated as:</span>
+    <span class="n">distribution</span><span class="p">:</span> <span class="n">_TDist</span> <span class="o">=</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
+    <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">apply_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Electronic anomalous Hall conductivity for a given `BrillouinZone` integral</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)</span>
@@ -954,85 +794,360 @@
 <span class="sd">    where :math:`\Omega_{i,\alpha\beta}` and :math:`f_i` is the Berry curvature and occupation</span>
 <span class="sd">    for state :math:`i`.</span>
 
-<span class="sd">    The conductivity will be averaged by the Brillouin zone volume of the parent. See `BrillouinZone.volume` for details.</span>
-<span class="sd">    Hence for 1D the returned unit will be S/Ang, 2D it will be S/Ang^2 and 3D it will be S/Ang^3.</span>
+<span class="sd">    The conductivity will be averaged by volume of the periodic unit cell.</span>
+<span class="sd">    Hence the unit of `ahc` depends on the periodic unit cell.</span>
+<span class="sd">    See `Lattice.volumef` for details.</span>
+
+<span class="sd">    See :cite:`Wang2006` for details on the implementation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bz : BrillouinZone</span>
 <span class="sd">        containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.</span>
-<span class="sd">    distribution : str or func, optional</span>
-<span class="sd">        distribution used to find occupations</span>
-<span class="sd">    method : {&quot;ahc&quot;}</span>
-<span class="sd">       &quot;ahc&quot; calculates the dc anomalous Hall conductivity</span>
-<span class="sd">    degenerate : float, optional</span>
-<span class="sd">       de-couple degenerate states within the given tolerance (in eV)</span>
-<span class="sd">    degenerate_dir : (3,), optional</span>
-<span class="sd">       along which direction degenerate states are decoupled.</span>
-<span class="sd">    eigenstate_kwargs : dict, optional</span>
+<span class="sd">    k_average:</span>
+<span class="sd">        if `True`, the returned quantity is averaged over `bz`, else all k-point</span>
+<span class="sd">        contributions will be collected (in the 1st dimension).</span>
+<span class="sd">        Note, for large `bz` integrations this may explode the memory usage.</span>
+<span class="sd">    distribution :</span>
+<span class="sd">        An optional distribution enabling one to automatically sum states</span>
+<span class="sd">        across occupied/unoccupied states.</span>
+<span class="sd">    eigenstate_kwargs :</span>
 <span class="sd">       keyword arguments passed directly to the ``contour.eigenstate`` method.</span>
 <span class="sd">       One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are</span>
 <span class="sd">       already used.</span>
-<span class="sd">    apply_kwargs : dict, optional</span>
+<span class="sd">    apply_kwargs :</span>
 <span class="sd">       keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.</span>
+<span class="sd">    **berry_kwargs :</span>
+<span class="sd">        arguments passed directly to the `berry_curvature` method.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    cond : float</span>
-<span class="sd">        conductivity in units [S/cm^D]. The D is the dimensionality of the system.</span>
+<span class="sd">        Here one can pass `derivative_kwargs` to pass flags to the</span>
+<span class="sd">        `derivative` method. In particular ``axes`` can be used</span>
+<span class="sd">        to speedup the calculation (by omitting certain directions).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    To calculate the AHC for a range of energy-points.</span>
+<span class="sd">    First create ``E`` which is the energy grid.</span>
+<span class="sd">    In order for the internal algorithm to be able</span>
+<span class="sd">    to broadcast arrays correctly, we have to allow the eigenvalue</span>
+<span class="sd">    spectrum to be appended by reshaping.</span>
+
+<span class="sd">    &gt;&gt;&gt; E = np.linspace(-2, 2, 51)</span>
+<span class="sd">    &gt;&gt;&gt; dist = get_distribution(&quot;step&quot;, x0=E.reshape(-1, 1))</span>
+<span class="sd">    &gt;&gt;&gt; ahc_cond = ahc(bz, dist)</span>
+<span class="sd">    &gt;&gt;&gt; assert ahc_cond.shape == (3, 3, len(E))</span>
+
+<span class="sd">    Sometimes one wishes to see the k-resolved AHC.</span>
+<span class="sd">    Be aware that AHC requires a dense k-grid, and hence it might</span>
+<span class="sd">    require a lot of memory.</span>
+<span class="sd">    Here it is calculated at :math:`E=0` (default energy reference).</span>
+
+<span class="sd">    &gt;&gt;&gt; ahc_cond = ahc(bz, k_average=False)</span>
+<span class="sd">    &gt;&gt;&gt; assert ahc_cond.shape == (len(bz), 3, 3)</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    berry_curvature: method used to calculate the Berry-flux for calculating the conductivity</span>
-<span class="sd">    BrillouinZone.volume: volume calculation of the Brillouin zone</span>
+<span class="sd">    derivative: method for calculating the exact derivatives</span>
+<span class="sd">    berry_curvature: method used to calculate the Berry curvature for calculating the conductivity</span>
+<span class="sd">    Lattice.volumef: volume calculation of the lattice</span>
+<span class="sd">    shc: spin Hall conductivity</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ahc: numpy.ndarray</span>
+<span class="sd">        Anomalous Hall conductivity returned in certain dimensions ``ahc[:, :]``.</span>
+<span class="sd">        If `sum` is False, it will be at least a 3D array with the 3rd dimension</span>
+<span class="sd">        having the contribution from state `i`.</span>
+<span class="sd">        If `k_average` is False, it will have a dimension prepended with</span>
+<span class="sd">        k-point resolved AHC.</span>
+<span class="sd">        If one passes `axes` to the `derivative_kwargs` argument one will get</span>
+<span class="sd">        dimensions according to the number of axes requested, by default all</span>
+<span class="sd">        axes will be used (even if they are non-periodic).</span>
+<span class="sd">        The dtype will be imaginary.</span>
+<span class="sd">        When :math:`D` is the dimensionality of the system we find the unit to be</span>
+<span class="sd">        :math:`\mathrm S/\mathrm{Ang}^{D-2}`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
 
+    <span class="n">H</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">parent</span>
+
     <span class="c1"># Currently we require the conductivity calculation to *only* accept Hamiltonians</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bz</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span>
-            <span class="s2">&quot;conductivity: requires the Brillouin zone object to contain a Hamiltonian!&quot;</span>
+            <span class="s2">&quot;ahc: requires the Brillouin zone object to contain a Hamiltonian!&quot;</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">distribution</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">eigenstate_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">eigenstate_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">apply_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">apply_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">_ahc</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="c1"># the latter arguments are merely for speeding up the procedure</span>
+        <span class="k">nonlocal</span> <span class="n">berry_kwargs</span><span class="p">,</span> <span class="n">distribution</span>
+        <span class="k">return</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span><span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">distribution</span><span class="p">)</span>
 
-    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;ahc&quot;</span><span class="p">:</span>
-
-        <span class="k">def</span> <span class="nf">_ahc</span><span class="p">(</span><span class="n">es</span><span class="p">):</span>
-            <span class="n">occ</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span><span class="p">)</span>
-            <span class="n">bc</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span>
-                <span class="n">degenerate</span><span class="o">=</span><span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="n">bc</span> <span class="o">@</span> <span class="n">occ</span>
-
-        <span class="n">vol</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">volume</span><span class="p">(</span><span class="n">ret_dim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;conductivity: found a dimensionality of 0 which is non-physical&quot;</span>
-            <span class="p">)</span>
-
-        <span class="n">cond</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="o">**</span><span class="n">apply_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span>
-            <span class="o">**</span><span class="n">eigenstate_kwargs</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="n">_ahc</span>
-        <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">constant</span><span class="o">.</span><span class="n">G0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-
-        <span class="c1"># Convert the dimensions from S/m^D to S/cm^D</span>
-        <span class="n">cond</span> <span class="o">/=</span> <span class="n">vol</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ang^</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;cm^</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;conductivity: be aware that the units are currently not tested, please provide feedback!&quot;</span>
-        <span class="p">)</span>
-
+    <span class="n">apply</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="o">**</span><span class="n">apply_kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">k_average</span><span class="p">:</span>
+        <span class="n">apply</span> <span class="o">=</span> <span class="n">apply</span><span class="o">.</span><span class="n">average</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;conductivity: requires the method to be [ahc]&quot;</span><span class="p">)</span>
+        <span class="n">apply</span> <span class="o">=</span> <span class="n">apply</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">cond</span> <span class="o">=</span> <span class="n">apply</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="o">**</span><span class="n">eigenstate_kwargs</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="n">_ahc</span><span class="p">)</span>
+
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span>
+    <span class="n">per_axes</span> <span class="o">=</span> <span class="n">lat</span><span class="o">.</span><span class="n">pbc</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">vol</span> <span class="o">=</span> <span class="n">lat</span><span class="o">.</span><span class="n">volumef</span><span class="p">(</span><span class="n">per_axes</span><span class="p">)</span>
+
+    <span class="c1"># Convert to S / Ang</span>
+    <span class="n">cond</span> <span class="o">*=</span> <span class="o">-</span><span class="n">_ahc_const</span> <span class="o">/</span> <span class="n">vol</span>
 
     <span class="k">return</span> <span class="n">cond</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_create_sigma</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This will return the Pauli matrix filled in a diagonal of the matrix</span>
+
+<span class="sd">    It will not return the spin operator, which has the pre-factor \hbar/2</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Spin</span><span class="p">,</span> <span class="n">sigma</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># it must be an ndarray</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">sigma</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># only the spin-box</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># full sigma</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="n">sigma</span>
+
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="s2">&quot;matrix&quot;</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">scs</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">scs</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span> <span class="n">sigma</span><span class="p">)</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">m</span>
+
+
+<div class="viewcode-block" id="shc">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.shc.html#sisl.physics.electron.shc">[docs]</a>
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">shc</span><span class="p">(</span>
+    <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span>
+    <span class="n">k_average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">sigma</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CartesianAxisStrLiteral</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">J_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CartesianAxisStrLiteral</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">CartesianAxisStrLiteral</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span>
+    <span class="n">distribution</span><span class="p">:</span> <span class="n">_TDist</span> <span class="o">=</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
+    <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">apply_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Electronic spin Hall conductivity for a given `BrillouinZone` integral</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \sigma^\gamma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k</span>
+<span class="sd">       \sum_i f_i\boldsymbol\Omega^\gamma_{i,\alpha\beta}(\mathbf k)</span>
+
+<span class="sd">    where :math:`\boldsymbol\Omega^\gamma_{i,\alpha\beta}` and :math:`f_i` are the</span>
+<span class="sd">    spin Berry curvature and occupation for state :math:`i`.</span>
+
+<span class="sd">    The conductivity will be averaged by volume of the periodic unit cell.</span>
+<span class="sd">    See `Lattice.volumef` for details.</span>
+
+<span class="sd">    See :cite:`PhysRevB.98.214402` and :cite:`Ji2022` for details on the implementation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bz :</span>
+<span class="sd">        containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.</span>
+<span class="sd">    k_average:</span>
+<span class="sd">        if `True`, the returned quantity is averaged over `bz`, else all k-point</span>
+<span class="sd">        contributions will be collected.</span>
+<span class="sd">        Note, for large `bz` integrations this may explode the memory usage.</span>
+<span class="sd">    sigma:</span>
+<span class="sd">        which Pauli matrix is used, alternatively one can pass a custom spin matrix,</span>
+<span class="sd">        or the full sigma.</span>
+<span class="sd">    J_axes:</span>
+<span class="sd">        the direction(s) where the :math:`J` operator will be applied (defaults to all).</span>
+<span class="sd">    distribution :</span>
+<span class="sd">        An optional distribution enabling one to automatically sum states</span>
+<span class="sd">        across occupied/unoccupied states.</span>
+<span class="sd">        Defaults to the step function.</span>
+<span class="sd">    eigenstate_kwargs :</span>
+<span class="sd">       keyword arguments passed directly to the ``bz.eigenstate`` method.</span>
+<span class="sd">       One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are</span>
+<span class="sd">       already used.</span>
+<span class="sd">    apply_kwargs :</span>
+<span class="sd">       keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.</span>
+<span class="sd">    **berry_kwargs : dict, optional</span>
+<span class="sd">        arguments passed directly to the `berry_curvature` method.</span>
+
+<span class="sd">        Here one can pass `derivative_kwargs` to pass flags to the</span>
+<span class="sd">        `derivative` method. In particular ``axes`` can be used</span>
+<span class="sd">        to speedup the calculation (by omitting certain directions).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For instance, ``sigma = &#39;x&#39;, J_axes = &#39;y&#39;`` will result in</span>
+<span class="sd">    :math:`J^{\sigma^x}_y=\dfrac12\{\hat{\sigma}^x, \hat{v}_y\}`, and the rest will</span>
+<span class="sd">    be the AHC.</span>
+
+<span class="sd">    &gt;&gt;&gt; cond = shc(bz, J_axes=&quot;y&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; shc_y_xyz = cond[1]</span>
+<span class="sd">    &gt;&gt;&gt; ahc_xz_xyz = cond[[0, 2]]</span>
+
+<span class="sd">    Passing an explicit :math:`\sigma` matrix is also allowed:</span>
+
+<span class="sd">    &gt;&gt;&gt; cond = shc(bz)</span>
+<span class="sd">    &gt;&gt;&gt; assert np.allclose(cond, shc(bz, sigma=Spin.Z))</span>
+
+<span class="sd">    For further examples, please see `ahc` which is equivalent to this</span>
+<span class="sd">    method.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Original implementation by Armando Pezo.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    derivative: method for calculating the exact derivatives</span>
+<span class="sd">    berry_curvature: the actual method used internally</span>
+<span class="sd">    spin_berry_curvature: method used to calculate the Berry-flux for calculating the spin conductivity</span>
+<span class="sd">    Lattice.volumef: volume calculation of the primary unit cell.</span>
+<span class="sd">    ahc: anomalous Hall conductivity, this is the equivalent method for the SHC.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    shc: numpy.ndarray</span>
+<span class="sd">        Spin Hall conductivity returned in certain dimensions ``shc[J_axes, :]``.</span>
+<span class="sd">        Anomalous Hall conductivity returned in the remaining dimensions ``shc[!J_axes, :]``.</span>
+<span class="sd">        If `sum` is False, it will be at least a 3D array with the 3rd dimension</span>
+<span class="sd">        having the contribution from state `i`.</span>
+<span class="sd">        If `k_average` is False, it will have a dimension prepended with</span>
+<span class="sd">        k-point resolved AHC/SHC.</span>
+<span class="sd">        If one passes `axes` to the `derivative_kwargs` argument one will get</span>
+<span class="sd">        dimensions according to the number of axes requested, by default all</span>
+<span class="sd">        axes will be used (even if they are non-periodic).</span>
+<span class="sd">        The dtype will be imaginary.</span>
+<span class="sd">        When :math:`D` is the dimensionality we find the unit to be</span>
+
+<span class="sd">        * AHC: ``shc[!J_axes, :]`` :math:`S/\mathrm{Ang}^{D-2}`.</span>
+<span class="sd">        * SHC: ``shc[J_axes, :]`` :math:`\hbar/e S/\mathrm{Ang}^{D-2}`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">J_axes</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="n">J_axes</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">J_axes</span><span class="p">)</span>
+    <span class="n">J_axes</span> <span class="o">=</span> <span class="n">J_axes</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">H</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">parent</span>
+
+    <span class="c1"># Currently we require the conductivity calculation to *only* accept Hamiltonians</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span>
+            <span class="s2">&quot;shc: requires the Brillouin zone object to contain a Hamiltonian!&quot;</span>
+        <span class="p">)</span>
+    <span class="c1"># A spin-berry-curvature requires the objects parent</span>
+    <span class="c1"># to have a spin associated</span>
+    <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;spin_berry_curvature requires &#39;state&#39; to be a non-colinear matrix.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="n">_create_sigma</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;csr&quot;</span><span class="p">))</span>
+
+    <span class="c1"># To reduce (heavily) the computational load, we pre-setup the</span>
+    <span class="c1"># operators here.</span>
+    <span class="k">def</span> <span class="nf">J</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">m</span><span class="p">,</span> <span class="n">J_axes</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">J_axes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">M</span> <span class="o">@</span> <span class="n">m</span> <span class="o">+</span> <span class="n">m</span> <span class="o">@</span> <span class="n">M</span>
+
+        <span class="k">return</span> <span class="n">M</span>
+
+    <span class="k">def</span> <span class="nf">noop</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">M</span>
+
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">berry_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;derivative_kwargs&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">direction</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">axes</span><span class="p">)]</span>
+
+    <span class="c1"># At this point we have the AHC (in terms of units)</span>
+    <span class="n">cond</span> <span class="o">=</span> <span class="n">ahc</span><span class="p">(</span>
+        <span class="n">bz</span><span class="p">,</span>
+        <span class="n">k_average</span><span class="p">,</span>
+        <span class="n">distribution</span><span class="o">=</span><span class="n">distribution</span><span class="p">,</span>
+        <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="n">eigenstate_kwargs</span><span class="p">,</span>
+        <span class="n">apply_kwargs</span><span class="o">=</span><span class="n">apply_kwargs</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span>
+        <span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">noop</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># The SHC misses a factor -2e/hbar to correct the operator change:</span>
+    <span class="c1">#  j_x = -e v_x, 1/2 {s_z, v_x}</span>
+    <span class="c1"># The s_z = \hbar / 2 \sigma_z</span>
+    <span class="c1"># and v = 1/\hbar \delta_k</span>
+    <span class="c1">#</span>
+    <span class="c1"># AHC:</span>
+    <span class="c1">#   j_x = -e / \hbar</span>
+    <span class="c1"># SHC:</span>
+    <span class="c1">#   j_x = 1/2 { \hbar/2 \sigma_z, 1/\hbar v_x } = 1/2</span>
+    <span class="c1"># The 1/\hbar is contained in `berry_curvature`, and hence we</span>
+    <span class="c1"># are left with:</span>
+    <span class="c1"># AHC:</span>
+    <span class="c1">#   j_x = -e</span>
+    <span class="c1"># SHC:</span>
+    <span class="c1">#   j_x = 1/2 \hbar</span>
+    <span class="c1"># Since we never use \hbar or e, it is the same as though</span>
+    <span class="c1"># the units are implicit. Hence at this point, the unit is:</span>
+    <span class="c1">#    -\hbar / (2e) S / Ang</span>
+    <span class="c1"># To convert to \hbar / e S / Ang</span>
+    <span class="c1"># simply multiply by: -1/2</span>
+    <span class="n">shc_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">J_axes</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">k_average</span><span class="p">:</span>
+        <span class="n">cond</span><span class="p">[</span><span class="n">shc_idx</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">0.5</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cond</span><span class="p">[:,</span> <span class="n">shc_idx</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">0.5</span>
+
+    <span class="k">return</span> <span class="n">cond</span></div>
+
+
+
+<div class="viewcode-block" id="conductivity">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity">[docs]</a>
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
+<span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;conductivity is deprecated, please use &#39;ahc&#39; instead.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span>
+    <span class="n">bz</span><span class="p">,</span>
+    <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi-dirac&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ahc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ahc&quot;</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">apply_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Deprecated, use `ahc` instead&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;ahc&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;conductivity with method != ahc is not implemented&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ahc</span><span class="p">(</span>
+        <span class="n">bz</span><span class="p">,</span>
+        <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="n">eigenstate_kwargs</span><span class="p">,</span>
+        <span class="n">apply_kwargs</span><span class="o">=</span><span class="n">apply_kwargs</span><span class="p">,</span>
+        <span class="n">distribution</span><span class="o">=</span><span class="n">distribution</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 
@@ -1817,59 +1932,6 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A state describing a physical quantity related to electrons, with associated coefficients of the state&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
-
-<div class="viewcode-block" id="StateCElectron.velocity">
-<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.velocity">[docs]</a>
-    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate velocity for the states</span>
-
-<span class="sd">        This routine calls ``derivative(1, *args, **kwargs)`` and returns the velocity for the states.</span>
-
-<span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
-<span class="sd">        to the energies of the states.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The states and energies for the states *may* have changed after calling this routine.</span>
-<span class="sd">        This is because of the velocity un-folding for degenerate modes. I.e. calling</span>
-<span class="sd">        `PDOS` after this method *may* change the result.</span>
-
-<span class="sd">        The velocities are calculated without the Berry curvature contribution see Eq. (2) in :cite:`Wang2006`.</span>
-<span class="sd">        The missing contribution may be added in later editions, for completeness sake, it is:</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">           \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)</span>
-
-<span class="sd">        where :math:`\Omega_i` is the Berry curvature for state :math:`i`.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        derivative : for details of the implementation</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">v</span> <span class="o">*=</span> <span class="n">_velocity_const</span>
-        <span class="k">return</span> <span class="n">v</span></div>
-
-
-<div class="viewcode-block" id="StateCElectron.berry_curvature">
-<a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.berry_curvature">[docs]</a>
-    <span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate Berry curvature for the states</span>
-
-<span class="sd">        This routine calls ``derivative(1, *args, **kwargs, matrix=True)`` and</span>
-<span class="sd">        returns the Berry curvature for the states.</span>
-
-<span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
-<span class="sd">        to the energies of the states.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        derivative : for details of the velocity matrix calculation implementation</span>
-<span class="sd">        sisl.physics.electron.berry_curvature : for details of the Berry curvature implementation</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="StateCElectron.effective_mass">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.effective_mass">[docs]</a>

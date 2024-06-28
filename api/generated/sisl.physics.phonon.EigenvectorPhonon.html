@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.phonon.EigenvectorPhonon &mdash; sisl 0.1-b0feb0c</title>
+  <title>sisl.physics.phonon.EigenvectorPhonon &mdash; sisl 0.1-6a1c670</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=81cd38e2"></script>
+        <script src="../../_static/documentation_options.js?v=325bdd88"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,7 @@
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -59,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-b0feb0c
+                0.1-6a1c670
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -73,7 +74,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
@@ -245,7 +246,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.phonon.EigenvectorPhonon.align_norm">
-<span class="sig-name descname"><span class="pre">align_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.align_norm" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">align_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><span class="pre">State</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.align_norm" title="Link to this definition"></a></dt>
 <dd><p>Align <em class="xref py py-obj">self</em> with the site-norms of <em class="xref py py-obj">other</em>, a copy may optionally be returned</p>
 <p>To determine the new ordering of <em class="xref py py-obj">self</em> first calculate the residual norm of the site-norms.</p>
 <div class="math notranslate nohighlight">
@@ -283,7 +284,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.phonon.EigenvectorPhonon.align_phase">
-<span class="sig-name descname"><span class="pre">align_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.align_phase" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">align_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><span class="pre">State</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.align_phase" title="Link to this definition"></a></dt>
 <dd><p>Align <em class="xref py py-obj">self</em> with the phases for <em class="xref py py-obj">other</em>, a copy may be returned</p>
 <p>States will be rotated by <span class="math notranslate nohighlight">\(\pi\)</span> provided the phase difference between the states are above <span class="math notranslate nohighlight">\(|\Delta\theta| &gt; \pi/2\)</span>.</p>
 <dl class="field-list simple">
@@ -419,7 +420,7 @@ full matrix.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.phonon.EigenvectorPhonon.ipr">
-<span class="sig-name descname"><span class="pre">ipr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.ipr" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ipr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.ipr" title="Link to this definition"></a></dt>
 <dd><p>Calculate the inverse participation ratio (IPR) for arbitrary <em class="xref py py-obj">q</em> values</p>
 <p>The inverse participation ratio is defined as</p>
 <div class="math notranslate nohighlight">
@@ -437,20 +438,20 @@ states:</p>
      \\
      \text{const.} &amp;\quad \text{localized state}
     \end{aligned}\right.
- \end{align}</div><p>For further details see <span id="id1">[<a class="reference internal" href="../../references.html#id11" title="N. C. Murphy, R. Wortis, and W. A. Atkinson. Generalized inverse participation ratio as a possible measure of localization for interacting systems. Phys. Rev. B, May 2011. URL: https://doi.org/10.1103/physrevb.83.184206, doi:10.1103/physrevb.83.184206.">5</a>]</span>. Note that for eigen states the IPR reduces to:</p>
+ \end{align}</div><p>For further details see <span id="id1">[<a class="reference internal" href="../../references.html#id14" title="N. C. Murphy, R. Wortis, and W. A. Atkinson. Generalized inverse participation ratio as a possible measure of localization for interacting systems. Phys. Rev. B, May 2011. URL: https://doi.org/10.1103/physrevb.83.184206, doi:10.1103/physrevb.83.184206.">7</a>]</span>. Note that for eigen states the IPR reduces to:</p>
 <div class="math notranslate nohighlight">
 \[I_{q,\alpha} = \sum_i |\psi_{\alpha,i}|^{2q}\]</div>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – order parameter for the IPR</p>
+<dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – order parameter for the IPR</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.phonon.EigenvectorPhonon.iter">
-<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asarray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.iter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asarray</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenvectorPhonon.iter" title="Link to this definition"></a></dt>
 <dd><p>An iterator looping over the states in this system</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
