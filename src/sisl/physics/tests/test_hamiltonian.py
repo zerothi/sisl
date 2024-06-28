@@ -756,29 +756,32 @@ class TestHamiltonian:
         k = [0.1] * 3
         # This is a degenerate eigenstate:
         #  2, 2, 4, 4, 2, 2
-        # and hence a decoupling is necessary
+        # It would be nice to check decoupling.
+        # Currently this is disabled, but should be used.
+
+        # Some comments from the older code which enabled automatic
+        # decoupling:
         # This test is the reason why a default degenerate=1e-5 is used
         # since the gauge='cell' yields the correct *decoupled* states
         # where as gauge='orbital' mixes them in a bad way.
         es1 = H.eigenstate(k, gauge="cell")
         es2 = H.eigenstate(k, gauge="orbital")
-        assert np.allclose(es1.velocity(), es2.velocity())
-        assert np.allclose(es1.velocity(), es2.velocity(degenerate_dir=(1, 1, 0)))
+        assert not np.allclose(es1.velocity(), es2.velocity())
 
         es2.change_gauge("cell")
-        assert np.allclose(es1.velocity(), es2.velocity())
+        assert not np.allclose(es1.velocity(), es2.velocity())
 
         es2.change_gauge("orbital")
         es1.change_gauge("orbital")
         v1 = es1.velocity()
         v2 = es2.velocity()
-        assert np.allclose(v1, v2)
+        assert not np.allclose(v1, v2)
 
         # Projected velocity
         vv1 = es1.velocity(matrix=True)
         vv2 = es2.velocity(matrix=True)
-        assert np.allclose(np.diagonal(vv1, axis1=1, axis2=2), v2)
-        assert np.allclose(np.diagonal(vv2, axis1=1, axis2=2), v1)
+        assert not np.allclose(np.diagonal(vv1, axis1=1, axis2=2), v2)
+        assert not np.allclose(np.diagonal(vv2, axis1=1, axis2=2), v1)
 
     def test_derivative_orthogonal(self, setup):
         R, param = [0.1, 1.5], [1.0, 0.1]
@@ -971,7 +974,7 @@ class TestHamiltonian:
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge="cell").berry_curvature()
         ie2 = H.eigenstate(k, gauge="orbital").berry_curvature()
-        assert np.allclose(ie1, ie2)
+        assert not np.allclose(ie1, ie2)
 
     def test_spin_berry_curvature(self, setup):
         R, param = [0.1, 1.5], [[1.0, 0.1, 0, 0], [0.4, 0.2, 0.3, 0.2]]

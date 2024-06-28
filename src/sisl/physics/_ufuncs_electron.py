@@ -32,10 +32,6 @@ def velocity(state: StateCElectron, *args, **kwargs):
 
     Notes
     -----
-    The states and energies for the states *may* have changed after calling this routine.
-    This is because of the velocity un-folding for degenerate modes. I.e. calling
-    `PDOS` after this method *may* change the result.
-
     The velocities are calculated without the Berry curvature contribution see Eq. (2) in :cite:`Wang2006`.
     It is thus typically denoted as the *effective velocity operater* (see Ref. 21 in :cite:`Wang2006`.
     The missing contribution may be added in later editions, for completeness sake, it is:
@@ -45,6 +41,11 @@ def velocity(state: StateCElectron, *args, **kwargs):
 
     where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
 
+    Parameters
+    ----------
+    *args, **kwargs:
+        arguments passed directly to `derivative`, see that method
+        for argument details.
 
     See Also
     --------
@@ -154,11 +155,7 @@ def berry_curvature(
     else:
         # different operators
         dA = state.derivative(order=1, operator=opA, matrix=True, **derivative_kwargs)
-
-        dB_kwargs = {**derivative_kwargs}
-        # we shouldn't change the states *again*
-        dB_kwargs.pop("degenerate", None)
-        dB = state.derivative(order=1, operator=opB, matrix=True, **dB_kwargs)
+        dB = state.derivative(order=1, operator=opB, matrix=True, **derivative_kwargs)
 
     ieta2 = 1j * eta**2
     energy = state.c

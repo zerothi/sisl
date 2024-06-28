@@ -973,9 +973,9 @@ def shc(
     # simply multiply by: -1/2
     shc_idx = [i for i in map(direction, J_axes) if i in axes]
     if k_average:
-        cond[shc_idx] *= 0.5
+        cond[shc_idx] *= -0.5
     else:
-        cond[:, shc_idx] *= 0.5
+        cond[:, shc_idx] *= -0.5
 
     return cond
 

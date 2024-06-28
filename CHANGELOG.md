@@ -101,6 +101,7 @@ we hit release version 1.0.0.
   be done for assigning matrix elements (it fills with 0's).
 
 ### Removed
+- `degenerate` argument in `velocity`/`derivative`, they do not belong there
 - `xvSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
 - `structSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
 - `Atom.radii` is removed, `Atom.radius` is the correct invocation

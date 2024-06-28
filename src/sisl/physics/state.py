@@ -61,6 +61,49 @@ def degenerate_decouple(state, M):
     return state
 
 
+"""
+        degenerate : float or list of array_like, optional
+           If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
+           levels. Defaults to 1e-5 eV.
+           If a list, it contains the indices of degenerate states. In that case a prior diagonalization
+           is required to decouple them. See `degenerate_dir` for the sum of directions.
+        degenerate_dir : (3,), optional
+           a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
+
+        # Now parse the degeneracy handling
+        if degenerate is not None:
+            if isinstance(degenerate, Real):
+                degenerate = self.degenerate(degenerate)
+
+            # normalize direction
+            degenerate_dir = _a.asarrayd(degenerate_dir)
+            degenerate_dir /= (degenerate_dir @ degenerate_dir) ** 0.5
+
+            # de-coupling is only done for the 1st derivative
+
+            # create the degeneracy decoupling projector
+            deg_dPk = sum(d * dh for d, dh in zip(degenerate_dir, dPk))
+
+            if is_orthogonal:
+                for deg in degenerate:
+                    # Set the average energy
+                    energy[deg] = np.average(energy[deg])
+                    # Now diagonalize to find the contributions from individual states
+                    # then re-construct the seperated degenerate states
+                    # Since we do this for all directions we should decouple them all
+                    state[deg] = degenerate_decouple(state[deg], deg_dPk)
+            else:
+                for deg in degenerate:
+                    e = np.average(energy[deg])
+                    energy[deg] = e
+                    deg_dSk = sum((d * e) * ds for d, ds in zip(degenerate_dir, dSk))
+                    state[deg] = degenerate_decouple(state[deg], deg_dPk - deg_dSk)
+                    del deg_dSk
+
+            del deg_dPk
+"""
+
+
 class _FakeMatrix:
     """Replacement object which superseedes a matrix"""
 
@@ -230,12 +273,12 @@ coefficients retained in this object
         "0.15",
         "0.16",
     )
-    def degenerate(self, atol: float = 1e-8):
+    def degenerate(self, atol: float):
         """Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
-        atol : float, optional
+        atol :
            the precision above which coefficients are not considered degenerate
 
         Returns
@@ -402,7 +445,7 @@ state coefficients
         """
         return self.sub(key)
 
-    def iter(self, asarray=False):
+    def iter(self, asarray: bool = False):
         """An iterator looping over the states in this system
 
         Parameters
@@ -1098,8 +1141,6 @@ coefficients assigned to each state
     def derivative(
         self,
         order: Literal[1, 2] = 1,
-        degenerate=None,
-        degenerate_dir=(1, 1, 1),
         matrix: bool = False,
         axes: CartesianAxes = "xyz",
         operator: _dM_Operator = lambda M, d=None: M,
@@ -1141,13 +1182,6 @@ coefficients assigned to each state
         ----------
         order :
            an integer specifying which order of the derivative is being calculated.
-        degenerate : float or list of array_like, optional
-           If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
-           levels. Defaults to 1e-5 eV.
-           If a list, it contains the indices of degenerate states. In that case a prior diagonalization
-           is required to decouple them. See `degenerate_dir` for the sum of directions.
-        degenerate_dir : (3,), optional
-           a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
         matrix :
            whether the full matrix or only the diagonal components are returned
         axes:
@@ -1296,38 +1330,6 @@ coefficients assigned to each state
         state = self.state
         # in case the state is not an Eigenstate*
         energy = self.c
-
-        # Now parse the degeneracy handling
-        if degenerate is not None:
-            if isinstance(degenerate, Real):
-                degenerate = self.degenerate(degenerate)
-
-            # normalize direction
-            degenerate_dir = _a.asarrayd(degenerate_dir)
-            degenerate_dir /= (degenerate_dir @ degenerate_dir) ** 0.5
-
-            # de-coupling is only done for the 1st derivative
-
-            # create the degeneracy decoupling projector
-            deg_dPk = sum(d * dh for d, dh in zip(degenerate_dir, dPk))
-
-            if is_orthogonal:
-                for deg in degenerate:
-                    # Set the average energy
-                    energy[deg] = np.average(energy[deg])
-                    # Now diagonalize to find the contributions from individual states
-                    # then re-construct the seperated degenerate states
-                    # Since we do this for all directions we should decouple them all
-                    state[deg] = degenerate_decouple(state[deg], deg_dPk)
-            else:
-                for deg in degenerate:
-                    e = np.average(energy[deg])
-                    energy[deg] = e
-                    deg_dSk = sum((d * e) * ds for d, ds in zip(degenerate_dir, dSk))
-                    state[deg] = degenerate_decouple(state[deg], deg_dPk - deg_dSk)
-                    del deg_dSk
-
-            del deg_dPk
 
         # States have been decoupled and we can calculate things now
         # number of states
