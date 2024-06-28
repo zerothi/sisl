@@ -36,6 +36,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v2
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
         with:
@@ -44,6 +48,7 @@ jobs:
           # the files submodule uses lfs
           lfs: true
           fetch-tags: true
+
 
       # This should generally not be required, but in the end it is just easier
       - name: Ensure system dependencies
@@ -65,9 +70,9 @@ jobs:
 
       - name: Build the documentation using the sisl-files as well
         env:
-          SISL_NUM_PROCS=${{ os.availableParallelism() }}
-          SISL_NODES_EXPORT_VIS=t
-          SISL_FILES_TESTS=${{ github.workspace }}/files/tests
+          SISL_NUM_PROCS: ${{ steps.cpu-cores.outputs.count }}
+          SISL_NODES_EXPORT_VIS: t
+          SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
         run: |
           cd docs
           make html
