@@ -7,7 +7,7 @@ sisl is shipped with these tutorials which introduce the basics.
 All examples are assumed to have this in the header::
 
    import numpy as np
-   from sisl import *
+   import sisl as si
 
 to enable `numpy`_ and sisl.
 
