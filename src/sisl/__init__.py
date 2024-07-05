@@ -191,6 +191,8 @@ def __getattr__(name):
 from ._ufuncs import expose_registered_methods
 
 expose_registered_methods("sisl")
+expose_registered_methods("sisl.physics")
+
 del expose_registered_methods
 
 # Make these things publicly available

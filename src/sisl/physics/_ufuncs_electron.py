@@ -19,7 +19,7 @@ from .state import _dM_Operator
 __all__ = []
 
 
-@register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
+@register_sisl_dispatch(StateCElectron, module="sisl.physics")
 def velocity(state: StateCElectron, *args, **kwargs):
     r"""Calculate velocity for the states
 
@@ -56,7 +56,7 @@ def velocity(state: StateCElectron, *args, **kwargs):
     return v
 
 
-@register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
+@register_sisl_dispatch(StateCElectron, module="sisl.physics")
 def berry_curvature(
     state: StateCElectron,
     sum: bool = True,
@@ -242,7 +242,7 @@ def berry_curvature(
     return sigma
 
 
-@register_sisl_dispatch(StateCElectron, module="sisl.physics.electron")
+@register_sisl_dispatch(StateCElectron, module="sisl.physics")
 def spin_berry_curvature(
     state: StateCElectron,
     sigma: Union[CartesianAxisStrLiteral, npt.ArrayLike] = "z",

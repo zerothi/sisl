@@ -105,7 +105,7 @@ def register_sisl_dispatch(
             )
             method_registry.__doc__ = doc
             method_registry.__name__ = name
-            method_registry.__module__ = "sisl"
+            method_registry.__module__ = module
             _registry[name] = singledispatch(method_registry)
 
         # Retrieve the dispatched method
