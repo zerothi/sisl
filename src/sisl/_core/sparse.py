@@ -1851,7 +1851,7 @@ column indices of the sparse elements
     # numpy dispatch methods
     __array_priority__ = 14
 
-    def __array__(self, dtype=None, copy: bool = False):
+    def __array__(self, dtype=None, *, copy: bool = False):
         out = self.toarray()
         if dtype is None:
             return out
