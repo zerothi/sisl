@@ -64,3 +64,21 @@ def test_curl_4d_not_3():
     a = np.random.rand(4, 3, 4, 3)
     with pytest.raises(ValueError):
         curl(a, axis=1, axisv=2)
+
+
+@pytest.mark.parametrize("nd", [0, 1, 2, 3])
+def test_cart2spher_nd(nd):
+    r = np.random.rand(*([3] * (nd + 1)))
+    R, theta, phi = cart2spher(r)
+    assert R.ndim == nd
+    assert theta.ndim == nd
+    assert phi.ndim == nd
+
+
+def test_cart2spher_nd_maxr():
+    r = np.random.rand(3, 3)
+    idx, R, theta, phi = cart2spher(r, maxR=0.5)
+    assert idx.ndim == 1
+    assert R.ndim == 1
+    assert theta.ndim == 1
+    assert phi.ndim == 1

@@ -711,8 +711,8 @@ class SphericalOrbital(Orbital):
         r = _a.asarray(r)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
-        p = _a.zerosd(n)
+        idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
+        p = _a.zerosd(s)
         if len(idx) > 0:
             p[idx] = self.psi_spher(r, theta, phi, m, cos_phi=True)
             # Reduce memory immediately
@@ -1570,10 +1570,8 @@ class _ExponentialOrbital(Orbital):
         r = _a.asarray(r)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = cart2spher(
-            r, theta=self.m != 0, cos_phi=True, maxR=self.R
-        )
-        p = _a.zerosd(n)
+        idx, r, theta, phi = cart2spher(r, theta=self.m != 0, cos_phi=True, maxR=self.R)
+        p = _a.zerosd(s)
         if len(idx) > 0:
             p[idx] = self.psi_spher(r, theta, phi, cos_phi=True)
             # Reduce memory immediately

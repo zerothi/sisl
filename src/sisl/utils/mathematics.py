@@ -161,8 +161,6 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
 
     Returns
     -------
-    n : int
-       number of total points, only for `maxR` different from ``None``
     idx : numpy.ndarray
        indices of points with ``r <= maxR``
     r : numpy.ndarray
@@ -174,36 +172,40 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
        If `cos_phi` is ``True`` this is :math:`\cos(\phi)`, otherwise
        :math:`\phi` is returned (the polar angle from the :math:`z` axis)
     """
-    r = _a.asarray(r).reshape(-1, 3)
-    n = r.shape[0]
+    r = _a.asarray(r)
     if maxR is None:
         rr = sqrt(square(r).sum(-1))
         if theta:
-            theta = arctan2(r[:, 1], r[:, 0])
+            theta = arctan2(r[..., 1], r[..., 0])
         else:
             theta = None
         phi = zeros_like(rr)
         idx = rr != 0.0
-        divide(r[:, 2], rr, out=phi, where=idx)
+        divide(r[..., 2], rr, out=phi, where=idx)
         if not cos_phi:
             arccos(phi, out=phi, where=idx)
         return rr, theta, phi
+
+    if r.ndim != 2:
+        raise NotImplementedError(
+            "cart2spher(..., maxR=1) not allowed for !=2D arrays."
+        )
 
     rr = square(r).sum(-1)
     idx = indices_le(rr, maxR**2)
     r = take(r, idx, 0)
     rr = sqrt(take(rr, idx))
     if theta:
-        theta = arctan2(r[:, 1], r[:, 0])
+        theta = arctan2(r[..., 1], r[..., 0])
     else:
         theta = None
 
     phi = zeros_like(rr)
     idx0 = rr != 0.0
-    divide(r[:, 2], rr, out=phi, where=idx0)
+    divide(r[..., 2], rr, out=phi, where=idx0)
     if not cos_phi:
         arccos(phi, out=phi, where=idx0)
-    return n, idx, rr, theta, phi
+    return idx, rr, theta, phi
 
 
 def spherical_harm(m, l, theta, phi):
