@@ -1202,7 +1202,7 @@ class fdfSileSiesta(SileSiesta):
 
             # Convert the big geometry's coordinates to fractional coordinates of the small unit-cell.
             isc_xyz = geom.xyz.dot(geom_small.lattice.icell.T) - np.tile(
-                geom_small.fxyz, (np.product(supercell), 1)
+                geom_small.fxyz, (np.prod(supercell), 1)
             )
 
             axis_tiling = []

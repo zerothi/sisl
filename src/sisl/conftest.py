@@ -149,6 +149,23 @@ def sisl_files():
 
 
 @pytest.fixture(scope="session")
+def sisl_tolerance():
+    r32 = (1e-6, 1e-11)
+    r64 = (1e-9, 1e-15)
+    return {np.float32: r32, np.float64: r64, np.complex64: r32, np.complex128: r64}
+
+
+@pytest.fixture(scope="session", params=[np.float32, np.float64])
+def sisl_float(request, sisl_tolerance):
+    yield (request.param,) + sisl_tolerance[request.param]
+
+
+@pytest.fixture(scope="session", params=[np.complex64, np.complex128])
+def sisl_complex(request, sisl_tolerance):
+    yield (request.param,) + sisl_tolerance[request.param]
+
+
+@pytest.fixture(scope="session")
 def sisl_system():
     """A preset list of geometries/Hamiltonians."""
 

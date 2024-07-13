@@ -62,6 +62,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- buildable for numpy>2, #791
 - `BrillouinZone.tocartesian()` now defaults to `k=self.k`
 - reading XV/STRUCT files from fdf siles could cause problems, #778
 - `Geometry.[ao][us]c2[su]c` methods now retains the input shapes (unless `unique=True`)

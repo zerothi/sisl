@@ -7,6 +7,11 @@ import warnings
 from functools import partial
 
 import numpy as np
+
+if np.lib.NumpyVersion(np.__version__) >= "2.0.0b1":
+    from numpy.exceptions import ComplexWarning
+else:
+    from numpy import ComplexWarning
 import pytest
 from scipy.linalg import block_diag
 from scipy.sparse import SparseEfficiencyWarning, issparse
@@ -190,7 +195,7 @@ class TestHamiltonian:
         assert nnz == 1
         setup.HS.empty()
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_Hk1(self, setup):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
@@ -216,8 +221,8 @@ class TestHamiltonian:
         Hk = h.Hk(k=[0.15, 0.15, 0.15], dtype=np.complex64)
         assert Hk.dtype == np.complex64
 
-    @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
-    def test_Hk5(self, setup, dtype):
+    def test_Hk5(self, setup, sisl_complex):
+        dtype, *_ = sisl_complex
         H = setup.H.copy()
         H.construct([(0.1, 1.5), (1.0, 0.1)])
         Hk = H.Hk(k=[0.15, 0.15, 0.15], dtype=dtype)
@@ -246,13 +251,15 @@ class TestHamiltonian:
     @pytest.mark.parametrize(
         "spin", ["unpolarized", "polarized", "non-collinear", "spin-orbit"]
     )
-    @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
-    def test_format_sc(self, orthogonal, gauge, spin, dtype):
+    def test_format_sc(self, orthogonal, gauge, spin, sisl_complex):
         g = Geometry(
             [[i, 0, 0] for i in range(10)],
             Atom(6, R=1.01),
             lattice=Lattice([10, 1, 5.0], nsc=[3, 3, 1]),
         )
+        dtype, atol, rtol = sisl_complex
+        allclose = partial(np.allclose, atol=atol, rtol=rtol)
+
         H = Hamiltonian(g, dtype=np.float64, orthogonal=orthogonal, spin=Spin(spin))
         nd = H._csr._D.shape[-1]
         # this will correctly account for the double size for NC/SOC
@@ -262,13 +269,6 @@ class TestHamiltonian:
             idx = g.close(ia, R=(0.1, 1.01))[1]
             H[ia, ia] = 1.0
             H[ia, idx] = np.random.rand(nd)
-        if dtype == np.complex64:
-            atol = 1e-6
-            rtol = 1e-12
-        else:
-            atol = 1e-9
-            rtol = 1e-15
-        allclose = partial(np.allclose, atol=atol, rtol=rtol)
 
         H = (H + H.transpose(hermitian=True)) / 2
         n_s = H.geometry.lattice.n_s
@@ -552,25 +552,29 @@ class TestHamiltonian:
         assert np.allclose(Hg.eigh(), Hc.eigh())
         del Hc, H
 
-    def test_eigh_vs_eig(self, setup):
+    def test_eigh_vs_eig(self, setup, sisl_tolerance):
+        atol, rtol = sisl_tolerance[np.complex64]
+        allclose = partial(np.allclose, atol=atol, rtol=rtol)
+
         # Test of eigenvalues
         R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param), eta=True)
+
         eig1 = H.eigh(dtype=np.complex64)
         eig2 = np.sort(H.eig(dtype=np.complex64).real)
         eig3 = np.sort(H.eig(eigvals_only=False, dtype=np.complex64)[0].real)
-        assert np.allclose(eig1, eig2, atol=1e-5)
-        assert np.allclose(eig1, eig3, atol=1e-5)
+        assert allclose(eig1, eig2)
+        assert allclose(eig1, eig3)
 
         eig1 = H.eigh([0.01] * 3, dtype=np.complex64)
         eig2 = np.sort(H.eig([0.01] * 3, dtype=np.complex64).real)
         eig3 = np.sort(
             H.eig([0.01] * 3, eigvals_only=False, dtype=np.complex64)[0].real
         )
-        assert np.allclose(eig1, eig2, atol=1e-5)
-        assert np.allclose(eig1, eig3, atol=1e-5)
+        assert allclose(eig1, eig2)
+        assert allclose(eig1, eig3)
 
     def test_eig1(self, setup):
         # Test of eigenvalues
@@ -987,7 +991,7 @@ class TestHamiltonian:
         ie2 = H.eigenstate(k, gauge="orbital").spin_berry_curvature()
         assert not np.allclose(ie1, ie2)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_ahc(self, setup):
         R, param = [0.1, 1.5], [1.0, 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -997,7 +1001,7 @@ class TestHamiltonian:
         mp = MonkhorstPack(H, [5, 5, 1])
         ahc(mp)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_ahc_spin(self, setup):
         R, param = [0.1, 1.5], [[1.0, 2.0], [0.1, 0.2]]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -1009,7 +1013,7 @@ class TestHamiltonian:
         cond2 = ahc(mp, sum=False)
         assert np.allclose(cond, cond2.sum(-1))
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_shc(self, setup):
         R, param = [0.1, 1.5], [[1.0, 0.1, 0, 0], [0.4, 0.2, 0.3, 0.2]]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -1024,7 +1028,7 @@ class TestHamiltonian:
         cond2 = shc(mp, sigma=Spin.Z)
         assert np.allclose(cond, cond2)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_shc_and_ahc(self, setup):
         R, param = [0.1, 1.5], [
             [1.0, 0.1, 0, 0, 0, 0, 0, 0],
@@ -1120,7 +1124,7 @@ class TestHamiltonian:
             vsub = es.sub([0]).velocity()[:, 0]
             assert np.allclose(v[:, 0], vsub)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_velocity_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
@@ -1141,7 +1145,7 @@ class TestHamiltonian:
             vsub = es.sub([0, 1]).velocity(matrix=True)
             assert np.allclose(v[:, :2, :2], vsub)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_velocity_matrix_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
@@ -1559,7 +1563,10 @@ class TestHamiltonian:
         assert len(sup) == 2
         assert len(sdn) == 1
 
-    def test_non_colinear_orthogonal(self, setup):
+    def test_non_colinear_orthogonal(self, setup, sisl_tolerance):
+        atol, rtol = sisl_tolerance[np.complex64]
+        allclose = partial(np.allclose, atol=atol, rtol=rtol)
+
         g = Geometry(
             [[i, 0, 0] for i in range(10)],
             Atom(6, R=1.01),
@@ -1578,9 +1585,10 @@ class TestHamiltonian:
             if i < 9:
                 H[i, i + 1, 0] = 1.0
                 H[i, i + 1, 1] = 1.0
+
         eig1 = H.eigh(dtype=np.complex64)
-        assert np.allclose(H.eigh(dtype=np.complex128), eig1)
-        assert np.allclose(H.eigh(gauge="orbital", dtype=np.complex128), eig1)
+        assert allclose(H.eigh(dtype=np.complex128), eig1)
+        assert allclose(H.eigh(gauge="orbital", dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin("non-collinear"))
@@ -1597,16 +1605,17 @@ class TestHamiltonian:
                 H1[i, i + 1, 0] = 1.0
                 H1[i, i + 1, 1] = 1.0
         assert H1.spsame(H)
+
         eig1 = H1.eigh(dtype=np.complex64)
-        assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
+        assert allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(), H1.eigh())
 
         # Create the block matrix for expectation
         SZ = block_diag(*([H1.spin.Z] * H1.no))
 
-        for dtype in [np.complex64, np.complex128]:
+        for dtype in (np.complex64, np.complex128):
             es = H1.eigenstate(dtype=dtype)
-            assert np.allclose(es.eig, eig1)
+            assert allclose(es.eig, eig1)
             assert np.allclose(es.inner(), 1)
 
             # Perform spin-moment calculation
@@ -1634,7 +1643,10 @@ class TestHamiltonian:
         es.change_gauge("cell")
         es.change_gauge("orbital")
 
-    def test_non_colinear_non_orthogonal(self):
+    def test_non_colinear_non_orthogonal(self, sisl_tolerance):
+        atol, rtol = sisl_tolerance[np.complex64]
+        allclose = partial(np.allclose, atol=atol * 10, rtol=rtol * 100)
+
         g = Geometry(
             [[i, 0, 0] for i in range(10)],
             Atom(6, R=1.01),
@@ -1654,8 +1666,9 @@ class TestHamiltonian:
                 H[i, i + 1, 0] = 1.0
                 H[i, i + 1, 1] = 1.0
             H.S[i, i] = 1.0
+
         eig1 = H.eigh(dtype=np.complex64)
-        assert np.allclose(H.eigh(dtype=np.complex128), eig1)
+        assert allclose(H.eigh(dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(
@@ -1675,13 +1688,14 @@ class TestHamiltonian:
                 H1[i, i + 1, 1] = 1.0
             H1.S[i, i] = 1.0
         assert H1.spsame(H)
-        eig1 = H1.eigh(dtype=np.complex64)
-        assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
-        assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
-        for dtype in [np.complex64, np.complex128]:
+        eig1 = H1.eigh(dtype=np.complex64)
+        assert allclose(H1.eigh(dtype=np.complex128), eig1)
+        assert allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
+
+        for dtype in (np.complex64, np.complex128):
             es = H1.eigenstate(dtype=dtype)
-            assert np.allclose(es.eig, eig1)
+            assert allclose(es.eig, eig1)
 
             sm = es.spin_moment()
 
@@ -1703,7 +1717,10 @@ class TestHamiltonian:
         es.change_gauge("cell")
         es.change_gauge("orbital")
 
-    def test_spin_orbit_orthogonal(self):
+    def test_spin_orbit_orthogonal(self, sisl_tolerance):
+        atol, rtol = sisl_tolerance[np.complex64]
+        allclose = partial(np.allclose, atol=atol * 10, rtol=rtol * 100)
+
         g = Geometry(
             [[i, 0, 0] for i in range(10)],
             Atom(6, R=1.01),
@@ -1726,8 +1743,9 @@ class TestHamiltonian:
             if i < 9:
                 H[i, i + 1, 0] = 1.0
                 H[i, i + 1, 1] = 1.0
+
         eig1 = H.eigh(dtype=np.complex64)
-        assert np.allclose(H.eigh(dtype=np.complex128), eig1)
+        assert allclose(H.eigh(dtype=np.complex128), eig1)
         assert len(H.eigh()) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin("spin-orbit"))
@@ -1748,18 +1766,17 @@ class TestHamiltonian:
                 H1[i, i + 1, 0] = 1.0
                 H1[i, i + 1, 1] = 1.0
         assert H1.spsame(H)
+
         eig1 = H1.eigh(dtype=np.complex64)
-        assert np.allclose(H1.eigh(dtype=np.complex128), eig1, atol=1e-5)
-        assert np.allclose(
-            H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128), atol=1e-5
-        )
+        assert allclose(H1.eigh(dtype=np.complex128), eig1)
+        assert allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
         # Create the block matrix for expectation
         SZ = block_diag(*([H1.spin.Z] * H1.no))
 
-        for dtype in [np.complex64, np.complex128]:
+        for dtype in (np.complex64, np.complex128):
             es = H.eigenstate(dtype=dtype)
-            assert np.allclose(es.eig, eig1)
+            assert allclose(es.eig, eig1)
 
             sm = es.spin_moment()
             sm2 = es.inner(matrix=SZ).real

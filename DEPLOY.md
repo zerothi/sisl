@@ -3,7 +3,7 @@ Deployment of sisl
 ==================
 
 This document describes the deployment details to perform
-an version release (or development release).
+a version release (or development release).
 
 
 Version release

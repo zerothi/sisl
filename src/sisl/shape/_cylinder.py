@@ -98,7 +98,7 @@ class EllipticalCylinder(PureShape):
     @property
     def volume(self) -> float:
         """Return the volume of the shape"""
-        return pi * np.product(self.radius) * self.height
+        return pi * np.prod(self.radius) * self.height
 
     @property
     def height(self) -> float:

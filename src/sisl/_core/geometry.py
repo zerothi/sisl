@@ -3057,7 +3057,7 @@ class Geometry(
 
         # Create ranges
         if is_integral:
-            return _a.arangei(ob, oe)
+            return _a.arangei(ob[0], oe[0])
 
         return _a.array_arange(ob, oe)
 
