@@ -272,7 +272,7 @@ class OrbitalQueriesManager:
 
             def _repr(v):
                 if isinstance(v, np.ndarray):
-                    v = list(v.ravel())
+                    v = v.ravel().tolist()
                 if isinstance(v, dict):
                     raise Exception(str(v))
                 return repr(v)
