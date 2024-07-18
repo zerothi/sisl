@@ -200,6 +200,12 @@ def _draw_xarray_lines(
             extra_style_dims = (
                 extra_style_dims or "extra_style_dim" in lines_style[key].dims
             )
+
+            # A negative width does not make sense, just plot the absolute value
+            # However we only take the absolute value if the array contains numbers.
+            if key == "width" and np.issubdtype(lines_style[key].dtype, np.number):
+                lines_style[key] = abs(lines_style[key])
+
         # If some style is constant, just repeat it.
         if lines_style[key] is None or "iterate_dim" not in lines_style[key].dims:
             lines_style[key] = itertools.repeat(lines_style[key])
