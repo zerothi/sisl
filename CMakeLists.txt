@@ -28,20 +28,32 @@ find_package(Python COMPONENTS
   REQUIRED)
 
 # Retrive the cython executable
-message(STATUS "Locating Cython executable")
-find_program(CYTHON_EXECUTABLE "cython" REQUIRED)
+message(CHECK_START "Checking Cython")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+message(CHECK_START "Locating executable")
+find_program(CYTHON_EXECUTABLE
+  NAMES cython cython3
+  REQUIRED)
+message(CHECK_PASS "${CYTHON_EXECUTABLE}")
+
+message(CHECK_START "Checking version")
 execute_process(COMMAND
   "${CYTHON_EXECUTABLE}" --version
   OUTPUT_QUIET
   OUTPUT_VARIABLE CYTHON_VERSION
   RESULT_VARIABLE CYTHON_VERSION_ERR
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  ERROR_STRIP_TRAILING_WHITESPACE)
 
 # Print it out
-message(STATUS "Cython version information [${CYTHON_EXECUTABLE} --version]: ${CYTHON_VERSION}")
 if(CYTHON_VERSION_ERR)
-  message(SEND_ERROR "ERROR: Cython version detection failed, this might be problematic")
+  message(CHECK_FAIL "${CYTHON_VERSION_ERR}")
+else()
+  message(CHECK_PASS "${CYTHON_VERSION}")
 endif()
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+message(CHECK_PASS "Found Cython")
 
 
 # Define global definitions
