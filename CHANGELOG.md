@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- `sisl._debug_info` for more complete debug information
 - `axes` argument added to `derivative` to only calculate on a subset
   of directions (can greatly improve performance for some systems)
 - `operator` argument added to `derivative` to apply an operator
