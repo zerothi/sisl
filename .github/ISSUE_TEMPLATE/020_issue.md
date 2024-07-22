@@ -10,5 +10,5 @@ about: Let us know if something is bothering you
 Run the below code and add to issue (if an issue is relevant for the issue):
 ```python
 import sisl._debug_info as sd
-sd.sisl_print_debug_info()
+sd.print_debug_info()
 ```
