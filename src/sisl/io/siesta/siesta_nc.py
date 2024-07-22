@@ -28,15 +28,6 @@ from ..sile import SileError, add_sile, sile_raise_write
 from ._help import *
 from .sile import SileCDFSiesta
 
-try:
-    from . import _siesta
-
-    # TODO make checks where appropiate
-    has_fortran_module = True
-except ImportError:
-    has_fortran_module = False
-
-
 __all__ = ["ncSileSiesta"]
 
 Bohr2Ang = unit_convert("Bohr", "Ang")
@@ -527,7 +518,7 @@ class ncSileSiesta(SileCDFSiesta):
                 len(sp.dimensions["nnzs"]) != csr.nnz
                 or np.any(sp.variables["n_col"][:] != csr.ncol[:])
                 or np.any(sp.variables["list_col"][:] != csr.col[:] + 1)
-                or np.any(sp.variables["isc_off"][:] != _siesta.siesta_sc_off(*nsc).T)
+                or np.any(sp.variables["isc_off"][:] != _siesta_sc_off(nsc))
             ):
                 raise ValueError(
                     f"{self.file} sparsity pattern stored *MUST* be equivalent for all matrices"
@@ -550,7 +541,7 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(sp, "isc_off", "i4", ("n_s", "xyz"))
             v.info = "Index of supercell coordinates"
-            v[:, :] = _siesta.siesta_sc_off(*nsc).T
+            v[:, :] = _siesta_sc_off(nsc)
         return sp
 
     def _write_overlap(self, spgroup, csr, orthogonal, S_idx):

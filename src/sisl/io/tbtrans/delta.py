@@ -18,18 +18,14 @@ from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
 from sisl.unit.siesta import unit_convert
 
-from ..siesta._help import _csr_from_sc_off, _csr_to_siesta, _mat_spin_convert
+from ..siesta._help import (
+    _csr_from_sc_off,
+    _csr_to_siesta,
+    _mat_spin_convert,
+    _siesta_sc_off,
+)
 from ..sile import SileError, add_sile, sile_raise_write
 from .sile import SileCDFTBtrans
-
-try:
-    from ..siesta._siesta import siesta_sc_off
-
-    # TODO add checks
-    has_fortran_module = True
-except ImportError:
-    has_fortran_module = False
-
 
 __all__ = ["deltancSileTBtrans"]
 
@@ -484,7 +480,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 )
             if np.any(
                 lvl.variables["isc_off"][:]
-                != siesta_sc_off(*delta.geometry.lattice.nsc).T
+                != _siesta_sc_off(delta.geometry.lattice.nsc)
             ):
                 raise ValueError(
                     "The sparsity pattern stored in delta *MUST* be equivalent for "
@@ -507,7 +503,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             v[:] = csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, "isc_off", "i4", ("n_s", "xyz"))
             v.info = "Index of supercell coordinates"
-            v[:] = siesta_sc_off(*delta.geometry.lattice.nsc).T
+            v[:] = _siesta_sc_off(delta.geometry.lattice.nsc)
 
         warn_E = True
         if ilvl in (3, 4):
