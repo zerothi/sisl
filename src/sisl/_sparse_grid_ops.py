@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import cython
 import cython.cimports.numpy as cnp
 import numpy as np
@@ -136,8 +139,6 @@ def reduce_grid_sum(
 
     need_transpose: cython.bint = new_axes.shape[0] > 1
 
-    row_value: cython.numeric
-
     for i in range(nrows):
 
         if need_transpose:
@@ -147,7 +148,7 @@ def reduce_grid_sum(
         else:
             reduced_i = i // reduce_factor
 
-        row_value = 0
+        row_value: cython.numeric = 0
         for j in range(ptr[i], ptr[i + 1]):
             row_value += data[j]
 
@@ -203,8 +204,6 @@ def reduce_grid_matvec_multiply(
 
     need_transpose: cython.bint = new_axes.shape[0] > 1
 
-    row_value: cython.numeric
-
     for i in range(nrows):
         reduced_i = i // reduce_factor
 
@@ -215,7 +214,7 @@ def reduce_grid_matvec_multiply(
         else:
             reduced_i = i // reduce_factor
 
-        row_value = 0
+        row_value: cython.numeric = 0
         for j in range(ptr[i], ptr[i + 1]):
             jcol = col[j]
             row_value += data[j] * V[jcol]
@@ -369,10 +368,6 @@ def reduce_sc_products(
     jcol_sc: cython.int
     jpair_sc: cython.int
 
-    # Temporal storage to build values
-    row_value: cython.floating
-    i_row_value: cython.floating
-
     # Index to loop over axes of the grid.
     iaxis: cython.int
 
@@ -415,7 +410,7 @@ def reduce_sc_products(
         row_end = ptr[row + 1]
 
         # Initialize the row value.
-        row_value = 0
+        row_value: cython.floating = 0
 
         # For each row, loop over pairs of columns (ij).
         # We add both ij and ji contributions, therefore we only need to loop over j greater than i.
@@ -423,8 +418,9 @@ def reduce_sc_products(
         # some computation if they are not.
         for i in range(row_start, row_end):
             icol = col[i]
+
             # Initialize the value for all pairs that we found for i
-            i_row_value = 0
+            i_row_value: cython.floating = 0
 
             # Precompute the supercell index of icol (will compare it to that of jcol)
             icol_sc = icol // uc_ncol
