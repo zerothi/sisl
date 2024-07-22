@@ -57,7 +57,7 @@ message(CHECK_PASS "Found Cython")
 
 # Define global definitions
 # We will never use the deprecated API any-more
-add_compile_definitions(NPY_NO_DEPRECATED_API=0)
+add_compile_definitions(NPY_NO_DEPRECATED_API=NPY_1_20_API_VERSION)
 add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
 
 # All libraries in sisl will *not* be prefixed with
