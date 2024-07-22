@@ -4,8 +4,6 @@ name: Wheel creation
 # Change this to whatever you want
 on:
   push:
-    branches:
-      - 'main'
     tags:
       - 'v*'
   workflow_dispatch:
