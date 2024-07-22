@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21)
 # We will use cmake_path for file-name manipulation
 
 list(APPEND CMAKE_MESSAGE_CONTEXT "sisl")
@@ -34,6 +34,7 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 message(CHECK_START "Locating executable")
 find_program(CYTHON_EXECUTABLE
   NAMES cython cython3
+  NO_CACHE
   REQUIRED)
 message(CHECK_PASS "${CYTHON_EXECUTABLE}")
 
