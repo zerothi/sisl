@@ -76,7 +76,7 @@ dynamic = ["version"]
 [tool.setuptools_scm]
 write_to = "src/sisl/_version.py"
 version_file = "src/sisl/_version.py"
-fallback_version = "0.15.0rc1"
+fallback_version = "0.15.0rc2"
 
 
 [tool.scikit-build]

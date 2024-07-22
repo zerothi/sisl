@@ -1,5 +1,5 @@
-version: 0.15.0rc1
-commit: "v0.15.0rc1"
+version: 0.15.0rc2
+commit: "v0.15.0rc2"
 date-released: "2024-02-04"
 cff-version: 1.2.0
 message: "Please cite sisl in any paper to acknowledge and support development."
