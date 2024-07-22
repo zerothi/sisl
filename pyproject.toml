@@ -324,7 +324,6 @@ extend-exclude = """
 build-verbosity = 3
 archs = ["auto"]
 
-before-test = "bash {project}/tools/build_tools/cibw_before_test.sh"
 test-requires = ["pytest", "joblib"]
 test-extras = "test"
 
