@@ -326,7 +326,7 @@ def fcc_slab(
     ----------
     alat :
         lattice constant of the fcc crystal
-    atoms : Atom
+    atoms :
         the atom that the crystal consists of
     miller :
         Miller indices of the surface facet
@@ -528,7 +528,7 @@ def bcc_slab(
     ----------
     alat :
         lattice constant of the fcc crystal
-    atoms : Atom
+    atoms :
         the atom that the crystal consists of
     miller :
         Miller indices of the surface facet
@@ -697,7 +697,7 @@ def rocksalt_slab(
     ----------
     alat :
         lattice constant of the rock-salt crystal
-    atoms : list
+    atoms :
         a list of two atoms that the crystal consist of
     miller :
         Miller indices of the surface facet

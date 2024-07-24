@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from numbers import Integral
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import numpy as np
 
@@ -26,14 +26,16 @@ __all__ = [
     "graphene_heteroribbon",
 ]
 
+FloatOrFloat2 = Union[float, Tuple[float, float]]
+
 
 @set_module("sisl.geom")
 def nanoribbon(
     width: int,
     bond: float,
     atoms: AtomsLike,
-    kind: str = "armchair",
-    vacuum: float = 20.0,
+    kind: Literal["armchair", "zigzag", "chiral"] = "armchair",
+    vacuum: FloatOrFloat2 = 20.0,
     chirality: Tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a nanoribbon unit cell of type armchair, zigzag or (n,m)-chiral.
@@ -48,12 +50,12 @@ def nanoribbon(
        bond length between atoms in the honeycomb lattice
     atoms :
        atom (or atoms) in the honeycomb lattice
-    kind : {'armchair', 'zigzag', 'chiral'}
+    kind :
        type of ribbon
     vacuum :
-       separation in transverse direction
+       separation in transverse and perpendicular direction
     chirality :
-       index (n, m), only used if `kind=chiral`
+       index (n, m), only used if ``kind=chiral``
 
     See Also
     --------
@@ -67,11 +69,16 @@ def nanoribbon(
     if not isinstance(width, Integral):
         raise ValueError(f"nanoribbon: width needs to be a postive integer ({width})!")
 
+    try:
+        vacuum_trans, vacuum_perp = vacuum
+    except Exception:
+        vacuum_trans = vacuum_perp = vacuum
+
     # Width characterization
     width = max(width, 1)
     n, m = width // 2, width % 2
 
-    ribbon = geom.honeycomb(bond, atoms, orthogonal=True)
+    ribbon = geom.honeycomb(bond, atoms, orthogonal=True, vacuum=vacuum_perp)
     angle = 0
 
     kind = kind.lower()
@@ -82,7 +89,10 @@ def nanoribbon(
             ribbon = ribbon.remove(3 * (n + 1)).remove(0)
         else:
             ribbon = ribbon.repeat(n, 1)
-        ribbon.cell[1, 1] += vacuum
+
+        # fix vacuum
+        xyz = ribbon.xyz
+        ribbon.cell[1, 1] = xyz[:, 1].max() - xyz[:, 1].min() + vacuum_trans
 
     elif kind in ("zigzag", "chiral"):
         # Construct zigzag GNR
@@ -96,9 +106,8 @@ def nanoribbon(
         ribbon.xyz[:, 1] *= -1
 
         # Set lattice vectors strictly orthogonal
-        ribbon.cell[:, :] = np.diag(
-            [ribbon.cell[1, 0], -ribbon.cell[0, 1] + vacuum, ribbon.cell[2, 2]]
-        )
+        ribbon.set_lattice([ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]])
+
         # Sort along x, then y
         ribbon = ribbon.sort(axis=(0, 1))
 
@@ -120,6 +129,17 @@ def nanoribbon(
             # first lattice vector strictly along x
             ribbon.cell[0, 1] = 0
 
+            # This will make the lattice vector exactly the vacuum length longer
+            y = (ribbon.fxyz * ribbon.lattice.length)[:, 1]
+            ribbon.cell[1] = ribbon.lattice.cell2length(
+                y.max() - y.min() + vacuum_trans, axes=1
+            )
+
+        else:
+            # fix vacuum
+            xyz = ribbon.xyz
+            ribbon.cell[1, 1] = xyz[:, 1].max() - xyz[:, 1].min() + vacuum_trans
+
     else:
         raise ValueError(f"nanoribbon: kind must be armchair or zigzag ({kind})")
 
@@ -140,8 +160,8 @@ def graphene_nanoribbon(
     width: int,
     bond: float = 1.42,
     atoms: Optional[AtomsLike] = None,
-    kind: str = "armchair",
-    vacuum: float = 20.0,
+    kind: Literal["armchair", "zigzag", "chiral"] = "armchair",
+    vacuum: FloatOrFloat2 = 20.0,
     chirality: Tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a graphene nanoribbon
@@ -154,12 +174,12 @@ def graphene_nanoribbon(
        C-C bond length
     atoms :
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
-    kind : {'armchair', 'zigzag', 'chiral'}
+    kind :
        type of ribbon
     vacuum :
        separation in transverse direction
     chirality :
-       index (n, m), only used if `kind=chiral`
+       index (n, m), only used if ``kind=chiral``
 
     See Also
     --------
@@ -180,7 +200,7 @@ def agnr(
     width: int,
     bond: float = 1.42,
     atoms: Optional[AtomsLike] = None,
-    vacuum: float = 20.0,
+    vacuum: FloatOrFloat2 = 20.0,
 ) -> Geometry:
     r"""Construction of an armchair graphene nanoribbon
 
@@ -190,10 +210,10 @@ def agnr(
        number of atoms in the transverse direction
     bond :
        C-C bond length
-    atoms : Atom, optional
+    atoms :
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     vacuum :
-       separation in transverse direction
+       separation in transverse and perpendicular direction
 
     See Also
     --------
@@ -212,7 +232,7 @@ def zgnr(
     width: int,
     bond: float = 1.42,
     atoms: Optional[AtomsLike] = None,
-    vacuum: float = 20.0,
+    vacuum: FloatOrFloat2 = 20.0,
 ) -> Geometry:
     r"""Construction of a zigzag graphene nanoribbon
 
@@ -222,11 +242,10 @@ def zgnr(
        number of atoms in the transverse direction
     bond :
        C-C bond length
-    atoms : Atom, optional
+    atoms :
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     vacuum :
-       separation in transverse direction
-
+       separation in transverse and perpendicular direction
 
     See Also
     --------
@@ -246,7 +265,7 @@ def cgnr(
     chirality: Tuple[int, int],
     bond: float = 1.42,
     atoms: Optional[AtomsLike] = None,
-    vacuum: float = 20.0,
+    vacuum: FloatOrFloat2 = 20.0,
 ) -> Geometry:
     r"""Construction of an (n, m, w)-chiral graphene nanoribbon
 
@@ -258,10 +277,10 @@ def cgnr(
        index (n, m) corresponding to an edge with n zigzag segments followed by m armchair segments
     bond :
        C-C bond length
-    atoms : Atom, optional
+    atoms :
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     vacuum :
-       separation in transverse direction
+       separation in transverse and perpendicular direction
 
     See Also
     --------
