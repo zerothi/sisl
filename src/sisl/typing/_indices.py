@@ -33,6 +33,7 @@ __all__ = [
 ]
 
 AxisIntLiteral = Literal[0, 1, 2]
+AxesIntLiteral = Sequence[AxisIntLiteral]
 """Defining axis specification in 3D space (int)"""
 CellAxisStrLiteral = Literal["a", "b", "c"]
 """Defining lattice axis specification in 3D space (str)"""

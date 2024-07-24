@@ -1305,9 +1305,136 @@ class Geometry(
             other_extend(idx)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
 
+    def find_nsc(
+        self,
+        axes: Optional[CellAxes] = None,
+        R: Optional[float] = None,
+        method: Literal["atoms", "cell", "overlap"] = "atoms",
+    ) -> ndarray:
+        """Find number of supercells for the geometry, depending on certain criteria
+
+        This can find the optimal ``nsc`` values for a given method.
+
+        The important parameter, `method` determines how ``nsc`` is found.
+        The method are shown here, from method that produces the smallest ``nsc``, up
+        to the largest ``nsc``.
+
+        ``method=atoms``
+            here only the atoms ranges are taken into account, and only
+            whether atoms in the primary unit cell can connect to others in neigboring
+            cells.
+
+        ``method=cell``
+            only the atoms ranges are taken into account.
+            For instance if a lattice vector is as long as the orbital range
+            it will have 3 supercells (it can only connect to its neighboring
+            cells).
+
+        ``method=overlap``
+            determine nsc by examining at what range two orbitals overlaps.
+
+        Parameters
+        ----------
+        axes :
+           only discover new ``nsc`` the specified axes (defaults to all)
+        R :
+           the maximum connection radius for each atom, defaults to ``self.maxR()``.
+        method:
+            See discussion above.
+
+        Returns
+        -------
+        numpy.ndarray: the found nsc that obeys `method`
+
+        See Also
+        --------
+        optimize_nsc: same as this, but equivalent to also doing ``self.set_nsc(self.find_nsc(...))``
+        """
+        method = method.lower()
+
+        nsc = self.nsc.copy()
+
+        if axes is None:
+            axes = [0, 1, 2]
+        else:
+            axes = map(direction, listify(axes)) | listify
+
+        if len(axes) == 0:
+            # requesting no search space
+            return nsc
+
+        if R is None:
+            R = self.maxR() + 0.001
+        if R < 0:
+            R = 0.00001
+            warn(
+                f"{self.__class__.__name__}"
+                ".find_nsc could not determine the radius from the "
+                "internal atoms (defaulting to zero radius)."
+            )
+
+        cell = self.cell
+        length, angles = self.lattice.parameters()
+
+        # TODO check that angles below 60 degrees are
+        # important.
+
+        # Half-nsc (only 1 direction)
+        hsc = nsc // 2
+
+        # determine the maximum hsc values
+        if method in ("atoms", "cell"):
+            R_actual = R
+        elif method in ("overlap",):
+            R_actual = R * 2
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.find_nsc got wrong 'method' argument, got {method}"
+            )
+
+        # Determine the actual range depending on the actual R
+        hsc[axes] = ceil(R_actual / length[axes])
+
+        if method == "atoms":
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+
+                isc = _a.emptyi(3)
+
+                for ax in axes:
+                    # Initialize the isc for this direction
+                    # (note we do not take non-orthogonal directions
+                    #  into account)
+                    isc[:] = 0
+
+                    # Initialize the actual number of supercell connections
+                    # along this direction.
+                    prev_isc = 0
+
+                    while prev_isc == isc[ax]:
+                        # Try next supercell connection
+                        isc[ax] += 1
+
+                        for ia in self:
+                            idx = self.close_sc(ia, isc=isc, R=R)
+                            if len(idx) > 0:
+                                prev_isc = isc[ax]
+                                break
+
+                    hsc[ax] = prev_isc
+
+        nsc[axes] = hsc[axes] * 2 + 1
+
+        return nsc
+
+    @deprecation(
+        "optimize_nsc is deprecated, update the code to use 'find_nsc' and then 'set_nsc'",
+        "0.15.0",
+        "0.16.0",
+    )
     def optimize_nsc(
         self,
-        axes: Optional[Union[int, Sequence[int]]] = None,
+        axes: Optional[CellAxes] = None,
         R: Optional[float] = None,
     ) -> ndarray:
         """Optimize the number of supercell connections based on ``self.maxR()``
@@ -1316,6 +1443,8 @@ class Geometry(
 
         This is an in-place operation.
 
+        Deprecated method!
+
         Parameters
         ----------
         axes :
@@ -1323,65 +1452,8 @@ class Geometry(
         R :
            the maximum connection radius for each atom
         """
-        if axes is None:
-            axes = [0, 1, 2]
-        else:
-            axes = _a.asarrayi(axes).ravel()
-        if len(axes) == 0:
-            return self.nsc
-
-        if R is None:
-            R = self.maxR() + 0.001
-        if R < 0:
-            R = 0.00001
-            warn(
-                f"{self.__class__.__name__}"
-                ".optimize_nsc could not determine the radius from the "
-                "internal atoms (defaulting to zero radius)."
-            )
-
-        ic = self.icell
-        nrc = 1 / fnorm(ic)
-        idiv = floor(np.maximum(nrc / (2 * R), 1.1)).astype(np.int32, copy=False)
-        imcell = ic * idiv.reshape(-1, 1)
-
-        # We know this is the maximum
-        nsc = self.nsc.copy()
-        # We need to subtract one to ensure we are not taking into account
-        # too big supercell connections.
-        # I don't think we need anything other than this.
-        # However, until I am sure that this wouldn't change, regardless of the
-        # cell. I will keep it.
-        Rimcell = R * fnorm(imcell)[axes]
-        nsc[axes] = (floor(Rimcell) + ceil(Rimcell % 0.5 - 0.5)).astype(np.int32)
-        # Since for 1 it is not sure that it is a connection or not, we limit the search by
-        # removing it.
-        nsc[axes] = np.where(nsc[axes] > 1, nsc[axes], 0)
-        for i in axes:
-            # Initialize the isc for this direction
-            # (note we do not take non-orthogonal directions
-            #  into account)
-            isc = _a.zerosi(3)
-            isc[i] = nsc[i]
-            # Initialize the actual number of supercell connections
-            # along this direction.
-            prev_isc = isc[i]
-            while prev_isc == isc[i]:
-                # Try next supercell connection
-                isc[i] += 1
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    for ia in self:
-                        idx = self.close_sc(ia, isc=isc, R=R)
-                        if len(idx) > 0:
-                            prev_isc = isc[i]
-                            break
-
-            # Save the reached supercell connection
-            nsc[i] = prev_isc * 2 + 1
-
+        nsc = self.find_nsc(axes, R, method="atoms")
         self.set_nsc(nsc)
-
         return nsc
 
     def sub_orbital(self, atoms: AtomsIndex, orbitals: OrbitalsIndex) -> Geometry:

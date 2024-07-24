@@ -989,7 +989,7 @@ state coefficients
         # Try and bypass whether the parent is a geometry, or not
         g = self._geometry()
         xyz = g.xyz + offset
-        phase = xyz[g.o2a(_a.arangei(g.no)), :] @ (k @ g.rcell)
+        phase = (xyz @ (k @ g.rcell))[g.o2a(_a.arange(g.no))]
 
         try:
             if not self.parent.spin.is_diagonal:

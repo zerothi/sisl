@@ -365,18 +365,11 @@ class Lattice(
 
         Returns
         -------
-        float
-            length of first lattice vector
-        float
-            length of second lattice vector
-        float
-            length of third lattice vector
-        float
-            angle between b and c vectors
-        float
-            angle between a and c vectors
-        float
-            angle between a and b vectors
+        length : numpy.ndarray
+            length of each lattice vector
+        angles : numpy.ndarray
+            angles between the lattice vectors (in Voigt notation)
+            ``[0]`` is between 2nd and 3rd lattice vector, etc.
         """
         if rad:
             f = 1.0
@@ -387,14 +380,13 @@ class Lattice(
         cell = self.cell.copy()
         abc = fnorm(cell)
 
-        from math import acos
-
         cell = cell / abc.reshape(-1, 1)
-        alpha = acos(dot3(cell[1], cell[2])) * f
-        beta = acos(dot3(cell[0], cell[2])) * f
-        gamma = acos(dot3(cell[0], cell[1])) * f
+        angles = np.empty(3)
+        angles[0] = math.acos(dot3(cell[1], cell[2])) * f
+        angles[1] = math.acos(dot3(cell[0], cell[2])) * f
+        angles[2] = math.acos(dot3(cell[0], cell[1])) * f
 
-        return abc[0], abc[1], abc[2], alpha, beta, gamma
+        return abc, angles
 
     def _fill(self, non_filled, dtype=None):
         """Return a zero filled array of length 3"""
@@ -1123,7 +1115,10 @@ class Lattice(
         return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s},\n bc=[{bc}]\n}}"
 
     def __repr__(self) -> str:
-        a, b, c, alpha, beta, gamma = map(lambda r: round(r, 4), self.parameters())
+        abc, abg = self.parameters()
+        a, b, c = map(lambda r: round(r, 4), abc.tolist())
+        alpha, beta, gamma = map(lambda r: round(r, 4), abg.tolist())
+
         BC = BoundaryCondition
         bc = self.boundary_condition
 

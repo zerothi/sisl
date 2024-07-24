@@ -86,7 +86,9 @@ class pdbSile(Sile):
         sile_raise_write(self)
 
         # Get parameters and append the space group and specification
-        args = lattice.parameters() + ("P 1", 1)
+        length, angles = lattice.parameters()
+        space_group = "P 1"
+        Z = 1
 
         # COLUMNS       DATA  TYPE    FIELD          DEFINITION
         # -------------------------------------------------------------
@@ -101,7 +103,7 @@ class pdbSile(Sile):
         # 67 - 70       Integer       z              Z value.
         self._write(
             ("CRYST1" + "{:9.3f}" * 3 + "{:7.2f}" * 3 + "{:<11s}" + "{:4d}\n").format(
-                *args
+                *length, *angles, space_group, Z
             )
         )
 
@@ -113,7 +115,7 @@ class pdbSile(Sile):
         # 31 - 40         Real(10.6)    s[n][3]            Sn3
         # 46 - 55         Real(10.5)    u[n]               Un
         for i in range(3):
-            args = [i + 1] + lattice.cell[i, :].tolist() + [0.0]
+            args = [i + 1] + lattice.cell[i].tolist() + [0.0]
             self._write(
                 ("SCALE{:1d}    {:10.6f}{:10.6f}{:10.6f}     {:10.5f}\n").format(*args)
             )

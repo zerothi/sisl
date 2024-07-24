@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- `Geometry.find_nsc`, alternate method for calculating `nsc` with more options
 - `sisl._debug_info` for more complete debug information
 - `axes` argument added to `derivative` to only calculate on a subset
   of directions (can greatly improve performance for some systems)
@@ -112,6 +113,7 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- `Lattice.parameters` now returns a 2-tuple of ``length, angles``
 - units of `conductivity` has changed to S / Ang
 - `conductivity` is deprecated, use `ahc` and `shc` instead
 - `berry_curvature` has completely changed, checks it API
