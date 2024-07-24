@@ -51,7 +51,7 @@ year = datetime.datetime.now().year
 # instantiate the logger, but we will not use it here...
 logging.getLogger(__name__)
 
-__author__ = "Nick Papior"
+__author__ = "sisl developers"
 __license__ = "MPL-2.0"
 
 import sisl._version as _version
@@ -60,12 +60,13 @@ __version__ = _version.version
 __version_tuple__ = _version.version_tuple
 __bibtex__ = f"""# BibTeX information if people wish to cite
 @software{{zerothi_sisl,
-    author = {{Papior, Nick}},
+    author = {{Papior, Nick and Febrer, Pol}},
     title  = {{sisl: v{__version__}}},
     year   = {{ {year} }},
     doi    = {{10.5281/zenodo.597181}},
     url    = {{https://doi.org/10.5281/zenodo.597181}},
 }}"""
+__citation__ = __bibtex__
 
 # do not expose this helper package
 del _version, year, datetime
