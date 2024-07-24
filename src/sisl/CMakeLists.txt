@@ -10,13 +10,16 @@ endforeach()
 
 # Python files that can be compiled with cython (Pure Python syntax)
 foreach(source _sparse_grid_ops)
-  add_cython_library(
-    SOURCE ${source}.py
-    LIBRARY ${source}
-    OUTPUT ${source}_C
-    )
-  install(TARGETS ${source} LIBRARY
-    DESTINATION ${SKBUILD_PROJECT_NAME})
+  sisl_compile_source(${source} compile)
+  if( compile )
+    add_cython_library(
+      SOURCE ${source}.py
+      LIBRARY ${source}
+      OUTPUT ${source}_C
+      )
+    install(TARGETS ${source} LIBRARY
+      DESTINATION ${SKBUILD_PROJECT_NAME})
+  endif()
 endforeach()
 
 # We do the configure step here

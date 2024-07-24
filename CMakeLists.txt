@@ -77,7 +77,7 @@ set(_def_fortran TRUE)
 #endif()
 
 option(WITH_FORTRAN
-  "Whether to compile and ship fortran sources (default True)" ${_def_fortran})
+  "Whether to compile and ship fortran sources (default ${_def_fortran})" ${_def_fortran})
 
 # Define all options for the user
 if( WITH_FORTRAN )
@@ -98,6 +98,11 @@ option(WITH_ANNOTATE
   "Create html file outputs that can be used for figuring out performance bottlenecks in cython sources" FALSE)
 option(WITH_GDB
   "Add GDB-enabled Cython sources" FALSE)
+
+# Define which pure-python modules that should not be built
+set(NO_COMPILATION ""
+  CACHE STRING
+  "A list of files that should not be compiled [_sparse_grid_ops|_sparse_grid_ops.py]")
 
 
 message(STATUS "Compilation flags")
@@ -211,6 +216,7 @@ cmake_print_variables(WITH_COVERAGE)
 cmake_print_variables(WITH_ANNOTATE)
 cmake_print_variables(WITH_LINE_DIRECTIVES)
 cmake_print_variables(WITH_GDB)
+cmake_print_variables(NO_COMPILATION)
 
 cmake_print_variables(WITH_FORTRAN)
 if(WITH_FORTRAN)
@@ -234,6 +240,54 @@ if(WITH_FORTRAN)
 endif()
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+
+
+# Return in _result whether the _file should be built, or not
+# It checks whether the file is present in the NO_COMPILATION
+function(sisl_compile_source _file _result)
+
+  # By default, we always compile everything
+  set(${_result} TRUE PARENT_SCOPE)
+
+  # Check whether the file is listed in the variable
+
+  # First get the stem of the file path (relative to the sisl source dir)
+  set(in "${CMAKE_CURRENT_SOURCE_DIR}/${_file}")
+  cmake_path(RELATIVE_PATH in
+    BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
+    OUTPUT_VARIABLE base
+    )
+  string(REPLACE "/" ";" base_list "${base}")
+
+  # Loop over the segments of the file
+  list(LENGTH base_list len)
+  math(EXPR len "${len} - 1")
+
+  foreach(i RANGE 0 ${len})
+
+    # Create the path from the list of base_list[i:]
+    list(SUBLIST base_list ${i} -1 path)
+    string(REPLACE ";" "/" path "${path}")
+
+    # Check if the file is present in the file naming list
+    list(FIND NO_COMPILATION "${path}" res1)
+    list(FIND NO_COMPILATION "${path}.py" res2)
+
+    if( res1 GREATER -1 OR res2 GREATER -1 )
+      set(${_result} FALSE PARENT_SCOPE)
+      break()
+    endif()
+
+  endforeach()
+
+endfunction()
+
+
+
+# Below we have the, a bit complicated property setup for the build-mechanism.
+# It allows one to properly define how specific fortran files should be
+# processed by f2py for correct signature creations.
 
 
 # Document the properties that we are dealing with
