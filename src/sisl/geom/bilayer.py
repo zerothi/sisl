@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from math import acos, pi
 from numbers import Integral
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 
@@ -24,11 +24,13 @@ def bilayer(
     bond: float = 1.42,
     bottom_atoms: Optional[AtomsLike] = None,
     top_atoms: Optional[AtomsLike] = None,
-    stacking: str = "AB",
+    stacking: Literal["AB", "AA", "BA"] = "AB",
     twist=(0, 0),
     separation: float = 3.35,
+    vacuum: float = 20,
+    *,
+    layer: Literal["both", "bottom", "top"] = "both",
     ret_angle: bool = False,
-    layer: str = "both",
 ) -> Geometry:
     r"""Commensurate unit cell of a hexagonal bilayer structure, possibly with a twist angle.
 
@@ -46,16 +48,18 @@ def bilayer(
        atom (or atoms) in the bottom layer. Defaults to ``Atom(6)``
     top_atoms :
        atom (or atoms) in the top layer, defaults to `bottom_atom`
-    stacking : {'AB', 'AA', 'BA'}
+    stacking :
        stacking sequence of the bilayer, where XY means that site X in bottom layer coincides with site Y in top layer
     twist : tuple of int, optional
        integer coordinates (m, n) defining a commensurate twist angle
     separation :
        distance between the two layers
+    vacuum :
+        length of vacuum region (along 3rd lattice vector)
+    layer :
+       control which layer(s) to return
     ret_angle :
        return the twist angle (in degrees) in addition to the geometry instance
-    layer : {'both', 'bottom', 'top'}
-       control which layer(s) to return
 
     See Also
     --------
@@ -70,8 +74,8 @@ def bilayer(
         top_atoms = bottom_atoms
 
     # Construct two layers
-    bottom = honeycomb(bond, bottom_atoms)
-    top = honeycomb(bond, top_atoms)
+    bottom = honeycomb(bond, bottom_atoms, vacuum=vacuum + separation)
+    top = honeycomb(bond, top_atoms, vacuum=vacuum + separation)
     ref_cell = bottom.cell.copy()
 
     stacking = stacking.lower()
