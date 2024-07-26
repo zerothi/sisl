@@ -22,8 +22,6 @@ from sisl import (
     Sphere,
 )
 
-_dir = osp.join("sisl")
-
 pytestmark = [pytest.mark.geom, pytest.mark.geometry]
 
 
@@ -1832,7 +1830,7 @@ def test_geometry_sub_orbitals():
 
 def test_geometry_new_xyz(sisl_tmp):
     # test that Geometry.new works
-    out = sisl_tmp("out.xyz", _dir)
+    out = sisl_tmp("out.xyz")
     C = Atom[6]
     gr = sisl_geom.graphene(atoms=C)
     # writing doesn't save orbital information, so we force

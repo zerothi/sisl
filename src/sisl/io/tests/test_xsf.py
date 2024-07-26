@@ -13,11 +13,10 @@ from sisl import Atom, Geometry, Grid
 from sisl.io.xsf import *
 
 pytestmark = [pytest.mark.io, pytest.mark.generic]
-_dir = osp.join("sisl", "io")
 
 
 def test_default(sisl_tmp):
-    f = sisl_tmp("GRID_default.xsf", _dir)
+    f = sisl_tmp("GRID_default.xsf")
     grid = Grid(0.2)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
@@ -34,7 +33,7 @@ def test_default(sisl_tmp):
     ],
 )
 def test_pbc(sisl_tmp, pbc):
-    f = sisl_tmp("GRID_default.xsf", _dir)
+    f = sisl_tmp("GRID_default.xsf")
     geom = Geometry(
         np.random.rand(10, 3),
         np.random.randint(1, 70, 10),
@@ -47,7 +46,7 @@ def test_pbc(sisl_tmp, pbc):
 
 
 def test_default_size(sisl_tmp):
-    f = sisl_tmp("GRID_default_size.xsf", _dir)
+    f = sisl_tmp("GRID_default_size.xsf")
     grid = Grid(0.2, lattice=2.0)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
@@ -55,7 +54,7 @@ def test_default_size(sisl_tmp):
 
 
 def test_geometry(sisl_tmp):
-    f = sisl_tmp("GRID_geometry.xsf", _dir)
+    f = sisl_tmp("GRID_geometry.xsf")
     geom = Geometry(
         np.random.rand(10, 3),
         np.random.randint(1, 70, 10),
@@ -68,7 +67,7 @@ def test_geometry(sisl_tmp):
 
 
 def test_imaginary(sisl_tmp):
-    f = sisl_tmp("GRID_imag.xsf", _dir)
+    f = sisl_tmp("GRID_imag.xsf")
     geom = Geometry(
         np.random.rand(10, 3),
         np.random.randint(1, 70, 10),
@@ -81,7 +80,7 @@ def test_imaginary(sisl_tmp):
 
 
 def test_axsf_geoms(sisl_tmp):
-    f = sisl_tmp("multigeom_nodata.axsf", _dir)
+    f = sisl_tmp("multigeom_nodata.axsf")
     geom = Geometry(
         np.random.rand(10, 3),
         np.random.randint(1, 70, 10),
@@ -119,7 +118,7 @@ def test_axsf_geoms(sisl_tmp):
 
 
 def test_axsf_data(sisl_tmp):
-    f = sisl_tmp("multigeom_data.axsf", _dir)
+    f = sisl_tmp("multigeom_data.axsf")
     geom = Geometry(
         np.random.rand(10, 3),
         np.random.randint(1, 70, 10),

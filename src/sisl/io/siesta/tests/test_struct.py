@@ -12,11 +12,10 @@ from sisl import Atom, Geometry, get_sile
 from sisl.io.siesta.struct import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_struct1(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.STRUCT_IN", _dir)
+    f = sisl_tmp("gr.STRUCT_IN")
     sisl_system.g.write(structSileSiesta(f, "w"))
     g = structSileSiesta(f).read_geometry()
 
@@ -27,7 +26,7 @@ def test_struct1(sisl_tmp, sisl_system):
 
 
 def test_struct_reorder(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.STRUCT_IN", _dir)
+    f = sisl_tmp("gr.STRUCT_IN")
     g = sisl_system.g.copy()
     g.atoms[0] = Atom(1)
     g.write(structSileSiesta(f, "w"))
@@ -40,7 +39,7 @@ def test_struct_reorder(sisl_tmp, sisl_system):
 
 
 def test_struct_ghost(sisl_tmp):
-    f = sisl_tmp("ghost.STRUCT_IN", _dir)
+    f = sisl_tmp("ghost.STRUCT_IN")
     a1 = Atom(1)
     am1 = Atom(-1)
     g = Geometry([[0.0, 0.0, i] for i in range(2)], [a1, am1], 2.0)
@@ -56,8 +55,8 @@ def test_struct_ghost(sisl_tmp):
 
 
 def test_si_pdos_kgrid_struct_out(sisl_files):
-    fdf = get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"))
-    struct = get_sile(sisl_files(_dir, "si_pdos_kgrid.STRUCT_OUT"))
+    fdf = get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"))
+    struct = get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.STRUCT_OUT"))
 
     struct_geom = struct.read_geometry()
     fdf_geom = fdf.read_geometry(order="STRUCT")

@@ -548,9 +548,9 @@ class fdfSileSiesta(SileSiesta):
                 value = value[:]
                 # do not skip to next line in next segment
                 value[-1] = value[-1].replace("\n", "")
-                s = f"{s}\n{''.join(value)}\n"
+                s = f"{s}\n {''.join(value)}\n"
             else:
-                s = "{s}\n{v}\n".format(s=s, v="\n".join(value))
+                s = "{s}\n {v}\n".format(s=s, v="\n".join(value))
             # We add an extra line after blocks
             s = f"{s}%endblock {key}\n"
         else:

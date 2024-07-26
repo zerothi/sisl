@@ -19,13 +19,14 @@ from sisl import Atom, Geometry, Hamiltonian, Lattice, _environ
 _log = logging.getLogger(__name__)
 
 sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
-sisl_has_files_tests = (sisl_files_tests / "sisl").is_dir()
+if (sisl_files_tests / "tests").is_dir():
+    sisl_files_tests = sisl_files_tests / "tests"
 
 
 # Modify items based on whether the env is correct or not
 def pytest_collection_modifyitems(config, items):
-    global sisl_has_files_tests
-    if sisl_has_files_tests:
+    global sisl_files_tests
+    if sisl_files_tests.is_dir():
         return
 
     xfail_sisl_files = pytest.mark.xfail(
@@ -50,6 +51,16 @@ def sisl_tmp(request, tmp_path_factory):
     The scope of the `sisl_tmp` fixture is at a function level to
     clean up after each function.
     """
+    global __file__
+    # The test file is in a tests/test_<name>.py,
+    # so step back twice
+    path = Path(request.node.path).parent.parent
+    # This file is in sisl/conftest.py
+    # And we wish to retain the sisl path, so go two levels up as well
+    path = str(path.relative_to(Path(__file__).parent.parent))
+
+    # Now path should be something like:
+    # sisl/io/siesta
 
     class FileFactory:
         def __init__(self):
@@ -57,7 +68,7 @@ def sisl_tmp(request, tmp_path_factory):
             self.dirs = [self.base]
             self.files = []
 
-        def dir(self, name="sisl"):
+        def dir(self, name=path):
             # Make name a path
             D = Path(name.replace(os.path.sep, "-"))
             if not (self.base / D).is_dir():
@@ -66,7 +77,7 @@ def sisl_tmp(request, tmp_path_factory):
 
             return self.dirs[-1]
 
-        def file(self, name, dir_name="sisl"):
+        def file(self, name, dir_name=path):
             # self.base *is* a pathlib
             D = self.base / dir_name.replace(os.path.sep, "-")
             if D in self.dirs:
@@ -80,7 +91,7 @@ def sisl_tmp(request, tmp_path_factory):
         def getbase(self):
             return self.dirs[-1]
 
-        def __call__(self, name, dir_name="sisl"):
+        def __call__(self, name, dir_name=path):
             """Shorthand for self.file"""
             return self.file(name, dir_name)
 
@@ -121,8 +132,23 @@ def sisl_files():
     If the environment variable is empty and a test has this fixture, it will
     be skipped.
     """
-    sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
-    if not sisl_files_tests.is_dir():
+    global sisl_files_tests
+
+    if sisl_files_tests.is_dir():
+
+        def _path(*files):
+            p = sisl_files_tests.joinpath(*files)
+            if p.exists():
+                return p
+            _log.info("sisl_files: test requested non-existing ' {p!s}' -> xfail")
+
+            # I expect this test to fail due to the wrong environment.
+            # But it isn't an actual fail since it hasn't runned...
+            pytest.xfail(
+                reason=f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found",
+            )
+
+    else:
         _log.info(
             "sisl_files SISL_FILES_TESTS={sisl_files_tests!s} does not exist, xfail dependencies"
         )
@@ -130,19 +156,6 @@ def sisl_files():
         def _path(*files):
             pytest.xfail(
                 reason=f"Environment SISL_FILES_TESTS not pointing to a valid directory.",
-            )
-
-    else:
-
-        def _path(*files):
-            p = sisl_files_tests.joinpath(*files)
-            if p.exists():
-                return p
-            _log.info("sisl_files: test requested non-existing ' {p!s}' -> xfail")
-            # I expect this test to fail due to the wrong environment.
-            # But it isn't an actual fail since it hasn't runned...
-            pytest.xfail(
-                reason=f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found",
             )
 
     return _path
@@ -236,7 +249,7 @@ def pytest_ignore_collect(collection_path, config):
 
 
 def pytest_report_header(config, start_path):
-    global sisl_files_tests, sisl_has_files_tests
+    global sisl_files_tests
     global _skip_paths
     s = []
     s.append(f"sisl-test: found FILES_TESTS: {sisl_files_tests!s}")
