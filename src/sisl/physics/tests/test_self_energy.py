@@ -253,9 +253,6 @@ def test_real_space_H_3d():
     )
 
 
-@pytest.mark.xfail(
-    reason="dtype for numpy>=2 seems to fail for complex64, to be cleaned"
-)
 def test_real_space_H_dtype(setup):
     RSE = RealSpaceSE(setup.H, 0, 1, (2, 2, 1), dk=100)
     g64 = RSE.green(0.1, dtype=np.complex64)
@@ -429,7 +426,7 @@ def test_real_space_SI_H_test(setup):
     RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
     RSI.set_options(dk=100, trs=False, bz=None)
     RSI.setup()
-    RSI.green(0.1, [0, 0, 0.1], dtype=np.complex128)
+    RSI.green(0.1, [0, 0, 0.1])
     RSI.self_energy(0.1, [0, 0, 0.1])
     RSI.clear()
 
@@ -441,7 +438,7 @@ def test_real_space_SI_H_k_trs(setup):
     RSI = RealSpaceSI(semi, surf, 0, (3, 1, 3))
     RSI.setup(dk=100, trs=True, bz=None)
     with pytest.raises(ValueError):
-        RSI.green(0.1, [0, 0, 0.1], dtype=np.complex128)
+        RSI.green(0.1, [0, 0, 0.1])
 
 
 def test_real_space_SI_fail_semi_in_k(setup):
