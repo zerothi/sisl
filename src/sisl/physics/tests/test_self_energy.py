@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import math as m
-import sys
 import warnings
 
 import numpy as np
@@ -255,8 +254,8 @@ def test_real_space_H_3d():
 
 
 @pytest.mark.xfail(
-    sys.version_info < (3, 12),
-    reason="some bug means older Python version wont honor dtype=complex64",
+    int(np.__version__.split(".")[0]) >= 2,
+    reason="some numpy2 bug means it will not honor dtype=complex64",
 )
 def test_real_space_H_dtype(setup):
     RSE = RealSpaceSE(setup.H, 0, 1, (2, 2, 1), dk=100)
