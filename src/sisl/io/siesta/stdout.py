@@ -40,7 +40,7 @@ def _ensure_atoms(atoms):
     return atoms
 
 
-def _parse_spin(attr, match):
+def _parse_spin(attr, instance, match):
     """Parse 'redata: Spin configuration *= <value>'"""
     opt = match.string.split("=")[-1]
 
@@ -114,19 +114,19 @@ class stdoutSileSiesta(SileSiesta):
         _A(
             "na",
             r"^initatomlists: Number of atoms",
-            lambda attr, match: int(match.string.split()[-3]),
+            lambda attr, instance, match: int(match.string.split()[-3]),
             not_found="warn",
         ),
         _A(
             "no",
             r"^initatomlists: Number of atoms",
-            lambda attr, match: int(match.string.split()[-2]),
+            lambda attr, instance, match: int(match.string.split()[-2]),
             not_found="warn",
         ),
         _A(
             "completed",
             r".*Job completed",
-            lambda attr, match: lambda: True,
+            lambda attr, instance, match: lambda: True,
             default=lambda: False,
             not_found="warn",
         ),
@@ -138,7 +138,7 @@ class stdoutSileSiesta(SileSiesta):
         _A(
             "_final_analysis",
             r"^siesta: Final energy",
-            lambda attr, match: lambda: True,
+            lambda attr, instance, match: lambda: True,
             default=lambda: False,
         ),
     ]

@@ -29,31 +29,36 @@ class stdoutSileORCA(SileORCA):
         _A(
             "na",
             r".*Number of atoms",
-            lambda attr, match: int(match.string.split()[-1]),
+            lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
         _A(
             "no",
             r".*Number of basis functions",
-            lambda attr, match: int(match.string.split()[-1]),
+            lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
         _A(
             "vdw_correction",
             r".*DFT DISPERSION CORRECTION",
-            lambda attr, match: True,
+            lambda attr, instance, match: True,
             default=False,
             not_found="ignore",
         ),
         _A(
             "completed",
             r".*ORCA TERMINATED NORMALLY",
-            lambda attr, match: True,
+            lambda attr, instance, match: True,
             default=False,
             not_found="warn",
         ),
     ]
 
+    @deprecation(
+        "stdoutSileORCA.completed is deprecated in favor of stdoutSileORCA.info.completed",
+        "0.15",
+        "0.16",
+    )
     def completed(self):
         """True if the full file has been read and "ORCA TERMINATED NORMALLY" was found."""
         return self.info.completed

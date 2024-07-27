@@ -31,19 +31,19 @@ class txtSileORCA(SileORCA):
         _A(
             "na",
             r".*Number of atoms:",
-            lambda attr, match: int(match.string.split()[-1]),
+            lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
         _A(
             "no",
             r".*number of basis functions:",
-            lambda attr, match: int(match.string.split()[-1]),
+            lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
         _A(
             "vdw_correction",
             r".*\$ VdW_Correction",
-            lambda attr, match: True,
+            lambda attr, instance, match: True,
             default=False,
             not_found="ignore",
         ),
