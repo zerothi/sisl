@@ -4,7 +4,7 @@
 Finding neighbors
 *****************
 
-.. module:: sisl.geom
+.. currentmodule:: sisl.geom
 
 `sisl` implements an **algorithm to find neighbors in a geometry**. It has two main properties:
 

@@ -25,7 +25,6 @@ from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
 from sisl.io.vasp import chgSileVASP
 from sisl.io.wannier90 import winSileWannier90
-from sisl.io.xsf import xsfSile
 
 pytestmark = pytest.mark.io
 
@@ -255,14 +254,6 @@ class TestObject:
         for obj in [BaseSile, Sile, moldenSile]:
             assert isinstance(s, obj)
 
-    @pytest.mark.parametrize(
-        "sile", _fnames("test", ["xsf", "XSF", "xsf.gz", "XSF.gz"])
-    )
-    def test_xsf(self, sile):
-        s = gs(sile)
-        for obj in [BaseSile, Sile, xsfSile]:
-            assert isinstance(s, obj)
-
     @pytest.mark.parametrize("sile", _fnames("test", ["win"]))
     def test_wannier90_seed(self, sile):
         sile = gs(sile, cls=SileWannier90)
@@ -325,9 +316,6 @@ class TestObject:
             pytest.xfail(
                 "Windows reading/writing supercell fails for some unknown reason"
             )
-
-        if issubclass(sile, xsfSile):
-            pytest.xfail("Reading xsfSile fails for some unknown reason")
 
         # Write
         sile(f, mode="w").write_lattice(L)

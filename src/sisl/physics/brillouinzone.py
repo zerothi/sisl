@@ -185,14 +185,14 @@ class BrillouinZoneDispatcher(ClassDispatcher):
 
     By default the `apply` method exposes a set of dispatch methods:
 
-    - `apply.iter`, the default iterator module
-    - `apply.average` reduced result by averaging (using `BrillouinZone.weight` as the weight per k-point.
-    - `apply.sum` reduced result without weighing
-    - `apply.array` return a single array with all values; has `len` equal to number of k-points
-    - `apply.none`, specialized method that is mainly useful when wrapping methods
-    - `apply.list` same as `apply.array` but using Python list as return value
-    - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical operations element wise
-    - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray` instance
+    - ``apply.iter``, the default iterator module
+    - ``apply.average`` reduced result by averaging (using `BrillouinZone.weight` as the weight per k-point.
+    - ``apply.sum`` reduced result without weighing
+    - ``apply.array`` return a single array with all values; has `len` equal to number of k-points
+    - ``apply.none``, specialized method that is mainly useful when wrapping methods
+    - ``apply.list`` same as ``apply.array`` but using Python list as return value
+    - ``apply.oplist`` using `sisl.oplist` allows greater flexibility for mathematical operations element wise
+    - ``apply.datarray`` if `xarray` is available one can retrieve an `xarray.DataArray` instance
 
     Please see :ref:`physics.brillouinzone` for further examples.
     """
@@ -244,6 +244,7 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk: float = 0.05):
         return np.cumsum(dist)
 
     total_dist = dist.sum() / stop
+
     # Scale to total length of `stop`
     return np.cumsum(dist) / total_dist
 
@@ -515,7 +516,13 @@ class BrillouinZone:
 
     @classmethod
     def param_circle(
-        cls, parent, N_or_dk: Union[int, float], kR: float, normal, origin, loop=False
+        cls,
+        parent,
+        N_or_dk: Union[int, float],
+        kR: float,
+        normal,
+        origin,
+        loop: bool = False,
     ):
         r"""Create a parameterized k-point list where the k-points are generated on a circle around an origin
 
@@ -539,7 +546,7 @@ class BrillouinZone:
            normal vector to determine the circle plane
         origin : array_like of float
            origin of the circle used to generate the circular parameterization
-        loop : bool, optional
+        loop :
            whether the first and last point are equal
 
         Examples
@@ -889,7 +896,7 @@ class MonkhorstPack(BrillouinZone):
         """Displacement for this Monkhorst-Pack grid"""
         return self._displ
 
-    def __str__(self):
+    def __str__(self) -> str:
         """String representation of `MonkhorstPack`"""
         p = self._parent_lattice()
         return (
@@ -1021,7 +1028,12 @@ class MonkhorstPack(BrillouinZone):
         return k, w
 
     def replace(
-        self, k, mp, displacement=False, as_index: bool = False, check_vol: bool = True
+        self,
+        k,
+        mp: MonkhorstPack,
+        displacement=False,
+        as_index: bool = False,
+        check_vol: bool = True,
     ):
         r"""Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
 

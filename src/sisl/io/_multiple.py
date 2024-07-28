@@ -219,7 +219,7 @@ class SileBound:
         -----
         This method defaults to return {default_slice} item(s).
 
-        This method enables slicing for handling multiple values (see [...|default]).
+        This method enables slicing for handling multiple values (see ``[...|default]``).
 
         This is an optional handler enabling returning multiple elements if {name}
         allows this.

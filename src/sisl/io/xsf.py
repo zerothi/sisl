@@ -192,7 +192,11 @@ class xsfSile(Sile):
 
     @sile_fh_open()
     def _r_geometry_next(
-        self, lattice: Optional[Lattice] = None, atoms=None, ret_data: bool = False
+        self,
+        lattice: Optional[Lattice] = None,
+        atoms=None,
+        ret_data: bool = False,
+        only_lattice: bool = False,
     ) -> Geometry:
         if lattice is None:
             # fetch the prior read cell value
@@ -317,6 +321,9 @@ class xsfSile(Sile):
             pt = PeriodicTable()
             atoms = [pt.Z(Z) for Z in atoms_r]
 
+        if only_lattice:
+            return cell
+
         if xyz is None:
             if ret_data:
                 return None, None
@@ -338,10 +345,8 @@ class xsfSile(Sile):
     @SileBinder(postprocess=postprocess_tuple(list))
     def read_lattice(self) -> Lattice:
         """Lattice contained in file"""
-        ret = self._r_geometry_next()
-        if ret is None:
-            return ret
-        return ret.lattice
+        ret = self._r_geometry_next(only_lattice=True)
+        return ret
 
     @SileBinder(postprocess=postprocess_tuple(list))
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")

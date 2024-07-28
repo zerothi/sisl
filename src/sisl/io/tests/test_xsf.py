@@ -9,13 +9,13 @@ from itertools import zip_longest
 import numpy as np
 import pytest
 
-from sisl import Atom, Geometry, Grid
+from sisl import Atom, Geometry, Grid, Lattice
 from sisl.io.xsf import *
 
 pytestmark = [pytest.mark.io, pytest.mark.generic]
 
 
-def test_default(sisl_tmp):
+def test_xsf_default(sisl_tmp):
     f = sisl_tmp("GRID_default.xsf")
     grid = Grid(0.2)
     grid.grid = np.random.rand(*grid.shape)
@@ -32,7 +32,7 @@ def test_default(sisl_tmp):
         (False, False, False),
     ],
 )
-def test_pbc(sisl_tmp, pbc):
+def test_xsf_pbc(sisl_tmp, pbc):
     f = sisl_tmp("GRID_default.xsf")
     geom = Geometry(
         np.random.rand(10, 3),
@@ -45,7 +45,7 @@ def test_pbc(sisl_tmp, pbc):
     assert all(geom.pbc == geom2.pbc)
 
 
-def test_default_size(sisl_tmp):
+def test_xsf_default_size(sisl_tmp):
     f = sisl_tmp("GRID_default_size.xsf")
     grid = Grid(0.2, lattice=2.0)
     grid.grid = np.random.rand(*grid.shape)
@@ -53,7 +53,7 @@ def test_default_size(sisl_tmp):
     assert grid.geometry is None
 
 
-def test_geometry(sisl_tmp):
+def test_xsf_geometry(sisl_tmp):
     f = sisl_tmp("GRID_geometry.xsf")
     geom = Geometry(
         np.random.rand(10, 3),
@@ -66,7 +66,7 @@ def test_geometry(sisl_tmp):
     assert not grid.geometry is None
 
 
-def test_imaginary(sisl_tmp):
+def test_xsf_imaginary(sisl_tmp):
     f = sisl_tmp("GRID_imag.xsf")
     geom = Geometry(
         np.random.rand(10, 3),
