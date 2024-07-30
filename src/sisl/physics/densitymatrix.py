@@ -1497,7 +1497,7 @@ class DensityMatrix(_densitymatrix):
 
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \mathbf D(\mathbf k) = \mathbf D_{ij} e^{i \mathbf k\cdot\mathb r}
@@ -1512,8 +1512,8 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -1562,7 +1562,7 @@ class DensityMatrix(_densitymatrix):
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` is one of the Cartesian directions.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \nabla_k \mathbf D_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf D_{ij} e^{i \mathbf k\cdot\mathbf r}
@@ -1577,8 +1577,8 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -1625,7 +1625,7 @@ class DensityMatrix(_densitymatrix):
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \nabla_k^2 \mathbf D^{(\alpha\beta)}(\mathbf k) = - \mathbf r^{(i)} \mathbf r^{\beta} \mathbf D_{ij} e^{i\mathbf k\cdot\mathbf r}
@@ -1640,8 +1640,8 @@ class DensityMatrix(_densitymatrix):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,

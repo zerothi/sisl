@@ -19,6 +19,8 @@ from sisl.linalg import eigh_destroy
 from sisl.messages import deprecate_argument, warn
 from sisl.typing import CartesianAxes, GaugeType, npt
 
+from ._feature import comply_gauge
+
 __all__ = ["degenerate_decouple", "Coefficient", "State", "StateC"]
 
 _pi = np.pi
@@ -961,16 +963,16 @@ state coefficients
 
             \tilde C_\alpha = e^{i\mathbf k\mathbf r_\alpha} C_\alpha
 
-        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``orbital`` and ``cell`` gauge, respectively.
+        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``atom`` and ``cell`` gauge, respectively.
 
         Parameters
         ----------
-        gauge : {'cell', 'orbital'}
+        gauge :
             specify the new gauge for the mode coefficients
         offset : array_like, optional
             whether the coordinates should be offset by another phase-factor
         """
-        gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+        gauge = comply_gauge(gauge)
 
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
@@ -1001,7 +1003,7 @@ state coefficients
             if self.shape[1] == g.no * 2:
                 phase = np.repeat(phase, 2)
 
-        if gauge == "orbital":
+        if gauge == "atom":
             # R -> r gauge tranformation.
             self.state *= exp(-1j * phase).reshape(1, -1)
         elif gauge == "cell":

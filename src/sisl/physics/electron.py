@@ -1727,7 +1727,7 @@ class _electron_State:
             grid = Grid(grid, geometry=geometry, dtype=self.dtype)
 
         # Ensure we are dealing with the R gauge
-        self.change_gauge("R")
+        self.change_gauge("cell")
 
         # Retrieve k
         k = self.info.get("k", _a.zerosd(3))

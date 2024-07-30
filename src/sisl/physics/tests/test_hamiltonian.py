@@ -234,6 +234,17 @@ class TestHamiltonian:
         # orthogonal basis sets always returns a diagonal in float64
         assert Sk.dtype == dtype
 
+    def test_eigenstate_gauge(self, setup):
+        H = setup.HS.copy()
+        H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
+
+        # Try with different gauges
+        for gauge in ("cell", "R"):
+            assert H.eigenstate(gauge=gauge).info["gauge"] == "cell"
+
+        for gauge in ("atom", "atoms", "atom", "orbitals", "r"):
+            assert H.eigenstate(gauge=gauge).info["gauge"] == "atom"
+
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.15, 0.15, 0.15]])
     def test_Hk_format(self, setup, k):
         H = setup.HS.copy()
@@ -247,7 +258,7 @@ class TestHamiltonian:
         assert np.allclose(csr, coo)
 
     @pytest.mark.parametrize("orthogonal", [True, False])
-    @pytest.mark.parametrize("gauge", ["cell", "orbital"])
+    @pytest.mark.parametrize("gauge", ["cell", "atom"])
     @pytest.mark.parametrize(
         "spin", ["unpolarized", "polarized", "non-collinear", "spin-orbit"]
     )
@@ -671,12 +682,12 @@ class TestHamiltonian:
 
         k = [0.1] * 3
         es1 = H.eigenstate(k, gauge="cell")
-        es2 = H.eigenstate(k, gauge="orbital")
+        es2 = H.eigenstate(k, gauge="atom")
         assert np.allclose(es1.eig, es2.eig)
         assert not np.allclose(es1.state, es2.state)
 
         es1 = H.eigenstate(k, gauge="cell", dtype=np.complex64)
-        es2 = H.eigenstate(k, gauge="orbital", dtype=np.complex64)
+        es2 = H.eigenstate(k, gauge="atom", dtype=np.complex64)
         assert np.allclose(es1.eig, es2.eig)
         assert not np.allclose(es1.state, es2.state)
 
@@ -769,14 +780,14 @@ class TestHamiltonian:
         # since the gauge='cell' yields the correct *decoupled* states
         # where as gauge='orbital' mixes them in a bad way.
         es1 = H.eigenstate(k, gauge="cell")
-        es2 = H.eigenstate(k, gauge="orbital")
+        es2 = H.eigenstate(k, gauge="atom")
         assert not np.allclose(es1.velocity(), es2.velocity())
 
         es2.change_gauge("cell")
         assert not np.allclose(es1.velocity(), es2.velocity())
 
-        es2.change_gauge("orbital")
-        es1.change_gauge("orbital")
+        es2.change_gauge("atom")
+        es1.change_gauge("atom")
         v1 = es1.velocity()
         v2 = es2.velocity()
         assert not np.allclose(v1, v2)
@@ -977,7 +988,7 @@ class TestHamiltonian:
 
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge="cell").berry_curvature()
-        ie2 = H.eigenstate(k, gauge="orbital").berry_curvature()
+        ie2 = H.eigenstate(k, gauge="atom").berry_curvature()
         assert not np.allclose(ie1, ie2)
 
     def test_spin_berry_curvature(self, setup):
@@ -988,7 +999,7 @@ class TestHamiltonian:
 
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge="cell").spin_berry_curvature()
-        ie2 = H.eigenstate(k, gauge="orbital").spin_berry_curvature()
+        ie2 = H.eigenstate(k, gauge="atom").spin_berry_curvature()
         assert not np.allclose(ie1, ie2)
 
     @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
@@ -1056,7 +1067,7 @@ class TestHamiltonian:
 
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge="cell").effective_mass()
-        ie2 = H.eigenstate(k, gauge="orbital").effective_mass()
+        ie2 = H.eigenstate(k, gauge="atom").effective_mass()
         assert np.allclose(abs(ie1), abs(ie2))
 
     def test_eigenstate_polarized_orthogonal_sk(self, setup):
@@ -1086,12 +1097,12 @@ class TestHamiltonian:
         HS.construct([(0.1, 1.5), ((1.0, 1.0), (0.1, 0.1))])
         es = HS.eigenstate()
         es2 = es.copy()
-        es2.change_gauge("orbitalr")
+        es2.change_gauge("atom")
         assert np.allclose(es2.state, es.state)
 
         es = HS.eigenstate(k=(0.2, 0.2, 0.2))
         es2 = es.copy()
-        es2.change_gauge("orbital")
+        es2.change_gauge("atom")
         assert not np.allclose(es2.state, es.state)
         es2.change_gauge("cell")
         assert np.allclose(es2.state, es.state)
@@ -1588,7 +1599,7 @@ class TestHamiltonian:
 
         eig1 = H.eigh(dtype=np.complex64)
         assert allclose(H.eigh(dtype=np.complex128), eig1)
-        assert allclose(H.eigh(gauge="orbital", dtype=np.complex128), eig1)
+        assert allclose(H.eigh(gauge="atom", dtype=np.complex128), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin("non-collinear"))
@@ -1641,7 +1652,7 @@ class TestHamiltonian:
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge("cell")
-        es.change_gauge("orbital")
+        es.change_gauge("atom")
 
     def test_non_colinear_non_orthogonal(self, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
@@ -1715,7 +1726,7 @@ class TestHamiltonian:
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge("cell")
-        es.change_gauge("orbital")
+        es.change_gauge("atom")
 
     def test_spin_orbit_orthogonal(self, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
@@ -1800,7 +1811,7 @@ class TestHamiltonian:
 
         # Ensure we can change gauge for SO stuff
         es.change_gauge("cell")
-        es.change_gauge("orbital")
+        es.change_gauge("atom")
 
     def test_finalized(self, setup):
         assert not setup.H.finalized

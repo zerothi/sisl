@@ -7,7 +7,20 @@ from typing import Iterator, List
 
 import numpy as np
 
-__all__ = ["yield_manifolds"]
+__all__ = ["yield_manifolds", "comply_gauge"]
+
+
+def comply_gauge(gauge: GaugeType) -> str:
+    """Comply the gauge to one of two words: atom | cell"""
+    return {
+        "R": "cell",
+        "cell": "cell",
+        "r": "atom",
+        "orbital": "atom",
+        "orbitals": "atom",
+        "atom": "atom",
+        "atoms": "atom",
+    }[gauge]
 
 
 def yield_manifolds(values, atol: float = 0.1, axis: int = -1) -> Iterator[List]:
