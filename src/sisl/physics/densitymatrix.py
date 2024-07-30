@@ -694,7 +694,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         spinor=None,
         atol: float = 1e-7,
         eta: Optional[bool] = False,
-        method: Literal["pre-compute", "direct"] = "pre-compute",
+        method: Literal["pre-compute", "direct"] = "direct",
         **kwargs,
     ):
         r"""Expand the density matrix to the charge density on a grid
@@ -723,22 +723,23 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        grid : Grid
+        grid :
            the grid on which to add the density (the density is in ``e/Ang^3``)
         spinor : (2,) or (2, 2), optional
            the spinor matrix to obtain the diagonal components of the density. For un-polarized density matrices
            this keyword has no influence. For spin-polarized it *has* to be either 1 integer or a vector of
            length 2 (defaults to total density).
            For non-collinear/spin-orbit density matrices it has to be a 2x2 matrix (defaults to total density).
-        atol : float, optional
+        atol :
            DM tolerance for accepted values. For all density matrix elements with absolute values below
            the tolerance, they will be treated as strictly zeros.
-        eta : bool, optional
+        eta :
            show a progressbar on stdout
         method:
            It determines if the orbital values are computed on the fly (direct) or they are all pre-computed
            on the grid at the beginning(pre-compute).
            Pre computing orbitals results in a faster computation, but it requires more memory.
+           Currently pre-computing has a bug that results in out-of-bounds, it will be fixed.
 
         Notes
         -----

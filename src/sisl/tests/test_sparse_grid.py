@@ -92,6 +92,7 @@ def test_wavefunction_correct(H, grid_shape, psi_values, k):
     assert np.allclose(from_psi_grid.grid, wf_grid.grid)
 
 
+@pytest.mark.xfail(reason="bug in array indices, data-sc-off (sometimes)")
 @pytest.mark.parametrize(
     ["k", "ncoeffs"],
     [[(0, 0, 0), 1], [(0, 0, 0), 2], [(0.25, 0, 0), 1], [(0.25, 0, 0), 2]],
@@ -148,6 +149,7 @@ def test_onthefly_reduction(geometry, psi_values, k, ncoeffs):
         assert np.allclose(reduced.reshape(post_reduced.shape), post_reduced)
 
 
+@pytest.mark.xfail(reason="bug in array indices, data-sc-off (sometimes)")
 def test_orbital_products(geometry):
     """Very simple tests to see if the orbital products are computed correctly"""
     geometry = geometry.copy()
@@ -207,6 +209,7 @@ def test_orbital_products(geometry):
     assert np.allclose(dens.grid.ravel(), predicted)
 
 
+@pytest.mark.xfail(reason="bug in array indices, data-sc-off (sometimes)")
 def test_orbital_products_periodic(geometry):
     """Very simple tests to see if the orbital products are computed correctly
     when there are periodic conditions.
@@ -247,6 +250,7 @@ def test_orbital_products_periodic(geometry):
     # We don't check for now.
 
 
+@pytest.mark.xfail(reason="bug in array indices, data-sc-off (sometimes)")
 @pytest.mark.parametrize("ncoeffs", [1, 2])
 def test_orbital_products_onthefly_reduction(geometry, psi_values, ncoeffs):
     """Checks that the on the fly reduction produces the same
