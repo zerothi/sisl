@@ -88,7 +88,18 @@ def setup():
     return t()
 
 
-@pytest.fixture(scope="module", params=["direct", "pre-compute"])
+@pytest.fixture(
+    scope="module",
+    params=[
+        "direct",
+        pytest.param(
+            "pre-compute",
+            marks=pytest.mark.xfail(
+                reason="raises NotImplementedError due to seg-fault"
+            ),
+        ),
+    ],
+)
 def density_method(request):
     return request.param
 
