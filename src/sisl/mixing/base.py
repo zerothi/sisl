@@ -7,10 +7,9 @@ import operator as op
 from abc import abstractmethod
 from collections import deque
 from numbers import Integral
-from typing import Any, Callable, Iterator, Optional, TypeVar, Union
+from typing import Any, Callable, Iterator, Optional, Sequence, TypeVar, Union
 
 from sisl._internal import set_module
-from sisl.typing import ArrayLike
 
 __all__ = [
     "BaseMixer",
@@ -362,7 +361,7 @@ class History:
     def __setitem__(self, key: int, value: Any) -> None:
         self._hist[key] = value
 
-    def __delitem__(self, key: Union[int, ArrayLike]) -> None:
+    def __delitem__(self, key: Union[int, Sequence[int]]) -> None:
         self.clear(key)
 
     def append(self, *variables: Any) -> None:
@@ -378,7 +377,7 @@ class History:
         """
         self._hist.append(variables)
 
-    def clear(self, index: Optional[Union[int, ArrayLike]] = None) -> None:
+    def clear(self, index: Optional[Union[int, Sequence[int]]] = None) -> None:
         r"""Clear variables to the history
 
         Parameters

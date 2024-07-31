@@ -112,7 +112,7 @@ jobs:
     - name: Python minimal versions
       if: ${{ matrix.minimal }}
       run: |
-        python -m pip install --progress-bar=off -vv "numpy<1.21" "scipy<1.6" "xarray<0.21"
+        python -m pip install --progress-bar=off -vv "numpy<1.22" "scipy<1.7" "xarray<0.21"
 
     - name: Install sisl + dependencies
       env:

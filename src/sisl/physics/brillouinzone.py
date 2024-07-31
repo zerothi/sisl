@@ -147,6 +147,7 @@ from numbers import Integral, Real
 from typing import Sequence, Tuple, Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import argsort, dot, pi, sum
 
 import sisl._array as _a
@@ -158,7 +159,6 @@ from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
-from sisl.typing import npt
 from sisl.unit import units
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm

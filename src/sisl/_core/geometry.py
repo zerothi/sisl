@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Iterator, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import (
     argsort,
     bool_,
@@ -50,14 +51,7 @@ from sisl._math_small import cross3, is_ascending, xyz_to_spherical_cos_phi
 from sisl._namedindex import NamedIndex
 from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
 from sisl.shape import Cube, Shape, Sphere
-from sisl.typing import (
-    ArrayLike,
-    AtomsIndex,
-    CellAxes,
-    NDArray,
-    OrbitalsIndex,
-    SileLike,
-)
+from sisl.typing import AtomsIndex, CellAxes, OrbitalsIndex, SileLike
 from sisl.utils import (
     angle,
     cmd,
@@ -182,7 +176,7 @@ class Geometry(
         "0.15",
         "0.16",
     )
-    def __init__(self, xyz: ArrayLike, atoms=None, lattice=None, names=None):
+    def __init__(self, xyz: npt.ArrayLike, atoms=None, lattice=None, names=None):
         # Create the geometry coordinate, be aware that we do not copy!
         self.xyz = _a.asarrayd(xyz, order="C").reshape(-1, 3)
 
@@ -306,24 +300,24 @@ class Geometry(
         return self.no * self.n_s
 
     @property
-    def firsto(self) -> NDArray[np.int32]:
+    def firsto(self) -> npt.NDArray[np.int32]:
         """The first orbital on the corresponding atom"""
         return self.atoms.firsto
 
     @property
-    def lasto(self) -> NDArray[np.int32]:
+    def lasto(self) -> npt.NDArray[np.int32]:
         """The last orbital on the corresponding atom"""
         return self.atoms.lasto
 
     @property
-    def orbitals(self) -> ndarray:
+    def orbitals(self) -> List[Orbital]:
         """List of orbitals per atom"""
         return self.atoms.orbitals
 
     ## End size of geometry
 
     @property
-    def fxyz(self) -> NDArray[np.float64]:
+    def fxyz(self) -> npt.NDArray[np.float64]:
         """Returns geometry coordinates in fractional coordinates"""
         return dot(self.xyz, self.icell.T)
 

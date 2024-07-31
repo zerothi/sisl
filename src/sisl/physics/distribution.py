@@ -270,7 +270,6 @@ def step_function(x, x0=0.0):
         the step function distribution, same length as `x`
     """
     x = np.asarray(x)
-    # numpy 1.20, broadcast_shapes introduces there!
     shape = np.broadcast_shapes(x.shape, np.asarray(x0).shape)
     s = np.ones_like(x, shape=shape)
     s[x == x0] = 0.5

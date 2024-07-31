@@ -6,10 +6,11 @@ from __future__ import annotations
 from typing import Optional, Tuple, Union
 
 import numpy as np
+import numpy.typing as npt
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
-from sisl.typing import SeqOrScalarFloat, SimpleIndex, npt
+from sisl.typing import SeqOrScalarFloat, SimpleIndex
 
 from .state import Coefficient, State, StateC
 

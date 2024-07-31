@@ -8,12 +8,13 @@ from pathlib import Path
 from typing import Any, Literal, NewType, Optional, Sequence, Tuple, TypedDict, Union
 
 import numpy as np
+import numpy.typing as npt
 
 import sisl
 from sisl._core.geometry import AtomCategory, Geometry
 from sisl._core.lattice import Lattice
 from sisl.io.sile import BaseSile
-from sisl.typing import AtomsIndex, GeometryLike, LatticeLike, npt
+from sisl.typing import AtomsIndex, GeometryLike, LatticeLike
 
 PathLike = Union[str, Path, BaseSile]
 

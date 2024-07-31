@@ -9,11 +9,11 @@ from operator import add
 from typing import Any, Optional, Tuple, Type, Union
 
 import numpy as np
+import numpy.typing as npt
 
 import sisl._array as _a
 from sisl._internal import set_module
 from sisl.linalg import solve_destroy
-from sisl.typing import ArrayLike, NDArray
 
 from .base import (
     BaseHistoryWeightMixer,
@@ -86,7 +86,7 @@ class DIISMixer(BaseHistoryWeightMixer):
 
         self._metric = metric
 
-    def solve_lagrange(self) -> Tuple[NDArray, NDArray]:
+    def solve_lagrange(self) -> Tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
         r"""Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier"""
         hist = self.history
         n_h = len(hist)
@@ -134,12 +134,12 @@ class DIISMixer(BaseHistoryWeightMixer):
             # We have a LinalgError
             return _a.arrayd([1.0]), last_metric
 
-    def coefficients(self) -> NDArray:
+    def coefficients(self) -> npt.NDArray[np.float64]:
         r"""Calculate coefficients of the Lagrangian"""
         c, lagrange = self.solve_lagrange()
         return c
 
-    def mix(self, coefficients: NDArray) -> Any:
+    def mix(self, coefficients: npt.ArrayLike) -> Any:
         r"""Calculate a new variable :math:`\mathbf f'` using history and input coefficients
 
         Parameters
@@ -211,7 +211,7 @@ class AdaptiveDIISMixer(DIISMixer):
         exp_lag_log = np.exp((np.log(lagrange) + offset) / spread)
         self._weight = self._weight_min + self._weight_delta / (exp_lag_log + 1)
 
-    def coefficients(self) -> NDArray:
+    def coefficients(self) -> npt.NDArray[np.float64]:
         r"""Calculate coefficients and adjust weights according to a Lagrange multiplier"""
         c, lagrange = self.solve_lagrange()
         self.adjust_weight(lagrange)

@@ -48,6 +48,7 @@ from functools import reduce
 from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 import scipy.sparse as scs
 from numpy import (
     add,
@@ -88,7 +89,7 @@ from sisl.messages import (
     progressbar,
     warn,
 )
-from sisl.typing import CartesianAxisStrLiteral, npt
+from sisl.typing import CartesianAxisStrLiteral
 from sisl.utils.misc import direction
 
 if TYPE_CHECKING:

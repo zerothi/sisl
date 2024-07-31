@@ -8,6 +8,7 @@ from numbers import Real
 from typing import Callable, Literal, Optional
 
 import numpy as np
+import numpy.typing as npt
 from numpy import bool_, einsum, exp, ndarray
 from scipy.sparse import csr_matrix
 
@@ -17,7 +18,7 @@ from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
 from sisl.messages import deprecate_argument, warn
-from sisl.typing import CartesianAxes, GaugeType, npt
+from sisl.typing import CartesianAxes, GaugeType
 
 from ._feature import comply_gauge
 

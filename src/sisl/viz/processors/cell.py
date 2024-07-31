@@ -8,10 +8,10 @@ import itertools
 from typing import Any, List, Literal, TypedDict, Union
 
 import numpy as np
+import numpy.typing as npt
 from xarray import Dataset
 
 from sisl._core.lattice import Lattice
-from sisl.typing import npt
 from sisl.viz.types import LatticeLike
 
 from .coords import CoordsDataset

@@ -7,9 +7,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Sequence, Union
 
 import numpy as np
+import numpy.typing as npt
 import scipy.sparse as sps
-
-from . import _numpy as npt
 
 # To prevent import cycles place any internal imports in the branch below
 # and use a string literal forward reference to it in subsequent types

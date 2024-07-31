@@ -18,7 +18,6 @@ from sisl._indices import list_index_le
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, deprecation, info
 from sisl.shape import Sphere
-from sisl.typing import NDArray
 
 from .orbital import Orbital
 

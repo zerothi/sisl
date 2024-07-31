@@ -8,11 +8,12 @@ from dataclasses import asdict
 from typing import Any, List, Optional, Sequence, Tuple, TypedDict, Union
 
 import numpy as np
+import numpy.typing as npt
 from xarray import Dataset
 
 from sisl import BrillouinZone, Geometry, PeriodicTable
 from sisl.messages import warn
-from sisl.typing import AtomsIndex, npt
+from sisl.typing import AtomsIndex
 from sisl.utils.mathematics import fnorm
 from sisl.viz.types import AtomArrowSpec
 

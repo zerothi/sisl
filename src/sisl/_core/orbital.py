@@ -13,6 +13,7 @@ from numbers import Integral, Real
 from typing import Callable, Optional, Tuple
 
 import numpy as np
+import numpy.typing as npt
 import scipy
 from numpy import cos, sin, sqrt, square, take
 from scipy.special import eval_genlaguerre, factorial, lpmv
@@ -29,7 +30,6 @@ from sisl._internal import set_module
 from sisl.constant import a0
 from sisl.messages import warn
 from sisl.shape import Sphere
-from sisl.typing import npt
 from sisl.utils.mathematics import cart2spher, close
 
 __all__ = [

@@ -38,9 +38,20 @@ keywords = [
     "physics"
 ]
 
+# Our dependencies should pretty much follow EOL python releases
+# However, the exception is currently that numpy.typing.NDArray
+# is currently (as of August 2024) required in some dependency
+# packages (PIL).
+# So this time around we will be taking a bit more recent one.
+# Otherwise, the chosen versions should be something like:
+# See when the currently oldest LIVE Python version was first released.
+# E.g. 3.9 was released 2020-10-05.
+# Now all dependencies that were released around the same time should be the
+# lower bound of dependencies.
 dependencies = [
-    "numpy>=1.20",
-    "scipy>=1.5",
+    # We need npt.NDArray
+    "numpy>=1.21",
+    "scipy>=1.6",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
     # xarray fixes get_loc in 0.20
