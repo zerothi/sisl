@@ -11,9 +11,9 @@ import numpy as np
 
 import sisl
 from sisl._core.geometry import AtomCategory, Geometry
-from sisl._core.lattice import Lattice, LatticeChild
+from sisl._core.lattice import Lattice
 from sisl.io.sile import BaseSile
-from sisl.typing import AtomsIndex, npt
+from sisl.typing import AtomsIndex, GeometryLike, LatticeLike, npt
 
 PathLike = Union[str, Path, BaseSile]
 
@@ -23,15 +23,11 @@ Color = NewType("Color", str)
 # (value, color) tuples.
 Colorscale = Union[str, Sequence[Color], Sequence[Tuple[float, Color]]]
 
-GeometryLike = Union[sisl.Geometry, Any]
-
 Axis = Union[
     Literal["x", "y", "z", "-x", "-y", "-z", "a", "b", "c", "-a", "-b", "-c"],
     Sequence[float],
 ]
 Axes = Sequence[Axis]
-
-GeometryLike = Union[Geometry, PathLike]
 
 
 @dataclass
@@ -92,8 +88,6 @@ class OrbitalStyleQuery(StyleSpec, OrbitalQuery): ...
 
 OrbitalQueries = Sequence[OrbitalQuery]
 OrbitalStyleQueries = Sequence[OrbitalStyleQuery]
-
-CellLike = Union[npt.NDArray[Union[np.float32, np.float64]], Lattice, LatticeChild]
 
 
 @dataclass

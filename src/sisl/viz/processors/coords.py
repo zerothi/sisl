@@ -10,19 +10,21 @@ import numpy as np
 from xarray import Dataset
 
 from sisl._core._lattice import cell_invert
-from sisl._core.lattice import Lattice, LatticeChild
+from sisl._core.lattice import Lattice
 from sisl.typing import npt
 from sisl.utils.mathematics import fnorm
 
+from ..types import Axes, Axis, LatticeLike
 from .axes import axes_cross_product, axis_direction, get_ax_title
-
-# from ...types import Axes, CellLike, Axis
 
 CoordsDataset = Dataset
 
 
 def projected_2Dcoords(
-    cell: CellLike, xyz: npt.NDArray[np.float64], xaxis: Axis = "x", yaxis: Axis = "y"
+    cell: LatticeLike,
+    xyz: npt.NDArray[np.float64],
+    xaxis: Axis = "x",
+    yaxis: Axis = "y",
 ) -> npt.NDArray[np.float64]:
     """Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -51,8 +53,7 @@ def projected_2Dcoords(
         the 2D coordinates of the geometry, with all positions projected into the plane
         defined by xaxis and yaxis.
     """
-    if isinstance(cell, (Lattice, LatticeChild)):
-        cell = cell.cell
+    cell = Lattice.new(cell).cell
 
     try:
         all_lattice_vecs = len(set([xaxis, yaxis]).intersection(["a", "b", "c"])) == 2
@@ -77,7 +78,9 @@ def projected_2Dcoords(
     return np.dot(xyz, icell.T)[..., coord_indices]
 
 
-def projected_1Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], axis: Axis = "x"):
+def projected_1Dcoords(
+    cell: LatticeLike, xyz: npt.NDArray[np.float64], axis: Axis = "x"
+):
     """
     Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -107,8 +110,7 @@ def projected_1Dcoords(cell: CellLike, xyz: npt.NDArray[np.float64], axis: Axis 
         the 1D coordinates of the geometry, with all positions projected into the line
         defined by axis.
     """
-    if isinstance(cell, (Lattice, LatticeChild)):
-        cell = cell.cell
+    cell = Lattice.new(cell).cell
 
     if isinstance(axis, str) and axis in ("a", "b", "c", "0", "1", "2"):
         return projected_2Dcoords(

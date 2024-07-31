@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.0] - YYYY-MM-DD
 
 ### Added
+- conversion of list-like elements to `Lattice`
 - vacuum argument for all `sisl.geom` methods that can use it
 - `Geometry.find_nsc`, alternate method for calculating `nsc` with more options
 - `sisl._debug_info` for more complete debug information

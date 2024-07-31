@@ -1192,6 +1192,19 @@ class LatticeNewLatticeDispatch(LatticeNewDispatch):
 new_dispatch.register(Lattice, LatticeNewLatticeDispatch)
 
 
+class LatticeNewListLikeDispatch(LatticeNewDispatch):
+    def dispatch(self, cell, *args, **kwargs):
+        return Lattice(cell, *args, **kwargs)
+
+
+# A cell can be created form a ndarray/list/tuple
+
+new_dispatch.register("ndarray", LatticeNewListLikeDispatch)
+new_dispatch.register(np.ndarray, LatticeNewListLikeDispatch)
+new_dispatch.register(list, LatticeNewListLikeDispatch)
+new_dispatch.register(tuple, LatticeNewListLikeDispatch)
+
+
 class LatticeNewAseDispatch(LatticeNewDispatch):
     def dispatch(self, aseg):
         cls = self._get_class(allow_instance=True)
