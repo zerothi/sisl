@@ -815,6 +815,9 @@ class _densitymatrix(SparseOrbitalBZSpin):
             csrDM = csr.tocsr(dim=0)
 
         if method == "pre-compute":
+            raise NotImplementedError(
+                "Currently a memory bug is happening, cannot be used until fixed, use the direct method"
+            )
             try:
                 # Compute orbital values on the grid
                 psi_values = uc_dm.geometry._orbital_values(grid.shape)
