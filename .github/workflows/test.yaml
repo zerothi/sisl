@@ -67,7 +67,7 @@ jobs:
         os: [ubuntu-latest]
         python-version: ['3.9', '3.12']
         full: [true]
-        minimal: [true, false]
+        minimal: [false]
         include:
           # Run a minimal dependency check for 3.9
           # This is not per-see a minimal dependency check.
