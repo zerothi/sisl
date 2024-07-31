@@ -67,6 +67,7 @@ jobs:
         os: [ubuntu-latest]
         python-version: ['3.9', '3.12']
         full: [true]
+        minimal: [true, false]
         include:
           # Run a minimal dependency check for 3.9
           # This is not per-see a minimal dependency check.
@@ -75,6 +76,7 @@ jobs:
           - python-version: '3.9'
             os: ubuntu-latest
             full: false
+            minimal: true
 
     steps:
     - name: Checkout sisl
@@ -103,18 +105,30 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Upgrade pip
+      run: |
+        python -m pip install --progress-bar=off --upgrade pip
+
+    - name: Python minimal versions
+      if: ${{ matrix.minimal }}
+      run: |
+        python -m pip install --progress-bar=off -vv "numpy<1.21" "scipy<1.6" "xarray<0.21"
+
     - name: Install sisl + dependencies
       env:
         SKBUILD_CMAKE_ARGS: -DWITH_COVERAGE:bool=true;-DWITH_LINE_DIRECTIVES:bool=true
         CC: gcc
         FC: gfortran
       run: |
-        python -m pip install --progress-bar=off --upgrade pip
         if [[ "${{ matrix.full }}" == "true" ]]; then
           python -m pip install --progress-bar=off -vv .[test,viz]
         else
           python -m pip install --progress-bar=off -vv .[test]
         fi
+
+    - name: sisl debug info
+      run: |
+        python -c 'from sisl._debug_info import * ; print_debug_info()'
 
     - name: Running sisl import test
       run: |

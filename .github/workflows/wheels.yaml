@@ -188,7 +188,8 @@ jobs:
             --progress-bar=off \
             --index-url https://test.pypi.org/simple/ \
             --extra-index-url https://pypi.org/simple/ \
-            "sisl[test,viz]==${{ env.SISL_VERSION }}" "numpy<1.21"
+            "sisl[test,viz]==${{ env.SISL_VERSION }}" \
+            "numpy<1.21" "scipy<1.6" "xarray<0.21"
 
       - name: Install sisl + dependencies (arm)
         if: ${{ matrix.os }} == 'macos-14'
@@ -198,6 +199,10 @@ jobs:
             --index-url https://test.pypi.org/simple/ \
             --extra-index-url https://pypi.org/simple/ \
             "sisl[test,viz]==${{ env.SISL_VERSION }}"
+
+      - name: sisl debug info
+        run: |
+          python -c 'from sisl._debug_info import * ; print_debug_info()'
 
       - name: Test the installation
         run: |
