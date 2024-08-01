@@ -176,7 +176,7 @@ jobs:
 
       - name: Wait for testpypi to catch up
         run: |
-          sleep 10
+          sleep 20
           version=${GITHUB_REF#refs/*/v}
           echo "SISL_VERSION=${version#refs/*/}" >> $GITHUB_ENV
           ls -lh
