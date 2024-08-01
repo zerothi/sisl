@@ -125,7 +125,7 @@ jobs:
         CC: gcc
         FC: gfortran
       run: |
-        if [[ "${{ matrix.full }}" == "true" ]]; then
+        if [[ "${{ matrix.full-test }}" == "true" ]]; then
           python -m pip install --progress-bar=off -vv .[test,viz]
         else
           python -m pip install --progress-bar=off -vv .[test]
