@@ -182,17 +182,17 @@ jobs:
           ls -lh
 
       - name: Install sisl + dependencies (oldest numpy, not ARM)
-        if: ${{ matrix.os }} != 'macos-14'
+        if: matrix.os != 'macos-14'
         run: |
           python -m pip install -v \
             --progress-bar=off \
             --index-url https://test.pypi.org/simple/ \
             --extra-index-url https://pypi.org/simple/ \
             "sisl[test,viz]==${{ env.SISL_VERSION }}" \
-            "numpy<1.22" "scipy<1.7" "xarray<0.21"
+            "numpy==1.21.*" "scipy==1.6.*" "xarray==0.21.*"
 
       - name: Install sisl + dependencies (arm)
-        if: ${{ matrix.os }} == 'macos-14'
+        if: matrix.os == 'macos-14'
         run: |
           python -m pip install -v \
             --progress-bar=off \

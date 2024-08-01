@@ -54,8 +54,8 @@ dependencies = [
     "scipy>=1.6",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
-    # xarray fixes get_loc in 0.20
-    "xarray>=0.20",
+    # xarray fixes get_loc in 0.21
+    "xarray>=0.21",
 ]
 
 authors = [

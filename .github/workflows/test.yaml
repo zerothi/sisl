@@ -64,18 +64,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-12, macos-14]
         python-version: ['3.9', '3.12']
-        full: [true]
-        minimal: [false]
-        include:
-          # Run a minimal dependency check for 3.9
-          # This is not per-see a minimal dependency check.
-          # However, it checks that sisl can run without viz
-          # and those dependencies.
+        full: [true, false]
+        minimal: [true, false]
+        exclude:
+          - python-version: '3.12'
+            minimal: true
           - python-version: '3.9'
-            os: ubuntu-latest
-            full: false
+            full: true
+            minimal: true
+          - os: macos-14
             minimal: true
 
     steps:
@@ -88,17 +87,17 @@ jobs:
         # the 'files' submodule uses lfs
         lfs: ${{ matrix.full }}
 
+    - name: Ensure fortran
+      uses: fortran-lang/setup-fortran@v1
+      with:
+        compiler: gcc
+        version: 11
+
     - name: Print-out commit information
       run: |
         echo "branch: ${{ github.event.inputs.branch }}"
         echo "hash: ${{ github.sha }}"
         echo "python-version: ${{ matrix.python-version }}"
-
-    # This should generally not be required, but in the end it is just easier
-    - name: Ensure system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install gcc gfortran
 
     - name: Python installation
       uses: actions/setup-python@v5
@@ -112,7 +111,8 @@ jobs:
     - name: Python minimal versions
       if: ${{ matrix.minimal }}
       run: |
-        python -m pip install --progress-bar=off -vv "numpy<1.22" "scipy<1.7" "xarray<0.21"
+        python -m pip install --progress-bar=off -vv \
+        "numpy==1.21.*" "scipy==1.6.*" "xarray==0.21.*"
 
     - name: Install sisl + dependencies
       env:
