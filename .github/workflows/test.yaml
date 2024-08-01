@@ -55,7 +55,7 @@ jobs:
           ref: '${{ github.event.inputs.branch }}'
       - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
 
-  test_runs:
+  test:
     needs: [lint, runnable]
     if: |
       always() &&
@@ -64,18 +64,27 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-12, macos-14]
         python-version: ['3.9', '3.12']
-        full: [true, false]
+        full: [true]
         minimal: [true, false]
+        os: [ubuntu-latest, macos-12, macos-14]
         exclude:
           - python-version: '3.12'
+            minimal: true
+          - os: macos-14
             minimal: true
           - python-version: '3.9'
             full: true
             minimal: true
-          - os: macos-14
+        include:
+          - python-version: '3.9'
             minimal: true
+            full: false
+            os: ubuntu-latest
+          - python-version: '3.9'
+            minimal: true
+            full: false
+            os: macos-12
 
     steps:
     - name: Checkout sisl
@@ -111,7 +120,7 @@ jobs:
     - name: Python minimal versions
       if: ${{ matrix.minimal }}
       run: |
-        python -m pip install --progress-bar=off -vv \
+        python -m pip install --progress-bar=off -v \
         "numpy==1.21.*" "scipy==1.6.*" "xarray==0.21.*"
 
     - name: Install sisl + dependencies
