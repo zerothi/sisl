@@ -99,10 +99,26 @@ jobs:
         version: 11
 
     - name: Print-out commit information
+      id: info
       run: |
         echo "branch: ${{ github.event.inputs.branch }}"
         echo "hash: ${{ github.sha }}"
         echo "python-version: ${{ matrix.python-version }}"
+
+        # Put stuff in the environment
+        #
+        # Test everything including LSF files submodule?
+        if [[ "${{ matrix.full-test }}" == "true" ]]; then
+          echo "sisl_extras=test,viz" >> $GITHUB_OUTPUT
+        else
+          echo "sisl_extras=test" >> $GITHUB_OUTPUT
+        fi
+        # Test minimal versioning?
+        if [[ "${{ matrix.minimal-dep }}" == "true" ]]; then
+          echo "sisl_install_packages=\"'numpy==1.21.*' 'scipy==1.6.*' 'xarray==0.21.*'\"" >> $GITHUB_OUTPUT
+        else
+          echo "sisl_install_packages=''" >> $GITHUB_OUTPUT
+        fi
 
     - name: Python installation
       uses: actions/setup-python@v5
@@ -116,8 +132,7 @@ jobs:
     - name: Python minimal versions
       if: ${{ matrix.minimal-dep }}
       run: |
-        python -m pip install --progress-bar=off -v \
-        "numpy==1.21.*" "scipy==1.6.*" "xarray==0.21.*"
+        python -m pip install --progress-bar=off -v ${{ steps.info.outputs.sisl_install_packages }}
 
     - name: Install sisl + dependencies
       env:
@@ -125,22 +140,19 @@ jobs:
         CC: gcc
         FC: gfortran
       run: |
-        if [[ "${{ matrix.full-test }}" == "true" ]]; then
-          python -m pip install --progress-bar=off -vv .[test,viz]
-        else
-          python -m pip install --progress-bar=off -vv .[test]
-        fi
+        python -m pip install --progress-bar=off -v .[${{ steps.info.outputs.sisl_extras }}] \
+          ${{ steps.info.outputs.sisl_install_packages }}
 
     - name: sisl debug info
       run: |
         python -c 'from sisl._debug_info import * ; print_debug_info()'
 
-    - name: Running sisl import test
+    - name: sisl import test
       run: |
         sgeom --help
         stoolbox atom-plot --help
 
-    - name: Running sisl tests
+    - name: sisl tests
       env:
         SISL_NUM_PROCS: 1
         OMP_NUM_THREADS: 1

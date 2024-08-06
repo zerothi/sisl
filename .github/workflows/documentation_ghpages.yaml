@@ -49,12 +49,11 @@ jobs:
           lfs: true
           fetch-tags: true
 
-
-      # This should generally not be required, but in the end it is just easier
-      - name: Ensure system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install gfortran
+      - name: Ensure fortran
+        uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: 11
 
       - name: Setup python environment
         uses: actions/setup-python@v5
