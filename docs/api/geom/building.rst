@@ -15,7 +15,7 @@ geometries via a `pull request <pr>`_.
 All methods returns a `Geometry` object.
 
 Some of the geometries are created in section based geometries, such as `heteroribbon`.
-This functionality is provided through the `composite_geometry`
+This functionality is provided through the `composite_geometry`.
 
 
 Bulk
