@@ -115,9 +115,9 @@ jobs:
         fi
         # Test minimal versioning?
         if [[ "${{ matrix.minimal-dep }}" == "true" ]]; then
-          echo "sisl_install_packages=\"'numpy==1.21.*' 'scipy==1.6.*' 'xarray==0.21.*'\"" >> $GITHUB_OUTPUT
+          echo "sisl_install_packages='numpy==1.21.*' 'scipy==1.6.*' 'xarray==0.21.*'" >> $GITHUB_OUTPUT
         else
-          echo "sisl_install_packages=''" >> $GITHUB_OUTPUT
+          echo "sisl_install_packages=" >> $GITHUB_OUTPUT
         fi
 
     - name: Python installation
