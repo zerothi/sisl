@@ -351,7 +351,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
     def mulliken(self, projection="orbital"):
         r""" Calculate Mulliken charges from the density matrix
 
-        See `math_convention`_ for details on the mathematical notation.
+        See :ref:`this document <math_convention>` for details on the mathematical notation.
         Matrices :math:`\boldsymbol\rho` and :math:`\mathbf S` are density
         and overlap matrices, respectively.
 
