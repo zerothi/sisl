@@ -7,7 +7,7 @@ from functools import reduce, update_wrapper
 from itertools import zip_longest
 from numbers import Integral
 from textwrap import dedent
-from typing import Any, Callable, Optional, Type
+from typing import Any, Callable, Optional
 
 Func = Callable[..., Optional[Any]]
 
@@ -54,9 +54,9 @@ class SileSlicer:
 
     def __init__(
         self,
-        obj: Type[Any],
+        obj: type[Any],
         func: Func,
-        key: Type[Any],
+        key: type[Any],
         *,
         check_empty: Optional[Func] = None,
         skip_func: Optional[Func] = None,
@@ -170,10 +170,10 @@ class SileBound:
 
     def __init__(
         self,
-        obj: Type[Any],
+        obj: type[Any],
         func: Callable[..., Any],
         *,
-        slicer: Type[SileSlicer] = SileSlicer,
+        slicer: type[SileSlicer] = SileSlicer,
         default_slice: Optional[Any] = None,
         **kwargs,
     ):

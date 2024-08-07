@@ -12,6 +12,7 @@ import numpy as np
 import pytest
 
 from sisl import Atom, Geometry, Hamiltonian, Lattice, _environ
+from sisl._help import has_module
 
 # Here we create the necessary methods and fixtures to enabled/disable
 # tests depending on whether a sisl-files directory is present.
@@ -227,9 +228,7 @@ collect_ignore_glob = []
 # We are ignoring stuff in sisl.viz if nodify cannot be imported
 # skip paths
 _skip_paths = []
-try:
-    import nodify
-except ImportError:
+if not has_module("nodify"):
     _skip_paths.append(os.path.join("sisl", "viz"))
 
 

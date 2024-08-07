@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import reduce
 from numbers import Integral
-from typing import Callable, List, Literal, Optional, Tuple, Union
+from typing import Callable, Literal, Optional, Union
 
 import numpy as np
 
@@ -166,7 +166,7 @@ def apply(
 @register_sisl_dispatch(Geometry, module="sisl")
 def sort(
     geometry: Geometry, **kwargs
-) -> Union[Geometry, Tuple[Geometry, List[List[int]]]]:
+) -> Union[Geometry, tuple[Geometry, list[list[int]]]]:
     r"""Sort atoms in a nested fashion according to various criteria
 
     There are many ways to sort a `Geometry`.

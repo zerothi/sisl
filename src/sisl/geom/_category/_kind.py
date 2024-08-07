@@ -7,7 +7,7 @@ import operator as op
 import re
 from functools import reduce, wraps
 from numbers import Integral
-from typing import Optional, Union
+from typing import Union
 
 import numpy as np
 

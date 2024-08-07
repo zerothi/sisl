@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 from functools import reduce
 from numbers import Integral
-from typing import Optional, Union
+from typing import Union
 
 import numpy as np
 

@@ -9,10 +9,10 @@ r"""Bloch's theorem
 Bloch's theorem is a very powerful proceduce that enables one to utilize
 the periodicity of a given direction to describe the complete system.
 """
-from typing import Sequence
+from collections.abc import Sequence
 
 import numpy as np
-from numpy import add, empty, exp, multiply, zeros
+from numpy import empty
 
 import sisl._array as _a
 from sisl._help import dtype_real_to_complex

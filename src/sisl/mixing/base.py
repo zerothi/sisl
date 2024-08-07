@@ -6,8 +6,9 @@ from __future__ import annotations
 import operator as op
 from abc import abstractmethod
 from collections import deque
+from collections.abc import Iterator, Sequence
 from numbers import Integral
-from typing import Any, Callable, Iterator, Optional, Sequence, TypeVar, Union
+from typing import Any, Callable, Optional, TypeVar, Union
 
 from sisl._internal import set_module
 

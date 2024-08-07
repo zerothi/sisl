@@ -56,24 +56,22 @@ from numpy import (
     conj,
     cos,
     dot,
-    einsum,
     empty,
     exp,
     floor,
     int32,
     log,
-    matmul,
     ogrid,
     pi,
     sin,
     sort,
     zeros,
 )
-from scipy.sparse import csr_matrix, hstack, identity, issparse
+from scipy.sparse import csr_matrix, hstack, issparse
 
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
-from sisl import C, Geometry, Grid, Lattice, units
+from sisl import C, Geometry, Grid, Lattice
 from sisl._core.oplist import oplist
 from sisl._indices import indices_le
 from sisl._internal import set_module
@@ -98,7 +96,7 @@ if TYPE_CHECKING:
 from .distribution import get_distribution
 from .sparse import SparseOrbitalBZSpin
 from .spin import Spin
-from .state import Coefficient, State, StateC, _FakeMatrix, degenerate_decouple
+from .state import Coefficient, State, StateC, _FakeMatrix
 
 __all__ = ["DOS", "PDOS", "COP"]
 __all__ += ["spin_moment", "spin_contamination"]

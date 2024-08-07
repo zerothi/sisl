@@ -6,10 +6,10 @@ from __future__ import annotations
 import gzip
 import logging
 import re
-from functools import reduce, wraps
+from functools import wraps
 from io import TextIOBase
 from itertools import product
-from operator import and_, contains
+from operator import contains
 from os.path import basename, splitext
 from pathlib import Path
 from textwrap import dedent, indent
@@ -17,8 +17,9 @@ from typing import Any, Callable, Optional, Union
 
 import sisl.io._exceptions as _exceptions
 from sisl._environ import get_environ_variable
+from sisl._help import has_module
 from sisl._internal import set_module
-from sisl.messages import SislInfo, SislWarning, deprecate, info, warn
+from sisl.messages import deprecate, info, warn
 from sisl.utils.misc import str_spec
 
 from ._exceptions import *
@@ -1262,21 +1263,19 @@ class Sile(Info, BaseSile):
 # Instead of importing netCDF4 on each invocation
 # of the __enter__ functioon (below), we make
 # a pass around it
-netCDF4 = None
+if has_module("netCDF4"):
+    import netCDF4
+else:
 
-
-def _import_netCDF4():
-    global netCDF4
-    if netCDF4 is None:
-        try:
-            import netCDF4
-        except ImportError as e:
-            # append
+    class _mock_netCDF4:
+        def __getattr__(self, attr):
             import sys
 
             exe = Path(sys.executable).name
             msg = f"Could not import netCDF4. Please install it using '{exe} -m pip install netCDF4'"
             raise SileError(msg) from e
+
+    netCDF4 = _mock_netCDF4()
 
 
 @set_module("sisl.io")
@@ -1295,8 +1294,6 @@ class SileCDF(BaseSile):
     """
 
     def __init__(self, filename, mode="r", lvl=0, access=1, *args, **kwargs):
-        _import_netCDF4()
-
         self._file = Path(filename)
         # Open mode
         self._mode = mode

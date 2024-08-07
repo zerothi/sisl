@@ -8,11 +8,10 @@ from functools import partial
 import numpy as np
 
 from sisl import _array as _a
-from sisl._core.geometry import Geometry
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import AtomsIndex
 
-from .sparse import SparseCSR, _ncol_to_indptr, issparse
+from .sparse import SparseCSR, _ncol_to_indptr
 from .sparse_geometry import SparseAtom, SparseOrbital, _SparseGeometry
 
 # Nothing gets exposed here

@@ -12,7 +12,7 @@ Visualization utilities
 import os
 
 try:
-    import nodify as _
+    import nodify as _  # noqa: F401
 except ModuleNotFoundError as e:
     raise ModuleNotFoundError(
         """\

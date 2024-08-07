@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import operator as ops
 
-import numpy as np
 import pytest
 
 from sisl import _array as ar

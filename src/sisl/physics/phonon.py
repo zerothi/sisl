@@ -37,13 +37,12 @@ from numpy import delete, fabs
 
 import sisl._array as _a
 from sisl import constant, units
-from sisl._help import dtype_complex_to_real
 from sisl._internal import set_module
 
 from .distribution import get_distribution
 from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
-from .state import Coefficient, State, StateC, degenerate_decouple
+from .state import Coefficient, State, StateC
 
 __all__ = ["DOS", "PDOS"]
 __all__ += ["CoefficientPhonon", "ModePhonon", "ModeCPhonon"]

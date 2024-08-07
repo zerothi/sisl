@@ -5,7 +5,7 @@
 # from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal, Tuple
+from typing import Literal
 
 import sisl
 from sisl.io import fdfSileSiesta, wfsxSileSiesta
@@ -46,7 +46,7 @@ class EigenstateData(Data):
         cls,
         fdf: fdfSileSiesta,
         source: Literal["wfsx", "hamiltonian"] = "wfsx",
-        k: Tuple[float, float, float] = (0, 0, 0),
+        k: tuple[float, float, float] = (0, 0, 0),
         spin: int = 0,
     ):
         if source == "wfsx":
@@ -68,7 +68,7 @@ class EigenstateData(Data):
         cls,
         wfsx_file: wfsxSileSiesta,
         geometry: sisl.Geometry,
-        k: Tuple[float, float, float] = (0, 0, 0),
+        k: tuple[float, float, float] = (0, 0, 0),
         spin: int = 0,
     ):
         """Reads the wavefunction coefficients from a SIESTA WFSX file"""
@@ -94,7 +94,7 @@ class EigenstateData(Data):
     def from_hamiltonian(
         cls,
         H: sisl.Hamiltonian,
-        k: Tuple[float, float, float] = (0, 0, 0),
+        k: tuple[float, float, float] = (0, 0, 0),
         spin: int = 0,
     ):
         """Calculates the eigenstates from a Hamiltonian and then generates the wavefunctions."""

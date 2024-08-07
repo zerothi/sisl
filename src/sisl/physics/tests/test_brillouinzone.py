@@ -10,10 +10,8 @@ import numpy as np
 import pytest
 
 from sisl import (
-    Atom,
     BandStructure,
     BrillouinZone,
-    Geometry,
     Lattice,
     LatticeChild,
     MonkhorstPack,

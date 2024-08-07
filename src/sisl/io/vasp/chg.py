@@ -13,7 +13,6 @@ from sisl._internal import set_module
 from .._help import grid_reduce_indices
 from ..sile import add_sile, sile_fh_open
 from .car import carSileVASP
-from .sile import SileVASP
 
 __all__ = ["chgSileVASP"]
 

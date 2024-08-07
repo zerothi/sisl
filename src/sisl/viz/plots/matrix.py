@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 from scipy.sparse import spmatrix
@@ -33,18 +33,18 @@ def atomic_matrix_plot(
     isc: Optional[int] = None,
     fill_value: Optional[float] = None,
     geometry: Union[sisl.Geometry, None] = None,
-    atom_lines: Union[bool, Dict] = False,
-    orbital_lines: Union[bool, Dict] = False,
-    sc_lines: Union[bool, Dict] = False,
+    atom_lines: Union[bool, dict] = False,
+    orbital_lines: Union[bool, dict] = False,
+    sc_lines: Union[bool, dict] = False,
     color_pixels: bool = True,
     colorscale: Optional[Colorscale] = "RdBu",
-    crange: Optional[Tuple[float, float]] = None,
+    crange: Optional[tuple[float, float]] = None,
     cmid: Optional[float] = None,
     text: Optional[str] = None,
     textfont: Optional[dict] = {},
     set_labels: bool = False,
     constrain_axes: bool = True,
-    arrows: List[dict] = [],
+    arrows: list[dict] = [],
     backend: str = "plotly",
 ) -> Figure:
     """Plots a (possibly sparse) matrix where rows and columns are either orbitals or atoms.

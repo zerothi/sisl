@@ -3,7 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional, Sequence, Tuple
+from collections.abc import Sequence
+from typing import Literal, Optional
 
 import numpy as np
 
@@ -52,10 +53,10 @@ def _group_traces(actions, group_legend: bool = True):
 
 def bands_plot(
     bands_data: BandsData,
-    Erange: Optional[Tuple[float, float]] = None,
+    Erange: Optional[tuple[float, float]] = None,
     E0: float = 0.0,
     E_axis: Literal["x", "y"] = "y",
-    bands_range: Optional[Tuple[int, int]] = None,
+    bands_range: Optional[tuple[int, int]] = None,
     spin: Optional[Literal[0, 1]] = None,
     bands_style: StyleSpec = {
         "color": "black",
@@ -70,7 +71,7 @@ def bands_plot(
     gap_color: str = "red",
     gap_marker: dict = {"size": 7},
     direct_gaps_only: bool = False,
-    custom_gaps: Sequence[Dict] = [],
+    custom_gaps: Sequence[dict] = [],
     line_mode: Literal["line", "scatter", "area_line"] = "line",
     group_legend: bool = True,
     backend: str = "plotly",
@@ -186,10 +187,10 @@ def bands_plot(
 # I am yet to find a nice solution for extending workflows.
 def fatbands_plot(
     bands_data: BandsData,
-    Erange: Optional[Tuple[float, float]] = None,
+    Erange: Optional[tuple[float, float]] = None,
     E0: float = 0.0,
     E_axis: Literal["x", "y"] = "y",
-    bands_range: Optional[Tuple[int, int]] = None,
+    bands_range: Optional[tuple[int, int]] = None,
     spin: Optional[Literal[0, 1]] = None,
     bands_style: StyleSpec = {"color": "black", "width": 1, "opacity": 1},
     spindown_style: StyleSpec = {"color": "blue", "width": 1},
@@ -198,7 +199,7 @@ def fatbands_plot(
     gap_color: str = "red",
     gap_marker: dict = {"size": 7},
     direct_gaps_only: bool = False,
-    custom_gaps: Sequence[Dict] = [],
+    custom_gaps: Sequence[dict] = [],
     bands_mode: Literal["line", "scatter", "area_line"] = "line",
     bands_group_legend: bool = True,
     # Fatbands inputs

@@ -3,14 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
 import platform
 import sys
 
 import numpy as np
 import pytest
 
-from sisl import Atom, Geometry, SislWarning, Spin, geom
+from sisl import Atom, SislWarning, Spin, geom
 from sisl.physics.sparse import SparseOrbitalBZ, SparseOrbitalBZSpin
 
 pytestmark = [pytest.mark.physics, pytest.mark.sparse]

@@ -12,9 +12,7 @@ NOT FUNCTIONAL WITH THE NEW REFACTORING OF SISL.VIZ, MUST UPDATE
 
 import argparse
 import ast
-import sys
 
-import sisl
 from sisl.utils import cmd
 
 from ._user_customs import PLOTS_FILE, PRESETS_FILE, PRESETS_VARIABLE

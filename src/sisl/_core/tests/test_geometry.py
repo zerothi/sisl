@@ -4,8 +4,6 @@
 from __future__ import annotations
 
 import itertools
-import math as m
-import os.path as osp
 
 import numpy as np
 import pytest

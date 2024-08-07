@@ -3,12 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import warnings
-
 import numpy as np
 
 import sisl._array as _a
-from sisl import SislError
 from sisl.messages import warn
 
 __all__ = ["_siesta_sc_off"]

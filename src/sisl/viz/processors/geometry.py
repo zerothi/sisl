@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import itertools
+from collections.abc import Sequence
 from dataclasses import asdict
-from typing import Any, List, Optional, Sequence, Tuple, TypedDict, Union
+from typing import Any, Optional, TypedDict, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -38,14 +39,14 @@ BondsDataset = GeometryDataset
 #     return Geometry.new(obj)
 
 
-def tile_geometry(geometry: Geometry, nsc: Tuple[int, int, int]) -> Geometry:
+def tile_geometry(geometry: Geometry, nsc: tuple[int, int, int]) -> Geometry:
     """Tiles a geometry along the three lattice vectors.
 
     Parameters
     -----------
     geometry: sisl.Geometry
         the geometry to be tiled.
-    nsc: Tuple[int, int, int]
+    nsc: tuple[int, int, int]
         the number of repetitions along each lattice vector.
     """
 
@@ -138,7 +139,7 @@ def sanitize_atoms(
 
 
 def tile_data_sc(
-    geometry_data: GeometryDataset, nsc: Tuple[int, int, int] = (1, 1, 1)
+    geometry_data: GeometryDataset, nsc: tuple[int, int, int] = (1, 1, 1)
 ) -> GeometryDataset:
     """Tiles coordinates from unit cell to a supercell.
 
@@ -289,7 +290,7 @@ def sanitize_arrows(
     atoms: AtomsIndex,
     ndim: int,
     axes: Sequence[str],
-) -> List[dict]:
+) -> list[dict]:
     """Sanitizes a list of arrow specifications.
 
     Each arrow specification in the output has the atoms sanitized and

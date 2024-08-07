@@ -7,7 +7,6 @@ from __future__ import annotations
 Sile object for reading/writing Wannier90 in/output
 """
 from collections import defaultdict
-from pathlib import Path
 
 import numpy as np
 import scipy.sparse as sps

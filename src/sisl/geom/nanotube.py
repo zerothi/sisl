@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -15,14 +15,14 @@ from ._common import geometry_define_nsc
 
 __all__ = ["nanotube"]
 
-FloatOrFloat2 = Union[float, Tuple[float, float]]
+FloatOrFloat2 = Union[float, tuple[float, float]]
 
 
 @set_module("sisl.geom")
 def nanotube(
     bond: float,
     atoms: Optional[AtomsLike] = None,
-    chirality: Tuple[int, int] = (1, 1),
+    chirality: tuple[int, int] = (1, 1),
     vacuum: FloatOrFloat2 = 20.0,
 ) -> Geometry:
     """Nanotube with user-defined chirality.

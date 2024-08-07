@@ -66,6 +66,7 @@ we hit release version 1.0.0.
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
 
 ### Fixed
+- PEP-585 compliant
 - buildable for numpy>2, #791
 - `BrillouinZone.tocartesian()` now defaults to `k=self.k`
 - reading XV/STRUCT files from fdf siles could cause problems, #778

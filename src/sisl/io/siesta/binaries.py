@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections import deque, namedtuple
 from itertools import product
 from numbers import Integral
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 
@@ -2433,7 +2433,7 @@ class _gfSileSiesta(SileBinSiesta):
 
         return mem
 
-    def read_hamiltonian(self) -> Tuple[np.ndarray, np.ndarray]:
+    def read_hamiltonian(self) -> tuple[np.ndarray, np.ndarray]:
         """Return current Hamiltonian and overlap matrix from the GF file
 
         Returns
@@ -2467,7 +2467,7 @@ class _gfSileSiesta(SileBinSiesta):
         # we don't convert to C order!
         return SE * _Ry2eV
 
-    def HkSk(self, k=(0, 0, 0), spin: int = 0) -> Tuple[np.ndarray, np.ndarray]:
+    def HkSk(self, k=(0, 0, 0), spin: int = 0) -> tuple[np.ndarray, np.ndarray]:
         """Retrieve H and S for the given k-point
 
         Parameters

@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Literal, Optional, Union
 
 import numpy as np
 from scipy.sparse import issparse
@@ -11,7 +11,7 @@ from scipy.sparse import issparse
 import sisl
 
 
-def get_orbital_sets_positions(atoms: List[sisl.Atom]) -> List[List[int]]:
+def get_orbital_sets_positions(atoms: list[sisl.Atom]) -> list[list[int]]:
     """Gets the orbital indices where an orbital set starts for each atom.
 
     An "orbital set" is a group of 2l + 1 orbitals with an angular momentum l
@@ -108,7 +108,7 @@ def matrix_as_array(
 def determine_color_midpoint(
     matrix: np.ndarray,
     cmid: Optional[float] = None,
-    crange: Optional[Tuple[float, float]] = None,
+    crange: Optional[tuple[float, float]] = None,
 ) -> Optional[float]:
     """Determines the midpoint of a colorscale given a matrix of values.
 
@@ -149,7 +149,7 @@ def get_matrix_mode(matrix) -> Literal["atoms", "orbitals"]:
     return "atoms" if isinstance(matrix, sisl.SparseAtom) else "orbitals"
 
 
-def sanitize_matrix_arrows(arrows: Union[dict, List[dict]]) -> List[dict]:
+def sanitize_matrix_arrows(arrows: Union[dict, list[dict]]) -> list[dict]:
     """Sanitizes an ``arrows`` argument to a list of sanitized specifications.
 
     Parameters

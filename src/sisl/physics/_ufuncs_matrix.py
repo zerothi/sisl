@@ -10,10 +10,8 @@ import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import GaugeType, KPoint
 
-from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_nc_diag, matrix_ddk_so
-from ._matrix_dk import matrix_dk, matrix_dk_nc, matrix_dk_nc_diag, matrix_dk_so
-from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_nc_diag, matrix_k_so
-from .sparse import SparseOrbitalBZ, SparseOrbitalBZSpin
+from ._matrix_k import matrix_k
+from .sparse import SparseOrbitalBZ
 
 # Nothing gets exposed here
 __all__ = []

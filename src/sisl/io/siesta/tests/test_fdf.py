@@ -3,14 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
 from pathlib import Path
 
 import numpy as np
 import pytest
 
 import sisl
-from sisl import Atom, AtomUnknown, Geometry, geom
+from sisl import geom
 from sisl.io import SileError, fdfSileSiesta
 from sisl.messages import SislWarning
 from sisl.unit.siesta import unit_convert

@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Type, TypeVar
+from typing import TypeVar
 
 from ..data import Data
 
@@ -11,7 +11,7 @@ DataInstance = TypeVar("DataInstance", bound=Data)
 
 
 def accept_data(
-    data: DataInstance, cls: Type[Data], check: bool = True
+    data: DataInstance, cls: type[Data], check: bool = True
 ) -> DataInstance:
     if not isinstance(data, cls):
         raise TypeError(
@@ -24,7 +24,7 @@ def accept_data(
     return data
 
 
-def extract_data(data: Data, cls: Type[Data], check: bool = True):
+def extract_data(data: Data, cls: type[Data], check: bool = True):
     if not isinstance(data, cls):
         raise TypeError(
             f"Data must be of type {cls.__name__} and was {type(data).__name__}"

@@ -4,13 +4,11 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from numbers import Real
 from typing import Callable, Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
 from numpy import bool_, einsum, exp, ndarray
-from scipy.sparse import csr_matrix
 
 import sisl._array as _a
 from sisl._core import Geometry

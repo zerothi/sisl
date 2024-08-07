@@ -3,20 +3,16 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Sequence, Union
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, Callable, Union
 
-import numpy as np
-import numpy.typing as npt
 import scipy.sparse as sps
 
 # To prevent import cycles place any internal imports in the branch below
 # and use a string literal forward reference to it in subsequent types
 # https://mypy.readthedocs.io/en/latest/common_issues.html#import-cycles
 if TYPE_CHECKING:
-    from sisl import BaseSile, Geometry, Grid, Lattice, Shape
-    from sisl._category import GenericCategory
-    from sisl.geom.category import AtomCategory
+    from sisl import Geometry, Lattice
 
 __all__ = [
     "Coord",

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import sisl
 
-from .file_source import FileData
+from .file_source import FileData  # noqa: F401
 
 
 def get_sile(path=None, fdf=None, cls=None, **kwargs):

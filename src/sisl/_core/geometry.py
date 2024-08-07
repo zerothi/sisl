@@ -7,17 +7,17 @@ from __future__ import annotations
 import logging
 import warnings
 from collections import OrderedDict
+from collections.abc import Iterator, Sequence
 from functools import singledispatchmethod
 from itertools import product
 from math import acos
 from numbers import Integral, Real
 from pathlib import Path
-from typing import Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 import numpy.typing as npt
 from numpy import (
-    argsort,
     bool_,
     ceil,
     concatenate,
@@ -25,9 +25,7 @@ from numpy import (
     dot,
     floor,
     int32,
-    isin,
     ndarray,
-    split,
     sqrt,
     square,
     tile,
@@ -39,7 +37,7 @@ import sisl._array as _a
 from sisl._category import Category, GenericCategory
 from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from sisl._help import isndarray
+from sisl._help import has_module, isndarray
 from sisl._indices import (
     indices_gt_le,
     indices_in_sphere_with_dist,
@@ -310,7 +308,7 @@ class Geometry(
         return self.atoms.lasto
 
     @property
-    def orbitals(self) -> List[Orbital]:
+    def orbitals(self) -> list[Orbital]:
         """List of orbitals per atom"""
         return self.atoms.orbitals
 
@@ -505,7 +503,7 @@ class Geometry(
 
     def as_primary(
         self, na_primary: int, axes: Sequence[int] = (0, 1, 2), ret_super: bool = False
-    ) -> Union[Geometry, Tuple[Geometry, Lattice]]:
+    ) -> Union[Geometry, tuple[Geometry, Lattice]]:
         """Reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -952,7 +950,7 @@ class Geometry(
         iR: int = 20,
         R: Optional[float] = None,
         atoms: AtomsIndex = None,
-    ) -> Iterator[Tuple[ndarray, ndarray]]:
+    ) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *random* block-iteration by randomly selecting the next center of block"""
 
         # We implement yields as we can then do nested iterators
@@ -1031,7 +1029,7 @@ class Geometry(
 
     def iter_block_shape(
         self, shape=None, iR: int = 20, atoms: AtomsIndex = None
-    ) -> Iterator[Tuple[ndarray, ndarray]]:
+    ) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *grid* block-iteration by looping a grid"""
 
         # We implement yields as we can then do nested iterators
@@ -1166,7 +1164,7 @@ class Geometry(
         R: Optional[float] = None,
         atoms: AtomsIndex = None,
         method: str = "rand",
-    ) -> Iterator[Tuple[ndarray, ndarray]]:
+    ) -> Iterator[tuple[ndarray, ndarray]]:
         """Iterator for performance critical loops
 
         NOTE: This requires that `R` has been set correctly as the maximum interaction range.
@@ -1244,7 +1242,7 @@ class Geometry(
         atol: float = 0.1,
         offset: Sequence[float] = (0.0, 0.0, 0.0),
         offset_other: Sequence[float] = (0.0, 0.0, 0.0),
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Calculate the overlapping indices between two geometries
 
         Find equivalent atoms (in the primary unit-cell only) in two geometries.
@@ -2966,7 +2964,7 @@ class Geometry(
 
     def a2transpose(
         self, atoms1: AtomsIndex, atoms2: AtomsIndex = None
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Transposes connections from `atoms1` to `atoms2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
@@ -3032,7 +3030,7 @@ class Geometry(
 
     def o2transpose(
         self, orb1: OrbitalsIndex, orb2: Optional[OrbitalsIndex] = None
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Transposes connections from `orb1` to `orb2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
@@ -3548,7 +3546,7 @@ class Geometry(
         periodic: Optional[Union[Sequence[bool], CellAxes]] = None,
         atol: float = 1e-5,
         origin: Sequence[float] = (0.0, 0.0, 0.0),
-    ) -> Tuple[ndarray, ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray, ndarray]:
         """Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
@@ -3683,7 +3681,7 @@ class Geometry(
         # infinite supercell indices
         return self.asc2uc(idx), xyz, isc
 
-    def _orbital_values(self, grid_shape: Tuple[int, int, int]):
+    def _orbital_values(self, grid_shape: tuple[int, int, int]):
         r"""Calculates orbital values for a given grid.
 
         Parameters
@@ -4562,14 +4560,11 @@ class GeometryToAseDispatch(GeometryToDispatch):
 
 
 to_dispatch.register("ase", GeometryToAseDispatch)
-try:
+if has_module("ase"):
     from ase import Atoms as ase_Atoms
 
     to_dispatch.register(ase_Atoms, GeometryToAseDispatch)
     del ase_Atoms
-
-except ImportError:
-    pass
 
 
 class GeometryTopymatgenDispatch(GeometryToDispatch):
@@ -4629,14 +4624,11 @@ class GeometryToDataframeDispatch(GeometryToDispatch):
 
 
 to_dispatch.register("dataframe", GeometryToDataframeDispatch)
-try:
+if has_module("pandas"):
     from pandas import DataFrame as pd_DataFrame
 
     to_dispatch.register(pd_DataFrame, GeometryToDataframeDispatch)
     del pd_DataFrame
-
-except ImportError:
-    pass
 
 
 # Clean up

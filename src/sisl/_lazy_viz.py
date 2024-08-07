@@ -30,7 +30,7 @@ class PlotHandlerPlaceholder:
     def __get__(self, instance, owner):
         # Import sisl.viz, which will remove all the placeholders and
         # set the actual plot handlers as the "plot" attribute.
-        import sisl.viz
+        import sisl.viz  # noqa: F401
 
         # Return the plot handler
         if instance is None:

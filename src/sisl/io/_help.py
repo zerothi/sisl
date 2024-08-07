@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Sequence
 from re import compile as re_compile
-from typing import List, Optional, Sequence, Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -136,7 +137,7 @@ def parse_order(
     return order
 
 
-def _fill_basis_empty(sp: np.ndarray, basis: List[Atom], start_Z=1000) -> Atoms:
+def _fill_basis_empty(sp: np.ndarray, basis: list[Atom], start_Z=1000) -> Atoms:
     """Adds atoms in `basis` with ``AtomUnknown(start_Z + species_idx)``
 
     This is useful when one does not have the required atom in the basis,

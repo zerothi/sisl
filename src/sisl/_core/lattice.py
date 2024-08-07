@@ -9,10 +9,11 @@ from __future__ import annotations
 
 import logging
 import math
+from collections.abc import Sequence
 from enum import IntEnum, auto
 from numbers import Integral
 from pathlib import Path
-from typing import Optional, Sequence, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 from numpy import dot, ndarray
@@ -349,7 +350,7 @@ class Lattice(
 
     def parameters(
         self, rad: bool = False
-    ) -> Tuple[float, float, float, float, float, float]:
+    ) -> tuple[float, float, float, float, float, float]:
         r"""Cell parameters of this cell in 3 lengths and 3 angles
 
         Notes
@@ -609,7 +610,7 @@ class Lattice(
 
     def plane(
         self, axis1: CellAxis, axis2: CellAxis, origin: bool = True
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
@@ -755,7 +756,7 @@ class Lattice(
 
         return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
-    def offset(self, isc=None) -> Tuple[float, float, float]:
+    def offset(self, isc=None) -> tuple[float, float, float]:
         """Returns the supercell offset of the supercell index"""
         if isc is None:
             return _a.arrayd([0, 0, 0])

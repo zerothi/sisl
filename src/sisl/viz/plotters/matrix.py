@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import List, Literal, Union
+from typing import Literal, Union
 
 import numpy as np
 
@@ -20,7 +20,7 @@ def draw_matrix_separators(
     separator_mode: Literal["orbitals", "atoms", "supercells"],
     draw_supercells: bool = True,
     showlegend: bool = True,
-) -> List[dict]:
+) -> list[dict]:
     """Returns the actions to draw separators in a matrix.
 
     Parameters
@@ -133,7 +133,7 @@ def set_matrix_axes(
     matrix_mode: Literal["orbitals", "atoms"],
     constrain_axes: bool = True,
     set_labels: bool = False,
-) -> List[dict]:
+) -> list[dict]:
     """Configure the axes of a matrix plot
 
     Parameters

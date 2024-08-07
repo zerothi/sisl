@@ -18,7 +18,6 @@ from sisl.physics import (
     DynamicalMatrix,
     EnergyDensityMatrix,
     Hamiltonian,
-    SparseOrbitalBZ,
 )
 from sisl.physics.overlap import Overlap
 from sisl.unit.siesta import unit_convert

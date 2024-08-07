@@ -8,12 +8,12 @@ from __future__ import annotations
 import functools
 import inspect
 import sys
-from typing import Literal, Optional, Type
+from typing import Literal, Optional
 
 from ..figure import Figure
 
 
-def _register_actions(figure_cls: Type[Figure]):
+def _register_actions(figure_cls: type[Figure]):
     # Take all actions possible from the Figure class
     module = sys.modules[__name__]
 

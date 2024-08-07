@@ -6,7 +6,6 @@ from __future__ import annotations
 import operator
 from functools import wraps
 from numbers import Integral
-from typing import Optional
 
 import numpy as np
 

@@ -7,15 +7,7 @@ from typing import Optional, Union
 
 import numpy as np
 
-from sisl import (
-    Atom,
-    AtomicOrbital,
-    Atoms,
-    AtomUnknown,
-    Geometry,
-    Orbital,
-    PeriodicTable,
-)
+from sisl import Atom, AtomicOrbital, Atoms, AtomUnknown, Geometry, PeriodicTable
 from sisl._array import arrayi
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from numbers import Integral
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -26,7 +26,7 @@ __all__ = [
     "graphene_heteroribbon",
 ]
 
-FloatOrFloat2 = Union[float, Tuple[float, float]]
+FloatOrFloat2 = Union[float, tuple[float, float]]
 
 
 @set_module("sisl.geom")
@@ -36,7 +36,7 @@ def nanoribbon(
     atoms: AtomsLike,
     kind: Literal["armchair", "zigzag", "chiral"] = "armchair",
     vacuum: FloatOrFloat2 = 20.0,
-    chirality: Tuple[int, int] = (3, 1),
+    chirality: tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a nanoribbon unit cell of type armchair, zigzag or (n,m)-chiral.
 
@@ -162,7 +162,7 @@ def graphene_nanoribbon(
     atoms: Optional[AtomsLike] = None,
     kind: Literal["armchair", "zigzag", "chiral"] = "armchair",
     vacuum: FloatOrFloat2 = 20.0,
-    chirality: Tuple[int, int] = (3, 1),
+    chirality: tuple[int, int] = (3, 1),
 ) -> Geometry:
     r"""Construction of a graphene nanoribbon
 
@@ -262,7 +262,7 @@ def zgnr(
 @set_module("sisl.geom")
 def cgnr(
     width: int,
-    chirality: Tuple[int, int],
+    chirality: tuple[int, int],
     bond: float = 1.42,
     atoms: Optional[AtomsLike] = None,
     vacuum: FloatOrFloat2 = 20.0,

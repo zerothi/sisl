@@ -3,8 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import re
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -12,9 +11,10 @@ from xarray import Dataset
 
 from sisl._core._lattice import cell_invert
 from sisl._core.lattice import Lattice
+from sisl.typing import LatticeLike
 from sisl.utils.mathematics import fnorm
 
-from ..types import Axes, Axis, LatticeLike
+from ..types import Axes, Axis
 from .axes import axes_cross_product, axis_direction, get_ax_title
 
 CoordsDataset = Dataset
@@ -143,7 +143,7 @@ def coords_depth(coords_data: CoordsDataset, axes: Axes) -> npt.NDArray[np.float
 
 def sphere(
     center: npt.ArrayLike = [0, 0, 0], r: float = 1, vertices: int = 10
-) -> Dict[str, np.ndarray]:
+) -> dict[str, np.ndarray]:
     """Computes a mesh defining a sphere."""
     phi, theta = np.mgrid[
         0.0 : np.pi : 1j * vertices, 0.0 : 2.0 * np.pi : 1j * vertices

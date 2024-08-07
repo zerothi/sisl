@@ -3,12 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
-from sisl import Atom, Geometry, Grid, SislError
+from sisl import Geometry, Grid, SislError
 from sisl.io.cube import *
 
 pytestmark = [pytest.mark.io, pytest.mark.generic]
