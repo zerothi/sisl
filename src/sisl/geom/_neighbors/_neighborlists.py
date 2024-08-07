@@ -9,6 +9,7 @@ from typing import Optional
 import numpy as np
 
 from sisl import Geometry
+from sisl._internal import set_module
 
 __all__ = [
     "UniqueNeighborList",
@@ -20,6 +21,7 @@ __all__ = [
 ]
 
 
+@set_module("sisl.geom")
 class Neighbors:
 
     def __init__(
@@ -71,6 +73,7 @@ class Neighbors:
         return len(self.split_indices)
 
 
+@set_module("sisl.geom")
 class AtomsNeighborList(Neighbors):
     """Base class for interactions between atoms."""
 
@@ -88,6 +91,7 @@ class AtomsNeighborList(Neighbors):
             return np.diff(self._split_indices, prepend=0)
 
 
+@set_module("sisl.geom")
 class UniqueNeighborList(AtomsNeighborList):
     """Full neighbors list of a system, but **containing only the upper triangle of the adjacency matrix**.
 
@@ -166,6 +170,7 @@ class UniqueNeighborList(AtomsNeighborList):
         )
 
 
+@set_module("sisl.geom")
 class FullNeighborList(AtomsNeighborList):
     """Full neighbors list of a system.
 
@@ -237,6 +242,7 @@ class FullNeighborList(AtomsNeighborList):
         )
 
 
+@set_module("sisl.geom")
 class PartialNeighborList(AtomsNeighborList):
     """Neighbors list containing only the neighbors of some atoms.
 
@@ -313,6 +319,7 @@ class PartialNeighborList(AtomsNeighborList):
             raise ValueError("Only integer indexing is supported.")
 
 
+@set_module("sisl.geom")
 class AtomNeighborList(Neighbors):
     """List of atoms that are close to a given atom.
 
@@ -339,6 +346,7 @@ class AtomNeighborList(Neighbors):
         return len(self._finder_results)
 
 
+@set_module("sisl.geom")
 class PointsNeighborList(Neighbors):
     """List of atoms that are close to a set of points in space.
 
@@ -414,6 +422,7 @@ class PointsNeighborList(Neighbors):
             raise ValueError("Only integer indexing is supported.")
 
 
+@set_module("sisl.geom")
 class PointNeighborList(Neighbors):
     """List of atoms that are close to a point in space.
 

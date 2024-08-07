@@ -75,7 +75,6 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
    scripts/index
    environment
    math
-   nodes/nodes_intro
 
 .. toctree::
    :hidden:

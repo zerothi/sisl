@@ -6,6 +6,8 @@ from __future__ import annotations
 import logging
 from functools import partial
 
+from sisl._internal import set_module
+
 from ..atom import AtomInput
 from ._variable import Variable
 from ._yaml_reader import parse_variable, read_yaml
@@ -17,6 +19,7 @@ _log = logging.getLogger(__name__)
 _spdfgh = "spdfgh"
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class AtomPseudo(AtomInput):
     def get_variables(self, dict_or_yaml, nodes=()):
         """Convert a dictionary or yaml file input to variables usable by the minimizer"""

@@ -20,7 +20,6 @@ One may also plot real-space wavefunctions.
    PDOS
    COP
    berry_phase
-   berry_curvature
    ahc
    shc
    conductivity

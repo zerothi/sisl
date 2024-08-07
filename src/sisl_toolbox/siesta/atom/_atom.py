@@ -37,6 +37,7 @@ except ImportError:
 from scipy.interpolate import interp1d
 
 import sisl as si
+from sisl._internal import set_module
 from sisl.utils import NotNonePropertyDict, PropertyDict
 
 __all__ = ["AtomInput", "atom_plot_cli"]
@@ -94,6 +95,7 @@ _shell_order = [
 _spdfgh = "spdfgh"
 
 
+@set_module("sisl_toolbox.siesta.atom")
 class AtomInput:
     """Input for the ``atom`` program see [AtomLicense]_
 
@@ -852,6 +854,7 @@ from sisl_toolbox.cli import register_toolbox_cli
 register_toolbox_cli(atom_plot_cli)
 
 
+@set_module("sisl_toolbox.siesta.atom")
 def atom_plot(args):
     import matplotlib.pyplot as plt
 

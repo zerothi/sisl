@@ -8,6 +8,7 @@ from typing import Optional, Sequence, Tuple, Union
 import numpy as np
 
 from sisl import Geometry
+from sisl._internal import set_module
 from sisl.typing import AtomsIndex
 from sisl.utils import size_to_elements
 
@@ -24,6 +25,7 @@ __all__ = [
 ]
 
 
+@set_module("sisl.geom")
 class NeighborFinder:
     """Fast and linear scaling finding of neighbors.
 
@@ -108,7 +110,7 @@ class NeighborFinder:
 
     See Also
     --------
-    FullNeighborList, UniqueNeighborList, PartialNeighborList, PointsNeighborList
+    FullNeighborList, UniqueNeighborList, PartialNeighborList, PointsNeighborList:
         The neighbor lists returned by this class when neighbors are requested.
 
     """

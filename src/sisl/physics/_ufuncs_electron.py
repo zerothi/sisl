@@ -123,7 +123,7 @@ def berry_curvature(
     by the spin current operator. see `spin_berry_curvature` for details.
 
     For additional details on the spin Berry curvature, see Eq. (1) in
-    :cite:`PhysRevB.98.21402` and Eq. (2) in :cite:`Ji2022`.
+    :cite:`PhysRevB.98.214402` and Eq. (2) in :cite:`Ji2022`.
 
     Notes
     -----

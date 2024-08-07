@@ -215,8 +215,7 @@ autodoc_typehints = "both"
 
 # Automatically create the autodoc_type_aliases
 autodoc_type_aliases = dict()
-_type_aliases_skip = set(dir(sisl.typing._numpy))
-_type_aliases_skip.add("npt")
+_type_aliases_skip = set()
 
 for name in dir(sisl.typing):
     if name.startswith("_"):

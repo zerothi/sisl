@@ -115,7 +115,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     are in fortran indexing (1-based), everything is returned as Python indexing (0-based)
     when using Python scripts.
 
-    The notation described in `math_convention`_ will be used.
+    The notation described in :ref:`math_convention` will be used.
 
     A word on DOS normalization:
 

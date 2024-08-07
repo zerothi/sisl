@@ -9,6 +9,7 @@ from numbers import Number
 import numpy as np
 
 import sisl.io.siesta as io_siesta
+from sisl._internal import set_module
 from sisl.io import get_sile
 from sisl.utils import direction
 
@@ -46,6 +47,7 @@ def _siesta_out_accept(out):
     return accept
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class SiestaMetric(Metric):
     """Generic Siesta metric
 
@@ -70,6 +72,7 @@ class SiestaMetric(Metric):
             )
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class EigenvalueMetric(SiestaMetric):
     """Compare eigenvalues between two calculations and return the difference as the metric"""
 
@@ -119,6 +122,7 @@ class EigenvalueMetric(SiestaMetric):
         return metric
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class EnergyMetric(SiestaMetric):
     """Metric is the energy (default basis.enthalpy), read from the output file
 
@@ -169,6 +173,7 @@ class EnergyMetric(SiestaMetric):
         return metric
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class ForceMetric(SiestaMetric):
     """Metric is the force (default maximum), read from the FA file
 
@@ -222,6 +227,7 @@ class ForceMetric(SiestaMetric):
         return metric
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class StressMetric(SiestaMetric):
     """Metric is the stress tensor, read from the output file
 

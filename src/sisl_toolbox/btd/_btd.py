@@ -33,6 +33,7 @@ from scipy.sparse.linalg import svds
 
 import sisl as si
 from sisl import _array as _a
+from sisl._internal import set_module
 from sisl.linalg import (
     cholesky,
     eigh,
@@ -121,6 +122,7 @@ def _scat_state_svd(A, **kwargs):
     return DOS**2 / (2 * np.pi), A
 
 
+@set_module("sisl_toolbox.btd")
 class PivotSelfEnergy(si.physics.SelfEnergy):
     """Container for the self-energy object
 
@@ -205,6 +207,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         return self._broad_func(*args, **kwargs)
 
 
+@set_module("sisl_toolbox.btd")
 class DownfoldSelfEnergy(PivotSelfEnergy):
     def __init__(
         self, name, se, pivot, Hdevice, eta_device=0, bulk=True, bloch=(1, 1, 1)
@@ -366,6 +369,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         return self.se2broadening(self.self_energy(*args, **kwargs))
 
 
+@set_module("sisl_toolbox.btd")
 class BlockMatrixIndexer:
     def __init__(self, bm):
         self._bm = bm
@@ -416,6 +420,7 @@ class BlockMatrixIndexer:
         self._bm._M[key] = M
 
 
+@set_module("sisl_toolbox.btd")
 class BlockMatrix:
     """Container class that holds a block matrix"""
 
@@ -466,6 +471,7 @@ class BlockMatrix:
         return BlockMatrixIndexer(self)
 
 
+@set_module("sisl_toolbox.btd")
 class DeviceGreen:
     r"""Block-tri-diagonal Green function calculator
 

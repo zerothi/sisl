@@ -107,7 +107,7 @@ def apply(
         axis selector for `data` along which `func` will be applied
     segments :
         which segments the `mapper` will recieve, if atoms, each atom
-        index will be passed to the `mapper(ia)`.
+        index will be passed to the ``mapper(ia)``.
         If ``'all'``, it will be ``range(data.shape[axis])``.
 
     Examples
