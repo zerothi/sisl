@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.geometry &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl._core.geometry &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -138,6 +138,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">argsort</span><span class="p">,</span>
     <span class="n">bool_</span><span class="p">,</span>
@@ -155,7 +156,7 @@
     <span class="n">tile</span><span class="p">,</span>
     <span class="n">unique</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_array</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl._category</span> <span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">GenericCategory</span>
@@ -173,14 +174,7 @@
 <span class="kn">from</span> <span class="nn">sisl._namedindex</span> <span class="kn">import</span> <span class="n">NamedIndex</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.shape</span> <span class="kn">import</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Shape</span><span class="p">,</span> <span class="n">Sphere</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ArrayLike</span><span class="p">,</span>
-    <span class="n">AtomsIndex</span><span class="p">,</span>
-    <span class="n">CellAxes</span><span class="p">,</span>
-    <span class="n">NDArray</span><span class="p">,</span>
-    <span class="n">OrbitalsIndex</span><span class="p">,</span>
-    <span class="n">SileLike</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">CellAxes</span><span class="p">,</span> <span class="n">OrbitalsIndex</span><span class="p">,</span> <span class="n">SileLike</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">angle</span><span class="p">,</span>
     <span class="n">cmd</span><span class="p">,</span>
@@ -310,7 +304,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Create the geometry coordinate, be aware that we do not copy!</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
@@ -438,24 +432,24 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_s</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">firsto</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">firsto</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The first orbital on the corresponding atom&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">firsto</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">lasto</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">lasto</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The last orbital on the corresponding atom&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">lasto</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">orbitals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">orbitals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Orbital</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of orbitals per atom&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">orbitals</span>
 
     <span class="c1">## End size of geometry</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">fxyz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">fxyz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns geometry coordinates in fractional coordinates&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
@@ -1488,11 +1482,141 @@
         <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">idx_self</span><span class="p">),</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">idx_other</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Geometry.find_nsc">
+<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.find_nsc">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_nsc</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CellAxes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;overlap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find number of supercells for the geometry, depending on certain criteria</span>
+
+<span class="sd">        This can find the optimal ``nsc`` values for a given method.</span>
+
+<span class="sd">        The important parameter, `method` determines how ``nsc`` is found.</span>
+<span class="sd">        The method are shown here, from method that produces the smallest ``nsc``, up</span>
+<span class="sd">        to the largest ``nsc``.</span>
+
+<span class="sd">        ``method=atoms``</span>
+<span class="sd">            here only the atoms ranges are taken into account, and only</span>
+<span class="sd">            whether atoms in the primary unit cell can connect to others in neigboring</span>
+<span class="sd">            cells.</span>
+
+<span class="sd">        ``method=cell``</span>
+<span class="sd">            only the atoms ranges are taken into account.</span>
+<span class="sd">            For instance if a lattice vector is as long as the orbital range</span>
+<span class="sd">            it will have 3 supercells (it can only connect to its neighboring</span>
+<span class="sd">            cells).</span>
+
+<span class="sd">        ``method=overlap``</span>
+<span class="sd">            determine nsc by examining at what range two orbitals overlaps.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axes :</span>
+<span class="sd">           only discover new ``nsc`` the specified axes (defaults to all)</span>
+<span class="sd">        R :</span>
+<span class="sd">           the maximum connection radius for each atom, defaults to ``self.maxR()``.</span>
+<span class="sd">        method:</span>
+<span class="sd">            See discussion above.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray: the found nsc that obeys `method`</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        optimize_nsc: same as this, but equivalent to also doing ``self.set_nsc(self.find_nsc(...))``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># requesting no search space</span>
+            <span class="k">return</span> <span class="n">nsc</span>
+
+        <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxR</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.001</span>
+        <span class="k">if</span> <span class="n">R</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="mf">0.00001</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;.find_nsc could not determine the radius from the &quot;</span>
+                <span class="s2">&quot;internal atoms (defaulting to zero radius).&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span>
+        <span class="n">length</span><span class="p">,</span> <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
+
+        <span class="c1"># TODO check that angles below 60 degrees are</span>
+        <span class="c1"># important.</span>
+
+        <span class="c1"># Half-nsc (only 1 direction)</span>
+        <span class="n">hsc</span> <span class="o">=</span> <span class="n">nsc</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="c1"># determine the maximum hsc values</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">):</span>
+            <span class="n">R_actual</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;overlap&quot;</span><span class="p">,):</span>
+            <span class="n">R_actual</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.find_nsc got wrong &#39;method&#39; argument, got </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Determine the actual range depending on the actual R</span>
+        <span class="n">hsc</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">R_actual</span> <span class="o">/</span> <span class="n">length</span><span class="p">[</span><span class="n">axes</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+                <span class="n">isc</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+                    <span class="c1"># Initialize the isc for this direction</span>
+                    <span class="c1"># (note we do not take non-orthogonal directions</span>
+                    <span class="c1">#  into account)</span>
+                    <span class="n">isc</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+                    <span class="c1"># Initialize the actual number of supercell connections</span>
+                    <span class="c1"># along this direction.</span>
+                    <span class="n">prev_isc</span> <span class="o">=</span> <span class="mi">0</span>
+
+                    <span class="k">while</span> <span class="n">prev_isc</span> <span class="o">==</span> <span class="n">isc</span><span class="p">[</span><span class="n">ax</span><span class="p">]:</span>
+                        <span class="c1"># Try next supercell connection</span>
+                        <span class="n">isc</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                        <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_sc</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">prev_isc</span> <span class="o">=</span> <span class="n">isc</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span>
+                                <span class="k">break</span>
+
+                    <span class="n">hsc</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_isc</span>
+
+        <span class="n">nsc</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">=</span> <span class="n">hsc</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">nsc</span></div>
+
+
 <div class="viewcode-block" id="Geometry.optimize_nsc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.optimize_nsc">[docs]</a>
+    <span class="nd">@deprecation</span><span class="p">(</span>
+        <span class="s2">&quot;optimize_nsc is deprecated, update the code to use &#39;find_nsc&#39; and then &#39;set_nsc&#39;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16.0&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">optimize_nsc</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CellAxes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Optimize the number of supercell connections based on ``self.maxR()``</span>
@@ -1501,6 +1625,8 @@
 
 <span class="sd">        This is an in-place operation.</span>
 
+<span class="sd">        Deprecated method!</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        axes :</span>
@@ -1508,65 +1634,8 @@
 <span class="sd">        R :</span>
 <span class="sd">           the maximum connection radius for each atom</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span>
-
-        <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxR</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.001</span>
-        <span class="k">if</span> <span class="n">R</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">R</span> <span class="o">=</span> <span class="mf">0.00001</span>
-            <span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;.optimize_nsc could not determine the radius from the &quot;</span>
-                <span class="s2">&quot;internal atoms (defaulting to zero radius).&quot;</span>
-            <span class="p">)</span>
-
-        <span class="n">ic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span>
-        <span class="n">nrc</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">ic</span><span class="p">)</span>
-        <span class="n">idiv</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">nrc</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">R</span><span class="p">),</span> <span class="mf">1.1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">imcell</span> <span class="o">=</span> <span class="n">ic</span> <span class="o">*</span> <span class="n">idiv</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="c1"># We know this is the maximum</span>
-        <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="c1"># We need to subtract one to ensure we are not taking into account</span>
-        <span class="c1"># too big supercell connections.</span>
-        <span class="c1"># I don&#39;t think we need anything other than this.</span>
-        <span class="c1"># However, until I am sure that this wouldn&#39;t change, regardless of the</span>
-        <span class="c1"># cell. I will keep it.</span>
-        <span class="n">Rimcell</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">imcell</span><span class="p">)[</span><span class="n">axes</span><span class="p">]</span>
-        <span class="n">nsc</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">Rimcell</span><span class="p">)</span> <span class="o">+</span> <span class="n">ceil</span><span class="p">(</span><span class="n">Rimcell</span> <span class="o">%</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-        <span class="c1"># Since for 1 it is not sure that it is a connection or not, we limit the search by</span>
-        <span class="c1"># removing it.</span>
-        <span class="n">nsc</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nsc</span><span class="p">[</span><span class="n">axes</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nsc</span><span class="p">[</span><span class="n">axes</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
-            <span class="c1"># Initialize the isc for this direction</span>
-            <span class="c1"># (note we do not take non-orthogonal directions</span>
-            <span class="c1">#  into account)</span>
-            <span class="n">isc</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-            <span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="c1"># Initialize the actual number of supercell connections</span>
-            <span class="c1"># along this direction.</span>
-            <span class="n">prev_isc</span> <span class="o">=</span> <span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">while</span> <span class="n">prev_isc</span> <span class="o">==</span> <span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                <span class="c1"># Try next supercell connection</span>
-                <span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-                        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_sc</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">prev_isc</span> <span class="o">=</span> <span class="n">isc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                            <span class="k">break</span>
-
-            <span class="c1"># Save the reached supercell connection</span>
-            <span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_isc</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
-
+        <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_nsc</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;atoms&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">nsc</span></div>
 
 
@@ -3722,7 +3791,9 @@
                 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">mode</span>
 
                 <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">mode</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="c1"># We don&#39;t need keepdims=False, because an array of size 1</span>
+                    <span class="c1"># can be broadcasted to a single element.</span>
+                    <span class="k">return</span> <span class="n">mode</span><span class="p">(</span><span class="n">lst</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -4097,7 +4168,7 @@
         <span class="n">grid_indices</span> <span class="o">=</span> <span class="n">grid_indices</span><span class="p">[:</span><span class="n">i_value</span><span class="p">]</span>
         <span class="n">orbital_indices</span> <span class="o">=</span> <span class="n">orbital_indices</span><span class="p">[:</span><span class="n">i_value</span><span class="p">]</span>
 
-        <span class="n">psi_values</span> <span class="o">=</span> <span class="n">csr_array</span><span class="p">(</span>
+        <span class="n">psi_values</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
             <span class="p">(</span><span class="n">grid_values</span><span class="p">,</span> <span class="p">(</span><span class="n">grid_indices</span><span class="p">,</span> <span class="n">orbital_indices</span><span class="p">)),</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">sp_grid_geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">),</span>
         <span class="p">)</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finding neighbors &mdash; sisl 0.1-430f9f5</title>
+  <title>Finding neighbors &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -147,8 +147,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-sisl.geom">
-<span id="finding-neighbors"></span><span id="geom-neighbors"></span><h1>Finding neighbors<a class="headerlink" href="#module-sisl.geom" title="Link to this heading"></a></h1>
+  <section id="finding-neighbors">
+<span id="geom-neighbors"></span><h1>Finding neighbors<a class="headerlink" href="#finding-neighbors" title="Link to this heading"></a></h1>
 <p><a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> implements an <strong>algorithm to find neighbors in a geometry</strong>. It has two main properties:</p>
 <p><span class="fas fa-truck-fast"></span> <strong>It is very fast</strong>. It can compute all the neighbors for a system of 3 million atoms in around 6 seconds.</p>
 <p><span class="fas fa-maximize"></span> <strong>It scales linearly</strong> with the number of atoms in the system.</p>
@@ -192,7 +192,7 @@ neighbor list.</p>
 <thead>
 <tr class="row-odd"><th class="head"><p>Class</p></th>
 <th class="head"><p>Neighbors for</p></th>
-<th class="head"><p><em class="xref py py-obj">i</em> &lt; <em class="xref py py-obj">j</em></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">j</span></code></p></th>
 <th class="head"><p>Items</p></th>
 </tr>
 </thead>
@@ -231,9 +231,9 @@ neighbor list.</p>
 </table>
 <p>Where:</p>
 <ul class="simple">
-<li><p><em class="xref py py-obj">i &lt; j</em> indicates whether the list only contains one direction of the interaction, i.e. by omitting
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">j</span></code> indicates whether the list only contains one direction of the interaction, i.e. by omitting
 the transposed interaction.</p></li>
-<li><p><em class="xref py py-obj">Items</em> indicates the type that you get when you iterate or index (e.g. <code class="docutils literal notranslate"><span class="pre">neighbors[0]</span></code>) the list.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Items</span></code> indicates the type that you get when you iterate or index (e.g. <code class="docutils literal notranslate"><span class="pre">neighbors[0]</span></code>) the list.</p></li>
 </ul>
 </section>
 </section>

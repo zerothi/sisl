@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xsf &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl.io.xsf &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -321,7 +321,11 @@
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">_r_geometry_next</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Lattice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lattice</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Lattice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ret_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">only_lattice</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># fetch the prior read cell value</span>
@@ -446,6 +450,9 @@
             <span class="n">pt</span> <span class="o">=</span> <span class="n">PeriodicTable</span><span class="p">()</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">pt</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">Z</span> <span class="ow">in</span> <span class="n">atoms_r</span><span class="p">]</span>
 
+        <span class="k">if</span> <span class="n">only_lattice</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cell</span>
+
         <span class="k">if</span> <span class="n">xyz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ret_data</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
@@ -472,10 +479,8 @@
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess_tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
     <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Lattice contained in file&quot;&quot;&quot;</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_next</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ret</span>
-        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">lattice</span></div>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_next</span><span class="p">(</span><span class="n">only_lattice</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
 
 <div class="viewcode-block" id="xsfSile.read_geometry">

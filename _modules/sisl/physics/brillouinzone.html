@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.brillouinzone &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl.physics.brillouinzone &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -137,8 +137,9 @@
 <span class="sd">particular methods from the contained object.</span>
 <span class="sd">This is best shown with an example:</span>
 
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; bz = BrillouinZone(H)</span>
+<span class="sd">&gt;&gt;&gt; import sisl as si</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; bz = si.BrillouinZone(H)</span>
 <span class="sd">&gt;&gt;&gt; bz.apply.array.eigh()</span>
 
 <span class="sd">This will calculate eigenvalues for all k-points associated with the `BrillouinZone` and</span>
@@ -147,8 +148,8 @@
 
 <span class="sd">This may be extremely convenient when calculating band-structures:</span>
 
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; bs = BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; bs = si.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)</span>
 <span class="sd">&gt;&gt;&gt; bs_eig = bs.apply.array.eigh()</span>
 <span class="sd">&gt;&gt;&gt; plt.plot(bs.lineark(), bs_eig)</span>
 
@@ -158,8 +159,8 @@
 <span class="sd">As an example lets post-process the DOS on a per k-point basis while</span>
 <span class="sd">calculating the average:</span>
 
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; mp = MonkhorstPack(H, [10, 10, 10])</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; mp = si.MonkhorstPack(H, [10, 10, 10])</span>
 <span class="sd">&gt;&gt;&gt; E = np.linspace(-2, 2, 100)</span>
 <span class="sd">&gt;&gt;&gt; def wrap_DOS(eigenstate):</span>
 <span class="sd">...    # Calculate the DOS for the eigenstates</span>
@@ -179,8 +180,8 @@
 <span class="sd">corresponding k-point. An example could be to manipulate the DOS depending on the k-point and</span>
 <span class="sd">weight:</span>
 
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; mp = MonkhorstPack(H, [10, 10, 10])</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; mp = si.MonkhorstPack(H, [10, 10, 10])</span>
 <span class="sd">&gt;&gt;&gt; E = np.linspace(-2, 2, 100)</span>
 <span class="sd">&gt;&gt;&gt; def wrap_DOS(eigenstate, k, weight):</span>
 <span class="sd">...    # Calculate the DOS for the eigenstates and weight by k_x and weight</span>
@@ -190,8 +191,8 @@
 <span class="sd">When using wrap to calculate more than one quantity per eigenstate it may be advantageous</span>
 <span class="sd">to use `~sisl.oplist` to handle cases of `BrillouinZone.apply.average` and `BrillouinZone.apply.sum`.</span>
 
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; mp = MonkhorstPack(H, [10, 10, 10])</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; mp = si.MonkhorstPack(H, [10, 10, 10])</span>
 <span class="sd">&gt;&gt;&gt; E = np.linspace(-2, 2, 100)</span>
 <span class="sd">&gt;&gt;&gt; def wrap_multiple(eigenstate):</span>
 <span class="sd">...    # Calculate DOS/PDOS for eigenstates</span>
@@ -199,7 +200,7 @@
 <span class="sd">...    PDOS = eigenstate.PDOS(E)</span>
 <span class="sd">...    # Calculate velocity for the eigenstates</span>
 <span class="sd">...    v = eigenstate.velocity()</span>
-<span class="sd">...    return oplist([DOS, PDOS, v])</span>
+<span class="sd">...    return si.oplist([DOS, PDOS, v])</span>
 <span class="sd">&gt;&gt;&gt; DOS, PDOS, v = mp.apply.average.eigenstate(wrap=wrap_multiple, eta=True)</span>
 
 <span class="sd">Which does mathematical operations (averaging/summing) using `~sisl.oplist`.</span>
@@ -211,8 +212,8 @@
 <span class="sd">The ``apply`` method looping k-points may be explicitly parallelized.</span>
 <span class="sd">To run parallel do:</span>
 
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; mp = MonkhorstPack(H, [10, 10, 10])</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; mp = si.MonkhorstPack(H, [10, 10, 10])</span>
 <span class="sd">&gt;&gt;&gt; with mp.apply.renew(pool=True) as par:</span>
 <span class="sd">...     par.eigh()</span>
 
@@ -232,8 +233,8 @@
 
 <span class="sd">Alternatively one can control the number of processors locally by doing:</span>
 
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; mp = MonkhorstPack(H, [10, 10, 10])</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; mp = si.MonkhorstPack(H, [10, 10, 10])</span>
 <span class="sd">&gt;&gt;&gt; with mp.apply.renew(pool=2) as par:</span>
 <span class="sd">...     par.eigh()</span>
 
@@ -243,8 +244,8 @@
 
 <span class="sd">&gt;&gt;&gt; from multiprocessing import Pool</span>
 <span class="sd">&gt;&gt;&gt; pool = Pool(4)</span>
-<span class="sd">&gt;&gt;&gt; H = Hamiltonian(...)</span>
-<span class="sd">&gt;&gt;&gt; mp = MonkhorstPack(H, [10, 10, 10])</span>
+<span class="sd">&gt;&gt;&gt; H = si.Hamiltonian(...)</span>
+<span class="sd">&gt;&gt;&gt; mp = si.MonkhorstPack(H, [10, 10, 10])</span>
 <span class="sd">&gt;&gt;&gt; with mp.apply.renew(pool=pool) as par:</span>
 <span class="sd">...     par.eigh()</span>
 
@@ -270,6 +271,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">argsort</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="nb">sum</span>
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
@@ -281,7 +283,6 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">dot3</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">npt</span>
 <span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">batched_indices</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">cart2spher</span><span class="p">,</span> <span class="n">fnorm</span>
@@ -308,14 +309,14 @@
 
 <span class="sd">    By default the `apply` method exposes a set of dispatch methods:</span>
 
-<span class="sd">    - `apply.iter`, the default iterator module</span>
-<span class="sd">    - `apply.average` reduced result by averaging (using `BrillouinZone.weight` as the weight per k-point.</span>
-<span class="sd">    - `apply.sum` reduced result without weighing</span>
-<span class="sd">    - `apply.array` return a single array with all values; has `len` equal to number of k-points</span>
-<span class="sd">    - `apply.none`, specialized method that is mainly useful when wrapping methods</span>
-<span class="sd">    - `apply.list` same as `apply.array` but using Python list as return value</span>
-<span class="sd">    - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical operations element wise</span>
-<span class="sd">    - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray` instance</span>
+<span class="sd">    - ``apply.iter``, the default iterator module</span>
+<span class="sd">    - ``apply.average`` reduced result by averaging (using `BrillouinZone.weight` as the weight per k-point.</span>
+<span class="sd">    - ``apply.sum`` reduced result without weighing</span>
+<span class="sd">    - ``apply.array`` return a single array with all values; has `len` equal to number of k-points</span>
+<span class="sd">    - ``apply.none``, specialized method that is mainly useful when wrapping methods</span>
+<span class="sd">    - ``apply.list`` same as ``apply.array`` but using Python list as return value</span>
+<span class="sd">    - ``apply.oplist`` using `sisl.oplist` allows greater flexibility for mathematical operations element wise</span>
+<span class="sd">    - ``apply.datarray`` if `xarray` is available one can retrieve an `xarray.DataArray` instance</span>
 
 <span class="sd">    Please see :ref:`physics.brillouinzone` for further examples.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -367,6 +368,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
 
     <span class="n">total_dist</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">stop</span>
+
     <span class="c1"># Scale to total length of `stop`</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_dist</span>
 
@@ -655,7 +657,13 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.param_circle">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">param_circle</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">N_or_dk</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">kR</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">N_or_dk</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">kR</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">normal</span><span class="p">,</span>
+        <span class="n">origin</span><span class="p">,</span>
+        <span class="n">loop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a parameterized k-point list where the k-points are generated on a circle around an origin</span>
 
@@ -679,7 +687,7 @@
 <span class="sd">           normal vector to determine the circle plane</span>
 <span class="sd">        origin : array_like of float</span>
 <span class="sd">           origin of the circle used to generate the circular parameterization</span>
-<span class="sd">        loop : bool, optional</span>
+<span class="sd">        loop :</span>
 <span class="sd">           whether the first and last point are equal</span>
 
 <span class="sd">        Examples</span>
@@ -1045,7 +1053,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Displacement for this Monkhorst-Pack grid&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_displ</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of `MonkhorstPack`&quot;&quot;&quot;</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_lattice</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -1182,7 +1190,12 @@
 <div class="viewcode-block" id="MonkhorstPack.replace">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack.replace">[docs]</a>
     <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check_vol</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="p">,</span>
+        <span class="n">mp</span><span class="p">:</span> <span class="n">MonkhorstPack</span><span class="p">,</span>
+        <span class="n">displacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">as_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">check_vol</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace a k-point with a new set of k-points from a Monkhorst-Pack grid</span>
 

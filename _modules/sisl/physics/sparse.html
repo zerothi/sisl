@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.sparse &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl.physics.sparse &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -363,7 +363,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -385,7 +385,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -407,7 +407,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -438,7 +438,7 @@
 
 <span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.</span>
 
-<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+<span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">           \mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}</span>
@@ -453,8 +453,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
-<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance</span>
+<span class="sd">        gauge :</span>
+<span class="sd">           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&quot;csr&quot;, &quot;array&quot;, &quot;matrix&quot;, &quot;coo&quot;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -524,7 +524,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
@@ -555,7 +555,7 @@
 <span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.</span>
 <span class="sd">        And :math:`\alpha` is one of the Cartesian directions.</span>
 
-<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+<span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">           \nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}</span>
@@ -570,8 +570,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&quot;cell&quot;, &quot;orbital&quot;}</span>
-<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance</span>
+<span class="sd">        gauge :</span>
+<span class="sd">           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&quot;csr&quot;, &quot;array&quot;, &quot;matrix&quot;, &quot;coo&quot;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -606,7 +606,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
@@ -626,7 +626,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -660,7 +660,7 @@
 <span class="sd">        where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.</span>
 <span class="sd">        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.</span>
 
-<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+<span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">           \nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf r_\alpha \mathbf r_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}</span>
@@ -675,8 +675,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
-<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance</span>
+<span class="sd">        gauge :</span>
+<span class="sd">           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&quot;csr&quot;, &quot;array&quot;, &quot;matrix&quot;, &quot;coo&quot;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -711,7 +711,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ddPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
@@ -731,7 +731,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1159,7 +1159,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
@@ -1182,7 +1182,7 @@
 <span class="sd">           the spin-index of the quantity</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="n">spin</span><span class="p">)</span>
@@ -1202,7 +1202,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1223,7 +1223,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1244,7 +1244,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
@@ -1267,7 +1267,7 @@
 <span class="sd">           the spin-index of the quantity</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="n">spin</span><span class="p">)</span>
@@ -1287,7 +1287,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1308,7 +1308,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1329,7 +1329,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1350,7 +1350,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1371,7 +1371,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
@@ -1391,7 +1391,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1412,7 +1412,7 @@
 <span class="sd">           k-point (default is Gamma point)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">           default to `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
+<span class="sd">        gauge :</span>
 <span class="sd">           chosen gauge</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>

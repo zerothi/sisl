@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -282,14 +282,14 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 </div>
 <p>By default the <a class="reference internal" href="#sisl.physics.MonkhorstPack.apply" title="sisl.physics.MonkhorstPack.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a> method exposes a set of dispatch methods:</p>
 <ul class="simple">
-<li><p><em class="xref py py-obj">apply.iter</em>, the default iterator module</p></li>
-<li><p><em class="xref py py-obj">apply.average</em> reduced result by averaging (using <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.weight" title="sisl.physics.BrillouinZone.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone.weight</span></code></a> as the weight per k-point.</p></li>
-<li><p><em class="xref py py-obj">apply.sum</em> reduced result without weighing</p></li>
-<li><p><em class="xref py py-obj">apply.array</em> return a single array with all values; has <em class="xref py py-obj">len</em> equal to number of k-points</p></li>
-<li><p><em class="xref py py-obj">apply.none</em>, specialized method that is mainly useful when wrapping methods</p></li>
-<li><p><em class="xref py py-obj">apply.list</em> same as <em class="xref py py-obj">apply.array</em> but using Python list as return value</p></li>
-<li><p><em class="xref py py-obj">apply.oplist</em> using <a class="reference internal" href="sisl.oplist.html#sisl.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
-<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2024.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2024.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.iter</span></code>, the default iterator module</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.average</span></code> reduced result by averaging (using <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.weight" title="sisl.physics.BrillouinZone.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone.weight</span></code></a> as the weight per k-point.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.sum</span></code> reduced result without weighing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.array</span></code> return a single array with all values; has <em class="xref py py-obj">len</em> equal to number of k-points</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.none</span></code>, specialized method that is mainly useful when wrapping methods</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.list</span></code> same as <code class="docutils literal notranslate"><span class="pre">apply.array</span></code> but using Python list as return value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.oplist</span></code> using <a class="reference internal" href="sisl.oplist.html#sisl.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.datarray</span></code> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2024.7.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2024.7.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
 </ul>
 <p>Please see <a class="reference internal" href="../physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a> for further examples.</p>
 </dd></dl>
@@ -416,7 +416,7 @@ will be.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.param_circle">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_or_dk</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.param_circle" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_or_dk</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.param_circle" title="Link to this definition"></a></dt>
 <dd><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p>
 <p>The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
 To generate a perfect circle in units of the reciprocal lattice vectors one can
@@ -433,7 +433,7 @@ the number of points increased to 2.</p></li>
 <li><p><strong>kR</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – radius of the k-point. In 1/Ang</p></li>
 <li><p><strong>normal</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – normal vector to determine the circle plane</p></li>
 <li><p><strong>origin</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – origin of the circle used to generate the circular parameterization</p></li>
-<li><p><strong>loop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the first and last point are equal</p></li>
+<li><p><strong>loop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – whether the first and last point are equal</p></li>
 </ul>
 </dd>
 </dl>
@@ -460,6 +460,7 @@ the number of points increased to 2.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>N_or_dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>)</p></li>
 <li><p><strong>kR</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>)</p></li>
+<li><p><strong>loop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -524,7 +525,7 @@ lists accordingly.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.replace">
-<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displacement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_vol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#MonkhorstPack.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.MonkhorstPack.replace" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><span class="pre">MonkhorstPack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">displacement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_vol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#MonkhorstPack.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.MonkhorstPack.replace" title="Link to this definition"></a></dt>
 <dd><p>Replace a k-point with a new set of k-points from a Monkhorst-Pack grid</p>
 <p>This method tries to replace an area corresponding to <em class="xref py py-obj">mp.size</em> around the k-point <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a>
 such that the k-points are replaced.
@@ -577,6 +578,7 @@ a 4x4x1 Monkhorst-Pack grid.</p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
+<li><p><strong>mp</strong> (<a class="reference internal" href="#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><em>MonkhorstPack</em></a>)</p></li>
 <li><p><strong>as_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 <li><p><strong>check_vol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>

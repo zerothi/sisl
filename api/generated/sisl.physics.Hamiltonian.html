@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.Hamiltonian &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl.physics.Hamiltonian &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -434,7 +434,7 @@ This is a keyword-only argument.</p></li>
 <div class="math notranslate nohighlight">
 \[\mathbf H(\mathbf k) = \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf R\)</span> is an integer times the cell vector and <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> are orbital indices.</p>
-<p>Another possible gauge is the orbital distance which can be written as</p>
+<p>Another possible gauge is the atomic distance which can be written as</p>
 <div class="math notranslate nohighlight">
 \[\mathbf H(\mathbf k) = \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
@@ -445,7 +445,7 @@ This is a keyword-only argument.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'cell'</em><em>, </em><em>'orbital'}</em>) – the chosen gauge, <em class="xref py py-obj">cell</em> for cell vector gauge, and <em class="xref py py-obj">orbital</em> for orbital distance
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the chosen gauge, <code class="docutils literal notranslate"><span class="pre">cell</span></code> for cell vector gauge, and <code class="docutils literal notranslate"><span class="pre">atom</span></code> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{'csr'</em><em>, </em><em>'array'</em><em>, </em><em>'dense'</em><em>, </em><em>'coo'</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
@@ -519,7 +519,7 @@ structure is completed.</p>
 <div class="math notranslate nohighlight">
 \[\mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf R\)</span> is an integer times the cell vector and <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> are orbital indices.</p>
-<p>Another possible gauge is the orbital distance which can be written as</p>
+<p>Another possible gauge is the atomic distance which can be written as</p>
 <div class="math notranslate nohighlight">
 \[\mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
@@ -530,7 +530,7 @@ structure is completed.</p>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'cell'</em><em>, </em><em>'orbital'}</em>) – the chosen gauge, <em class="xref py py-obj">cell</em> for cell vector gauge, and <em class="xref py py-obj">orbital</em> for orbital distance
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the chosen gauge, <code class="docutils literal notranslate"><span class="pre">cell</span></code> for cell vector gauge, and <code class="docutils literal notranslate"><span class="pre">atom</span></code> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{&quot;csr&quot;</em><em>, </em><em>&quot;array&quot;</em><em>, </em><em>&quot;matrix&quot;</em><em>, </em><em>&quot;coo&quot;</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
@@ -824,10 +824,10 @@ for the all atoms within <code class="docutils literal notranslate"><span class=
 \[\nabla_{\mathbf k} \mathbf H_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf R\)</span> is an integer times the cell vector and <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> are orbital indices.
 And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the Cartesian directions.</p>
-<p>Another possible gauge is the orbital distance which can be written as</p>
+<p>Another possible gauge is the atomic distance which can be written as</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k} \mathbf H_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+<p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the atoms (for atom centered orbitals).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -835,7 +835,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'cell'</em><em>, </em><em>'orbital'}</em>) – the chosen gauge, <em class="xref py py-obj">cell</em> for cell vector gauge, and <em class="xref py py-obj">orbital</em> for orbital distance
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the chosen gauge, <code class="docutils literal notranslate"><span class="pre">cell</span></code> for cell vector gauge, and <code class="docutils literal notranslate"><span class="pre">atom</span></code> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{'csr'</em><em>, </em><em>'array'</em><em>, </em><em>'dense'</em><em>, </em><em>'coo'</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
@@ -879,7 +879,7 @@ this keyword is ignored.</p></li>
 \[\nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf R\)</span> is an integer times the cell vector and <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> are orbital indices.
 And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the Cartesian directions.</p>
-<p>Another possible gauge is the orbital distance which can be written as</p>
+<p>Another possible gauge is the atomic distance which can be written as</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
@@ -890,7 +890,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{&quot;cell&quot;</em><em>, </em><em>&quot;orbital&quot;}</em>) – the chosen gauge, <em class="xref py py-obj">cell</em> for cell vector gauge, and <em class="xref py py-obj">orbital</em> for orbital distance
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the chosen gauge, <code class="docutils literal notranslate"><span class="pre">cell</span></code> for cell vector gauge, and <code class="docutils literal notranslate"><span class="pre">atom</span></code> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{&quot;csr&quot;</em><em>, </em><em>&quot;array&quot;</em><em>, </em><em>&quot;matrix&quot;</em><em>, </em><em>&quot;coo&quot;</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
@@ -935,10 +935,10 @@ return in <a class="reference external" href="https://numpy.org/doc/stable/refer
 \[\nabla_{\mathbf k^2} \mathbf H_{\alpha\beta}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf R\)</span> is an integer times the cell vector and <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> are orbital indices.
 And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> are one of the Cartesian directions.</p>
-<p>Another possible gauge is the orbital distance which can be written as</p>
+<p>Another possible gauge is the atomic distance which can be written as</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k^2} \mathbf H_{\alpha\beta}(\mathbf k) = -\mathbf r_\alpha\mathbf r_\beta \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+<p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -946,7 +946,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'cell'</em><em>, </em><em>'orbital'}</em>) – the chosen gauge, <em class="xref py py-obj">cell</em> for cell vector gauge, and <em class="xref py py-obj">orbital</em> for orbital distance
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the chosen gauge, <code class="docutils literal notranslate"><span class="pre">cell</span></code> for cell vector gauge, and <code class="docutils literal notranslate"><span class="pre">atom</span></code> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{'csr'</em><em>, </em><em>'array'</em><em>, </em><em>'dense'</em><em>, </em><em>'coo'</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
@@ -990,7 +990,7 @@ this keyword is ignored.</p></li>
 \[\nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf R\)</span> is an integer times the cell vector and <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> are orbital indices.
 And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> are one of the Cartesian directions.</p>
-<p>Another possible gauge is the orbital distance which can be written as</p>
+<p>Another possible gauge is the atomic distance which can be written as</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf r_\alpha \mathbf r_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
@@ -1001,7 +1001,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'cell'</em><em>, </em><em>'orbital'}</em>) – the chosen gauge, <em class="xref py py-obj">cell</em> for cell vector gauge, and <em class="xref py py-obj">orbital</em> for orbital distance
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the chosen gauge, <code class="docutils literal notranslate"><span class="pre">cell</span></code> for cell vector gauge, and <code class="docutils literal notranslate"><span class="pre">atom</span></code> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{&quot;csr&quot;</em><em>, </em><em>&quot;array&quot;</em><em>, </em><em>&quot;matrix&quot;</em><em>, </em><em>&quot;coo&quot;</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
@@ -1106,7 +1106,7 @@ this parameter is only valid for <a class="reference internal" href="sisl.physic
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like*3</em><em>, </em><em>optional</em>) – the k-point at which to evaluate the eigenstates at</p></li>
-<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the gauge used for calculating the eigenstates</p></li>
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the gauge used for calculating the eigenstates</p></li>
 <li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference internal" href="#sisl.physics.Hamiltonian.eigsh" title="sisl.physics.Hamiltonian.eigsh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigsh</span></code></a> will be called, else <a class="reference internal" href="#sisl.physics.Hamiltonian.eigh" title="sisl.physics.Hamiltonian.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a> will be
 called (default).</p></li>
 <li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – see <a class="reference internal" href="#sisl.physics.Hamiltonian.eigh" title="sisl.physics.Hamiltonian.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a> for details, this will be passed to the EigenstateElectron
@@ -1142,7 +1142,7 @@ instance to be used in subsequent calls, may speed up post-processing.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like*3</em><em>, </em><em>optional</em>) – the k-point at which to evaluate the eigenvalues at</p></li>
-<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the gauge used for calculating the eigenvalues</p></li>
+<li><p><strong>gauge</strong> (<em>sisl.typing.GaugeType</em>) – the gauge used for calculating the eigenvalues</p></li>
 <li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference internal" href="#sisl.physics.Hamiltonian.eigsh" title="sisl.physics.Hamiltonian.eigsh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigsh</span></code></a> will be called, else <a class="reference internal" href="#sisl.physics.Hamiltonian.eigh" title="sisl.physics.Hamiltonian.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a> will be
 called (default).</p></li>
 <li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – see <a class="reference internal" href="#sisl.physics.Hamiltonian.eigh" title="sisl.physics.Hamiltonian.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a> for details, this will be passed to the EigenstateElectron

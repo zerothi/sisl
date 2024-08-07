@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating common geometries &mdash; sisl 0.1-430f9f5</title>
+  <title>Creating common geometries &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
@@ -25,7 +25,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -172,8 +172,8 @@
 <section id="Creating-a-geometry">
 <h2>Creating a geometry<a class="headerlink" href="#Creating-a-geometry" title="Link to this heading"></a></h2>
 <div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">sisl</span></code> provides a broad set of methods to create <a class="reference external" href="../../api/geom.rst">default geometries</a>. There are <code class="docutils literal notranslate"><span class="pre">fcc</span></code>, <code class="docutils literal notranslate"><span class="pre">bcc</span></code>, <code class="docutils literal notranslate"><span class="pre">sc</span></code>, <code class="docutils literal notranslate"><span class="pre">graphene</span></code> and many other default geometries available.</div>
-<div class="line">The default geometry creations are found in the <a class="reference external" href="../../api/geom.rst">sisl.geom</a> module, (for additional details check out <code class="docutils literal notranslate"><span class="pre">help(si.geom)</span></code>).</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">sisl</span></code> provides a broad set of methods to create <a class="reference internal" href="../../api/geom/building.html"><span class="doc">default geometries</span></a>. There are <code class="docutils literal notranslate"><span class="pre">fcc</span></code>, <code class="docutils literal notranslate"><span class="pre">bcc</span></code>, <code class="docutils literal notranslate"><span class="pre">sc</span></code>, <code class="docutils literal notranslate"><span class="pre">graphene</span></code> and many other default geometries available.</div>
+<div class="line">The default geometry creations are found in the <a class="reference internal" href="../../api/geom/building.html"><span class="doc">sisl.geom</span></a> module, (for additional details check out <code class="docutils literal notranslate"><span class="pre">help(si.geom)</span></code>).</div>
 </div>
 <hr class="docutils" />
 <p>Our focus here will be to create an FCC lattice of iron.</p>
@@ -299,7 +299,7 @@ Geometry{na: 2, no: 2,
   origin=[0.0000, 0.0000, 0.0000],
   A=[2.1300, -1.2298, 0.0000],
   B=[2.1300, 1.2298, 0.0000],
-  C=[0.0000, 0.0000, 14.2000],
+  C=[0.0000, 0.0000, 20.0000],
   bc=[Periodic,
       Periodic,
       Unknown]
@@ -329,7 +329,7 @@ array([[0.  , 0.  , 0.  ],
 <p>The atomic coordinates here signals the two positions, and it is obvious that the default bond-length for graphene is defined to be <span class="math notranslate nohighlight">\(1.42\)</span>.</p>
 <section id="Other-default-geometries">
 <h3>Other default geometries<a class="headerlink" href="#Other-default-geometries" title="Link to this heading"></a></h3>
-<p>There are many other implicit geometries available in <code class="docutils literal notranslate"><span class="pre">sisl</span></code> which can be found <a class="reference external" href="../../api/geom.rst">here</a>. These can be used to generalize and construct geometries on the fly, in a simply and efficient manner.</p>
+<p>There are many other implicit geometries available in <code class="docutils literal notranslate"><span class="pre">sisl</span></code> which can be found <a class="reference internal" href="../../api/geom/building.html"><span class="doc">here</span></a>. These can be used to generalize and construct geometries on the fly, in a simply and efficient manner.</p>
 <section id="Defining-atoms">
 <h4>Defining atoms<a class="headerlink" href="#Defining-atoms" title="Link to this heading"></a></h4>
 <div class="line-block">
@@ -673,7 +673,7 @@ Geometry{na: 4, no: 4,
   origin=[0.0000, 0.0000, 0.0000],
   A=[2.1750, -1.2557, 0.0000],
   B=[2.1750, 1.2557, 0.0000],
-  C=[0.0000, 0.0000, 14.5000],
+  C=[0.0000, 0.0000, 23.3500],
   bc=[Periodic,
       Periodic,
       Unknown]

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom.NeighborFinder &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl.geom.NeighborFinder &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -24,7 +24,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -155,7 +155,7 @@
 <h1>sisl.geom.NeighborFinder<a class="headerlink" href="#sisl-geom-neighborfinder" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">NeighborFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">NeighborFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.geom.NeighborFinder" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Fast and linear scaling finding of neighbors.</p>
 <p>Once this class is instantiated, a table is built. Then,
@@ -252,27 +252,14 @@ a vacancy:</p>
 <td><p>Prepares everything for neighbor finding.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.memory" title="sisl.geom.NeighborFinder.memory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">memory</span></code></a></p></td>
-<td><p>Memory control of the finder</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.nbins" title="sisl.geom.NeighborFinder.nbins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nbins</span></code></a></p></td>
-<td><p>Number of bins along each cell direction</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.total_nbins" title="sisl.geom.NeighborFinder.total_nbins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_nbins</span></code></a></p></td>
-<td><p>Total number of bins</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.geometry" title="sisl.geom.NeighborFinder.geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code></a></p></td>
-<td><p>The geometry associated with the finder</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.NeighborFinder.R" title="sisl.geom.NeighborFinder.R"><code class="xref py py-obj docutils literal notranslate"><span class="pre">R</span></code></a></p></td>
-<td><p>The cutoff radius for each atom in the geometry.</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.R">
-<span class="sig-name descname"><span class="pre">R</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.NeighborFinder.R" title="Link to this definition"></a></dt>
-<dd><p>The cutoff radius for each atom in the geometry.</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">R</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span></em><a class="headerlink" href="#sisl.geom.NeighborFinder.R" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.__init__">
@@ -298,7 +285,7 @@ a vacancy:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.find_close">
-<span class="sig-name descname"><span class="pre">find_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom._neighbors._neighborlists.PointsNeighborList"><span class="pre">PointsNeighborList</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_close" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><span class="pre">PointsNeighborList</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_close" title="Link to this definition"></a></dt>
 <dd><p>Find all atoms that are close to some coordinates in space.</p>
 <p>This routine only executes the action of finding neighbors,
 the parameters of the search (<em class="xref py py-obj">geometry</em>, <em class="xref py py-obj">R</em>, <em class="xref py py-obj">overlap</em>…)
@@ -313,14 +300,14 @@ Otherwise a list containing the neighbors for each point is returned.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom._neighbors._neighborlists.PointsNeighborList"><em>PointsNeighborList</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><em>PointsNeighborList</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.find_neighbors">
-<span class="sig-name descname"><span class="pre">find_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sisl.typing.AtomsIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList" title="sisl.geom._neighbors._neighborlists.FullNeighborList"><span class="pre">FullNeighborList</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList" title="sisl.geom._neighbors._neighborlists.PartialNeighborList"><span class="pre">PartialNeighborList</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_neighbors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_neighbors" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sisl.typing.AtomsIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList" title="sisl.geom.FullNeighborList"><span class="pre">FullNeighborList</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList" title="sisl.geom.PartialNeighborList"><span class="pre">PartialNeighborList</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_neighbors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_neighbors" title="Link to this definition"></a></dt>
 <dd><p>Find neighbors as specified in the finder.</p>
 <p>This routine only executes the action of finding neighbors,
 the parameters of the search (<em class="xref py py-obj">geometry</em>, <em class="xref py py-obj">R</em>, <em class="xref py py-obj">overlap</em>…)
@@ -346,7 +333,7 @@ be sanitized by <a class="reference internal" href="../../generated/sisl.Geometr
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.find_unique_pairs">
-<span class="sig-name descname"><span class="pre">find_unique_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom._neighbors._neighborlists.UniqueNeighborList"><span class="pre">UniqueNeighborList</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_unique_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_unique_pairs" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_unique_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom.UniqueNeighborList"><span class="pre">UniqueNeighborList</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_unique_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_unique_pairs" title="Link to this definition"></a></dt>
 <dd><p>Find unique neighbor pairs within the geometry.</p>
 <p>This function only returns one direction of a given connection
 between atoms i and j. In particular, it returns the connection
@@ -368,7 +355,7 @@ the neighbors for each atom is returned.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom._neighbors._neighborlists.UniqueNeighborList"><em>UniqueNeighborList</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom.UniqueNeighborList"><em>UniqueNeighborList</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -376,20 +363,17 @@ the neighbors for each atom is returned.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.geometry">
 <span class="sig-name descname"><span class="pre">geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></em><a class="headerlink" href="#sisl.geom.NeighborFinder.geometry" title="Link to this definition"></a></dt>
-<dd><p>The geometry associated with the finder</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.memory">
-<span class="sig-name descname"><span class="pre">memory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('200MB',</span> <span class="pre">1.5)</span></em><a class="headerlink" href="#sisl.geom.NeighborFinder.memory" title="Link to this definition"></a></dt>
-<dd><p>Memory control of the finder</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">memory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('200MB',</span> <span class="pre">1.5)</span></em><a class="headerlink" href="#sisl.geom.NeighborFinder.memory" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.nbins">
-<span class="sig-name descname"><span class="pre">nbins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sisl.geom.NeighborFinder.nbins" title="Link to this definition"></a></dt>
-<dd><p>Number of bins along each cell direction</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">nbins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sisl.geom.NeighborFinder.nbins" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.setup">
@@ -432,8 +416,7 @@ bins.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.geom.NeighborFinder.total_nbins">
 <span class="sig-name descname"><span class="pre">total_nbins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.geom.NeighborFinder.total_nbins" title="Link to this definition"></a></dt>
-<dd><p>Total number of bins</p>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 

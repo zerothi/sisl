@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.siesta.atom._atom &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl_toolbox.siesta.atom._atom &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -160,6 +160,7 @@
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 
 <span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">NotNonePropertyDict</span><span class="p">,</span> <span class="n">PropertyDict</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AtomInput&quot;</span><span class="p">,</span> <span class="s2">&quot;atom_plot_cli&quot;</span><span class="p">]</span>
@@ -217,8 +218,7 @@
 <span class="n">_spdfgh</span> <span class="o">=</span> <span class="s2">&quot;spdfgh&quot;</span>
 
 
-<div class="viewcode-block" id="AtomInput">
-<a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput">[docs]</a>
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.siesta.atom&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">AtomInput</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Input for the ``atom`` program see [AtomLicense]_</span>
 
@@ -959,7 +959,6 @@
         <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span></div>
-</div>
 
 
 
@@ -1014,6 +1013,7 @@
 <span class="n">register_toolbox_cli</span><span class="p">(</span><span class="n">atom_plot_cli</span><span class="p">)</span>
 
 
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.siesta.atom&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">atom_plot</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 

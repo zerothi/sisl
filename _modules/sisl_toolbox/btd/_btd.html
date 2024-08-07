@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.btd._btd &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl_toolbox.btd._btd &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -156,6 +156,7 @@
 
 <span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">cholesky</span><span class="p">,</span>
     <span class="n">eigh</span><span class="p">,</span>
@@ -244,8 +245,7 @@
     <span class="k">return</span> <span class="n">DOS</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">A</span>
 
 
-<div class="viewcode-block" id="PivotSelfEnergy">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy">[docs]</a>
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PivotSelfEnergy</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">SelfEnergy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for the self-energy object</span>
 
@@ -253,7 +253,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="PivotSelfEnergy.__init__">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Name of electrode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -327,24 +327,22 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pvt_dev</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PivotSelfEnergy.self_energy">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.self_energy">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.self_energy">[docs]</a>
     <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PivotSelfEnergy.broadening_matrix">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-</div>
 
 
 
-<div class="viewcode-block" id="DownfoldSelfEnergy">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy">[docs]</a>
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DownfoldSelfEnergy</span><span class="p">(</span><span class="n">PivotSelfEnergy</span><span class="p">):</span>
 <div class="viewcode-block" id="DownfoldSelfEnergy.__init__">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">Hdevice</span><span class="p">,</span> <span class="n">eta_device</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bloch</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="p">):</span>
@@ -472,7 +470,7 @@
             <span class="p">)</span>
 
 <div class="viewcode-block" id="DownfoldSelfEnergy.self_energy">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy">[docs]</a>
     <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
@@ -506,13 +504,13 @@
 
 
 <div class="viewcode-block" id="DownfoldSelfEnergy.broadening_matrix">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">se2broadening</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
-</div>
 
 
 
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BlockMatrixIndexer</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bm</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bm</span> <span class="o">=</span> <span class="n">bm</span>
@@ -563,6 +561,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_bm</span><span class="o">.</span><span class="n">_M</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span>
 
 
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BlockMatrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class that holds a block matrix&quot;&quot;&quot;</span>
 
@@ -613,8 +612,7 @@
         <span class="k">return</span> <span class="n">BlockMatrixIndexer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="DeviceGreen">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen">[docs]</a>
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DeviceGreen</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Block-tri-diagonal Green function calculator</span>
 
@@ -683,7 +681,7 @@
     <span class="c1">#      the elements which determines if it has been calculated or not.</span>
 
 <div class="viewcode-block" id="DeviceGreen.__init__">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">elecs</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Green function with Hamiltonian and BTD matrix elements&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span>
@@ -718,7 +716,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="DeviceGreen.from_fdf">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.from_fdf">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.from_fdf">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_fdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fdf</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;TBT&quot;</span><span class="p">,</span> <span class="n">use_tbt_se</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new `DeviceGreen` using information gathered from the fdf</span>
@@ -975,7 +973,7 @@
 
 
 <div class="viewcode-block" id="DeviceGreen.reset">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.reset">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.reset">[docs]</a>
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean any memory used by this object&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span></div>
@@ -1159,7 +1157,7 @@
         <span class="k">return</span> <span class="n">BM</span>
 
 <div class="viewcode-block" id="DeviceGreen.Sk">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.Sk">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.Sk">[docs]</a>
     <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">is_btd</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="s2">&quot;format&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -1175,7 +1173,7 @@
 
 
 <div class="viewcode-block" id="DeviceGreen.Hk">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.Hk">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.Hk">[docs]</a>
     <span class="k">def</span> <span class="nf">Hk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">is_btd</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="s2">&quot;format&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -1201,7 +1199,7 @@
         <span class="k">return</span> <span class="n">blocks</span>
 
 <div class="viewcode-block" id="DeviceGreen.green">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.green">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.green">[docs]</a>
     <span class="k">def</span> <span class="nf">green</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Green function for a given `E` and `k` point</span>
 
@@ -1584,7 +1582,7 @@
         <span class="k">return</span> <span class="n">G</span>
 
 <div class="viewcode-block" id="DeviceGreen.spectral">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.spectral">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.spectral">[docs]</a>
     <span class="k">def</span> <span class="nf">spectral</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">,</span>
@@ -2006,7 +2004,7 @@
         <span class="k">return</span> <span class="n">DOS</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">U</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">]</span>
 
 <div class="viewcode-block" id="DeviceGreen.scattering_state">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.scattering_state">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.scattering_state">[docs]</a>
     <span class="k">def</span> <span class="nf">scattering_state</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">,</span>
@@ -2212,7 +2210,7 @@
         <span class="k">return</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DeviceGreen.scattering_matrix">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.scattering_matrix">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.scattering_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`</span>
 
@@ -2301,7 +2299,7 @@
 
 
 <div class="viewcode-block" id="DeviceGreen.eigenchannel">
-<a class="viewcode-back" href="../../../toolbox/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.eigenchannel">[docs]</a>
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.eigenchannel">[docs]</a>
     <span class="k">def</span> <span class="nf">eigenchannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">ret_coeff</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the eigenchannel from scattering states entering electrodes `elec_to`</span>
 
@@ -2393,7 +2391,6 @@
         <span class="k">if</span> <span class="n">ret_coeff</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">teig</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">(</span><span class="n">Ut</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">teig</span></div>
-</div>
 
 </pre></div>
 

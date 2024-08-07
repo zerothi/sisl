@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.utils.misc &mdash; sisl 0.1-430f9f5</title>
+  <title>sisl.utils.misc &mdash; sisl 0.1-1d76d5d</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=ec5504e5"></script>
+        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-430f9f5
+                0.1-1d76d5d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -159,12 +159,12 @@
 
 <div class="viewcode-block" id="math_eval">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.math_eval.html#sisl.utils.math_eval">[docs]</a>
-<span class="k">def</span> <span class="nf">math_eval</span><span class="p">(</span><span class="n">expr</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">math_eval</span><span class="p">(</span><span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate a mathematical expression using a safe evaluation method</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    expr : str</span>
+<span class="sd">    expr :</span>
 <span class="sd">       the string to be evaluated using math</span>
 
 <span class="sd">    Examples</span>
@@ -325,7 +325,7 @@
 
 <div class="viewcode-block" id="str_spec">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.str_spec.html#sisl.utils.str_spec">[docs]</a>
-<span class="k">def</span> <span class="nf">str_spec</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">str_spec</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split into a tuple of name and specifier, delimited by ``{...}``.</span>
 
 <span class="sd">    Parameters</span>
@@ -420,7 +420,7 @@
 <span class="c1"># Transform a string to a Cartesian direction</span>
 <div class="viewcode-block" id="direction">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.direction.html#sisl.utils.direction">[docs]</a>
-<span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">abc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">abc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Index coordinate transformation from int/str to an integer</span>
 
 <span class="sd">    Parameters</span>
@@ -487,12 +487,12 @@
 <span class="c1"># Transform an input to an angle</span>
 <div class="viewcode-block" id="angle">
 <a class="viewcode-back" href="../../../api/generated/sisl.utils.angle.html#sisl.utils.angle">[docs]</a>
-<span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_rad</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">in_rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the input string to an angle, either radians or degrees.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    s : str</span>
+<span class="sd">    s :</span>
 <span class="sd">       If `s` starts with &#39;r&#39; it is interpreted as radians ``[0:2pi]``.</span>
 <span class="sd">       If `s` starts with &#39;a&#39; it is interpreted as a regular angle ``[0:360]``.</span>
 <span class="sd">       If `s` ends with &#39;r&#39; it returns in radians.</span>
@@ -500,10 +500,10 @@
 
 <span class="sd">       `s` may be any mathematical equation which can be</span>
 <span class="sd">       intercepted through ``eval``.</span>
-<span class="sd">    rad : bool, optional</span>
+<span class="sd">    rad :</span>
 <span class="sd">       Whether the returned angle is in radians.</span>
 <span class="sd">       Note than an &#39;r&#39; at the end of `s` has precedence.</span>
-<span class="sd">    in_rad : bool, optional</span>
+<span class="sd">    in_rad :</span>
 <span class="sd">       Whether the calculated angle is in radians.</span>
 <span class="sd">       Note than an &#39;r&#39; at the beginning of `s` has precedence.</span>
 
