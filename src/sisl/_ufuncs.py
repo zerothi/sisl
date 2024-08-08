@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import singledispatch
 from textwrap import dedent
-from typing import Callable, Optional
+from typing import Optional
 
 from sisl.messages import SislError, warn
 from sisl.typing import FuncType

@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import Optional
 
-from sisl._category import Category, NullCategory
+from sisl._category import NullCategory
 from sisl._core import AtomCategory, Geometry
 from sisl.typing import AtomsIndex
 

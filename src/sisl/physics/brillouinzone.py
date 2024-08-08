@@ -143,24 +143,21 @@ on the chunksize of the jobs. By default the chunksize is controlled by
 from __future__ import annotations
 
 import itertools
-from functools import reduce
+from collections.abc import Sequence
 from numbers import Integral, Real
-from typing import Sequence, Tuple, Union
+from typing import Union
 
 import numpy as np
 import numpy.typing as npt
-from numpy import argsort, dot, pi, sum
+from numpy import argsort, dot, pi
 
 import sisl._array as _a
-from sisl._core.grid import Grid
 from sisl._core.lattice import Lattice
-from sisl._core.oplist import oplist
 from sisl._core.quaternion import Quaternion
 from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
-from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
-from sisl.unit import units
+from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import direction, listify
@@ -407,7 +404,7 @@ class BrillouinZone:
     )
     def volume(
         self, ret_dim: bool = False, axes: Optional[CellAxes] = None
-    ) -> Union[float, Tuple[float, int]]:
+    ) -> Union[float, tuple[float, int]]:
         """Calculate the volume of the BrillouinZone, optionally only on some axes `axes`
 
         This will return the volume of the Brillouin zone,

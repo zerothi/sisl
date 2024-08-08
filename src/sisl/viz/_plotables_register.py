@@ -10,7 +10,7 @@ It does so by patching them accordingly
 """
 import sisl
 import sisl.io.siesta as siesta
-from sisl.io.sile import BaseSile, get_siles
+from sisl.io.sile import get_siles
 
 from ._plotables import register_data_source, register_plotable, register_sile_method
 from .data import *

@@ -3,8 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Sequence
 from math import sqrt as msqrt
-from typing import Sequence
 
 import numpy as np
 
@@ -323,7 +323,6 @@ CompositeShape.to.register("Sphere", ToSphereDispatch)
 
 class ToEllipsoidDispatcher(ShapeToDispatch):
     def dispatch(self, *args, center=None, **kwargs):
-        from .ellipsoid import Ellipsoid
 
         shape = self._get_object()
         return shape.to.Sphere(center=center).to.Ellipsoid()

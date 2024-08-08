@@ -42,7 +42,6 @@ import datetime
 import os
 import re
 import sys
-import time
 
 from git import Repo
 from github import Github

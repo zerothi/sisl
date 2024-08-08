@@ -10,7 +10,7 @@ import numpy as np
 
 from sisl import Atom, Geometry, Lattice, Orbital, constant, units
 from sisl._internal import set_module
-from sisl.messages import deprecate_argument, deprecation, info, warn
+from sisl.messages import deprecation, info, warn
 from sisl.physics import DynamicalMatrix
 
 from .._help import parse_order

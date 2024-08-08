@@ -3,13 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-import sys
-
-import numpy as np
 import pytest
 
-import sisl
 from sisl.io.orca.txt import *
 
 pytestmark = [pytest.mark.io, pytest.mark.orca]

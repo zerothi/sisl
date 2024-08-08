@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import itertools
-import math as m
 from functools import partial
 
 import numpy as np

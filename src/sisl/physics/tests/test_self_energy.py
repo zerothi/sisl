@@ -3,9 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
-import warnings
-
 import numpy as np
 import pytest
 from scipy.sparse import SparseEfficiencyWarning
@@ -21,7 +18,6 @@ from sisl import (
     RealSpaceSE,
     RealSpaceSI,
     RecursiveSI,
-    SelfEnergy,
     SemiInfinite,
     WideBandSE,
 )

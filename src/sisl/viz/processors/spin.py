@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import List, Literal, Union
+from typing import Literal, Union
 
 from sisl import Spin
 
@@ -24,7 +24,7 @@ _options = {
 
 def get_spin_options(
     spin: Union[Spin, str], only_if_polarized: bool = False
-) -> List[Literal[0, 1, "total", "x", "y", "z"]]:
+) -> list[Literal[0, 1, "total", "x", "y", "z"]]:
     """Returns the options for a given spin class.
 
     Parameters

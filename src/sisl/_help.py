@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import functools
+import importlib.util
 import warnings
 
 import numpy as np
@@ -14,7 +15,7 @@ __all__ = ["array_fill_repeat"]
 __all__ += ["isndarray", "isiterable", "voigt_matrix"]
 __all__ += ["get_dtype"]
 __all__ += ["dtype_complex_to_real", "dtype_real_to_complex"]
-__all__ += ["wrap_filterwarnings"]
+__all__ += ["wrap_filterwarnings", "has_module"]
 
 # Wrappers typically used
 __all__ += ["xml_parse"]
@@ -36,6 +37,11 @@ try:
         raise ImportError
 except ImportError:
     from xml.etree.ElementTree import parse as xml_parse
+
+
+def has_module(*args, **kwargs) -> bool:
+    """Wrapper for `importlib.util.find_spec`"""
+    return importlib.util.find_spec(*args, **kwargs)
 
 
 def array_fill_repeat(array, size, axis=-1, cls=None):

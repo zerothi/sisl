@@ -16,7 +16,7 @@ class NotAvailableFigure(Figure):
 
 
 try:
-    import plotly
+    import plotly  # noqa: F401
 except ModuleNotFoundError:
 
     class PlotlyFigure(NotAvailableFigure):
@@ -26,7 +26,7 @@ else:
     from .plotly import PlotlyFigure
 
 try:
-    import matplotlib
+    import matplotlib  # noqa: F401
 except ModuleNotFoundError:
 
     class MatplotlibFigure(NotAvailableFigure):
@@ -36,7 +36,7 @@ else:
     from .matplotlib import MatplotlibFigure
 
 try:
-    import py3Dmol
+    import py3Dmol  # noqa: F401
 except ModuleNotFoundError:
 
     class Py3DmolFigure(NotAvailableFigure):
@@ -46,7 +46,7 @@ else:
     from .py3dmol import Py3DmolFigure
 
 try:
-    import bpy
+    import bpy  # noqa: F401
 except ModuleNotFoundError:
 
     class BlenderFigure(NotAvailableFigure):

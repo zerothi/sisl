@@ -4,12 +4,10 @@
 from __future__ import annotations
 
 import logging
-from collections import namedtuple
-from typing import Any, Optional, Sequence, Union
+from collections.abc import Sequence
+from typing import Any, Optional, Union
 
-from sisl.utils._search_mro import find_implementation
-
-from ._dispatcher import AbstractDispatcher, ClassDispatcher, TypeDispatcher
+from ._dispatcher import ClassDispatcher
 
 """Internal class used for subclassing.
 

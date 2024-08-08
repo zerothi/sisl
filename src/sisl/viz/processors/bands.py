@@ -5,7 +5,8 @@
 # from __future__ import annotations
 
 import itertools
-from typing import List, Literal, Optional, Sequence, Tuple, Union
+from collections.abc import Sequence
+from typing import Literal, Optional, Union
 
 import numpy as np
 import xarray as xr
@@ -15,9 +16,9 @@ from ..plotters import plot_actions
 
 def filter_bands(
     bands_data: xr.Dataset,
-    Erange: Optional[Tuple[float, float]] = None,
+    Erange: Optional[tuple[float, float]] = None,
     E0: float = 0,
-    bands_range: Optional[Tuple[int, int]] = None,
+    bands_range: Optional[tuple[int, int]] = None,
     spin: Optional[int] = None,
 ) -> xr.Dataset:
     filtered_bands = bands_data.copy()
@@ -235,11 +236,11 @@ def sanitize_k(bands_data: xr.Dataset, k: Union[float, str]) -> Optional[float]:
 
 def get_gap_coords(
     bands_data: xr.Dataset,
-    bands: Tuple[int, int],
+    bands: tuple[int, int],
     from_k: Union[float, str],
     to_k: Optional[Union[float, str]] = None,
     spin: int = 0,
-) -> Tuple[Tuple[float, float], Tuple[float, float]]:
+) -> tuple[tuple[float, float], tuple[float, float]]:
     """Calculates the coordinates of a gap given some k values.
 
     Parameters
@@ -303,7 +304,7 @@ def draw_gaps(
     direct_gaps_only: bool,
     custom_gaps: Sequence[dict],
     E_axis: Literal["x", "y"],
-) -> List[dict]:
+) -> list[dict]:
     """Returns the drawing actions to draw gaps.
 
     Parameters
@@ -406,8 +407,8 @@ def draw_gaps(
 
 
 def draw_gap(
-    ks: Tuple[float, float],
-    Es: Tuple[float, float],
+    ks: tuple[float, float],
+    Es: tuple[float, float],
     color: Optional[str] = None,
     marker: dict = {},
     name: str = "Gap",

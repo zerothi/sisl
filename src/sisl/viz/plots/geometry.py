@@ -3,7 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Callable, Literal, Optional, Sequence, Tuple, TypeVar, Union
+from collections.abc import Sequence
+from typing import Callable, Literal, Optional, TypeVar, Union
 
 import numpy as np
 
@@ -89,7 +90,7 @@ def _get_arrow_plottings(atoms_data, arrows, nsc=[1, 1, 1]):
 
 
 def _sanitize_scale(
-    scale: float, ndim: int, ndim_scale: Tuple[float, float, float] = (16, 16, 1)
+    scale: float, ndim: int, ndim_scale: tuple[float, float, float] = (16, 16, 1)
 ):
     return ndim_scale[ndim - 1] * scale
 
@@ -111,9 +112,9 @@ def geometry_plot(
     show_bonds: bool = True,
     show_cell: Literal["box", "axes", False] = "box",
     cell_style: StyleSpec = {},
-    nsc: Tuple[int, int, int] = (1, 1, 1),
-    atoms_ndim_scale: Tuple[float, float, float] = (16, 16, 1),
-    bonds_ndim_scale: Tuple[float, float, float] = (1, 1, 10),
+    nsc: tuple[int, int, int] = (1, 1, 1),
+    atoms_ndim_scale: tuple[float, float, float] = (16, 16, 1),
+    bonds_ndim_scale: tuple[float, float, float] = (1, 1, 10),
     dataaxis_1d: Optional[Union[np.ndarray, Callable]] = None,
     arrows: Sequence[AtomArrowSpec] = (),
     backend="plotly",
@@ -294,8 +295,8 @@ def sites_plot(
     drawing_mode: Literal["scatter", "balls", "line", None] = None,
     show_cell: Literal["box", "axes", False] = False,
     cell_style: StyleSpec = {},
-    nsc: Tuple[int, int, int] = (1, 1, 1),
-    sites_ndim_scale: Tuple[float, float, float] = (1, 1, 1),
+    nsc: tuple[int, int, int] = (1, 1, 1),
+    sites_ndim_scale: tuple[float, float, float] = (1, 1, 1),
     dataaxis_1d: Optional[Union[np.ndarray, Callable]] = None,
     arrows: Sequence[AtomArrowSpec] = (),
     backend="plotly",

@@ -4,15 +4,12 @@
 from __future__ import annotations
 
 import logging
-from functools import partial
 from subprocess import CompletedProcess
 
 import numpy as np
 
 from sisl._array import arangei, arrayi, zerosd
 from sisl._internal import set_module
-from sisl.io import tableSile
-from sisl.io.siesta import fdfSileSiesta
 from sisl.utils import PropertyDict
 
 from ._minimize import *

@@ -5,9 +5,10 @@
 # from __future__ import annotations
 
 from collections import ChainMap, defaultdict
+from collections.abc import Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Sequence, TypedDict, Union
+from typing import Any, Callable, Optional, TypedDict, Union
 
 import numpy as np
 import xarray
@@ -48,7 +49,7 @@ class OrbitalQueriesManager:
     geometry: Geometry
     spin: Spin
 
-    key_gens: Dict[str, Callable] = {}
+    key_gens: dict[str, Callable] = {}
 
     @singledispatchmethod
     @classmethod
@@ -56,7 +57,7 @@ class OrbitalQueriesManager:
         cls,
         geometry: Geometry,
         spin: Union[str, Spin] = "",
-        key_gens: Dict[str, Callable] = {},
+        key_gens: dict[str, Callable] = {},
     ):
         return cls(geometry=geometry, spin=spin or "", key_gens=key_gens)
 
@@ -66,7 +67,7 @@ class OrbitalQueriesManager:
         cls,
         geometry: Geometry,
         spin: Union[str, Spin] = "",
-        key_gens: Dict[str, Callable] = {},
+        key_gens: dict[str, Callable] = {},
     ):
         return cls(geometry=geometry, spin=spin or "", key_gens=key_gens)
 
@@ -76,7 +77,7 @@ class OrbitalQueriesManager:
         cls,
         string: str,
         spin: Union[str, Spin] = "",
-        key_gens: Dict[str, Callable] = {},
+        key_gens: dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from a string, assuming it is a path."""
         return cls.new(Path(string), spin=spin, key_gens=key_gens)
@@ -84,7 +85,7 @@ class OrbitalQueriesManager:
     @new.register
     @classmethod
     def from_path(
-        cls, path: Path, spin: Union[str, Spin] = "", key_gens: Dict[str, Callable] = {}
+        cls, path: Path, spin: Union[str, Spin] = "", key_gens: dict[str, Callable] = {}
     ):
         """Initializes an OrbitalQueriesManager from a path, converting it to a sile."""
         return cls.new(sisl.get_sile(path), spin=spin, key_gens=key_gens)
@@ -95,7 +96,7 @@ class OrbitalQueriesManager:
         cls,
         sile: sisl.io.BaseSile,
         spin: Union[str, Spin] = "",
-        key_gens: Dict[str, Callable] = {},
+        key_gens: dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from a sile."""
         return cls.new(sile.read_geometry(), spin=spin, key_gens=key_gens)
@@ -106,7 +107,7 @@ class OrbitalQueriesManager:
         cls,
         array: xarray.core.common.AttrAccessMixin,
         spin: Optional[Union[str, Spin]] = None,
-        key_gens: Dict[str, Callable] = {},
+        key_gens: dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from an xarray object."""
         if spin is None:
@@ -120,7 +121,7 @@ class OrbitalQueriesManager:
         cls,
         data: Data,
         spin: Optional[Union[str, Spin]] = None,
-        key_gens: Dict[str, Callable] = {},
+        key_gens: dict[str, Callable] = {},
     ):
         """Initializes an OrbitalQueriesManager from a sisl Data object."""
         return cls.new(data._data, spin=spin, key_gens=key_gens)
@@ -129,7 +130,7 @@ class OrbitalQueriesManager:
         self,
         geometry: Optional[Geometry] = None,
         spin: Union[str, Spin] = "",
-        key_gens: Dict[str, Callable] = {},
+        key_gens: dict[str, Callable] = {},
     ):
         self.geometry = geometry
         self.spin = Spin(spin)
@@ -722,7 +723,7 @@ def reduce_orbital_data(
 
 
 def get_orbital_queries_manager(
-    obj, spin: Optional[str] = None, key_gens: Dict[str, Callable] = {}
+    obj, spin: Optional[str] = None, key_gens: dict[str, Callable] = {}
 ) -> OrbitalQueriesManager:
     return OrbitalQueriesManager.new(obj, spin=spin, key_gens=key_gens)
 
@@ -775,7 +776,7 @@ def split_orbitals(
 def atom_data_from_orbital_data(
     orbital_data,
     atoms: AtomsIndex = None,
-    request_kwargs: Dict = {},
+    request_kwargs: dict = {},
     geometry: Optional[Geometry] = None,
     reduce_func: Callable = np.mean,
     spin_reduce: Optional[Callable] = None,

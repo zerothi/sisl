@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import Literal
 
 import numpy as np
 from numpy import abs as _abs
@@ -16,7 +16,6 @@ from numpy import (
     eye,
     matmul,
     subtract,
-    zeros,
     zeros_like,
 )
 
@@ -26,7 +25,7 @@ from sisl._help import array_replace
 from sisl._internal import set_module
 from sisl.linalg import inv, linalg_info, solve
 from sisl.linalg.base import _compute_lwork
-from sisl.messages import deprecate_argument, deprecation, info, warn
+from sisl.messages import deprecate_argument, deprecation, warn
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.utils.mathematics import fnorm

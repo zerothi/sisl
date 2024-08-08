@@ -3,7 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Sequence, Tuple, Union
+from collections.abc import Sequence
+from typing import Optional, Union
 
 import numpy as np
 
@@ -116,9 +117,9 @@ class NeighborFinder:
     """
 
     #: Memory control of the finder
-    memory: Tuple[str, float] = ("200MB", 1.5)
+    memory: tuple[str, float] = ("200MB", 1.5)
     #: Number of bins along each cell direction
-    nbins: Tuple[int, int, int]
+    nbins: tuple[int, int, int]
     #: Total number of bins
     total_nbins: int
 
@@ -143,7 +144,7 @@ class NeighborFinder:
         geometry: Geometry,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = False,
-        bin_size: Union[float, Tuple[float, float, float]] = 2,
+        bin_size: Union[float, tuple[float, float, float]] = 2,
     ):
         self.setup(geometry, R=R, overlap=overlap, bin_size=bin_size)
 
@@ -152,7 +153,7 @@ class NeighborFinder:
         geometry: Optional[Geometry] = None,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = None,
-        bin_size: Union[float, Tuple[float, float, float]] = 2,
+        bin_size: Union[float, tuple[float, float, float]] = 2,
     ):
         """Prepares everything for neighbor finding.
 

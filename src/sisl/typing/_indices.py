@@ -3,9 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import typing
-from itertools import permutations
-from typing import TYPE_CHECKING, Any, Callable, Literal, Sequence, Union
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Literal, Union
 
 # To prevent import cycles place any internal imports in the branch below
 # and use a string literal forward reference to it in subsequent types

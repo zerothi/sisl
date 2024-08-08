@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 import itertools
-from typing import Optional, Sequence
+from collections.abc import Sequence
+from typing import Optional
 
 import numpy as np
 import plotly.graph_objs as go

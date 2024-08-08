@@ -3,14 +3,15 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import numpy as np
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.messages import SislError
-from sisl.typing import CellAxes, CellAxis, GridLike, SileLike
+from sisl.typing import CellAxis, GridLike, SileLike
 from sisl.utils import import_attr
 from sisl.utils.misc import direction
 

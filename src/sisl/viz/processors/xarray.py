@@ -5,8 +5,9 @@
 # from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Sequence
 from functools import singledispatchmethod
-from typing import Any, Callable, Optional, Sequence, Tuple, TypedDict, Union
+from typing import Any, Callable, Optional, TypedDict, Union
 
 import numpy as np
 import xarray as xr
@@ -38,8 +39,8 @@ class Group(TypedDict, total=False):
 def group_reduce(
     data: Union[DataArray, Dataset, XarrayData],
     groups: Sequence[Group],
-    reduce_dim: Union[str, Tuple[str, ...]],
-    reduce_func: Union[Callable, Tuple[Callable, ...]] = np.mean,
+    reduce_dim: Union[str, tuple[str, ...]],
+    reduce_func: Union[Callable, tuple[Callable, ...]] = np.mean,
     groups_dim: str = "group",
     sanitize_group: Callable = lambda x: x,
     group_vars: Optional[Sequence[str]] = None,
@@ -219,7 +220,7 @@ def select(dataset: Dataset, dim: str, selector: Any) -> Dataset:
 
 def filter_energy_range(
     data: Union[DataArray, Dataset],
-    Erange: Optional[Tuple[float, float]] = None,
+    Erange: Optional[tuple[float, float]] = None,
     E0: float = 0,
 ) -> Union[DataArray, Dataset]:
     # Shift the energies

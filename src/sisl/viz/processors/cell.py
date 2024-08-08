@@ -4,15 +4,13 @@
 # TODO when forward refs work with annotations
 # from __future__ import annotations
 
-import itertools
-from typing import Any, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict
 
 import numpy as np
-import numpy.typing as npt
 from xarray import Dataset
 
 from sisl._core.lattice import Lattice
-from sisl.viz.types import LatticeLike
+from sisl.typing import LatticeLike
 
 from .coords import CoordsDataset
 
@@ -65,7 +63,7 @@ def is_1D_cartesian(
     return is_1D_cartesian and (cell[lattice_vecs[0]] > tol).sum() == 1
 
 
-def infer_cell_axes(cell: LatticeLike, axes: List[str], tol: float = 1e-3) -> List[int]:
+def infer_cell_axes(cell: LatticeLike, axes: list[str], tol: float = 1e-3) -> list[int]:
     """Returns the indices of the lattice vectors that correspond to the given axes."""
     cell = Lattice.new(cell).cell
 

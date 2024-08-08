@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -23,7 +23,7 @@ __all__ = [
     "goldene",
 ]
 
-FloatOrFloat3 = Union[float, Tuple[float, float, float]]
+FloatOrFloat3 = Union[float, tuple[float, float, float]]
 
 
 @set_module("sisl.geom")

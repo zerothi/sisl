@@ -27,6 +27,7 @@ from sisl import (
     SphericalOrbital,
     constant,
 )
+from sisl._help import has_module
 from sisl._indices import indices_only
 from sisl._internal import set_module
 from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
@@ -41,7 +42,6 @@ from .._help import *
 from ..sile import (
     SileCDF,
     SileError,
-    _import_netCDF4,
     add_sile,
     get_sile_class,
     sile_fh_open,
@@ -79,9 +79,7 @@ _log = logging.getLogger(__name__)
 
 def _order_remove_netcdf(order):
     """Removes the order elements that refer to siles based on NetCDF"""
-    try:
-        _import_netCDF4()
-    except SileError:
+    if not has_module("netCDF4"):
         # We got an import error
         def accept(suffix):
             try:

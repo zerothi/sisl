@@ -9,7 +9,7 @@ Sile object for reading/writing PDB files
 
 import numpy as np
 
-from sisl import Atom, Atoms, Geometry, Lattice
+from sisl import Geometry, Lattice
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 

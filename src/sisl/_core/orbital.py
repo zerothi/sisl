@@ -4,18 +4,16 @@
 from __future__ import annotations
 
 from collections import namedtuple
-from collections.abc import Iterable
 from functools import partial
 from math import factorial as fact
 from math import pi
 from math import sqrt as msqrt
 from numbers import Integral, Real
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional
 
 import numpy as np
 import numpy.typing as npt
-import scipy
-from numpy import cos, sin, sqrt, square, take
+from numpy import cos, sin, take
 from scipy.special import eval_genlaguerre, factorial, lpmv
 
 try:
@@ -341,7 +339,7 @@ RadialFuncT = Callable[[npt.ArrayLike], npt.NDArray]
 def radial_minimize_range(
     radial_func: Callable[[RadialFuncT], npt.NDArray],
     contains: float,
-    dr: Tuple[float, float] = (0.01, 0.0001),
+    dr: tuple[float, float] = (0.01, 0.0001),
     maxR: float = 100,
     func: Optional[Callable[[RadialFuncT, npt.ArrayLike], npt.NDArray]] = None,
 ) -> float:

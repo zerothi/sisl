@@ -7,7 +7,6 @@ import numpy as np
 import pytest
 import xarray as xr
 
-import sisl
 from sisl import Spin
 from sisl.viz.data import BandsData
 from sisl.viz.processors.bands import (

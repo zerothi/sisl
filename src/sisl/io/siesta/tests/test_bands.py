@@ -5,7 +5,6 @@ from __future__ import annotations
 
 """ pytest test configures """
 
-import os.path as osp
 
 import pytest
 

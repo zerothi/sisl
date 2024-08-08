@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import os.path as osp
-from numbers import Integral
 from typing import Optional
 
 import numpy as np

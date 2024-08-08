@@ -11,7 +11,6 @@ from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile, sile_raise_write
 from .siesta_grid import gridncSileSiesta
-from .sile import SileCDFSiesta
 
 __all__ = ["tsvncSileSiesta"]
 

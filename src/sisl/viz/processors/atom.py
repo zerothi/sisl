@@ -3,11 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from collections import defaultdict
-from typing import Any, Callable, Optional, Sequence, TypedDict, Union
+from collections.abc import Sequence
+from typing import Any, Callable, Optional, Union
 
 import numpy as np
-import xarray as xr
 from xarray import DataArray, Dataset
 
 from sisl._core import Geometry

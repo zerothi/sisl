@@ -9,7 +9,6 @@ import xarray as xr
 
 import sisl
 from sisl.viz.processors.atom import reduce_atom_data
-from sisl.viz.processors.orbital import reduce_orbital_data
 
 pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
