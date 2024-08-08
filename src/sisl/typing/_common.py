@@ -3,8 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, Callable, Union
+from collections.abc import Callable, Sequence
+from typing import TYPE_CHECKING, Any, Union
 
 import scipy.sparse as sps
 
@@ -19,7 +19,6 @@ __all__ = [
     "CoordOrScalar",
     "FuncType",
     "KPoint",
-    "LatticeOrGeometry",
     "SeqFloat",
     "SeqOrScalarFloat",
     "SparseMatrix",
@@ -37,11 +36,6 @@ KPoint = Sequence[float]
 
 # Short for *any* function
 FuncType = Callable[..., Any]
-
-LatticeOrGeometry = Union[
-    "Lattice",
-    "Geometry",
-]
 
 if hasattr(sps, "sparray"):
     SparseMatrixExt = Union[

@@ -184,8 +184,8 @@ class Geometry(
     def __init__(
         self,
         xyz: npt.ArrayLike,
-        atoms: AtomsLike = None,
-        lattice: LatticeLike = None,
+        atoms: Optional[AtomsLike] = None,
+        lattice: Optional[LatticeLike] = None,
         names=None,
     ):
         # Create the geometry coordinate, be aware that we do not copy!
@@ -206,7 +206,7 @@ class Geometry(
 
         self._init_lattice(lattice)
 
-    def _init_lattice(self, lattice: LatticeLike) -> None:
+    def _init_lattice(self, lattice: Optional[LatticeLike]) -> None:
         """Initializes the supercell by *calculating* the size if not supplied
 
         If the supercell has not been passed we estimate the unit cell size

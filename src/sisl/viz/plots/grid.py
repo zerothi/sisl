@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from collections import ChainMap
-from collections.abc import Sequence
-from typing import Callable, Literal, Optional, Union
+from collections.abc import Callable, Sequence
+from typing import Literal, Optional, Union
 
 from sisl._core import Geometry, Grid
 

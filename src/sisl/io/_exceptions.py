@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import warnings
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable, Optional, Union
+from typing import Optional, Union
 
 from sisl._internal import set_module
 from sisl.messages import SislError, SislException, SislInfo, SislWarning, info, warn

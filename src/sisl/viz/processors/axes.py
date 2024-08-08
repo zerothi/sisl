@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Sequence
-from typing import Callable, Optional, Union
+from collections.abc import Callable, Sequence
+from typing import Optional, Union
 
 import numpy as np
 

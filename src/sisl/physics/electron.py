@@ -44,8 +44,9 @@ automatically passes the correct ``S`` because it knows the states :math:`\mathb
 """
 from __future__ import annotations
 
+from collections.abc import Callable
 from functools import reduce
-from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal, Optional, Union
 
 import numpy as np
 import numpy.typing as npt

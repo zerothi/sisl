@@ -6,6 +6,7 @@ from __future__ import annotations
 import gzip
 import logging
 import re
+from collections.abc import Callable
 from functools import wraps
 from io import TextIOBase
 from itertools import product
@@ -13,7 +14,7 @@ from operator import contains
 from os.path import basename, splitext
 from pathlib import Path
 from textwrap import dedent, indent
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
 import sisl.io._exceptions as _exceptions
 from sisl._environ import get_environ_variable

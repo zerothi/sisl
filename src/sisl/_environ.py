@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Callable
 from contextlib import contextmanager
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable
+from typing import Any
 
 __all__ = ["register_environ_variable", "get_environ_variable", "sisl_environ"]
 

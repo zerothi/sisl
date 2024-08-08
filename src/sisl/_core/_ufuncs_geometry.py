@@ -3,9 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Callable
 from functools import reduce
 from numbers import Integral
-from typing import Callable, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 import numpy as np
 

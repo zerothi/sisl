@@ -3,8 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from collections.abc import Sequence
-from typing import Callable, Literal, Optional, TypeVar, Union
+from collections.abc import Callable, Sequence
+from typing import Literal, Optional, TypeVar, Union
 
 import numpy as np
 

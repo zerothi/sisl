@@ -13,6 +13,7 @@ The typing types are shown below:
 .. autosummary::
    :toctree: generated/
 
+   AxisIntLiteral
    CellAxisStrLiteral
    CellAxisLiteral
    CartesianAxisStrLiteral
@@ -34,7 +35,9 @@ The typing types are shown below:
 .. autosummary::
    :toctree: generated/
 
+   AtomLike
    AtomsLike
+   CellLike
    Coord
    CoordOrScalar
    FuncType

@@ -19,6 +19,7 @@ __all__ = [
     "CellLike",
     "GeometryLike",
     "LatticeLike",
+    "LatticeOrGeometry",
     "LatticeOrGeometryLike",
     "GridLike",
 ]
@@ -49,6 +50,11 @@ GridLike = Union[
 ]
 """Data-types that can be converted to a `Grid`"""
 
+
+LatticeOrGeometry = Union[
+    "Lattice",
+    "Geometry",
+]
 
 LatticeOrGeometryLike = Union[
     LatticeLike,

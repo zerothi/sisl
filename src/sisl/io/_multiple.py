@@ -3,11 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Callable
 from functools import reduce, update_wrapper
 from itertools import zip_longest
 from numbers import Integral
 from textwrap import dedent
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 Func = Callable[..., Optional[Any]]
 
