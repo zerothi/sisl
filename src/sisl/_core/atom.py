@@ -956,15 +956,15 @@ class Atom(
 
     Parameters
     ----------
-    Z : int or str
+    Z :
         determine species for the atomic species.
     orbitals : list of Orbital or float, optional
         orbitals associated with this atom. See `Orbital` for details on
         how to define orbitals.
         Defaults to one orbital.
-    mass : float, optional
+    mass :
         the atomic mass, defaults to the mass found in `PeriodicTable`.
-    tag : str, optional
+    tag :
         arbitrary designation for user handling similar atoms with
         different settings (defaults to the label of the atom)
 
@@ -1043,7 +1043,7 @@ class Atom(
 
     def __init__(
         self,
-        Z,
+        Z: Union[str, int],
         orbitals=None,
         mass: Optional[float] = None,
         tag: Optional[str] = None,
@@ -1420,14 +1420,14 @@ class Atoms:
 
     Parameters
     ----------
-    atoms : str, Atom, dict or list-like
+    atoms :
        atoms to be contained in this list of atoms
        If a str, or a single `Atom` it will be the only atom in the resulting
        class repeated `na` times.
        If a list, it will create all unique atoms and retain these, each item in
        the list may a single argument passed to the `Atom` or a dictionary
        that is passed to `Atom`, see examples.
-    na : int or None
+    na :
        total number of atoms, if ``len(atoms)`` is smaller than `na` it will
        be repeated to match `na`.
 

@@ -49,7 +49,14 @@ from sisl._math_small import cross3, is_ascending, xyz_to_spherical_cos_phi
 from sisl._namedindex import NamedIndex
 from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
 from sisl.shape import Cube, Shape, Sphere
-from sisl.typing import AtomsIndex, CellAxes, OrbitalsIndex, SileLike
+from sisl.typing import (
+    AtomsIndex,
+    AtomsLike,
+    CellAxes,
+    LatticeLike,
+    OrbitalsIndex,
+    SileLike,
+)
 from sisl.utils import (
     angle,
     cmd,
@@ -126,12 +133,12 @@ class Geometry(
 
     Parameters
     ----------
-    xyz : array_like
+    xyz :
         atomic coordinates
         ``xyz[i, :]`` is the atomic coordinate of the i'th atom.
-    atoms : array_like or Atoms
+    atoms :
         atomic species retrieved from the `PeriodicTable`
-    lattice : Lattice
+    lattice :
         the unit-cell describing the atoms in a periodic
         super-cell
 
@@ -174,7 +181,13 @@ class Geometry(
         "0.15",
         "0.16",
     )
-    def __init__(self, xyz: npt.ArrayLike, atoms=None, lattice=None, names=None):
+    def __init__(
+        self,
+        xyz: npt.ArrayLike,
+        atoms: AtomsLike = None,
+        lattice: LatticeLike = None,
+        names=None,
+    ):
         # Create the geometry coordinate, be aware that we do not copy!
         self.xyz = _a.asarrayd(xyz, order="C").reshape(-1, 3)
 
@@ -193,7 +206,7 @@ class Geometry(
 
         self._init_lattice(lattice)
 
-    def _init_lattice(self, lattice):
+    def _init_lattice(self, lattice: LatticeLike) -> None:
         """Initializes the supercell by *calculating* the size if not supplied
 
         If the supercell has not been passed we estimate the unit cell size

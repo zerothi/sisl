@@ -42,6 +42,8 @@ if on_rtd:
 print("python exec:", sys.executable)
 print("sys.path:", sys.path)
 
+import numpy as np
+
 import sisl
 
 print(f"Located sisl here: {sisl.__path__}")
@@ -214,8 +216,16 @@ autodoc_typehints_format = "short"
 autodoc_typehints = "both"
 
 # Automatically create the autodoc_type_aliases
-autodoc_type_aliases = dict()
+autodoc_type_aliases = {}
 _type_aliases_skip = set()
+
+for name in dir(np.typing):
+    if name.startswith("_"):
+        continue
+    if name in _type_aliases_skip:
+        continue
+    autodoc_type_aliases[f"npt.{name}"] = f"numpy.typing.{name}"
+
 
 for name in dir(sisl.typing):
     if name.startswith("_"):

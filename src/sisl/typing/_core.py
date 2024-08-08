@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "SileLike",
+    "CellLike",
     "GeometryLike",
     "LatticeLike",
     "LatticeOrGeometryLike",
@@ -36,7 +37,10 @@ GeometryLike = Union[
 ]
 """Data-types that can be converted to a `Geometry`"""
 
-LatticeLike = Union[SileLike, "Lattice", "LatticeChild", npt.ArrayLike]
+CellLike = Union[npt.NDArray, list, tuple]
+"""Data-types that can be converted to a `Lattice.cell` structure"""
+
+LatticeLike = Union[SileLike, "Lattice", "LatticeChild", CellLike]
 """Data-types that can be converted to a `Lattice`"""
 
 GridLike = Union[

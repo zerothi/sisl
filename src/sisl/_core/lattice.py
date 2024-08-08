@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import dot, ndarray
 
 import sisl._array as _a
@@ -25,7 +26,7 @@ from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate, deprecate_argument, deprecation, warn
 from sisl.shape.prism4 import Cuboid
-from sisl.typing import CellAxes, CellAxis
+from sisl.typing import CellAxes, CellAxis, LatticeLike
 from sisl.utils.mathematics import fnorm
 from sisl.utils.misc import direction, listify
 
@@ -98,14 +99,14 @@ class Lattice(
 
     Parameters
     ----------
-    cell : array_like
+    cell :
        the lattice parameters of the unit cell (the actual cell
        is returned from `tocell`.
-    nsc : array_like of int
+    nsc :
        number of supercells along each lattice vector
     origin : (3,) of float, optional
        the origin of the supercell.
-    boundary_condition : int/str or list of int/str (3, 2) or (3, ), optional
+    boundary_condition :
         the boundary conditions for each of the cell's planes. Defaults to periodic boundary condition.
         See `BoundaryCondition` for valid enumerations.
     """
@@ -118,8 +119,8 @@ class Lattice(
 
     def __init__(
         self,
-        cell,
-        nsc=None,
+        cell: CellLike,
+        nsc: npt.ArrayLike = None,
         origin=None,
         boundary_condition: SeqBoundaryConditionType = BoundaryCondition.PERIODIC,
     ):
@@ -1174,7 +1175,7 @@ class LatticeNewDispatch(AbstractDispatch):
 
 
 class LatticeNewLatticeDispatch(LatticeNewDispatch):
-    def dispatch(self, lattice, copy=False):
+    def dispatch(self, lattice, copy: bool = False):
         """Return Lattice as-is, for sanitization purposes"""
         cls = self._get_class()
         if cls != lattice.__class__:
@@ -1202,6 +1203,8 @@ class LatticeNewListLikeDispatch(LatticeNewDispatch):
 
 new_dispatch.register("ndarray", LatticeNewListLikeDispatch)
 new_dispatch.register(np.ndarray, LatticeNewListLikeDispatch)
+new_dispatch.register(int, LatticeNewListLikeDispatch)
+new_dispatch.register(float, LatticeNewListLikeDispatch)
 new_dispatch.register(list, LatticeNewListLikeDispatch)
 new_dispatch.register(tuple, LatticeNewListLikeDispatch)
 
@@ -1349,19 +1352,13 @@ class LatticeChild:
         """
         self.lattice.set_nsc(*args, **kwargs)
 
-    def set_lattice(self, lattice):
+    def set_lattice(self, lattice: LatticeLike):
         """Overwrites the local lattice."""
         if lattice is None:
             # Default supercell is a simple
             # 1x1x1 unit-cell
-            self.lattice = Lattice([1.0, 1.0, 1.0])
-        elif isinstance(lattice, Lattice):
-            self.lattice = lattice
-        elif isinstance(lattice, LatticeChild):
-            self.lattice = lattice.lattice
-        else:
-            # The supercell is given as a cell
-            self.lattice = Lattice(lattice)
+            lattice = [1.0, 1.0, 1.0]
+        self.lattice = Lattice.new(lattice)
 
     set_supercell = deprecation(
         "set_sc is deprecated; please use set_lattice instead", "0.15", "0.16"
@@ -1444,7 +1441,7 @@ class LatticeChild:
 
 
 class LatticeNewLatticeChildDispatch(LatticeNewDispatch):
-    def dispatch(self, obj, copy=False):
+    def dispatch(self, obj, copy: bool = False):
         # for sanitation purposes
         if copy:
             return obj.lattice.copy()
