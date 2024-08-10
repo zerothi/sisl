@@ -28,15 +28,12 @@ _log = logging.getLogger("sisl_doc")
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # make sure the source version is preferred (#3567)
-_root = pathlib.Path(__file__).absolute().parent.parent / "src"
+_root = pathlib.Path(__file__).absolute().parent.parent
+_src = _root / "src"
 
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
-if on_rtd:
-    os.environ["SISL_NUM_PROCS"] = "1"
-    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
-# sys.path.insert(0, str(_root))
 
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
@@ -172,7 +169,10 @@ autosummary_generate = True
 
 # If building this on RTD, mock out fortran sources
 if on_rtd:
-    nbsphinx_allow_errors = True
+    nbsphinx_allow_errors = False
+    os.environ["SISL_NUM_PROCS"] = "1"
+    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
+    os.environ["SISL_FILES_TESTS"] = str(_root / "files" / "tests")
 else:
     nbsphinx_allow_errors = False
 
