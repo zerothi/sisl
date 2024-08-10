@@ -140,7 +140,7 @@ register_environ_variable(
 
 register_environ_variable(
     "SISL_TMP",
-    ".sisl_tmp",
+    _abs_path(".sisl_tmp"),
     "Path where temporary files should be stored",
     process=_abs_path,
 )
@@ -154,7 +154,7 @@ register_environ_variable(
 
 register_environ_variable(
     "SISL_FILES_TESTS",
-    "_THIS_DIRECTORY_DOES_NOT_EXIST_",
+    _abs_path("_THIS_DIRECTORY_DOES_NOT_EXIST_"),
     dedent(
         """\
                           Full path of the sisl/files folder.
