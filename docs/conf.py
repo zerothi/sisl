@@ -34,6 +34,15 @@ _src = _root / "src"
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
 
+# If building this on RTD, mock out fortran sources
+if on_rtd:
+    nbsphinx_allow_errors = False
+    os.environ["SISL_NUM_PROCS"] = "1"
+    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
+    os.environ["SISL_FILES_TESTS"] = str(_root / "files" / "tests")
+else:
+    nbsphinx_allow_errors = False
+
 
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
@@ -166,15 +175,6 @@ rst_epilog = """
 """
 
 autosummary_generate = True
-
-# If building this on RTD, mock out fortran sources
-if on_rtd:
-    nbsphinx_allow_errors = False
-    os.environ["SISL_NUM_PROCS"] = "1"
-    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
-    os.environ["SISL_FILES_TESTS"] = str(_root / "files" / "tests")
-else:
-    nbsphinx_allow_errors = False
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
