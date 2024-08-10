@@ -38,6 +38,8 @@ on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
 if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
     os.environ["SISL_VIZ_NUM_PROCS"] = "1"
+
+if "SISL_FILES_TESTS" not in os.environ:
     os.environ["SISL_FILES_TESTS"] = str(_root / "files" / "tests")
 
 
@@ -55,9 +57,10 @@ print(f"Located sisl here: {sisl.__path__}")
 sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
 print(f"SISL_FILES_TESTS: {sisl_files_tests}")
 print("  is directory: ", sisl_files_tests.is_dir())
-print("  content:")
-for _child in sisl_files_tests.iterdir():
-    print(f"    {_child}")
+if sisl_files_tests.is_dir():
+    print("  content:")
+    for _child in sisl_files_tests.iterdir():
+        print(f"    {_child}")
 
 
 # General information about the project.
