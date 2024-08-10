@@ -13,6 +13,9 @@ build:
     - gfortran
   tools:
     python: "latest"
+  jobs:
+    pre_install:
+      - ./.readthedocs-pre_install.sh
 
 sphinx:
   configuration: docs/conf.py

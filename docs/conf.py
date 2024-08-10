@@ -39,10 +39,6 @@ if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
     os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
-if "SISL_FILES_TESTS" not in os.environ:
-    os.environ["SISL_FILES_TESTS"] = str(_root / "files" / "tests")
-
-
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
 print("sys.path:", sys.path)
@@ -54,7 +50,7 @@ import sisl
 print(f"Located sisl here: {sisl.__path__}")
 
 # Figure out if we can locate the tests:
-sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
+sisl_files_tests = os.environ.get("SISL_FILES_TESTS", "-unknown-directory-")
 print(f"SISL_FILES_TESTS: {sisl_files_tests}")
 print("  is directory: ", sisl_files_tests.is_dir())
 if sisl_files_tests.is_dir():
