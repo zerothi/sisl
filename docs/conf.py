@@ -36,12 +36,9 @@ on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
 
 # If building this on RTD, mock out fortran sources
 if on_rtd:
-    nbsphinx_allow_errors = False
     os.environ["SISL_NUM_PROCS"] = "1"
     os.environ["SISL_VIZ_NUM_PROCS"] = "1"
     os.environ["SISL_FILES_TESTS"] = str(_root / "files" / "tests")
-else:
-    nbsphinx_allow_errors = False
 
 
 # Print standard information about executable and path...
@@ -53,6 +50,15 @@ import numpy as np
 import sisl
 
 print(f"Located sisl here: {sisl.__path__}")
+
+# Figure out if we can locate the tests:
+sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
+print(f"SISL_FILES_TESTS: {sisl_files_tests}")
+print("  is directory: ", sisl_files_tests.is_dir())
+print("  content:")
+for _child in sisl_files_tests.iterdir():
+    print(f"    {_child}")
+
 
 # General information about the project.
 project = "sisl"
