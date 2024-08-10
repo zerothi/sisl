@@ -8,7 +8,7 @@ from collections.abc import Callable
 from contextlib import contextmanager
 from pathlib import Path
 from textwrap import dedent
-from typing import Any
+from typing import Any, Union
 
 __all__ = ["register_environ_variable", "get_environ_variable", "sisl_environ"]
 
@@ -95,8 +95,24 @@ def get_environ_variable(name: str):
     return variable["process"](variable["value"])
 
 
+def _abs_path(path: str):
+    path = Path(path)
+    return path.resolve()
+
+
+def _float_or_int(value: Union[str, float, int]):
+    value = float(value)
+    # See if it is an integer
+    if value == int(value):
+        value = int(value)
+    return value
+
+
 register_environ_variable(
-    "SISL_LOG_FILE", "", "Log file to write into. If empty, do not log.", process=Path
+    "SISL_LOG_FILE",
+    "",
+    "Log file to write into. If empty, do not log.",
+    process=_abs_path,
 )
 
 register_environ_variable(
@@ -115,14 +131,6 @@ register_environ_variable(
 )
 
 
-def _float_or_int(value):
-    value = float(value)
-    # See if it is an integer
-    if value == int(value):
-        value = int(value)
-    return value
-
-
 register_environ_variable(
     "SISL_PAR_CHUNKSIZE",
     0.1,
@@ -131,14 +139,17 @@ register_environ_variable(
 )
 
 register_environ_variable(
-    "SISL_TMP", ".sisl_tmp", "Path where temporary files should be stored", process=Path
+    "SISL_TMP",
+    ".sisl_tmp",
+    "Path where temporary files should be stored",
+    process=_abs_path,
 )
 
 register_environ_variable(
     "SISL_CONFIGDIR",
     Path.home() / ".config" / "sisl",
     "Directory where configuration files for sisl should be stored",
-    process=Path,
+    process=_abs_path,
 )
 
 register_environ_variable(
@@ -150,7 +161,7 @@ register_environ_variable(
                           Generally this is only used for tests and for documentations.
                           """
     ),
-    process=Path,
+    process=_abs_path,
 )
 
 register_environ_variable(
