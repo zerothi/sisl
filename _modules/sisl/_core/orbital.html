@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.orbital &mdash; sisl 0.1-1d76d5d</title>
+  <title>sisl._core.orbital &mdash; sisl 0.1-2157c89</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
+        <script src="../../../_static/documentation_options.js?v=80742628"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-1d76d5d
+                0.1-2157c89
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -127,18 +127,17 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">factorial</span> <span class="k">as</span> <span class="n">fact</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span> <span class="k">as</span> <span class="n">msqrt</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Real</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">square</span><span class="p">,</span> <span class="n">take</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">take</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">eval_genlaguerre</span><span class="p">,</span> <span class="n">factorial</span><span class="p">,</span> <span class="n">lpmv</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -233,7 +232,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    R : float or dict or None</span>
+<span class="sd">    R :</span>
 <span class="sd">        maximum radius of interaction.</span>
 <span class="sd">        In case of a dict the values will be passed to the `radial_minimize_range`</span>
 <span class="sd">        method.</span>
@@ -249,9 +248,9 @@
 <span class="sd">        If a negative number is passed, it will be converted to ``{&#39;contains&#39;:-R}``</span>
 <span class="sd">        A dictionary will only make sense if the class has the ``_radial`` function</span>
 <span class="sd">        associated.</span>
-<span class="sd">    q0 : float, optional</span>
+<span class="sd">    q0 :</span>
 <span class="sd">        initial charge</span>
-<span class="sd">    tag : str, optional</span>
+<span class="sd">    tag :</span>
 <span class="sd">        user defined tag</span>
 
 <span class="sd">    Examples</span>
@@ -290,7 +289,7 @@
 
 <div class="viewcode-block" id="Orbital.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.Orbital.html#sisl.Orbital.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]],</span> <span class="n">q0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize orbital object&quot;&quot;&quot;</span>
         <span class="c1"># Determine if the orbital has a radial function</span>
         <span class="c1"># In which case we can apply the radial discovery</span>
@@ -482,7 +481,7 @@
 <span class="k">def</span> <span class="nf">radial_minimize_range</span><span class="p">(</span>
     <span class="n">radial_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">RadialFuncT</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">],</span>
     <span class="n">contains</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">dr</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">),</span>
+    <span class="n">dr</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">),</span>
     <span class="n">maxR</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">RadialFuncT</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -718,6 +717,11 @@
     <span class="k">return</span> <span class="n">p</span>
 
 
+<span class="n">RadialFuncType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
+    <span class="nb">tuple</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span>
+<span class="p">]</span>
+
+
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SphericalOrbital</span><span class="p">(</span><span class="n">Orbital</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;An *arbitrary* orbital class which only contains the harmonical part of the wavefunction  where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`</span>
@@ -742,16 +746,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    l : int</span>
+<span class="sd">    l :</span>
 <span class="sd">       azimuthal quantum number</span>
-<span class="sd">    rf_or_func : tuple of (r, f) or func</span>
+<span class="sd">    rf_or_func :</span>
 <span class="sd">       radial components as a tuple/list, or the function which can interpolate to any R</span>
 <span class="sd">       See `set_radial` for details.</span>
 <span class="sd">    R :</span>
 <span class="sd">       See `Orbital` for details.</span>
-<span class="sd">    q0 : float, optional</span>
+<span class="sd">    q0 :</span>
 <span class="sd">       initial charge</span>
-<span class="sd">    tag : str, optional</span>
+<span class="sd">    tag :</span>
 <span class="sd">       user defined tag</span>
 <span class="sd">    **kwargs:</span>
 <span class="sd">       arguments passed directly to ``set_radial(rf_or_func, **kwargs)``</span>
@@ -776,7 +780,12 @@
 <div class="viewcode-block" id="SphericalOrbital.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rf_or_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">rf_or_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RadialFuncType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">q0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize spherical orbital object&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_l</span> <span class="o">=</span> <span class="n">l</span>
@@ -1022,9 +1031,9 @@
 <span class="sd">        list of arguments can be in different input options</span>
 <span class="sd">    R :</span>
 <span class="sd">       See `Orbital` for details.</span>
-<span class="sd">    q0 : float, optional</span>
+<span class="sd">    q0 :</span>
 <span class="sd">        initial charge</span>
-<span class="sd">    tag : str, optional</span>
+<span class="sd">    tag :</span>
 <span class="sd">        user defined tag</span>
 
 <span class="sd">    Examples</span>
@@ -1542,15 +1551,15 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    n : int</span>
+<span class="sd">    n :</span>
 <span class="sd">        principal quantum number</span>
-<span class="sd">    l : int</span>
+<span class="sd">    l :</span>
 <span class="sd">        angular momentum quantum number</span>
-<span class="sd">    m : int</span>
+<span class="sd">    m :</span>
 <span class="sd">        magnetic quantum number</span>
-<span class="sd">    Z : float</span>
+<span class="sd">    Z :</span>
 <span class="sd">        effective atomic number</span>
-<span class="sd">    R :</span>
+<span class="sd">    **kwargs :</span>
 <span class="sd">        See `Orbital` for details.</span>
 
 <span class="sd">    Examples</span>

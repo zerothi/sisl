@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl._core.atom &mdash; sisl 0.1-1d76d5d</title>
+  <title>sisl._core.atom &mdash; sisl 0.1-2157c89</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=55a4b42e"></script>
+        <script src="../../../_static/documentation_options.js?v=80742628"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-1d76d5d
+                0.1-2157c89
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1091,15 +1091,15 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    Z : int or str</span>
+<span class="sd">    Z :</span>
 <span class="sd">        determine species for the atomic species.</span>
 <span class="sd">    orbitals : list of Orbital or float, optional</span>
 <span class="sd">        orbitals associated with this atom. See `Orbital` for details on</span>
 <span class="sd">        how to define orbitals.</span>
 <span class="sd">        Defaults to one orbital.</span>
-<span class="sd">    mass : float, optional</span>
+<span class="sd">    mass :</span>
 <span class="sd">        the atomic mass, defaults to the mass found in `PeriodicTable`.</span>
-<span class="sd">    tag : str, optional</span>
+<span class="sd">    tag :</span>
 <span class="sd">        arbitrary designation for user handling similar atoms with</span>
 <span class="sd">        different settings (defaults to the label of the atom)</span>
 
@@ -1180,7 +1180,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Atom.html#sisl.Atom.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">Z</span><span class="p">,</span>
+        <span class="n">Z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">mass</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1576,14 +1576,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    atoms : str, Atom, dict or list-like</span>
+<span class="sd">    atoms :</span>
 <span class="sd">       atoms to be contained in this list of atoms</span>
 <span class="sd">       If a str, or a single `Atom` it will be the only atom in the resulting</span>
 <span class="sd">       class repeated `na` times.</span>
 <span class="sd">       If a list, it will create all unique atoms and retain these, each item in</span>
 <span class="sd">       the list may a single argument passed to the `Atom` or a dictionary</span>
 <span class="sd">       that is passed to `Atom`, see examples.</span>
-<span class="sd">    na : int or None</span>
+<span class="sd">    na :</span>
 <span class="sd">       total number of atoms, if ``len(atoms)`` is smaller than `na` it will</span>
 <span class="sd">       be repeated to match `na`.</span>
 
