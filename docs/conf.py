@@ -50,7 +50,7 @@ import sisl
 print(f"Located sisl here: {sisl.__path__}")
 
 # Figure out if we can locate the tests:
-sisl_files_tests = os.environ.get("SISL_FILES_TESTS", "-unknown-directory-")
+sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
 print(f"SISL_FILES_TESTS: {sisl_files_tests}")
 print("  is directory: ", sisl_files_tests.is_dir())
 if sisl_files_tests.is_dir():
