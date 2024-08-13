@@ -1,0 +1,259 @@
+******
+0.15.0
+******
+
+Released 13 of August 2024.
+
+Contributors
+============
+
+A total of 4 people contributed to this release. People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Nils Wittemeier
+* Pol Febrer
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 92 pull requests were merged for this release.
+
+* :pull:`#393 <393>`: Linear and efficient neighbour finder
+* :pull:`#496 <496>`: Calculate psi values on a sparse grid, to accelerate multiple...
+* :pull:`#497 <497>`: mnt: changed spin_squared name to other name
+* :pull:`#647 <647>`: Added a node to keep track of files
+* :pull:`#651 <651>`: added typing hints for Lattice and LatticeChild
+* :pull:`#652 <652>`: added sanitize to SparseCSR and __setitem__
+* :pull:`#658 <658>`: Bump pypa/gh-action-pypi-publish from 1.8.10 to 1.8.11
+* :pull:`#659 <659>`: Bump JamesIves/github-pages-deploy-action from 4.4.3 to 4.5.0
+* :pull:`#660 <660>`: Bump actions/setup-python from 4 to 5
+* :pull:`#662 <662>`: Bump github/codeql-action from 2 to 3
+* :pull:`#663 <663>`: Bump actions/upload-artifact from 3 to 4
+* :pull:`#664 <664>`: Bump actions/download-artifact from 3 to 4
+* :pull:`#665 <665>`: moving towards functional programming in sisl
+* :pull:`#666 <666>`: Support for conditional expressions on workflows.
+* :pull:`#667 <667>`: ensure that workflows have (and transmit) the right state
+* :pull:`#668 <668>`: WIP: Added a matrix plot
+* :pull:`#670 <670>`: Missing fdf flags error
+* :pull:`#672 <672>`: first try at implementing bond-order calculations
+* :pull:`#673 <673>`: removed selector from code base
+* :pull:`#679 <679>`: Bump codecov/codecov-action from 3 to 4
+* :pull:`#681 <681>`: Fix multisize 3D balls in plots
+* :pull:`#682 <682>`: Added Jmol colors as defaults for atoms.
+* :pull:`#683 <683>`: Added pre-commit config
+* :pull:`#684 <684>`: Some tweaks to atom colors
+* :pull:`#686 <686>`: 579 dftb hamiltonian
+* :pull:`#692 <692>`: Lazy loading of the viz module
+* :pull:`#693 <693>`: Fix wheels workflow
+* :pull:`#695 <695>`: added typing in lots of io places, added SileSlicer
+* :pull:`#696 <696>`: Bump pypa/gh-action-pypi-publish from 1.8.11 to 1.8.12
+* :pull:`#697 <697>`: Optimize nsc after reading Hamiltonian from wann90 output
+* :pull:`#702 <702>`: fixed #700 by reverting 7cf88f1a5
+* :pull:`#704 <704>`: Bump pypa/gh-action-pypi-publish from 1.8.12 to 1.8.14
+* :pull:`#706 <706>`: cleaned finder and removed pbc (getting it from Lattice)
+* :pull:`#710 <710>`: removed txtSileOrca.no/info.no since it was never present
+* :pull:`#711 <711>`: added warning for complex grids and isosurface
+* :pull:`#714 <714>`: 675 documentation
+* :pull:`#715 <715>`: Bump pypa/cibuildwheel from 2.16 to 2.17
+* :pull:`#717 <717>`: Fix for reading spinful CHG/CHGCAR
+* :pull:`#722 <722>`: Add `read_gtensor` and `read_hyperfine_coupling` to `txtSileORCA`
+* :pull:`#723 <723>`: add test for reading Hamiltonian from wannier90 output
+* :pull:`#725 <725>`: Additional energy units
+* :pull:`#726 <726>`: `units` as parameter in `read_*`
+* :pull:`#727 <727>`: Resolve Issue #716
+* :pull:`#729 <729>`: Minor ORCA/VASP documentation improvements
+* :pull:`#734 <734>`: Remove deprecated `bc` argument to `Grid`
+* :pull:`#736 <736>`: Some polishing of `sisl.nodes`
+* :pull:`#737 <737>`: added math notation convention
+* :pull:`#739 <739>`: Ensure __module__ is fine on node class creation
+* :pull:`#742 <742>`: Draft: add vectorsSileSIESTA for parsing vibra output
+* :pull:`#743 <743>`: Added specific functions to create animations and subplots
+* :pull:`#746 <746>`: 745 rtd files
+* :pull:`#749 <749>`: Ensure c-order for `Geometry` coordinates
+* :pull:`#750 <750>`: `norm2` as atom-resolved quantity
+* :pull:`#751 <751>`: made State.inner a very flexible matrix product
+* :pull:`#752 <752>`: added hexagonal and goldene
+* :pull:`#753 <753>`: removed sisl.plot from the code base
+* :pull:`#754 <754>`: Reading spin densities from CHGCAR
+* :pull:`#755 <755>`: Bump JamesIves/github-pages-deploy-action from 4.5.0 to 4.6.0
+* :pull:`#757 <757>`: Plot update on getting attributes
+* :pull:`#758 <758>`: Added declaration of some attributes in Figure
+* :pull:`#759 <759>`: Removed nodes from `sisl`
+* :pull:`#761 <761>`: removed 3.8 support, bumped min to 3.9
+* :pull:`#762 <762>`: CI also run on minimal installation
+* :pull:`#763 <763>`: changed phonon displacement shape
+* :pull:`#765 <765>`: Modifying the returns of the neighbor finder
+* :pull:`#767 <767>`: fixed pbc usage across sisl, fixes #764
+* :pull:`#769 <769>`: Bump pypa/cibuildwheel from 2.17 to 2.18
+* :pull:`#771 <771>`: Removed leftover print
+* :pull:`#772 <772>`: Removed deprecated argument `diag->projection`
+* :pull:`#773 <773>`: Dihedral angles
+* :pull:`#774 <774>`: Bump JamesIves/github-pages-deploy-action from 4.6.0 to 4.6.1
+* :pull:`#776 <776>`: Add support for sisl in nodify's GUI
+* :pull:`#779 <779>`: fixed reading geometries from fdf + XV + STRUCT
+* :pull:`#780 <780>`: Allow dash to be set in bands plots.
+* :pull:`#781 <781>`: Allow tuning matplotlib subplots.
+* :pull:`#784 <784>`: Legend grouping in bands plots
+* :pull:`#786 <786>`: Allow custom color scales across sisl.viz
+* :pull:`#787 <787>`: Clarify viz dependencies error
+* :pull:`#788 <788>`: Bump pypa/cibuildwheel from 2.18 to 2.19
+* :pull:`#789 <789>`: Bump pypa/gh-action-pypi-publish from 1.8.14 to 1.9.0
+* :pull:`#790 <790>`: fixed lots of parallel calculations
+* :pull:`#792 <792>`: trying to remove numpy 2 (as a temporary work-around)
+* :pull:`#793 <793>`: adding test for parallel calculation
+* :pull:`#796 <796>`: Clarify out of memory error on density
+* :pull:`#797 <797>`: 766 shc
+* :pull:`#803 <803>`: Bump JamesIves/github-pages-deploy-action from 4.6.1 to 4.6.3
+* :pull:`#804 <804>`: ensured building against numpy>=2
+* :pull:`#805 <805>`: Fix bug with numpy v2.0
+* :pull:`#807 <807>`: Fix fatbands with negative size
+* :pull:`#809 <809>`: enabled vacuum for all geometries with non-pbc directions
+* :pull:`#812 <812>`: completed tests rearrangement
+* :pull:`#818 <818>`: fixing many simple PEP-585 deprecations
+
+[0.15.0] - 2024-08-13
+---------------------
+
+Added
+^^^^^
+* conversion of list-like elements to `Lattice`
+* vacuum argument for all `sisl.geom` methods that can use it
+* `Geometry.find_nsc`, alternate method for calculating `nsc` with more options
+* `sisl._debug_info` for more complete debug information
+* `axes` argument added to `derivative` to only calculate on a subset
+  of directions (can greatly improve performance for some systems)
+* `operator` argument added to `derivative` to apply an operator
+  to `dHk` and `dSk` matrices.
+  of directions (can greatly improve performance for some systems)
+* added `apply_kwargs` to methods which uses a `BrillouinZone` object.
+  This enables one to leverage parallel processing for calculations.
+* `SISL_PAR_CHUNKSIZE=25`, new default parameter for parallel processing.
+  Can greatly improve parallel processing of BZ integrations
+* added `vectorsSileSiesta` to read vibra eigenmode output
+* added `dihedral` to `Geometry`, :pull:`#773 <773>`
+* ability to retain sub-classes through `<class>.new` calls
+* added `Listify` to ensure arguments behaves as *iterables*
+* setter for `Lattice.pbc` to specify it through an array
+* `Lattice.volumef` to calculate a subset volume based on axes
+* added `write_grid` to Siesta binary grid files
+* added the `goldene` 2D lattice, a `hexagonal` Gold 2D structure
+* added the `hexagonal` 2D lattice, close-packed FCC(111) surface
+* improved `atom` projections of states, :pull:`#750 <750>`
+* improved typing system
+* `units` to `read_*` for some `Sile`s, :pull:`#726 <726>`
+* enabled reading the Hamiltonian from the Wannier90 _tb.dat file, :pull:`#727 <727>`
+* "Hz", "MHz", "GHz", "THz", and "invcm" as valid energy units, :pull:`#725 <725>`
+* added `read_gtensor` and `read_hyperfine_coupling` to `txtSileORCA`, :pull:`#722 <722>`
+* enabled `AtomsArgument` and `OrbitalsArgument` to accept `bool` for *all* or *none*
+* enabled `winSileWannier90.read_hamiltonian` to read the ``_tb.dat`` files
+* `atoms` argument to `DensityMatrix.spin_align` to align a subset of atoms
+  (only diagonal elements between the atoms orbitals)
+* added an efficient neighbor finder, :pull:`#393 <393>`
+* enabled reading DFTB+ output Hamiltonian and overlap matrices, :pull:`#579 <579>`
+* `bond_order` for `DensityMatrix` objects, :pull:`#507 <507>`
+* better error messages when users request quantities not calculated by Siesta/TBtrans
+* functional programming of the basic sisl classes
+  Now many of the `Geometry|Lattice|Grid.* manipulation routines which
+  returns new objects, are subjected to dispatch methods.
+  E.g.
+
+      sisl.tile(geometry, 2, axis=1)
+      geometry.tile(2, axis=1)
+
+  will call the same method. The first uses a dispatch method, and a `SislError`
+  will be raised if the dispatch argument is not implemented.
+* `SparseCSR.toarray` to comply with array handling (equivalent to `todense`)
+* enabled `Grid.to|new` with the most basic stuff
+  str|Path|Grid|pyamg
+* `Shape.translate`, to easily translate entire shape constructs, :pull:`#655 <655>`
+* Creation of chiral GNRs (`kind=chiral` in `sisl.geom.nanoribbon`/`sisl.geom.graphene_nanoribbon`
+  as well as `sisl.geom.cgnr`)
+* Creation of [n]-triangulenes (`sisl.geom.triangulene`)
+* added `offset` argument in `Geometry.add_vacuum` to enable shifting atomic coordinates
+* A new `AtomicMatrixPlot` to plot sparse matrices, :pull:`#668 <668>`
+
+Fixed
+^^^^^
+* PEP-585 compliant
+* buildable for numpy>2, :pull:`#791 <791>`
+* `BrillouinZone.tocartesian()` now defaults to `k=self.k`
+* reading XV/STRUCT files from fdf siles could cause problems, :pull:`#778 <778>`
+* `Geometry.[ao][us]c2[su]c` methods now retains the input shapes (unless `unique=True`)
+* lots of `Lattice` methods did not consistently copy over BC
+* `BrillouinZone.volume` fixed to actually return BZ volume
+  use `Lattice.volume` for getting the lattice volume.
+* xsf files now only respect `lattice.pbc` for determining PBC, :pull:`#764 <764>`
+* fixed `CHGCAR` spin-polarized density reads, :pull:`#754 <754>`
+* dispatch methods now searches the mro for best matches, :pull:`#721 <721>`
+* all `eps` arguments has changed to `atol`
+* methods with `axis` arguments now accepts the str equivalent 0==a
+* documentation links to external resources
+* fixed `chgSileVASP.read_grid` for spinful calculations
+* `txtSileOrca.info.no` used a wrong regex, added a test
+* raises error when requesting isosurface for complex valued grids, :pull:`#709 <709>`
+* some attributes associated with `Sile.info.*` will now warn instead of raising information
+* reading matrices from HSX files with *weird* labels, should now work (*fingers-crossed*)
+* `Atom(Z="1000")` will now correctly work, :pull:`#708 <708>`
+* `AtomUnknown` now also has a default mass of 1e40
+* changed `read_force_constant` to `read_hessian`, the old methods are retained with
+  deprecation warnings.
+* `pdosSileSiesta` plotting produced wrong spin components for NC/SOC
+* `tqdm` changed API in 2019, `eta=True` in Notebooks should now work
+* `SparseCSR` ufunc handling, in some corner cases could the dtype casting do things
+  wrongly.
+* fixed corner cases where the `SparseCSR.diags(offsets=)` would add elements
+  in non-existing elements
+* some cases of writing orthogonal matrices to TSHS/nc file formats :pull:`#661 <661>`
+* `BDOS` from TBtrans calculations now returns the full DOS of all (Bloch-expanded)
+  atoms
+* `Lattice` objects now issues a warning when created with 0-length vectors
+* HSX file reads should respect input geometry arguments
+* enabled slicing in matrix assignments, :pull:`#650 <650>`
+* changed `Shape.volume()` to `Shape.volume`
+* growth direction for zigzag heteroribbons
+* `BandStructure` points can now automatically add the `nsc == 1` axis as would
+  be done for assigning matrix elements (it fills with 0's).
+
+Removed
+^^^^^^^
+* `degenerate` argument in `velocity`/`derivative`, they do not belong there
+* `xvSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
+* `structSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
+* `Atom.radii` is removed, `Atom.radius` is the correct invocation
+* `sisl.plot` is removed (`sisl.viz` is replacing it!)
+* `cell` argument for `Geometry.translate/move` (it never worked)
+* removed `Selector` and `TimeSelector`, they were never used internally
+
+Changed
+^^^^^^^
+* internal test structure, should improve future progress
+* `Lattice.parameters` now returns a 2-tuple of ``length, angles``
+* units of `conductivity` has changed to S / Ang
+* `conductivity` is deprecated, use `ahc` and `shc` instead
+* `berry_curvature` has completely changed, checks it API
+* BZ apply methods are now by default parallel (if ``SISL_NUM_PROCS>1``)
+* `hsxSileSiesta.read_hamiltonian` now implicitly shifts Fermi-level to 0 (for newer HSX versions)
+* deprecated `periodic` to `axes` argument in `BrillouinZone.volume`
+* changed `Eigenmode.displacement` shape, please read the documentation
+* bumped minimal Python version to 3.9, :pull:`#640 <640>`
+* documentation build system on RTD is updated, :pull:`#745 <745>`
+* `gauge` arguments now accept 'cell' and 'orbital' in replacements for 'R' and 'r', respectively
+* `siesta.*.read_basis` now defaults to read an `Atoms` object with all atoms
+* `atoms.specie` changed to `atoms.species`, generally species is the singular form
+* `in_place` arguments changed to `inplace`
+* renamed `stdoutSileVASP` to `outcarSileVASP`, :pull:`#719 <719>`
+* deprecated scale_atoms in favor of scale_basis in `Geometry.scale`
+* changed default number of eigenvalues calculated in sparse `eigsh`, from 10 to 1
+* `stdoutSileSiesta.read_*` now defaults to read the *next* entry, and not the last
+* `stdoutSileSiesta.read_*` changed MD output functionality, see :pull:`#586 <586>` for details
+* `AtomNeighbours` changed name to `AtomNeighbor` to follow :pull:`#393 <393>`
+* changed method name `spin_squared` to `spin_contamination`
+* removed `Lattice.translate|move`, they did not make sense, and so their
+  usage should be deferred to `Lattice.add` instead.
+* `vacuum` is now an optional parameter for all ribbon structures
+* enabled `array_fill_repeat` with custom axis, to tile along specific
+  dimensions
+* Importing `sisl.viz` explicitly is no longer needed, as it will be lazily
+  loaded whenever it is required.

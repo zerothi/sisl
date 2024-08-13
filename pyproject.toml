@@ -10,7 +10,7 @@
 [tool.setuptools_scm]
 write_to = "src/sisl/_version.py"
 version_file = "src/sisl/_version.py"
-fallback_version = "0.15.0rc8"
+fallback_version = "0.15.0"
 
 # First we define the build-system which we will probably alter the most
 [build-system]
