@@ -42,7 +42,7 @@ def _ensure_atoms(atoms):
 
 def _parse_spin(attr, match):
     """Parse 'redata: Spin configuration *= <value>'"""
-    opt = match.string.split("=")[-1]
+    opt = match.string.split("=")[-1].strip()
 
     if opt.startswith("spin-orbit"):
         return Spin("spin-orbit")
@@ -1233,16 +1233,16 @@ class stdoutSileSiesta(SileSiesta):
                         # This should be a line containing the total charge for an atom
                         ia, charge = _parse_charge_total(line)
                         atom_idx.append(ia)
-                        atom_charges.append(charge)
+                        atom_charges.append([charge])
 
             # Determine with which spin type we are dealing
-            if self.info.spin == Spin.UNPOLARIZED:
+            if self.info.spin == Spin():  # UNPOLARIZED
                 # No spin components so just parse charge
                 atom_charges = []
                 atom_idx = []
                 header = ["e"]
                 _parse_spin_pol()
-            elif self.info.spin == Spin.POLARIZED:
+            elif self.info.spin == Spin("polarized"):
                 # Parse both spin polarizations
                 atom_charges_pol = []
                 header = ["e", "Sz"]
@@ -1255,10 +1255,14 @@ class stdoutSileSiesta(SileSiesta):
 
                 # Compute the charge and spin of each atom
                 atom_charges_pol_array = _a.arrayf(atom_charges_pol)
-                atom_q = atom_charges_pol_array[0, :] + atom_charges_pol_array[1, :]
-                atom_s = atom_charges_pol_array[0, :] - atom_charges_pol_array[1, :]
+                atom_q = (
+                    atom_charges_pol_array[0, :, 0] + atom_charges_pol_array[1, :, 0]
+                )
+                atom_s = (
+                    atom_charges_pol_array[0, :, 0] - atom_charges_pol_array[1, :, 0]
+                )
                 atom_charges[:] = np.stack((atom_q, atom_s), axis=-1)
-            elif self.info.spin == Spin.NONCOLINEAR or self.info.spin == Spin.SPINORBIT:
+            elif self.info.spin in [Spin("non-colinear"), Spin("spin-orbit")]:
                 # Parse as long as we find new species
                 atom_charges = []
                 atom_idx = []
