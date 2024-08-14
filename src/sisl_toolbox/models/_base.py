@@ -28,6 +28,9 @@ class BaseModel:
         ),
     )
 
+    def __getattr__(self, attr):
+        return getattr(self.ref, attr)
+
 
 # Each model should inherit from this
 

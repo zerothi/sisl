@@ -21,7 +21,8 @@ class GrapheneHamiltonian(GrapheneModel):
 class SimpleDispatch(ReferenceDispatch):
     """This implements the simple nearest neighbor TB model"""
 
-    def dispatch(self, t=-2.7, a=1.42, orthogonal=False):
+    def dispatch(self, t: float = -2.7, a: float = 1.42, orthogonal: bool = False):
+        """The simplest tight-binding model for graphene"""
         # Define the graphene lattice
         da = 0.0005
         C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=a + da))
@@ -40,7 +41,8 @@ class Hancock2010Dispatch(ReferenceDispatch):
 
     doi = "10.1103/PhysRevB.81.245402"
 
-    def dispatch(self, set="A", a=1.42, orthogonal=False):
+    def dispatch(self, set: str = "A", a: float = 1.42, orthogonal: bool = False):
+        """Tight-binding model based on 10.1103/PhysRevB.81.245402"""
         distance = self._obj.distance
         da = 0.0005
         H_orthogonal = True
@@ -85,9 +87,11 @@ class Hancock2010Dispatch(ReferenceDispatch):
         C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=R[-1]))
         graphene = si.geom.graphene(a, C, orthogonal=orthogonal)
         graphene.optimize_nsc([0, 1])
+
         # Define the Hamiltonian
         H = si.Hamiltonian(graphene, orthogonal=H_orthogonal)
         H.construct([R, t])
+
         return H
 
 
@@ -104,7 +108,8 @@ class Ishii2010Dispatch(ReferenceDispatch):
 
     doi = "10.1103/PhysRevLett.104.116801"
 
-    def dispatch(self, t=-2.7, a=1.42, orthogonal=False):
+    def dispatch(self, t: float = -2.7, a: float = 1.42, orthogonal: bool = False):
+        """Tight-binding model based on 10.1103/PhysRevLett.104.116801"""
         distance = self._obj.distance
         da = 0.0005
 
@@ -120,9 +125,11 @@ class Ishii2010Dispatch(ReferenceDispatch):
         # Define the graphene lattice
         C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=R[-1]))
         graphene = si.geom.graphene(a, C, orthogonal=orthogonal)
+
         # Define the Hamiltonian
         H = si.Hamiltonian(graphene)
         H.construct(construct)
+
         return H
 
 
@@ -136,8 +143,13 @@ class Cummings2019Dispatch(ReferenceDispatch):
     doi = "10.1021/acs.nanolett.9b03112"
 
     def dispatch(
-        self, t=(-2.414, -0.168), beta=(-1.847, -3.077), a=1.42, orthogonal=False
+        self,
+        t: tuple[float, float] = (-2.414, -0.168),
+        beta: tuple[float, float] = (-1.847, -3.077),
+        a: float = 1.42,
+        orthogonal: bool = False,
     ):
+        """Tight-binding model based on 10.1021/acs.nanolett.9b03112"""
         distance = self._obj.distance
         da = 0.0005
 
@@ -154,9 +166,11 @@ class Cummings2019Dispatch(ReferenceDispatch):
         # Define the graphene lattice
         C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=R[-1]))
         graphene = si.geom.graphene(a, C, orthogonal=orthogonal)
+
         # Define the Hamiltonian
         H = si.Hamiltonian(graphene)
         H.construct(construct)
+
         return H
 
 
@@ -169,7 +183,8 @@ class Wu2011Dispatch(ReferenceDispatch):
 
     doi = "10.1007/s11671-010-9791-y"
 
-    def dispatch(self, a=1.42, orthogonal=False):
+    def dispatch(self, a: float = 1.42, orthogonal: bool = False):
+        """Tight-binding model based on 10.1007/s11671-010-9791-y"""
         distance = self._obj.distance
         da = 0.0005
 
@@ -182,10 +197,12 @@ class Wu2011Dispatch(ReferenceDispatch):
         # Define the graphene lattice
         C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=R[-1]))
         graphene = si.geom.graphene(a, C, orthogonal=orthogonal)
+
         # Define the Hamiltonian
         H = si.Hamiltonian(graphene, orthogonal=False)
         t = [(-0.45, 1), (-2.78, 0.117), (-0.15, 0.004), (-0.095, 0.002)]
         H.construct([R, t])
+
         return H
 
 
