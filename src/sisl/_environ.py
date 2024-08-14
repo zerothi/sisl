@@ -65,6 +65,7 @@ def register_environ_variable(
     """
     if not name.startswith("SISL_"):
         raise ValueError("register_environ_variable: name should start with 'SISL_'")
+
     if process is None:
 
         def process(arg):
@@ -140,7 +141,7 @@ register_environ_variable(
 
 register_environ_variable(
     "SISL_TMP",
-    _abs_path(".sisl_tmp"),
+    ".sisl_tmp",
     "Path where temporary files should be stored",
     process=_abs_path,
 )
@@ -154,7 +155,7 @@ register_environ_variable(
 
 register_environ_variable(
     "SISL_FILES_TESTS",
-    _abs_path("_THIS_DIRECTORY_DOES_NOT_EXIST_"),
+    "_THIS_DIRECTORY_DOES_NOT_EXIST_",
     dedent(
         """\
                           Full path of the sisl/files folder.

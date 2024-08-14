@@ -25,6 +25,13 @@ endforeach()
 # We do the configure step here
 # We do not have the configure file in the current directory
 # Otherwise it would be installed together with it
+# Also get the compile definitions
+get_directory_property( SISL_DEFINITIONS DIRECTORY
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  COMPILE_DEFINITIONS )
+# Join to stringify list
+list(JOIN SISL_DEFINITIONS " " SISL_DEFINITIONS)
+
 configure_file(
   ${PROJECT_SOURCE_DIR}/tools/_debug_info.py.conf
   ${CMAKE_CURRENT_SOURCE_DIR}/_debug_info.py

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 # We will use cmake_path for file-name manipulation
 
 list(APPEND CMAKE_MESSAGE_CONTEXT "sisl")
