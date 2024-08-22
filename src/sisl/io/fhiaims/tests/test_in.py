@@ -3,20 +3,17 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
-from sisl import Atom, Geometry
+from sisl import Atom
 from sisl.io.fhiaims._geometry import *
 
 pytestmark = [pytest.mark.io, pytest.mark.fhiaims, pytest.mark.aims]
-_dir = osp.join("sisl", "io", "fhiaims")
 
 
 def test_in_simple(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.in", _dir)
+    f = sisl_tmp("gr.in")
     sisl_system.g.write(inSileFHIaims(f, "w"))
     g = inSileFHIaims(f).read_geometry()
 
@@ -27,7 +24,7 @@ def test_in_simple(sisl_tmp, sisl_system):
 
 
 def test_in_velocity(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.in", _dir)
+    f = sisl_tmp("gr.in")
     g = sisl_system.g.copy()
     g.atoms[0] = Atom(1)
     v = np.random.rand(len(g), 3)
@@ -51,7 +48,7 @@ def test_in_velocity(sisl_tmp, sisl_system):
 
 
 def test_in_moment(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.in", _dir)
+    f = sisl_tmp("gr.in")
     g = sisl_system.g.copy()
     g.atoms[0] = Atom(1)
     m = np.random.rand(len(g))
@@ -75,7 +72,7 @@ def test_in_moment(sisl_tmp, sisl_system):
 
 
 def test_in_v_m(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.in", _dir)
+    f = sisl_tmp("gr.in")
     g = sisl_system.g.copy()
     g.atoms[0] = Atom(1)
     v = np.random.rand(len(g), 3)

@@ -37,19 +37,19 @@ def test_pdos_from_sisl_H(spin):
     )
 
 
-@pytest.mark.parametrize("spin", ["unpolarized", "polarized", "noncolinear"])
-def test_pdos_from_siesta_PDOS(spin, siesta_test_files):
+@pytest.mark.parametrize("spin", ["unpolarized", "polarized", "non-collinear"])
+def test_pdos_from_siesta_PDOS(spin, sisl_files):
     n_spin, filename = {
         "unpolarized": (1, "SrTiO3.PDOS"),
-        "polarized": (2, "SrTiO3_polarized.PDOS"),
-        "noncolinear": (4, "SrTiO3_noncollinear.PDOS"),
+        "polarized": (2, "SrTiO3.PDOS"),
+        "non-collinear": (4, "SrTiO3.PDOS"),
     }[spin]
 
-    file = siesta_test_files(filename)
+    file = sisl_files("siesta", "SrTiO3", spin, filename)
 
     data = PDOSData.new(file)
 
-    checksum = 1240.0012709612743
+    checksum = 2376.8803000000003 / 2
     if n_spin > 1:
         checksum = checksum * 2
 
@@ -58,30 +58,26 @@ def test_pdos_from_siesta_PDOS(spin, siesta_test_files):
     )
 
 
-@pytest.mark.parametrize("spin", ["noncolinear"])
-def test_pdos_from_siesta_wfsx(spin, siesta_test_files):
-    n_spin, filename = {
-        "noncolinear": (4, "bi2se3_3ql.bands.WFSX"),
-    }[spin]
+def test_pdos_from_siesta_wfsx(sisl_files):
+    nspin = 4
+    dir = "Bi2Se3_3layer"
 
     # From a siesta .WFSX file
     # Since there is no hamiltonian for bi2se3_3ql.fdf, we create a dummy one
-    wfsx = sisl.get_sile(siesta_test_files(filename))
+    wfsx = sisl.get_sile(sisl_files("siesta", dir, "Bi2Se3.bands.WFSX"))
 
-    geometry = sisl.get_sile(siesta_test_files("bi2se3_3ql.fdf")).read_geometry()
+    geometry = sisl.get_sile(sisl_files("siesta", dir, "Bi2Se3.fdf")).read_geometry()
     geometry = sisl.Geometry(geometry.xyz, atoms=wfsx.read_basis())
 
-    H = sisl.Hamiltonian(geometry, dim=4)
+    H = sisl.Hamiltonian(geometry, dim=nspin)
 
     data = PDOSData.new(wfsx, H=H)
 
     # For now, the checksum is 0 because we have no overlap matrix.
     checksum = 0
-    if n_spin > 1:
-        checksum = checksum * 2
 
     data.sanity_check(
-        na=15, no=195, n_spin=n_spin, atom_tags=("Bi", "Se"), dos_checksum=checksum
+        na=15, no=195, n_spin=nspin, atom_tags=("Bi", "Se"), dos_checksum=checksum
     )
 
 

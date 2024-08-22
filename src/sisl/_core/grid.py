@@ -1709,7 +1709,7 @@ def sgrid(grid=None, argv=None, ret_grid=False):
     import sys
     from pathlib import Path
 
-    from sisl.io import BaseSile, get_sile
+    from sisl.io import BaseSile
 
     # The file *MUST* be the first argument
     # (except --help|-h)
@@ -1757,7 +1757,6 @@ This may be unexpected but enables one to do advanced manipulations.
     # First read the input "Sile"
     stdout_grid = True
     if grid is None:
-        from os.path import isfile
 
         argv, input_file = cmd.collect_input(argv)
 

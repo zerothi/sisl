@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import warnings
-from typing import Literal
 
 import numpy as np
 from scipy.sparse import SparseEfficiencyWarning, csr_matrix
@@ -231,7 +230,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -253,7 +252,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -275,7 +274,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -304,7 +303,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}
@@ -319,8 +318,8 @@ class SparseOrbitalBZ(SparseOrbital):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {"csr", "array", "matrix", "coo", ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -389,7 +388,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
@@ -418,7 +417,7 @@ class SparseOrbitalBZ(SparseOrbital):
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` is one of the Cartesian directions.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}
@@ -433,8 +432,8 @@ class SparseOrbitalBZ(SparseOrbital):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {"cell", "orbital"}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {"csr", "array", "matrix", "coo", ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -468,7 +467,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._dPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
@@ -488,7 +487,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -520,7 +519,7 @@ class SparseOrbitalBZ(SparseOrbital):
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf r_\alpha \mathbf r_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}
@@ -535,8 +534,8 @@ class SparseOrbitalBZ(SparseOrbital):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {"csr", "array", "matrix", "coo", ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -570,7 +569,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._ddPk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
@@ -590,7 +589,7 @@ class SparseOrbitalBZ(SparseOrbital):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1003,7 +1002,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format)
@@ -1026,7 +1025,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            the spin-index of the quantity
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
@@ -1046,7 +1045,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1067,7 +1066,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1088,7 +1087,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._dPk(k, dtype=dtype, gauge=gauge, format=format)
@@ -1111,7 +1110,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            the spin-index of the quantity
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._dPk(k, dtype=dtype, gauge=gauge, format=format, _dim=spin)
@@ -1131,7 +1130,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1152,7 +1151,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1173,7 +1172,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1194,7 +1193,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1215,7 +1214,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         return self._Pk(k, dtype=dtype, gauge=gauge, format=format, _dim=self.S_idx)
@@ -1235,7 +1234,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
@@ -1256,7 +1255,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
-        gauge : {'cell', 'orbital'}
+        gauge :
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()

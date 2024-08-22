@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from collections import ChainMap
-from typing import Any, Dict, Literal, Optional, Tuple
+from typing import Any, Literal, Optional
 
 import numpy as np
 
@@ -126,7 +126,7 @@ class Figure:
             "animation",
         ] = None,
         plot_actions=(),
-        init_kwargs: Dict[str, Any] = {},
+        init_kwargs: dict[str, Any] = {},
     ):
         if composite_method is None:
             self._composite_mode = self._NONE
@@ -201,7 +201,7 @@ class Figure:
         rows: Optional[int] = None,
         cols: Optional[int] = None,
         arrange: Literal["rows", "cols", "square"] = "rows",
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """Returns the number of rows and columns for a subplot grid."""
         if rows is None and cols is None:
             if arrange == "rows":

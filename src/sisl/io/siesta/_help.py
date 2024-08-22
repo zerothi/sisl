@@ -3,24 +3,35 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import warnings
-
 import numpy as np
 
 import sisl._array as _a
-from sisl import SislError
 from sisl.messages import warn
 
-try:
-    from . import _siesta
-
-    has_fortran_module = True
-except ImportError:
-    has_fortran_module = False
-
-__all__ = ["_csr_from_siesta", "_csr_from_sc_off"]
+__all__ = ["_siesta_sc_off"]
+__all__ += ["_csr_from_siesta", "_csr_from_sc_off"]
 __all__ += ["_csr_to_siesta", "_csr_to_sc_off"]
 __all__ += ["_mat_spin_convert", "_fc_correct"]
+
+
+def _siesta_sc_off(nsc):
+    """Create supercell offsets according to how Siesta does it
+
+    This is a static way of doing things, hopefully Siesta will
+    never change this.
+    """
+    rnsc = nsc[::-1]
+    sh = (*rnsc, 3)
+    sc = _a.emptyi(sh)
+    for i, nc in enumerate(nsc):
+        hsc = nc // 2
+        ns = _a.arangei(nc)
+        ns[hsc + 1 :] -= nc
+        sh = [1, 1, 1]
+        sh[2 - i] = -1
+        sc[..., i] = ns.reshape(*sh)
+    sc.shape = (-1, 3)
+    return sc
 
 
 def _ensure_diagonal(csr):
@@ -39,12 +50,7 @@ def _ensure_diagonal(csr):
 
 def _csr_from_siesta(geom, csr):
     """Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc"""
-    if not has_fortran_module:
-        raise SislError(
-            "sisl cannot convert the sparse matrix from a Siesta conforming sparsity pattern! Please install with fortran support!"
-        )
-
-    _csr_from_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
+    _csr_from_sc_off(geom, _siesta_sc_off(geom.nsc), csr)
 
 
 def _csr_to_siesta(geom, csr, diag=True):
@@ -56,14 +62,9 @@ def _csr_to_siesta(geom, csr, diag=True):
     diag: bool, optional
        whether the csr matrix will be ensured diagonal as well
     """
-    if not has_fortran_module:
-        raise SislError(
-            "sisl cannot convert the sparse matrix into a Siesta conforming sparsity pattern! Please install with fortran support!"
-        )
-
     if diag:
         _ensure_diagonal(csr)
-    _csr_to_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
+    _csr_to_sc_off(geom, _siesta_sc_off(geom.nsc), csr)
 
 
 def _csr_from_sc_off(geom, sc_off, csr):

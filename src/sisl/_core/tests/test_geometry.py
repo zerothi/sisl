@@ -4,8 +4,6 @@
 from __future__ import annotations
 
 import itertools
-import math as m
-import os.path as osp
 
 import numpy as np
 import pytest
@@ -21,8 +19,6 @@ from sisl import (
     SislWarning,
     Sphere,
 )
-
-_dir = osp.join("sisl")
 
 pytestmark = [pytest.mark.geom, pytest.mark.geometry]
 
@@ -1295,37 +1291,37 @@ class TestGeometry:
         d = geom.distance(0, method="mode")
         assert len(d) == 1
 
-    def test_optimize_nsc1(self, setup):
+    def test_find_nsc1(self, setup):
         # Create a 1D chain
         geom = Geometry([0] * 3, Atom(1, R=1.0), lattice=1)
         geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc(), [3, 3, 3])
-        geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc(1), [77, 3, 77])
-        geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc([0, 2]), [3, 77, 3])
-        geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc([0, 2], R=2.00000001), [5, 77, 5])
-        geom.set_nsc([1, 1, 1])
-        assert np.allclose(geom.optimize_nsc([0, 2], R=2.0000001), [5, 1, 5])
-        geom.set_nsc([5, 1, 5])
-        assert np.allclose(geom.optimize_nsc([0, 2], R=0.9999), [1, 1, 1])
 
-    def test_optimize_nsc2(self, setup):
+        assert np.allclose(geom.find_nsc(), [3, 3, 3])
+        assert np.allclose(geom.find_nsc(1), [77, 3, 77])
+        assert np.allclose(geom.find_nsc([0, 2]), [3, 77, 3])
+        assert np.allclose(geom.find_nsc([0, 2], R=2.00000001), [5, 77, 5])
+
+        geom.set_nsc([1, 1, 1])
+        assert np.allclose(geom.find_nsc([0, 2], R=2.00000001), [5, 1, 5])
+
+        geom.set_nsc([5, 1, 5])
+        assert np.allclose(geom.find_nsc([0, 2], R=0.9999), [1, 1, 1])
+
+    def test_find_nsc2(self, setup):
         # 2 ** 0.5 ensures lattice vectors with length 1
         geom = sisl_geom.fcc(2**0.5, Atom(1, R=1.0001))
         geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc(), [3, 3, 3])
-        geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc(1), [77, 3, 77])
-        geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc([0, 2]), [3, 77, 3])
-        geom.set_nsc([77, 77, 77])
-        assert np.allclose(geom.optimize_nsc([0, 2], R=2.000001), [5, 77, 5])
+
+        assert np.allclose(geom.find_nsc(), [3, 3, 3])
+        assert np.allclose(geom.find_nsc(1), [77, 3, 77])
+        assert np.allclose(geom.find_nsc([0, 2]), [3, 77, 3])
+        assert np.allclose(geom.find_nsc([0, 2], R=2.00000001), [5, 77, 5])
+
         geom.set_nsc([1, 1, 1])
-        assert np.allclose(geom.optimize_nsc([0, 2], R=2.0000001), [5, 1, 5])
+        assert np.allclose(geom.find_nsc([0, 2], R=2.00000001), [5, 1, 5])
+
         geom.set_nsc([5, 1, 5])
-        assert np.allclose(geom.optimize_nsc([0, 2], R=0.9999), [1, 1, 1])
+        assert np.allclose(geom.find_nsc([0, 2], R=0.9999), [1, 1, 1])
 
     def test_argumentparser1(self, setup):
         setup.g.ArgumentParser()
@@ -1832,7 +1828,7 @@ def test_geometry_sub_orbitals():
 
 def test_geometry_new_xyz(sisl_tmp):
     # test that Geometry.new works
-    out = sisl_tmp("out.xyz", _dir)
+    out = sisl_tmp("out.xyz")
     C = Atom[6]
     gr = sisl_geom.graphene(atoms=C)
     # writing doesn't save orbital information, so we force

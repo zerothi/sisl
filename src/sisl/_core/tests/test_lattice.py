@@ -277,9 +277,12 @@ class TestLattice:
         tmp3.set_lattice([1, 1, 1, 90, 90, 90])
         tmp4 = P()
         tmp4.set_lattice([1])
+        tmp5 = P()
+        tmp5.set_lattice([[1, 1, 1], [90, 90, 90]])
         assert np.allclose(tmp1.cell, tmp2.cell)
         assert np.allclose(tmp1.cell, tmp3.cell)
         assert np.allclose(tmp1.cell, tmp4.cell)
+        assert np.allclose(tmp1.cell, tmp5.cell)
         assert len(tmp1.lattice._fill([0, 0, 0])) == 3
         assert len(tmp1.lattice._fill_sc([0, 0, 0])) == 3
         assert tmp1.lattice.is_orthogonal()
@@ -304,17 +307,22 @@ class TestLattice:
         param = np.array([1, 2, 3, 45, 60, 80], np.float64)
         parama = param.copy()
         parama[3:] *= np.pi / 180
+
         lattice = Lattice(param)
-        assert np.allclose(param, lattice.parameters())
-        assert np.allclose(parama, lattice.parameters(True))
+
+        param.shape = (2, 3)
+        parama.shape = (2, 3)
+
+        assert np.allclose(param, np.array(lattice.parameters()))
+        assert np.allclose(parama, np.array(lattice.parameters(True)))
         for ang in range(0, 91, 5):
             s = (
                 lattice.rotate(ang, lattice.cell[0, :])
                 .rotate(ang, lattice.cell[1, :])
                 .rotate(ang, lattice.cell[2, :])
             )
-            assert np.allclose(param, s.parameters())
-            assert np.allclose(parama, s.parameters(True))
+            assert np.allclose(param, np.array(s.parameters()))
+            assert np.allclose(parama, np.array(s.parameters(True)))
 
     def test_rcell(self, setup):
         # LAPACK inverse algorithm implicitly does

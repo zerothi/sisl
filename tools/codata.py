@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import sys
-from collections import OrderedDict
 from dataclasses import dataclass
 
 import numpy as np

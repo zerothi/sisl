@@ -4,22 +4,20 @@
 # TODO when forward refs work with annotations
 # from __future__ import annotations
 
-import itertools
-from typing import Any, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict
 
 import numpy as np
 from xarray import Dataset
 
-from sisl._core.lattice import Lattice, LatticeChild
-from sisl.typing import npt
-from sisl.viz.types import CellLike
+from sisl._core.lattice import Lattice
+from sisl.typing import LatticeLike
 
 from .coords import CoordsDataset
 
 CellDataset = CoordsDataset
 
 
-def is_cartesian_unordered(cell: CellLike, tol: float = 1e-3) -> bool:
+def is_cartesian_unordered(cell: LatticeLike, tol: float = 1e-3) -> bool:
     """Whether a cell has cartesian axes as lattice vectors, regardless of their order.
 
     Parameters
@@ -29,8 +27,7 @@ def is_cartesian_unordered(cell: CellLike, tol: float = 1e-3) -> bool:
     tol: float, optional
         Threshold value to consider a component of the cell nonzero.
     """
-    if isinstance(cell, (Lattice, LatticeChild)):
-        cell = cell.cell
+    cell = Lattice.new(cell).cell
 
     bigger_than_tol = abs(cell) > tol
     return (
@@ -41,7 +38,7 @@ def is_cartesian_unordered(cell: CellLike, tol: float = 1e-3) -> bool:
 
 
 def is_1D_cartesian(
-    cell: CellLike, coord_ax: Literal["x", "y", "z"], tol: float = 1e-3
+    cell: LatticeLike, coord_ax: Literal["x", "y", "z"], tol: float = 1e-3
 ) -> bool:
     """Whether a cell contains only one vector that contributes only to a given coordinate.
 
@@ -57,8 +54,7 @@ def is_1D_cartesian(
     tol: float, optional
         Threshold value to consider a component of the cell nonzero.
     """
-    if isinstance(cell, (Lattice, LatticeChild)):
-        cell = cell.cell
+    cell = Lattice.new(cell).cell
 
     coord_index = "xyz".index(coord_ax)
     lattice_vecs = np.where(cell[:, coord_index] > tol)[0]
@@ -67,10 +63,9 @@ def is_1D_cartesian(
     return is_1D_cartesian and (cell[lattice_vecs[0]] > tol).sum() == 1
 
 
-def infer_cell_axes(cell: CellLike, axes: List[str], tol: float = 1e-3) -> List[int]:
+def infer_cell_axes(cell: LatticeLike, axes: list[str], tol: float = 1e-3) -> list[int]:
     """Returns the indices of the lattice vectors that correspond to the given axes."""
-    if isinstance(cell, (Lattice, LatticeChild)):
-        cell = cell.cell
+    cell = Lattice.new(cell).cell
 
     grid_axes = []
     for ax in axes:
@@ -88,10 +83,9 @@ def infer_cell_axes(cell: CellLike, axes: List[str], tol: float = 1e-3) -> List[
     return grid_axes
 
 
-def gen_cell_dataset(lattice: Union[Lattice, LatticeChild]) -> CellDataset:
+def gen_cell_dataset(lattice: LatticeLike) -> CellDataset:
     """Generates a dataset with the vertices of the cell."""
-    if isinstance(lattice, LatticeChild):
-        lattice = lattice.lattice
+    lattice = Lattice.new(lattice)
 
     return Dataset(
         {"xyz": (("a", "b", "c", "axis"), lattice.vertices())},

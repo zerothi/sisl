@@ -6,19 +6,21 @@ from __future__ import annotations
 import gzip
 import logging
 import re
-from functools import reduce, wraps
+from collections.abc import Callable
+from functools import wraps
 from io import TextIOBase
 from itertools import product
-from operator import and_, contains
+from operator import contains
 from os.path import basename, splitext
 from pathlib import Path
 from textwrap import dedent, indent
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
 import sisl.io._exceptions as _exceptions
 from sisl._environ import get_environ_variable
+from sisl._help import has_module
 from sisl._internal import set_module
-from sisl.messages import SislInfo, SislWarning, deprecate, info, warn
+from sisl.messages import deprecate, info, warn
 from sisl.utils.misc import str_spec
 
 from ._exceptions import *
@@ -765,7 +767,7 @@ class Info:
     """
 
     # default to be empty
-    _info_attributes_ = []
+    _info_attributes_: List[InfoAttr] = []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -784,26 +786,6 @@ class Info:
             self._attrs = []
             self._properties = []
 
-            # Patch once the properties has been created
-
-            # Patch the readline of the instance
-            def patch(info):
-                # grab the function to be patched
-                instance = info._instance
-                properties = info._properties
-                func = instance.readline
-
-                @wraps(func)
-                def readline(*args, **kwargs):
-                    line = func(*args, **kwargs)
-                    for prop in properties:
-                        prop.process(line)
-                    return line
-
-                return readline
-
-            self._instance.readline = patch(self)
-
             # add the properties
             for prop in instance._info_attributes_:
                 if isinstance(prop, dict):
@@ -812,7 +794,25 @@ class Info:
                     prop = prop.copy()
                 self.add_property(prop)
 
-        def add_property(self, prop):
+            # Patch the readline of the instance
+            def patch(info):
+                # grab the function to be patched
+                properties = info._properties
+                func = info._instance.readline
+
+                @wraps(func)
+                def readline(*args, **kwargs):
+                    line = func(*args, **kwargs)
+                    for prop in properties:
+                        prop.process(info._instance, line)
+                    return line
+
+                return readline
+
+            if len(self) > 0:
+                self._instance.readline = patch(self)
+
+        def add_property(self, prop: InfoAttr) -> None:
             """Add a new property to be reachable from the .info"""
             self._attrs.append(prop.attr)
             self._properties.append(prop)
@@ -820,6 +820,9 @@ class Info:
         def __str__(self):
             """Return a string of the contained attributes, with the values they currently contain"""
             return "\n".join([p.documentation() for p in self._properties])
+
+        def __len__(self) -> int:
+            return len(self._properties)
 
         def __getattr__(self, attr):
             """Overwrite the attribute retrieval to be able to fetch the actual values from the information"""
@@ -862,16 +865,17 @@ class Info:
         attr:
             the name of the attribute
             This will be the `sile.info.<name>` access point.
-        regex:
+        searcher:
             the regular expression used to match a line.
             If a `str`, it will be compiled *as is* to a regex pattern.
             `regex.match(line)` will be used to check if the value should be updated.
+            It can also be a direct method called
         parser:
             if `regex.match(line)` returns a match that is true, then this parser will
             be executed.
             The parser *must* be a function accepting two arguments:
 
-                def parser(attr, match)
+                def parser(attr, instance, match)
 
             where `attr` is this object, and `match` is the match done on the line.
             (Note that `match.string` will return the full line used to match against).
@@ -891,7 +895,7 @@ class Info:
 
         __slots__ = (
             "attr",
-            "regex",
+            "searcher",
             "parser",
             "updatable",
             "value",
@@ -903,8 +907,10 @@ class Info:
         def __init__(
             self,
             attr: str,
-            regex: Union[str, re.Pattern],
-            parser,
+            searcher: Union[Callable[[InfoAttr, BaseSile, str], str], str, re.Pattern],
+            parser: Callable[
+                [InfoAttr, BaseSile, Union[str, re.Match]], Any
+            ] = lambda attr, inst, line: line,
             doc: str = "",
             updatable: bool = False,
             default: Optional[Any] = None,
@@ -912,9 +918,31 @@ class Info:
             not_found: Optional[Callable[[Any, InfoAttr], None]] = None,
         ):
             self.attr = attr
-            if isinstance(regex, str):
-                regex = re.compile(regex)
-            self.regex = regex
+
+            if isinstance(searcher, str):
+                searcher = re.compile(searcher)
+
+            if isinstance(searcher, re.Pattern):
+
+                def used_searcher(info, instance, line):
+                    nonlocal searcher
+
+                    match = searcher.match(line)
+                    if match:
+                        info.value = info.parser(info, instance, match)
+                        # print(f"found {info.attr}={info.value} with {line}")
+                        info.found = True
+                        return True
+
+                    return False
+
+                used_searcher.pattern = searcher.pattern
+            else:
+
+                used_searcher = searcher
+                used_searcher.pattern = "<custom>"
+
+            self.searcher = used_searcher
             self.parser = parser
             self.updatable = updatable
             self.value = default
@@ -960,23 +988,16 @@ class Info:
 
             self.not_found = not_found
 
-        def process(self, line):
+        def process(self, instance, line):
             if self.found and not self.updatable:
                 return False
 
-            match = self.regex.match(line)
-            if match:
-                self.value = self.parser(self, match)
-                # print(f"found {self.attr}={self.value} with {line}")
-                self.found = True
-                return True
-
-            return False
+            return self.searcher(self, instance, line)
 
         def copy(self):
             return self.__class__(
                 attr=self.attr,
-                regex=self.regex,
+                searcher=self.searcher,
                 parser=self.parser,
                 doc=self.doc,
                 updatable=self.updatable,
@@ -991,7 +1012,7 @@ class Info:
                 doc = "\n" + indent(dedent(self.doc), " " * 4)
             else:
                 doc = ""
-            return f"{self.attr}[{self.value}]: r'{self.regex.pattern}'{doc}"
+            return f"{self.attr}[{self.value}]: r'{self.searcher.pattern}'{doc}"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1243,21 +1264,19 @@ class Sile(Info, BaseSile):
 # Instead of importing netCDF4 on each invocation
 # of the __enter__ functioon (below), we make
 # a pass around it
-netCDF4 = None
+if has_module("netCDF4"):
+    import netCDF4
+else:
 
-
-def _import_netCDF4():
-    global netCDF4
-    if netCDF4 is None:
-        try:
-            import netCDF4
-        except ImportError as e:
-            # append
+    class _mock_netCDF4:
+        def __getattr__(self, attr):
             import sys
 
             exe = Path(sys.executable).name
             msg = f"Could not import netCDF4. Please install it using '{exe} -m pip install netCDF4'"
             raise SileError(msg) from e
+
+    netCDF4 = _mock_netCDF4()
 
 
 @set_module("sisl.io")
@@ -1276,8 +1295,6 @@ class SileCDF(BaseSile):
     """
 
     def __init__(self, filename, mode="r", lvl=0, access=1, *args, **kwargs):
-        _import_netCDF4()
-
         self._file = Path(filename)
         # Open mode
         self._mode = mode

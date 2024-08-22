@@ -27,6 +27,7 @@ from sisl import (
     SphericalOrbital,
     constant,
 )
+from sisl._help import has_module
 from sisl._indices import indices_only
 from sisl._internal import set_module
 from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
@@ -41,7 +42,6 @@ from .._help import *
 from ..sile import (
     SileCDF,
     SileError,
-    _import_netCDF4,
     add_sile,
     get_sile_class,
     sile_fh_open,
@@ -79,9 +79,7 @@ _log = logging.getLogger(__name__)
 
 def _order_remove_netcdf(order):
     """Removes the order elements that refer to siles based on NetCDF"""
-    try:
-        _import_netCDF4()
-    except SileError:
+    if not has_module("netCDF4"):
         # We got an import error
         def accept(suffix):
             try:
@@ -548,9 +546,9 @@ class fdfSileSiesta(SileSiesta):
                 value = value[:]
                 # do not skip to next line in next segment
                 value[-1] = value[-1].replace("\n", "")
-                s = f"{s}\n{''.join(value)}\n"
+                s = f"{s}\n {''.join(value)}\n"
             else:
-                s = "{s}\n{v}\n".format(s=s, v="\n".join(value))
+                s = "{s}\n {v}\n".format(s=s, v="\n".join(value))
             # We add an extra line after blocks
             s = f"{s}%endblock {key}\n"
         else:
@@ -1202,7 +1200,7 @@ class fdfSileSiesta(SileSiesta):
 
             # Convert the big geometry's coordinates to fractional coordinates of the small unit-cell.
             isc_xyz = geom.xyz.dot(geom_small.lattice.icell.T) - np.tile(
-                geom_small.fxyz, (np.product(supercell), 1)
+                geom_small.fxyz, (np.prod(supercell), 1)
             )
 
             axis_tiling = []

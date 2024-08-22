@@ -41,13 +41,9 @@ def test_bands_from_sisl_H(spin):
     )
 
 
-@pytest.mark.parametrize("spin", ["unpolarized"])
-def test_bands_from_siesta_bands(spin, siesta_test_files):
-    n_spin, filename = {
-        "unpolarized": (1, "SrTiO3.bands"),
-    }[spin]
-
-    file = siesta_test_files(filename)
+def test_bands_from_siesta_bands(sisl_files):
+    n_spin = 1
+    file = sisl_files("siesta", "SrTiO3", "unpolarized", "SrTiO3.bands")
 
     data = BandsData.new(file)
 
@@ -61,13 +57,15 @@ def test_bands_from_siesta_bands(spin, siesta_test_files):
 
 
 @pytest.mark.parametrize("spin", ["noncolinear"])
-def test_bands_from_siesta_wfsx(spin, siesta_test_files):
-    n_spin, filename = {
-        "noncolinear": (4, "bi2se3_3ql.bands.WFSX"),
-    }[spin]
+def test_bands_from_siesta_wfsx(spin, sisl_files):
+    n_spin = 4
+    dirs = ("siesta", "Bi2Se3_3layer")
 
-    wfsx = sisl.get_sile(siesta_test_files(filename))
-    fdf = siesta_test_files("bi2se3_3ql.fdf")
+    # From a siesta .WFSX file
+    # Since there is no hamiltonian for bi2se3_3ql.fdf, we create a dummy one
+    wfsx = sisl.get_sile(sisl_files(*dirs, "Bi2Se3.bands.WFSX"))
+
+    fdf = sisl_files(*dirs, "Bi2Se3.fdf")
 
     data = BandsData.new(wfsx, fdf=fdf)
 

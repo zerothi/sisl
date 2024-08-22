@@ -3,20 +3,15 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
-import numpy as np
 import pytest
 
-from sisl import Geometry
 from sisl.io.siesta import aniSileSiesta
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_ani(sisl_tmp):
-    f = sisl_tmp("sisl.ANI", _dir)
+    f = sisl_tmp("sisl.ANI")
     open(f, "w").write(
         """1
 

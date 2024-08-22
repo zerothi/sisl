@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
@@ -12,11 +10,10 @@ from sisl import Atom, Geometry
 from sisl.io.vasp.car import *
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
-_dir = osp.join("sisl", "io", "vasp")
 
 
 def test_geometry_car_mixed(sisl_tmp):
-    f = sisl_tmp("test_read_write.POSCAR", _dir)
+    f = sisl_tmp("test_read_write.POSCAR")
 
     atoms = [Atom[1], Atom[2], Atom[2], Atom[1], Atom[1], Atom[2], Atom[3]]
     xyz = np.random.rand(len(atoms), 3)
@@ -28,7 +25,7 @@ def test_geometry_car_mixed(sisl_tmp):
 
 
 def test_geometry_car_group(sisl_tmp):
-    f = sisl_tmp("test_sort.POSCAR", _dir)
+    f = sisl_tmp("test_sort.POSCAR")
 
     atoms = [Atom[1], Atom[2], Atom[2], Atom[1], Atom[1], Atom[2], Atom[3]]
     xyz = np.random.rand(len(atoms), 3)
@@ -42,7 +39,7 @@ def test_geometry_car_group(sisl_tmp):
 
 
 def test_geometry_car_allsame(sisl_tmp):
-    f = sisl_tmp("test_read_write.POSCAR", _dir)
+    f = sisl_tmp("test_read_write.POSCAR")
 
     atoms = Atom[1]
     xyz = np.random.rand(10, 3)
@@ -54,7 +51,7 @@ def test_geometry_car_allsame(sisl_tmp):
 
 
 def test_geometry_car_dynamic(sisl_tmp):
-    f = sisl_tmp("test_dynamic.POSCAR", _dir)
+    f = sisl_tmp("test_dynamic.POSCAR")
 
     atoms = Atom[1]
     xyz = np.random.rand(10, 3)

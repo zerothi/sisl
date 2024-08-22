@@ -7,6 +7,7 @@ import numpy as np
 
 cimport numpy as np
 
+from ._feature import comply_gauge
 from ._matrix_phase import *
 from ._matrix_phase_nc import *
 from ._matrix_phase_nc_diag import *
@@ -23,18 +24,18 @@ __all__ = ["matrix_k", "matrix_k_nc", "matrix_k_so", "matrix_k_nc_diag"]
 def matrix_k(gauge, M, const int idx, sc,
              np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype)
-    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    gauge = comply_gauge(gauge)
 
     if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
 
-    elif gauge == 'orbital':
+    elif gauge == 'atom':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0
     else:
-        raise ValueError("matrix_k: gauge must be in [r, R]")
+        raise ValueError("matrix_k: gauge must be in [cell, atom]")
 
     # Check that the dimension *works*
     if idx < 0:
@@ -101,7 +102,7 @@ def _matrix_sc_k(csr, const int nc, const int idx, phases, dtype, format, p_opt)
         # direct conversion, should be simple (generally only at Gamma-point)
         m = csr.tocsr(idx)
         if format in ("array", "matrix", "dense"):
-            return m.A
+            return m.toarray()
         return m
 
     raise ValueError("matrix_k: (supercell format) currently only supports dtype in [float32, float64, complex64, complex128].")
@@ -110,16 +111,16 @@ def _matrix_sc_k(csr, const int nc, const int idx, phases, dtype, format, p_opt)
 def matrix_k_nc(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    gauge = comply_gauge(gauge)
     if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
-    elif gauge == 'orbital':
+    elif gauge == 'atom':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0
     else:
-        raise ValueError("matrix_k_nc: gauge must be in [r, R]")
+        raise ValueError("matrix_k_nc: gauge must be in [cell, atom]")
 
     if format.startswith("sc:") or format == "sc":
         if format == "sc":
@@ -174,11 +175,11 @@ def _matrix_sc_k_nc(csr, nc, phases, dtype, format, p_opt):
 def matrix_k_so(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    gauge = comply_gauge(gauge)
     if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
-    elif gauge == 'orbital':
+    elif gauge == 'atom':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0
@@ -237,11 +238,11 @@ def _matrix_sc_k_so(csr, nc, phases, dtype, format, p_opt):
 def matrix_k_nc_diag(gauge, M, const int idx, sc,
                      np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    gauge = comply_gauge(gauge)
     if gauge == 'cell':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
-    elif gauge == 'orbital':
+    elif gauge == 'atom':
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0

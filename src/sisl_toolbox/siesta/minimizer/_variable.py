@@ -7,9 +7,12 @@ from collections.abc import Iterable
 
 import numpy as np
 
+from sisl._internal import set_module
+
 __all__ = ["Parameter", "Variable", "UpdateVariable"]
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class Parameter:
     """A parameter which is static and not changing.
 
@@ -55,6 +58,7 @@ class Parameter:
         return self.name == other
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class Variable(Parameter):
     """A minimization variable with associated name, inital value, and possible bounds.
 
@@ -131,6 +135,7 @@ class Variable(Parameter):
         return value / fac + offset
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class UpdateVariable(Variable):
     def __init__(self, name, value, bounds, func, **attrs):
         super().__init__(name, value, bounds, **attrs)

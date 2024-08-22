@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 
@@ -23,9 +23,13 @@ __all__ = [
     "goldene",
 ]
 
+FloatOrFloat3 = Union[float, tuple[float, float, float]]
+
 
 @set_module("sisl.geom")
-def honeycomb(bond: float, atoms: AtomsLike, orthogonal: bool = False) -> Geometry:
+def honeycomb(
+    bond: float, atoms: AtomsLike, orthogonal: bool = False, vacuum: float = 20
+) -> Geometry:
     """Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     This enables creating BN lattices with ease, or graphene lattices.
@@ -38,6 +42,8 @@ def honeycomb(bond: float, atoms: AtomsLike, orthogonal: bool = False) -> Geomet
         the atom (or atoms) that the honeycomb lattice consists of
     orthogonal :
         if True returns an orthogonal lattice
+    vacuum :
+        length of vacuum region (along 3rd lattice vector)
 
     See Also
     --------
@@ -48,7 +54,8 @@ def honeycomb(bond: float, atoms: AtomsLike, orthogonal: bool = False) -> Geomet
     if orthogonal:
         lattice = Lattice(
             np.array(
-                [[3.0, 0.0, 0.0], [0.0, 2 * sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+                [[3.0, 0.0, 0.0], [0.0, 2 * sq3h, 0.0], [0.0, 0.0, vacuum / bond]],
+                np.float64,
             )
             * bond
         )
@@ -64,7 +71,8 @@ def honeycomb(bond: float, atoms: AtomsLike, orthogonal: bool = False) -> Geomet
     else:
         lattice = Lattice(
             np.array(
-                [[1.5, -sq3h, 0.0], [1.5, sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+                [[1.5, -sq3h, 0.0], [1.5, sq3h, 0.0], [0.0, 0.0, vacuum / bond]],
+                np.float64,
             )
             * bond
         )
@@ -82,7 +90,10 @@ def honeycomb(bond: float, atoms: AtomsLike, orthogonal: bool = False) -> Geomet
 
 @set_module("sisl.geom")
 def graphene(
-    bond: float = 1.42, atoms: AtomsLike = None, orthogonal: bool = False
+    bond: float = 1.42,
+    atoms: AtomsLike = None,
+    orthogonal: bool = False,
+    vacuum: float = 20,
 ) -> Geometry:
     """Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
@@ -95,6 +106,8 @@ def graphene(
         Default to Carbon atom.
     orthogonal :
         if True returns an orthogonal lattice
+    vacuum :
+        length of vacuum region (along 3rd lattice vector)
 
     See Also
     --------
@@ -103,12 +116,12 @@ def graphene(
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
-    return honeycomb(bond, atoms, orthogonal)
+    return honeycomb(bond, atoms, orthogonal, vacuum=vacuum)
 
 
 @set_module("sisl.geom")
 def honeycomb_flake(
-    shells: int, bond: float, atoms: AtomsLike, vacuum: float = 20.0
+    shells: int, bond: float, atoms: AtomsLike, vacuum: FloatOrFloat3 = 20.0
 ) -> Geometry:
     """Hexagonal flake of a honeycomb lattice, with zig-zag edges.
 
@@ -122,7 +135,8 @@ def honeycomb_flake(
     atoms:
         the atom (or atoms) that the honeycomb lattice consists of
     vacuum:
-        Amount of vacuum to add to the cell on all directions
+        Amount of vacuum to add to the cell in all directions (with tuple, individual
+        vacuum lengths)
     """
 
     # Function that generates one of the six triangular portions of the
@@ -184,10 +198,9 @@ def honeycomb_flake(
     geom += geom.rotate(120, [0, 0, 1]) + geom.rotate(240, [0, 0, 1])
 
     # Set the cell according to the requested vacuum
-    max_x = np.max(geom.xyz[:, 0])
-    geom.cell[0, 0] = max_x * 2 + vacuum
-    geom.cell[1, 1] = max_x * 2 + vacuum
-    geom.cell[2, 2] = 20.0
+    xyz = geom.xyz
+    cell = xyz.max(0) - xyz.min(0) + vacuum
+    geom.set_lattice(cell)
 
     # Center the flake
     geom = geom.translate(geom.center(what="cell"))
@@ -200,7 +213,10 @@ def honeycomb_flake(
 
 @set_module("sisl.geom")
 def graphene_flake(
-    shells: int, bond: float = 1.42, atoms: AtomsLike = None, vacuum: float = 20.0
+    shells: int,
+    bond: float = 1.42,
+    atoms: AtomsLike = None,
+    vacuum: FloatOrFloat3 = 20.0,
 ) -> Geometry:
     """Hexagonal flake of graphene, with zig-zag edges.
 
@@ -228,7 +244,10 @@ def graphene_flake(
 
 @set_module("sisl.geom")
 def triangulene(
-    n: int, bond: float = 1.42, atoms: Optional[AtomsLike] = None, vacuum: float = 20.0
+    n: int,
+    bond: float = 1.42,
+    atoms: Optional[AtomsLike] = None,
+    vacuum: FloatOrFloat3 = 20.0,
 ) -> Geometry:
     """Construction of an [n]-triangulene geometry
 
@@ -264,7 +283,10 @@ def triangulene(
 
 
 def hexagonal(
-    bond: float, atoms: AtomsLike = None, orthogonal: bool = False
+    bond: float,
+    atoms: AtomsLike = None,
+    orthogonal: bool = False,
+    vacuum: float = 20.0,
 ) -> Geometry:
     """A hexagonal unit-cell with 1 or 2 atoms in the basic unit cell
 
@@ -280,11 +302,16 @@ def hexagonal(
     orthogonal :
         if True returns an orthogonal lattice (2 atoms), otherwise
         a non-orthogonal lattice (1 atom).
+    vacuum :
+        length of vacuum region (along 3rd lattice vector)
     """
     sq3h = 3.0**0.5 * 0.5
     if orthogonal:
         lattice = Lattice(
-            np.array([[2 * sq3h, 0.0, 0.0], [0, 1, 0.0], [0.0, 0.0, 10.0]], np.float64)
+            np.array(
+                [[2 * sq3h, 0.0, 0.0], [0, 1, 0.0], [0.0, 0.0, vacuum / bond]],
+                np.float64,
+            )
             * bond
         )
         g = Geometry(
@@ -299,7 +326,8 @@ def hexagonal(
     else:
         lattice = Lattice(
             np.array(
-                [[sq3h, -0.5, 0.0], [sq3h, 0.5, 0.0], [0.0, 0.0, 10.0]], np.float64
+                [[sq3h, -0.5, 0.0], [sq3h, 0.5, 0.0], [0.0, 0.0, vacuum / bond]],
+                np.float64,
             )
             * bond
         )
@@ -316,7 +344,10 @@ def hexagonal(
 
 
 def goldene(
-    bond: float = 2.7, atoms: AtomsLike = None, orthogonal: bool = False
+    bond: float = 2.7,
+    atoms: AtomsLike = None,
+    orthogonal: bool = False,
+    vacuum: float = 20.0,
 ) -> Geometry:
     """A goldene unit-cell with 1 or 2 atoms in the basic unit cell
 
@@ -330,6 +361,8 @@ def goldene(
     orthogonal :
         if True returns an orthogonal lattice (2 atoms), otherwise
         a non-orthogonal lattice (1 atom).
+    vacuum :
+        length of vacuum region (along 3rd lattice vector)
 
     See Also
     --------
@@ -337,4 +370,4 @@ def goldene(
     """
     if atoms is None:
         atoms = Atom(Z=79, R=bond * 1.01)
-    return hexagonal(bond, atoms, orthogonal)
+    return hexagonal(bond, atoms, orthogonal, vacuum)

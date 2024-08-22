@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -69,7 +69,7 @@ def eigenstate_geometry(
 
 def tile_if_k(
     geometry: sisl.Geometry,
-    nsc: Tuple[int, int, int],
+    nsc: tuple[int, int, int],
     eigenstate: sisl.EigenstateElectron,
 ) -> sisl.Geometry:
     """Tiles the geometry if the eigenstate does not correspond to gamma.
@@ -83,7 +83,7 @@ def tile_if_k(
     ----------
     geometry : sisl.Geometry
         The geometry for which the wavefunction was calculated.
-    nsc : Tuple[int, int, int]
+    nsc : tuple[int, int, int]
         The number of supercells that are to be displayed in each direction.
     eigenstate : sisl.EigenstateElectron
         The eigenstate for which the wavefunction was calculated.
@@ -103,8 +103,8 @@ def tile_if_k(
 
 
 def get_grid_nsc(
-    nsc: Tuple[int, int, int], eigenstate: sisl.EigenstateElectron
-) -> Tuple[int, int, int]:
+    nsc: tuple[int, int, int], eigenstate: sisl.EigenstateElectron
+) -> tuple[int, int, int]:
     """Returns the supercell to display once the geometry is tiled.
 
     The geometry must be tiled if the eigenstate is not calculated at gamma,
@@ -113,7 +113,7 @@ def get_grid_nsc(
 
     Parameters
     ----------
-    nsc : Tuple[int, int, int]
+    nsc : tuple[int, int, int]
         The number of supercells to be display in each direction.
     eigenstate : sisl.EigenstateElectron
         The eigenstate for which the wavefunction was calculated.

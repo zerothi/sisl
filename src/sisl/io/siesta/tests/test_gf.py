@@ -3,20 +3,17 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_gf_write(sisl_tmp, sisl_system):
     tb = sisl.Hamiltonian(sisl_system.gtb)
-    f = sisl_tmp("file.TSGF", _dir)
+    f = sisl_tmp("file.TSGF")
     gf = sisl.io.get_sile(f)
     bz = sisl.MonkhorstPack(tb, [3, 3, 1])
     E = np.linspace(-2, 2, 20) + 1j * 1e-4
@@ -35,7 +32,7 @@ def test_gf_write(sisl_tmp, sisl_system):
 
 def test_gf_write_read(sisl_tmp, sisl_system):
     tb = sisl.Hamiltonian(sisl_system.gtb)
-    f = sisl_tmp("file.TSGF", _dir)
+    f = sisl_tmp("file.TSGF")
 
     bz = sisl.MonkhorstPack(tb, [3, 3, 1])
     E = np.linspace(-2, 2, 20) + 1j * 1e-4
@@ -73,7 +70,7 @@ def test_gf_write_read(sisl_tmp, sisl_system):
 
 
 def test_gf_write_read_spin(sisl_tmp, sisl_system):
-    f = sisl_tmp("file.TSGF", _dir)
+    f = sisl_tmp("file.TSGF")
 
     tb = sisl.Hamiltonian(sisl_system.gtb, spin=sisl.Spin("P"))
     tb.construct([(0.1, 1.5), ([0.1, -0.1], [2.7, 1.6])])
@@ -115,7 +112,7 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
 
 
 def test_gf_write_read_direct(sisl_tmp, sisl_system):
-    f = sisl_tmp("file.TSGF", _dir)
+    f = sisl_tmp("file.TSGF")
 
     tb = sisl.Hamiltonian(sisl_system.gtb, spin=sisl.Spin("P"))
     tb.construct([(0.1, 1.5), ([0.1, -0.1], [2.7, 1.6])])

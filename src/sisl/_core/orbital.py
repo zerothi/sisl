@@ -4,17 +4,17 @@
 from __future__ import annotations
 
 from collections import namedtuple
-from collections.abc import Iterable
+from collections.abc import Callable
 from functools import partial
 from math import factorial as fact
 from math import pi
 from math import sqrt as msqrt
 from numbers import Integral, Real
-from typing import Callable, Optional, Tuple
+from typing import Optional, Union
 
 import numpy as np
-import scipy
-from numpy import cos, sin, sqrt, square, take
+import numpy.typing as npt
+from numpy import cos, sin, take
 from scipy.special import eval_genlaguerre, factorial, lpmv
 
 try:
@@ -29,7 +29,6 @@ from sisl._internal import set_module
 from sisl.constant import a0
 from sisl.messages import warn
 from sisl.shape import Sphere
-from sisl.typing import npt
 from sisl.utils.mathematics import cart2spher, close
 
 __all__ = [
@@ -110,7 +109,7 @@ class Orbital:
 
     Parameters
     ----------
-    R : float or dict or None
+    R :
         maximum radius of interaction.
         In case of a dict the values will be passed to the `radial_minimize_range`
         method.
@@ -126,9 +125,9 @@ class Orbital:
         If a negative number is passed, it will be converted to ``{'contains':-R}``
         A dictionary will only make sense if the class has the ``_radial`` function
         associated.
-    q0 : float, optional
+    q0 :
         initial charge
-    tag : str, optional
+    tag :
         user defined tag
 
     Examples
@@ -165,7 +164,7 @@ class Orbital:
 
     __slots__ = ("_R", "_tag", "_q0")
 
-    def __init__(self, R, q0: float = 0.0, tag: str = ""):
+    def __init__(self, R: Optional[Union[float, dict]], q0: float = 0.0, tag: str = ""):
         """Initialize orbital object"""
         # Determine if the orbital has a radial function
         # In which case we can apply the radial discovery
@@ -341,7 +340,7 @@ RadialFuncT = Callable[[npt.ArrayLike], npt.NDArray]
 def radial_minimize_range(
     radial_func: Callable[[RadialFuncT], npt.NDArray],
     contains: float,
-    dr: Tuple[float, float] = (0.01, 0.0001),
+    dr: tuple[float, float] = (0.01, 0.0001),
     maxR: float = 100,
     func: Optional[Callable[[RadialFuncT, npt.ArrayLike], npt.NDArray]] = None,
 ) -> float:
@@ -577,6 +576,11 @@ def _radial(self, r, *args, **kwargs) -> np.ndarray:
     return p
 
 
+RadialFuncType = Union[
+    tuple[npt.ArrayLike, npt.ArrayLike], Callable[[npt.ArrayLike], npt.NDArray]
+]
+
+
 @set_module("sisl")
 class SphericalOrbital(Orbital):
     r"""An *arbitrary* orbital class which only contains the harmonical part of the wavefunction  where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
@@ -601,16 +605,16 @@ class SphericalOrbital(Orbital):
 
     Parameters
     ----------
-    l : int
+    l :
        azimuthal quantum number
-    rf_or_func : tuple of (r, f) or func
+    rf_or_func :
        radial components as a tuple/list, or the function which can interpolate to any R
        See `set_radial` for details.
     R :
        See `Orbital` for details.
-    q0 : float, optional
+    q0 :
        initial charge
-    tag : str, optional
+    tag :
        user defined tag
     **kwargs:
        arguments passed directly to ``set_radial(rf_or_func, **kwargs)``
@@ -633,7 +637,12 @@ class SphericalOrbital(Orbital):
     __slots__ = ("_l", "_radial")
 
     def __init__(
-        self, l: int, rf_or_func=None, q0: float = 0.0, tag: str = "", **kwargs
+        self,
+        l: int,
+        rf_or_func: Optional[RadialFuncType] = None,
+        q0: float = 0.0,
+        tag: str = "",
+        **kwargs,
     ):
         """Initialize spherical orbital object"""
         self._l = l
@@ -711,8 +720,8 @@ class SphericalOrbital(Orbital):
         r = _a.asarray(r)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
-        p = _a.zerosd(n)
+        idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
+        p = _a.zerosd(s)
         if len(idx) > 0:
             p[idx] = self.psi_spher(r, theta, phi, m, cos_phi=True)
             # Reduce memory immediately
@@ -863,9 +872,9 @@ class AtomicOrbital(Orbital):
         list of arguments can be in different input options
     R :
        See `Orbital` for details.
-    q0 : float, optional
+    q0 :
         initial charge
-    tag : str, optional
+    tag :
         user defined tag
 
     Examples
@@ -1359,15 +1368,15 @@ class HydrogenicOrbital(AtomicOrbital):
 
     Parameters
     ----------
-    n : int
+    n :
         principal quantum number
-    l : int
+    l :
         angular momentum quantum number
-    m : int
+    m :
         magnetic quantum number
-    Z : float
+    Z :
         effective atomic number
-    R :
+    **kwargs :
         See `Orbital` for details.
 
     Examples
@@ -1570,10 +1579,8 @@ class _ExponentialOrbital(Orbital):
         r = _a.asarray(r)
         s = r.shape[:-1]
         # Convert to spherical coordinates
-        n, idx, r, theta, phi = cart2spher(
-            r, theta=self.m != 0, cos_phi=True, maxR=self.R
-        )
-        p = _a.zerosd(n)
+        idx, r, theta, phi = cart2spher(r, theta=self.m != 0, cos_phi=True, maxR=self.R)
+        p = _a.zerosd(s)
         if len(idx) > 0:
             p[idx] = self.psi_spher(r, theta, phi, cos_phi=True)
             # Reduce memory immediately

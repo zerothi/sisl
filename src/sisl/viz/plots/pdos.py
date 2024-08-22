@@ -3,7 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Any, Literal, Optional, Sequence, Tuple
+from collections.abc import Sequence
+from typing import Literal
 
 import numpy as np
 
@@ -11,7 +12,6 @@ from sisl.viz.types import OrbitalStyleQuery
 
 from ..data import PDOSData
 from ..figure import Figure, get_figure
-from ..plot import Plot
 from ..plotters.xarray import draw_xarray_xy
 from ..processors.data import accept_data
 from ..processors.logic import swap
@@ -23,7 +23,7 @@ from .orbital_groups_plot import OrbitalGroupsPlot
 def pdos_plot(
     pdos_data: PDOSData,
     groups: Sequence[OrbitalStyleQuery] = [{"name": "DOS"}],
-    Erange: Tuple[float, float] = (-2, 2),
+    Erange: tuple[float, float] = (-2, 2),
     E_axis: Literal["x", "y"] = "x",
     line_mode: Literal["line", "scatter", "area_line"] = "line",
     line_scale: float = 1.0,

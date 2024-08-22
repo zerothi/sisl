@@ -4,8 +4,9 @@
 # TODO when forward refs work with locals
 # from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal, Optional, Sequence, Union
+from typing import Literal, Optional, Union
 
 import numpy as np
 from xarray import DataArray
@@ -20,13 +21,6 @@ from .._single_dispatch import singledispatchmethod
 from ..data_sources import FileDataSIESTA
 from ..processors.spin import get_spin_options
 from .xarray import OrbitalData
-
-try:
-    import pathos
-
-    _do_parallel_calc = True
-except:
-    _do_parallel_calc = False
 
 
 class PDOSData(OrbitalData):
@@ -334,7 +328,7 @@ class PDOSData(OrbitalData):
         # Calculate the PDOS for all available spins
         PDOS = []
         for spin in spin_indices:
-            with bz.apply(pool=_do_parallel_calc) as parallel:
+            with bz.apply as parallel:
                 spin_PDOS = parallel.average.eigenstate(
                     spin=spin, wrap=lambda eig: eig.PDOS(E, distribution=distribution)
                 )

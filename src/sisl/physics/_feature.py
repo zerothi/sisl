@@ -3,14 +3,27 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Iterator, List
+from collections.abc import Iterator
 
 import numpy as np
 
-__all__ = ["yield_manifolds"]
+__all__ = ["yield_manifolds", "comply_gauge"]
 
 
-def yield_manifolds(values, atol: float = 0.1, axis: int = -1) -> Iterator[List]:
+def comply_gauge(gauge: GaugeType) -> str:
+    """Comply the gauge to one of two words: atom | cell"""
+    return {
+        "R": "cell",
+        "cell": "cell",
+        "r": "atom",
+        "orbital": "atom",
+        "orbitals": "atom",
+        "atom": "atom",
+        "atoms": "atom",
+    }[gauge]
+
+
+def yield_manifolds(values, atol: float = 0.1, axis: int = -1) -> Iterator[list]:
     r"""Yields indices for manifolds along the axis `axis`
 
     A manifold is found under the criteria that all neighboring

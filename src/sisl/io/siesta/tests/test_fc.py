@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
@@ -12,11 +10,10 @@ from sisl.io.siesta.fc import *
 from sisl.unit.siesta import unit_convert
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_read_fc(sisl_tmp):
-    f = sisl_tmp("test.FC", _dir)
+    f = sisl_tmp("test.FC")
 
     fc = np.random.rand(20, 6, 2, 3)
     sign = 1
@@ -37,7 +34,7 @@ def test_read_fc(sisl_tmp):
 
 @pytest.mark.filterwarnings("ignore", message="*assumes displacement=")
 def test_read_fc_old(sisl_tmp):
-    f = sisl_tmp("test2.FC", _dir)
+    f = sisl_tmp("test2.FC")
 
     fc = np.random.rand(20, 6, 2, 3)
     with open(f, "w") as fh:

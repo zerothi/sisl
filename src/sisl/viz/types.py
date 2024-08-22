@@ -3,17 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, NewType, Optional, Sequence, Tuple, TypedDict, Union
+from typing import Any, Literal, NewType, Optional, TypedDict, Union
 
-import numpy as np
-
-import sisl
-from sisl._core.geometry import AtomCategory, Geometry
-from sisl._core.lattice import Lattice, LatticeChild
 from sisl.io.sile import BaseSile
-from sisl.typing import AtomsIndex, npt
+from sisl.typing import AtomsIndex
 
 PathLike = Union[str, Path, BaseSile]
 
@@ -21,17 +17,13 @@ Color = NewType("Color", str)
 
 # A colorscale can be a scale name, a sequence of colors or a sequence of
 # (value, color) tuples.
-Colorscale = Union[str, Sequence[Color], Sequence[Tuple[float, Color]]]
-
-GeometryLike = Union[sisl.Geometry, Any]
+Colorscale = Union[str, Sequence[Color], Sequence[tuple[float, Color]]]
 
 Axis = Union[
     Literal["x", "y", "z", "-x", "-y", "-z", "a", "b", "c", "-a", "-b", "-c"],
     Sequence[float],
 ]
 Axes = Sequence[Axis]
-
-GeometryLike = Union[Geometry, PathLike]
 
 
 @dataclass
@@ -92,8 +84,6 @@ class OrbitalStyleQuery(StyleSpec, OrbitalQuery): ...
 
 OrbitalQueries = Sequence[OrbitalQuery]
 OrbitalStyleQueries = Sequence[OrbitalStyleQuery]
-
-CellLike = Union[npt.NDArray[Union[np.float32, np.float64]], Lattice, LatticeChild]
 
 
 @dataclass

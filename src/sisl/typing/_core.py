@@ -6,19 +6,20 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Union
 
-import numpy as np
-import scipy.sparse as sps
+import numpy.typing as npt
 
 # To prevent import cycles place any internal imports in the branch below
 # and use a string literal forward reference to it in subsequent types
 # https://mypy.readthedocs.io/en/latest/common_issues.html#import-cycles
 if TYPE_CHECKING:
-    from sisl import BaseSile
+    from sisl import BaseSile, Geometry, Grid, Lattice
 
 __all__ = [
     "SileLike",
+    "CellLike",
     "GeometryLike",
     "LatticeLike",
+    "LatticeOrGeometry",
     "LatticeOrGeometryLike",
     "GridLike",
 ]
@@ -37,10 +38,10 @@ GeometryLike = Union[
 ]
 """Data-types that can be converted to a `Geometry`"""
 
-LatticeLike = Union[
-    SileLike,
-    "Lattice",
-]
+CellLike = Union[npt.NDArray, list, tuple]
+"""Data-types that can be converted to a `Lattice.cell` structure"""
+
+LatticeLike = Union[SileLike, "Lattice", "LatticeChild", CellLike]
 """Data-types that can be converted to a `Lattice`"""
 
 GridLike = Union[
@@ -49,6 +50,11 @@ GridLike = Union[
 ]
 """Data-types that can be converted to a `Grid`"""
 
+
+LatticeOrGeometry = Union[
+    "Lattice",
+    "Geometry",
+]
 
 LatticeOrGeometryLike = Union[
     LatticeLike,

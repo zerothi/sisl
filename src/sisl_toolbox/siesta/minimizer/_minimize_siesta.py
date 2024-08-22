@@ -4,14 +4,12 @@
 from __future__ import annotations
 
 import logging
-from functools import partial
 from subprocess import CompletedProcess
 
 import numpy as np
 
 from sisl._array import arangei, arrayi, zerosd
-from sisl.io import tableSile
-from sisl.io.siesta import fdfSileSiesta
+from sisl._internal import set_module
 from sisl.utils import PropertyDict
 
 from ._minimize import *
@@ -23,6 +21,7 @@ __all__ = ["MinimizeSiesta", "LocalMinimizeSiesta", "DualAnnealingMinimizeSiesta
 _log = logging.getLogger(__name__)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class MinimizeSiesta(BaseMinimize):  # no inheritance!
     """A minimize minimizer for siesta (PP and basis or what-ever)
 
@@ -215,9 +214,11 @@ class MinimizeSiesta(BaseMinimize):  # no inheritance!
         return metric
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class LocalMinimizeSiesta(LocalMinimize, MinimizeSiesta):
     pass
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class DualAnnealingMinimizeSiesta(DualAnnealingMinimize, MinimizeSiesta):
     pass

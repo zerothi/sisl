@@ -6,9 +6,10 @@
 # from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Sequence
 from functools import partial
 from pathlib import Path
-from typing import Dict, Optional, Sequence, Union
+from typing import Optional, Union
 
 import numpy as np
 import xarray as xr
@@ -21,13 +22,6 @@ from sisl.physics.spin import Spin
 from .._single_dispatch import singledispatchmethod
 from ..data_sources import FileDataSIESTA, HamiltonianDataSource
 from .xarray import XarrayData
-
-try:
-    import pathos
-
-    _do_parallel_calc = True
-except:
-    _do_parallel_calc = False
 
 try:
     from aiida import orm
@@ -336,7 +330,7 @@ class BandsData(XarrayData):
         cls,
         bz: sisl.BrillouinZone,
         H: Union[sisl.Hamiltonian, None] = None,
-        extra_vars: Sequence[Union[Dict, str]] = (),
+        extra_vars: Sequence[Union[dict, str]] = (),
     ):
         """Uses a sisl's `BrillouinZone` object to calculate the bands."""
         if bz is None:
@@ -374,7 +368,7 @@ class BandsData(XarrayData):
             if not spin.is_diagonal:
                 spin_kwarg = {}
 
-            with bz.apply(pool=_do_parallel_calc, zip=True) as parallel:
+            with bz.apply(zip=True) as parallel:
                 spin_bands = parallel.dataarray.eigenstate(
                     wrap=partial(bands_wrapper, spin_index=spin_index),
                     **spin_kwarg,
@@ -589,7 +583,7 @@ class BandsData(XarrayData):
 
 
 def _get_eigenstate_wrapper(
-    k_vals, spin, extra_vars: Sequence[Union[Dict, str]] = (), spin_moments: bool = True
+    k_vals, spin, extra_vars: Sequence[Union[dict, str]] = (), spin_moments: bool = True
 ):
     """Helper function to build the function to call on each eigenstate.
 

@@ -3,19 +3,16 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
 from sisl.io.vasp.locpot import *
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
-_dir = osp.join("sisl", "io", "vasp")
 
 
 def test_graphene_locpot(sisl_files):
-    f = sisl_files(_dir, "graphene", "LOCPOT")
+    f = sisl_files("vasp", "graphene", "LOCPOT")
     gridf64 = locpotSileVASP(f).read_grid()
     gridf32 = locpotSileVASP(f).read_grid(dtype=np.float32)
     geom = locpotSileVASP(f).read_geometry()
@@ -29,7 +26,7 @@ def test_graphene_locpot(sisl_files):
 
 
 def test_graphene_locpot_index_float(sisl_files):
-    f = sisl_files(_dir, "graphene", "LOCPOT")
+    f = sisl_files("vasp", "graphene", "LOCPOT")
     grid = locpotSileVASP(f).read_grid()
     gridh = locpotSileVASP(f).read_grid(index=[0.5])
 

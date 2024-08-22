@@ -6,9 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 we hit release version 1.0.0.
 
 
-## [0.15.0] - YYYY-MM-DD
+## [0.15.1] - YYYY-MM-DD
+
+
+
+## [0.15.0] - 2024-08-13
 
 ### Added
+- conversion of list-like elements to `Lattice`
+- vacuum argument for all `sisl.geom` methods that can use it
+- `Geometry.find_nsc`, alternate method for calculating `nsc` with more options
+- `sisl._debug_info` for more complete debug information
+- `axes` argument added to `derivative` to only calculate on a subset
+  of directions (can greatly improve performance for some systems)
+- `operator` argument added to `derivative` to apply an operator
+  to `dHk` and `dSk` matrices.
+  of directions (can greatly improve performance for some systems)
+- added `apply_kwargs` to methods which uses a `BrillouinZone` object.
+  This enables one to leverage parallel processing for calculations.
+- `SISL_PAR_CHUNKSIZE=25`, new default parameter for parallel processing.
+  Can greatly improve parallel processing of BZ integrations
 - added `vectorsSileSiesta` to read vibra eigenmode output
 - added `dihedral` to `Geometry`, #773
 - ability to retain sub-classes through `<class>.new` calls
@@ -54,6 +71,9 @@ we hit release version 1.0.0.
 - Parsing of total Mulliken charges in `stdoutSileSiesta`, #691
 
 ### Fixed
+- PEP-585 compliant
+- buildable for numpy>2, #791
+- `BrillouinZone.tocartesian()` now defaults to `k=self.k`
 - reading XV/STRUCT files from fdf siles could cause problems, #778
 - `Geometry.[ao][us]c2[su]c` methods now retains the input shapes (unless `unique=True`)
 - lots of `Lattice` methods did not consistently copy over BC
@@ -92,6 +112,7 @@ we hit release version 1.0.0.
   be done for assigning matrix elements (it fills with 0's).
 
 ### Removed
+- `degenerate` argument in `velocity`/`derivative`, they do not belong there
 - `xvSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
 - `structSileSiesta.read_geometry(species_as_Z)`, deprecated in favor of `atoms=`
 - `Atom.radii` is removed, `Atom.radius` is the correct invocation
@@ -100,6 +121,12 @@ we hit release version 1.0.0.
 - removed `Selector` and `TimeSelector`, they were never used internally
 
 ### Changed
+- internal test structure, should improve future progress
+- `Lattice.parameters` now returns a 2-tuple of ``length, angles``
+- units of `conductivity` has changed to S / Ang
+- `conductivity` is deprecated, use `ahc` and `shc` instead
+- `berry_curvature` has completely changed, checks it API
+- BZ apply methods are now by default parallel (if ``SISL_NUM_PROCS>1``)
 - `hsxSileSiesta.read_hamiltonian` now implicitly shifts Fermi-level to 0 (for newer HSX versions)
 - deprecated `periodic` to `axes` argument in `BrillouinZone.volume`
 - changed `Eigenmode.displacement` shape, please read the documentation

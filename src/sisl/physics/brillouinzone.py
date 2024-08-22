@@ -14,8 +14,9 @@ The BrillouinZone object allows direct looping of contained k-points while invok
 particular methods from the contained object.
 This is best shown with an example:
 
->>> H = Hamiltonian(...)
->>> bz = BrillouinZone(H)
+>>> import sisl as si
+>>> H = si.Hamiltonian(...)
+>>> bz = si.BrillouinZone(H)
 >>> bz.apply.array.eigh()
 
 This will calculate eigenvalues for all k-points associated with the `BrillouinZone` and
@@ -24,8 +25,8 @@ the `BrillouinZone` object has several use cases (here ``array`` is shown).
 
 This may be extremely convenient when calculating band-structures:
 
->>> H = Hamiltonian(...)
->>> bs = BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)
+>>> H = si.Hamiltonian(...)
+>>> bs = si.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)
 >>> bs_eig = bs.apply.array.eigh()
 >>> plt.plot(bs.lineark(), bs_eig)
 
@@ -35,8 +36,8 @@ Sometimes one may want to post-process the data for each k-point.
 As an example lets post-process the DOS on a per k-point basis while
 calculating the average:
 
->>> H = Hamiltonian(...)
->>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> H = si.Hamiltonian(...)
+>>> mp = si.MonkhorstPack(H, [10, 10, 10])
 >>> E = np.linspace(-2, 2, 100)
 >>> def wrap_DOS(eigenstate):
 ...    # Calculate the DOS for the eigenstates
@@ -56,8 +57,8 @@ The usage of the ``wrap`` method are also passed optional arguments, ``parent`` 
 corresponding k-point. An example could be to manipulate the DOS depending on the k-point and
 weight:
 
->>> H = Hamiltonian(...)
->>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> H = si.Hamiltonian(...)
+>>> mp = si.MonkhorstPack(H, [10, 10, 10])
 >>> E = np.linspace(-2, 2, 100)
 >>> def wrap_DOS(eigenstate, k, weight):
 ...    # Calculate the DOS for the eigenstates and weight by k_x and weight
@@ -67,8 +68,8 @@ weight:
 When using wrap to calculate more than one quantity per eigenstate it may be advantageous
 to use `~sisl.oplist` to handle cases of `BrillouinZone.apply.average` and `BrillouinZone.apply.sum`.
 
->>> H = Hamiltonian(...)
->>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> H = si.Hamiltonian(...)
+>>> mp = si.MonkhorstPack(H, [10, 10, 10])
 >>> E = np.linspace(-2, 2, 100)
 >>> def wrap_multiple(eigenstate):
 ...    # Calculate DOS/PDOS for eigenstates
@@ -76,7 +77,7 @@ to use `~sisl.oplist` to handle cases of `BrillouinZone.apply.average` and `Bril
 ...    PDOS = eigenstate.PDOS(E)
 ...    # Calculate velocity for the eigenstates
 ...    v = eigenstate.velocity()
-...    return oplist([DOS, PDOS, v])
+...    return si.oplist([DOS, PDOS, v])
 >>> DOS, PDOS, v = mp.apply.average.eigenstate(wrap=wrap_multiple, eta=True)
 
 Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
@@ -88,8 +89,8 @@ Parallel calculations
 The ``apply`` method looping k-points may be explicitly parallelized.
 To run parallel do:
 
->>> H = Hamiltonian(...)
->>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> H = si.Hamiltonian(...)
+>>> mp = si.MonkhorstPack(H, [10, 10, 10])
 >>> with mp.apply.renew(pool=True) as par:
 ...     par.eigh()
 
@@ -109,8 +110,8 @@ cores in a HPC environment).
 
 Alternatively one can control the number of processors locally by doing:
 
->>> H = Hamiltonian(...)
->>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> H = si.Hamiltonian(...)
+>>> mp = si.MonkhorstPack(H, [10, 10, 10])
 >>> with mp.apply.renew(pool=2) as par:
 ...     par.eigh()
 
@@ -120,14 +121,18 @@ will be used for the parallel processing.
 
 >>> from multiprocessing import Pool
 >>> pool = Pool(4)
->>> H = Hamiltonian(...)
->>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> H = si.Hamiltonian(...)
+>>> mp = si.MonkhorstPack(H, [10, 10, 10])
 >>> with mp.apply.renew(pool=pool) as par:
 ...     par.eigh()
 
 The ``Pool`` should implement some standard methods that are
 existing in the ``pathos`` enviroment such as ``Pool.restart`` and ``Pool.terminate``
-and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis.
+and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for details.
+
+Finally, the performance of the parallel pools are generally very dependent
+on the chunksize of the jobs. By default the chunksize is controlled by
+``SISL_PAR_CHUNKSIZE``, and playing with this can heavily impact performance.
 
 
    BrillouinZone
@@ -138,23 +143,21 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
 from __future__ import annotations
 
 import itertools
-from functools import reduce
+from collections.abc import Sequence
 from numbers import Integral, Real
-from typing import Sequence, Union
+from typing import Union
 
 import numpy as np
-from numpy import argsort, dot, pi, sum
+import numpy.typing as npt
+from numpy import argsort, dot, pi
 
 import sisl._array as _a
-from sisl._core.grid import Grid
 from sisl._core.lattice import Lattice
-from sisl._core.oplist import oplist
 from sisl._core.quaternion import Quaternion
 from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
-from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
-from sisl.unit import units
+from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import direction, listify
@@ -180,14 +183,14 @@ class BrillouinZoneDispatcher(ClassDispatcher):
 
     By default the `apply` method exposes a set of dispatch methods:
 
-    - `apply.iter`, the default iterator module
-    - `apply.average` reduced result by averaging (using `BrillouinZone.weight` as the weight per k-point.
-    - `apply.sum` reduced result without weighing
-    - `apply.array` return a single array with all values; has `len` equal to number of k-points
-    - `apply.none`, specialized method that is mainly useful when wrapping methods
-    - `apply.list` same as `apply.array` but using Python list as return value
-    - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical operations element wise
-    - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray` instance
+    - ``apply.iter``, the default iterator module
+    - ``apply.average`` reduced result by averaging (using `BrillouinZone.weight` as the weight per k-point.
+    - ``apply.sum`` reduced result without weighing
+    - ``apply.array`` return a single array with all values; has `len` equal to number of k-points
+    - ``apply.none``, specialized method that is mainly useful when wrapping methods
+    - ``apply.list`` same as ``apply.array`` but using Python list as return value
+    - ``apply.oplist`` using `sisl.oplist` allows greater flexibility for mathematical operations element wise
+    - ``apply.datarray`` if `xarray` is available one can retrieve an `xarray.DataArray` instance
 
     Please see :ref:`physics.brillouinzone` for further examples.
     """
@@ -239,6 +242,7 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk: float = 0.05):
         return np.cumsum(dist)
 
     total_dist = dist.sum() / stop
+
     # Scale to total length of `stop`
     return np.cumsum(dist) / total_dist
 
@@ -294,7 +298,7 @@ class BrillouinZone:
         obj_getattr=lambda obj, key: getattr(obj.parent, key),
     )
 
-    def set_parent(self, parent):
+    def set_parent(self, parent) -> None:
         """Update the parent associated to this object
 
         Parameters
@@ -398,7 +402,9 @@ class BrillouinZone:
         "0.15",
         "0.16",
     )
-    def volume(self, ret_dim: bool = False, axes: Optional[CellAxes] = None):
+    def volume(
+        self, ret_dim: bool = False, axes: Optional[CellAxes] = None
+    ) -> Union[float, tuple[float, int]]:
         """Calculate the volume of the BrillouinZone, optionally only on some axes `axes`
 
         This will return the volume of the Brillouin zone,
@@ -446,7 +452,9 @@ class BrillouinZone:
         return vol
 
     @staticmethod
-    def parametrize(parent, func, N: Union[Sequence[int], int], *args, **kwargs):
+    def parametrize(
+        parent, func, N: Union[Sequence[int], int], *args, **kwargs
+    ) -> BrillouinZone:
         """Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
@@ -506,7 +514,13 @@ class BrillouinZone:
 
     @classmethod
     def param_circle(
-        cls, parent, N_or_dk: Union[int, float], kR: float, normal, origin, loop=False
+        cls,
+        parent,
+        N_or_dk: Union[int, float],
+        kR: float,
+        normal,
+        origin,
+        loop: bool = False,
     ):
         r"""Create a parameterized k-point list where the k-points are generated on a circle around an origin
 
@@ -530,7 +544,7 @@ class BrillouinZone:
            normal vector to determine the circle plane
         origin : array_like of float
            origin of the circle used to generate the circular parameterization
-        loop : bool, optional
+        loop :
            whether the first and last point are equal
 
         Examples
@@ -611,29 +625,31 @@ class BrillouinZone:
         return self._w
 
     @property
-    def cell(self):
+    def cell(self) -> np.ndarray:
         return self.parent.cell
 
     @property
-    def rcell(self):
+    def rcell(self) -> np.ndarray:
         return self.parent.rcell
 
-    def tocartesian(self, k):
+    def tocartesian(self, k: Optional[npt.ArrayLike] = None) -> np.ndarray:
         """Transfer a k-point in reduced coordinates to the Cartesian coordinates
 
         Parameters
         ----------
-        k : list of float
-           k-point in reduced coordinates
+        k :
+           k-point in reduced coordinates, defaults to this objects k-points.
 
         Returns
         -------
         numpy.ndarray
             in units of 1/Ang
         """
+        if k is None:
+            k = self.k
         return dot(k, self.rcell)
 
-    def toreduced(self, k):
+    def toreduced(self, k: npt.ArrayLike) -> np.ndarray:
         """Transfer a k-point in Cartesian coordinates to the reduced coordinates
 
         Parameters
@@ -649,7 +665,7 @@ class BrillouinZone:
         return dot(k, self.cell.T / (2 * pi))
 
     @staticmethod
-    def in_primitive(k):
+    def in_primitive(k: npt.ArrayLike) -> np.ndarray:
         """Move the k-point into the primitive point(s) ]-0.5 ; 0.5]
 
         Parameters
@@ -878,7 +894,7 @@ class MonkhorstPack(BrillouinZone):
         """Displacement for this Monkhorst-Pack grid"""
         return self._displ
 
-    def __str__(self):
+    def __str__(self) -> str:
         """String representation of `MonkhorstPack`"""
         p = self._parent_lattice()
         return (
@@ -1010,7 +1026,12 @@ class MonkhorstPack(BrillouinZone):
         return k, w
 
     def replace(
-        self, k, mp, displacement=False, as_index: bool = False, check_vol: bool = True
+        self,
+        k,
+        mp: MonkhorstPack,
+        displacement=False,
+        as_index: bool = False,
+        check_vol: bool = True,
     ):
         r"""Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
 

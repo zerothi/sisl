@@ -7,4 +7,4 @@ from typing import Literal
 
 __all__ = ["GaugeType"]
 
-GaugeType = Literal["cell", "orbital"]
+GaugeType = Literal["cell", "atom"]

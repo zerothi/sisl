@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import Optional, Union
 
 import numpy as np
 
@@ -15,10 +15,15 @@ from ._common import geometry_define_nsc
 
 __all__ = ["nanotube"]
 
+FloatOrFloat2 = Union[float, tuple[float, float]]
+
 
 @set_module("sisl.geom")
 def nanotube(
-    bond: float, atoms: Optional[AtomsLike] = None, chirality: Tuple[int, int] = (1, 1)
+    bond: float,
+    atoms: Optional[AtomsLike] = None,
+    chirality: tuple[int, int] = (1, 1),
+    vacuum: FloatOrFloat2 = 20.0,
 ) -> Geometry:
     """Nanotube with user-defined chirality.
 
@@ -26,11 +31,11 @@ def nanotube(
 
     Parameters
     ----------
-    bond : float
+    bond :
        length between atoms in nano-tube
-    atoms : Atom(6)
+    atoms :
        nanotube atoms
-    chirality : (int, int)
+    chirality :
        chirality of nanotube (n, m)
     """
     if atoms is None:
@@ -142,11 +147,15 @@ def nanotube(
     # Sort the atomic coordinates according to z
     idx = np.argsort(xyz[:, 2])
     xyz = xyz[idx, :]
+    xyz_min, xyz_max = xyz.min(0), xyz.max(0)
 
-    lattice = Lattice([rs * 4, rs * 4, t])
+    cell = xyz_max - xyz_min
+    cell[:2] += vacuum
+    cell[2] = t
+    lattice = Lattice(cell)
 
     geom = Geometry(xyz, atoms, lattice=lattice)
-    geom = geom.translate(-np.amin(geom.xyz, axis=0))
+    geom = geom.translate(-xyz_min)
 
     geometry_define_nsc(geom, [False, False, True])
 

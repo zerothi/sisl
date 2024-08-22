@@ -3,11 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal, Sequence
+from typing import Literal
+
+from sisl.typing import LatticeLike
 
 from ..processors.cell import cell_to_lines, gen_cell_dataset
 from ..processors.coords import project_to_axes
-from ..types import Axes, CellLike
+from ..types import Axes
 from .xarray import draw_xarray_xy
 
 
@@ -24,7 +26,7 @@ def get_z(ndim: int) -> Literal["z", False]:
 
 
 def cell_plot_actions(
-    cell: CellLike = None,
+    cell: LatticeLike = None,
     show_cell: Literal[False, "box", "axes"] = "box",
     axes=["x", "y", "z"],
     name: str = "Unit cell",

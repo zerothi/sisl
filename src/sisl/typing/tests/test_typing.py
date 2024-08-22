@@ -3,9 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import operator as ops
-
-import numpy as np
 import pytest
 
 import sisl.typing as st

@@ -20,6 +20,7 @@ sisl objects.
    add
    append
    apply
+   ~physics.berry_curvature
    center
    copy
    insert
@@ -29,11 +30,13 @@ sisl objects.
    rotate
    scale
    sort
+   ~physics.spin_berry_curvature
    sub
    swap
    swapaxes
    tile
    translate
+   ~physics.velocity
    unrepeat
    untile
    write

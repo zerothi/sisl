@@ -14,6 +14,7 @@ import numpy as np
 from scipy.optimize import dual_annealing, minimize
 
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
+from sisl._internal import set_module
 from sisl.io import tableSile
 from sisl.utils import PropertyDict
 
@@ -48,6 +49,7 @@ def _convert_optimize_result(minimizer, result):
     return result
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class BaseMinimize:
     # Basic minimizer basically used for figuring out whether
     # to use a local or global minimization strategy
@@ -303,6 +305,7 @@ class BaseMinimize:
         """Run the minimize model"""
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class LocalMinimize(BaseMinimize):
     def run(self, *args, **kwargs):
         # Run minimization (always with normalized values)
@@ -316,6 +319,7 @@ class LocalMinimize(BaseMinimize):
         return _convert_optimize_result(self, opt)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class DualAnnealingMinimize(BaseMinimize):
     def run(self, *args, **kwargs):
         # Run minimization (always with normalized values)
@@ -328,6 +332,7 @@ class DualAnnealingMinimize(BaseMinimize):
         return _convert_optimize_result(self, opt)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class MinimizeToDispatcher(AbstractDispatch):
     """Base dispatcher from class passing from Minimize class"""
 
@@ -337,6 +342,7 @@ class MinimizeToDispatcher(AbstractDispatch):
             raise ValueError(f"Dispatcher on {obj} must not be called on the class.")
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class MinimizeToskoptDispatcher(MinimizeToDispatcher):
     def dispatch(self, *args, **kwargs):
         import skopt

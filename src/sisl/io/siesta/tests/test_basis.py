@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
 from io import StringIO
 
 import pytest
@@ -11,57 +10,56 @@ import pytest
 from sisl.io.siesta.basis import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_ion_nc(sisl_files):
     pytest.importorskip("netCDF4")
-    f = sisl_files(_dir, "Si.ion.nc")
+    f = sisl_files("siesta", "Si_pdos_k", "Si.ion.nc")
     with ionncSileSiesta(f) as sile:
         atom = sile.read_basis()
 
     # Number of orbitals
-    assert len(atom) == 13
+    assert len(atom) == 9
 
 
 def test_si_ion_xml(sisl_files):
-    f = sisl_files(_dir, "Si.ion.xml")
+    f = sisl_files("siesta", "Si_pdos_k", "Si.ion.xml")
     with ionxmlSileSiesta(f) as sile:
         atom = sile.read_basis()
 
     # Number of orbitals
-    assert len(atom) == 13
+    assert len(atom) == 9
 
 
 def test_si_ion_xml_handle(sisl_files):
-    f = open(sisl_files(_dir, "Si.ion.xml"), "r")
+    f = open(sisl_files("siesta", "Si_pdos_k", "Si.ion.xml"), "r")
 
     with ionxmlSileSiesta(f) as sile:
         assert "Buffer" in sile.__class__.__name__
         atom = sile.read_basis()
 
     # Number of orbitals
-    assert len(atom) == 13
+    assert len(atom) == 9
 
 
 def test_si_ion_xml_stringio(sisl_files):
-    f = StringIO(open(sisl_files(_dir, "Si.ion.xml"), "r").read())
+    f = StringIO(open(sisl_files("siesta", "Si_pdos_k", "Si.ion.xml"), "r").read())
 
     with ionxmlSileSiesta(f) as sile:
         assert "Buffer" in sile.__class__.__name__
         atom = sile.read_basis()
 
     # Number of orbitals
-    assert len(atom) == 13
+    assert len(atom) == 9
 
 
 def test_si_ion_compare(sisl_files):
     pytest.importorskip("netCDF4")
-    f = sisl_files(_dir, "Si.ion.nc")
+    f = sisl_files("siesta", "Si_pdos_k", "Si.ion.nc")
     with ionncSileSiesta(f) as sile:
         nc = sile.read_basis()
 
-    f = sisl_files(_dir, "Si.ion.xml")
+    f = sisl_files("siesta", "Si_pdos_k", "Si.ion.xml")
     with ionxmlSileSiesta(f) as sile:
         xml = sile.read_basis()
 

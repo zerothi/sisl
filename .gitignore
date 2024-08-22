@@ -3,7 +3,7 @@ ci
 .coverage
 .*/
 dist
-build
+build*
 *.pyc
 *.so
 *.c

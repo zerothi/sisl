@@ -13,7 +13,7 @@ import numpy as np
 import sisl._array as _a
 from sisl import Atoms, BoundaryCondition, Geometry, Lattice
 from sisl._internal import set_module
-from sisl.messages import deprecate_argument, warn
+from sisl.messages import deprecate_argument
 
 # Import sile objects
 from ._help import header_to_dict

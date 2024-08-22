@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
@@ -12,11 +10,10 @@ from sisl import Atom, Atoms, AtomUnknown, Geometry
 from sisl.io.siesta.xv import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_xv1(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.XV", _dir)
+    f = sisl_tmp("gr.XV")
     sisl_system.g.write(xvSileSiesta(f, "w"))
     g = xvSileSiesta(f).read_geometry()
 
@@ -27,7 +24,7 @@ def test_xv1(sisl_tmp, sisl_system):
 
 
 def test_xv_reorder(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.XV", _dir)
+    f = sisl_tmp("gr.XV")
     g = sisl_system.g.copy()
     g.atoms[0] = Atom(1)
     g.write(xvSileSiesta(f, "w"))
@@ -40,7 +37,7 @@ def test_xv_reorder(sisl_tmp, sisl_system):
 
 
 def test_xv_velocity(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.XV", _dir)
+    f = sisl_tmp("gr.XV")
     g = sisl_system.g.copy()
     g.atoms[0] = Atom(1)
     v = np.random.rand(len(g), 3)
@@ -64,7 +61,7 @@ def test_xv_velocity(sisl_tmp, sisl_system):
 
 
 def test_xv_ghost(sisl_tmp):
-    f = sisl_tmp("ghost.XV", _dir)
+    f = sisl_tmp("ghost.XV")
     a1 = Atom(1)
     am1 = Atom(-1)
     g = Geometry([[0.0, 0.0, i] for i in range(2)], [a1, am1], 2.0)
@@ -81,7 +78,7 @@ def test_xv_ghost(sisl_tmp):
 
 def test_xv_missing_atoms(sisl_tmp):
     # test for #778
-    f = sisl_tmp("missing.XV", _dir)
+    f = sisl_tmp("missing.XV")
     with open(f, "w") as fh:
         fh.write(
             """\
@@ -110,7 +107,7 @@ def test_xv_missing_atoms(sisl_tmp):
 
 def test_xv_missing_atoms_end(sisl_tmp):
     # test for #778
-    f = sisl_tmp("missing_end.XV", _dir)
+    f = sisl_tmp("missing_end.XV")
     with open(f, "w") as fh:
         fh.write(
             """\
@@ -135,7 +132,7 @@ def test_xv_missing_atoms_end(sisl_tmp):
 
 def test_xv_missing_atoms_species(sisl_tmp):
     # test for #778
-    f = sisl_tmp("missing_species.XV", _dir)
+    f = sisl_tmp("missing_species.XV")
     with open(f, "w") as fh:
         fh.write(
             """\

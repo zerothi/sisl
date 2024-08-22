@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Dict
-
 import numpy as np
 
 from sisl._core.atom import AtomGhost, PeriodicTable
@@ -74,7 +72,7 @@ def AtomNOrbitals(geometry, atoms=None):
 
 class AtomColors(AtomData):
     _fallback_color: str = "pink"
-    _atoms_colors: Dict[str, str] = {}
+    _atoms_colors: dict[str, str] = {}
 
     def function(self, geometry, atoms=None):
         return np.array(

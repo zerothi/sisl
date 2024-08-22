@@ -28,23 +28,36 @@ _log = logging.getLogger("sisl_doc")
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # make sure the source version is preferred (#3567)
-_root = pathlib.Path(__file__).absolute().parent.parent / "src"
+_root = pathlib.Path(__file__).absolute().parent.parent
+_src = _root / "src"
 
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
+
+# If building this on RTD, mock out fortran sources
 if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
     os.environ["SISL_VIZ_NUM_PROCS"] = "1"
-
-# sys.path.insert(0, str(_root))
 
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
 print("sys.path:", sys.path)
 
+import numpy as np
+
 import sisl
 
 print(f"Located sisl here: {sisl.__path__}")
+
+# Figure out if we can locate the tests:
+sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
+print(f"SISL_FILES_TESTS: {sisl_files_tests}")
+print("  is directory: ", sisl_files_tests.is_dir())
+if sisl_files_tests.is_dir():
+    print("  content:")
+    for _child in sisl_files_tests.iterdir():
+        print(f"    {_child}")
+
 
 # General information about the project.
 project = "sisl"
@@ -168,12 +181,6 @@ rst_epilog = """
 
 autosummary_generate = True
 
-# If building this on RTD, mock out fortran sources
-if on_rtd:
-    nbsphinx_allow_errors = True
-else:
-    nbsphinx_allow_errors = False
-
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
@@ -214,9 +221,16 @@ autodoc_typehints_format = "short"
 autodoc_typehints = "both"
 
 # Automatically create the autodoc_type_aliases
-autodoc_type_aliases = dict()
-_type_aliases_skip = set(dir(sisl.typing._numpy))
-_type_aliases_skip.add("npt")
+autodoc_type_aliases = {}
+_type_aliases_skip = set()
+
+for name in dir(np.typing):
+    if name.startswith("_"):
+        continue
+    if name in _type_aliases_skip:
+        continue
+    autodoc_type_aliases[f"npt.{name}"] = f"numpy.typing.{name}"
+
 
 for name in dir(sisl.typing):
     if name.startswith("_"):

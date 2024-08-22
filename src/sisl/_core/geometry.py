@@ -7,16 +7,17 @@ from __future__ import annotations
 import logging
 import warnings
 from collections import OrderedDict
+from collections.abc import Iterator, Sequence
 from functools import singledispatchmethod
 from itertools import product
 from math import acos
 from numbers import Integral, Real
 from pathlib import Path
-from typing import Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import (
-    argsort,
     bool_,
     ceil,
     concatenate,
@@ -24,20 +25,19 @@ from numpy import (
     dot,
     floor,
     int32,
-    isin,
     ndarray,
-    split,
     sqrt,
     square,
     tile,
     unique,
 )
+from scipy.sparse import csr_matrix
 
 import sisl._array as _a
 from sisl._category import Category, GenericCategory
 from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from sisl._help import isndarray
+from sisl._help import has_module, isndarray
 from sisl._indices import (
     indices_gt_le,
     indices_in_sphere_with_dist,
@@ -45,15 +45,15 @@ from sisl._indices import (
     list_index_le,
 )
 from sisl._internal import set_module
-from sisl._math_small import cross3, is_ascending
+from sisl._math_small import cross3, is_ascending, xyz_to_spherical_cos_phi
 from sisl._namedindex import NamedIndex
 from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
 from sisl.shape import Cube, Shape, Sphere
 from sisl.typing import (
-    ArrayLike,
     AtomsIndex,
+    AtomsLike,
     CellAxes,
-    NDArray,
+    LatticeLike,
     OrbitalsIndex,
     SileLike,
 )
@@ -133,12 +133,12 @@ class Geometry(
 
     Parameters
     ----------
-    xyz : array_like
+    xyz :
         atomic coordinates
         ``xyz[i, :]`` is the atomic coordinate of the i'th atom.
-    atoms : array_like or Atoms
+    atoms :
         atomic species retrieved from the `PeriodicTable`
-    lattice : Lattice
+    lattice :
         the unit-cell describing the atoms in a periodic
         super-cell
 
@@ -181,7 +181,13 @@ class Geometry(
         "0.15",
         "0.16",
     )
-    def __init__(self, xyz: ArrayLike, atoms=None, lattice=None, names=None):
+    def __init__(
+        self,
+        xyz: npt.ArrayLike,
+        atoms: Optional[AtomsLike] = None,
+        lattice: Optional[LatticeLike] = None,
+        names=None,
+    ):
         # Create the geometry coordinate, be aware that we do not copy!
         self.xyz = _a.asarrayd(xyz, order="C").reshape(-1, 3)
 
@@ -200,7 +206,7 @@ class Geometry(
 
         self._init_lattice(lattice)
 
-    def _init_lattice(self, lattice):
+    def _init_lattice(self, lattice: Optional[LatticeLike]) -> None:
         """Initializes the supercell by *calculating* the size if not supplied
 
         If the supercell has not been passed we estimate the unit cell size
@@ -305,24 +311,24 @@ class Geometry(
         return self.no * self.n_s
 
     @property
-    def firsto(self) -> NDArray[np.int32]:
+    def firsto(self) -> npt.NDArray[np.int32]:
         """The first orbital on the corresponding atom"""
         return self.atoms.firsto
 
     @property
-    def lasto(self) -> NDArray[np.int32]:
+    def lasto(self) -> npt.NDArray[np.int32]:
         """The last orbital on the corresponding atom"""
         return self.atoms.lasto
 
     @property
-    def orbitals(self) -> ndarray:
+    def orbitals(self) -> list[Orbital]:
         """List of orbitals per atom"""
         return self.atoms.orbitals
 
     ## End size of geometry
 
     @property
-    def fxyz(self) -> NDArray[np.float64]:
+    def fxyz(self) -> npt.NDArray[np.float64]:
         """Returns geometry coordinates in fractional coordinates"""
         return dot(self.xyz, self.icell.T)
 
@@ -510,7 +516,7 @@ class Geometry(
 
     def as_primary(
         self, na_primary: int, axes: Sequence[int] = (0, 1, 2), ret_super: bool = False
-    ) -> Union[Geometry, Tuple[Geometry, Lattice]]:
+    ) -> Union[Geometry, tuple[Geometry, Lattice]]:
         """Reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -957,7 +963,7 @@ class Geometry(
         iR: int = 20,
         R: Optional[float] = None,
         atoms: AtomsIndex = None,
-    ) -> Iterator[Tuple[ndarray, ndarray]]:
+    ) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *random* block-iteration by randomly selecting the next center of block"""
 
         # We implement yields as we can then do nested iterators
@@ -1036,7 +1042,7 @@ class Geometry(
 
     def iter_block_shape(
         self, shape=None, iR: int = 20, atoms: AtomsIndex = None
-    ) -> Iterator[Tuple[ndarray, ndarray]]:
+    ) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *grid* block-iteration by looping a grid"""
 
         # We implement yields as we can then do nested iterators
@@ -1171,7 +1177,7 @@ class Geometry(
         R: Optional[float] = None,
         atoms: AtomsIndex = None,
         method: str = "rand",
-    ) -> Iterator[Tuple[ndarray, ndarray]]:
+    ) -> Iterator[tuple[ndarray, ndarray]]:
         """Iterator for performance critical loops
 
         NOTE: This requires that `R` has been set correctly as the maximum interaction range.
@@ -1249,7 +1255,7 @@ class Geometry(
         atol: float = 0.1,
         offset: Sequence[float] = (0.0, 0.0, 0.0),
         offset_other: Sequence[float] = (0.0, 0.0, 0.0),
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Calculate the overlapping indices between two geometries
 
         Find equivalent atoms (in the primary unit-cell only) in two geometries.
@@ -1304,9 +1310,136 @@ class Geometry(
             other_extend(idx)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
 
+    def find_nsc(
+        self,
+        axes: Optional[CellAxes] = None,
+        R: Optional[float] = None,
+        method: Literal["atoms", "cell", "overlap"] = "atoms",
+    ) -> ndarray:
+        """Find number of supercells for the geometry, depending on certain criteria
+
+        This can find the optimal ``nsc`` values for a given method.
+
+        The important parameter, `method` determines how ``nsc`` is found.
+        The method are shown here, from method that produces the smallest ``nsc``, up
+        to the largest ``nsc``.
+
+        ``method=atoms``
+            here only the atoms ranges are taken into account, and only
+            whether atoms in the primary unit cell can connect to others in neigboring
+            cells.
+
+        ``method=cell``
+            only the atoms ranges are taken into account.
+            For instance if a lattice vector is as long as the orbital range
+            it will have 3 supercells (it can only connect to its neighboring
+            cells).
+
+        ``method=overlap``
+            determine nsc by examining at what range two orbitals overlaps.
+
+        Parameters
+        ----------
+        axes :
+           only discover new ``nsc`` the specified axes (defaults to all)
+        R :
+           the maximum connection radius for each atom, defaults to ``self.maxR()``.
+        method:
+            See discussion above.
+
+        Returns
+        -------
+        numpy.ndarray: the found nsc that obeys `method`
+
+        See Also
+        --------
+        optimize_nsc: same as this, but equivalent to also doing ``self.set_nsc(self.find_nsc(...))``
+        """
+        method = method.lower()
+
+        nsc = self.nsc.copy()
+
+        if axes is None:
+            axes = [0, 1, 2]
+        else:
+            axes = map(direction, listify(axes)) | listify
+
+        if len(axes) == 0:
+            # requesting no search space
+            return nsc
+
+        if R is None:
+            R = self.maxR() + 0.001
+        if R < 0:
+            R = 0.00001
+            warn(
+                f"{self.__class__.__name__}"
+                ".find_nsc could not determine the radius from the "
+                "internal atoms (defaulting to zero radius)."
+            )
+
+        cell = self.cell
+        length, angles = self.lattice.parameters()
+
+        # TODO check that angles below 60 degrees are
+        # important.
+
+        # Half-nsc (only 1 direction)
+        hsc = nsc // 2
+
+        # determine the maximum hsc values
+        if method in ("atoms", "cell"):
+            R_actual = R
+        elif method in ("overlap",):
+            R_actual = R * 2
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.find_nsc got wrong 'method' argument, got {method}"
+            )
+
+        # Determine the actual range depending on the actual R
+        hsc[axes] = ceil(R_actual / length[axes])
+
+        if method == "atoms":
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+
+                isc = _a.emptyi(3)
+
+                for ax in axes:
+                    # Initialize the isc for this direction
+                    # (note we do not take non-orthogonal directions
+                    #  into account)
+                    isc[:] = 0
+
+                    # Initialize the actual number of supercell connections
+                    # along this direction.
+                    prev_isc = 0
+
+                    while prev_isc == isc[ax]:
+                        # Try next supercell connection
+                        isc[ax] += 1
+
+                        for ia in self:
+                            idx = self.close_sc(ia, isc=isc, R=R)
+                            if len(idx) > 0:
+                                prev_isc = isc[ax]
+                                break
+
+                    hsc[ax] = prev_isc
+
+        nsc[axes] = hsc[axes] * 2 + 1
+
+        return nsc
+
+    @deprecation(
+        "optimize_nsc is deprecated, update the code to use 'find_nsc' and then 'set_nsc'",
+        "0.15.0",
+        "0.16.0",
+    )
     def optimize_nsc(
         self,
-        axes: Optional[Union[int, Sequence[int]]] = None,
+        axes: Optional[CellAxes] = None,
         R: Optional[float] = None,
     ) -> ndarray:
         """Optimize the number of supercell connections based on ``self.maxR()``
@@ -1315,6 +1448,8 @@ class Geometry(
 
         This is an in-place operation.
 
+        Deprecated method!
+
         Parameters
         ----------
         axes :
@@ -1322,65 +1457,8 @@ class Geometry(
         R :
            the maximum connection radius for each atom
         """
-        if axes is None:
-            axes = [0, 1, 2]
-        else:
-            axes = _a.asarrayi(axes).ravel()
-        if len(axes) == 0:
-            return self.nsc
-
-        if R is None:
-            R = self.maxR() + 0.001
-        if R < 0:
-            R = 0.00001
-            warn(
-                f"{self.__class__.__name__}"
-                ".optimize_nsc could not determine the radius from the "
-                "internal atoms (defaulting to zero radius)."
-            )
-
-        ic = self.icell
-        nrc = 1 / fnorm(ic)
-        idiv = floor(np.maximum(nrc / (2 * R), 1.1)).astype(np.int32, copy=False)
-        imcell = ic * idiv.reshape(-1, 1)
-
-        # We know this is the maximum
-        nsc = self.nsc.copy()
-        # We need to subtract one to ensure we are not taking into account
-        # too big supercell connections.
-        # I don't think we need anything other than this.
-        # However, until I am sure that this wouldn't change, regardless of the
-        # cell. I will keep it.
-        Rimcell = R * fnorm(imcell)[axes]
-        nsc[axes] = (floor(Rimcell) + ceil(Rimcell % 0.5 - 0.5)).astype(np.int32)
-        # Since for 1 it is not sure that it is a connection or not, we limit the search by
-        # removing it.
-        nsc[axes] = np.where(nsc[axes] > 1, nsc[axes], 0)
-        for i in axes:
-            # Initialize the isc for this direction
-            # (note we do not take non-orthogonal directions
-            #  into account)
-            isc = _a.zerosi(3)
-            isc[i] = nsc[i]
-            # Initialize the actual number of supercell connections
-            # along this direction.
-            prev_isc = isc[i]
-            while prev_isc == isc[i]:
-                # Try next supercell connection
-                isc[i] += 1
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    for ia in self:
-                        idx = self.close_sc(ia, isc=isc, R=R)
-                        if len(idx) > 0:
-                            prev_isc = isc[i]
-                            break
-
-            # Save the reached supercell connection
-            nsc[i] = prev_isc * 2 + 1
-
+        nsc = self.find_nsc(axes, R, method="atoms")
         self.set_nsc(nsc)
-
         return nsc
 
     def sub_orbital(self, atoms: AtomsIndex, orbitals: OrbitalsIndex) -> Geometry:
@@ -1709,16 +1787,19 @@ class Geometry(
             \\
             \mathbf u_2 &= \mathbf r_3 - \mathbf r_2
             \\
-            \phi &= \operatorname{atan2}\Big(\hat\mathbf u_0\dot
-                (\hat\mathbf u_1\times\hat\mathbf u_2),
-                (\hat\mathbf u_0\times\hat\mathbf u_1)\dot
-                (\hat\mathbf u_1\times\hat\mathbf u_2)
+            \phi &= \operatorname{atan2}\Big(
+                 \hat{\mathbf u}_0\cdot
+                (\hat{\mathbf u}_1\times\hat{\mathbf u}_2),
+                (\hat{\mathbf u}_0\times\hat{\mathbf u}_1)\cdot
+                (\hat{\mathbf u}_1\times\hat{\mathbf u}_2)
                 \Big)
+
+        Where :math:`\hat{\cdot}` means the unit-vector.
 
         Parameters
         ----------
         atoms :
-           An array of shape (4,)  or (N, 4) representing the indices of 4 atoms forming the dihedral angle
+           An array of shape `(4,)` or `(*, 4)` representing the indices of 4 atoms forming the dihedral angle
         rad :
            whether the returned value is in radians
         """
@@ -1733,11 +1814,11 @@ class Geometry(
         elif ndim == 2:
             if atoms.shape[1] != 4:
                 raise ValueError(
-                    f"{self.__class__.__name__}.dihedral requires atoms to be (N, 4) indices"
+                    f"{self.__class__.__name__}.dihedral requires atoms to be (*, 4) indices"
                 )
         else:
             raise ValueError(
-                f"{self.__class__.__name__}.dihedral requires atoms index of shape (4,) or (N, 4)"
+                f"{self.__class__.__name__}.dihedral requires atoms index of shape (4,) or (*, 4)"
             )
 
         # The 2 planes are defined by
@@ -1755,6 +1836,7 @@ class Geometry(
         # Prepare arguments for atan2
         y = (u[:, 0] * n1).sum(axis=-1)
         x = (n0 * n1).sum(axis=-1)
+
         # see https://en.wikipedia.org/wiki/Dihedral_angle
         angles = np.arctan2(y, x)
 
@@ -2895,7 +2977,7 @@ class Geometry(
 
     def a2transpose(
         self, atoms1: AtomsIndex, atoms2: AtomsIndex = None
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Transposes connections from `atoms1` to `atoms2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
@@ -2961,7 +3043,7 @@ class Geometry(
 
     def o2transpose(
         self, orb1: OrbitalsIndex, orb2: Optional[OrbitalsIndex] = None
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Transposes connections from `orb1` to `orb2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
@@ -3052,7 +3134,7 @@ class Geometry(
 
         # Create ranges
         if is_integral:
-            return _a.arangei(ob, oe)
+            return _a.arangei(ob[0], oe[0])
 
         return _a.array_arange(ob, oe)
 
@@ -3436,7 +3518,9 @@ class Geometry(
                 from scipy.stats import mode
 
                 def func(lst):
-                    return mode(lst, keepdims=False)[0]
+                    # We don't need keepdims=False, because an array of size 1
+                    # can be broadcasted to a single element.
+                    return mode(lst)[0]
 
             else:
                 try:
@@ -3475,7 +3559,7 @@ class Geometry(
         periodic: Optional[Union[Sequence[bool], CellAxes]] = None,
         atol: float = 1e-5,
         origin: Sequence[float] = (0.0, 0.0, 0.0),
-    ) -> Tuple[ndarray, ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray, ndarray]:
         """Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
@@ -3609,6 +3693,210 @@ class Geometry(
         # Convert indices to unit-cell indices and also return coordinates and
         # infinite supercell indices
         return self.asc2uc(idx), xyz, isc
+
+    def _orbital_values(self, grid_shape: tuple[int, int, int]):
+        r"""Calculates orbital values for a given grid.
+
+        Parameters
+        ----------
+        grid_shape:
+           the grid shape (i.e. resolution) in which to calculate the orbital values.
+
+        Notes
+        -----
+        This method does not belong on this geometry. It will be removed eventually.
+        """
+        # We need to import these here to avoid circular imports.
+        from sisl import Grid
+        from sisl._sparse_grid import SparseGridOrbitalBZ
+
+        # In the following we don't care about division
+        # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
+        old_err = np.seterr(divide="ignore", invalid="ignore")
+
+        # Instead of looping all atoms in the supercell we find the exact atoms
+        # and their supercell indices.
+        add_R = _a.fulld(3, self.maxR())
+        # Calculate the required additional vectors required to increase the fictitious
+        # supercell by add_R in each direction.
+        # For extremely skewed lattices this will be way too much, hence we make
+        # them square.
+        o = self.lattice.to.Cuboid(True)
+        lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
+
+        # Retrieve all atoms within the grid supercell
+        # (and the neighbours that connect into the cell)
+        IA, XYZ, ISC = self.within_inf(lattice, periodic=self.pbc)
+        XYZ -= self.lattice.origin.reshape(1, 3)
+
+        # within_inf translates atoms to the unit cell to compute
+        # supercell indices. Here we revert that
+        ISC -= np.floor(self.fxyz[IA]).astype(int32)
+
+        def xyz2spherical(xyz, offset):
+            """Calculate the spherical coordinates from indices"""
+            rx = xyz[:, 0] - offset[0]
+            ry = xyz[:, 1] - offset[1]
+            rz = xyz[:, 2] - offset[2]
+
+            xyz_to_spherical_cos_phi(rx, ry, rz)
+            return rx, ry, rz
+
+        def sphere_grid_index(grid, center, R):
+
+            corners = np.mgrid[-1:2:2, -1:2:2, -1:2:2].T * R + center
+            corners = corners.reshape(-1, 3)
+
+            corners_i = grid.index(corners)
+
+            cmin = np.maximum(corners_i.min(axis=0), 0)
+            cmax = np.maximum(corners_i.max(axis=0) + 1, 0)
+
+            rx = slice(cmin[0], min(cmax[0], grid.shape[0]))
+            ry = slice(cmin[1], min(cmax[1], grid.shape[1]))
+            rz = slice(cmin[2], min(cmax[2], grid.shape[2]))
+
+            indices = np.mgrid[rx, ry, rz].reshape(3, -1).T
+
+            return indices
+
+        # Get the size of the auxiliary supercell needed to store orbital values.
+        nsc = abs(ISC).max(axis=0) * 2 + 1
+        sp_grid_geom = self.copy()
+        sp_grid_geom.set_nsc(nsc)
+
+        # Initialize a fake grid to compute some quantities related to the grid distribution
+        grid = Grid(grid_shape, geometry=self)
+
+        # Estimate a top limit on how many values we need to store. We estimate it by expecting
+        # each orbital to fill a sphere of radius R, being R the radius of the orbital. We also
+        # add a margin of 1 voxel so that we don't underestimate because of rounding.
+        dvolume = grid.dvolume
+        margin_R = np.linalg.norm(grid.dcell.sum(axis=0))
+        vol = 0.0
+        for atom, indices in self.sub(IA).atoms.iter(species=True):
+            vol += (4 / 3 * np.pi * (atom.R + margin_R) ** 3).sum() * len(indices)
+
+        max_vals = int(vol / dvolume)
+
+        # Array storing all the grid values
+        grid_values = np.zeros(max_vals, dtype=np.float64)
+        # Orbital indices for each orbital that has a nonzero value in the grid.
+        orbital_indices = np.full(max_vals, -1, dtype=np.int32)
+        # For each value, its index of the grid. Even if the grid is 3 dimensional,
+        # we store the raveled index. That is, a single integer representing the position
+        # of the point. One can always unravel the index if needed.
+        grid_indices = np.zeros(max_vals, dtype=np.int32)
+
+        # print(
+        #     f"Estimated memory required:",
+        #     (orbital_indices.size * 32 + grid_values.size * 64 + grid_indices.size * 32) / 8 / 1024 / 1024,
+        #     "MB"
+        # )
+
+        # Temporal variables that will help us keep track of the construction of the arrays.
+        i_value = 0
+        first_orbs = self.firsto
+        isc_off = sp_grid_geom.isc_off
+
+        # Loop over all atoms in the grid-cell
+        for ia, ia_xyz, isc in zip(IA, XYZ, ISC):
+            # Get current atom
+            atom = self.atoms[ia]
+
+            # Get the index of the cell where this atom is in the auxiliary supercell
+            index_sc = isc_off[isc[0], isc[1], isc[2]]
+            # And use it to calculate the offset on the orbital index.
+            io_offset = self.no * index_sc
+
+            # Extract maximum R
+            R = atom.maxR()
+
+            if R <= 0.0:
+                warn(f"Atom '{atom}' does not have a wave-function, skipping atom.")
+                continue
+
+            idx = sphere_grid_index(grid, ia_xyz, R)
+
+            if len(idx) == 0:
+                continue
+
+            # Get real-space coordinates for the atom
+            grid_xyz = dot(idx, grid.dcell)
+            # Convert them to spherical coordinates
+            at_r, at_theta, at_cos_phi = xyz2spherical(grid_xyz, ia_xyz)
+
+            del grid_xyz
+            # Merge the three components of spherical coordinates into one array.
+            at_spherical = np.array([at_r, at_theta, at_cos_phi]).T
+
+            # Filter out points where the distance to the atom is less than its max R.
+            at_nonzero = at_spherical[:, 0] < R
+            idx = idx[at_nonzero]
+            at_spherical = at_spherical[at_nonzero]
+
+            if len(idx) == 0:
+                continue
+
+            # Ravel multi index to save space. That is, convert the 3D grid index
+            # into a single integer. One can always unravel them if needed.
+            idx = (
+                idx[:, 0] * grid.shape[1] * grid.shape[2]
+                + idx[:, 1] * grid.shape[2]
+                + idx[:, 2]
+            )
+
+            # Loop over the orbitals
+            for io, orb in enumerate(atom.orbitals):
+                # Get the index of this orbital
+                uc_io = first_orbs[ia] + io
+
+                orb_spherical = at_spherical
+                orb_indices = idx
+
+                # The orbital's R might not be the maximum R of the atom. In that case,
+                # we don't need to calculate the values for all the grid points that are within
+                # the atom's range.
+                if R - orb.R > 1e-6:
+                    # Check which coordinates are not within this orbital's range (the radius is bigger than orbital radius)
+                    orb_nonzero = orb_spherical[:, 0] < orb.R
+
+                    orb_spherical = orb_spherical[orb_nonzero]
+                    orb_indices = orb_indices[orb_nonzero]
+
+                # Number of grid values that we are going to compute for this orbital
+                orb_nvals = orb_spherical.shape[0]
+
+                # If there are no values to add, go to the next orbital
+                if orb_nvals == 0:
+                    continue
+
+                # Compute the psi values for the grid points we are interested in
+                psi = orb.psi_spher(*orb_spherical.T, cos_phi=True)
+
+                # Update the data structure
+                values_i = slice(i_value, i_value + orb_nvals)
+                grid_values[values_i] = psi
+                grid_indices[values_i] = orb_indices
+                orbital_indices[values_i] = uc_io + io_offset
+
+                # Update the index where new values should be stored
+                i_value += orb_nvals
+
+        # Reset the error code for division
+        np.seterr(**old_err)
+
+        # Cut the arrays to return only the parts that have been filled
+        grid_values = grid_values[:i_value]
+        grid_indices = grid_indices[:i_value]
+        orbital_indices = orbital_indices[:i_value]
+
+        psi_values = csr_matrix(
+            (grid_values, (grid_indices, orbital_indices)),
+            shape=(np.prod(grid.shape), sp_grid_geom.no_s),
+        )
+
+        return SparseGridOrbitalBZ(grid.shape, psi_values, geometry=sp_grid_geom)
 
     # Create pickling routines
     def __getstate__(self):
@@ -4285,14 +4573,11 @@ class GeometryToAseDispatch(GeometryToDispatch):
 
 
 to_dispatch.register("ase", GeometryToAseDispatch)
-try:
+if has_module("ase"):
     from ase import Atoms as ase_Atoms
 
     to_dispatch.register(ase_Atoms, GeometryToAseDispatch)
     del ase_Atoms
-
-except ImportError:
-    pass
 
 
 class GeometryTopymatgenDispatch(GeometryToDispatch):
@@ -4352,14 +4637,11 @@ class GeometryToDataframeDispatch(GeometryToDispatch):
 
 
 to_dispatch.register("dataframe", GeometryToDataframeDispatch)
-try:
+if has_module("pandas"):
     from pandas import DataFrame as pd_DataFrame
 
     to_dispatch.register(pd_DataFrame, GeometryToDataframeDispatch)
     del pd_DataFrame
-
-except ImportError:
-    pass
 
 
 # Clean up

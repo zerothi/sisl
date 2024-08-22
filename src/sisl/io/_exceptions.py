@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import warnings
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 from sisl._internal import set_module
 from sisl.messages import SislError, SislException, SislInfo, SislWarning, info, warn
@@ -50,7 +51,7 @@ class SileInfo(SislInfo):
     """Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning."""
 
 
-InputsType = Optional[Union[List[Tuple[str, str]], List[str], str]]
+InputsType = Optional[Union[list[tuple[str, str]], list[str], str]]
 
 
 class MissingInputSileException(SislException):

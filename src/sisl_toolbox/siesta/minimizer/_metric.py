@@ -5,9 +5,12 @@ from __future__ import annotations
 
 from abc import abstractmethod
 
+from sisl._internal import set_module
+
 __all__ = ["Metric", "CompositeMetric"]
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class Metric:
     @abstractmethod
     def metric(self, variables, *args, **kwargs):
@@ -50,6 +53,7 @@ class Metric:
         return MaxMetric(self, other)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class CompositeMetric(Metric):
     """Placeholder for two metrics"""
 
@@ -69,6 +73,7 @@ class CompositeMetric(Metric):
         return A, B
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class AbsMetric(Metric):
     def __init__(self, A):
         self.A = A
@@ -77,42 +82,49 @@ class AbsMetric(Metric):
         return abs(super().metric(variables, *args, **kwargs))
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class MinMetric(CompositeMetric):
     def metric(self, variables, *args, **kwargs):
         A, B = self._metric_composite(variables, *args, **kwargs)
         return min(A, B)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class MaxMetric(CompositeMetric):
     def metric(self, variables, *args, **kwargs):
         A, B = self._metric_composite(variables, *args, **kwargs)
         return max(A, B)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class SumMetric(CompositeMetric):
     def metric(self, variables, *args, **kwargs):
         A, B = self._metric_composite(variables, *args, **kwargs)
         return A + B
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class SubMetric(CompositeMetric):
     def metric(self, variables, *args, **kwargs):
         A, B = self._metric_composite(variables, *args, **kwargs)
         return A - B
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class MulMetric(CompositeMetric):
     def metric(self, variables, *args, **kwargs):
         A, B = self._metric_composite(variables, *args, **kwargs)
         return A * B
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class DivMetric(CompositeMetric):
     def metric(self, variables, *args, **kwargs):
         A, B = self._metric_composite(variables, *args, **kwargs)
         return A / B
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class PowMetric(CompositeMetric):
     def __init__(self, A, B, mod=None):
         super().__init__(A, B)

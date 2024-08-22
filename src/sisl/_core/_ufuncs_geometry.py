@@ -3,9 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Callable
 from functools import reduce
 from numbers import Integral
-from typing import Callable, List, Literal, Optional, Tuple, Union
+from typing import Literal, Optional, Union
 
 import numpy as np
 
@@ -107,7 +108,7 @@ def apply(
         axis selector for `data` along which `func` will be applied
     segments :
         which segments the `mapper` will recieve, if atoms, each atom
-        index will be passed to the `mapper(ia)`.
+        index will be passed to the ``mapper(ia)``.
         If ``'all'``, it will be ``range(data.shape[axis])``.
 
     Examples
@@ -166,7 +167,7 @@ def apply(
 @register_sisl_dispatch(Geometry, module="sisl")
 def sort(
     geometry: Geometry, **kwargs
-) -> Union[Geometry, Tuple[Geometry, List[List[int]]]]:
+) -> Union[Geometry, tuple[Geometry, list[list[int]]]]:
     r"""Sort atoms in a nested fashion according to various criteria
 
     There are many ways to sort a `Geometry`.

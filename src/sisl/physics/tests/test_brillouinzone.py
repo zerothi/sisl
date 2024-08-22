@@ -10,10 +10,8 @@ import numpy as np
 import pytest
 
 from sisl import (
-    Atom,
     BandStructure,
     BrillouinZone,
-    Geometry,
     Lattice,
     LatticeChild,
     MonkhorstPack,
@@ -467,10 +465,7 @@ class TestMonkhorstPack:
             assert np.allclose(ds1.data_vars[var].values, data)
         assert len(ds1.coords) < len(ds0.coords)
 
-    def test_pathos(self):
-        pytest.skip(
-            "BrillouinZone.apply(pool=True|int) scales extremely bad and may cause stall"
-        )
+    def test_bz_parallel_pathos(self):
         pytest.importorskip("pathos", reason="pathos not available")
 
         from sisl import Hamiltonian, geom
@@ -484,12 +479,24 @@ class TestMonkhorstPack:
         # try and determine a sensible
         import os
 
+        nprocs = 2
+
+        try:
+            nprocs = len(os.sched_getaffinity(0)) // 2
+        except Exception:
+            pass
+
         try:
             import psutil
 
             nprocs = len(psutil.Process().cpu_affinity()) // 2
         except Exception:
-            nprocs = os.cpu_count() // 2
+            pass
+
+        if nprocs == 1:
+            pytest.skip("not in a parallel environment")
+
+        nprocs = max(2, nprocs)
         omp_num_threads = os.environ.get("OMP_NUM_THREADS")
 
         # Check that the ObjectDispatcher works
@@ -498,7 +505,7 @@ class TestMonkhorstPack:
         papply = bz.apply.renew(pool=nprocs)
         assert str(apply) != str(papply)
 
-        for method in ["iter", "average", "sum", "array", "list", "oplist"]:
+        for method in ("iter", "average", "sum", "array", "list", "oplist"):
             # TODO One should be careful with zip
             # zip will stop when it hits the final element in the first
             # list.
@@ -520,7 +527,7 @@ class TestMonkhorstPack:
         papply = bz.apply.renew(pool=True).eigh
         assert str(apply) != str(papply)
 
-        for method in ["iter", "average", "sum", "array", "list", "oplist"]:
+        for method in ("iter", "average", "sum", "array", "list", "oplist"):
             # TODO One should be careful with zip
             # zip will stop when it hits the final element in the first
             # list.

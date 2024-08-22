@@ -8,6 +8,7 @@ import numpy as np
 
 cimport numpy as np
 
+from ._feature import comply_gauge
 from ._matrix_phase3 import *
 from ._matrix_phase3_nc import *
 from ._matrix_phase3_so import *
@@ -21,7 +22,7 @@ __all__ = ["matrix_dk", "matrik_dk_nc", "matrik_dk_nc_diag", "matrik_dk_so"]
 
 def _phase_dk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype):
     # dtype *must* be passed through phase_dtype
-    gauge = {"R": "cell", "r": "orbital", "orbitals": "orbital"}.get(gauge, gauge)
+    gauge = comply_gauge(gauge)
 
     # This is the differentiated matrix with respect to k
     # See _phase.pyx, we are using exp(i k.R/r)
@@ -31,7 +32,7 @@ def _phase_dk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype)
         iRs = (1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
         p_opt = 1
 
-    elif gauge == 'orbital':
+    elif gauge == 'atom':
         M.finalize()
         rij = M.Rij()._csr._D
         iRs = (1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)

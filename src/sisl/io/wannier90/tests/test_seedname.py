@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
@@ -12,12 +10,11 @@ from sisl import units
 from sisl.io.wannier90 import *
 
 pytestmark = [pytest.mark.io, pytest.mark.wannier90, pytest.mark.w90]
-_dir = osp.join("sisl", "io", "wannier90")
 
 
 @pytest.mark.parametrize("unit", ["", "Ang\n", "ang\n", "bohr\n"])
 def test_seedname_read_frac(sisl_tmp, unit):
-    f = sisl_tmp("read_frac.win", _dir)
+    f = sisl_tmp("read_frac.win")
     with open(f, "w") as fh:
         fh.write(
             """
@@ -47,7 +44,7 @@ end
 @pytest.mark.parametrize("unit_sc", ["", "Ang\n", "ang\n", "bohr\n"])
 @pytest.mark.parametrize("unit", ["", "Ang\n", "ang\n", "bohr\n"])
 def test_seedname_read_coord(sisl_tmp, unit_sc, unit):
-    f = sisl_tmp("read_coord.win", _dir)
+    f = sisl_tmp("read_coord.win")
     with open(f, "w") as fh:
         fh.write(
             """
@@ -80,7 +77,7 @@ end
 
 @pytest.mark.parametrize("frac", [True, False])
 def test_seedname_write_read(sisl_tmp, sisl_system, frac):
-    f = sisl_tmp("write_read.win", _dir)
+    f = sisl_tmp("write_read.win")
     sile = winSileWannier90(f, "w")
     sile.write_geometry(sisl_system.g, frac=frac)
 
@@ -90,7 +87,7 @@ def test_seedname_write_read(sisl_tmp, sisl_system, frac):
 
 
 def test_seedname_read_ham(sisl_files):
-    f = winSileWannier90(sisl_files(_dir, "read_ham", "read_ham.win"))
+    f = winSileWannier90(sisl_files("wannier90", "silicon", "silicon.win"))
 
     ham = {}
     for key in ["hr", "tb"]:
@@ -100,7 +97,7 @@ def test_seedname_read_ham(sisl_files):
 
 
 def test_seedname_read_lattice(sisl_files):
-    f = winSileWannier90(sisl_files(_dir, "read_ham", "read_ham.win"))
+    f = winSileWannier90(sisl_files("wannier90", "silicon", "silicon.win"))
 
     lat1 = f.read_lattice(order="tb")
     lat2 = f.read_lattice(order="win")

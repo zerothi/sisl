@@ -3,11 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
-
 import numpy as np
 import pytest
-import scipy as sc
 
 import sisl.messages as sm
 from sisl import Atom, Cuboid, Geometry, Lattice

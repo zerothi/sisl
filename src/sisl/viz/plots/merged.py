@@ -6,7 +6,6 @@ from __future__ import annotations
 from typing import Literal, Optional
 
 from ..figure import Figure, get_figure
-from ..plot import Plot
 from ..plotters.plot_actions import combined
 
 

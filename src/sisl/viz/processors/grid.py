@@ -3,17 +3,17 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Callable, List, Literal, Optional, Sequence, Tuple, Union
+from collections.abc import Callable, Sequence
+from typing import Literal, Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 from scipy.ndimage import affine_transform
 from xarray import DataArray
 
-import sisl
 from sisl import _array as _a
 from sisl._core import Geometry, Grid
 from sisl._core._lattice import cell_invert
-from sisl.typing import npt
 
 from .cell import infer_cell_axes, is_1D_cartesian, is_cartesian_unordered
 
@@ -63,7 +63,7 @@ def get_grid_representation(
     return grid.apply(_func)
 
 
-def tile_grid(grid: Grid, nsc: Tuple[int, int, int] = (1, 1, 1)) -> Grid:
+def tile_grid(grid: Grid, nsc: tuple[int, int, int] = (1, 1, 1)) -> Grid:
     """Tiles the grid"""
     for ax, reps in enumerate(nsc):
         grid = grid.tile(reps, ax)
@@ -73,7 +73,7 @@ def tile_grid(grid: Grid, nsc: Tuple[int, int, int] = (1, 1, 1)) -> Grid:
 def transform_grid_cell(
     grid: Grid,
     cell: npt.NDArray[np.float64] = np.eye(3),
-    output_shape: Optional[Tuple[int, int, int]] = None,
+    output_shape: Optional[nuple[int, int, int]] = None,
     mode: str = "constant",
     order: int = 1,
     **kwargs,
@@ -170,7 +170,7 @@ def transform_grid_cell(
 
 def orthogonalize_grid(
     grid: Grid,
-    interp: Tuple[int, int, int] = (1, 1, 1),
+    interp: tuple[int, int, int] = (1, 1, 1),
     mode: str = "constant",
     **kwargs,
 ) -> Grid:
@@ -204,7 +204,7 @@ def orthogonalize_grid_if_needed(
     grid: Grid,
     axes: Sequence[str],
     tol: float = 1e-3,
-    interp: Tuple[int, int, int] = (1, 1, 1),
+    interp: tuple[int, int, int] = (1, 1, 1),
     mode: str = "constant",
     **kwargs,
 ) -> Grid:
@@ -306,9 +306,9 @@ def reduce_grid(
 
 def sub_grid(
     grid: Grid,
-    x_range: Optional[Tuple[float, float]] = None,
-    y_range: Optional[Tuple[float, float]] = None,
-    z_range: Optional[Tuple[float, float]] = None,
+    x_range: Optional[tuple[float, float]] = None,
+    y_range: Optional[tuple[float, float]] = None,
+    z_range: Optional[tuple[float, float]] = None,
     cart_tol: float = 1e-3,
 ) -> Grid:
     """Returns only the part of the grid that is within the specified ranges.
@@ -378,7 +378,7 @@ def sub_grid(
 
 
 def interpolate_grid(
-    grid: Grid, interp: Tuple[int, int, int] = (1, 1, 1), force: bool = False
+    grid: Grid, interp: tuple[int, int, int] = (1, 1, 1), force: bool = False
 ) -> Grid:
     """Interpolates the grid.
 
@@ -473,7 +473,7 @@ def should_transform_grid_cell_plotting(
     return should_orthogonalize
 
 
-def get_grid_axes(grid: Grid, axes: Sequence[str]) -> List[int]:
+def get_grid_axes(grid: Grid, axes: Sequence[str]) -> list[int]:
     """Returns the indices of the lattice vectors that correspond to the axes.
 
     If axes is of length 3 (i.e. a 3D view), this function always returns [0, 1, 2]
@@ -502,7 +502,7 @@ def get_grid_axes(grid: Grid, axes: Sequence[str]) -> List[int]:
 def get_ax_vals(
     grid: Grid,
     ax: Literal[0, 1, 2, "a", "b", "c", "x", "y", "z"],
-    nsc: Tuple[int, int, int],
+    nsc: tuple[int, int, int],
 ) -> npt.NDArray[np.float64]:
     """Returns the values of a given axis on all grid points.
 
@@ -556,7 +556,7 @@ GridDataArray = DataArray
 
 
 def grid_to_dataarray(
-    grid: Grid, axes: Sequence[str], grid_axes: Sequence[int], nsc: Tuple[int, int, int]
+    grid: Grid, axes: Sequence[str], grid_axes: Sequence[int], nsc: tuple[int, int, int]
 ) -> GridDataArray:
     transpose_grid_axes = [*grid_axes]
     for ax in (0, 1, 2):
@@ -577,7 +577,7 @@ def grid_to_dataarray(
     return arr
 
 
-def get_isos(data: GridDataArray, isos: Sequence[dict]) -> List[dict]:
+def get_isos(data: GridDataArray, isos: Sequence[dict]) -> list[dict]:
     """Gets the iso surfaces or isocontours of an array of data.
 
     Parameters

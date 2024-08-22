@@ -18,12 +18,29 @@ from .sile import SileVASP
 __all__ = ["carSileVASP"]
 
 
+_A = SileVASP.InfoAttr
+
+
+def _search_name(info, instance, line):
+    """Names for CAR files are always in the first line"""
+    return instance._line == 1
+
+
 @set_module("sisl.io.vasp")
 class carSileVASP(SileVASP):
     """CAR VASP files for defining geometries
 
     This file-object handles both POSCAR and CONTCAR files
     """
+
+    _info_attributes_ = [
+        _A(
+            "name",
+            _search_name,
+            default="<unknown>",
+            not_found="error",
+        ),
+    ]
 
     def _setup(self, *args, **kwargs):
         """Setup the `carSile` after initialization"""
@@ -138,7 +155,7 @@ class carSileVASP(SileVASP):
         # Read cell vectors
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
-            cell[i, :] = list(map(float, self.readline().split()[:3]))
+            cell[i] = list(map(float, self.readline().split()[:3]))
         cell *= self._scale
 
         return Lattice(cell)

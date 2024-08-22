@@ -7,5 +7,6 @@ from __future__ import annotations
 # going to be added. If they are not imported, they wont be registered
 __all__ = []
 
-import sisl_toolbox.siesta.atom
-import sisl_toolbox.transiesta.poisson
+
+import sisl_toolbox.siesta.atom  # noqa: F401
+import sisl_toolbox.transiesta.poisson  # noqa: F401

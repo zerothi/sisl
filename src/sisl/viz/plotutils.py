@@ -9,13 +9,11 @@ from pathlib import Path
 import numpy as np
 
 try:
-    from pathos.pools import ProcessPool as Pool
 
     pathos_avail = True
 except Exception:
     pathos_avail = False
 try:
-    import tqdm
 
     tqdm_avail = True
 except Exception:
@@ -95,7 +93,6 @@ def check_widgets():
 
     if "ipyevents" in out:
         try:
-            import ipyevents
 
             widgets["events_avail"] = True
         except Exception:

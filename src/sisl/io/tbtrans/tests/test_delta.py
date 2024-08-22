@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
@@ -12,13 +10,12 @@ from sisl import Hamiltonian
 from sisl.io.tbtrans import *
 
 pytestmark = [pytest.mark.io, pytest.mark.tbtrans]
-_dir = osp.join("sisl", "io", "tbtrans")
 
 netCDF4 = pytest.importorskip("netCDF4")
 
 
 def test_tbt_delta1(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.dH.nc", _dir)
+    f = sisl_tmp("gr.dH.nc")
     H = Hamiltonian(sisl_system.gtb)
     H.construct([sisl_system.R, sisl_system.t])
 
@@ -67,7 +64,7 @@ def test_tbt_delta1(sisl_tmp, sisl_system):
 
 
 def test_tbt_delta_fail(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.dH.nc", _dir)
+    f = sisl_tmp("gr.dH.nc")
     H = Hamiltonian(sisl_system.gtb)
     H.construct([sisl_system.R, sisl_system.t])
     H.finalize()
@@ -81,7 +78,7 @@ def test_tbt_delta_fail(sisl_tmp, sisl_system):
 
 
 def test_tbt_delta_write_read(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.dH.nc", _dir)
+    f = sisl_tmp("gr.dH.nc")
     H = Hamiltonian(sisl_system.gtb, dtype=np.complex64)
     H.construct([sisl_system.R, sisl_system.t])
     H.finalize()
@@ -95,7 +92,7 @@ def test_tbt_delta_write_read(sisl_tmp, sisl_system):
 
 
 def test_tbt_delta_fail_list_col(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.dH.nc", _dir)
+    f = sisl_tmp("gr.dH.nc")
     H = Hamiltonian(sisl_system.gtb)
     H.construct([sisl_system.R, sisl_system.t])
 
@@ -110,7 +107,7 @@ def test_tbt_delta_fail_list_col(sisl_tmp, sisl_system):
 
 
 def test_tbt_delta_fail_ncol(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.dH.nc", _dir)
+    f = sisl_tmp("gr.dH.nc")
     H = Hamiltonian(sisl_system.gtb)
     H.construct([sisl_system.R, sisl_system.t])
 
@@ -125,9 +122,9 @@ def test_tbt_delta_fail_ncol(sisl_tmp, sisl_system):
 
 
 def test_tbt_delta_merge(sisl_tmp, sisl_system):
-    f1 = sisl_tmp("gr1.dH.nc", _dir)
-    f2 = sisl_tmp("gr2.dH.nc", _dir)
-    fout = sisl_tmp("grmerged.dH.nc", _dir)
+    f1 = sisl_tmp("gr1.dH.nc")
+    f2 = sisl_tmp("gr2.dH.nc")
+    fout = sisl_tmp("grmerged.dH.nc")
 
     H = Hamiltonian(sisl_system.gtb)
     H.construct([sisl_system.R, sisl_system.t])

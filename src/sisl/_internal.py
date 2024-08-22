@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 r""" Internal sisl-only methods that should not be used outside """
-import sys
 
 # override module level, inspired by numpy
 

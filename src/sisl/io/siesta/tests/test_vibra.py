@@ -3,22 +3,19 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_eigenmode_read(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, "h_chain_vibra.fdf"))
+    fdf = sisl.get_sile(sisl_files("siesta", "H_chain", "h_chain_vibra.fdf"))
     geometry = fdf.read_geometry()
     vectors = sisl.io.siesta.vectorsSileSiesta(
-        sisl_files(_dir, "h_chain_vibra.vectors"),
+        sisl_files("siesta", "H_chain", "h_chain_vibra.vectors"),
         geometry=geometry,
     )
 
@@ -46,9 +43,9 @@ def test_eigenmode_read(sisl_files):
 
 
 def test_eigenmode_values(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, "h_chain_vibra.fdf"))
+    fdf = sisl.get_sile(sisl_files("siesta", "H_chain", "h_chain_vibra.fdf"))
     vectors = sisl.io.siesta.vectorsSileSiesta(
-        sisl_files(_dir, "h_chain_vibra.vectors"),
+        sisl_files("siesta", "H_chain", "h_chain_vibra.vectors"),
         geometry=fdf.read_geometry(),
     )
 

@@ -29,14 +29,14 @@ class outcarSileVASP(SileVASP):
         _A(
             "completed",
             r".*General timing and accounting",
-            lambda attr, match: lambda: True,
+            lambda attr, instance, match: lambda: True,
             default=lambda: False,
             not_found="warn",
         ),
         _A(
             "accuracy_reached",
             r".*reached required accuracy",
-            lambda attr, match: lambda: True,
+            lambda attr, instance, match: lambda: True,
             default=lambda: False,
             not_found="warn",
         ),

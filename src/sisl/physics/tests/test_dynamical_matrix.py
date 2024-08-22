@@ -3,9 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
-
 import numpy as np
+
+if np.lib.NumpyVersion(np.__version__) >= "2.0.0b1":
+    from numpy.exceptions import ComplexWarning
+else:
+    from numpy import ComplexWarning
+
 import pytest
 
 from sisl import Atom, DynamicalMatrix, Geometry, Lattice
@@ -117,7 +121,7 @@ class TestDynamicalMatrix:
         em2.change_gauge("cell")
         assert np.allclose(em.mode, em2.mode)
 
-    @pytest.mark.filterwarnings("ignore", category=np.ComplexWarning)
+    @pytest.mark.filterwarnings("ignore", category=ComplexWarning)
     def test_dos_pdos_velocity(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)

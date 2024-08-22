@@ -3,14 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
 from pathlib import Path
 
 import numpy as np
 import pytest
 
 import sisl
-from sisl import Atom, AtomUnknown, Geometry, geom
+from sisl import geom
 from sisl.io import SileError, fdfSileSiesta
 from sisl.messages import SislWarning
 from sisl.unit.siesta import unit_convert
@@ -21,11 +20,10 @@ pytestmark = [
     pytest.mark.fdf,
     pytest.mark.filterwarnings("ignore", message="*number of supercells"),
 ]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_fdf1(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.fdf", _dir)
+    f = sisl_tmp("gr.fdf")
     sisl_system.g.write(fdfSileSiesta(f, "w"))
 
     fdf = fdfSileSiesta(f)
@@ -43,7 +41,7 @@ def test_fdf1(sisl_tmp, sisl_system):
 
 
 def test_fdf2(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.fdf", _dir)
+    f = sisl_tmp("gr.fdf")
     sisl_system.g.write(fdfSileSiesta(f, "w"))
     g = fdfSileSiesta(f).read_geometry()
 
@@ -56,7 +54,7 @@ def test_fdf2(sisl_tmp, sisl_system):
 
 
 def test_fdf_units(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.fdf", _dir)
+    f = sisl_tmp("gr.fdf")
     fdf = fdfSileSiesta(f, "w")
     g = sisl_system.g
 
@@ -71,7 +69,7 @@ def test_fdf_units(sisl_tmp, sisl_system):
 
 
 def test_lattice(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     lines = [
         "Latticeconstant 1. Ang",
         "%block Latticevectors",
@@ -116,7 +114,7 @@ def test_lattice(sisl_tmp):
 
 
 def test_lattice_fail(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     lines = [
         "%block Latticevectors",
         " 1. 1. 1.",
@@ -131,7 +129,7 @@ def test_lattice_fail(sisl_tmp):
 
 
 def test_geometry(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     sc_lines = [
         "Latticeconstant 1. Ang",
         "%block latticeparameters",
@@ -179,7 +177,7 @@ def test_geometry(sisl_tmp):
 
 
 def test_re_read(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     with open(f, "w") as fh:
         fh.write("Flag1 date\n")
         fh.write("Flag1 not-date\n")
@@ -193,7 +191,7 @@ def test_re_read(sisl_tmp):
 
 
 def test_get_set(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     with open(f, "w") as fh:
         fh.write("Flag1 date\n")
 
@@ -209,7 +207,7 @@ def test_get_set(sisl_tmp):
 
 
 def test_get_block(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     with open(f, "w") as fh:
         fh.write("%block MyBlock\n  date\n%endblock\n")
 
@@ -221,7 +219,7 @@ def test_get_block(sisl_tmp):
 
 
 def test_include(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     with open(f, "w") as fh:
         fh.write("Flag1 date\n")
         fh.write("# Flag2 comment\n")
@@ -236,21 +234,21 @@ def test_include(sisl_tmp):
         fh.write("\n")
         fh.write("TestLast 1. eV\n")
 
-    hello = sisl_tmp("hello", _dir)
+    hello = sisl_tmp("hello")
     with open(hello, "w") as fh:
         fh.write("Flag4 hello\n")
         fh.write("# Comments should be discarded\n")
         fh.write("Flag3 test\n")
         fh.write("Sub sub-test\n")
 
-    file2 = sisl_tmp("file2.fdf", _dir)
+    file2 = sisl_tmp("file2.fdf")
     with open(file2, "w") as fh:
         fh.write("Flag4 non\n")
         fh.write("\n")
         fh.write("FakeReal 2.\n")
         fh.write("  %incLude file3.fdf")
 
-    file3 = sisl_tmp("file3.fdf", _dir)
+    file3 = sisl_tmp("file3.fdf")
     with open(file3, "w") as fh:
         fh.write("Sub level\n")
         fh.write("Third level\n")
@@ -285,24 +283,24 @@ def test_include(sisl_tmp):
     # assert np.allclose(fdf.get('MyList', []), np.arange(3) + 1)
 
     # Read a block
-    ll = open(sisl_tmp("hello", _dir)).readlines()
+    ll = open(sisl_tmp("hello")).readlines()
     ll.pop(1)
     assert fdf.get("Hello") == [l.replace("\n", "").strip() for l in ll]
 
 
 def test_xv_preference(sisl_tmp):
     g = geom.graphene()
-    g.write(sisl_tmp("file.fdf", _dir))
+    g.write(sisl_tmp("file.fdf"))
     g.xyz[0, 0] += 1.0
-    g.write(sisl_tmp("siesta.XV", _dir))
+    g.write(sisl_tmp("siesta.XV"))
 
-    lattice = fdfSileSiesta(sisl_tmp("file.fdf", _dir)).read_lattice(True)
-    g2 = fdfSileSiesta(sisl_tmp("file.fdf", _dir)).read_geometry(True)
+    lattice = fdfSileSiesta(sisl_tmp("file.fdf")).read_lattice(True)
+    g2 = fdfSileSiesta(sisl_tmp("file.fdf")).read_geometry(True)
     assert np.allclose(lattice.cell, g.cell)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
 
-    g2 = fdfSileSiesta(sisl_tmp("file.fdf", _dir)).read_geometry(order=["fdf"])
+    g2 = fdfSileSiesta(sisl_tmp("file.fdf")).read_geometry(order=["fdf"])
     assert np.allclose(g.cell, g2.cell)
     g2.xyz[0, 0] += 1.0
     assert np.allclose(g.xyz, g2.xyz)
@@ -316,13 +314,13 @@ def test_geom_order(sisl_tmp):
     gnc = gfdf.copy()
     gnc.xyz[0, 0] += 0.5
 
-    gfdf.write(sisl_tmp("siesta.fdf", _dir))
+    gfdf.write(sisl_tmp("siesta.fdf"))
 
     # Create fdf-file
-    fdf = fdfSileSiesta(sisl_tmp("siesta.fdf", _dir))
+    fdf = fdfSileSiesta(sisl_tmp("siesta.fdf"))
     assert fdf.read_geometry(order=["nc"]) is None
-    gxv.write(sisl_tmp("siesta.XV", _dir))
-    gnc.write(sisl_tmp("siesta.nc", _dir))
+    gxv.write(sisl_tmp("siesta.XV"))
+    gnc.write(sisl_tmp("siesta.nc"))
 
     # Should read from XV
     g = fdf.read_geometry(True)
@@ -342,23 +340,30 @@ def test_geom_constraints(sisl_tmp):
     gfdf["CONSTRAIN-y"] = [1, 3, 4, 5]
     gfdf["CONSTRAIN-z"] = range(len(gfdf))
 
-    gfdf.write(sisl_tmp("siesta.fdf", _dir))
+    gfdf.write(sisl_tmp("siesta.fdf"))
 
 
 def test_h2_dynamical_matrix(sisl_files):
-    si = fdfSileSiesta(sisl_files(_dir, "H2_dynamical_matrix.fdf"))
+    si = fdfSileSiesta(sisl_files("siesta", "H2_hessian", "h2_hessian.fdf"))
 
-    trans_inv = [True, False]
-    sum0 = trans_inv[:]
-    hermitian = trans_inv[:]
+    TF = [True, False]
 
     eV2cm = 8065.54429
-    hw_true = [-88.392650, -88.392650, -0.000038, -0.000001, 0.000025, 3797.431825]
+    hw_true = [
+        -7.11492125e-06,
+        1.71779189e-05,
+        2.02363231e-05,
+        1.25035599e03,
+        1.25035599e03,
+        3.16727461e03,
+    ]
 
     from itertools import product
 
-    for ti, s0, herm in product(trans_inv, sum0, hermitian):
+    for ti, s0, herm in product(TF, TF, TF):
+
         dyn = si.read_dynamical_matrix(trans_inv=ti, sum0=s0, hermitian=herm)
+
         hw = dyn.eigenvalue().hw
         if ti and s0 and herm:
             assert np.allclose(hw * eV2cm, hw_true, atol=1e-4)
@@ -367,7 +372,7 @@ def test_h2_dynamical_matrix(sisl_files):
 def test_dry_read(sisl_tmp):
     # This test runs the read-functions. They aren't expected to actually read anything,
     # it is only a dry-run.
-    file = sisl_tmp("siesta.fdf", _dir)
+    file = sisl_tmp("siesta.fdf")
     geom.graphene().write(file)
     fdf = fdfSileSiesta(file)
 
@@ -398,7 +403,7 @@ def test_dry_read(sisl_tmp):
 
 
 def test_fdf_argumentparser(sisl_tmp):
-    f = sisl_tmp("file.fdf", _dir)
+    f = sisl_tmp("file.fdf")
     with open(f, "w") as fh:
         fh.write("Flag1 date\n")
         fh.write("Flag1 not-date\n")
@@ -409,9 +414,12 @@ def test_fdf_argumentparser(sisl_tmp):
 
 
 def test_fdf_fe_basis(sisl_files):
-    geom = fdfSileSiesta(sisl_files(_dir, "fe.fdf")).read_geometry()
-    assert geom.no == 15
+    geom = fdfSileSiesta(
+        sisl_files("siesta", "fe_bcc_simple", "fe.fdf")
+    ).read_geometry()
     assert geom.na == 1
+    # The fe.fdf does not contain basis information, so it will default to 1.
+    assert geom.no == 1
 
 
 def test_fdf_pao_basis():
@@ -473,7 +481,7 @@ Pt_SOC                2                    # Species label, number of l-shells
 
 
 def test_fdf_gz(sisl_files):
-    f = sisl_files(osp.join(_dir, "fdf"), "main.fdf.gz")
+    f = sisl_files("siesta", "fdf", "main.fdf.gz")
     fdf = fdfSileSiesta(f)
 
     # read from gzipped file
@@ -488,7 +496,7 @@ def test_fdf_gz(sisl_files):
     assert fdf.get("Lvl3.Foo") == "world3"
     assert fdf.get("Lvl3.Bar") == "hello3"
 
-    f = sisl_files(osp.join(_dir, "fdf"), "level2.fdf")
+    f = sisl_files("siesta", "fdf", "level2.fdf")
     fdf = fdfSileSiesta(f)
 
     # read from non-gzipped file
@@ -500,9 +508,8 @@ def test_fdf_gz(sisl_files):
     assert fdf.get("Lvl3.Bar") == "hello3"
 
 
-@pytest.mark.xfail(reason="wrong set handling for blocks etc")
 def test_fdf_block_write_print(sisl_tmp):
-    f = sisl_tmp("block_write_print.fdf", _dir)
+    f = sisl_tmp("block_write_print.fdf")
     fdf = fdfSileSiesta(f, "w")
 
     block_value = ["this is my life"]
@@ -517,12 +524,12 @@ def test_fdf_block_write_print(sisl_tmp):
  {block_value[0]}
 %endblock hello
 """ == fdf.print(
-        "hello"
+        "hello", block_value
     )
 
 
 def test_fdf_write_bandstructure(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.fdf", _dir)
+    f = sisl_tmp("gr.fdf")
 
     bs = sisl.BandStructure(
         sisl_system.g,
@@ -541,7 +548,7 @@ def test_fdf_write_bandstructure(sisl_tmp, sisl_system):
 
 def test_fdf_read_from_xv(sisl_tmp):
     # test for #778
-    f_fdf = sisl_tmp("read_from_xv.fdf", _dir)
+    f_fdf = sisl_tmp("read_from_xv.fdf")
     sc_lines = [
         "Latticeconstant 1. Ang",
         "%block latticeparameters",
@@ -570,7 +577,7 @@ def test_fdf_read_from_xv(sisl_tmp):
         fh.write("\n".join(lines))
         fh.write("\nSystemLabel read_from_xv")
 
-    f_xv = sisl_tmp("read_from_xv.XV", _dir)
+    f_xv = sisl_tmp("read_from_xv.XV")
     with open(f_xv, "w") as fh:
         fh.write(
             """\
@@ -611,7 +618,7 @@ def test_fdf_read_from_xv(sisl_tmp):
 
 def test_fdf_multiple_atoms_scrambeld(sisl_tmp):
     # test for #778
-    f_fdf = sisl_tmp("multiple_atoms_scrambled.fdf", _dir)
+    f_fdf = sisl_tmp("multiple_atoms_scrambled.fdf")
     sc_lines = [
         "Latticeconstant 1. Ang",
         "%block latticeparameters",
@@ -648,7 +655,7 @@ def test_fdf_multiple_atoms_scrambeld(sisl_tmp):
 
 def test_fdf_multiple_atoms_linear(sisl_tmp):
     # test for #778
-    f = sisl_tmp("multiple_atoms_linear.fdf", _dir)
+    f = sisl_tmp("multiple_atoms_linear.fdf")
     sc_lines = [
         "Latticeconstant 1. Ang",
         "%block latticeparameters",
@@ -685,7 +692,7 @@ def test_fdf_multiple_atoms_linear(sisl_tmp):
 
 def test_fdf_multiple_simple(sisl_tmp):
     # test for #778
-    f = sisl_tmp("multiple_simple.fdf", _dir)
+    f = sisl_tmp("multiple_simple.fdf")
 
     with open(f, "w") as fh:
         fh.write(

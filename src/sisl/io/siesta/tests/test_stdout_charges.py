@@ -3,10 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-import sys
-from itertools import product
-
 import numpy as np
 import pytest
 
@@ -14,7 +10,6 @@ import sisl
 from sisl.io.siesta.stdout import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta", "outs")
 
 # tests here tests charge reads for output
 #  voronoi + hirshfeld: test_vh_*
@@ -37,7 +32,7 @@ def with_pandas():
 
 @pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
 def test_vh_empty_file(name, sisl_files):
-    f = sisl_files(_dir, "voronoi_hirshfeld_4.1_none.out")
+    f = sisl_files("siesta", "ancient", "voronoi_hirshfeld_4.1_none.out")
     out = stdoutSileSiesta(f)
 
     with pytest.raises(SileError, match="any charges"):
@@ -53,9 +48,10 @@ def test_vh_empty_file(name, sisl_files):
         out.read_charge(name, iscf=None, imd=-1)
 
 
+@pytest.mark.parametrize("fname", ("end", "pol_end"))
 @pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
-def test_vh_final(name, sisl_files):
-    f = sisl_files(_dir, "voronoi_hirshfeld.out")
+def test_vh_final(fname, name, sisl_files):
+    f = sisl_files("siesta", "charges", fname, "RUN.out")
     out = stdoutSileSiesta(f)
 
     q = out.read_charge(name, iscf=None, imd=None)
@@ -79,11 +75,13 @@ def test_vh_final(name, sisl_files):
         assert np.allclose(df.values, q)
 
 
-@pytest.mark.parametrize("fname", ("md", "4.1_pol_md", "nc_md"))
+@pytest.mark.parametrize("fname", ("md", "pol_md", ("ancient", "pol_md"), "nc_md"))
 @pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
 def test_vh_md(name, fname, sisl_files):
-    #  voronoi_hirshfeld_md.out
-    f = sisl_files(_dir, f"voronoi_hirshfeld_{fname}.out")
+    if isinstance(fname, tuple):
+        f = sisl_files("siesta", "ancient", f"voronoi_hirshfeld_4.1_{fname[1]}.out")
+    else:
+        f = sisl_files("siesta", "charges", fname, "RUN.out")
     out = stdoutSileSiesta(f)
 
     q = out.read_charge(name)
@@ -110,10 +108,10 @@ def test_vh_md(name, fname, sisl_files):
         assert np.allclose(q[-1].ravel(), df.values.ravel())
 
 
-@pytest.mark.parametrize("fname", ("md_scf", "nc_md_scf", "pol_md_scf", "soc_md_scf"))
+@pytest.mark.parametrize("fname", ("md_scf", "pol_md_scf", "nc_md_scf", "soc_md_scf"))
 @pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
 def test_vh_md_scf(name, fname, sisl_files):
-    f = sisl_files(_dir, f"voronoi_hirshfeld_{fname}.out")
+    f = sisl_files("siesta", "charges", fname, "RUN.out")
     out = stdoutSileSiesta(f)
 
     q = out.read_charge(name)

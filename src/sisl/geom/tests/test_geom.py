@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import itertools
-import math as m
 from functools import partial
 
 import numpy as np
@@ -28,6 +27,15 @@ def is_right_handed(geometry):
     return sc.volume > 0.0
 
 
+def has_vacuum(geometry, vacuum):
+    fxyz = geometry.fxyz
+    # print(fxyz.max(0) - fxyz.min(0), geometry.lattice.length)
+    vac = (1 - (fxyz.max(0) - fxyz.min(0))) * geometry.lattice.length
+    vac = vac[~geometry.lattice.pbc]
+    print(vac, vacuum)
+    return np.allclose(vac, vacuum)
+
+
 def test_basic():
     a = sc(2.52, Atom["Fe"])
     assert is_right_handed(a)
@@ -46,52 +54,79 @@ def test_basic():
 
 
 @pytest.mark.parametrize(
-    "func, orthogonal",
-    itertools.product([graphene, goldene], [True, False]),
+    "func, orthogonal, vacuum",
+    itertools.product([graphene, goldene], [True, False], [10, 20]),
 )
-def test_flat(func, orthogonal):
-    a = func(orthogonal=orthogonal)
+def test_flat(func, orthogonal, vacuum):
+    a = func(orthogonal=orthogonal, vacuum=vacuum)
     assert is_right_handed(a)
-    a = func(atoms="C", orthogonal=orthogonal)
+    assert has_vacuum(a, vacuum)
+    a = func(atoms="C", orthogonal=orthogonal, vacuum=vacuum)
     assert is_right_handed(a)
+    assert has_vacuum(a, vacuum)
 
 
-def test_flat_flakes():
-    g = graphene_flake(shells=0, bond=1.42)
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, (20, 30, 10)],
+)
+def test_flat_flakes(vacuum):
+    g = graphene_flake(shells=0, bond=1.42, vacuum=vacuum)
     assert g.na == 6
     # All atoms are close to the center
     assert len(g.close(g.center(), 1.44)) == g.na
     # All atoms have two neighbors
     assert len(g.axyz(AtomNeighbors(min=2, max=2, R=1.44))) == g.na
+    assert is_right_handed(g)
+    assert has_vacuum(g, vacuum)
 
-    g = graphene_flake(shells=1, bond=1.42)
+    g = graphene_flake(shells=1, bond=1.42, vacuum=vacuum)
     assert g.na == 24
     assert len(g.close(g.center(), 4)) == g.na
     assert len(g.axyz(AtomNeighbors(min=2, max=2, R=1.44))) == 12
     assert len(g.axyz(AtomNeighbors(min=3, max=3, R=1.44))) == 12
+    assert is_right_handed(g)
+    assert has_vacuum(g, vacuum)
 
-    bn = honeycomb_flake(shells=1, atoms=["B", "N"], bond=1.42)
+    bn = honeycomb_flake(shells=1, atoms=["B", "N"], bond=1.42, vacuum=vacuum)
     assert bn.na == 24
     assert np.allclose(bn.xyz, g.xyz)
     # Check that atoms are alternated.
     assert len(bn.axyz(AtomZ(5) & AtomNeighbors(min=1, R=1.44, neighbor=AtomZ(5)))) == 0
+    assert is_right_handed(bn)
+    assert has_vacuum(bn, vacuum)
 
 
-def test_triangulene():
-    g = triangulene(3)
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, (20, 30, 10)],
+)
+def test_triangulene(vacuum):
+    g = triangulene(3, vacuum=vacuum)
     assert g.na == 22
-    g = triangulene(3, atoms=["B", "N"])
+    assert is_right_handed(g)
+    assert has_vacuum(g, vacuum)
+
+    g = triangulene(3, atoms=["B", "N"], vacuum=vacuum)
     assert g.atoms.nspecies == 2
-    g = triangulene(3, bond=1.6)
+    assert is_right_handed(g)
+    assert has_vacuum(g, vacuum)
 
 
-def test_nanotube():
-    a = nanotube(1.42)
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, (30, 10)],
+)
+def test_nanotube(vacuum):
+    a = nanotube(1.42, vacuum=vacuum)
     assert is_right_handed(a)
-    a = nanotube(1.42, chirality=(3, 5))
+    assert has_vacuum(a, vacuum)
+    a = nanotube(1.42, chirality=(3, 5), vacuum=vacuum)
     assert is_right_handed(a)
-    a = nanotube(1.42, chirality=(6, -3))
+    assert has_vacuum(a, vacuum)
+    a = nanotube(1.42, chirality=(6, -3), vacuum=vacuum)
     assert is_right_handed(a)
+    assert has_vacuum(a, vacuum)
 
 
 def test_diamond():
@@ -99,9 +134,18 @@ def test_diamond():
     assert is_right_handed(a)
 
 
-def test_bilayer():
-    a = bilayer(1.42)
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, 30],
+)
+def test_bilayer(vacuum):
+    a = bilayer(1.42, vacuum=vacuum)
     assert is_right_handed(a)
+    assert has_vacuum(a, vacuum)
+
+
+def test_bilayer_arguments():
+    # Just test arguments
     bilayer(1.42, stacking="AA")
     bilayer(1.42, stacking="BA")
     bilayer(1.42, stacking="AB")
@@ -123,15 +167,24 @@ def test_bilayer():
         bilayer(1.42, twist=("str", 7), stacking="undefined")
 
 
-def test_nanoribbon():
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, (30, 10)],
+)
+def test_nanoribbon(vacuum):
+    for w in range(0, 5):
+        a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="zigzag", vacuum=vacuum)
+        assert is_right_handed(a)
+        assert has_vacuum(a, vacuum)
+
+
+def test_nanoribbon_arguments():
     for w in range(0, 5):
         nanoribbon(w, 1.42, Atom(6), kind="armchair")
         nanoribbon(w, 1.42, Atom(6), kind="zigzag")
         nanoribbon(w, 1.42, Atom(6), kind="chiral")
         nanoribbon(w, 1.42, Atom(6), kind="chiral", chirality=(2, 2))
         nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="armchair")
-        a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind="zigzag")
-        assert is_right_handed(a)
 
     with pytest.raises(ValueError):
         nanoribbon(6, 1.42, (Atom(5), Atom(7)), kind="undefined")
@@ -142,27 +195,36 @@ def test_nanoribbon():
 
 def test_graphene_nanoribbon():
     graphene_nanoribbon(6, kind="armchair")
-    graphene_nanoribbon(6, kind="zigzag")
-    graphene_nanoribbon(6, kind="chiral")
-    a = graphene_nanoribbon(5)
+
+
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, (30, 10)],
+)
+def test_agnr(vacuum):
+    a = agnr(5, vacuum=vacuum)
     assert is_right_handed(a)
+    assert has_vacuum(a, vacuum)
 
 
-def test_agnr():
-    a = agnr(5)
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, (30, 10)],
+)
+def test_zgnr(vacuum):
+    a = zgnr(5, vacuum=vacuum)
     assert is_right_handed(a)
+    assert has_vacuum(a, vacuum)
 
 
-def test_zgnr():
-    a = zgnr(5)
+@pytest.mark.parametrize(
+    "vacuum",
+    [10, (30, 10)],
+)
+def test_cgnr(vacuum):
+    a = cgnr(6, (3, 1), atoms=["B", "N"], vacuum=vacuum)
     assert is_right_handed(a)
-
-
-def test_cgnr():
-    cgnr(6, (3, 1), vacuum=0)
-    cgnr(6, (3, 1), bond=1.6)
-    a = cgnr(6, (3, 1), atoms=["B", "N"])
-    assert is_right_handed(a)
+    assert has_vacuum(a, vacuum)
 
 
 @pytest.mark.parametrize(

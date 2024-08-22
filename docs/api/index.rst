@@ -40,5 +40,4 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :maxdepth: 1
    :caption: Advanced usage
 
-   nodes
    typing

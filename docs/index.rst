@@ -71,11 +71,10 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
 
    introduction
    quickstart/index
-   tutorials.rst
+   tutorials/index
    scripts/index
    environment
    math
-   nodes/nodes_intro
 
 .. toctree::
    :hidden:

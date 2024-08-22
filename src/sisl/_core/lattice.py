@@ -9,12 +9,14 @@ from __future__ import annotations
 
 import logging
 import math
+from collections.abc import Sequence
 from enum import IntEnum, auto
 from numbers import Integral
 from pathlib import Path
-from typing import Optional, Sequence, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import dot, ndarray
 
 import sisl._array as _a
@@ -24,7 +26,7 @@ from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate, deprecate_argument, deprecation, warn
 from sisl.shape.prism4 import Cuboid
-from sisl.typing import CellAxes, CellAxis
+from sisl.typing import CellAxes, CellAxis, LatticeLike
 from sisl.utils.mathematics import fnorm
 from sisl.utils.misc import direction, listify
 
@@ -97,14 +99,14 @@ class Lattice(
 
     Parameters
     ----------
-    cell : array_like
+    cell :
        the lattice parameters of the unit cell (the actual cell
        is returned from `tocell`.
-    nsc : array_like of int
+    nsc :
        number of supercells along each lattice vector
     origin : (3,) of float, optional
        the origin of the supercell.
-    boundary_condition : int/str or list of int/str (3, 2) or (3, ), optional
+    boundary_condition :
         the boundary conditions for each of the cell's planes. Defaults to periodic boundary condition.
         See `BoundaryCondition` for valid enumerations.
     """
@@ -117,8 +119,8 @@ class Lattice(
 
     def __init__(
         self,
-        cell,
-        nsc=None,
+        cell: CellLike,
+        nsc: npt.ArrayLike = None,
         origin=None,
         boundary_condition: SeqBoundaryConditionType = BoundaryCondition.PERIODIC,
     ):
@@ -349,7 +351,7 @@ class Lattice(
 
     def parameters(
         self, rad: bool = False
-    ) -> Tuple[float, float, float, float, float, float]:
+    ) -> tuple[float, float, float, float, float, float]:
         r"""Cell parameters of this cell in 3 lengths and 3 angles
 
         Notes
@@ -365,18 +367,11 @@ class Lattice(
 
         Returns
         -------
-        float
-            length of first lattice vector
-        float
-            length of second lattice vector
-        float
-            length of third lattice vector
-        float
-            angle between b and c vectors
-        float
-            angle between a and c vectors
-        float
-            angle between a and b vectors
+        length : numpy.ndarray
+            length of each lattice vector
+        angles : numpy.ndarray
+            angles between the lattice vectors (in Voigt notation)
+            ``[0]`` is between 2nd and 3rd lattice vector, etc.
         """
         if rad:
             f = 1.0
@@ -387,14 +382,13 @@ class Lattice(
         cell = self.cell.copy()
         abc = fnorm(cell)
 
-        from math import acos
-
         cell = cell / abc.reshape(-1, 1)
-        alpha = acos(dot3(cell[1], cell[2])) * f
-        beta = acos(dot3(cell[0], cell[2])) * f
-        gamma = acos(dot3(cell[0], cell[1])) * f
+        angles = np.empty(3)
+        angles[0] = math.acos(dot3(cell[1], cell[2])) * f
+        angles[1] = math.acos(dot3(cell[0], cell[2])) * f
+        angles[2] = math.acos(dot3(cell[0], cell[1])) * f
 
-        return abc[0], abc[1], abc[2], alpha, beta, gamma
+        return abc, angles
 
     def _fill(self, non_filled, dtype=None):
         """Return a zero filled array of length 3"""
@@ -617,7 +611,7 @@ class Lattice(
 
     def plane(
         self, axis1: CellAxis, axis2: CellAxis, origin: bool = True
-    ) -> Tuple[ndarray, ndarray]:
+    ) -> tuple[ndarray, ndarray]:
         """Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
@@ -763,7 +757,7 @@ class Lattice(
 
         return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
-    def offset(self, isc=None) -> Tuple[float, float, float]:
+    def offset(self, isc=None) -> tuple[float, float, float]:
         """Returns the supercell offset of the supercell index"""
         if isc is None:
             return _a.arrayd([0, 0, 0])
@@ -1123,7 +1117,10 @@ class Lattice(
         return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s},\n bc=[{bc}]\n}}"
 
     def __repr__(self) -> str:
-        a, b, c, alpha, beta, gamma = map(lambda r: round(r, 4), self.parameters())
+        abc, abg = self.parameters()
+        a, b, c = map(lambda r: round(r, 4), abc.tolist())
+        alpha, beta, gamma = map(lambda r: round(r, 4), abg.tolist())
+
         BC = BoundaryCondition
         bc = self.boundary_condition
 
@@ -1178,7 +1175,7 @@ class LatticeNewDispatch(AbstractDispatch):
 
 
 class LatticeNewLatticeDispatch(LatticeNewDispatch):
-    def dispatch(self, lattice, copy=False):
+    def dispatch(self, lattice, copy: bool = False):
         """Return Lattice as-is, for sanitization purposes"""
         cls = self._get_class()
         if cls != lattice.__class__:
@@ -1195,6 +1192,21 @@ class LatticeNewLatticeDispatch(LatticeNewDispatch):
 
 
 new_dispatch.register(Lattice, LatticeNewLatticeDispatch)
+
+
+class LatticeNewListLikeDispatch(LatticeNewDispatch):
+    def dispatch(self, cell, *args, **kwargs):
+        return Lattice(cell, *args, **kwargs)
+
+
+# A cell can be created form a ndarray/list/tuple
+
+new_dispatch.register("ndarray", LatticeNewListLikeDispatch)
+new_dispatch.register(np.ndarray, LatticeNewListLikeDispatch)
+new_dispatch.register(int, LatticeNewListLikeDispatch)
+new_dispatch.register(float, LatticeNewListLikeDispatch)
+new_dispatch.register(list, LatticeNewListLikeDispatch)
+new_dispatch.register(tuple, LatticeNewListLikeDispatch)
 
 
 class LatticeNewAseDispatch(LatticeNewDispatch):
@@ -1340,19 +1352,13 @@ class LatticeChild:
         """
         self.lattice.set_nsc(*args, **kwargs)
 
-    def set_lattice(self, lattice):
+    def set_lattice(self, lattice: LatticeLike):
         """Overwrites the local lattice."""
         if lattice is None:
             # Default supercell is a simple
             # 1x1x1 unit-cell
-            self.lattice = Lattice([1.0, 1.0, 1.0])
-        elif isinstance(lattice, Lattice):
-            self.lattice = lattice
-        elif isinstance(lattice, LatticeChild):
-            self.lattice = lattice.lattice
-        else:
-            # The supercell is given as a cell
-            self.lattice = Lattice(lattice)
+            lattice = [1.0, 1.0, 1.0]
+        self.lattice = Lattice.new(lattice)
 
     set_supercell = deprecation(
         "set_sc is deprecated; please use set_lattice instead", "0.15", "0.16"
@@ -1435,7 +1441,7 @@ class LatticeChild:
 
 
 class LatticeNewLatticeChildDispatch(LatticeNewDispatch):
-    def dispatch(self, obj, copy=False):
+    def dispatch(self, obj, copy: bool = False):
         # for sanitation purposes
         if copy:
             return obj.lattice.copy()

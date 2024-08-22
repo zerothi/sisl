@@ -5,7 +5,6 @@ from __future__ import annotations
 
 """ pytest test configures """
 
-import os.path as osp
 
 import numpy as np
 import pytest
@@ -13,14 +12,13 @@ import pytest
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     assert si.version == 1
     HS1 = si.read_hamiltonian()
-    f = sisl_tmp("tmp.TSHS", _dir)
+    f = sisl_tmp("tmp.TSHS")
     HS1.write(f)
     si = sisl.get_sile(f)
     HS2 = si.read_hamiltonian()
@@ -32,10 +30,10 @@ def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
 
 def test_tshs_si_pdos_kgrid_tofromnc(sisl_files, sisl_tmp):
     pytest.importorskip("netCDF4")
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS1 = si.read_hamiltonian()
-    f = sisl_tmp("tmp.TSHS", _dir)
-    fnc = sisl_tmp("tmp.nc", _dir)
+    f = sisl_tmp("tmp.TSHS")
+    fnc = sisl_tmp("tmp.nc")
 
     HS1.write(f)
     HS1.write(fnc)
@@ -52,7 +50,7 @@ def test_tshs_si_pdos_kgrid_tofromnc(sisl_files, sisl_tmp):
 
 
 def test_tshs_si_pdos_kgrid_repeat_tile(sisl_files, sisl_tmp):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS = si.read_hamiltonian()
     HSr = HS.repeat(3, 2).repeat(3, 0).repeat(3, 1)
     HSt = HS.tile(3, 2).tile(3, 0).tile(3, 1)
@@ -60,7 +58,7 @@ def test_tshs_si_pdos_kgrid_repeat_tile(sisl_files, sisl_tmp):
 
 
 def test_tshs_si_pdos_kgrid_repeat_tile_not_used(sisl_files, sisl_tmp):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS = si.read_hamiltonian()
     for i in range(HS.no):
         HS._csr._extend_empty(i, 3 + i % 3)
@@ -70,9 +68,9 @@ def test_tshs_si_pdos_kgrid_repeat_tile_not_used(sisl_files, sisl_tmp):
 
 
 def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
-    fdf = sisl.get_sile(sisl_files(_dir, "SOC_Pt2_xx.fdf"), base=sisl_files(_dir))
+    fdf = sisl.get_sile(sisl_files("siesta", "Pt2_soc", "Pt2.fdf"))
     HS1 = fdf.read_hamiltonian()
-    f = sisl_tmp("tmp.TSHS", _dir)
+    f = sisl_tmp("tmp.TSHS")
     HS1.write(f)
     si = sisl.get_sile(f)
     HS2 = si.read_hamiltonian()
@@ -83,7 +81,7 @@ def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
 
 
 def test_tshs_soc_pt2_xx_pdos(sisl_files):
-    fdf = sisl.get_sile(sisl_files(_dir, "SOC_Pt2_xx.fdf"), base=sisl_files(_dir))
+    fdf = sisl.get_sile(sisl_files("siesta", "Pt2_soc", "Pt2.fdf"))
     sc = fdf.read_lattice(order="TSHS")
     HS = fdf.read_hamiltonian()
     assert np.allclose(sc.cell, HS.geometry.lattice.cell)
@@ -91,7 +89,7 @@ def test_tshs_soc_pt2_xx_pdos(sisl_files):
 
 
 def test_tshs_warn(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
 
     # check number of orbitals
     geom = si.read_geometry()
@@ -120,7 +118,7 @@ def test_tshs_warn(sisl_files):
 
 def test_tshs_error(sisl_files):
     # reading with a wrong geometry
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
 
     # check number of orbitals
     geom = si.read_geometry()
@@ -130,7 +128,7 @@ def test_tshs_error(sisl_files):
 
 
 def test_tshs_si_pdos_kgrid_overlap(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
     HS = si.read_hamiltonian()
     S = si.read_overlap()
     assert HS._csr.spsame(S._csr)
@@ -152,8 +150,8 @@ def test_tshs_spin_orbit(sisl_tmp):
         )
     )
 
-    f1 = sisl_tmp("tmp1.TSHS", _dir)
-    f2 = sisl_tmp("tmp2.TSHS", _dir)
+    f1 = sisl_tmp("tmp1.TSHS")
+    f2 = sisl_tmp("tmp2.TSHS")
     H1.write(f1)
     H1.finalize()
     H2 = sisl.get_sile(f1).read_hamiltonian()
@@ -179,9 +177,9 @@ def test_tshs_spin_orbit_tshs2nc2tshs(sisl_tmp):
         )
     )
 
-    fdf_file = sisl_tmp("RUN.fdf", _dir)
-    f1 = sisl_tmp("tmp1.TSHS", _dir)
-    f2 = sisl_tmp("tmp1.nc", _dir)
+    fdf_file = sisl_tmp("RUN.fdf")
+    f1 = sisl_tmp("tmp1.TSHS")
+    f2 = sisl_tmp("tmp1.nc")
     H1.write(f1)
     H1.finalize()
     H2 = sisl.get_sile(f1).read_hamiltonian()
@@ -204,11 +202,11 @@ def test_tshs_missing_diagonal(sisl_tmp):
     # remove diagonal component here
     del H1[0, 0]
 
-    f1 = sisl_tmp("tmp1.TSHS", _dir)
+    f1 = sisl_tmp("tmp1.TSHS")
     with pytest.warns(sisl.SislWarning, match=r"changes the sparsity pattern"):
         H1.write(f1)
 
-    f2 = sisl_tmp("tmp2.TSHS", _dir)
+    f2 = sisl_tmp("tmp2.TSHS")
     H2 = sisl.get_sile(f1).read_hamiltonian()
     H2.write(f2)
     H3 = sisl.get_sile(f2).read_hamiltonian()

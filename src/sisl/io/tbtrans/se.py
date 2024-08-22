@@ -10,7 +10,6 @@ except Exception:
 
 import numpy as np
 
-from sisl._indices import indices
 from sisl._internal import set_module
 
 # Import the geometry object

@@ -9,6 +9,7 @@ import sisl._array as _a
 from sisl._internal import set_module
 from sisl.typing import GaugeType
 
+from ._feature import comply_gauge
 from .distribution import get_distribution
 from .electron import EigenstateElectron, EigenvalueElectron
 from .sparse import SparseOrbitalBZSpin
@@ -126,7 +127,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \mathbf H(\mathbf k) = \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}
@@ -141,8 +142,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -192,12 +193,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` is one of the Cartesian directions.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \nabla_{\mathbf k} \mathbf H_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`\mathbf r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the atoms (for atom centered orbitals).
 
         Parameters
         ----------
@@ -207,8 +208,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -255,12 +256,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
         where :math:`\mathbf R` is an integer times the cell vector and :math:`i`, :math:`j` are orbital indices.
         And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.
 
-        Another possible gauge is the orbital distance which can be written as
+        Another possible gauge is the atomic distance which can be written as
 
         .. math::
            \nabla_{\mathbf k^2} \mathbf H_{\alpha\beta}(\mathbf k) = -\mathbf r_\alpha\mathbf r_\beta \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf r}
 
-        where :math:`\mathbf r` is the distance between the orbitals.
+        where :math:`\mathbf r` is the distance between the atoms.
 
         Parameters
         ----------
@@ -270,8 +271,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for orbital distance
+        gauge :
+           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -336,7 +337,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         ----------
         k : array_like*3, optional
             the k-point at which to evaluate the eigenvalues at
-        gauge : str, optional
+        gauge :
             the gauge used for calculating the eigenvalues
         sparse : bool, optional
             if ``True``, `eigsh` will be called, else `eigh` will be
@@ -356,6 +357,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         -------
         EigenvalueElectron
         """
+        gauge = comply_gauge(gauge)
         format = kwargs.pop("format", None)
         if kwargs.pop("sparse", False):
             e = self.eigsh(k, gauge=gauge, eigvals_only=True, **kwargs)
@@ -376,7 +378,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         ----------
         k : array_like*3, optional
             the k-point at which to evaluate the eigenstates at
-        gauge : str, optional
+        gauge :
             the gauge used for calculating the eigenstates
         sparse : bool, optional
             if ``True``, `eigsh` will be called, else `eigh` will be
@@ -396,6 +398,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         -------
         EigenstateElectron
         """
+        gauge = comply_gauge(gauge)
         format = kwargs.pop("format", None)
         if kwargs.pop("sparse", False):
             e, v = self.eigsh(k, gauge=gauge, eigvals_only=False, **kwargs)
@@ -432,7 +435,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
             with get_sile(sile, mode="r") as fh:
                 return fh.read_hamiltonian(*args, **kwargs)
 
-    def fermi_level(self, bz=None, q=None, distribution="fermi_dirac", q_tol=1e-10):
+    def fermi_level(
+        self,
+        bz=None,
+        q=None,
+        distribution="fermi_dirac",
+        q_tol: float = 1e-10,
+        *,
+        apply_kwargs=None,
+    ):
         """Calculate the Fermi-level using a Brillouinzone sampling and a target charge
 
         The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues
@@ -451,6 +462,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
             used distribution, must accept the keyword ``mu`` as parameter for the Fermi-level
         q_tol : float, optional
             tolerance of charge for finding the Fermi-level
+        apply_kwargs : dict, optional
+           keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
 
         Returns
         -------
@@ -465,6 +478,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             # Overwrite the parent in bz
             bz.set_parent(self)
+
+        if apply_kwargs is None:
+            apply_kwargs = {}
 
         if q is None:
             if self.spin.is_unpolarized:
@@ -512,7 +528,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             return Ef
 
         # Retrieve dispatcher for averaging
-        eigh = bz.apply.array.eigh
+        eigh = bz.apply(**apply_kwargs).array.eigh
 
         if self.spin.is_polarized and q.size == 2:
             if np.any(q >= len(self)):

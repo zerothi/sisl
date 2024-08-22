@@ -3,44 +3,41 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import os.path as osp
-
 import numpy as np
 import pytest
 
 import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = osp.join("sisl", "io", "siesta")
 
 
 def test_si_pdos_kgrid_grid(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.VT"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.VT"))
     si.read_grid()
     assert si.grid_unit == pytest.approx(sisl.unit.siesta.unit_convert("Ry", "eV"))
 
 
 def test_si_pdos_kgrid_grid_cell(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.VT"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.VT"))
     si.read_lattice()
 
 
 def test_si_pdos_kgrid_grid_fractions(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.VT"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.VT"))
     grid = si.read_grid()
     grid_halve = si.read_grid(index=[0.5])
     assert np.allclose(grid.grid * 0.5, grid_halve.grid)
 
 
 def test_si_pdos_kgrid_grid_fdf(sisl_files):
-    si = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.fdf"))
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"))
     VT = si.read_grid("VT", order="bin")
     TotPot = si.read_grid("totalpotential", order="bin")
     assert np.allclose(VT.grid, TotPot.grid)
 
 
 def test_grid_read_write(sisl_tmp):
-    path = sisl_tmp("grid.bin", _dir)
+    path = sisl_tmp("grid.bin")
     lat = sisl.Lattice(1).rotate(45, "z").rotate(45, "x")
     grid = sisl.Grid([4, 5, 6], lattice=lat)
     grid.grid = np.random.rand(*grid.shape)

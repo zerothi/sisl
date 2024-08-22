@@ -34,12 +34,12 @@ _operators = {
 }
 
 
-def math_eval(expr):
+def math_eval(expr: str) -> Any:
     """Evaluate a mathematical expression using a safe evaluation method
 
     Parameters
     ----------
-    expr : str
+    expr :
        the string to be evaluated using math
 
     Examples
@@ -194,7 +194,7 @@ def iter_shape(shape):
                     slc[i - 1] += 1
 
 
-def str_spec(name):
+def str_spec(name) -> Tuple[str, Union[None, str]]:
     """Split into a tuple of name and specifier, delimited by ``{...}``.
 
     Parameters
@@ -286,7 +286,7 @@ listify = Listify()
 
 
 # Transform a string to a Cartesian direction
-def direction(d, abc=None, xyz=None):
+def direction(d: Union[int, str], abc=None, xyz=None) -> Union[int, Any]:
     """Index coordinate transformation from int/str to an integer
 
     Parameters
@@ -350,12 +350,12 @@ def direction(d, abc=None, xyz=None):
 
 
 # Transform an input to an angle
-def angle(s, rad=True, in_rad=True):
+def angle(s: str, rad: bool = True, in_rad: bool = True) -> float:
     """Convert the input string to an angle, either radians or degrees.
 
     Parameters
     ----------
-    s : str
+    s :
        If `s` starts with 'r' it is interpreted as radians ``[0:2pi]``.
        If `s` starts with 'a' it is interpreted as a regular angle ``[0:360]``.
        If `s` ends with 'r' it returns in radians.
@@ -363,10 +363,10 @@ def angle(s, rad=True, in_rad=True):
 
        `s` may be any mathematical equation which can be
        intercepted through ``eval``.
-    rad : bool, optional
+    rad :
        Whether the returned angle is in radians.
        Note than an 'r' at the end of `s` has precedence.
-    in_rad : bool, optional
+    in_rad :
        Whether the calculated angle is in radians.
        Note than an 'r' at the beginning of `s` has precedence.
 

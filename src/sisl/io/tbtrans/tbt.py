@@ -12,7 +12,7 @@ except Exception:
 
 import itertools
 from functools import reduce
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -26,7 +26,7 @@ from sisl import Atoms, Geometry, constant
 from sisl._core.sparse import _ncol_to_indptr
 from sisl._help import wrap_filterwarnings
 from sisl._internal import set_module
-from sisl.messages import SislError, deprecate, deprecate_argument, info, warn
+from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.physics.densitymatrix import DensityMatrix
 from sisl.physics.distribution import fermi_dirac
 from sisl.unit.siesta import unit_convert
@@ -115,7 +115,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     are in fortran indexing (1-based), everything is returned as Python indexing (0-based)
     when using Python scripts.
 
-    The notation described in `math_convention`_ will be used.
+    The mathematical notation described in :ref:`this document <math_convention>`
+    will be used throughout.
 
     A word on DOS normalization:
 
@@ -155,7 +156,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def _value_avg(
         self,
         name: str,
-        tree: Optional[Union[str, List[str]]] = None,
+        tree: Optional[Union[str, list[str]]] = None,
         kavg: bool = False,
     ):
         """Local method for obtaining the data from the SileCDF.
@@ -206,7 +207,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def _value_E(
         self,
         name: str,
-        tree: Optional[Union[str, List[str]]] = None,
+        tree: Optional[Union[str, list[str]]] = None,
         kavg: bool = False,
         E: Optional[Union[int, float]] = None,
     ):

@@ -21,6 +21,13 @@ try:
 except ImportError:
     _has_xarray = False
 
+try:
+    import pathos
+
+    _has_pathos = True
+except ImportError:
+    _has_pathos = False
+
 import sisl._array as _a
 from sisl._core.grid import Grid
 from sisl._core.lattice import Lattice
@@ -28,7 +35,7 @@ from sisl._core.oplist import oplist
 from sisl._dispatcher import AbstractDispatch
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
-from sisl.messages import SislError, progressbar
+from sisl.messages import SislError, progressbar, warn
 from sisl.unit import units
 from sisl.utils.mathematics import cart2spher
 from sisl.utils.misc import allow_kwargs
@@ -55,7 +62,7 @@ def _correct_str(orig, insert):
     return f"Apply{{{insert}, {orig[i:]}"
 
 
-def _pool_procs(pool):
+def _pool_procs(pool, size: int):
     """
     This is still a bit mysterious to me.
 
@@ -64,22 +71,94 @@ def _pool_procs(pool):
     have a global list of open pools to not pollute the pools.
     This means that one may accidentially request a pool that the user
     has openened elsewhere.
+
+    This method is working via 3 different allowed argument types:
+
+    pool = int | bool
+
+        in this case it just uses defaults.
+
+    pool = int | bool, {run}
+
+        here the {run} is the arguments used for the mapping
+        tool in the parallel region (i.e. `imap(..., **run)`
+
+    pool = int | bool, {init}, {run}
+
+        here the {init} is the arguments used for the constructor
+        of the ProcessPool (except ``nodes``).
+        And {run} is equivalent to the before.
     """
-    if pool is False or pool is None:
-        return None
+    nprocs = get_environ_variable("SISL_NUM_PROCS")
+    nchunk = get_environ_variable("SISL_PAR_CHUNKSIZE")
 
-    import pathos as pos
+    init = {}
+    run = {}
 
-    if pool is True:
-        nprocs = get_environ_variable("SISL_NUM_PROCS")
-        if nprocs <= 1:
-            return None
-        pool = pos.pools.ProcessPool(nodes=nprocs)
-    elif isinstance(pool, int):
-        pool = pos.pools.ProcessPool(nodes=pool)
+    if isinstance(pool, (tuple, list)):
+        run_in = {}
+        init_in = {}
+        if len(pool) == 1:
+            pool = pool[0]
+        elif len(pool) == 2:
+            pool, run_in = pool
+        elif len(pool) == 3:
+            pool, init_in, run_in = pool
+        else:
+            raise ValueError("Too many arguments for pool=, expected a length of <=3")
+        init.update(init_in)
+        run.update(run_in)
+
+    if pool is None:
+        pool = _has_pathos
+
+    if isinstance(pool, bool):
+        if pool:
+            pool = nprocs
+        else:
+            pool = 1
+
+    if isinstance(pool, int):
+        if pool <= 1:
+            return None, run
+
+        ncpus = pool
+        import pathos
+
+        pool = pathos.pools.ProcessPool(ncpus=pool, **init)
+    else:
+
+        ncpus = None
+        try:
+            ncpus = pool.ncpus
+        except Exception:
+            pass
+
+        if ncpus is None:
+            try:
+                ncpus = pool._processes
+            except Exception:
+                pass
+
+        # we don't know
+        warn(
+            f"{__module__} could not determine number of CPUs from the pool, expecting 2"
+        )
+        ncpus = 2
+
+    if "chunksize" not in run:
+        if isinstance(nchunk, float):
+            nchunk = max(1, int(size / ncpus * nchunk))
+            # Try to make the chunksize as evenly distributed as possible
+            tmp = size // nchunk
+            nchunk = size // tmp
+        run["chunksize"] = nchunk
+
+    # Prepare the pool, just in case it has already been used.
     pool.terminate()
     pool.join()
-    return pool
+
+    return pool, run
 
 
 @set_module("sisl.physics")
@@ -122,7 +201,8 @@ class IteratorApply(BrillouinZoneParentApply):
 
     def dispatch(self, method, eta_key="iter"):
         """Dispatch the method by iterating values"""
-        pool = _pool_procs(self._attrs.get("pool", None))
+        pool, pool_run = _pool_procs(self._attrs.get("pool"), len(self._get_object()))
+
         if pool is None:
 
             @wraps(method)
@@ -130,11 +210,11 @@ class IteratorApply(BrillouinZoneParentApply):
                 bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
                 k = bz.k
                 w = bz.weight
-                for i in range(len(k)):
+                for i, ki in enumerate(k):
                     yield wrap(
-                        method(*args, k=k[i], **kwargs),
+                        method(*args, k=ki, **kwargs),
                         parent=parent,
-                        k=k[i],
+                        k=ki,
                         weight=w[i],
                     )
                     eta.update()
@@ -144,8 +224,8 @@ class IteratorApply(BrillouinZoneParentApply):
 
             @wraps(method)
             def func(*args, wrap=None, eta=None, **kwargs):
-                pool.restart()
-                bz, parent, wrap, _ = self._parse_kwargs(wrap)
+                pool.restart(True)
+                bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
                 k = bz.k
                 w = bz.weight
 
@@ -154,12 +234,17 @@ class IteratorApply(BrillouinZoneParentApply):
                         method(*args, k=k, **kwargs), parent=parent, k=k, weight=w
                     )
 
-                yield from pool.imap(func, k, w)
+                for ret in pool.imap(func, k, w, **pool_run):
+                    eta.update()
+                    yield ret
+
                 # TODO notify users that this may be bad when used with zip
                 # unless this generator is the first argument of zip
                 # zip has left-to-right checks of length and stops querying
                 # elements as soon as the left-most one stops.
-                pool.terminate()
+                pool.close()
+                pool.join()
+                eta.close()
 
         return func
 
@@ -253,7 +338,7 @@ class NDArrayApply(BrillouinZoneParentApply):
 
     def dispatch(self, method, eta_key="ndarray"):
         """Dispatch the method by one array"""
-        pool = _pool_procs(self._attrs.get("pool", None))
+        pool, pool_run = _pool_procs(self._attrs.get("pool"), len(self._get_object()))
         unzip = self._attrs.get("zip", self._attrs.get("unzip", False))
 
         def _create_v(nk, v):
@@ -278,11 +363,11 @@ class NDArrayApply(BrillouinZoneParentApply):
 
                 if unzip:
                     a = tuple(_create_v(nk, vi) for vi in v)
-                    for i in range(1, len(k)):
+                    for i, ki in enumerate(k[1:], 1):
                         v = wrap(
-                            method(*args, k=k[i], **kwargs),
+                            method(*args, k=ki, **kwargs),
                             parent=parent,
-                            k=k[i],
+                            k=ki,
                             weight=w[i],
                         )
                         for ai, vi in zip(a, v):
@@ -291,11 +376,11 @@ class NDArrayApply(BrillouinZoneParentApply):
                 else:
                     a = _create_v(nk, v)
                     del v
-                    for i in range(1, len(k)):
+                    for i, ki in enumerate(k[1:], 1):
                         a[i] = wrap(
-                            method(*args, k=k[i], **kwargs),
+                            method(*args, k=ki, **kwargs),
                             parent=parent,
-                            k=k[i],
+                            k=ki,
                             weight=w[i],
                         )
                         eta.update()
@@ -306,9 +391,9 @@ class NDArrayApply(BrillouinZoneParentApply):
         else:
 
             @wraps(method)
-            def func(*args, wrap=None, **kwargs):
-                pool.restart()
-                bz, parent, wrap, _ = self._parse_kwargs(wrap)
+            def func(*args, wrap=None, eta=None, **kwargs):
+                pool.restart(True)
+                bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
                 k = bz.k
                 nk = len(k)
                 w = bz.weight
@@ -318,21 +403,25 @@ class NDArrayApply(BrillouinZoneParentApply):
                         method(*args, k=k, **kwargs), parent=parent, k=k, weight=w
                     )
 
-                it = pool.imap(func, k, w)
+                it = pool.imap(func, k, w, **pool_run)
                 v = next(it)
+                eta.update()
 
                 if unzip:
                     a = tuple(_create_v(nk, vi) for vi in v)
-                    for i, v in enumerate(it):
-                        i += 1
+                    for i, v in enumerate(it, 1):
                         for ai, vi in zip(a, v):
                             ai[i] = vi
+                        eta.update()
                 else:
                     a = _create_v(nk, v)
-                    for i, v in enumerate(it):
-                        a[i + 1] = v
+                    for i, v in enumerate(it, 1):
+                        a[i] = v
+                        eta.update()
                 del v
-                pool.terminate()
+                pool.close()
+                pool.join()
+                eta.close()
                 return a
 
         return func
@@ -345,7 +434,8 @@ class AverageApply(BrillouinZoneParentApply):
 
     def dispatch(self, method):
         """Dispatch the method by averaging"""
-        pool = _pool_procs(self._attrs.get("pool", None))
+        pool, pool_run = _pool_procs(self._attrs.get("pool"), len(self._get_object()))
+
         if pool is None:
 
             @wraps(method)
@@ -366,13 +456,13 @@ class AverageApply(BrillouinZoneParentApply):
                     * w[0]
                 )
                 eta.update()
-                for i in range(1, len(k)):
+                for i, ki in enumerate(k[1:], 1):
                     v += (
                         _asoplist(
                             wrap(
-                                method(*args, k=k[i], **kwargs),
+                                method(*args, k=ki, **kwargs),
                                 parent=parent,
-                                k=k[i],
+                                k=ki,
                                 weight=w[i],
                             )
                         )
@@ -385,21 +475,29 @@ class AverageApply(BrillouinZoneParentApply):
         else:
 
             @wraps(method)
-            def func(*args, wrap=None, **kwargs):
-                pool.restart()
-                bz, parent, wrap, _ = self._parse_kwargs(wrap)
+            def func(*args, wrap=None, eta=None, **kwargs):
+                pool.restart(True)
+
+                bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
                 k = bz.k
                 w = bz.weight
 
                 def func(k, w):
-                    return (
+                    return w * _asoplist(
                         wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=w)
-                        * w
                     )
 
-                iter_func = pool.uimap(func, k, w)
-                avg = reduce(op.add, iter_func, _asoplist(next(iter_func)))
-                pool.terminate()
+                iret = pool.imap(func, k, w, **pool_run)
+                avg = next(iret)
+                eta.update()
+                for it in iret:
+                    avg += it
+                    eta.update()
+
+                pool.close()
+                pool.join()
+
+                eta.close()
                 return avg
 
         return func
@@ -580,7 +678,6 @@ class GridApply(MonkhorstPackParentApply):
 
     def dispatch(self, method, eta_key="grid"):
         """Dispatch the method by putting values on the grid"""
-        pool = _pool_procs(self._attrs.get("pool", None))
 
         @wraps(method)
         def func(*args, wrap=None, eta=None, **kwargs):
@@ -707,24 +804,24 @@ class GridApply(MonkhorstPackParentApply):
             # Now perform calculation
             eta.update()
             if data_axis is None:
-                for i in range(1, len(k)):
-                    grid[k2idx(k[i])] = wrap(
-                        method(*args, k=k[i], **kwargs),
+                for i, ki in enumerate(k[1:], 1):
+                    grid[k2idx(ki)] = wrap(
+                        method(*args, k=ki, **kwargs),
                         parent=parent,
-                        k=k[i],
+                        k=ki,
                         weight=w[i],
                     )
                     eta.update()
             else:
-                for i in range(1, len(k)):
-                    idx = k2idx(k[i]).tolist()
+                for i, ki in enumerate(k[1:], 1):
+                    idx = k2idx(ki).tolist()
                     weight = weights[idx[data_axis]]
                     idx[data_axis] = slice(None)
                     grid[tuple(idx)] = (
                         wrap(
-                            method(*args, k=k[i], **kwargs),
+                            method(*args, k=ki, **kwargs),
                             parent=parent,
-                            k=k[i],
+                            k=ki,
                             weight=w[i],
                         )
                         * weight

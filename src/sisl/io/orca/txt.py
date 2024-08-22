@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 
 from sisl._core.geometry import Geometry
@@ -31,19 +29,19 @@ class txtSileORCA(SileORCA):
         _A(
             "na",
             r".*Number of atoms:",
-            lambda attr, match: int(match.string.split()[-1]),
+            lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
         _A(
             "no",
             r".*number of basis functions:",
-            lambda attr, match: int(match.string.split()[-1]),
+            lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
         _A(
             "vdw_correction",
             r".*\$ VdW_Correction",
-            lambda attr, match: True,
+            lambda attr, instance, match: True,
             default=False,
             not_found="ignore",
         ),
@@ -215,7 +213,7 @@ class txtSileORCA(SileORCA):
         return G
 
     @sile_fh_open()
-    def read_hyperfine_coupling(self, units: UnitsVar = "eV") -> List[PropertyDict]:
+    def read_hyperfine_coupling(self, units: UnitsVar = "eV") -> list[PropertyDict]:
         r"""Reads hyperfine couplings from the ``EPRNMR_ATensor`` block
 
         For a nucleus :math:`k`, the hyperfine interaction is usually

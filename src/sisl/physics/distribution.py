@@ -76,7 +76,7 @@ def get_distribution(method, smearing=0.1, x0=0.0):
 
 
 @set_module("sisl.physics")
-def gaussian(x, sigma=0.1, x0=0.0):
+def gaussian(x, sigma: float = 0.1, x0=0.0):
     r"""Gaussian distribution function
 
     .. math::
@@ -86,9 +86,9 @@ def gaussian(x, sigma=0.1, x0=0.0):
     ----------
     x : array_like
         points at which the Gaussian distribution is calculated
-    sigma : float, optional
+    sigma :
         spread of the Gaussian
-    x0 : float, optional
+    x0 : array_like, optional
         maximum position of the Gaussian
 
     Returns
@@ -101,7 +101,7 @@ def gaussian(x, sigma=0.1, x0=0.0):
 
 
 @set_module("sisl.physics")
-def lorentzian(x, gamma=0.1, x0=0.0):
+def lorentzian(x, gamma: float = 0.1, x0=0.0):
     r"""Lorentzian distribution function
 
     .. math::
@@ -111,9 +111,9 @@ def lorentzian(x, gamma=0.1, x0=0.0):
     ----------
     x : array_like
         points at which the Lorentzian distribution is calculated
-    gamma : float, optional
+    gamma :
         spread of the Lorentzian
-    x0 : float, optional
+    x0 : array_like, optional
         maximum position of the Lorentzian
 
     Returns
@@ -125,7 +125,7 @@ def lorentzian(x, gamma=0.1, x0=0.0):
 
 
 @set_module("sisl.physics")
-def fermi_dirac(E, kT=0.1, mu=0.0):
+def fermi_dirac(E, kT: float = 0.1, mu=0.0):
     r"""Fermi-Dirac distribution function
 
     .. math::
@@ -135,9 +135,9 @@ def fermi_dirac(E, kT=0.1, mu=0.0):
     ----------
     E : array_like
         energy evaluation points
-    kT : float, optional
+    kT :
         temperature broadening
-    mu : float, optional
+    mu : array_like, optional
         chemical potential
 
     Returns
@@ -149,7 +149,7 @@ def fermi_dirac(E, kT=0.1, mu=0.0):
 
 
 @set_module("sisl.physics")
-def bose_einstein(E, kT=0.1, mu=0.0):
+def bose_einstein(E, kT: float = 0.1, mu=0.0):
     r"""Bose-Einstein distribution function
 
     .. math::
@@ -159,9 +159,9 @@ def bose_einstein(E, kT=0.1, mu=0.0):
     ----------
     E : array_like
         energy evaluation points
-    kT : float, optional
+    kT :
         temperature broadening
-    mu : float, optional
+    mu : array_like, optional
         chemical potential
 
     Returns
@@ -173,7 +173,7 @@ def bose_einstein(E, kT=0.1, mu=0.0):
 
 
 @set_module("sisl.physics")
-def cold(E, kT=0.1, mu=0.0):
+def cold(E, kT: float = 0.1, mu=0.0):
     r""" Cold smearing function
 
     For more details see :cite:`Marzari1999`.
@@ -187,9 +187,9 @@ def cold(E, kT=0.1, mu=0.0):
     ----------
     E : array_like
         energy evaluation points
-    kT : float, optional
+    kT :
         temperature broadening
-    mu : float, optional
+    mu : array_like, optional
         chemical potential
 
     Returns
@@ -222,7 +222,7 @@ def heaviside(x, x0=0.0):
     ----------
     x : array_like
         points at which the Heaviside step distribution is calculated
-    x0 : float, optional
+    x0 : array_like, optional
         step position
 
     Returns
@@ -230,9 +230,11 @@ def heaviside(x, x0=0.0):
     numpy.ndarray
         the Heaviside step function distribution, same length as `x`
     """
-    H = np.zeros_like(x)
-    H[x > x0] = 1.0
+    x = np.asarray(x)
+    shape = np.broadcast_shapes(x.shape, np.asarray(x0).shape)
+    H = np.zeros_like(x, shape=shape)
     H[x == x0] = 0.5
+    H[x > x0] = 1.0
     return H
 
 
@@ -259,7 +261,7 @@ def step_function(x, x0=0.0):
     ----------
     x : array_like
         points at which the step distribution is calculated
-    x0 : float, optional
+    x0 : array_like, optional
         step position
 
     Returns
@@ -267,7 +269,9 @@ def step_function(x, x0=0.0):
     numpy.ndarray
         the step function distribution, same length as `x`
     """
-    s = np.ones_like(x)
-    s[x > x0] = 0.0
+    x = np.asarray(x)
+    shape = np.broadcast_shapes(x.shape, np.asarray(x0).shape)
+    s = np.ones_like(x, shape=shape)
     s[x == x0] = 0.5
+    s[x > x0] = 0.0
     return s

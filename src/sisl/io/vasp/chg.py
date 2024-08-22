@@ -13,7 +13,6 @@ from sisl._internal import set_module
 from .._help import grid_reduce_indices
 from ..sile import add_sile, sile_fh_open
 from .car import carSileVASP
-from .sile import SileVASP
 
 __all__ = ["chgSileVASP"]
 
@@ -88,7 +87,12 @@ class chgSileVASP(carSileVASP):
         is_chgcar = True
         i = 0
         while i < n * max_index:
-            line = rl().split()
+            line = rl()
+            if line == "":
+                raise ValueError(
+                    f"{self.__class__.__name__}.read_grid cannot find requested index in {self!r}"
+                )
+            line = line.split()
             # CHG: 10 columns, CHGCAR: 5 columns
             if is_chgcar and len(line) > 5:
                 # we have a data line with more than 5 columns, must be a CHG file
@@ -110,6 +114,7 @@ class chgSileVASP(carSileVASP):
                     j = len(line.split())
                     while j < geom.na:
                         j += len(rl().split())
+
                 # one line of nx, ny, nz
                 assert np.allclose(list(map(int, rl().split())), [nx, ny, nz])
 

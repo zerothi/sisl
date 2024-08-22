@@ -3,7 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Mapping, Sequence, Union
+from collections.abc import Mapping, Sequence
+from typing import Union
 
 __all__ = ["UnitsVar"]
 

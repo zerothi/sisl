@@ -4,7 +4,7 @@
 Finding neighbors
 *****************
 
-.. module:: sisl.geom
+.. currentmodule:: sisl.geom
 
 `sisl` implements an **algorithm to find neighbors in a geometry**. It has two main properties:
 
@@ -41,7 +41,7 @@ neighbor list.
 The following table summarizes the properties of each type of neighbor list:
 
 +----------------------+--------------------+--------------+-----------------------+
-| Class                | Neighbors for      |   `i` < `j`  |  Items                |
+| Class                | Neighbors for      |   ``i < j``  |  Items                |
 +======================+====================+==============+=======================+
 | `FullNeighborList`   | All atoms          |      No      |  `AtomNeighborList`   |
 +----------------------+--------------------+--------------+-----------------------+
@@ -58,6 +58,6 @@ The following table summarizes the properties of each type of neighbor list:
 
 Where:
 
-- `i < j` indicates whether the list only contains one direction of the interaction, i.e. by omitting
+- ``i < j`` indicates whether the list only contains one direction of the interaction, i.e. by omitting
   the transposed interaction.
-- `Items` indicates the type that you get when you iterate or index (e.g. ``neighbors[0]``) the list.
+- ``Items`` indicates the type that you get when you iterate or index (e.g. ``neighbors[0]``) the list.

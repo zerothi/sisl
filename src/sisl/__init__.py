@@ -51,7 +51,7 @@ year = datetime.datetime.now().year
 # instantiate the logger, but we will not use it here...
 logging.getLogger(__name__)
 
-__author__ = "Nick Papior"
+__author__ = "sisl developers"
 __license__ = "MPL-2.0"
 
 import sisl._version as _version
@@ -60,23 +60,24 @@ __version__ = _version.version
 __version_tuple__ = _version.version_tuple
 __bibtex__ = f"""# BibTeX information if people wish to cite
 @software{{zerothi_sisl,
-    author = {{Papior, Nick}},
+    author = {{Papior, Nick and Febrer, Pol}},
     title  = {{sisl: v{__version__}}},
     year   = {{ {year} }},
     doi    = {{10.5281/zenodo.597181}},
     url    = {{https://doi.org/10.5281/zenodo.597181}},
 }}"""
+__citation__ = __bibtex__
 
 # do not expose this helper package
 del _version, year, datetime
 
-import sisl._environ as _environ
+from sisl._environ import get_environ_variable
 
 # Immediately check if the file is logable
-log_file = _environ.get_environ_variable("SISL_LOG_FILE")
+log_file = get_environ_variable("SISL_LOG_FILE")
 if not log_file.is_dir():
     # Create the logging
-    log_lvl = _environ.get_environ_variable("SISL_LOG_LEVEL")
+    log_lvl = get_environ_variable("SISL_LOG_LEVEL")
 
     # Start the logging to the file
     logging.basicConfig(filename=str(log_file), level=getattr(logging, log_lvl))
@@ -191,6 +192,8 @@ def __getattr__(name):
 from ._ufuncs import expose_registered_methods
 
 expose_registered_methods("sisl")
+expose_registered_methods("sisl.physics")
+
 del expose_registered_methods
 
 # Make these things publicly available

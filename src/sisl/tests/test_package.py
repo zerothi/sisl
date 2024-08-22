@@ -3,9 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
-
-import numpy as np
 import pytest
 
 import sisl
@@ -36,7 +33,7 @@ def test_import_in_io():
 def test_import_in_io_from():
     # The imports should only be visible in the io module
     with pytest.raises(ImportError):
-        from sisl import xyzSile
+        from sisl import xyzSile  # noqa: F401
 
 
 def test_dispatch_methods():

@@ -3,13 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
 from numbers import Integral, Real
 
 import numpy as np
 import pytest
 
-from sisl import Atom, Geometry, Lattice, Sphere
+from sisl import Atom, Geometry, Lattice
 
 
 @pytest.fixture

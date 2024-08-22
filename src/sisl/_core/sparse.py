@@ -1851,10 +1851,11 @@ column indices of the sparse elements
     # numpy dispatch methods
     __array_priority__ = 14
 
-    def __array__(self, dtype=None):
+    def __array__(self, dtype=None, *, copy: bool = False):
         out = self.toarray()
         if dtype is None:
             return out
+        # Always no copy, since it will always be a copy!
         return out.astype(dtype, copy=False)
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):

@@ -5,13 +5,9 @@ name: Wheel creation
 on:
   push:
     tags:
-     - 'v*'
+      - 'v*'
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Which branch to build wheels for'
-        required: false
-        default: 'main'
       release:
         description: 'Release the wheels?'
         type: boolean
@@ -24,68 +20,102 @@ concurrency:
 
 jobs:
 
-    # cibuildwheels already manages multiple python versions automatically
-    # by just detecting the os. However, it does everything in the same job
-    # and therefore in a serial manner. We build a matrix of operating systems
-    # and python versions so that builds are ran in parallel.
-    # The job matrix is basically copied from https://github.com/scikit-learn/scikit-learn/blob/main/.github/workflows/wheels.yml
+  # cibuildwheels already manages multiple python versions automatically
+  # by just detecting the os. However, it does everything in the same job
+  # and therefore in a serial manner. We build a matrix of operating systems
+  # and python versions so that builds are ran in parallel.
+  # The job matrix is basically copied from https://github.com/scikit-learn/scikit-learn/blob/main/.github/workflows/wheels.yml
   build_wheels:
-    name: Wheel building
+    name: Wheel building for cp${{ matrix.python[0] }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
     runs-on: ${{ matrix.os }}
+
     strategy:
-      # If one of the jobs fails, continue with the others.
+      # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-13, macos-14]
-        arch: [auto64]
-        toolchain:
-         - {compiler: gcc, version: 11}
-        exclude:
-         - os: macos-14
-           arch: auto64
         include:
-         - os: macos-14
-           arch: arm64
+          # Window 64 bit
+          #- os: windows-latest
+          #  python: ["310", "3.10"]
+          #  platform_id: win_amd64
+
+          # Linux 64 bit manylinux2014
+          - os: ubuntu-latest
+            python: ["39", "3.9"]
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: ["310", "3.10"]
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: ["311", "3.11"]
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: ["312", "3.12"]
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # MacOS x86_64
+          - os: macos-12
+            python: ["39", "3.9"]
+            platform_id: macosx_x86_64
+          - os: macos-12
+            python: ["310", "3.10"]
+            platform_id: macosx_x86_64
+          - os: macos-12
+            python: ["311", "3.11"]
+            platform_id: macosx_x86_64
+          - os: macos-12
+            python: ["312", "3.12"]
+            platform_id: macosx_x86_64
+
+          # MacOS arm64
+          - os: macos-14
+            python: ["39", "3.9"]
+            platform_id: macosx_arm64
+          - os: macos-14
+            python: ["310", "3.10"]
+            platform_id: macosx_arm64
+          - os: macos-14
+            python: ["311", "3.11"]
+            platform_id: macosx_arm64
+          - os: macos-14
+            python: ["312", "3.12"]
+            platform_id: macosx_arm64
 
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Checkout sisl
+        uses: actions/checkout@v4
+
+      - name: Ensure fortran
+        uses: fortran-lang/setup-fortran@v1
         with:
-          fetch-depth: 0
-          submodules: false
+          compiler: gcc
+          version: 11
 
-      # Setup the fortran compiler. This is aware of the operating system.
-      - uses: fortran-lang/setup-fortran@main
-        id: sf
+      - name: Print-out commit information
+        run: |
+          echo "branch: ${{ github.event.inputs.branch }}"
+          echo "hash: ${{ github.sha }}"
+          echo "python-version: ${{ matrix.python[0] }} - ${{ matrix.python[1] }}"
+
+      - name: Build and test wheels
+        env:
+          CIBW_BUILD: cp${{ matrix.python[0] }}-${{ matrix.platform_id }}
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
+        shell: bash -el {0}
+        run: |
+          bash -e tools/build_tools/build_wheels.sh
+
+      # Upload the wheel to the action's artifact.
+      - name: Store artifacts
+        uses: actions/upload-artifact@v4
         with:
-          compiler: ${{ matrix.toolchain.compiler }}
-          version: ${{ matrix.toolchain.version }}
-
-      # We use the cibuildwheel action to take care of everything
-      - name: Build wheels (Mac)
-        if: runner.os == 'macOS'
-        uses: pypa/cibuildwheel@v2.18
-        env:
-          CIBW_ARCHS: "${{ matrix.arch }}"
-
-      - name: Build wheels (Linux)
-        if: runner.os == 'Linux'
-        uses: pypa/cibuildwheel@v2.18
-        env:
-          CIBW_ARCHS: "${{ matrix.arch }}"
-          SKBUILD_CMAKE_ARGS: -DCMAKE_Fortran_COMPILER=${{ steps.sf.outputs.fc }};-DCMAKE_C_COMPILER=${{ steps.sf.outputs.cc }}
-
-      - name: Build wheels (Windows)
-        if: runner.os == 'Windows'
-        uses: pypa/cibuildwheel@v2.18
-        env:
-          CIBW_ARCHS: "${{ matrix.arch }}"
-          SKBUILD_CMAKE_ARGS: -DCMAKE_Fortran_COMPILER=${{ steps.sf.outputs.fc }};-DCMAKE_C_COMPILER=${{ steps.sf.outputs.cc }}
-          PIP_NO_CLEAN: "yes"
-
-      # Upload the wheel to the action's articfact.
-      - uses: actions/upload-artifact@v4
-        with:
-          name: artifact-${{ matrix.os }}
+          name: artifact-cp${{ matrix.python[0] }}-${{ matrix.platform_id }}
           path: ./wheelhouse/*.whl
 
   # Build the source distribution as well
@@ -94,12 +124,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: false
 
       - name: Build sdist
-        run: pipx run build --sdist
+        run: |
+          pipx run build --sdist
 
       - uses: actions/upload-artifact@v4
         with:
@@ -117,7 +145,7 @@ jobs:
           merge-multiple: True
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.8.14
+      - uses: pypa/gh-action-pypi-publish@v1.9.0
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN }}
@@ -146,13 +174,35 @@ jobs:
         with:
           python-version: "3.9"
 
-      # We should also wait for index to update on remote server
-      - name: Install sisl + dependencies
+      - name: Wait for testpypi to catch up
         run: |
-          sleep 10
+          sleep 20
           version=${GITHUB_REF#refs/*/v}
-          version=${version#refs/*/}
-          python -m pip install --progress-bar=off --find-links dist --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test,viz]==${version}
+          echo "SISL_VERSION=${version#refs/*/}" >> $GITHUB_ENV
+          ls -lh
+
+      - name: Install sisl + dependencies (oldest numpy, not ARM)
+        if: matrix.os != 'macos-14'
+        run: |
+          python -m pip install -v \
+            --progress-bar=off \
+            --index-url https://test.pypi.org/simple/ \
+            --extra-index-url https://pypi.org/simple/ \
+            "sisl[test,viz]==${{ env.SISL_VERSION }}" \
+            "numpy==1.21.*" "scipy==1.6.*" "xarray==0.21.*"
+
+      - name: Install sisl + dependencies (arm)
+        if: matrix.os == 'macos-14'
+        run: |
+          python -m pip install -v \
+            --progress-bar=off \
+            --index-url https://test.pypi.org/simple/ \
+            --extra-index-url https://pypi.org/simple/ \
+            "sisl[test,viz]==${{ env.SISL_VERSION }}"
+
+      - name: sisl debug info
+        run: |
+          python -c 'from sisl._debug_info import * ; print_debug_info()'
 
       - name: Test the installation
         run: |
@@ -172,7 +222,7 @@ jobs:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.8.14
+      - uses: pypa/gh-action-pypi-publish@v1.9.0
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}

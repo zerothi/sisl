@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from sisl import Atom, AtomicOrbital, Geometry, Grid, Lattice, SphericalOrbital, Spin
+from sisl import Atom, Geometry, Lattice, SphericalOrbital
 from sisl.physics.overlap import Overlap
 
 pytestmark = [pytest.mark.physics, pytest.mark.overlap]

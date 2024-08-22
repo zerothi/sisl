@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import numpy as np
 import xarray as xr
@@ -14,9 +14,9 @@ from sisl.viz.processors.grid import get_isos
 
 def draw_grid(
     data,
-    isos: List[dict] = [],
+    isos: list[dict] = [],
     colorscale: Optional[str] = None,
-    crange: Optional[Tuple[float, float]] = None,
+    crange: Optional[tuple[float, float]] = None,
     cmid: Optional[float] = None,
     smooth: bool = False,
     color_pixels_2d: bool = True,
@@ -97,7 +97,7 @@ def draw_grid(
     return to_plot
 
 
-def draw_grid_arrows(data, arrows: List[dict]):
+def draw_grid_arrows(data, arrows: list[dict]):
     to_plot = []
 
     # If it is a numpy array, convert it to a DataArray

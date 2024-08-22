@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from functools import singledispatch
 from textwrap import dedent
-from typing import Callable, Optional
+from typing import Optional
 
 from sisl.messages import SislError, warn
 from sisl.typing import FuncType
@@ -105,7 +105,7 @@ def register_sisl_dispatch(
             )
             method_registry.__doc__ = doc
             method_registry.__name__ = name
-            method_registry.__module__ = "sisl"
+            method_registry.__module__ = module
             _registry[name] = singledispatch(method_registry)
 
         # Retrieve the dispatched method

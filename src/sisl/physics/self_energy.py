@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import Literal
 
 import numpy as np
 from numpy import abs as _abs
@@ -16,7 +16,6 @@ from numpy import (
     eye,
     matmul,
     subtract,
-    zeros,
     zeros_like,
 )
 
@@ -26,7 +25,7 @@ from sisl._help import array_replace
 from sisl._internal import set_module
 from sisl.linalg import inv, linalg_info, solve
 from sisl.linalg.base import _compute_lwork
-from sisl.messages import deprecate_argument, deprecation, info, warn
+from sisl.messages import deprecate_argument, deprecation, warn
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.utils.mathematics import fnorm
@@ -329,14 +328,14 @@ class RecursiveSI(SemiInfinite):
         numpy.ndarray
             the self-energy corresponding to the semi-infinite direction
         """
-        if E.imag == 0.0:
-            E = E.real + 1j * self.eta
-
         # Get k-point
         k = _a.asarrayd(k)
 
         if dtype is None:
             dtype = complex128
+        if E.imag == 0.0:
+            E = E.real + 1j * self.eta
+        E = dtype(E)
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -450,14 +449,14 @@ class RecursiveSI(SemiInfinite):
         numpy.ndarray
             the self-energy corresponding to the semi-infinite direction
         """
-        if E.imag == 0.0:
-            E = E.real + 1j * self.eta
-
         # Get k-point
         k = _a.asarrayd(k)
 
         if dtype is None:
             dtype = complex128
+        if E.imag == 0.0:
+            E = E.real + 1j * self.eta
+        E = dtype(E)
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -1056,7 +1055,9 @@ class RealSpaceSE(SelfEnergy):
             - self._calc["P0"](k, dtype=dtype, **kwargs)
         ).toarray() - inv(G, True)
 
-    def green(self, E: complex, k=(0, 0, 0), dtype=None, **kwargs):
+    def green(
+        self, E: complex, k=(0, 0, 0), dtype=None, *, apply_kwargs=None, **kwargs
+    ):
         r"""Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -1073,6 +1074,8 @@ class RealSpaceSE(SelfEnergy):
            I.e. this would correspond to a circular real-space Green function
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
+        apply_kwargs : dict, optional
+           keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
@@ -1088,6 +1091,8 @@ class RealSpaceSE(SelfEnergy):
 
         if dtype is None:
             dtype = complex128
+        if apply_kwargs is None:
+            apply_kwargs = {}
 
         # Now we are to calculate the real-space self-energy
         if E.imag == 0:
@@ -1271,7 +1276,9 @@ class RealSpaceSE(SelfEnergy):
         no = len(self.parent)
 
         # calculate the Green function
-        G = bz.apply.average(_func_bloch)(dtype=dtype, no=no, tile=tile, idx0=idx0)
+        G = bz.apply(**apply_kwargs).average(_func_bloch)(
+            dtype=dtype, no=no, tile=tile, idx0=idx0
+        )
 
         if is_k:
             # Revert k-points

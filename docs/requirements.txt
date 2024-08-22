@@ -1,4 +1,3 @@
-xarray>=0.20
 matplotlib
 dill>=0.3.2
 pathos

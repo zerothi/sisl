@@ -14,7 +14,7 @@ from sisl.messages import deprecate_argument, info
 from sisl.unit.siesta import unit_convert
 
 from .._help import grid_reduce_indices
-from ..sile import SileError, add_sile, sile_raise_write
+from ..sile import add_sile, sile_raise_write
 from .sile import SileCDFSiesta
 
 __all__ = ["gridncSileSiesta"]

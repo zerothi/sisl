@@ -10,10 +10,8 @@ import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import GaugeType, KPoint
 
-from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_nc_diag, matrix_ddk_so
-from ._matrix_dk import matrix_dk, matrix_dk_nc, matrix_dk_nc_diag, matrix_dk_so
-from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_nc_diag, matrix_k_so
-from .sparse import SparseOrbitalBZ, SparseOrbitalBZSpin
+from ._matrix_k import matrix_k
+from .sparse import SparseOrbitalBZ
 
 # Nothing gets exposed here
 __all__ = []
@@ -38,7 +36,7 @@ def matrix_at_k(
     .. math::
         \mathbf M(\mathbf k) = \sum_{\mathbf{k}} \mathbf M^{\mathrm{sc}_i} e^{i \mathbf R_{\mathrm{sc}_i} \cdot \mathbf k}
 
-    when `gauge` is ``orbital`` the matrix is folded with the interatomic distances, like:
+    when `gauge` is ``atom`` the matrix is folded with the interatomic distances, like:
 
     .. math::
         \mathbf M(\mathbf k) = \sum_{\mathbf{k}} \mathbf M^{\mathrm{sc}_i} e^{i (\mathbf r_i - \mathbf r_j) \cdot \mathbf k}
@@ -49,8 +47,8 @@ def matrix_at_k(
        k-point (default is Gamma point)
     dtype : numpy.dtype, optional
        default to `numpy.complex128`
-    gauge : {'cell', 'orbital'}
-       chosen gauge, either the lattice gauge (``cell``), or the interatomic distance gauge (``orbital``).
+    gauge :
+       chosen gauge, either the lattice gauge (``cell``), or the interatomic distance gauge (``atom``).
     format : {"csr", "array", "coo", ...}
        the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
        however if one always requires operations on dense matrices, one can always
@@ -85,7 +83,7 @@ def overlap_at_k(
     .. math::
         \mathbf S(\mathbf k) = \sum_{\mathbf{k}} \mathbf S^{\mathrm{sc}_i} e^{i \mathbf R_{\mathrm{sc}_i} \cdot \mathbf k}
 
-    when `gauge` is ``orbital`` the overlap matrix is folded with the interatomic distances, like:
+    when `gauge` is ``atom`` the overlap matrix is folded with the interatomic distances, like:
 
     .. math::
         \mathbf S(\mathbf k) = \sum_{\mathbf{k}} \mathbf S^{\mathrm{sc}_i} e^{i (\mathbf r_i - \mathbf r_j) \cdot \mathbf k}
@@ -96,8 +94,8 @@ def overlap_at_k(
        k-point (default is Gamma point)
     dtype : numpy.dtype, optional
        default to `numpy.complex128`
-    gauge : {'cell', 'orbital'}
-       chosen gauge, either the lattice gauge (``cell``), or the interatomic distance gauge (``orbital``).
+    gauge :
+       chosen gauge, either the lattice gauge (``cell``), or the interatomic distance gauge (``atom``).
     format : {"csr", "array", "coo", ...}
        the returned format of the overlap matrix, defaulting to the `scipy.sparse.csr_matrix`,
        however if one always requires operations on dense matrices, one can always

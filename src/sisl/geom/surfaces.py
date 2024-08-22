@@ -4,9 +4,10 @@
 from __future__ import annotations
 
 from collections import namedtuple
+from collections.abc import Sequence
 from itertools import groupby
 from numbers import Integral
-from typing import Sequence, Tuple, Union
+from typing import Union
 
 import numpy as np
 
@@ -306,7 +307,7 @@ def _slab_with_vacuum(func, *args, **kwargs):
 def fcc_slab(
     alat: float,
     atoms: AtomsLike,
-    miller: Union[int, str, Tuple[int, int, int]],
+    miller: Union[int, str, tuple[int, int, int]],
     layers=None,
     vacuum: Union[float, Sequence[float]] = 20.0,
     *,
@@ -326,7 +327,7 @@ def fcc_slab(
     ----------
     alat :
         lattice constant of the fcc crystal
-    atoms : Atom
+    atoms :
         the atom that the crystal consists of
     miller :
         Miller indices of the surface facet
@@ -508,7 +509,7 @@ def fcc_slab(
 def bcc_slab(
     alat: float,
     atoms: AtomsLike,
-    miller: Union[int, str, Tuple[int, int, int]],
+    miller: Union[int, str, tuple[int, int, int]],
     layers=None,
     vacuum: Union[float, Sequence[float]] = 20.0,
     *,
@@ -528,7 +529,7 @@ def bcc_slab(
     ----------
     alat :
         lattice constant of the fcc crystal
-    atoms : Atom
+    atoms :
         the atom that the crystal consists of
     miller :
         Miller indices of the surface facet
@@ -672,7 +673,7 @@ def bcc_slab(
 def rocksalt_slab(
     alat: float,
     atoms: AtomsLike,
-    miller: Union[int, str, Tuple[int, int, int]],
+    miller: Union[int, str, tuple[int, int, int]],
     layers=None,
     vacuum: Union[float, Sequence[float]] = 20.0,
     *,
@@ -697,7 +698,7 @@ def rocksalt_slab(
     ----------
     alat :
         lattice constant of the rock-salt crystal
-    atoms : list
+    atoms :
         a list of two atoms that the crystal consist of
     miller :
         Miller indices of the surface facet

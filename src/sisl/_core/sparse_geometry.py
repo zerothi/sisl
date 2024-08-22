@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import functools as ftool
 import warnings
 from collections import namedtuple
 from numbers import Integral

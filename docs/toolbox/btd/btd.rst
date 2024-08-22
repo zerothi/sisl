@@ -11,7 +11,7 @@ Enables block-tri-diagonal inversion algorithms directly in Python.
 
 
 .. autosummary::
-   :toctree: ../generated/
+   :toctree: generated/
 
    PivotSelfEnergy
    DownfoldSelfEnergy

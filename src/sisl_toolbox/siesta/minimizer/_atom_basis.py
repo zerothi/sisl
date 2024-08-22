@@ -7,6 +7,7 @@ import logging
 from functools import partial
 
 import sisl as si
+from sisl._internal import set_module
 from sisl.utils import NotNonePropertyDict
 
 from ._variable import Variable
@@ -20,6 +21,7 @@ _Ang2Bohr = si.units.convert("Ang", "Bohr")
 _eV2Ry = si.units.convert("eV", "Ry")
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class AtomBasis:
     """Basis block format for Siesta"""
 

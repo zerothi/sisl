@@ -10,6 +10,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from sisl._internal import set_module
 from sisl.io.siesta import fdfSileSiesta
 
 from ._path import path_abs, path_rel_or_abs
@@ -35,6 +36,7 @@ def commonprefix(*paths):
     return common, [Path(path).relative_to(common) for path in paths]
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class AbstractRunner(ABC):
     """Define a runner"""
 
@@ -49,6 +51,7 @@ class AbstractRunner(ABC):
         """Run this runner"""
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class AndRunner(AbstractRunner):
     """Placeholder for two runners"""
 
@@ -100,6 +103,7 @@ class AndRunner(AbstractRunner):
         return A + B
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class PathRunner(AbstractRunner):
     """Define a runner"""
 
@@ -137,6 +141,7 @@ class PathRunner(AbstractRunner):
                     shutil.rmtree(fs)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class CleanRunner(PathRunner):
     def __init__(self, path, *files):
         super().__init__(path)
@@ -147,6 +152,7 @@ class CleanRunner(PathRunner):
         self.clean(*self.files)
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class CopyRunner(PathRunner):
     def __init__(self, from_path, to_path, *files, **rename):
         # we store .path as *from_path*
@@ -192,6 +198,7 @@ class CopyRunner(PathRunner):
         _log.debug(f"copying {copy}; removing {rem}")
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class CommandRunner(PathRunner):
     def __init__(
         self, path, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, hook=None
@@ -252,6 +259,7 @@ class CommandRunner(PathRunner):
         )
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class AtomRunner(CommandRunner):
     """Run a command with atom-input file as first argument and output file as second argument
 
@@ -302,6 +310,7 @@ class AtomRunner(CommandRunner):
         )
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class SiestaRunner(CommandRunner):
     """Run a script/cmd with fdf as first argument and output file as second argument
 
@@ -359,6 +368,7 @@ class SiestaRunner(CommandRunner):
         )
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class FunctionRunner(AbstractRunner):
     """Run a method `func` with specified arguments and kwargs"""
 

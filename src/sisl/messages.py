@@ -26,6 +26,7 @@ import warnings
 from functools import wraps
 
 from ._environ import get_environ_variable
+from ._help import has_module
 from ._internal import set_module
 
 __all__ = ["SislDeprecation", "SislInfo", "SislWarning", "SislException", "SislError"]
@@ -213,18 +214,12 @@ def is_jupyter_notebook():
 # Figure out if we can import tqdm.
 # If so, simply use the progressbar class there.
 # Otherwise, create a fake one.
-try:
+if has_module("tqdm"):
     if is_jupyter_notebook():
         from tqdm.notebook import tqdm as _tqdm
     else:
         from tqdm import tqdm as _tqdm
-except ImportError:
-    # Notify user of better option
-    info(
-        "Please install tqdm (pip install tqdm) for better looking progress bars",
-        register=True,
-    )
-
+else:
     # Necessary methods used
     from sys import stdout as _stdout
     from time import time as _time
@@ -235,6 +230,11 @@ except ImportError:
         __slots__ = ["total", "desc", "t0", "n", "l"]
 
         def __init__(self, total, desc, unit):
+            # Only inform them when we hit this
+            info(
+                "Please install tqdm (pip install tqdm) for better looking progress bars",
+                register=True,
+            )
             self.total = total
             self.desc = desc
             _stdout.write(f"{self.desc}  ETA = ?????h ??m ????s\r")

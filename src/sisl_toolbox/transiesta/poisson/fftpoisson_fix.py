@@ -57,6 +57,7 @@ from pathlib import Path
 import numpy as np
 
 import sisl as si
+from sisl._internal import set_module
 
 __all__ = ["pyamg_solve", "solve_poisson", "fftpoisson_fix_cli", "fftpoisson_fix_run"]
 
@@ -102,6 +103,7 @@ def pyamg_solve(A, b, tolerance=1e-12, accel=None, title=""):
     return x
 
 
+@set_module("sisl_toolbox.transiesta.poisson")
 def solve_poisson(
     geometry,
     shape,

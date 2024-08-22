@@ -8,7 +8,7 @@ This file provides tools to handle plotability of objects
 """
 import inspect
 from collections import ChainMap
-from typing import Sequence, Type
+from collections.abc import Sequence
 
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, ObjectDispatcher
 
@@ -216,7 +216,7 @@ def register_data_source(
     plot_cls,
     setting_key,
     name=None,
-    default: Sequence[Type] = [],
+    default: Sequence[type] = [],
     plot_handler_attr="plot",
     data_source_init_kwargs: dict = {},
     **kwargs,
