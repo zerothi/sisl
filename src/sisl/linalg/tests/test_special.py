@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 import scipy.linalg as sl
 
-from sisl.linalg import invsqrth, signsqrt, sqrth
+from sisl.linalg import invsqrth, lowdin, signsqrt, sqrth
 
 pytestmark = [pytest.mark.linalg]
 
@@ -61,3 +61,32 @@ def test_invsqrth_offset():
     np.divide(1, eig, where=(eig != 0), out=eig)
     sa2 = (ev * eig) @ ev.conj().T
     assert np.allclose(sa1, sa2)
+
+
+@pytest.mark.parametrize("driver", ["eigh", "gesdd", "gesvd"])
+def test_lowdin(driver):
+    # offsetting eigenvalues only works if the matrix is
+    # positive semi-definite
+    np.random.seed(1285947159)
+
+    b = np.random.rand(10, 10)
+    b = b + b.T
+    np.fill_diagonal(b, b.diagonal() + 4)
+
+    # Recreate an overlap matrix with all eigenvalues being 1.
+    _, ev = sl.eigh(b)
+    b = ev.T @ ev
+
+    # Create "H"
+    a = np.random.rand(10, 10)
+    a = a + a.T
+
+    eig, ev = sl.eigh(a, b)
+
+    # Calculate eigenvalues for a, b and then
+    # by the Lowdin transformed a
+    aL = lowdin(b, a, driver=driver)
+    eigL, evL = sl.eigh(aL)
+
+    assert np.allclose(eig, eigL)
+    assert not np.allclose(ev, evL)

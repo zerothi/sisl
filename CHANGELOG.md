@@ -8,6 +8,9 @@ we hit release version 1.0.0.
 
 ## [0.15.1] - YYYY-MM-DD
 
+### Added
+- enabled `lowdin` to return the Lowdin transformation matrix, and also
+  allow it to be calculated using SVD
 
 
 ## [0.15.0] - 2024-08-13
