@@ -3721,7 +3721,7 @@ class Geometry(
         # supercell by add_R in each direction.
         # For extremely skewed lattices this will be way too much, hence we make
         # them square.
-        o = self.lattice.to.Cuboid(True)
+        o = self.lattice.to.Cuboid(orthogonal=True)
         lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
         # Retrieve all atoms within the grid supercell
