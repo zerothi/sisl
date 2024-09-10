@@ -12,6 +12,9 @@ we hit release version 1.0.0.
 - enabled `lowdin` to return the Lowdin transformation matrix, and also
   allow it to be calculated using SVD
 
+### Fixed
+- bugfix for wrong call `Lattice.to.cuboid` which caused wrong densities, #821
+
 
 ## [0.15.0] - 2024-08-13
 
