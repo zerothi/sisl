@@ -38,7 +38,7 @@ from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.unit.siesta import unit_convert
 
 from .._help import grid_reduce_indices
-from ..sile import SileError, SileWarning, add_sile
+from ..sile import MissingFermiLevelWarning, SileError, SileWarning, add_sile
 from ._help import *
 from .sile import SileBinSiesta
 
@@ -790,7 +790,7 @@ class hsxSileSiesta(SileBinSiesta):
     @property
     def version(self) -> int:
         """The version of the file"""
-        return _siesta.read_hsx_version(self.file)
+        return int(_siesta.read_hsx_version(self.file))
 
     def _xij2system(self, xij, geometry=None, **kwargs):
         """Create a new geometry with *correct* nsc and somewhat correct xyz
@@ -1351,6 +1351,11 @@ class hsxSileSiesta(SileBinSiesta):
         if no_s // no == np.prod(geom.nsc):
             _csr_from_siesta(geom, H._csr)
 
+        warn(
+            MissingFermiLevelWarning(
+                f"{self.file} does not contain Ef, electronic structure not shifted to Fermi level."
+            )
+        )
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def _r_hamiltonian_v1(self, **kwargs):
