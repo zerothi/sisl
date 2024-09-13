@@ -2158,17 +2158,6 @@ class _gfSileSiesta(SileBinSiesta):
 
     """
 
-    def _setup(self, *args, **kwargs):
-        """Simple setup that needs to be overwritten"""
-        super()._setup(*args, **kwargs)
-
-        # The unit convention used for energy-points
-        # This is necessary until Siesta uses CODATA values
-        if kwargs.get("version", "old").lower() in ("old", "4.1"):
-            self._E_Ry2eV = 13.60580
-        else:
-            self._E_Ry2eV = _Ry2eV
-
     def _open_gf(self, mode, rewind=False):
         self._fortran_open(mode, rewind=rewind)
 
@@ -2407,7 +2396,7 @@ class _gfSileSiesta(SileBinSiesta):
             self._no_u = no_u * 2
         else:
             self._no_u = no_u
-        self._E = E * self._E_Ry2eV
+        self._E = E * _Ry2eV
         self._k = k.T
 
         return nspin, no_u, self._k, self._E
@@ -2626,7 +2615,7 @@ class _gfSileSiesta(SileBinSiesta):
             mu * _eV2Ry,
             _toF(k.T, np.float64),
             w,
-            self._E / self._E_Ry2eV,
+            self._E / _Ry2eV,
             **sizes,
         )
         self._fortran_check("write_header", "could not write header information.")
@@ -2649,7 +2638,7 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.write_gf_hs(
             self._iu,
             self._ik,
-            self._E[self._iE] / self._E_Ry2eV,
+            self._E[self._iE] / _Ry2eV,
             _toF(H, np.complex128, _eV2Ry),
             _toF(S, np.complex128),
             no_u=no,
@@ -2677,7 +2666,7 @@ class _gfSileSiesta(SileBinSiesta):
             self._iu,
             self._ik,
             self._iE,
-            self._E[self._iE] / self._E_Ry2eV,
+            self._E[self._iE] / _Ry2eV,
             _toF(SE, np.complex128, _eV2Ry),
             no_u=no,
         )
