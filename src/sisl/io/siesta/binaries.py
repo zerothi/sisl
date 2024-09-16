@@ -1307,11 +1307,27 @@ class hsxSileSiesta(SileBinSiesta):
         Only valid for files created by Siesta >=5.
         """
         if self.version == 0:
-            # It isn't implemented in the old file format.
-            warn(f"{self!r} does not contain the fermi-level (too old version file).")
+            warn(
+                MissingFermiLevelWarning(
+                    f"{self.file} does not contain Ef, too old version file."
+                )
+            )
             return None
         Ef = _siesta.read_hsx_ef(self.file)
         self._fortran_check("read_fermi_level", "could not read Fermi-level")
+        if Ef >= np.finfo(np.float32).max:
+            # we can't compare with math.isinf, as it doesn't work.
+            # fortran huge returns the maximum represented value that is not
+            # inf.
+            # So we will just compare against the max of the float.
+            # This should then also work for HSX files in single-precision.
+            warn(
+                MissingFermiLevelWarning(
+                    f"{self.file} does not contain a usable Ef, likely the Fermi-level hasn't been calculated by Siesta? (option = H.Setup.Only)"
+                )
+            )
+            Ef = 0.0
+
         return Ef * _Ry2eV
 
     def _r_hamiltonian_v0(self, **kwargs):

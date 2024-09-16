@@ -10,6 +10,7 @@ we hit release version 1.0.0.
 ### Fixed
 - fixed warning raised when reading electronic structure without Ef, #826
 - fixed precision writing of energies in GF files (siesta), #827
+- fixed reading `HSetupOnly` HSX files from Siesta, #828
 
 
 ## [0.15.1] - 2024-09-10
