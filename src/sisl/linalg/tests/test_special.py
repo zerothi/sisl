@@ -63,7 +63,7 @@ def test_invsqrth_offset():
     assert np.allclose(sa1, sa2)
 
 
-@pytest.mark.parametrize("driver", ["eigh", "gesdd", "gesvd"])
+@pytest.mark.parametrize("driver", ["eigh", "gesdd", "gesvd", "schur"])
 def test_lowdin(driver):
     # offsetting eigenvalues only works if the matrix is
     # positive semi-definite

@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import Literal
 
 import numpy as np
+import scipy.linalg as la
 
 from .base import eigh, svd
 
@@ -59,7 +60,7 @@ def lowdin(
     a,
     b=None,
     overwrite_a: bool = False,
-    driver: Literal["eigh", "gesdd", "gesvd"] = "eigh",
+    driver: Literal["eigh", "gesdd", "gesvd", "schur"] = "eigh",
 ):
     r"""Calculate the Lowdin transformation matrix, optionally convert the matrix `b` into the orthogonal basis
 
@@ -94,6 +95,8 @@ def lowdin(
         )
         a12 = U @ Vh
         del U, _, Vh
+    elif driver == "schur":
+        a12 = la.sqrtm(a)
     else:
         raise ValueError(f"lowdin: got unknown driver argument '{driver}'")
 
