@@ -422,6 +422,46 @@ class TestDensityMatrix:
         assert not np.allclose(D_mull[1], d_mull[3])
         assert np.allclose(D_mull[0], d_mull[0])
 
+    def test_spin_rotate_pol_full(self):
+        bond = 1.42
+        sq3h = 3.0**0.5 * 0.5
+        lattice = Lattice(
+            np.array(
+                [[1.5, sq3h, 0.0], [1.5, -sq3h, 0.0], [0.0, 0.0, 10.0]], np.float64
+            )
+            * bond,
+            nsc=[3, 3, 1],
+        )
+
+        orb = AtomicOrbital("px", R=bond * 1.001)
+        C = Atom(6, orb)
+        g = Geometry(
+            np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], np.float64) * bond,
+            atoms=C,
+            lattice=lattice,
+        )
+        D = DensityMatrix(g, spin=Spin("p"))
+        D.construct([[0.1, bond + 0.01], [(1.0, 0), (0.1, 0.0)]])
+
+        D_mull = D.mulliken()
+        assert D_mull.shape == (2, len(D))
+
+        # Euler (noop)
+        d = D.spin_rotate([0, 0, 64], rad=False)
+        assert d.spin.is_polarized
+        assert np.allclose(d.mulliken()[1], D.mulliken()[1])
+        d = D.spin_rotate([180, 180, 64], rad=False)
+        assert d.spin.is_polarized
+        assert np.allclose(d.mulliken()[1], D.mulliken()[1])
+
+        # Euler (full)
+        d = D.spin_rotate([0, 180, 64], rad=False)
+        assert d.spin.is_polarized
+        assert np.allclose(d.mulliken()[1], -D.mulliken()[1])
+        d = D.spin_rotate([180, 0, 64], rad=False)
+        assert d.spin.is_polarized
+        assert np.allclose(d.mulliken()[1], -D.mulliken()[1])
+
     def test_spin_rotate_nc(self):
         bond = 1.42
         sq3h = 3.0**0.5 * 0.5
