@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-2157c89</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1-d54955e</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=80742628"></script>
+        <script src="../../../../_static/documentation_options.js?v=94f02c60"></script>
         <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2157c89
+                0.1-d54955e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -161,7 +161,7 @@
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
 
 <span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="n">grid_reduce_indices</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">SileWarning</span><span class="p">,</span> <span class="n">add_sile</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">MissingFermiLevelWarning</span><span class="p">,</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">SileWarning</span><span class="p">,</span> <span class="n">add_sile</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileBinSiesta</span>
 
@@ -946,7 +946,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The version of the file&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_xij2system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xij</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new geometry with *correct* nsc and somewhat correct xyz</span>
@@ -1474,11 +1474,27 @@
 <span class="sd">        Only valid for files created by Siesta &gt;=5.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># It isn&#39;t implemented in the old file format.</span>
-            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2"> does not contain the fermi-level (too old version file).&quot;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="n">MissingFermiLevelWarning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> does not contain Ef, too old version file.&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">Ef</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_ef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_fermi_level&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read Fermi-level&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Ef</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
+            <span class="c1"># we can&#39;t compare with math.isinf, as it doesn&#39;t work.</span>
+            <span class="c1"># fortran huge returns the maximum represented value that is not</span>
+            <span class="c1"># inf.</span>
+            <span class="c1"># So we will just compare against the max of the float.</span>
+            <span class="c1"># This should then also work for HSX files in single-precision.</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="n">MissingFermiLevelWarning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> does not contain a usable Ef, likely the Fermi-level hasn&#39;t been calculated by Siesta? (option = H.Setup.Only)&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">Ef</span> <span class="o">=</span> <span class="mf">0.0</span>
+
         <span class="k">return</span> <span class="n">Ef</span> <span class="o">*</span> <span class="n">_Ry2eV</span></div>
 
 
@@ -1519,6 +1535,11 @@
         <span class="k">if</span> <span class="n">no_s</span> <span class="o">//</span> <span class="n">no</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">nsc</span><span class="p">):</span>
             <span class="n">_csr_from_siesta</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
 
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="n">MissingFermiLevelWarning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> does not contain Ef, electronic structure not shifted to Fermi level.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_r_hamiltonian_v1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2345,17 +2366,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple setup that needs to be overwritten&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># The unit convention used for energy-points</span>
-        <span class="c1"># This is necessary until Siesta uses CODATA values</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;old&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">,</span> <span class="s2">&quot;4.1&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span> <span class="o">=</span> <span class="mf">13.60580</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span> <span class="o">=</span> <span class="n">_Ry2eV</span>
-
     <span class="k">def</span> <span class="nf">_open_gf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_open</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="n">rewind</span><span class="p">)</span>
 
@@ -2594,7 +2604,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_no_u</span> <span class="o">=</span> <span class="n">no_u</span> <span class="o">*</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_no_u</span> <span class="o">=</span> <span class="n">no_u</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">=</span> <span class="n">E</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">=</span> <span class="n">E</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">T</span>
 
         <span class="k">return</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">no_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span>
@@ -2813,7 +2823,7 @@
             <span class="n">mu</span> <span class="o">*</span> <span class="n">_eV2Ry</span><span class="p">,</span>
             <span class="n">_toF</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
             <span class="n">w</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">/</span> <span class="n">_Ry2eV</span><span class="p">,</span>
             <span class="o">**</span><span class="n">sizes</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;write_header&quot;</span><span class="p">,</span> <span class="s2">&quot;could not write header information.&quot;</span><span class="p">)</span>
@@ -2836,7 +2846,7 @@
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_gf_hs</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">]</span> <span class="o">/</span> <span class="n">_Ry2eV</span><span class="p">,</span>
             <span class="n">_toF</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">_eV2Ry</span><span class="p">),</span>
             <span class="n">_toF</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
             <span class="n">no_u</span><span class="o">=</span><span class="n">no</span><span class="p">,</span>
@@ -2864,7 +2874,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">]</span> <span class="o">/</span> <span class="n">_Ry2eV</span><span class="p">,</span>
             <span class="n">_toF</span><span class="p">(</span><span class="n">SE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">_eV2Ry</span><span class="p">),</span>
             <span class="n">no_u</span><span class="o">=</span><span class="n">no</span><span class="p">,</span>
         <span class="p">)</span>

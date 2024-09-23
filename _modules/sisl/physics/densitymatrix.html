@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.densitymatrix &mdash; sisl 0.1-2157c89</title>
+  <title>sisl.physics.densitymatrix &mdash; sisl 0.1-d54955e</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=80742628"></script>
+        <script src="../../../_static/documentation_options.js?v=94f02c60"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2157c89
+                0.1-d54955e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -202,7 +202,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        angles : (3,)</span>
 <span class="sd">           angle to rotate spin boxes around the Cartesian directions</span>
-<span class="sd">           :math:`x`, :math:`y` and :math:`z`, respectively</span>
+<span class="sd">           :math:`x`, :math:`y` and :math:`z`, respectively (Euler angles).</span>
 <span class="sd">        rad : bool, optional</span>
 <span class="sd">           Determines the unit of `angles`, for true it is in radians</span>
 
@@ -219,23 +219,44 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rad</span><span class="p">:</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
+        <span class="c1"># Helper routines</span>
         <span class="k">def</span> <span class="nf">cos_sin</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-        <span class="n">calpha</span><span class="p">,</span> <span class="n">salpha</span> <span class="o">=</span> <span class="n">cos_sin</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">cbeta</span><span class="p">,</span> <span class="n">sbeta</span> <span class="o">=</span> <span class="n">cos_sin</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">cgamma</span><span class="p">,</span> <span class="n">sgamma</span> <span class="o">=</span> <span class="n">cos_sin</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="k">del</span> <span class="n">cos_sin</span>
+        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">1080</span>
+
+        <span class="n">c</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">cos_sin</span><span class="p">,</span> <span class="n">angles</span><span class="p">)))</span>
 
         <span class="c1"># define rotation matrix</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="c1"># Rz</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">cgamma</span><span class="p">,</span> <span class="o">-</span><span class="n">sgamma</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">sgamma</span><span class="p">,</span> <span class="n">cgamma</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-            <span class="c1"># Ry</span>
-            <span class="o">.</span><span class="n">dot</span><span class="p">([[</span><span class="n">cbeta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sbeta</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">sbeta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cbeta</span><span class="p">]])</span>
-            <span class="c1"># Rx</span>
-            <span class="o">.</span><span class="n">dot</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">calpha</span><span class="p">,</span> <span class="o">-</span><span class="n">salpha</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">salpha</span><span class="p">,</span> <span class="n">calpha</span><span class="p">]])</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">calpha</span><span class="p">,</span> <span class="n">cbeta</span><span class="p">,</span> <span class="n">cgamma</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="n">salpha</span><span class="p">,</span> <span class="n">sbeta</span><span class="p">,</span> <span class="n">sgamma</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="c1"># Rz</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">cgamma</span><span class="p">,</span> <span class="o">-</span><span class="n">sgamma</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">sgamma</span><span class="p">,</span> <span class="n">cgamma</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+                <span class="c1"># Ry</span>
+                <span class="o">.</span><span class="n">dot</span><span class="p">([[</span><span class="n">cbeta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sbeta</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">sbeta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cbeta</span><span class="p">]])</span>
+                <span class="c1"># Rx</span>
+                <span class="o">.</span><span class="n">dot</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">calpha</span><span class="p">,</span> <span class="o">-</span><span class="n">salpha</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">salpha</span><span class="p">,</span> <span class="n">calpha</span><span class="p">]])</span>
+            <span class="p">)</span>
+
+            <span class="c1"># if the spin is not rotated around y, then no rotation has happened</span>
+            <span class="c1"># x just puts the correct place, and z rotation is a no-op.</span>
+            <span class="n">is_pol_noop</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="ow">and</span> <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+            <span class="p">)</span>
+
+            <span class="n">is_pol_flip</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="ow">and</span> <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.spin_rotate got wrong number of angles (expected 3, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -293,13 +314,11 @@
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-                <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">1080</span>
-
             <span class="c1"># figure out if this is only rotating 180 for x or y</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="ow">and</span> <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span>
-                <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">close</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_pol_noop</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">is_pol_flip</span><span class="p">:</span>
                 <span class="c1"># flip spin</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
@@ -481,7 +500,7 @@
 
 <div class="viewcode-block" id="_densitymatrix.mulliken">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.densitymatrix._densitymatrix.html#sisl.physics._densitymatrix.mulliken">[docs]</a>
-    <span class="k">def</span> <span class="nf">mulliken</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;orbital&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mulliken</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;orbital&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Mulliken charges from the density matrix</span>
 
 <span class="sd">        See :ref:`this document &lt;math_convention&gt;` for details on the mathematical notation.</span>
@@ -514,7 +533,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        projection : {&#39;orbital&#39;, &#39;atom&#39;}</span>
+<span class="sd">        projection :</span>
 <span class="sd">            how the Mulliken charges are returned.</span>
 <span class="sd">            Can be atom-resolved, orbital-resolved or the</span>
 <span class="sd">            charge matrix (off-diagonal elements)</span>
@@ -591,7 +610,9 @@
 
 <div class="viewcode-block" id="_densitymatrix.bond_order">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.densitymatrix._densitymatrix.html#sisl.physics._densitymatrix.bond_order">[docs]</a>
-    <span class="k">def</span> <span class="nf">bond_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mayer&quot;</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bond_order</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mayer&quot;</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bond-order calculation using various methods</span>
 
 <span class="sd">        For ``method=&#39;wiberg&#39;``, the bond-order is calculated as:</span>
@@ -636,7 +657,7 @@
 <span class="sd">        method : {mayer, wiberg, mulliken}[:spin]</span>
 <span class="sd">            which method to calculate the bond-order with</span>
 
-<span class="sd">        projection : {atom, orbital}</span>
+<span class="sd">        projection :</span>
 <span class="sd">            whether the returned matrix is in orbital form, or in atom form.</span>
 <span class="sd">            If orbital is used, then the above formulas will be changed</span>
 
@@ -1397,7 +1418,11 @@
 
 <div class="viewcode-block" id="DensityMatrix.orbital_momentum">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.orbital_momentum">[docs]</a>
-    <span class="k">def</span> <span class="nf">orbital_momentum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;onsite&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">orbital_momentum</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;orbital&quot;</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;onsite&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;onsite&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate orbital angular momentum on either atoms or orbitals</span>
 
 <span class="sd">        Currently this implementation equals the Siesta implementation in that</span>
@@ -1414,9 +1439,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        projection : {&#39;orbital&#39;, &#39;atom&#39;}</span>
+<span class="sd">        projection :</span>
 <span class="sd">            whether the angular momentum is resolved per atom, or per orbital</span>
-<span class="sd">        method : {&#39;onsite&#39;}</span>
+<span class="sd">        method :</span>
 <span class="sd">            method used to calculate the angular momentum</span>
 
 <span class="sd">        Returns</span>

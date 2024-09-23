@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.RecursiveSI &mdash; sisl 0.1-2157c89</title>
+  <title>sisl.physics.RecursiveSI &mdash; sisl 0.1-d54955e</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
@@ -24,7 +24,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=80742628"></script>
+        <script src="../../_static/documentation_options.js?v=94f02c60"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2157c89
+                0.1-d54955e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -250,7 +250,7 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.12)"><em>complex</em></a>) – energy at which the calculation will take place</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point at which the Green function should be evaluated.
 the k-point should be in units of the reciprocal lattice vectors.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a>) – the resulting data type</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><em>dtype</em></a>) – the resulting data type</p></li>
 <li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – convergence criteria for the recursion</p></li>
 <li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.parent.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.parent.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
 </ul>
@@ -259,7 +259,7 @@ the k-point should be in units of the reciprocal lattice vectors.</p></li>
 <dd class="field-even"><p>the self-energy corresponding to the semi-infinite direction</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -287,7 +287,7 @@ the k-point should be in units of the reciprocal lattice vectors.</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.12)"><em>complex</em></a>) – energy at which the calculation will take place</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point at which the self-energy should be evaluated.
 the k-point should be in units of the reciprocal lattice vectors.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a>) – the resulting data type</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><em>dtype</em></a>) – the resulting data type</p></li>
 <li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – convergence criteria for the recursion</p></li>
 <li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – if true, <span class="math notranslate nohighlight">\(E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma\)</span> is returned, else
 <span class="math notranslate nohighlight">\(\boldsymbol\Sigma\)</span> is returned (default).</p></li>
@@ -298,7 +298,7 @@ the k-point should be in units of the reciprocal lattice vectors.</p></li>
 <dd class="field-even"><p>the self-energy corresponding to the semi-infinite direction</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -315,7 +315,7 @@ I.e. only when the reference energy is equivalent in the left/right schemes does
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.12)"><em>complex</em></a>) – energy at which the calculation will take place, if complex, the hosting <code class="docutils literal notranslate"><span class="pre">eta</span></code> won’t be used.</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point at which the self-energy should be evaluated.
 the k-point should be in units of the reciprocal lattice vectors.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.0)"><em>dtype</em></a><em>, </em><em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><em>dtype</em></a><em>, </em><em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
 <li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – convergence criteria for the recursion</p></li>
 <li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – if true, <span class="math notranslate nohighlight">\(E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma\)</span> is returned, else
 <span class="math notranslate nohighlight">\(\boldsymbol\Sigma\)</span> is returned (default).</p></li>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-2157c89</title>
+  <title>sisl.io.siesta.fdf &mdash; sisl 0.1-d54955e</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
@@ -23,7 +23,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=80742628"></script>
+        <script src="../../../../_static/documentation_options.js?v=94f02c60"></script>
         <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,7 +55,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2157c89
+                0.1-d54955e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -163,6 +163,7 @@
 
 <span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MissingFermiLevelWarning</span><span class="p">,</span>
     <span class="n">SileCDF</span><span class="p">,</span>
     <span class="n">SileError</span><span class="p">,</span>
     <span class="n">add_sile</span><span class="p">,</span>
@@ -877,7 +878,7 @@
 
     <span class="k">def</span> <span class="nf">_r_lattice_nsc_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CDF.Save&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -1122,7 +1123,7 @@
 <div class="viewcode-block" id="fdfSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_fermi_level">[docs]</a>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read fermi-level from output of the calculation</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read Fermi-level from output of the calculation</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1144,6 +1145,7 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">:</span>
                     <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">(read_fermi_level) found in file=</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
+        <span class="n">warn</span><span class="p">(</span><span class="n">MissingFermiLevelWarning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> could not find any Ef values.&quot;</span><span class="p">))</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -2472,15 +2474,17 @@
             <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_hamiltonian_hsx</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;  got version = </span><span class="si">{</span><span class="n">hsx</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;atoms&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_basis</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;^hsx&quot;</span><span class="p">)</span>
-            <span class="n">H</span> <span class="o">=</span> <span class="n">hsx</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">hsx</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># TODO python 3.11 (category= added)</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">list_warns</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">)</span>
+                <span class="n">H</span> <span class="o">=</span> <span class="n">hsx</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">list_warns</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span>
+                <span class="n">list_warns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">MissingFermiLevelWarning</span>
+            <span class="p">):</span>
                 <span class="n">Ef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_fermi_level</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">Ef</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2">.read_hamiltonian from HSX file failed shifting to the Fermi-level.&quot;</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">Ef</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">H</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="n">Ef</span><span class="p">)</span>
+                <span class="c1"># else Ef is None, then a warning should have been raised.</span>
         <span class="k">return</span> <span class="n">H</span>
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Manipulate a FDF file.&quot;</span><span class="p">)</span>
