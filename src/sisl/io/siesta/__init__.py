@@ -37,6 +37,7 @@ Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO
    kpSileSiesta - k-points from simulation
    rkpSileSiesta - k-points to simulation
    structSileSiesta - geometry in STRUCT_* files
+   timesSileSiesta - timing output from siesta
 
 
 The TranSiesta specific output files are:
@@ -63,6 +64,7 @@ from .siesta_grid import *
 from .siesta_nc import *
 from .stdout import *
 from .struct import *
+from .times import *
 from .transiesta_grid import *
 from .vibra import *
 from .xv import *

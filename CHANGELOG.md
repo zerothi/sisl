@@ -7,6 +7,9 @@ we hit release version 1.0.0.
 
 ## [0.15.2] - YYYY-MM-DD
 
+### Added
+- added `timesSileSiesta` which can read siesta TIMES output
+
 ### Fixed
 - fixed warning raised when reading electronic structure without Ef, #826
 - fixed precision writing of energies in GF files (siesta), #827
