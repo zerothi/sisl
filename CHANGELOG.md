@@ -11,6 +11,7 @@ we hit release version 1.0.0.
 - added `timesSileSiesta` which can read siesta TIMES output
 
 ### Fixed
+- a read problem for very big simulations (related to `orbindxSileSiesta`)
 - bug-fix for `tbtSileTBtrans.Eindex` handling of integers, #829
   This is a regression fix, integers will now be handled differently
   than prior releases.
