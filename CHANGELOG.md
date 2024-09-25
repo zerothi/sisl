@@ -11,9 +11,16 @@ we hit release version 1.0.0.
 - added `timesSileSiesta` which can read siesta TIMES output
 
 ### Fixed
+- bug-fix for `tbtSileTBtrans.Eindex` handling of integers, #829
+  This is a regression fix, integers will now be handled differently
+  than prior releases.
+  A warning is raised to inform users.
 - fixed warning raised when reading electronic structure without Ef, #826
 - fixed precision writing of energies in GF files (siesta), #827
 - fixed reading `HSetupOnly` HSX files from Siesta, #828
+
+### Changed
+- `tbtSileTBtrans.Eindex` changed, see #829 for details.
 
 
 ## [0.15.1] - 2024-09-10

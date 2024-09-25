@@ -10,6 +10,7 @@ except Exception:
 
 import numpy as np
 
+from sisl._core import Geometry
 from sisl._internal import set_module
 from sisl.physics import DensityMatrix
 from sisl.unit.siesta import unit_convert
@@ -17,7 +18,7 @@ from sisl.utils import collect_action, default_ArgumentParser, list2str
 
 from ..sile import add_sile
 from .sile import missing_input_fdf
-from .tbt import tbtncSileTBtrans
+from .tbt import EType, NormType, tbtncSileTBtrans
 
 __all__ = ["tbtprojncSileTBtrans"]
 
@@ -92,12 +93,12 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     def ADOS(
         self,
         elec_mol_proj,
-        E=None,
+        E: Optional[EType] = None,
         kavg=True,
         atoms=None,
         orbitals=None,
-        sum=True,
-        norm="none",
+        sum: bool = True,
+        norm: NormType = "none",
     ):
         r"""Projected spectral density of states (DOS) (1/eV)
 
@@ -125,9 +126,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atoms` keyword
-        sum : bool, optional
+        sum :
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
-        norm : {'none', 'atom', 'orbital', 'all'}
+        norm :
            how the normalization of the summed DOS is performed (see `norm` routine).
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
@@ -142,7 +143,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             * eV2Ry
         )
 
-    def orbital_transmission(self, E, elec_mol_proj, *args, **kwargs):
+    def orbital_transmission(self, E: EType, elec_mol_proj, *args, **kwargs):
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
         super().orbital_transmission(E, mol_proj_elec, *args, **kwargs)
 
@@ -198,7 +199,13 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
     @missing_input_fdf([("TBT.Projs.DM.A", "True")])
     def Adensity_matrix(
-        self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None, geometry=None
+        self,
+        elec_mol_proj,
+        E: EType,
+        kavg=True,
+        isc=None,
+        orbitals=None,
+        geometry: Optional[Geometry] = None,
     ):
         r"""Projected spectral function density matrix at energy `E` (1/eV)
 
@@ -218,10 +225,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         ----------
         elec_mol_proj: str or tuple
            the projected electrode of originating electrons
-        E : float or int
-           the energy or the energy index of density matrix. If an integer
-           is passed it is the index, otherwise the index corresponding to
-           ``Eindex(E)`` is used.
+        E :
+           the density matrix corresponding to the energy.
         kavg: bool, int or array_like, optional
            whether the returned density matrix is k-averaged, an explicit k-point
            or a selection of k-points
@@ -232,7 +237,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         orbitals : array-like or dict, optional
            only retain density matrix elements for a subset of orbitals, all
            other are set to 0.
-        geometry: Geometry, optional
+        geometry:
            geometry that will be associated with the density matrix. By default the
            geometry contained in this file will be used. However, then the
            atomic species are probably incorrect, nor will the orbitals contain
@@ -259,7 +264,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         return DM
 
     @missing_input_fdf([("TBT.Projs.COOP.A", "True")])
-    def orbital_ACOOP(self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None):
+    def orbital_ACOOP(
+        self, elec_mol_proj, E: EType, kavg=True, isc=None, orbitals=None
+    ):
         r""" Orbital COOP analysis of the projected spectral function
 
         This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
@@ -290,10 +297,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         ----------
         elec_mol_proj: str or tuple
            the electrode of the spectral function
-        E: float or int
-           the energy or the energy index of COOP. If an integer
-           is passed it is the index, otherwise the index corresponding to
-           ``Eindex(E)`` is used.
+        E:
+           the COOP values corresponding to the energy.
         kavg: bool, int or array_like, optional
            whether the returned COOP is k-averaged, an explicit k-point
            or a selection of k-points
@@ -328,7 +333,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         return COOP
 
     @missing_input_fdf([("TBT.Projs.COHP.A", "True")])
-    def orbital_ACOHP(self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None):
+    def orbital_ACOHP(
+        self, elec_mol_proj, E: EType, kavg=True, isc=None, orbitals=None
+    ):
         r"""Orbital COHP analysis of the projected spectral function
 
         This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
@@ -345,10 +352,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         ----------
         elec_mol_proj: str or tuple
            the electrode of the projected spectral function
-        E: float or int
-           the energy or the energy index of COHP. If an integer
-           is passed it is the index, otherwise the index corresponding to
-           ``Eindex(E)`` is used.
+        E:
+           the COHP values corresponding to the energy.
         kavg: bool, int or array_like, optional
            whether the returned COHP is k-averaged, an explicit k-point
            or a selection of k-points

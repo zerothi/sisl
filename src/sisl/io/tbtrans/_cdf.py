@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from numbers import Integral
+from typing import Literal, Optional, Union
 
 import numpy as np
 
@@ -25,6 +26,9 @@ from .sile import SileCDFTBtrans
 __all__ = ["_ncSileTBtrans", "_devncSileTBtrans"]
 
 
+ElecType = Union[str, int]
+EType = Union[str, float]
+
 Bohr2Ang = unit_convert("Bohr", "Ang")
 Ry2eV = unit_convert("Ry", "eV")
 Ry2K = unit_convert("Ry", "K")
@@ -39,7 +43,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
     """
 
     @lru_cache(maxsize=1)
-    def read_lattice(self):
+    def read_lattice(self) -> Lattice:
         """Returns `Lattice` object from this file"""
         cell = _a.arrayd(np.copy(self.cell))
         cell.shape = (3, 3)
@@ -49,7 +53,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
         lattice.sc_off = self._value("isc_off")
         return lattice
 
-    def read_geometry(self, *args, **kwargs):
+    def read_geometry(self, *args, **kwargs) -> Geometry:
         """Returns `Geometry` object from this file"""
         lattice = self.read_lattice()
 
@@ -85,7 +89,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def geometry(self):
+    def geometry(self) -> Geometry:
         """The associated geometry from this file"""
         return self.read_geometry()
 
@@ -101,13 +105,13 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def cell(self):
+    def cell(self) -> np.ndarray:
         """Unit cell in file"""
         return self._value("cell") * Bohr2Ang
 
     @property
     @lru_cache(maxsize=1)
-    def na(self):
+    def na(self) -> int:
         """Returns number of atoms in the cell"""
         return len(self._dimension("na_u"))
 
@@ -115,7 +119,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def no(self):
+    def no(self) -> int:
         """Returns number of orbitals in the cell"""
         return len(self._dimension("no_u"))
 
@@ -123,7 +127,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def xyz(self):
+    def xyz(self) -> np.ndarray:
         """Atomic coordinates in file"""
         return self._value("xa") * Bohr2Ang
 
@@ -131,13 +135,13 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def lasto(self):
+    def lasto(self) -> np.ndarray:
         """Last orbital of corresponding atom"""
         return self._value("lasto") - 1
 
     @property
     @lru_cache(maxsize=1)
-    def k(self):
+    def k(self) -> np.ndarray:
         """Sampled k-points in file"""
         return self._value("kpt")
 
@@ -145,7 +149,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def wk(self):
+    def wk(self) -> np.ndarray:
         """Weights of k-points in file"""
         return self._value("wkpt")
 
@@ -153,7 +157,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def nk(self):
+    def nk(self) -> int:
         """Number of k-points in file"""
         return len(self.dimensions["nkpt"])
 
@@ -161,33 +165,66 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def E(self):
+    def E(self) -> np.ndarray:
         """Sampled energy-points in file"""
         return self._value("E") * Ry2eV
 
     @property
     @lru_cache(maxsize=1)
-    def ne(self):
+    def ne(self) -> int:
         """Number of energy-points in file"""
         return len(self._dimension("ne"))
 
     nE = ne
 
-    def Eindex(self, E):
+    def Eindex(
+        self, E: Etype, method: Literal["nearest", "above", "below"] = "nearest"
+    ):
         """Return the closest energy index corresponding to the energy ``E``
 
         Parameters
         ----------
-        E : float or int or str
+        E :
            if `int`, return it-self, else return the energy index which is
            closests to the energy.
            For a `str` it will be parsed to a float and treated as such.
+        method :
+            how non-equal values should be located.
+            * `nearest` takes the closests value
+            * `above` takes the closests value above `E`.
+            * `below` takes the closests value below `E`.
         """
-        if isinstance(E, Integral):
-            return E
-        elif isinstance(E, str):
-            E = float(E)
-        idxE = np.abs(self.E - E).argmin()
+        warn(
+            f"{self.__class__.__name__}.Eindex handles int's the same as floats [>0.15.2]."
+        )
+        E = float(E)
+
+        dE = self.E - E
+        if method == "nearest":
+            idxE = np.abs(dE).argmin()
+
+        elif method == "above":
+            valid_idx = (dE >= 0).nonzero()[0]
+            if len(valid_idx) == 0:
+                raise ValueError(
+                    f"{self.__class__.__name__}.Eindex could not "
+                    f"locate any energy value above {E} eV"
+                )
+            idxE = valid_idx[dE[valid_idx].argmin()]
+
+        elif method == "below":
+            valid_idx = (dE <= 0).nonzero()[0]
+            if len(valid_idx) == 0:
+                raise ValueError(
+                    f"{self.__class__.__name__}.Eindex could not "
+                    f"locate any energy value below {E} eV"
+                )
+            idxE = valid_idx[dE[valid_idx].argmax()]
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.Eindex got wrong method argument {method=}"
+            )
+
         ret_E = self.E[idxE]
         if abs(ret_E - E) > 5e-3:
             warn(
@@ -201,7 +238,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
             )
         return idxE
 
-    def _bias_window_integrator(self, elec_from=0, elec_to=1):
+    def _bias_window_integrator(self, elec_from: ElecType = 0, elec_to: ElecType = 1):
         r"""An integrator for the bias window between two electrodes
 
         Given two chemical potentials this returns an integrator (function) which
@@ -290,7 +327,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def na_b(self):
+    def na_b(self) -> int:
         """Number of atoms in the buffer region"""
         return len(self._dimension("na_b"))
 
@@ -305,7 +342,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
     # Device atoms and other quantities
     @property
     @lru_cache(maxsize=1)
-    def na_d(self):
+    def na_d(self) -> int:
         """Number of atoms in the device region"""
         return len(self._dimension("na_d"))
 
@@ -318,24 +355,24 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return self._value("a_dev") - 1
 
     @lru_cache(maxsize=16)
-    def a_elec(self, elec):
+    def a_elec(self, elec: ElecType):
         """Electrode atomic indices for the full geometry (sorted)
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            electrode to retrieve indices for
         """
         return self._value("a", self._elec(elec)) - 1
 
-    def a_down(self, elec, bulk=False):
+    def a_down(self, elec: ElecType, bulk: bool = False):
         """Down-folding atomic indices for a given electrode
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            electrode to retrieve indices for
-        bulk : bool, optional
+        bulk :
            whether the returned indices are *only* in the pristine electrode,
            or the down-folding region (electrode + downfolding region, not in device)
         """
@@ -356,16 +393,16 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     @property
     @lru_cache(maxsize=1)
-    def no_d(self):
+    def no_d(self) -> int:
         """Number of orbitals in the device region"""
         return len(self.dimensions["no_d"])
 
-    def _elec(self, elec):
+    def _elec(self, elec: ElecType):
         """Converts a string or integer to the corresponding electrode name
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            if `str` it is the *exact* electrode name, if `int` it is the electrode
            index
 
@@ -387,19 +424,19 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return list(self.groups.keys())
 
     @lru_cache(maxsize=16)
-    def chemical_potential(self, elec):
+    def chemical_potential(self, elec: ElecType) -> float:
         """Return the chemical potential associated with the electrode `elec`"""
         return self._value("mu", self._elec(elec))[0] * Ry2eV
 
     mu = chemical_potential
 
     @lru_cache(maxsize=16)
-    def eta(self, elec=None):
+    def eta(self, elec: Optional[ElecType] = None) -> float:
         """The imaginary part used when calculating the self-energies in eV (or for the device
 
         Parameters
         ----------
-        elec : str, int, optional
+        elec :
            electrode to extract the eta value from. If not specified (or None) the device
            region eta will be returned.
         """
@@ -409,12 +446,12 @@ class _devncSileTBtrans(_ncSileTBtrans):
             return 0.0  # unknown!
 
     @lru_cache(maxsize=16)
-    def electron_temperature(self, elec):
+    def electron_temperature(self, elec: ElecType) -> float:
         """Electron bath temperature [Kelvin]
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            electrode to extract the temperature from
 
         See Also
@@ -424,12 +461,12 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return self._value("kT", self._elec(elec))[0] * Ry2K
 
     @lru_cache(maxsize=16)
-    def kT(self, elec):
+    def kT(self, elec: ElecType) -> float:
         """Electron bath temperature [eV]
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            electrode to extract the temperature from
 
         See Also
@@ -439,12 +476,12 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return self._value("kT", self._elec(elec))[0] * Ry2eV
 
     @lru_cache(maxsize=16)
-    def bloch(self, elec):
+    def bloch(self, elec: ElecType):
         """Bloch-expansion coefficients for an electrode
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            bloch expansions of electrode
         """
         try:
@@ -453,86 +490,94 @@ class _devncSileTBtrans(_ncSileTBtrans):
             return _a.onesi(3)
 
     @lru_cache(maxsize=16)
-    def n_btd(self, elec=None):
+    def n_btd(self, elec: Optional[ElecType] = None) -> int:
         """Number of blocks in the BTD partioning
 
         Parameters
         ----------
-        elec : str or int, optional
+        elec :
            if None the number of blocks in the device region BTD matrix. Else
            the number of BTD blocks in the electrode down-folding.
         """
         return len(self._dimension("n_btd", self._elec(elec)))
 
     @lru_cache(maxsize=16)
-    def btd(self, elec=None):
+    def btd(self, elec: Optional[ElecType] = None):
         """Block-sizes for the BTD method in the device/electrode region
 
         Parameters
         ----------
-        elec : str or int, optional
+        elec :
            the BTD block sizes for the device (if none), otherwise the downfolding
            BTD block sizes for the electrode
         """
         return self._value("btd", self._elec(elec))
 
     @lru_cache(maxsize=16)
-    def na_down(self, elec):
+    def na_down(self, elec: ElecType) -> int:
         """Number of atoms in the downfolding region (without device downfolded region)
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            Number of downfolding atoms for electrode `elec`
         """
         return len(self._dimension("na_down", self._elec(elec)))
 
     @lru_cache(maxsize=16)
-    def no_e(self, elec):
+    def no_e(self, elec: ElecType) -> int:
         """Number of orbitals in the downfolded region of the electrode in the device
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            Specify the electrode to query number of downfolded orbitals
         """
         return len(self._dimension("no_e", self._elec(elec)))
 
     @lru_cache(maxsize=16)
-    def no_down(self, elec):
+    def no_down(self, elec: ElecType) -> int:
         """Number of orbitals in the downfolding region (plus device downfolded region)
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            Number of downfolding orbitals for electrode `elec`
         """
         return len(self._dimension("no_down", self._elec(elec)))
 
     @lru_cache(maxsize=16)
-    def pivot_down(self, elec):
+    def pivot_down(self, elec: ElecType):
         """Pivoting orbitals for the downfolding region of a given electrode
 
         Parameters
         ----------
-        elec : str or int
+        elec :
            the corresponding electrode to get the pivoting indices for
         """
         return self._value("pivot_down", self._elec(elec)) - 1
 
     @lru_cache(maxsize=32)
-    def pivot(self, elec=None, in_device=False, sort=False):
+    def pivot(
+        self,
+        elec: Optional[ElecType] = None,
+        in_device: bool = False,
+        sort: bool = False,
+    ):
         """Return the pivoting indices for a specific electrode (in the device region) or the device
 
         Parameters
         ----------
-        elec : str or int
-           the corresponding electrode to return the pivoting indices from
-        in_device : bool, optional
+        elec :
+            Can be None, to specify the device region pivot indices (default).
+            Otherwise, it corresponds to the pivoting indicies in the downfolding
+            region.
+
+        in_device :
            If ``True`` the pivoting table will be translated to the device region orbitals.
            If `sort` is also true, this would correspond to the orbitals directly translated
            to the geometry ``self.geometry.sub(self.a_dev)``.
-        sort : bool, optional
+        sort :
            Whether the returned indices are sorted. Mostly useful if you want to handle
            the device in a non-pivoted order.
 
@@ -602,7 +647,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return self.o2p(self.geometry.a2o(atoms, True))
 
-    def o2p(self, orbitals, elec=None):
+    def o2p(self, orbitals, elec: Optional[ElecType] = None):
         """Return the pivoting indices (0-based) for the orbitals, possibly on an electrode
 
         Will warn if an orbital requested is not in the device list of orbitals.
@@ -611,7 +656,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         ----------
         orbitals : array_like or int
            orbital indices (0-based)
-        elec : str or int or None, optional
+        elec :
            electrode to return pivoting indices of (if None it is the
            device pivoting indices).
         """
