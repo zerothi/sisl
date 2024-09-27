@@ -40,6 +40,7 @@ from sisl.utils.ranges import list2str
 
 from .._help import *
 from ..sile import (
+    MissingFermiLevelWarning,
     SileCDF,
     SileError,
     add_sile,
@@ -727,7 +728,7 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_lattice_nsc_nc(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".nc")
-        _track_file(self._r_lattice_nsc_nc, f, [("CDF.Save", "True")])
+        _track_file(self._r_lattice_nsc_nc, f, inputs=[("CDF.Save", "True")])
         if f.is_file():
             return ncSileSiesta(f).read_lattice_nsc()
         return None
@@ -961,7 +962,7 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def read_fermi_level(self, *args, **kwargs) -> float:
-        """Read fermi-level from output of the calculation
+        """Read Fermi-level from output of the calculation
 
         Parameters
         ----------
@@ -983,6 +984,7 @@ class fdfSileSiesta(SileSiesta):
                 if self.track:
                     info(f"{self.file}(read_fermi_level) found in file={f}")
                 return v
+        warn(MissingFermiLevelWarning(f"{self.file} could not find any Ef values."))
         return None
 
     def _r_fermi_level_nc(self):
@@ -2286,15 +2288,17 @@ class fdfSileSiesta(SileSiesta):
             _track_file(self._r_hamiltonian_hsx, f, f"  got version = {hsx.version}")
             if "atoms" not in kwargs:
                 kwargs["atoms"] = self.read_basis(order="^hsx")
-            H = hsx.read_hamiltonian(*args, **kwargs)
-            if hsx.version == 0:
+            # TODO python 3.11 (category= added)
+            with warnings.catch_warnings(record=True) as list_warns:
+                warnings.simplefilter("always")
+                H = hsx.read_hamiltonian(*args, **kwargs)
+            if list_warns and issubclass(
+                list_warns[-1].category, MissingFermiLevelWarning
+            ):
                 Ef = self.read_fermi_level()
-                if Ef is None:
-                    info(
-                        f"{self!r}.read_hamiltonian from HSX file failed shifting to the Fermi-level."
-                    )
-                else:
+                if Ef is not None:
                     H.shift(-Ef)
+                # else Ef is None, then a warning should have been raised.
         return H
 
     @default_ArgumentParser(description="Manipulate a FDF file.")

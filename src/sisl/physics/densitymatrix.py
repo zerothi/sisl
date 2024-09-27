@@ -75,7 +75,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         ----------
         angles : (3,)
            angle to rotate spin boxes around the Cartesian directions
-           :math:`x`, :math:`y` and :math:`z`, respectively
+           :math:`x`, :math:`y` and :math:`z`, respectively (Euler angles).
         rad : bool, optional
            Determines the unit of `angles`, for true it is in radians
 
@@ -92,23 +92,44 @@ class _densitymatrix(SparseOrbitalBZSpin):
         if not rad:
             angles = angles / 180 * np.pi
 
+        # Helper routines
         def cos_sin(a):
             return m.cos(a), m.sin(a)
 
-        calpha, salpha = cos_sin(angles[0])
-        cbeta, sbeta = cos_sin(angles[1])
-        cgamma, sgamma = cos_sin(angles[2])
-        del cos_sin
+        def close(a, v):
+            return abs(abs(a) - v) < np.pi / 1080
+
+        c, s = zip(*list(map(cos_sin, angles)))
 
         # define rotation matrix
-        R = (
-            # Rz
-            np.array([[cgamma, -sgamma, 0], [sgamma, cgamma, 0], [0, 0, 1]])
-            # Ry
-            .dot([[cbeta, 0, sbeta], [0, 1, 0], [-sbeta, 0, cbeta]])
-            # Rx
-            .dot([[1, 0, 0], [0, calpha, -salpha], [0, salpha, calpha]])
-        )
+        if len(angles) == 3:
+            calpha, cbeta, cgamma = c
+            salpha, sbeta, sgamma = s
+            R = (
+                # Rz
+                np.array([[cgamma, -sgamma, 0], [sgamma, cgamma, 0], [0, 0, 1]])
+                # Ry
+                .dot([[cbeta, 0, sbeta], [0, 1, 0], [-sbeta, 0, cbeta]])
+                # Rx
+                .dot([[1, 0, 0], [0, calpha, -salpha], [0, salpha, calpha]])
+            )
+
+            # if the spin is not rotated around y, then no rotation has happened
+            # x just puts the correct place, and z rotation is a no-op.
+            is_pol_noop = (
+                close(angles[0], 0)
+                and close(angles[1], 0)
+                or (close(angles[0], np.pi) and close(angles[1], np.pi))
+            )
+
+            is_pol_flip = (close(angles[0], np.pi) and close(angles[1], 0)) or (
+                close(angles[0], 0) and close(angles[1], np.pi)
+            )
+
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.spin_rotate got wrong number of angles (expected 3, got {len(angles)}"
+            )
 
         if self.spin.is_noncolinear:
             A = np.empty([len(self._csr._D), 3], dtype=self.dtype)
@@ -166,13 +187,11 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         elif self.spin.is_polarized:
 
-            def close(a, v):
-                return abs(abs(a) - v) < np.pi / 1080
-
             # figure out if this is only rotating 180 for x or y
-            if (close(angles[0], np.pi) and close(angles[1], 0)) or (
-                close(angles[0], 0) and close(angles[1], np.pi)
-            ):
+            if is_pol_noop:
+                out = self.copy()
+
+            elif is_pol_flip:
                 # flip spin
                 out = self.copy()
                 out._csr._D[:, [0, 1]] = out._csr._D[:, [1, 0]]
@@ -348,7 +367,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out
 
-    def mulliken(self, projection="orbital"):
+    def mulliken(self, projection: Literal["orbital", "atom"] = "orbital"):
         r""" Calculate Mulliken charges from the density matrix
 
         See :ref:`this document <math_convention>` for details on the mathematical notation.
@@ -381,7 +400,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        projection : {'orbital', 'atom'}
+        projection :
             how the Mulliken charges are returned.
             Can be atom-resolved, orbital-resolved or the
             charge matrix (off-diagonal elements)
@@ -455,7 +474,9 @@ class _densitymatrix(SparseOrbitalBZSpin):
             f"{self.__class__.__name__}.mulliken only allows projection [orbital, atom]"
         )
 
-    def bond_order(self, method: str = "mayer", projection: str = "atom"):
+    def bond_order(
+        self, method: str = "mayer", projection: Literal["atom", "orbital"] = "atom"
+    ):
         r"""Bond-order calculation using various methods
 
         For ``method='wiberg'``, the bond-order is calculated as:
@@ -500,7 +521,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         method : {mayer, wiberg, mulliken}[:spin]
             which method to calculate the bond-order with
 
-        projection : {atom, orbital}
+        projection :
             whether the returned matrix is in orbital form, or in atom form.
             If orbital is used, then the above formulas will be changed
 
@@ -1251,7 +1272,11 @@ class DensityMatrix(_densitymatrix):
         self._def_dim = self.UP
         return self
 
-    def orbital_momentum(self, projection="orbital", method="onsite"):
+    def orbital_momentum(
+        self,
+        projection: Literal["orbital", "atom"] = "orbital",
+        method: Literal["onsite"] = "onsite",
+    ):
         r"""Calculate orbital angular momentum on either atoms or orbitals
 
         Currently this implementation equals the Siesta implementation in that
@@ -1268,9 +1293,9 @@ class DensityMatrix(_densitymatrix):
 
         Parameters
         ----------
-        projection : {'orbital', 'atom'}
+        projection :
             whether the angular momentum is resolved per atom, or per orbital
-        method : {'onsite'}
+        method :
             method used to calculate the angular momentum
 
         Returns

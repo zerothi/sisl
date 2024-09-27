@@ -65,7 +65,6 @@ def test_1_graphene_all_content(sisl_files):
     assert tbt.wk.sum() == pytest.approx(1.0)
 
     for i in range(ne):
-        assert tbt.Eindex(i) == i
         assert tbt.Eindex(tbt.E[i]) == i
 
     # Check raises
@@ -403,6 +402,26 @@ def test_1_graphene_all_content(sisl_files):
     tbt.info()
     for elec in elecs:
         tbt.info(elec)
+
+
+@pytest.mark.filterwarnings("ignore", message="closest energy")
+def test_1_graphene_Eindex(sisl_files):
+    # gh-829 (Eindex -> only energy resolutions)
+    tbt = sisl.get_sile(sisl_files("siesta", "tbtrans", "graphene", "graphene.TBT.nc"))
+    idx = tbt.Eindex(-0.7)
+    assert idx == 0
+    assert tbt.E[idx] == pytest.approx(-0.75)
+    idx = tbt.Eindex(-0.7, method="below")
+    assert idx == 0
+    assert tbt.E[idx] == pytest.approx(-0.75)
+    idx = tbt.Eindex(-0.7, method="above")
+    assert idx == 1
+    assert tbt.E[idx] == pytest.approx(-0.25)
+
+    with pytest.raises(ValueError):
+        tbt.Eindex(-0.76, method="below")
+    with pytest.raises(ValueError):
+        tbt.Eindex(0.76, method="above")
 
 
 @pytest.mark.slow

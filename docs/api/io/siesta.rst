@@ -30,6 +30,7 @@ Siesta
    kpSileSiesta - k-points from simulation
    rkpSileSiesta - k-points to simulation
    structSileSiesta - geometry in STRUCT_* files
+   timesSileSiesta - timings from siesta
 
 
 .. autosummary::

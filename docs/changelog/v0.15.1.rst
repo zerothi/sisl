@@ -1,0 +1,34 @@
+******
+0.15.1
+******
+
+Released 10 of September 2024.
+
+Contributors
+============
+
+A total of 2 people contributed to this release. People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Pol Febrer
+
+Pull requests merged
+====================
+
+A total of 5 pull requests were merged for this release.
+
+* :pull:`#819 <819>`: Make sure wheels are uploaded to pypi
+* :pull:`#822 <822>`: Bump pypa/gh-action-pypi-publish from 1.9.0 to 1.10.0
+* :pull:`#823 <823>`: Fix orbital values
+* :pull:`#824 <824>`: Bump pypa/gh-action-pypi-publish from 1.10.0 to 1.10.1
+* :pull:`#825 <825>`: Bump JamesIves/github-pages-deploy-action from 4.6.3 to 4.6.4
+
+Added
+^^^^^
+* enabled `lowdin` to return the Lowdin transformation matrix, and also
+  allow it to be calculated using SVD
+
+Fixed
+^^^^^
+* bugfix for wrong call `Lattice.to.cuboid` which caused wrong densities, :pull:`#821 <821>`

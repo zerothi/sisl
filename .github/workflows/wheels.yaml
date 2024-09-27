@@ -25,8 +25,8 @@ jobs:
   # and therefore in a serial manner. We build a matrix of operating systems
   # and python versions so that builds are ran in parallel.
   # The job matrix is basically copied from https://github.com/scikit-learn/scikit-learn/blob/main/.github/workflows/wheels.yml
-  build_wheels:
-    name: Wheel building for cp${{ matrix.python[0] }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+  wheels:
+    name: cp${{ matrix.python[0] }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -56,6 +56,10 @@ jobs:
             python: ["312", "3.12"]
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: ["313", "3.13"]
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
 
           # MacOS x86_64
           - os: macos-12
@@ -70,6 +74,9 @@ jobs:
           - os: macos-12
             python: ["312", "3.12"]
             platform_id: macosx_x86_64
+          - os: macos-12
+            python: ["313", "3.13"]
+            platform_id: macosx_x86_64
 
           # MacOS arm64
           - os: macos-14
@@ -83,6 +90,9 @@ jobs:
             platform_id: macosx_arm64
           - os: macos-14
             python: ["312", "3.12"]
+            platform_id: macosx_arm64
+          - os: macos-14
+            python: ["313", "3.13"]
             platform_id: macosx_arm64
 
     steps:
@@ -119,7 +129,7 @@ jobs:
           path: ./wheelhouse/*.whl
 
   # Build the source distribution as well
-  build_sdist:
+  sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
@@ -135,7 +145,7 @@ jobs:
 
   # Upload to testpypi
   upload_testpypi:
-    needs: [build_sdist, build_wheels]
+    needs: [sdist, wheels]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
@@ -145,7 +155,7 @@ jobs:
           merge-multiple: True
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.9.0
+      - uses: pypa/gh-action-pypi-publish@v1.10.2
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN }}
@@ -164,11 +174,6 @@ jobs:
         os: [ubuntu-latest, macos-13, macos-14]
 
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: artifact
-          path: dist
-
       - name: Python installation
         uses: actions/setup-python@v5
         with:
@@ -219,10 +224,10 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: artifact
+          merge-multiple: True
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.9.0
+      - uses: pypa/gh-action-pypi-publish@v1.10.2
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}

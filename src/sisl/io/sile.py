@@ -16,14 +16,15 @@ from pathlib import Path
 from textwrap import dedent, indent
 from typing import Any, Optional, Union
 
-import sisl.io._exceptions as _exceptions
 from sisl._environ import get_environ_variable
 from sisl._help import has_module
 from sisl._internal import set_module
 from sisl.messages import deprecate, info, warn
 from sisl.utils.misc import str_spec
 
-from ._exceptions import *
+from . import _except_base, _except_objects
+from ._except_base import *
+from ._except_objects import *
 from ._help import *
 
 # Public used objects
@@ -36,7 +37,8 @@ __all__ += [
     "SileCDF",
     "SileBin",
 ]
-__all__.extend(_exceptions.__all__)
+__all__.extend(_except_base.__all__)
+__all__.extend(_except_objects.__all__)
 
 # Decorators or sile-specific functions
 __all__ += ["sile_fh_open", "sile_raise_write", "sile_raise_read"]

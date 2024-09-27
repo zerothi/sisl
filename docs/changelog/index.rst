@@ -30,6 +30,7 @@ Changelogs
 .. toctree::
    :maxdepth: 1
 
+   v0.15.1
    v0.15.0
    v0.14.3
    v0.14.2

@@ -5,9 +5,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
+## [0.15.2] - YYYY-MM-DD
 
-## [0.15.1] - YYYY-MM-DD
+### Added
+- added `timesSileSiesta` which can read siesta TIMES output
 
+### Fixed
+- a read problem for very big simulations (related to `orbindxSileSiesta`)
+- bug-fix for `tbtSileTBtrans.Eindex` handling of integers, #829
+  This is a regression fix, integers will now be handled differently
+  than prior releases.
+  A warning is raised to inform users.
+- fixed warning raised when reading electronic structure without Ef, #826
+- fixed precision writing of energies in GF files (siesta), #827
+- fixed reading `HSetupOnly` HSX files from Siesta, #828
+
+### Changed
+- `tbtSileTBtrans.Eindex` changed, see #829 for details.
+
+
+## [0.15.1] - 2024-09-10
+
+### Added
+- enabled `lowdin` to return the Lowdin transformation matrix, and also
+  allow it to be calculated using SVD
+
+### Fixed
+- bugfix for wrong call `Lattice.to.cuboid` which caused wrong densities, #821
 
 
 ## [0.15.0] - 2024-08-13

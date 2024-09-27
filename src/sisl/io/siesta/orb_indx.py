@@ -42,13 +42,14 @@ class orbindxSileSiesta(SileSiesta):
 
         for _ in range(no_s):
             line = self.readline().split()
-            isc = list(map(int_abs, line[12:15]))
-            if isc[0] > nsc[0]:
-                nsc[0] = isc[0]
-            if isc[1] > nsc[1]:
-                nsc[1] = isc[1]
-            if isc[2] > nsc[2]:
-                nsc[2] = isc[2]
+            if len(line) == 16:
+                isc = list(map(int_abs, line[12:15]))
+                if isc[0] > nsc[0]:
+                    nsc[0] = isc[0]
+                if isc[1] > nsc[1]:
+                    nsc[1] = isc[1]
+                if isc[2] > nsc[2]:
+                    nsc[2] = isc[2]
 
         return arrayi([n * 2 + 1 for n in nsc])
 

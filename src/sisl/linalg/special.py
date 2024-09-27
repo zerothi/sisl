@@ -3,9 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import numpy as np
+from typing import Literal
 
-from .base import eigh
+import numpy as np
+import scipy.linalg as la
+
+from .base import eigh, svd
 
 __all__ = ["signsqrt", "sqrth", "invsqrth", "lowdin"]
 
@@ -53,19 +56,50 @@ def invsqrth(a, overwrite_a=False):
     return (ev * eig) @ ev.conj().T
 
 
-def lowdin(a, b, overwrite_a=False):
-    r"""Convert the matrix `b` in the basis `a` into an orthogonal basis using the Lowdin transformation
+def lowdin(
+    a,
+    b=None,
+    overwrite_a: bool = False,
+    driver: Literal["eigh", "gesdd", "gesvd", "schur"] = "eigh",
+):
+    r"""Calculate the Lowdin transformation matrix, optionally convert the matrix `b` into the orthogonal basis
+
+    Convert the matrix `b` in the basis `a` into an orthogonal basis using the Lowdin transformation
 
     .. math::
 
        \mathbf B' = \mathbf A^{-1/2} \mathbf B \mathbf A^{-1/2}
+
+    Note, this method assumes `a` to be Hermitian.
 
     Parameters
     ----------
     a : array_like
        basis matrix to convert to the Lowdin basis
     b : array_like
-       matrix to convert
+       matrix to convert, if not provided as an argument, :math:`\mathbf A^{-1/2}` is
+       returned.
+    overwrite_a :
+        specificy whether `a` can be altered in the call.
+    driver :
+        which driver to use for calculating the Lowdin transformed `a` matrix.
+        When `a` is a matrix with rank ``len(a)`` with algebraic multiplicity
+        :math:`\mu_A(1)` equal to the rank, then the SVD method can be used
+        to construct the Lowdin transformation.
     """
-    a12 = invsqrth(a, overwrite_a=overwrite_a)
+    if driver == "eigh":
+        a12 = invsqrth(a, overwrite_a=overwrite_a)
+    elif driver.startswith("ges"):
+        U, _, Vh = svd(
+            a, compute_uv=True, overwrite_a=overwrite_a, lapack_driver=driver
+        )
+        a12 = U @ Vh
+        del U, _, Vh
+    elif driver == "schur":
+        a12 = la.sqrtm(a)
+    else:
+        raise ValueError(f"lowdin: got unknown driver argument '{driver}'")
+
+    if b is None:
+        return a12
     return a12 @ b @ a12

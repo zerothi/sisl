@@ -38,7 +38,7 @@ from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.unit.siesta import unit_convert
 
 from .._help import grid_reduce_indices
-from ..sile import SileError, SileWarning, add_sile
+from ..sile import MissingFermiLevelWarning, SileError, SileWarning, add_sile
 from ._help import *
 from .sile import SileBinSiesta
 
@@ -790,7 +790,7 @@ class hsxSileSiesta(SileBinSiesta):
     @property
     def version(self) -> int:
         """The version of the file"""
-        return _siesta.read_hsx_version(self.file)
+        return int(_siesta.read_hsx_version(self.file))
 
     def _xij2system(self, xij, geometry=None, **kwargs):
         """Create a new geometry with *correct* nsc and somewhat correct xyz
@@ -1307,11 +1307,27 @@ class hsxSileSiesta(SileBinSiesta):
         Only valid for files created by Siesta >=5.
         """
         if self.version == 0:
-            # It isn't implemented in the old file format.
-            warn(f"{self!r} does not contain the fermi-level (too old version file).")
+            warn(
+                MissingFermiLevelWarning(
+                    f"{self.file} does not contain Ef, too old version file."
+                )
+            )
             return None
         Ef = _siesta.read_hsx_ef(self.file)
         self._fortran_check("read_fermi_level", "could not read Fermi-level")
+        if Ef >= np.finfo(np.float32).max:
+            # we can't compare with math.isinf, as it doesn't work.
+            # fortran huge returns the maximum represented value that is not
+            # inf.
+            # So we will just compare against the max of the float.
+            # This should then also work for HSX files in single-precision.
+            warn(
+                MissingFermiLevelWarning(
+                    f"{self.file} does not contain a usable Ef, likely the Fermi-level hasn't been calculated by Siesta? (option = H.Setup.Only)"
+                )
+            )
+            Ef = 0.0
+
         return Ef * _Ry2eV
 
     def _r_hamiltonian_v0(self, **kwargs):
@@ -1351,6 +1367,11 @@ class hsxSileSiesta(SileBinSiesta):
         if no_s // no == np.prod(geom.nsc):
             _csr_from_siesta(geom, H._csr)
 
+        warn(
+            MissingFermiLevelWarning(
+                f"{self.file} does not contain Ef, electronic structure not shifted to Fermi level."
+            )
+        )
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def _r_hamiltonian_v1(self, **kwargs):
@@ -2153,17 +2174,6 @@ class _gfSileSiesta(SileBinSiesta):
 
     """
 
-    def _setup(self, *args, **kwargs):
-        """Simple setup that needs to be overwritten"""
-        super()._setup(*args, **kwargs)
-
-        # The unit convention used for energy-points
-        # This is necessary until Siesta uses CODATA values
-        if kwargs.get("version", "old").lower() in ("old", "4.1"):
-            self._E_Ry2eV = 13.60580
-        else:
-            self._E_Ry2eV = _Ry2eV
-
     def _open_gf(self, mode, rewind=False):
         self._fortran_open(mode, rewind=rewind)
 
@@ -2402,7 +2412,7 @@ class _gfSileSiesta(SileBinSiesta):
             self._no_u = no_u * 2
         else:
             self._no_u = no_u
-        self._E = E * self._E_Ry2eV
+        self._E = E * _Ry2eV
         self._k = k.T
 
         return nspin, no_u, self._k, self._E
@@ -2621,7 +2631,7 @@ class _gfSileSiesta(SileBinSiesta):
             mu * _eV2Ry,
             _toF(k.T, np.float64),
             w,
-            self._E / self._E_Ry2eV,
+            self._E / _Ry2eV,
             **sizes,
         )
         self._fortran_check("write_header", "could not write header information.")
@@ -2644,7 +2654,7 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.write_gf_hs(
             self._iu,
             self._ik,
-            self._E[self._iE] / self._E_Ry2eV,
+            self._E[self._iE] / _Ry2eV,
             _toF(H, np.complex128, _eV2Ry),
             _toF(S, np.complex128),
             no_u=no,
@@ -2672,7 +2682,7 @@ class _gfSileSiesta(SileBinSiesta):
             self._iu,
             self._ik,
             self._iE,
-            self._E[self._iE] / self._E_Ry2eV,
+            self._E[self._iE] / _Ry2eV,
             _toF(SE, np.complex128, _eV2Ry),
             no_u=no,
         )
