@@ -124,6 +124,12 @@ class stdoutSileSiesta(SileSiesta):
             not_found="warn",
         ),
         _A(
+            "ns",
+            r"^redata: Number of Atomic Species",
+            lambda attr, instance, match: int(match.string.split("=")[-1]),
+            not_found="warn",
+        ),
+        _A(
             "completed",
             r".*Job completed",
             lambda attr, instance, match: lambda: True,
@@ -1263,14 +1269,13 @@ class stdoutSileSiesta(SileSiesta):
                 )
                 atom_charges[:] = np.stack((atom_q, atom_s), axis=-1)
             elif self.info.spin in [Spin("non-colinear"), Spin("spin-orbit")]:
-                # Parse as long as we find new species
+                # Parse each species
                 atom_charges = []
                 atom_idx = []
                 header = None
-                found, _ = self.step_to("Species:", allow_reread=False)
-                while found:
-                    _parse_species_nc()
+                for _ in range(self.info.ns):
                     found, _ = self.step_to("Species:", allow_reread=False)
+                    _parse_species_nc()
             else:
                 assert False  # It should never reach here
 
