@@ -25,7 +25,7 @@ def filter_bands(
     # Shift the energies according to the reference energy, while keeping the
     # attributes (which contain the units, amongst other things)
     filtered_bands["E"] = bands_data.E - E0
-    continous_bands = filtered_bands.dropna("k", how="all")
+    continous_bands = filtered_bands.dropna("k", how="all", subset=["E"])
 
     # Get the bands that matter for the plot
     if Erange is None:
@@ -40,15 +40,15 @@ def filter_bands(
             ]
 
         filtered_bands = filtered_bands.sel(band=slice(*bands_range))
-        continous_bands = filtered_bands.dropna("k", how="all")
+        continous_bands = filtered_bands.dropna("k", how="all", subset=["E"])
 
         # This is the new Erange
         # Erange = np.array([float(f'{val:.3f}') for val in [float(continous_bands.E.min() - 0.01), float(continous_bands.E.max() + 0.01)]])
     else:
         filtered_bands = filtered_bands.where(
             (filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])
-        ).dropna("band", how="all")
-        continous_bands = filtered_bands.dropna("k", how="all")
+        ).dropna("band", how="all", subset=["E"])
+        continous_bands = filtered_bands.dropna("k", how="all", subset=["E"])
 
         # This is the new bands range
         # bands_range = [int(continous_bands['band'].min()), int(continous_bands['band'].max())]
