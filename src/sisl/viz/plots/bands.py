@@ -294,7 +294,7 @@ def fatbands_plot(
         group_vars=("color", "dash"),
         groups_dim="group",
         drop_empty=True,
-        spin_reduce=np.sum,
+        spin_reduce=False,
     )
     scaled_fatbands_data = scale_variable(
         fatbands_data,
