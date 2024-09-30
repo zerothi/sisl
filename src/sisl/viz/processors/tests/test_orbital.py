@@ -224,6 +224,17 @@ def test_reduce_orbital_data_spin(geometry, spin):
         assert np.allclose(sel_total.values, red_total.values)
 
 
+def test_reduce_orbital_data_no_spin(geometry, spin):
+    """Reduce orbital data without reducing the spin dimension"""
+    data = PDOSData.toy_example(geometry=geometry, spin=spin)._data
+
+    reduced = reduce_orbital_data(
+        data, [{"name": "all", "spin": "total"}], spin_reduce=False
+    )
+
+    assert np.all(data.spin == reduced.spin)
+
+
 def test_atom_data_from_orbital_data(geometry: Geometry, spin):
     data = PDOSData.toy_example(geometry=geometry, spin=spin)._data
 
