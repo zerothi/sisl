@@ -3749,12 +3749,13 @@ class Geometry(
 
             corners_i = grid.index(corners)
 
-            cmin = np.maximum(corners_i.min(axis=0), 0)
-            cmax = np.maximum(corners_i.max(axis=0) + 1, 0)
+            cmin = corners_i.min(axis=0)
+            cmax = corners_i.max(axis=0) + 1
 
-            rx = slice(min(cmin[0], grid.shape[0]), min(cmax[0], grid.shape[0]))
-            ry = slice(min(cmin[1], grid.shape[1]), min(cmax[1], grid.shape[1]))
-            rz = slice(min(cmin[2], grid.shape[2]), min(cmax[2], grid.shape[2]))
+            sh = grid.shape
+            rx = slice(min(max(cmin[0], 0), sh[0]), min(max(cmax[0], 0), sh[0]))
+            ry = slice(min(max(cmin[1], 0), sh[1]), min(max(cmax[1], 0), sh[1]))
+            rz = slice(min(max(cmin[2], 0), sh[2]), min(max(cmax[2], 0), sh[2]))
 
             indices = np.mgrid[rx, ry, rz].reshape(3, -1).T
 
