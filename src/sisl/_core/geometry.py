@@ -3752,9 +3752,9 @@ class Geometry(
             cmin = np.maximum(corners_i.min(axis=0), 0)
             cmax = np.maximum(corners_i.max(axis=0) + 1, 0)
 
-            rx = slice(cmin[0], min(cmax[0], grid.shape[0]))
-            ry = slice(cmin[1], min(cmax[1], grid.shape[1]))
-            rz = slice(cmin[2], min(cmax[2], grid.shape[2]))
+            rx = slice(min(cmin[0], grid.shape[0]), min(cmax[0], grid.shape[0]))
+            ry = slice(min(cmin[1], grid.shape[1]), min(cmax[1], grid.shape[1]))
+            rz = slice(min(cmin[2], grid.shape[2]), min(cmax[2], grid.shape[2]))
 
             indices = np.mgrid[rx, ry, rz].reshape(3, -1).T
 
