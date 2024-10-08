@@ -7,7 +7,11 @@
     .. autosummary::
     {% for item in attributes %}
         {% if not item.startswith('_') %}
+        {% if '.' in item %}
+            {{ name }}.{{ item }}
+        {% else %}
           ~{{ name }}.{{ item }}
+        {% endif %}
 	{% endif %}
     {%- endfor %}
     {% endif %}
@@ -26,7 +30,11 @@
                           'step_either', 'step_to',
 			  'isDataset', 'isDimension', 'isGroup',
 			  'isRoot', 'isVariable']) %}
-           ~{{ name }}.{{ item }}
+        {% if '.' in item %}
+            {{ name }}.{{ item }}
+        {% else %}
+          ~{{ name }}.{{ item }}
+        {% endif %}
       {% endif %}
    {%- endfor %}
    {% endif %}

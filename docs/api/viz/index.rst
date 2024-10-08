@@ -26,6 +26,7 @@ Plot classes are workflow classes that implement some specific plotting.
     GridPlot
     WavefunctionPlot
     PdosPlot
+    AtomicMatrixPlot
 
 Utilities
 ---------
