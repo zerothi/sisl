@@ -235,7 +235,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # Get the row and column of every element in the matrix
         rows, cols = self.nonzero()
 
-        n_rows = len(self)
+        n_rows = self.shape[0]
         is_atom = n_rows == self.na
 
         # Find out the unit cell indices for the columns, and the index of the supercell
