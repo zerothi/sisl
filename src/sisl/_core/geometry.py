@@ -142,6 +142,16 @@ class Geometry(
         the unit-cell describing the atoms in a periodic
         super-cell
 
+
+    Attributes
+    ----------
+    xyz : np.ndarray
+        atomic coordinates such that ``geometry.xyz[i]`` is the
+        :math:`xyz` coordinate of the ``i``th atom.
+    lattice: Lattice
+        the inherent lattice associated with the atomit
+        coordinates.
+
     Examples
     --------
 

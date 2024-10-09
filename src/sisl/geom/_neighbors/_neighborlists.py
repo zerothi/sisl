@@ -279,14 +279,16 @@ class PartialNeighborList(AtomsNeighborList):
         neighbors[0].atom # This will be 2
         neighbors[0].j
 
+    Attributes
+    ----------
+    atoms : np.ndarray
+        The atoms for which the neighbors are stored.
+
     See Also
     --------
     AtomNeighborList
         The object returned by this list when iterating or indexing.
     """
-
-    #: The atoms for which the neighbors are stored.
-    atoms: np.ndarray
 
     def __init__(
         self, geometry: Geometry, finder_results, atoms: np.ndarray, split_indices=None
@@ -327,14 +329,16 @@ class AtomNeighborList(Neighbors):
     `FullNeighborList` or a `PartialNeighborList`. See their documentation for
     examples.
 
+    Attributes
+    ----------
+    atom : int
+        The atom for which the neighbors are stored.
+
     See Also
     --------
     FullNeighborList, PartialNeighborList
         The lists that, when iterated, return `AtomNeighborList` objects.
     """
-
-    #: The atom for which the neighbors are stored.
-    atom: int
 
     def __init__(self, geometry, finder_results, atom: int):
         self.atom = atom
@@ -380,6 +384,11 @@ class PointsNeighborList(Neighbors):
 
         # Or get the neighbors of a particular point:
         neighbors[0].j
+
+    Attributes
+    ----------
+    points : np.ndarray
+        Points that the neighbors are located around.
 
     See Also
     --------
@@ -429,14 +438,16 @@ class PointNeighborList(Neighbors):
     The usual way to get a `PointNeighborList` object is by iterating over a
     `PointsNeighborList`. See its documentation for examples.
 
+    Attributes
+    ----------
+    point : np.ndarray
+        Point that the neighbors are located around.
+
     See Also
     --------
     PointsNeighborList
         The list that, when iterated, returns `PointNeighborList` objects.
     """
-
-    #: The point for which the neighbors are stored.
-    point: np.ndarray
 
     def __init__(self, geometry, point: np.ndarray, finder_results: np.ndarray):
         self.point = point
