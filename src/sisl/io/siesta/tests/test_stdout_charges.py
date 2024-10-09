@@ -13,6 +13,7 @@ pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
 # tests here tests charge reads for output
 #  voronoi + hirshfeld: test_vh_*
+#  voronoi + hirshfeld + mulliken: test_vhm_*
 #  voronoi: test_v_*
 #  hirshfeld: test_h_*
 #  mulliken: test_m_*
@@ -30,8 +31,8 @@ def with_pandas():
         return False
 
 
-@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
-def test_vh_empty_file(name, sisl_files):
+@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld", "mulliken"))
+def test_vhm_empty_file(name, sisl_files):
     f = sisl_files("siesta", "ancient", "voronoi_hirshfeld_4.1_none.out")
     out = stdoutSileSiesta(f)
 
@@ -76,9 +77,11 @@ def test_vh_final(fname, name, sisl_files):
 
 
 @pytest.mark.parametrize("fname", ("md", "pol_md", ("ancient", "pol_md"), "nc_md"))
-@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld"))
-def test_vh_md(name, fname, sisl_files):
+@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld", "mulliken"))
+def test_vhm_md(name, fname, sisl_files):
     if isinstance(fname, tuple):
+        if name == "mulliken":
+            return
         f = sisl_files("siesta", "ancient", f"voronoi_hirshfeld_4.1_{fname[1]}.out")
     else:
         f = sisl_files("siesta", "charges", fname, "RUN.out")
