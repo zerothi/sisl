@@ -11,12 +11,3 @@ ScaleUP
    orboccSileScaleUp - orbital information
    refSileScaleUp - reference coordinates
    rhamSileScaleUp - Hamiltonian file
-
-
-.. autosummary::
-   :toctree: generated/
-   :hidden:
-
-   SileScaleUp
-   SileBinScaleUp
-

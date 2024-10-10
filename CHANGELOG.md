@@ -74,7 +74,7 @@ we hit release version 1.0.0.
 - `bond_order` for `DensityMatrix` objects, #507
 - better error messages when users request quantities not calculated by Siesta/TBtrans
 - functional programming of the basic sisl classes
-  Now many of the `Geometry|Lattice|Grid.* manipulation routines which
+  Now many of the `Geometry|Lattice|Grid.*` manipulation routines which
   returns new objects, are subjected to dispatch methods.
   E.g.
 

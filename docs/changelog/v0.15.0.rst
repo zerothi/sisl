@@ -155,7 +155,7 @@ Added
 * `bond_order` for `DensityMatrix` objects, :pull:`#507 <507>`
 * better error messages when users request quantities not calculated by Siesta/TBtrans
 * functional programming of the basic sisl classes
-  Now many of the `Geometry|Lattice|Grid.* manipulation routines which
+  Now many of the `Geometry|Lattice|Grid.*` manipulation routines which
   returns new objects, are subjected to dispatch methods.
   E.g.
 

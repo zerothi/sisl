@@ -33,15 +33,6 @@ Siesta
    timesSileSiesta - timings from siesta
 
 
-.. autosummary::
-   :toctree: generated/
-   :hidden:
-
-   SileSiesta
-   SileCDFSiesta
-   SileBinSiesta
-
-
 TranSiesta
 ==========
 

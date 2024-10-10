@@ -14,11 +14,3 @@ VASP
    chgSileVASP
    locpotSileVASP
    outcarSileVASP
-
-
-.. autosummary::
-   :toctree: generated/
-   :hidden:
-
-   SileVASP
-   SileBinVASP
