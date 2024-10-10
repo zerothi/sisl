@@ -15,13 +15,6 @@ TBtrans
    tbtavncSileTBtrans
    tbtprojncSileTBtrans
 
-.. autosummary::
-   :toctree: generated/
-   :hidden:
-
-   SileTBtrans
-   SileCDFTBtrans
-   SileBinTBtrans
 
 PHtrans
 =======

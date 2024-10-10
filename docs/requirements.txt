@@ -9,6 +9,7 @@ netCDF4
 # actual documentation requirements
 ipykernel
 nbsphinx
+sphinx<8
 sphinx-rtd-theme
 sphinx-design
 sphinx-gallery

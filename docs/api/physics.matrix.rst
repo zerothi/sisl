@@ -20,15 +20,6 @@ Spin
 Matrices
 --------
 
-.. we need this to ensure
-   we can link back to the sources of the methods
-
-.. autosummary::
-   :toctree: generated/
-   :hidden:
-
-   densitymatrix._densitymatrix
-
 .. autosummary::
    :toctree: generated/
 

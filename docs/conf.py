@@ -31,14 +31,6 @@ _log = logging.getLogger("sisl_doc")
 _root = pathlib.Path(__file__).absolute().parent.parent
 _src = _root / "src"
 
-# If building this on RTD, mock out fortran sources
-on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
-
-# If building this on RTD, mock out fortran sources
-if on_rtd:
-    os.environ["SISL_NUM_PROCS"] = "1"
-    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
-
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
 print("sys.path:", sys.path)
@@ -47,7 +39,8 @@ import numpy as np
 
 import sisl
 
-print(f"Located sisl here: {sisl.__path__}")
+print(f"sisl: {sisl.__version__}, {sisl.__file__}")
+import pybtex
 
 # Figure out if we can locate the tests:
 sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
@@ -57,6 +50,21 @@ if sisl_files_tests.is_dir():
     print("  content:")
     for _child in sisl_files_tests.iterdir():
         print(f"    {_child}")
+
+
+# Setting up generic things
+
+# If building this on RTD, mock out fortran sources
+on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
+_doc_skip = list(
+    map(lambda x: x.lower(), os.environ.get("_SISL_DOC_SKIP", "").split(","))
+)
+skip_notebook = "notebook" in _doc_skip
+
+# If building this on RTD, mock out fortran sources
+if on_rtd:
+    os.environ["SISL_NUM_PROCS"] = "1"
+    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
 
 # General information about the project.
@@ -71,9 +79,11 @@ copyright = f"2015-{date.today().year}, {author}"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    # Small extension just to measure the speed of compilation.
+    # "sphinx.ext.duration",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.coverage",
+    # "sphinx.ext.coverage",
     "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinx.ext.mathjax",
@@ -99,21 +109,33 @@ extensions = [
     # bibtex stuff
     "sphinxcontrib.bibtex",
 ]
+
+
+napoleon_google_docstring = False
 napoleon_numpy_docstring = True
-napoleon_use_param = True
+napoleon_use_param = False
+napoleon_use_rtype = False
+napoleon_use_ivar = False
+napoleon_preprocess_types = True
+# Using attr_annotations = True ensures that
+# autodoc_type_aliases is in effect.
+# Then there is no need to use napoleon_type_aliases.
+napoleon_attr_annotations = True
 
 
 # The default is MathJax 3.
 # In case we want to revert to 2.7.7, then use the below link:
 # mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
 
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # Short-hand for :doi:
 extlinks = {
-    "issue": ("https://github.com/zerothi/sisl/issues/%s", "issue #%s"),
-    "pull": ("https://github.com/zerothi/sisl/pull/%s", "pull request #%s"),
+    "issue": ("https://github.com/zerothi/sisl/issues/%s", "GH%s"),
+    "pull": ("https://github.com/zerothi/sisl/pull/%s", "PR%s"),
+    "discussion": ("https://github.com/zerothi/sisl/discussions/%s", "D%s"),
     "doi": ("https://doi.org/%s", "%s"),
 }
 
@@ -204,10 +226,15 @@ autoclass_content = "class"
 autodoc_default_options = {
     "members": True,
     "undoc-members": True,
-    "special-members": "__init__,__call__",
+    "special-members": "__call__",
     "inherited-members": True,
     "show-inheritance": True,
 }
+# alphabetical | groupwise | bysource
+# How automodule + autoclass orders content.
+# Right now, the current way sisl documents things
+# is basically groupwise. So lets be explicit
+autodoc_member_order = "groupwise"
 
 # typehints only shows the minimal class, instead
 # of full module paths
@@ -219,25 +246,46 @@ autodoc_typehints_format = "short"
 # Show type-hints in both the signature
 # and in the variable list
 autodoc_typehints = "both"
+autodoc_typehints_description_target = "all"
 
 # Automatically create the autodoc_type_aliases
-autodoc_type_aliases = {}
+# This is handy for commonly used terminologies.
+# It currently puts everything into a `<>` which
+# is sub-optimal (i.e. one cannot do "`umpy.ndarray` or `any`")
+# Perhaps just a small tweak and it works.
+autodoc_type_aliases = {
+    # general terms
+    "array-like": "numpy.ndarray",
+    "array_like": "numpy.ndarray",
+    "int-like": "int or numpy.ndarray",
+    "float-like": "float or numpy.ndarray",
+    "sequence": "sequence",
+    "np.ndarray": "numpy.ndarray",
+    "ndarray": "numpy.ndarray",
+}
 _type_aliases_skip = set()
 
-for name in dir(np.typing):
-    if name.startswith("_"):
-        continue
+
+def has_under(name: str):
+    return name.startswith("_")
+
+
+def has_no_under(name: str):
+    return not has_under(name)
+
+
+for name in filter(has_no_under, dir(np.typing)):
     if name in _type_aliases_skip:
         continue
     autodoc_type_aliases[f"npt.{name}"] = f"numpy.typing.{name}"
 
 
-for name in dir(sisl.typing):
-    if name.startswith("_"):
-        continue
+for name in filter(has_no_under, dir(sisl.typing)):
     if name in _type_aliases_skip:
         continue
 
+    # sisl typing should be last, in this way we ensure
+    # that sisl typing is always preferred
     autodoc_type_aliases[name] = f"sisl.typing.{name}"
 
 
@@ -245,6 +293,7 @@ for name in dir(sisl.typing):
 # directories to ignore when looking for source files.
 exclude_patterns = [
     "build",
+    "_build",
     "**/setupegg.py",
     "**/setup.rst",
     "**/tests",
@@ -254,6 +303,13 @@ exclude_patterns.append("**/GUI with Python Demo.ipynb")
 exclude_patterns.append("**/Building a plot class.ipynb")
 for _venv in pathlib.Path(".").glob("*venv*"):
     exclude_patterns.append(str(_venv.name))
+
+if skip_notebook:
+    # Just exclude *ALL* notebooks to speed-up the documentation
+    # creation.
+    exclude_patterns.append("**/*.ipynb")
+
+remove_from_toctrees = ["generated/*"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -290,10 +346,11 @@ if html_theme == "furo":
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = f"sisl {release}"
+# We do not need to put in the version.
+# It is located elsewhere
+html_title = "sisl"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = "sisl"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -313,7 +370,6 @@ html_css_files = [
 html_use_modindex = True
 html_use_index = True
 
-# -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
@@ -379,6 +435,10 @@ ipython_execlines = [
 ]
 
 html_context = {
+    "github_user": "zerothi",
+    "github_repo": "sisl",
+    "github_version": "main",
+    "doc_path": "docs",
     "header": header,
 }
 
@@ -457,7 +517,7 @@ nbsphinx_timeout = 600
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
-{% set docname = "docs/" + env.doc2path(env.docname, base=False) %}
+{% set docname = "docs/" + env.doc2path(env.docname, base=None) %}
 
 .. raw:: html
 
@@ -481,6 +541,7 @@ def sisl_method2class(meth):
         for cls in inspect.getmro(meth.__self__.__class__):
             if cls.__dict__.get(meth.__name__) is meth:
                 return cls
+
     if inspect.isfunction(meth):
         cls = getattr(
             inspect.getmodule(meth),
@@ -515,17 +576,15 @@ def sisl_skip(app, what, name, obj, skip, options):
             "isGroup",
             "isRoot",
             "isVariable",
+            "InfoAttr",
         ]:
             _log.info(f"skip: {obj=} {what=} {name=}")
             return True
     # elif what == "attribute":
     #    return True
-    if "InfoAttr" in name:
-        _log.info(f"skip: {what=} {name=}")
-        return True
 
     # check for special methods (we don't want all)
-    if name.startswith("_") and name not in autodoc_default_options.get(
+    if has_under(name) and name not in autodoc_default_options.get(
         "special-members", ""
     ).split(","):
         return True

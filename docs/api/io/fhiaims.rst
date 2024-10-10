@@ -9,12 +9,3 @@ FHIaims
    :toctree: generated/
 
    inSileFHIaims
-
-
-.. autosummary::
-   :toctree: generated/
-   :hidden:
-
-   SileFHIaims
-   SileBinFHIaims
-

@@ -10,11 +10,3 @@ DFTB+
 
    overrealSileDFTB - overlap matrix file
    hamrealSileDFTB - Hamiltonian matrix file
-
-
-.. autosummary::
-   :toctree: generated/
-   :hidden:
-
-   SileDFTB
-   SileBinDFTB
