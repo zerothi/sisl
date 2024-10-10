@@ -226,10 +226,15 @@ autoclass_content = "class"
 autodoc_default_options = {
     "members": True,
     "undoc-members": True,
-    "special-members": "__init__,__call__",
+    "special-members": "__call__",
     "inherited-members": True,
     "show-inheritance": True,
 }
+# alphabetical | groupwise | bysource
+# How automodule + autoclass orders content.
+# Right now, the current way sisl documents things
+# is basically groupwise. So lets be explicit
+autodoc_member_order = "groupwise"
 
 # typehints only shows the minimal class, instead
 # of full module paths
@@ -241,25 +246,46 @@ autodoc_typehints_format = "short"
 # Show type-hints in both the signature
 # and in the variable list
 autodoc_typehints = "both"
+autodoc_typehints_description_target = "all"
 
 # Automatically create the autodoc_type_aliases
-autodoc_type_aliases = {}
+# This is handy for commonly used terminologies.
+# It currently puts everything into a `<>` which
+# is sub-optimal (i.e. one cannot do "`umpy.ndarray` or `any`")
+# Perhaps just a small tweak and it works.
+autodoc_type_aliases = {
+    # general terms
+    "array-like": "numpy.ndarray",
+    "array_like": "numpy.ndarray",
+    "int-like": "int or numpy.ndarray",
+    "float-like": "float or numpy.ndarray",
+    "sequence": "sequence",
+    "np.ndarray": "numpy.ndarray",
+    "ndarray": "numpy.ndarray",
+}
 _type_aliases_skip = set()
 
-for name in dir(np.typing):
-    if name.startswith("_"):
-        continue
+
+def has_under(name: str):
+    return name.startswith("_")
+
+
+def has_no_under(name: str):
+    return not has_under(name)
+
+
+for name in filter(has_no_under, dir(np.typing)):
     if name in _type_aliases_skip:
         continue
     autodoc_type_aliases[f"npt.{name}"] = f"numpy.typing.{name}"
 
 
-for name in dir(sisl.typing):
-    if name.startswith("_"):
-        continue
+for name in filter(has_no_under, dir(sisl.typing)):
     if name in _type_aliases_skip:
         continue
 
+    # sisl typing should be last, in this way we ensure
+    # that sisl typing is always preferred
     autodoc_type_aliases[name] = f"sisl.typing.{name}"
 
 
@@ -267,6 +293,7 @@ for name in dir(sisl.typing):
 # directories to ignore when looking for source files.
 exclude_patterns = [
     "build",
+    "_build",
     "**/setupegg.py",
     "**/setup.rst",
     "**/tests",
@@ -278,6 +305,8 @@ for _venv in pathlib.Path(".").glob("*venv*"):
     exclude_patterns.append(str(_venv.name))
 
 if skip_notebook:
+    # Just exclude *ALL* notebooks to speed-up the documentation
+    # creation.
     exclude_patterns.append("**/*.ipynb")
 
 remove_from_toctrees = ["generated/*"]
@@ -317,10 +346,11 @@ if html_theme == "furo":
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = f"sisl {release}"
+# We do not need to put in the version.
+# It is located elsewhere
+html_title = "sisl"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = "sisl"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -405,6 +435,10 @@ ipython_execlines = [
 ]
 
 html_context = {
+    "github_user": "zerothi",
+    "github_repo": "sisl",
+    "github_version": "main",
+    "doc_path": "docs",
     "header": header,
 }
 
@@ -542,17 +576,15 @@ def sisl_skip(app, what, name, obj, skip, options):
             "isGroup",
             "isRoot",
             "isVariable",
+            "InfoAttr",
         ]:
             _log.info(f"skip: {obj=} {what=} {name=}")
             return True
     # elif what == "attribute":
     #    return True
-    if "InfoAttr" in name:
-        _log.info(f"skip: {what=} {name=}")
-        return True
 
     # check for special methods (we don't want all)
-    if name.startswith("_") and name not in autodoc_default_options.get(
+    if has_under(name) and name not in autodoc_default_options.get(
         "special-members", ""
     ).split(","):
         return True
