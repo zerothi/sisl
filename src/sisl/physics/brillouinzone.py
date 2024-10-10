@@ -266,14 +266,22 @@ class BrillouinZone:
 
     Parameters
     ----------
-    parent : object or array_like
+    parent : object or array-like
        An object with associated ``parent.cell`` and ``parent.rcell`` or
        an array of floats which may be turned into a `Lattice`
-    k : array_like, optional
+    k : array-like, optional
        k-points that this Brillouin zone represents
-    weight : scalar or array_like, optional
+    weight : scalar or array-like, optional
        weights for the k-points.
+
     """
+
+    apply = BrillouinZoneDispatcher(
+        "apply",
+        # Do not allow class dispatching
+        type_dispatcher=None,
+        obj_getattr=lambda obj, key: getattr(obj.parent, key),
+    )
 
     def __init__(self, parent, k=None, weight=None):
         self.set_parent(parent)
@@ -290,13 +298,6 @@ class BrillouinZone:
             if weight is None:
                 weight = 1.0 / len(self._k)
             self._w[:] = weight
-
-    apply = BrillouinZoneDispatcher(
-        "apply",
-        # Do not allow class dispatching
-        type_dispatcher=None,
-        obj_getattr=lambda obj, key: getattr(obj.parent, key),
-    )
 
     def set_parent(self, parent) -> None:
         """Update the parent associated to this object

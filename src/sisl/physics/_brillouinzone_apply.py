@@ -12,14 +12,8 @@ from functools import reduce, wraps
 from itertools import zip_longest
 
 import numpy as np
+import xarray
 from numpy import cross, pi
-
-try:
-    import xarray
-
-    _has_xarray = True
-except ImportError:
-    _has_xarray = False
 
 try:
     import pathos
@@ -196,6 +190,8 @@ class BrillouinZoneParentApply(BrillouinZoneApply):
 
 @set_module("sisl.physics")
 class IteratorApply(BrillouinZoneParentApply):
+    """Iterator for calculations *while iterating*."""
+
     def __str__(self, message="iter"):
         return super().__str__(message)
 
@@ -280,7 +276,6 @@ class NoneApply(IteratorApply):
         def func(*args, **kwargs):
             for _ in iter_func(*args, **kwargs):
                 pass
-            return None
 
         return func
 
@@ -303,7 +298,7 @@ class ListApply(IteratorApply):
 
             @wraps(method)
             def func(*args, **kwargs):
-                return [v for v in iter_func(*args, **kwargs)]
+                return list(iter_func(*args, **kwargs))
 
         return func
 
@@ -602,9 +597,8 @@ apply_dispatch.register("ndarray", NDArrayApply)
 apply_dispatch.register("none", NoneApply)
 apply_dispatch.register("list", ListApply)
 apply_dispatch.register("oplist", OpListApply)
-if _has_xarray:
-    apply_dispatch.register("dataarray", XArrayApply)
-    apply_dispatch.register("xarray", XArrayApply)
+apply_dispatch.register("dataarray", XArrayApply)
+apply_dispatch.register("xarray", XArrayApply)
 
 # Remove refernce
 del apply_dispatch

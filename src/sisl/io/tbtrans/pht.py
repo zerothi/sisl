@@ -55,6 +55,8 @@ for _name in (
     "shot_noise",
     "noise_power",
 ):
+    # TODO change this such that the intrinsic details
+    # are separated.
     setattr(phtncSilePHtrans, _name, None)
     setattr(phtavncSilePHtrans, _name, None)
 
