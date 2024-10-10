@@ -135,16 +135,10 @@ Parameters
 #}
 {{ check_sections(attributes, methods) }}
 
-{% block attributes %}
-{% if attributes %}
-   .. rubric:: {{ _('Attributes') }}
 
-   .. autosummary::
-      {% call(item) accepted_methods(attributes) %}
-      ~{{ name }}.{{ item }}
-      {%- endcall %}
-{%- endif %}
-{%- endblock %}
+{#
+Now the actual writing of things happen!
+#}
 
 {% if check_ns.to or check_ns.new %}
    .. rubric:: {{ _('Conversions') }}
@@ -185,6 +179,17 @@ Parameters
 
    .. autosummary::
       {% call(item) accepted_methods(methods) %}
+      ~{{ name }}.{{ item }}
+      {%- endcall %}
+{%- endif %}
+{%- endblock %}
+
+{% block attributes %}
+{% if attributes %}
+   .. rubric:: {{ _('Attributes') }}
+
+   .. autosummary::
+      {% call(item) accepted_methods(attributes) %}
       ~{{ name }}.{{ item }}
       {%- endcall %}
 {%- endif %}
