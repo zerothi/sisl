@@ -31,14 +31,6 @@ _log = logging.getLogger("sisl_doc")
 _root = pathlib.Path(__file__).absolute().parent.parent
 _src = _root / "src"
 
-# If building this on RTD, mock out fortran sources
-on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
-
-# If building this on RTD, mock out fortran sources
-if on_rtd:
-    os.environ["SISL_NUM_PROCS"] = "1"
-    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
-
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
 print("sys.path:", sys.path)
@@ -47,7 +39,8 @@ import numpy as np
 
 import sisl
 
-print(f"Located sisl here: {sisl.__path__}")
+print(f"sisl: {sisl.__version__}, {sisl.__file__}")
+import pybtex
 
 # Figure out if we can locate the tests:
 sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
@@ -57,6 +50,21 @@ if sisl_files_tests.is_dir():
     print("  content:")
     for _child in sisl_files_tests.iterdir():
         print(f"    {_child}")
+
+
+# Setting up generic things
+
+# If building this on RTD, mock out fortran sources
+on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
+_doc_skip = list(
+    map(lambda x: x.lower(), os.environ.get("_SISL_DOC_SKIP", "").split(","))
+)
+skip_notebook = "notebook" in _doc_skip
+
+# If building this on RTD, mock out fortran sources
+if on_rtd:
+    os.environ["SISL_NUM_PROCS"] = "1"
+    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
 
 # General information about the project.
@@ -71,9 +79,11 @@ copyright = f"2015-{date.today().year}, {author}"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    # Small extension just to measure the speed of compilation.
+    # "sphinx.ext.duration",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.coverage",
+    # "sphinx.ext.coverage",
     "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinx.ext.mathjax",
@@ -99,21 +109,33 @@ extensions = [
     # bibtex stuff
     "sphinxcontrib.bibtex",
 ]
+
+
+napoleon_google_docstring = False
 napoleon_numpy_docstring = True
-napoleon_use_param = True
+napoleon_use_param = False
+napoleon_use_rtype = False
+napoleon_use_ivar = False
+napoleon_preprocess_types = True
+# Using attr_annotations = True ensures that
+# autodoc_type_aliases is in effect.
+# Then there is no need to use napoleon_type_aliases.
+napoleon_attr_annotations = True
 
 
 # The default is MathJax 3.
 # In case we want to revert to 2.7.7, then use the below link:
 # mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
 
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # Short-hand for :doi:
 extlinks = {
-    "issue": ("https://github.com/zerothi/sisl/issues/%s", "issue #%s"),
-    "pull": ("https://github.com/zerothi/sisl/pull/%s", "pull request #%s"),
+    "issue": ("https://github.com/zerothi/sisl/issues/%s", "GH%s"),
+    "pull": ("https://github.com/zerothi/sisl/pull/%s", "PR%s"),
+    "discussion": ("https://github.com/zerothi/sisl/discussions/%s", "D%s"),
     "doi": ("https://doi.org/%s", "%s"),
 }
 
@@ -255,6 +277,11 @@ exclude_patterns.append("**/Building a plot class.ipynb")
 for _venv in pathlib.Path(".").glob("*venv*"):
     exclude_patterns.append(str(_venv.name))
 
+if skip_notebook:
+    exclude_patterns.append("**/*.ipynb")
+
+remove_from_toctrees = ["generated/*"]
+
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
 default_role = "autolink"
@@ -313,7 +340,6 @@ html_css_files = [
 html_use_modindex = True
 html_use_index = True
 
-# -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
@@ -457,7 +483,7 @@ nbsphinx_timeout = 600
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
-{% set docname = "docs/" + env.doc2path(env.docname, base=False) %}
+{% set docname = "docs/" + env.doc2path(env.docname, base=None) %}
 
 .. raw:: html
 
@@ -481,6 +507,7 @@ def sisl_method2class(meth):
         for cls in inspect.getmro(meth.__self__.__class__):
             if cls.__dict__.get(meth.__name__) is meth:
                 return cls
+
     if inspect.isfunction(meth):
         cls = getattr(
             inspect.getmodule(meth),
