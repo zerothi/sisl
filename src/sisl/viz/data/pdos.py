@@ -6,7 +6,7 @@
 
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal, Optional, Union
+from typing import Literal, Optional, Tuple, Union
 
 import numpy as np
 from xarray import DataArray
@@ -295,14 +295,35 @@ class PDOSData(OrbitalData):
     def from_hamiltonian(
         cls,
         H: Hamiltonian,
-        kgrid=None,
-        kgrid_displ=(0, 0, 0),
-        Erange=(-2, 2),
-        E0=0,
-        nE=100,
+        kgrid: Tuple[int, int, int] = None,
+        kgrid_displ: Tuple[float, float, float] = (0, 0, 0),
+        Erange: Tuple[float, float] = (-2, 2),
+        E0: float = 0,
+        nE: int = 100,
         distribution=get_distribution("gaussian"),
     ):
-        """Calculates the PDOS from a sisl Hamiltonian."""
+        """Calculates the PDOS from a sisl Hamiltonian.
+
+        Parameters
+        ----------
+        H:
+            The Hamiltonian from which to calculate the PDOS.
+        kgrid:
+            Number of kpoints in each reciprocal space direction. A Monkhorst-pack grid
+            will be generated from this specification. The PDOS will be averaged over the
+            whole k-grid.
+        kgrid_displ:
+            Displacement of the Monkhorst-Pack grid.
+        Erange:
+            Energy range (min and max) for the PDOS calculation.
+        E0:
+            Energy shift for the PDOS calculation.
+        nE:
+            Number of energy points for the PDOS calculation.
+        distribution:
+            The distribution to use for smoothing the PDOS along the energy axis.
+            Each state will be broadened by this distribution.
+        """
 
         # Get the kgrid or generate a default grid by checking the interaction between cells
         # This should probably take into account how big the cell is.

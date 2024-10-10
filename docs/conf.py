@@ -471,6 +471,8 @@ nbsphinx_prolog = r"""
 
 nbsphinx_thumbnails = {}
 
+nbsphinx_allow_errors = True
+
 import inspect
 
 
@@ -571,6 +573,100 @@ def sisl_skip(app, what, name, obj, skip, options):
             _log.info(f"skip: {obj=} {what=} {name=}")
             return True
     return skip
+
+
+from functools import wraps
+
+import sisl.viz
+from sisl.viz._plotables import ALL_PLOT_HANDLERS
+
+
+def document_nested_attribute(obj, owner_cls, attribute_path: str):
+    """Sets a nested attribute to a class with a placeholder name.
+
+    It substitutes dots in the attribute name with a placeholder. This substitution
+    will be reversed once the documentation is built.
+
+    This is needed because autodoc refuses to document attributes with dots in their name
+    (although python allows for that possibility).
+    """
+
+    setattr(owner_cls, attribute_path, obj)
+    setattr(
+        getattr(owner_cls, attribute_path.split(".")[0]),
+        ".".join(attribute_path.split(".")[1:]),
+        obj,
+    )
+
+
+def document_nested_method(
+    method, owner_cls, method_path: str, add_signature_self: bool = False
+):
+    """Takes a nested method, wraps it to make sure is of function type and creates a nested attribute in the owner class."""
+
+    @wraps(method)
+    def method_wrapper(*args, **kwargs):
+        return method(*args, **kwargs)
+
+    if add_signature_self:
+        wrapper_sig = inspect.signature(method_wrapper)
+        method_wrapper.__signature__ = wrapper_sig.replace(
+            parameters=[
+                inspect.Parameter("self", inspect.Parameter.POSITIONAL_ONLY),
+                *wrapper_sig.parameters.values(),
+            ]
+        )
+
+    document_nested_attribute(method_wrapper, owner_cls, method_path)
+
+    setattr(
+        getattr(owner_cls, method_path.split(".")[0]),
+        method_path.split(".")[1],
+        method_wrapper,
+    )
+
+
+def document_class_dispatcher_methods(
+    dispatcher,
+    owner_cls,
+    dispatcher_path: str,
+    add_signature_self: bool = False,
+    as_attributes: bool = False,
+):
+    """Document all methods in a dispatcher class as nested methods in the owner class."""
+    for key, method in dispatcher._dispatchs.items():
+        if not isinstance(key, str):
+            continue
+        if as_attributes:
+            document_nested_attribute(method, owner_cls, f"{dispatcher_path}.{key}")
+        else:
+            document_nested_method(
+                method,
+                owner_cls,
+                f"{dispatcher_path}.{key}",
+                add_signature_self=add_signature_self,
+            )
+
+
+# Document all plotting possibilities of each plot handler
+for plot_handler in ALL_PLOT_HANDLERS:
+    document_class_dispatcher_methods(
+        plot_handler, plot_handler._cls, "plot", add_signature_self=True
+    )
+
+# Document the methods of the Geometry.to dispatcher
+document_class_dispatcher_methods(
+    sisl.Geometry.to, sisl.Geometry, "to", add_signature_self=False
+)
+
+# Document the dispatchers within the BrillouinZone.apply dispatcher
+document_class_dispatcher_methods(
+    sisl.BrillouinZone.apply,
+    sisl.BrillouinZone,
+    "apply",
+    add_signature_self=False,
+    as_attributes=True,
+)
 
 
 def setup(app):
