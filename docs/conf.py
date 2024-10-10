@@ -16,11 +16,13 @@
 
 from __future__ import annotations
 
+import inspect
 import logging
 import os
 import pathlib
 import sys
 from datetime import date
+from functools import wraps
 
 _log = logging.getLogger("sisl_doc")
 
@@ -534,8 +536,6 @@ nbsphinx_prolog = r"""
 
 nbsphinx_thumbnails = {}
 
-import inspect
-
 
 def sisl_method2class(meth):
     # Method to retrieve the class from a method (bounded and unbounded)
@@ -555,7 +555,142 @@ def sisl_method2class(meth):
     return None  # not required since None would have been implicitly returned anyway
 
 
+# Run hacks to ensure the documentation shows proper
+# documentation.
+def assign_nested_attribute(cls: object, attribute_path: str, attribute: object):
+    """Sets a nested attribute to a class with a placeholder name.
+
+    It takes `cls` and sets the full `attribute_path` (with possible `.` in it)
+    to `attribute`.
+
+    It then also does this recursively for the objects located in the nested attribute.
+    """
+
+    # This sets the *full* attribute to the class
+    setattr(cls, attribute_path, attribute)
+    _log.info("adding %s attribute to class %s" % (attribute_path, cls.__name__))
+    attribute_paths = attribute_path.split(".")
+
+    if len(attribute_paths) > 1:
+        attribute_cls = getattr(cls, attribute_paths[0])
+        _log.info(
+            "adding %s attribute to class %s"
+            % (".".join(attribute_paths[1:]), attribute_cls.__name__)
+        )
+        setattr(attribute_cls, ".".join(attribute_paths[1:]), attribute)
+
+
+def assign_nested_method(
+    cls: object, method_path: str, method: object, signature_add_self: bool = False
+):
+    """Takes a nested method, wraps it to make sure is of function type and creates a nested attribute in the owner class."""
+
+    @wraps(method)
+    def wrapped_method(*args, **kwargs):
+        return method(*args, **kwargs)
+
+    if signature_add_self:
+        wrapper_sig = inspect.signature(wrapped_method)
+        wrapped_method.__signature__ = wrapper_sig.replace(
+            parameters=[
+                inspect.Parameter("self", inspect.Parameter.POSITIONAL_ONLY),
+                *wrapper_sig.parameters.values(),
+            ]
+        )
+
+    # Make the method assigned as
+    assign_nested_attribute(cls, method_path, wrapped_method)
+
+    # I don't really see why this is required?
+    # head, tail, *_ = method_path.split(".")
+    # setattr(
+    #    getattr(cls, head), tail, wrapped_method,
+    # )
+
+
+def assign_class_dispatcher_methods(
+    cls: object,
+    dispatcher_name: str,
+    signature_add_self: bool = False,
+    as_attributes: bool = False,
+):
+    """Document all methods in a dispatcher class as nested methods in the owner class."""
+
+    dispatcher = getattr(cls, dispatcher_name)
+    print("assign_class_dispatcher_methods", dispatcher)
+    for key, method in dispatcher._dispatchs.items():
+        if not isinstance(key, str):
+            continue
+
+        path = f"{dispatcher_name}.{key}"
+        print(f"running for {path=}")
+        print("before assignment", getattr(cls, path, None))
+        if as_attributes:
+            assign_nested_attribute(cls, path, method.dispatch)
+        else:
+            assign_nested_method(
+                cls,
+                path,
+                method.dispatch,
+                signature_add_self=signature_add_self,
+            )
+        print("after assignment", getattr(cls, path))
+
+
 # My custom detailed instructions for not documenting stuff
+# Run through all classes in sisl, extract attributes which
+# are subclasses of the AbstractDispatcher.
+
+_TRAVERSED = set()
+
+
+def is_sisl_object(obj):
+    try:
+        return obj.__module__.startswith("sisl")
+    except:
+        pass
+    return False
+
+
+def yield_objects(module):
+    global _TRAVERSED
+
+    for name in dir(module):
+        obj = getattr(module, name)
+        if not is_sisl_object(obj):
+            continue
+
+        if inspect.ismodule(obj):
+            if name not in _TRAVERSED:
+                _TRAVERSED.add(name)
+                yield from yield_objects(obj)
+        elif inspect.isclass(obj):
+            if is_sisl_object(obj):
+                yield obj
+
+
+def yield_dispatchers(obj: object):
+    for name in dir(obj):
+
+        # False-positives could be Abstract methods etc.
+        if not hasattr(obj, name):
+            continue
+
+        # get the actual attribute
+        attr = getattr(obj, name)
+
+        for check in (issubclass, isinstance):
+            try:
+                if check(attr, sisl._dispatcher.AbstractDispatcher):
+                    yield name, attr
+                    break
+            except:
+                pass
+
+
+for obj in yield_objects(sisl):
+    for name, attr in yield_dispatchers(obj):
+        assign_class_dispatcher_methods(obj, name, as_attributes=True)
 
 
 def sisl_skip(app, what, name, obj, skip, options):
