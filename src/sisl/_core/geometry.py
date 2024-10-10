@@ -3694,13 +3694,17 @@ class Geometry(
         # infinite supercell indices
         return self.asc2uc(idx), xyz, isc
 
-    def _orbital_values(self, grid_shape: tuple[int, int, int]):
+    def _orbital_values(
+        self, grid_shape: tuple[int, int, int], truncate_with_nsc: bool = False
+    ):
         r"""Calculates orbital values for a given grid.
 
         Parameters
         ----------
         grid_shape:
            the grid shape (i.e. resolution) in which to calculate the orbital values.
+        truncate_with_nsc:
+            if True, only consider atoms within the geometry's auxiliary cell.
 
         Notes
         -----
@@ -3732,6 +3736,11 @@ class Geometry(
         # within_inf translates atoms to the unit cell to compute
         # supercell indices. Here we revert that
         ISC -= np.floor(self.fxyz[IA]).astype(int32)
+
+        # Don't consider atoms that are outside of the geometry's auxiliary cell.
+        if truncate_with_nsc:
+            mask = (abs(ISC) <= self.nsc // 2).all(axis=1)
+            IA, XYZ, ISC = IA[mask], XYZ[mask], ISC[mask]
 
         def xyz2spherical(xyz, offset):
             """Calculate the spherical coordinates from indices"""
