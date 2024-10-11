@@ -524,7 +524,7 @@ class TypeDispatcher(ObjectDispatcher):
             if isinstance(cls_dispatch, ClassDispatcher):
                 cls_dispatch.register(key, dispatch, overwrite=overwrite)
 
-    def __call__(self, obj, *args, **kwargs):
+    def __call__(self, obj: Any, *args, **kwargs) -> Any:
         # A call on a TypeDispatcher forces at least a single argument
         # where the type is being dispatched.
 

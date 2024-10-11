@@ -38,6 +38,8 @@ _log = logging.getLogger(__name__)
 
 
 class BoundaryCondition(IntEnum):
+    """Enum for boundary conditions"""
+
     UNKNOWN = auto()
     PERIODIC = auto()
     DIRICHLET = auto()
@@ -1165,17 +1167,11 @@ to_dispatch = Lattice.to
 
 # Define base-class for this
 class LatticeNewDispatch(AbstractDispatch):
-    """Base dispatcher from class passing arguments to Geometry class
-
-    This forwards all `__call__` calls to `dispatch`
-    """
-
-    def __call__(self, *args, **kwargs):
-        return self.dispatch(*args, **kwargs)
+    """Base dispatcher from class passing arguments to Lattice class"""
 
 
 class LatticeNewLatticeDispatch(LatticeNewDispatch):
-    def dispatch(self, lattice, copy: bool = False):
+    def dispatch(self, lattice, copy: bool = False) -> Lattice:
         """Return Lattice as-is, for sanitization purposes"""
         cls = self._get_class()
         if cls != lattice.__class__:
@@ -1195,7 +1191,14 @@ new_dispatch.register(Lattice, LatticeNewLatticeDispatch)
 
 
 class LatticeNewListLikeDispatch(LatticeNewDispatch):
-    def dispatch(self, cell, *args, **kwargs):
+    def dispatch(self, cell, *args, **kwargs) -> Lattice:
+        """Converts simple `array-like` variables to a `Lattice`
+
+        Examples
+        --------
+
+        >>> Lattice.new([1, 2, 3]) == Lattice([1, 2, 3])
+        """
         return Lattice(cell, *args, **kwargs)
 
 
@@ -1210,7 +1213,8 @@ new_dispatch.register(tuple, LatticeNewListLikeDispatch)
 
 
 class LatticeNewAseDispatch(LatticeNewDispatch):
-    def dispatch(self, aseg):
+    def dispatch(self, aseg) -> Lattice:
+        """`ase.Cell` conversion to `Lattice`"""
         cls = self._get_class(allow_instance=True)
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
@@ -1234,7 +1238,7 @@ except Exception:
 
 
 class LatticeNewFileDispatch(LatticeNewDispatch):
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs) -> Lattice:
         """Defer the `Lattice.read` method by passing down arguments"""
         cls = self._get_class()
         return cls.read(*args, **kwargs)
@@ -1250,7 +1254,8 @@ class LatticeToDispatch(AbstractDispatch):
 
 
 class LatticeToAseDispatch(LatticeToDispatch):
-    def dispatch(self, **kwargs):
+    def dispatch(self, **kwargs) -> ase.Cell:
+        """`Lattice` conversion to an `ase.Cell` object."""
         from ase import Cell as ase_Cell
 
         lattice = self._get_object()
@@ -1261,7 +1266,16 @@ to_dispatch.register("ase", LatticeToAseDispatch)
 
 
 class LatticeToSileDispatch(LatticeToDispatch):
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs) -> Any:
+        """`Lattice` writing to a sile.
+
+        Examples
+        --------
+
+        >>> geom = si.geom.graphene()
+        >>> geom.lattice.to("hello.xyz")
+        >>> geom.lattice.to(pathlib.Path("hello.xyz"))
+        """
         lattice = self._get_object()
         return lattice.write(*args, **kwargs)
 
@@ -1274,7 +1288,8 @@ to_dispatch.register(Path, LatticeToSileDispatch)
 
 
 class LatticeToCuboidDispatch(LatticeToDispatch):
-    def dispatch(self, center=None, origin=None, orthogonal=False):
+    def dispatch(self, center=None, origin=None, orthogonal=False) -> Cuboid:
+        """Convert lattice parameters to a `Cuboid`"""
         lattice = self._get_object()
 
         cell = lattice.cell.copy()
@@ -1436,12 +1451,13 @@ class LatticeChild:
 
     @property
     def pbc(self) -> np.ndarray:
-        f"""{Lattice.pbc.__doc__}"""
+        __doc__ = Lattice.pbc.__doc__
         return self.lattice.pbc
 
 
 class LatticeNewLatticeChildDispatch(LatticeNewDispatch):
-    def dispatch(self, obj, copy: bool = False):
+    def dispatch(self, obj, copy: bool = False) -> Lattice:
+        """Extraction of `Lattice` object from a `LatticeChild` object."""
         # for sanitation purposes
         if copy:
             return obj.lattice.copy()

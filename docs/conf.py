@@ -638,36 +638,52 @@ def assign_nested_method(
     assign_nested_attribute(cls, method_path, wrapped_method)
 
     # I don't really see why this is required?
-    # head, tail, *_ = method_path.split(".")
-    # setattr(
-    #    getattr(cls, head), tail, wrapped_method,
-    # )
+    head, tail, *_ = method_path.split(".")
+    setattr(
+        getattr(cls, head),
+        tail,
+        wrapped_method,
+    )
 
 
 def assign_class_dispatcher_methods(
     cls: object,
-    dispatcher_name: str,
+    dispatcher_name: Union[str, tuple[str, str]],
     signature_add_self: bool = False,
     as_attributes: bool = False,
 ):
     """Document all methods in a dispatcher class as nested methods in the owner class."""
 
+    if isinstance(dispatcher_name, str):
+        dispatcher_name = (dispatcher_name, "dispatch")
+
+    dispatcher_name, method_name = dispatcher_name
     dispatcher = getattr(cls, dispatcher_name)
 
     _log.info("assign_class_dispatcher_methods found dispatcher: {dispatcher}")
     for key, method in dispatcher._dispatchs.items():
         if not isinstance(key, str):
+            # TODO do not know yet what to do with object types used as extractions
             continue
+
+        if method_name is None:
+            dispatch = method
+        else:
+            dispatch = getattr(method, method_name)
 
         path = f"{dispatcher_name}.{key}"
         _log.info("assign_class_dispatcher_methods assigning attribute: {path}")
+        # if dispatcher_name == "new":
+        #    print(cls, dispatcher_name, path, method, dispatch, dispatch.__doc__)
+        # if dispatcher_name == "to":
+        #    print(cls, dispatcher_name, path, method, dispatch, dispatch.__doc__)
         if as_attributes:
-            assign_nested_attribute(cls, path, method.dispatch)
+            assign_nested_attribute(cls, path, dispatch)
         else:
             assign_nested_method(
                 cls,
                 path,
-                method.dispatch,
+                dispatch,
                 signature_add_self=signature_add_self,
             )
 
@@ -751,7 +767,7 @@ for obj in yield_objects(sisl):
 
     for name, attr in yield_types(obj, sisl._dispatcher.AbstractDispatcher):
         # Fix the class dispatchers methods
-        assign_class_dispatcher_methods(obj, name, as_attributes=True)
+        assign_class_dispatcher_methods(obj, name, as_attributes=False)
         # Collect all the different names where a dispatcher is associated.
         # In this way we die if we add a new one, without documenting it!
         _found_dispatch_attributes.add(name)
