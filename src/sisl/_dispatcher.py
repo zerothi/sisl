@@ -110,6 +110,7 @@ class AbstractDispatch(metaclass=ABCMeta):
         A basic interception would be
 
         .. code:: python
+
             @wraps(method)
             def func(*args, **kwargs):
                 return method(*args, **kwargs)

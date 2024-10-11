@@ -746,17 +746,31 @@ def yield_types(obj: object, classes):
                 pass
 
 
+_found_dispatch_attributes = set()
 for obj in yield_objects(sisl):
 
     for name, attr in yield_types(obj, sisl._dispatcher.AbstractDispatcher):
         # Fix the class dispatchers methods
         assign_class_dispatcher_methods(obj, name, as_attributes=True)
+        # Collect all the different names where a dispatcher is associated.
+        # In this way we die if we add a new one, without documenting it!
+        _found_dispatch_attributes.add(name)
 
     for name, attr in yield_types(
         obj, (sisl.io._multiple.SileBound, sisl.io._multiple.SileBinder)
     ):
 
         assign_nested_attribute(obj, name, attr.__wrapped__)
+
+
+if (
+    len(
+        diff := _found_dispatch_attributes
+        - set(autosummary_context["sisl_dispatch_attributes"])
+    )
+    > 0
+):
+    raise ValueError(f"Found more sets than defined: {diff}")
 
 
 def sisl_skip(app, what, name, obj, skip, options):
