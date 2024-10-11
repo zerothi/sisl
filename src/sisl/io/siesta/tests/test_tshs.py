@@ -99,11 +99,8 @@ def test_tshs_warn(sisl_files):
 
     # check cell
     geom = si.read_geometry()
-    geom.lattice.cell[:, :] = 1.0
-    with (
-        pytest.warns(sisl.SislWarning, match="lattice vectors"),
-        pytest.raises(ValueError, match="math domain error"),
-    ):
+    geom.lattice.cell[:, :] += 1.0
+    with pytest.warns(sisl.SislWarning, match="lattice vectors"):
         si.read_hamiltonian(geometry=geom)
 
     # check atomic coordinates
