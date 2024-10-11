@@ -526,11 +526,19 @@ nbsphinx_prolog = r"""
 
 .. raw:: html
 
-     <div align="right">
-     <a href="https://raw.githubusercontent.com/zerothi/sisl/main/{{ docname }}"><img alt="ipynb download badge" src="https://img.shields.io/badge/download-ipynb-blue.svg" style="vertical-align:text-bottom"></a>
-     &nbsp;
-     <a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>
-     </div>
+    <div align="right">
+    <a href="https://raw.githubusercontent.com/zerothi/sisl/main/{{ docname }}">
+        <img alt="ipynb download badge"
+            src="https://img.shields.io/badge/download-ipynb-blue.svg"
+            style="vertical-align:text-bottom">
+    </a>
+    &nbsp;
+    <a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath={{ docname|e }}">
+       <img alt="Binder badge"
+            src="https://mybinder.org/badge_logo.svg"
+            style="vertical-align:text-bottom">
+    </a>
+    </div>
 
 """
 
@@ -553,6 +561,34 @@ def sisl_method2class(meth):
         if isinstance(cls, type):
             return cls
     return None  # not required since None would have been implicitly returned anyway
+
+
+autosummary_context = {
+    "sisl_dispatch_attributes": [
+        "plot",
+        "apply",
+        "to",
+        "new",
+    ],
+    "sisl_skip_methods": [
+        "ArgumentParser",
+        "ArgumentParser_out",
+        "is_keys",
+        "key2case",
+        "keys2case",
+        "line_has_key",
+        "line_has_keys",
+        "readline",
+        "step_to",
+        "step_either",
+        "isDataset",
+        "isDimension",
+        "isGroup",
+        "isRoot",
+        "isVariable",
+        "InfoAttr",
+    ],
+}
 
 
 # Run hacks to ensure the documentation shows proper
@@ -581,7 +617,7 @@ def assign_nested_attribute(cls: object, attribute_path: str, attribute: object)
 
 
 def assign_nested_method(
-    cls: object, method_path: str, method: object, signature_add_self: bool = False
+    cls: object, method_path: str, method, signature_add_self: bool = False
 ):
     """Takes a nested method, wraps it to make sure is of function type and creates a nested attribute in the owner class."""
 
@@ -617,14 +653,14 @@ def assign_class_dispatcher_methods(
     """Document all methods in a dispatcher class as nested methods in the owner class."""
 
     dispatcher = getattr(cls, dispatcher_name)
-    print("assign_class_dispatcher_methods", dispatcher)
+
+    _log.info("assign_class_dispatcher_methods found dispatcher: {dispatcher}")
     for key, method in dispatcher._dispatchs.items():
         if not isinstance(key, str):
             continue
 
         path = f"{dispatcher_name}.{key}"
-        print(f"running for {path=}")
-        print("before assignment", getattr(cls, path, None))
+        _log.info("assign_class_dispatcher_methods assigning attribute: {path}")
         if as_attributes:
             assign_nested_attribute(cls, path, method.dispatch)
         else:
@@ -634,7 +670,6 @@ def assign_class_dispatcher_methods(
                 method.dispatch,
                 signature_add_self=signature_add_self,
             )
-        print("after assignment", getattr(cls, path))
 
 
 # My custom detailed instructions for not documenting stuff
@@ -645,8 +680,15 @@ _TRAVERSED = set()
 
 
 def is_sisl_object(obj):
+    """Check whether an object is coming from the sisl module."""
     try:
+        # for objects
         return obj.__module__.startswith("sisl")
+    except:
+        pass
+    try:
+        # for modules
+        return obj.__name__.startswith("sisl")
     except:
         pass
     return False
@@ -655,33 +697,49 @@ def is_sisl_object(obj):
 def yield_objects(module):
     global _TRAVERSED
 
-    for name in dir(module):
-        obj = getattr(module, name)
-        if not is_sisl_object(obj):
+    for name, member in inspect.getmembers(module):
+
+        # We need to sort out things that are
+        # originating from the sisl module. We don't care
+        # about external modules here...
+        if not is_sisl_object(member):
             continue
 
-        if inspect.ismodule(obj):
+        if inspect.ismodule(member):
+            # Never run through a module twice.
+            # We will likely import modules again and again,
+            # thus creating infinite loops.
             if name not in _TRAVERSED:
                 _TRAVERSED.add(name)
-                yield from yield_objects(obj)
-        elif inspect.isclass(obj):
-            if is_sisl_object(obj):
-                yield obj
+                yield from yield_objects(member)
+
+        elif inspect.isclass(member):
+            if name not in _TRAVERSED:
+                _TRAVERSED.add(name)
+                yield member
 
 
-def yield_dispatchers(obj: object):
+def yield_types(obj: object, classes):
+    """Yield any attributes/methods in `obj` which is has AbstractDispatcher as
+    a baseclass."""
     for name in dir(obj):
 
         # False-positives could be Abstract methods etc.
         if not hasattr(obj, name):
+            _log.info("skipping obj.%s due to hasattr error" % name)
+            continue
+
+        # Do not parse privates
+        if name.startswith("_"):
             continue
 
         # get the actual attribute
         attr = getattr(obj, name)
 
-        for check in (issubclass, isinstance):
+        for istype in (issubclass, isinstance):
+            # print("check", obj, attr, name, classes)
             try:
-                if check(attr, sisl._dispatcher.AbstractDispatcher):
+                if istype(attr, classes):
                     yield name, attr
                     break
             except:
@@ -689,33 +747,19 @@ def yield_dispatchers(obj: object):
 
 
 for obj in yield_objects(sisl):
-    for name, attr in yield_dispatchers(obj):
+
+    for name, attr in yield_types(obj, sisl._dispatcher.AbstractDispatcher):
+        # Fix the class dispatchers methods
         assign_class_dispatcher_methods(obj, name, as_attributes=True)
 
 
 def sisl_skip(app, what, name, obj, skip, options):
-    global autodoc_default_options
+    global autodoc_default_options, autosummary_context
     # When adding routines here, please also add them
     # to the _templates/autosummary/class.rst file to limit
     # the documentation.
     if what == "class":
-        if name in [
-            "ArgumentParser",
-            "ArgumentParser_out",
-            "is_keys",
-            "key2case",
-            "keys2case",
-            "line_has_key",
-            "line_has_keys",
-            "readline",
-            "step_to",
-            "isDataset",
-            "isDimension",
-            "isGroup",
-            "isRoot",
-            "isVariable",
-            "InfoAttr",
-        ]:
+        if name in autosummary_context["sisl_skip_methods"]:
             _log.info(f"skip: {obj=} {what=} {name=}")
             return True
     # elif what == "attribute":
@@ -755,13 +799,16 @@ def sisl_skip(app, what, name, obj, skip, options):
         ]:
             _log.info(f"skip: {obj=} {what=} {name=}")
             return True
-    if "SilePHtrans" in cls.__name__:
+    if cls.__name__.endswith("SilePHtrans"):
         if name in [
+            "current",
+            "atom_current",
+            "bond_current",
+            "vector_current",
+            "orbital_current",
             "chemical_potential",
             "electron_temperature",
             "kT",
-            "current",
-            "current_parameter",
             "shot_noise",
             "noise_power",
         ]:

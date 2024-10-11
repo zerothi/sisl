@@ -1,45 +1,40 @@
 {{ fullname | escape | underline}}
 
-{# Global variables specified for use further down #}
+{#
 
-{% set check_ns = namespace(
-      plot=false,
-      to=false,
-      new=false,
-      apply=false,
-      )
-%}
-{% set specials = [
-      'plot',
-      'apply',
-      'to',
-      'new',
-   ]
-%}
+Global variables specified for use further down.
 
-{% macro check_sections() %}
-{# Check for variables that should be in specific sections #}
+This uses the externally defined variables in the
+autosummary_context variable.
+
+   - sisl_dispatch_attributes
+   - sisl_skip_methods
+#}
+
+
+{% set found_ns = namespace(found=[]) %}
+
+{% macro parse_sections() %}
+{#
+
+Check for variables that should be in specific sections.
+This will store in `found_ns.found` the items that are found.
+It is not optimal in the sense that the searched variables
+are defined in `conf.py`. But the actual parsing requires
+that we have them explicitly in the docs.
+
+#}
 
 {% for things in varargs %}
 {% for item in things %}
 
-   {# Determine whether we should do any Plotting section #}
-   {% if item.startswith('plot.') %}
-      {% set check_ns.plot = true %}
-   {%- endif %}
-
-   {% if item.startswith('to.') %}
-      {% set check_ns.to = true %}
-   {%- endif %}
-
-   {% if item.startswith('new.') %}
-      {% set check_ns.new = true %}
-   {%- endif %}
-
-   {# Determine whether we should do any Dispatch section #}
-   {% if item.startswith('apply.') %}
-      {% set check_ns.apply = true %}
-   {%- endif %}
+   {% for attr in sisl_dispatch_attributes %}
+      {% if not attr in found_ns.found %}
+         {% if item.startswith(attr + '.') %}
+            {% set found_ns.found = found_ns.found + [attr] %}
+         {%- endif %}
+      {%- endif %}
+   {%- endfor %}
 
 {%- endfor %}
 {%- endfor %}
@@ -77,14 +72,6 @@ Parameters
 
 
 {% macro accepted_methods() %}
-{% set skip_methods =
-                   ['ArgumentParser', 'ArgumentParser_out',
-                    'is_keys', 'key2case', 'keys2case',
-                    'line_has_key', 'line_has_keys', 'readline',
-                    'step_either', 'step_to',
-                    'isDataset', 'isDimension', 'isGroup',
-                    'isRoot', 'isVariable'] + specials
-%}
 
 {# Loop on the arguments #}
 {% for things in varargs %}
@@ -97,25 +84,32 @@ Parameters
    Use the namespace variable to pass down
    contexts. This is needed because variables
    in Jinja are hard scoped.
+
    #}
 
    {% if item.startswith('_') %}
       {% set tmp.keep = false %}
    {%- endif %}
-   {% if item in skip_methods %}
+   {% if item in sisl_skip_methods + sisl_dispatch_attributes %}
+      {#
+      I am actually not really sure this is needed.
+      Because the `sisl_skip` method in `conf.py` already
+      lists these as skipped. So likely not required...
+      Oh well...
+      #}
       {% set tmp.keep = false %}
    {%- endif %}
 
-   {% for starts in specials %}
-   {% if item.startswith(starts + '.') %}
-      {% set tmp.keep = false %}
-   {%- endif %}
+   {% for starts in sisl_dispatch_attributes %}
+      {% if item.startswith(starts + '.') %}
+         {% set tmp.keep = false %}
+      {%- endif %}
    {%- endfor %}
 
    {% if tmp.keep %}
-   {# Call the parent caller with the item that has
-      passed all tests for eligibility
-   #}
+      {# Call the parent caller with the item that has
+         passed all tests for eligibility
+      #}
    {{ caller(item) }}
    {%- endif %}
 
@@ -133,29 +127,34 @@ Parameters
    Just call the macro, this won't write anything,
    only set some variables in the check_ns namespace variable
 #}
-{{ check_sections(attributes, methods) }}
+{{ parse_sections(attributes, methods) }}
+
 
 
 {#
 Now the actual writing of things happen!
 #}
 
-{% if check_ns.to or check_ns.new %}
+{% block conversions %}
+{% if 'to' in found_ns.found or 'new' in found_ns.found %}
    .. rubric:: {{ _('Conversions') }}
 
    .. autosummary::
-      {% if check_ns.new %}
+      {% if 'new' in found_ns.found %}
       {{ name }}.new
       {% endif %}
       {{ extract_startswith('new.', false, attributes, methods) }}
-      {% if check_ns.to %}
+      {% if 'to' in found_ns.found %}
       {{ name }}.to
       {% endif %}
       {{ extract_startswith('to.', false, attributes, methods) }}
 
 {%- endif %}
+{%- endblock %}
 
-{% if check_ns.plot %}
+
+{% block plotting %}
+{% if 'plot' in found_ns.found %}
    .. rubric:: {{ _('Plotting') }}
 
    .. autosummary::
@@ -163,15 +162,20 @@ Now the actual writing of things happen!
       {{ extract_startswith('plot.', false, attributes, methods) }}
 
 {%- endif %}
+{%- endblock %}
 
-{% if check_ns.apply %}
-   .. rubric:: {{ _('Dispatching') }}
+
+{% block dispatching %}
+{% if 'apply' in found_ns.found %}
+   .. rubric:: :math:`k`-{{ _('point') }} {{ _('calculations') }}
 
    .. autosummary::
       {{ name }}.apply
       {{ extract_startswith('apply.', false, attributes, methods) }}
 
 {%- endif %}
+{%- endblock %}
+
 
 {% block methods %}
 {% if methods %}
@@ -183,6 +187,7 @@ Now the actual writing of things happen!
       {%- endcall %}
 {%- endif %}
 {%- endblock %}
+
 
 {% block attributes %}
 {% if attributes %}
