@@ -752,6 +752,12 @@ for obj in yield_objects(sisl):
         # Fix the class dispatchers methods
         assign_class_dispatcher_methods(obj, name, as_attributes=True)
 
+    for name, attr in yield_types(
+        obj, (sisl.io._multiple.SileBound, sisl.io._multiple.SileBinder)
+    ):
+
+        assign_nested_attribute(obj, name, attr.__wrapped__)
+
 
 def sisl_skip(app, what, name, obj, skip, options):
     global autodoc_default_options, autosummary_context

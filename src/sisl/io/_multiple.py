@@ -180,26 +180,42 @@ class SileBound:
     ):
         self._obj = obj
         # first update to the wrapped function
-        update_wrapper(self, func)
         self.slicer = slicer
         self.default_slice = default_slice
         self.kwargs = kwargs
-        self._update_doc()
 
-    def __str__(self):
-        # trying to bypass the documentationt
-        return self.__doc__
+        # Retrive documentation details.
+        # This can be any attributes that should be overwritten
+        # in some methods (used for documentation purposes).
+        attrs = self._get_doc(func)
 
-    def _update_doc(self):
+        # Assign the wrapped function to this object.
+        # This will store it in self.__wrapped__
+        update_wrapper(self, func)
+
+        for attr, value in attrs.items():
+            for obj in (self, self.__call__, self.__wrapped__):
+                try:
+                    setattr(obj, attr, value)
+                except AttributeError as e:
+                    # we cannot set the __doc__ string, let it go
+                    pass
+        # This is mainly to signal that it shouldn't patch `__wrapped__`
+        # anymore.
+        # See in SileSlicer.
+        self.__wrapped__.__silebound_patched__ = True
+
+    def _get_doc(self, func: Callable) -> dict[str, str]:
         # Override name to display slice handling in help
         default_slice = self.default_slice
         if self.default_slice is None:
             default_slice = 0
 
-        name = self.__wrapped__.__name__
-        self.__name__ = f"{name}[...|{default_slice!r}]"
+        base_name = func.__name__
+        name = f"{base_name}[...|{default_slice!r}]"
+
         try:
-            doc = dedent(self.__doc__)
+            doc = func.__doc__
         except AttributeError:
             doc = ""
 
@@ -212,41 +228,39 @@ class SileBound:
         else:
             default_slice = self.default_slice
 
-        docs = [doc]
-        docs.append(
-            dedent(
-                f"""
+        docs_slicer = dedent(
+            f"""
         Notes
         -----
         This method defaults to return {default_slice} item(s).
 
         This method enables slicing for handling multiple values (see ``[...|default]``).
 
-        This is an optional handler enabling returning multiple elements if {name}
+        This is an optional handler enabling returning multiple elements if ``{name}``
         allows this.
 
-        >>> single = obj.{name}() # returns the default entry of {name}
+        >>> single = obj.{base_name}() # returns the default entry of {name}
 
-        To retrieve the first two elements that {name} will return
+        To retrieve the first two elements that ``{base_name}`` will return
 
-        >>> first_two = obj.{name}[:2]()
+        >>> first_two = obj.{base_name}[:2]()
 
         Retrieving the last two is done equivalently:
 
-        >>> last_two = obj.{name}[-2:]()
+        >>> last_two = obj.{base_name}[-2:]()
 
-        While one can store the sliced function ``tmp = obj.{name}[:]`` one
+        While one can store the sliced function ``tmp = obj.{base_name}[:]`` one
         will loose the slice after each call.
         """
-            )
         )
-        doc = "\n".join(docs)
-        try:
-            self.__doc__ = doc
-            self.__call__.__doc__ = doc
-        except AttributeError:
-            # we cannot set the __doc__ string, let it go
-            pass
+
+        # Correctly parse the doc strings.
+        # Generally the first line has the wrong indentation.
+        # So let's correct that!
+        doc0, *docs = doc.splitlines(True)
+        docs = "".join(docs)
+        doc = "\n".join([dedent(doc0), dedent(docs), dedent(docs_slicer)])
+        return {"__name__": name, "__doc__": doc}
 
     def __call__(self, *args, **kwargs):
         if self.default_slice is None:
@@ -279,12 +293,12 @@ class SileBinder:
         self.kwargs = kwargs
 
     # this is the decorator call
-    def __call__(self, func):
+    def __call__(self, func) -> Self:
         # update doc str etc.
         update_wrapper(self, func)
         return self
 
-    def __get__(self, obj, objtype=None):
+    def __get__(self, obj, objtype=None) -> Any:
         func = self.__wrapped__
 
         if obj is None:
@@ -292,7 +306,10 @@ class SileBinder:
             # and other things, this one won't bind
             # the SileBound object to the function
             # name it arrived from.
-            bound = SileBound(obj=objtype, func=func, **self.kwargs)
+            if getattr(func, "__silebound_patched__", False):
+                bound = func
+            else:
+                bound = SileBound(obj=objtype, func=func, **self.kwargs)
         else:
             bound = SileBound(obj=obj, func=func, **self.kwargs)
             # bind the class object to the host
