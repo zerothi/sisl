@@ -236,6 +236,10 @@ autodoc_default_options = {
 # is basically groupwise. So lets be explicit
 autodoc_member_order = "groupwise"
 
+# Show type-hints in both the signature
+# and in the variable list
+autodoc_typehints = "signature"
+
 # typehints only shows the minimal class, instead
 # of full module paths
 # The linkage is still problematic, and a known issue:
@@ -243,10 +247,9 @@ autodoc_member_order = "groupwise"
 # autodoc will likely get a rewrite. Until then..
 autodoc_typehints_format = "short"
 
-# Show type-hints in both the signature
-# and in the variable list
-autodoc_typehints = "both"
-autodoc_typehints_description_target = "all"
+# Do not evaluate things that are defaulted in arguments.
+# Show them *as-is*.
+autodoc_preserve_defaults = True
 
 # Automatically create the autodoc_type_aliases
 # This is handy for commonly used terminologies.
