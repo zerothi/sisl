@@ -767,7 +767,7 @@ for obj in yield_objects(sisl):
 
     for name, attr in yield_types(obj, sisl._dispatcher.AbstractDispatcher):
         # Fix the class dispatchers methods
-        assign_class_dispatcher_methods(obj, name, as_attributes=False)
+        assign_class_dispatcher_methods(obj, name, as_attributes=name in ["apply"])
         # Collect all the different names where a dispatcher is associated.
         # In this way we die if we add a new one, without documenting it!
         _found_dispatch_attributes.add(name)
