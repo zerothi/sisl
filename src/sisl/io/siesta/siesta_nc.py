@@ -143,9 +143,7 @@ class ncSileSiesta(SileCDFSiesta):
         xyz.shape = (-1, 3)
 
         if "BASIS" in self.groups:
-            basis = self.read_basis()
-            species = self.groups["BASIS"].variables["basis"][:] - 1
-            atom = Atoms([basis[i] for i in species])
+            atom = self.read_basis()
         else:
             atom = Atom(1)
 
