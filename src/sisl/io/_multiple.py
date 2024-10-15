@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import inspect
 from collections.abc import Callable
 from functools import reduce, update_wrapper
 from itertools import zip_longest
