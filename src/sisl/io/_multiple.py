@@ -214,11 +214,6 @@ class SileBound:
         base_name = func.__name__
         name = f"{base_name}[...|{default_slice!r}]"
 
-        try:
-            doc = func.__doc__
-        except AttributeError:
-            doc = ""
-
         if default_slice == 0:
             default_slice = "the first"
         elif default_slice == -1:
@@ -257,9 +252,8 @@ class SileBound:
         # Correctly parse the doc strings.
         # Generally the first line has the wrong indentation.
         # So let's correct that!
-        doc0, *docs = doc.splitlines(True)
-        docs = "".join(docs)
-        doc = "\n".join([dedent(doc0), dedent(docs), dedent(docs_slicer)])
+        doc = inspect.getdoc(func)
+        doc = "\n".join([doc, dedent(docs_slicer)])
         return {"__name__": name, "__doc__": doc}
 
     def __call__(self, *args, **kwargs):
