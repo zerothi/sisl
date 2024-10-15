@@ -122,7 +122,6 @@ Parameters
 .. currentmodule:: {{ module }}
 
 .. autoclass:: {{ objname }}
-
 {#
    Just call the macro, this won't write anything,
    only set some variables in the check_ns namespace variable
@@ -135,11 +134,13 @@ Parameters
 Now the actual writing of things happen!
 #}
 
-{% block conversions %}
+{% block conversion %}
 {% if 'to' in found_ns.found or 'new' in found_ns.found %}
-   .. rubric:: {{ _('Conversions') }}
+   .. rubric:: {{ _('Conversion') }}
 
    .. autosummary::
+      :removeprefix: {{ name }}.
+
       {% if 'new' in found_ns.found %}
       {{ name }}.new
       {% endif %}
@@ -158,6 +159,8 @@ Now the actual writing of things happen!
    .. rubric:: {{ _('Plotting') }}
 
    .. autosummary::
+      :removeprefix: {{ name }}.
+
       {{ name }}.plot
       {{ extract_startswith('plot.', false, attributes, methods) }}
 
@@ -170,6 +173,8 @@ Now the actual writing of things happen!
    .. rubric:: :math:`k`-{{ _('point') }} {{ _('calculations') }}
 
    .. autosummary::
+      :removeprefix: {{ name }}.
+
       {{ name }}.apply
       {{ extract_startswith('apply.', false, attributes, methods) }}
 

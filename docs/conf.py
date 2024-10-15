@@ -853,6 +853,32 @@ def sisl_skip(app, what, name, obj, skip, options):
     return skip
 
 
+from docutils.parsers.rst import directives
+
+#######
+# @pfebrer's suggestion for overriding the shown prefix for the templates.
+from sphinx.ext.autosummary import Autosummary
+
+
+class RemovePrefixAutosummary(Autosummary):
+    """Wrapper around the autosummary directive to allow for custom display names.
+
+    Adds a new option `:removeprefix:` which removes a prefix from the display names.
+    """
+
+    option_spec = {**Autosummary.option_spec, "removeprefix": directives.unchanged}
+
+    def get_items(self, *args, **kwargs):
+        items = super().get_items(*args, **kwargs)
+
+        remove_prefix = self.options.get("removeprefix")
+        if remove_prefix is not None:
+            items = [(item[0].removeprefix(remove_prefix), *item[1:]) for item in items]
+
+        return items
+
+
 def setup(app):
     # Setup autodoc skipping
     app.connect("autodoc-skip-member", sisl_skip)
+    app.add_directive("autosummary", RemovePrefixAutosummary, override=True)
