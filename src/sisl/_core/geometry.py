@@ -3760,11 +3760,38 @@ class Geometry(
 
             cmin = corners_i.min(axis=0)
             cmax = corners_i.max(axis=0) + 1
-
             sh = grid.shape
-            rx = slice(min(max(cmin[0], 0), sh[0]), min(max(cmax[0], 0), sh[0]))
-            ry = slice(min(max(cmin[1], 0), sh[1]), min(max(cmax[1], 0), sh[1]))
-            rz = slice(min(max(cmin[2], 0), sh[2]), min(max(cmax[2], 0), sh[2]))
+
+            # direct if-statements are 4-5 times faster than min+max
+            if cmin[0] < 0:
+                cmin[0] = 0
+            elif sh[0] < cmin[0]:
+                cmin[0] = sh[0]
+            if cmin[1] < 0:
+                cmin[1] = 0
+            elif sh[1] < cmin[1]:
+                cmin[1] = sh[1]
+            if cmin[2] < 0:
+                cmin[2] = 0
+            elif sh[2] < cmin[2]:
+                cmin[2] = sh[2]
+
+            if cmax[0] < 0:
+                cmax[0] = 0
+            elif sh[0] < cmax[0]:
+                cmax[0] = sh[0]
+            if cmax[1] < 0:
+                cmax[1] = 0
+            elif sh[1] < cmax[1]:
+                cmax[1] = sh[1]
+            if cmax[2] < 0:
+                cmax[2] = 0
+            elif sh[2] < cmax[2]:
+                cmax[2] = sh[2]
+
+            rx = slice(cmin[0], cmax[0])
+            ry = slice(cmin[1], cmax[1])
+            rz = slice(cmin[2], cmax[2])
 
             indices = np.mgrid[rx, ry, rz].reshape(3, -1).T
 
