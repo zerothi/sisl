@@ -10,11 +10,12 @@ This method allows classes to dispatch methods through other classes.
 Here is a small snippet showing how to utilize this module.
 
 """
+import inspect
 import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, namedtuple
 from functools import update_wrapper
-from typing import Any
+from typing import Any, Callable, Union
 
 from sisl.utils._search_mro import find_implementation
 
@@ -52,6 +53,70 @@ class AbstractDispatch(metaclass=ABCMeta):
         # This could in principle contain anything.
         self._attrs = attrs
         _log.debug(f"__init__ {self.__class__.__name__}", extra={"obj": self})
+
+    @classmethod
+    def __from_function__(
+        cls, func: Optional[Callable] = None, *, name: Optional[str] = None, **kwargs
+    ) -> Self:
+        """Wrap function to return a new class (in the named function) for easier
+        handling
+
+        Parameters
+        ----------
+        func :
+            the function to be wrapped to a new type.
+            If not specified the remaining arguments can be used to return
+            a decorator.
+        name :
+            Returned class name of the decorated function.
+        **kwargs :
+            Methods added to the ``type(name, (cls,), kwargs)``.
+
+        Examples
+        --------
+
+        >>> @DispatchClass.__from_function__
+        ... def func(msg):
+        ...     print(msg)
+        >>> print(func)
+        <class '__main__.func'>
+
+        >>> @DispatchClass.__from_function__(name="Hello")
+        ... def func(msg):
+        ...     print(msg)
+        >>> print(func)
+        <class '__main__.Hello'>
+        """
+        if func is None:
+
+            def decorator(func) -> Self:
+                return cls.__from_function__(func, name=name, **kwargs)
+
+            return decorator
+
+        if name is None:
+            name = func.__name__
+
+        things = dict(__signature__=inspect.signature(func), dispatch=func)
+        for attr in (
+            "__module__",
+            "__name__",
+            "__qualname__",
+            "__doc__",
+            "__annotations__",
+            "__type_params__",
+        ):
+            try:
+                value = getattr(func, attr)
+            except AttributeError:
+                pass
+            else:
+                things[attr] = value
+
+        # Add user-defined details
+        things.update(**kwargs)
+
+        return type(name, (cls,), things)
 
     def copy(self):
         """Create a copy of this object (will not copy `obj`)"""
@@ -110,6 +175,7 @@ class AbstractDispatch(metaclass=ABCMeta):
         A basic interception would be
 
         .. code:: python
+
             @wraps(method)
             def func(*args, **kwargs):
                 return method(*args, **kwargs)
@@ -523,7 +589,7 @@ class TypeDispatcher(ObjectDispatcher):
             if isinstance(cls_dispatch, ClassDispatcher):
                 cls_dispatch.register(key, dispatch, overwrite=overwrite)
 
-    def __call__(self, obj, *args, **kwargs):
+    def __call__(self, obj: Any, *args, **kwargs) -> Any:
         # A call on a TypeDispatcher forces at least a single argument
         # where the type is being dispatched.
 

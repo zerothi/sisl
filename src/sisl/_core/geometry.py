@@ -4443,18 +4443,12 @@ to_dispatch = Geometry.to
 
 # Define base-class for this
 class GeometryNewDispatch(AbstractDispatch):
-    """Base dispatcher from class passing arguments to Geometry class
-
-    This forwards all `__call__` calls to `dispatch`
-    """
-
-    def __call__(self, *args, **kwargs):
-        return self.dispatch(*args, **kwargs)
+    """Base dispatcher from class passing arguments to Geometry class"""
 
 
 # Bypass regular Geometry to be returned as is
 class GeometryNewGeometryDispatch(GeometryNewDispatch):
-    def dispatch(self, geometry, copy=False):
+    def dispatch(self, geometry, copy: bool = False) -> Geometry:
         """Return Geometry, for sanitization purposes"""
         cls = self._get_class()
         if cls != geometry.__class__:
@@ -4473,7 +4467,7 @@ new_dispatch.register(Geometry, GeometryNewGeometryDispatch)
 
 
 class GeometryNewFileDispatch(GeometryNewDispatch):
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs) -> Geometry:
         """Defer the `Geometry.read` method by passing down arguments"""
         cls = self._get_class()
         return cls.read(*args, **kwargs)
@@ -4485,8 +4479,8 @@ new_dispatch.register(Path, GeometryNewFileDispatch)
 
 
 class GeometryNewAseDispatch(GeometryNewDispatch):
-    def dispatch(self, aseg, **kwargs):
-        """Convert an ``ase`` object into a `Geometry`"""
+    def dispatch(self, aseg, **kwargs) -> Geometry:
+        """Convert an `ase.Atoms` object into a `Geometry`"""
         cls = self._get_class()
         Z = aseg.get_atomic_numbers()
         xyz = aseg.get_positions()
@@ -4511,7 +4505,7 @@ except Exception:
 
 
 class GeometryNewpymatgenDispatch(GeometryNewDispatch):
-    def dispatch(self, struct, **kwargs):
+    def dispatch(self, struct, **kwargs) -> Geometry:
         """Convert a ``pymatgen`` structure/molecule object into a `Geometry`"""
         from pymatgen.core import Structure
 
@@ -4556,7 +4550,16 @@ class GeometryToDispatch(AbstractDispatch):
 
 
 class GeometryToSileDispatch(GeometryToDispatch):
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs) -> None:
+        """Writes the geometry to a sile with any optional arguments.
+
+        Examples
+        --------
+
+        >>> geom = si.geom.graphene()
+        >>> geom.to("hello.xyz")
+        >>> geom.to(pathlib.Path("hello.xyz"))
+        """
         geom = self._get_object()
         return geom.write(*args, **kwargs)
 
@@ -4569,7 +4572,8 @@ to_dispatch.register(Path, GeometryToSileDispatch)
 
 
 class GeometryToAseDispatch(GeometryToDispatch):
-    def dispatch(self, **kwargs):
+    def dispatch(self, **kwargs) -> ase.Atoms:
+        """Conversion of `Geometry` to an `ase.Atoms` object"""
         from ase import Atoms as ase_Atoms
 
         geom = self._get_object()
@@ -4591,7 +4595,13 @@ if has_module("ase"):
 
 
 class GeometryTopymatgenDispatch(GeometryToDispatch):
-    def dispatch(self, **kwargs):
+    def dispatch(
+        self, **kwargs
+    ) -> Union[pymatgen.core.Molecule, pymatgen.core.Structure]:
+        """Conversion of `Geometry` to a `pymatgen` object.
+
+        Depending on the periodicity, it can be `Molecule` or `Structure`.
+        """
         from pymatgen.core import Lattice, Molecule, Structure
 
         from sisl._core.atom import PeriodicTable
@@ -4615,7 +4625,9 @@ to_dispatch.register("pymatgen", GeometryTopymatgenDispatch)
 
 
 class GeometryToDataframeDispatch(GeometryToDispatch):
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs) -> pandas.DataFrame:
+        """Convert the geometry to a `pandas.DataFrame` with values stored in columns"""
+
         import pandas as pd
 
         geom = self._get_object()
