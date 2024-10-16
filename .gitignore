@@ -12,6 +12,7 @@ __config__.py
 .*/
 docs/build
 docs/**/generated/
+docs/tutorials/**/*.{cube,xyz,fdf}
 */sisl.egg-info
 src/sisl/**/*.html
 src/sisl/_version.py
