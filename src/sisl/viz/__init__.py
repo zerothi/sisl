@@ -9,8 +9,6 @@ Visualization utilities
 
 """
 
-import os
-
 try:
     import nodify as _  # noqa: F401
 except ModuleNotFoundError as e:
@@ -27,19 +25,11 @@ Or conda (only possible if inside a conda environment):
 # Placeholders for 'plot' attributes are set in the classes while
 # sisl.viz is not loaded. Now we are loading it, so just remove those
 # placeholders.
-from sisl._environ import register_environ_variable
 from sisl._lazy_viz import clear_viz_placeholders
-
-register_environ_variable(
-    "SISL_VIZ_NUM_PROCS",
-    1,
-    description="Maximum number of processors used for parallel plotting",
-    process=int,
-)
 
 clear_viz_placeholders()
 
-del os, register_environ_variable, clear_viz_placeholders
+del clear_viz_placeholders
 
 from . import _xarray_accessor
 from ._plotables import register_plotable

@@ -303,7 +303,6 @@ isolated_build = True
 [testenv]
 setenv =
     SISL_NUM_PROCS=1
-    SISL_VIZ_NUM_PROCS=1
 deps = -rdocs/requirements.txt
 commands = pytest -s -rXs {posargs}
 """

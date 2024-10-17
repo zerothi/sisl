@@ -66,7 +66,6 @@ skip_notebook = "notebook" in _doc_skip
 # If building this on RTD, mock out fortran sources
 if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
-    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
 
 # General information about the project.
