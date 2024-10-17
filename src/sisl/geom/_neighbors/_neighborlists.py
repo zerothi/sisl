@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from functools import cached_property
+from numbers import Integral
 from typing import Optional
 
 import numpy as np
@@ -217,7 +218,7 @@ class FullNeighborList(AtomsNeighborList):
 
     def __getitem__(self, item) -> AtomNeighborList:
         """Returns the interactions of a given atom."""
-        if isinstance(item, int):
+        if isinstance(item, Integral):
 
             start = 0 if item == 0 else self.split_indices[item - 1]
             end = self.split_indices[item]
@@ -305,7 +306,7 @@ class PartialNeighborList(AtomsNeighborList):
 
     def __getitem__(self, item) -> AtomNeighborList:
         """Returns the interactions of a given atom."""
-        if isinstance(item, int):
+        if isinstance(item, Integral):
 
             start = 0 if item == 0 else self.split_indices[item - 1]
             end = self.split_indices[item]
@@ -408,7 +409,7 @@ class PointsNeighborList(Neighbors):
 
     def __getitem__(self, item):
         """Returns the interactions of a given point."""
-        if isinstance(item, int):
+        if isinstance(item, Integral):
 
             start = 0 if item == 0 else self.split_indices[item - 1]
             end = self.split_indices[item]
