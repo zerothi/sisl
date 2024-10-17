@@ -3763,6 +3763,9 @@ class Geometry(
             sh = grid.shape
 
             # direct if-statements are 4-5 times faster than min+max
+            # These subsequent 25 lines are equivalent to:
+            # cmin = np.maximum(0, np.minimum(cmin, sh))
+            # the numpy equivalents are way too slow in this case.
             if cmin[0] < 0:
                 cmin[0] = 0
             elif sh[0] < cmin[0]:
