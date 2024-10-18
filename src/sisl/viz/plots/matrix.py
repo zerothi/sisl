@@ -50,7 +50,7 @@ def atomic_matrix_plot(
     """Plots a (possibly sparse) matrix where rows and columns are either orbitals or atoms.
 
     Parameters
-    -----------
+    ----------
     matrix:
         the matrix, either as a numpy array or as a sisl sparse matrix.
     dim:

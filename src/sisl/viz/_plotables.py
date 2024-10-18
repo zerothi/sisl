@@ -10,9 +10,35 @@ import inspect
 from collections import ChainMap
 from collections.abc import Sequence
 
+try:
+    from numpydoc.docscrape import FunctionDoc
+except ImportError:
+
+    # Class that mocks the numpydoc FunctionDoc class
+    class FunctionDoc:
+        def __init__(self, *args, **kwargs):
+            self._dict = {
+                "Parameters": [],
+            }
+
+        def __iter__(self):
+            return iter([])
+
+        def __setitem__(self, key, value):
+            self._dict[key] = value
+
+        def __getitem__(self, key):
+            return self._dict[key]
+
+        def __str__(self):
+            return "Install numpydoc to get a useful docstring here."
+
+
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, ObjectDispatcher
 
 __all__ = ["register_plotable", "register_data_source", "register_sile_method"]
+
+ALL_PLOT_HANDLERS = []
 
 
 class ClassPlotHandler(ClassDispatcher):
@@ -24,6 +50,10 @@ class ClassPlotHandler(ClassDispatcher):
             kwargs["instance_dispatcher"] = ObjectPlotHandler
         kwargs["type_dispatcher"] = None
         super().__init__(*args, inherited_handlers=inherited_handlers, **kwargs)
+
+        ALL_PLOT_HANDLERS.append(self)
+
+        self.__doc__ = f"Plotting functions for the `{cls.__name__}` class."
 
         self._dispatchs = ChainMap(
             self._dispatchs, *[handler._dispatchs for handler in inherited_handlers]
@@ -66,7 +96,7 @@ class PlotDispatch(AbstractDispatch):
         return self._plot(self._obj, *args, **kwargs)
 
 
-def create_plot_dispatch(function, name):
+def create_plot_dispatch(function, name, plot_cls=None):
     """From a function, creates a dispatch class that will be used by the dispatchers.
 
     Parameters
@@ -84,6 +114,7 @@ def create_plot_dispatch(function, name):
             "_plot": staticmethod(function),
             "__doc__": function.__doc__,
             "__signature__": inspect.signature(function),
+            "_plot_class": plot_cls,
         },
     )
 
@@ -110,19 +141,23 @@ def _get_plotting_func(plot_cls, setting_key):
     def _plot(obj, *args, **kwargs):
         return plot_cls(*args, **{setting_key: obj, **kwargs})
 
-    _plot.__doc__ = f"""Builds a {plot_cls.__name__} by setting the value of "{setting_key}" to the current object.
+    fdoc = FunctionDoc(plot_cls)
+    fdoc["Parameters"] = list(
+        filter(lambda p: p.name.replace(":", "") != setting_key, fdoc["Parameters"])
+    )
+    docstring = str(fdoc)
+    docstring = docstring[docstring.find("\n") :].lstrip()
 
-    Documentation for {plot_cls.__name__}
-    ===========
-    {inspect.cleandoc(plot_cls.__doc__) if plot_cls.__doc__ is not None else None}
-    """
+    _plot.__doc__ = f"""Builds a ``{plot_cls.__name__}`` by setting the value of "{setting_key}" to the current object."""
+    _plot.__doc__ += "\n\n" + docstring
 
     sig = inspect.signature(plot_cls)
 
     # The signature will be the same as the plot class, but without the setting key, which
     # will be added by the _plot function
     _plot.__signature__ = sig.replace(
-        parameters=[p for p in sig.parameters.values() if p.name != setting_key]
+        parameters=[p for p in sig.parameters.values() if p.name != setting_key],
+        return_annotation=plot_cls,
     )
 
     return _plot
@@ -206,9 +241,48 @@ def register_plotable(
 
         plot_handler = getattr(plotable, plot_handler_attr)
 
-    plot_dispatch = create_plot_dispatch(plotting_func, name)
+    plot_dispatch = create_plot_dispatch(plotting_func, name, plot_cls=plot_cls)
     # Register the function in the plot_handler
     plot_handler.register(name, plot_dispatch, default=default, **kwargs)
+
+
+def _get_merged_parameters(
+    doc1,
+    doc2,
+    excludedoc1: list = (),
+    replacedoc1: dict = {},
+    excludedoc2: list = (),
+    replacedoc2: dict = {},
+):
+    def filter_and_replace(params, exclude, replace):
+        filtered = list(
+            filter(lambda p: p.name.replace(":", "") not in exclude, params)
+        )
+
+        replaced = []
+        for p in filtered:
+            name = p.name.replace(":", "")
+            if name in replace:
+                p = p.__class__(name=replace[name], type=p.type, desc=p.desc)
+            replaced.append(p)
+        return replaced
+
+    fdoc1 = FunctionDoc(doc1)
+
+    fdoc2 = FunctionDoc(doc2)
+    fdoc1["Parameters"] = [
+        *filter_and_replace(fdoc1["Parameters"], excludedoc1, replacedoc1),
+        *filter_and_replace(fdoc2["Parameters"], excludedoc2, replacedoc2),
+    ]
+    for k in fdoc1:
+        if k == "Parameters":
+            continue
+        fdoc1[k] = fdoc1[k].__class__()
+
+    docstring = str(fdoc1)
+    docstring = docstring[docstring.find("\n") :].lstrip()
+
+    return docstring
 
 
 def register_data_source(
@@ -272,7 +346,9 @@ def register_data_source(
 
         new_parameters.extend(list(plot_cls_params.values()))
 
-        signature = signature.replace(parameters=new_parameters)
+        signature = signature.replace(
+            parameters=new_parameters, return_annotation=plot_cls
+        )
 
         params_info = {
             "data_args": data_args,
@@ -320,16 +396,30 @@ def register_data_source(
             return plot_cls(**{setting_key: data, **bound.arguments, **plot_kwargs})
 
         _plot.__signature__ = signature
-        doc = f"Read data into {data_source_cls.__name__} and create a {plot_cls.__name__} from it.\n\n"
+        doc = f"Creates a ``{data_source_cls.__name__}`` object and then plots a ``{plot_cls.__name__}`` from it.\n\n"
 
         doc += (
-            "This function accepts the arguments for creating both the data source and the plot. The following"
-            " arguments of the data source have been renamed so that they don't clash with the plot arguments:\n"
-            + "\n".join(f" - {v} -> {k}" for k, v in replaced_data_args.items())
-            + f"\n\nDocumentation for the {data_source_cls.__name__} creator ({func.__name__})"
-            f"\n=============\n{inspect.cleandoc(func.__doc__) if func.__doc__ is not None else None}"
-            f"\n\nDocumentation for {plot_cls.__name__}:"
-            f"\n=============\n{inspect.cleandoc(plot_cls.__doc__) if plot_cls.__doc__ is not None else None}"
+            # "This function accepts the arguments for creating both the data source and the plot. The following"
+            # " arguments of the data source have been renamed so that they don't clash with the plot arguments:\n"
+            # + "\n".join(f" - {v} -> {k}" for k, v in replaced_data_args.items())
+            "\n"
+            + _get_merged_parameters(
+                func,
+                plot_cls,
+                excludedoc1=(list(inspect.signature(func).parameters)[0],),
+                replacedoc1={
+                    v: k for k, v in params_info["replaced_data_args"].items()
+                },
+                excludedoc2=(setting_key,),
+            )
+        )
+
+        doc += (
+            "\n\nSee also\n--------\n"
+            + plot_cls.__name__
+            + "\n    The plot class used to generate the plot.\n"
+            + data_source_cls.__name__
+            + "\n    The class to which data is converted."
         )
 
         _plot.__doc__ = doc
@@ -405,7 +495,7 @@ def register_sile_method(
         ),
     }
 
-    signature = signature.replace(parameters=new_parameters)
+    signature = signature.replace(parameters=new_parameters, return_annotation=plot_cls)
 
     def _plot(obj, *args, **kwargs):
         bound = signature.bind_partial(**kwargs)
@@ -433,16 +523,30 @@ def register_sile_method(
         return plot_cls(**{setting_key: data, **bound.arguments, **plot_kwargs})
 
     _plot.__signature__ = signature
-    doc = f"Calls {method} and creates a {plot_cls.__name__} from its output.\n\n"
+    doc = (
+        f"Calls ``{method}`` and creates a ``{plot_cls.__name__}`` from its output.\n\n"
+    )
 
     doc += (
-        f"This function accepts the arguments both for calling {method} and creating the plot. The following"
-        f" arguments of {method} have been renamed so that they don't clash with the plot arguments:\n"
-        + "\n".join(f" - {k} -> {v}" for k, v in replaced_data_args.items())
-        + f"\n\nDocumentation for {method} "
-        f"\n=============\n{inspect.cleandoc(func.__doc__) if func.__doc__ is not None else None}"
-        f"\n\nDocumentation for {plot_cls.__name__}:"
-        f"\n=============\n{inspect.cleandoc(plot_cls.__doc__) if plot_cls.__doc__ is not None else None}"
+        # f"This function accepts the arguments both for calling {method} and creating the plot. The following"
+        # f" arguments of {method} have been renamed so that they don't clash with the plot arguments:\n"
+        # + "\n".join(f" - {k} -> {v}" for k, v in replaced_data_args.items())
+        "\n"
+        + _get_merged_parameters(
+            func,
+            plot_cls,
+            excludedoc1=(list(inspect.signature(func).parameters)[0],),
+            replacedoc1={v: k for k, v in params_info["replaced_data_args"].items()},
+            excludedoc2=(setting_key,),
+        )
+    )
+
+    doc += (
+        "\n\nSee also\n--------\n"
+        + plot_cls.__name__
+        + "\n    The plot class used to generate the plot.\n"
+        + method
+        + "\n    The method called to get the data."
     )
 
     _plot.__doc__ = doc

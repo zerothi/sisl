@@ -765,8 +765,24 @@ _found_dispatch_attributes = set()
 for obj in yield_objects(sisl):
 
     for name, attr in yield_types(obj, sisl._dispatcher.AbstractDispatcher):
+
+        # If it is a plot, document the dispatch class itself, because it contains the right
+        # documentation. Also in that case add self to the signature so that sphinx doesn't
+        # hide the first argument
+        if name in ["plot"]:
+            dispatch_name = (name, None)
+            signature_add_self = True
+        else:
+            dispatch_name = name
+            signature_add_self = False
+
         # Fix the class dispatchers methods
-        assign_class_dispatcher_methods(obj, name, as_attributes=name in ["apply"])
+        assign_class_dispatcher_methods(
+            obj,
+            dispatch_name,
+            as_attributes=name in ["apply"],
+            signature_add_self=signature_add_self,
+        )
         # Collect all the different names where a dispatcher is associated.
         # In this way we die if we add a new one, without documenting it!
         _found_dispatch_attributes.add(name)

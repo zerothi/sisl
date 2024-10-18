@@ -6,7 +6,7 @@
 
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal, Optional, Union
+from typing import Literal, Optional, Tuple, Union
 
 import numpy as np
 from xarray import DataArray
@@ -201,13 +201,36 @@ class PDOSData(OrbitalData):
     @new.register
     @classmethod
     def from_path(cls, path: Path, *args, **kwargs):
-        """Creates a sile from the path and tries to read the PDOS from it."""
+        """Creates a sile from the path and tries to read the PDOS from it.
+
+        Parameters
+        ----------
+        path:
+            The path to the file to read the PDOS from.
+
+            Depending of the sile extracted from the path, the corresponding `PDOSData` constructor
+            will be called.
+        **kwargs:
+            Extra arguments to be passed to the PDOSData constructor.
+        """
         return cls.new(sisl.get_sile(path), *args, **kwargs)
 
     @new.register
     @classmethod
     def from_string(cls, string: str, *args, **kwargs):
-        """Assumes the string is a path to a file"""
+        """Converts the string to a path and calls the `from_path` method.
+
+        Parameters
+        ----------
+        string:
+            The string to be converted to a path.
+        **kwargs:
+            Extra arguments directly passed to the `from_path` method.
+
+        See Also
+        --------
+        from_path: The arguments are passed to this method.
+        """
         return cls.new(Path(string), *args, **kwargs)
 
     @new.register
@@ -224,9 +247,9 @@ class PDOSData(OrbitalData):
 
         Parameters
         ----------
-        fdf: fdfSileSiesta
+        fdf:
             The fdf file to read the PDOS from.
-        source: Literal["pdos", "tbtnc", "wfsx", "hamiltonian"], optional
+        source:
             The source to read the PDOS data from.
         **kwargs
             Extra arguments to be passed to the PDOSData constructor, which depends
@@ -266,7 +289,13 @@ class PDOSData(OrbitalData):
     @new.register
     @classmethod
     def from_siesta_pdos(cls, pdos_file: pdosSileSiesta):
-        """Gets the PDOS from a SIESTA PDOS file"""
+        """Gets the PDOS from a SIESTA PDOS file.
+
+        Parameters
+        ----------
+        pdos_file:
+            The PDOS file to read the PDOS from.
+        """
         # Get the info from the .PDOS file
         geometry, E, PDOS = pdos_file.read_data()
 
@@ -277,7 +306,17 @@ class PDOSData(OrbitalData):
     def from_tbtrans(
         cls, tbt_nc: tbtncSileTBtrans, geometry: Union[Geometry, None] = None
     ):
-        """Reads the PDOS from a *.TBT.nc file coming from a TBtrans run."""
+        """Reads the PDOS from a *.TBT.nc file coming from a TBtrans run.
+
+        Parameters
+        ----------
+        tbt_nc:
+            The TBtrans file to read the PDOS from.
+        geometry:
+            Full geometry of the system (including scattering and electrode regions).
+            Right now only used to get the basis of each atom, which is not
+            stored in the TBT.nc file.
+        """
         PDOS = tbt_nc.DOS(sum=False).T
         E = tbt_nc.E
 
@@ -295,14 +334,35 @@ class PDOSData(OrbitalData):
     def from_hamiltonian(
         cls,
         H: Hamiltonian,
-        kgrid=None,
-        kgrid_displ=(0, 0, 0),
-        Erange=(-2, 2),
-        E0=0,
-        nE=100,
+        kgrid: Tuple[int, int, int] = None,
+        kgrid_displ: Tuple[float, float, float] = (0, 0, 0),
+        Erange: Tuple[float, float] = (-2, 2),
+        E0: float = 0,
+        nE: int = 100,
         distribution=get_distribution("gaussian"),
     ):
-        """Calculates the PDOS from a sisl Hamiltonian."""
+        """Calculates the PDOS from a sisl Hamiltonian.
+
+        Parameters
+        ----------
+        H:
+            The Hamiltonian from which to calculate the PDOS.
+        kgrid:
+            Number of kpoints in each reciprocal space direction. A Monkhorst-pack grid
+            will be generated from this specification. The PDOS will be averaged over the
+            whole k-grid.
+        kgrid_displ:
+            Displacement of the Monkhorst-Pack grid.
+        Erange:
+            Energy range (min and max) for the PDOS calculation.
+        E0:
+            Energy shift for the PDOS calculation.
+        nE:
+            Number of energy points for the PDOS calculation.
+        distribution:
+            The distribution to use for smoothing the PDOS along the energy axis.
+            Each state will be broadened by this distribution.
+        """
 
         # Get the kgrid or generate a default grid by checking the interaction between cells
         # This should probably take into account how big the cell is.
@@ -360,7 +420,27 @@ class PDOSData(OrbitalData):
         E0: float = 0,
         distribution=get_distribution("gaussian"),
     ):
-        """Generates the PDOS values from a file containing eigenstates."""
+        """Generates the PDOS values from a file containing eigenstates.
+
+        Parameters
+        ----------
+        wfsx_file:
+            The file containing the eigenstates.
+        H:
+            The Hamiltonian to which the eigenstates correspond. Used to get the overlap
+            matrix and the spin type.
+        geometry:
+            The geometry of the system. If not provided, it is extracted from the Hamiltonian.
+        Erange:
+            The energy range in which to calculate the PDOS.
+        nE:
+            The number of energy points for which to calculate the PDOS.
+        E0:
+            Reference energy to take as 0. Energy levels will be shifted by `-E0`.
+        distribution:
+            The distribution to use for smoothing the PDOS along the energy axis.
+            Each state will be broadened by this distribution.
+        """
         if geometry is None:
             geometry = getattr(H, "geometry", None)
 
