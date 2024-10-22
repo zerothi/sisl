@@ -150,16 +150,17 @@ class fdfSileSiesta(SileSiesta):
         # Public key for printing information about where stuff comes from
         self.track = kwargs.get("track", False)
 
-    def _pushfile(self, f):
-        if self.dir_file(f).is_file():
+    def _pushfile(self, f) -> None:
+        # We currently don't allow spaces/newlines/tabs at either end of the file name
+        if (f1 := self.dir_file(f)).is_file():
             self._parent_fh.append(self.fh)
-            self.fh = self.dir_file(f).open(self._mode)
-        elif self.dir_file(f"{f}.gz").is_file():
+            self.fh = f1.open(self._mode)
+        elif (f2 := self.dir_file(f"{f}.gz")).is_file():
             self._parent_fh.append(self.fh)
-            self.fh = gzip.open(self.dir_file(f"{f}.gz"), mode="rt")
+            self.fh = gzip.open(f2, mode="rt")
         else:
             warn(
-                f"{self!r} is trying to include file: {f} but the file seems not to exist? Will disregard file!"
+                f"{self!r} is trying to include file: {f1!s} but the file seems not to exist? Will disregard file!"
             )
 
     def _popfile(self):
@@ -227,46 +228,61 @@ class fdfSileSiesta(SileSiesta):
         """
         self._seek()
 
-        def tolabel(label):
+        def tolabel(label) -> str:
             return label.lower().replace("_", "").replace("-", "").replace(".", "")
 
         labell = tolabel(label)
 
-        def valid_line(line):
+        def valid_line(line) -> bool:
             ls = line.strip()
             if len(ls) == 0:
                 return False
             return not (ls[0] in self._comment)
 
         def process_line(line):
+            nonlocal labell
+
             # Split line by spaces
-            ls = line.split()
-            if len(ls) == 0:
+            # Generally we only need to split once, and hence
+            # we use maxsplit, this should be a bit faster...
+            # At least when reading *MANY* files this can greatly
+            # impact performance.
+            ls = line.split(maxsplit=1)
+            nls = len(ls)
+            if nls == 0:
                 return None
 
             # Make a lower equivalent of ls
-            lsl = list(map(tolabel, ls))
+            ls0 = tolabel(ls[0])
 
             # Check if there is a pipe in the line
-            if "<" in lsl:
-                idx = lsl.index("<")
+            if nls > 1 and "<" in ls[1]:
+                # Split the rest, we do it here since it has a severe perf. impact
+                # by splitting the line, and joining again, so better to have it separated
+                # in the few corner cases we see in input files.
+                ls_left, ls_right = ls[1].split("<")
+                # The file should be stripped of lines
+                ls_right = ls_right.strip()
+
+                # get all labels on the LHS of '<'
+                lsN = [tolabel(l) for l in ls_left.split()]
                 # Now there are two cases
 
                 # 1. It is a block, in which case
                 #    the full block is piped into the label
                 #    %block Label < file
-                if lsl[0] == "%block" and lsl[1] == labell:
+                if ls0 == "%block" and lsN[0] == labell:
                     # Correct line found
                     # Read the file content, removing any empty and/or comment lines
-                    lines = self.dir_file(ls[3]).open("r").readlines()
+                    lines = self.dir_file(ls_right).open("r").readlines()
                     return [l.strip() for l in lines if valid_line(l)]
 
                 # 2. There are labels that should be read from a subsequent file
                 #    Label1 Label2 < other.fdf
-                if labell in lsl[:idx]:
+                if ls0 == labell or labell in lsN:
                     # Valid line, read key from other.fdf
                     return fdfSileSiesta(
-                        self.dir_file(ls[idx + 1]), base=self._directory
+                        self.dir_file(ls_right), base=self._directory
                     )._r_label(label)
 
                 # It is not in this line, either key is
@@ -275,23 +291,26 @@ class fdfSileSiesta(SileSiesta):
 
             # The last case is if the label is the first word on the line
             # In that case we have found what we are looking for
-            if lsl[0] == labell:
-                return (" ".join(ls[1:])).strip()
+            if ls0 == labell:
+                if nls == 1:
+                    return ""
+                return ls[1]
 
-            elif lsl[0] == "%block":
-                if lsl[1] == labell:
+            elif ls0 == "%block":
+                # we had only split once
+                if tolabel(ls[1]) == labell:
                     # Read in the block content
                     lines = []
 
                     # Now read lines
                     l = self.readline().strip()
-                    while not tolabel(l).startswith("%endblock"):
+                    while not l.lower().startswith("%endblock"):
                         if len(l) > 0:
                             lines.append(l)
                         l = self.readline().strip()
                     return lines
 
-            elif lsl[0] == "%include":
+            elif ls0 == "%include":
                 # We have to open a new file
                 self._pushfile(ls[1])
 
@@ -301,13 +320,13 @@ class fdfSileSiesta(SileSiesta):
         l = self.readline().split("#")[0]
         if len(l) == 0:
             return None
-        l = process_line(l)
+        l = process_line(l.strip())
         while l is None:
             l = self.readline().split("#")[0]
             if len(l) == 0:
                 if not self._popfile():
                     return None
-            l = process_line(l)
+            l = process_line(l.strip())
 
         return l
 
@@ -781,7 +800,10 @@ class fdfSileSiesta(SileSiesta):
         """Returns `Lattice` object from the FDF file"""
         s = self.get("LatticeConstant", unit="Ang")
         if s is None:
-            raise SileError("Could not find LatticeConstant in file")
+            raise SileError(
+                "Could not find LatticeConstant in file: "
+                f"{self._directory!s}/{self.base_file!s}"
+            )
 
         # Read in cell
         cell = _a.emptyd([3, 3])
