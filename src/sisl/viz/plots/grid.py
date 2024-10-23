@@ -140,7 +140,7 @@ def grid_plot(
         The backend to use to generate the figure.
 
     See also
-    ----------
+    --------
     scipy.ndimage.affine_transform : method used to orthogonalize the grid if needed.
     """
 
@@ -299,7 +299,7 @@ def wavefunction_plot(
         The backend to use to generate the figure.
 
     See also
-    ----------
+    --------
     scipy.ndimage.affine_transform : method used to orthogonalize the grid if needed.
     """
 

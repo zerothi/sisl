@@ -31,13 +31,36 @@ class EigenstateData(Data):
     @new.register
     @classmethod
     def from_path(cls, path: Path, *args, **kwargs):
-        """Creates a sile from the path and tries to read the PDOS from it."""
+        """Creates a sile from the path and tries to read the eigenstates from it.
+
+        Parameters
+        ----------
+        path:
+            The path to the file to read the eigenstates from.
+
+            Depending of the sile extracted from the path, the corresponding `EigenstateData` constructor
+            will be called.
+        **kwargs:
+            Extra arguments to be passed to the EigenstateData constructor.
+        """
         return cls.new(sisl.get_sile(path), *args, **kwargs)
 
     @new.register
     @classmethod
     def from_string(cls, string: str, *args, **kwargs):
-        """Assumes the string is a path to a file"""
+        """Converts the string to a path and calls the `from_path` method.
+
+        Parameters
+        ----------
+        string:
+            The string to be converted to a path.
+        **kwargs:
+            Extra arguments directly passed to the `from_path` method.
+
+        See Also
+        --------
+        from_path: The arguments are passed to this method.
+        """
         return cls.new(Path(string), *args, **kwargs)
 
     @new.register
@@ -49,6 +72,21 @@ class EigenstateData(Data):
         k: tuple[float, float, float] = (0, 0, 0),
         spin: int = 0,
     ):
+        """Gets eigenstate coefficients using the fdf file as the root.
+
+        Parameters
+        ----------
+        fdf:
+            The FDF file to be used as the root.
+        source:
+            The source of the eigenstates. It can be either from the WFSX file
+            or from the Hamiltonian, in which case the eigenstates need to be
+            calculated.
+        k:
+            The k-point for which the eigenstate coefficients are desired.
+        spin:
+            The spin for which the eigenstate coefficients are desired.
+        """
         if source == "wfsx":
             sile = FileDataSIESTA(fdf=fdf, cls=wfsxSileSiesta)
 
@@ -71,6 +109,20 @@ class EigenstateData(Data):
         k: tuple[float, float, float] = (0, 0, 0),
         spin: int = 0,
     ):
+        """Gets eigenstate coefficients from the WFSX file.
+
+        Parameters
+        ----------
+        fdf:
+            The FDF file to be used as the root.
+        geometry:
+            The geometry to be used for the Hamiltonian.
+        k:
+            The k-point for which the eigenstate coefficients are desired.
+        spin:
+            The spin for which the eigenstate coefficients are desired.
+        """
+
         """Reads the wavefunction coefficients from a SIESTA WFSX file"""
         # Get the WFSX file. If not provided, it is inferred from the fdf.
         if not wfsx_file.file.is_file():
@@ -97,7 +149,17 @@ class EigenstateData(Data):
         k: tuple[float, float, float] = (0, 0, 0),
         spin: int = 0,
     ):
-        """Calculates the eigenstates from a Hamiltonian and then generates the wavefunctions."""
+        """Calculates the eigenstates from a Hamiltonian and then generates the wavefunctions.
+
+        Parameters
+        ----------
+        H:
+            The Hamiltonian to be used to calculate the eigenstates.
+        k:
+            The k-point for which the eigenstate coefficients are desired.
+        spin:
+            The spin for which the eigenstate coefficients are desired.
+        """
         return cls.new(H.eigenstate(k, spin=spin))
 
     def __getitem__(self, key):
