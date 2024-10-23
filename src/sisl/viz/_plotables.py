@@ -11,7 +11,7 @@ from collections import ChainMap
 from collections.abc import Sequence
 
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, ObjectDispatcher
-from sisl._lib.utils.docscrape import FunctionDoc
+from sisl._lib._docscrape import FunctionDoc
 
 __all__ = ["register_plotable", "register_data_source", "register_sile_method"]
 
