@@ -222,6 +222,21 @@ class BandsData(XarrayData):
     @new.register
     @classmethod
     def from_dataset(cls, bands_data: xr.Dataset):
+        """Creates a bands plot from an xarray ``Dataset``.
+
+        Parameters
+        ----------
+        bands_data: xr.Dataset
+            The dataset containing the bands data. It should have at least an
+            energy variable named 'E' and coordinates 'k' and 'band'. Optionally,
+            it can have a 'spin' coordinate.
+
+            Coordinates can have an 'axis' attribute that will be used to determine
+            the layout of the corresponding axis in a plot.
+
+            The geometry of the system can be passed as the 'geometry' attribute
+            of the dataset.
+        """
         old_attrs = bands_data.attrs
 
         # Check if there's a spin attribute
@@ -280,6 +295,20 @@ class BandsData(XarrayData):
     @new.register
     @classmethod
     def from_dataarray(cls, bands_data: xr.DataArray):
+        """Creates a ``BandsData`` object from an xarray ``DataArray``.
+
+        Parameters
+        ----------
+        bands_data: xr.DataArray
+            The dataarray containing the band energies.
+
+        See Also
+        --------
+        from_dataset:
+            Called after the dataarray is wrapped in a dataset.
+            It contains documentation about the expected structure of the dataarray.
+            Attributes are transferred from the dataarray to the dataset.
+        """
         bands_data_ds = xr.Dataset({"E": bands_data})
         bands_data_ds.attrs.update(bands_data.attrs)
 
@@ -288,13 +317,36 @@ class BandsData(XarrayData):
     @new.register
     @classmethod
     def from_path(cls, path: Path, *args, **kwargs):
-        """Creates a sile from the path and tries to read the PDOS from it."""
+        """Creates a sile from the path and tries to read the bands from it.
+
+        Parameters
+        ----------
+        path:
+            The path to the file to read the bands from.
+
+            Depending of the sile extracted from the path, the corresponding `BandsData` constructor
+            will be called.
+        **kwargs:
+            Extra arguments to be passed to the `BandsData` constructor.
+        """
         return cls.new(sisl.get_sile(path), *args, **kwargs)
 
     @new.register
     @classmethod
     def from_string(cls, string: str, *args, **kwargs):
-        """Assumes the string is a path to a file"""
+        """Converts the string to a path and calls the `from_path` method.
+
+        Parameters
+        ----------
+        string:
+            The string to be converted to a path.
+        **kwargs:
+            Extra arguments directly passed to the `from_path` method.
+
+        See Also
+        --------
+        from_path: The arguments are passed to this method.
+        """
         return cls.new(Path(string), *args, **kwargs)
 
     @new.register
@@ -302,7 +354,17 @@ class BandsData(XarrayData):
     def from_fdf(
         cls, fdf: fdfSileSiesta, bands_file: Union[str, bandsSileSiesta, None] = None
     ):
-        """Gets the bands data from a SIESTA .bands file"""
+        """Gets the bands data from a SIESTA .bands file.
+
+        Parameters
+        ----------
+        fdf:
+            The fdf file that was used to run the calculation.
+        bands_file:
+            Path to the bands file. If `None`, it will be assumed that the bands file
+            is in the same directory as the fdf file and has the name `<SystemLabel>.bands`,
+            with SystemLabel being retrieved from the fdf file.
+        """
         bands_file = FileDataSIESTA(
             fdf=fdf, path=bands_file, cls=sisl.io.bandsSileSiesta
         )
@@ -314,7 +376,13 @@ class BandsData(XarrayData):
     @new.register
     @classmethod
     def from_siesta_bands(cls, bands_file: bandsSileSiesta):
-        """Gets the bands data from a SIESTA .bands file"""
+        """Gets the bands data from a SIESTA .bands file
+
+        Parameters
+        ----------
+        bands_file:
+            The bands file to read the data from.
+        """
 
         bands_data = bands_file.read_data(as_dataarray=True)
         bands_data.k.attrs["axis"] = {
@@ -332,7 +400,35 @@ class BandsData(XarrayData):
         H: Union[sisl.Hamiltonian, None] = None,
         extra_vars: Sequence[Union[dict, str]] = (),
     ):
-        """Uses a sisl's `BrillouinZone` object to calculate the bands."""
+        """Uses a sisl's `BrillouinZone` object to calculate the bands.
+
+        It computes the eigenvalues of the Hamiltonian at each k point in the Brillouin zone
+
+        Parameters
+        ----------
+        bz:
+            The Brillouin zone object containing the k points to use for calculating
+            the bands. This will most likely be a `BandStructure` object.
+        H:
+            The Hamiltonian to use for the calculations. If `None`, the parent of the
+            Brillouin zone will be used, which is typically what you want!
+        extra_vars:
+            Additional variables to calculate for each eigenstate, apart from their energy.
+            Each item of the list should be a dictionary with the following keys:
+                - 'name', str: The name of the variable.
+                - 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
+                spin index, and returns the values of the variable in a numpy array. This
+                function will be called for each eigenstate object separately. That is, once
+                for each (k-point, spin) combination.
+                - 'coords', tuple of str: The names of the  dimensions of the returned array.
+                The number of coordinates should match the number of dimensions.
+                - 'coords_values', dict: If this variable introduces a new coordinate, you should
+                pass the values for that coordinate here. If the coordinates were already defined
+                by another variable, they will already have values. If you are unsure that the
+                coordinates are new, just pass the values for them, they will get overwritten.
+
+            Each item can also be a string indicating the name of a known variable: 'norm2', 'spin_moment', 'ipr'.
+        """
         if bz is None:
             raise ValueError("No band structure (k points path) was provided")
 
@@ -425,6 +521,33 @@ class BandsData(XarrayData):
         """Plots bands from the eigenvalues contained in a WFSX file.
 
         It also needs to get a geometry.
+
+        Parameters
+        ----------
+        wfsx_file:
+            The WFSX file to read the eigenstates from.
+        fdf:
+            Path to the fdf file used to run the calculation. Needed to gather
+            information about the geometry and the hamiltonian/overlap if needed.
+        extra_vars:
+            Additional variables to calculate for each eigenstate, apart from their energy.
+
+            Each item of the list should be a dictionary with the following keys:
+                - 'name', str: The name of the variable.
+                - 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
+                spin index, and returns the values of the variable in a numpy array. This
+                function will be called for each eigenstate object separately. That is, once
+                for each (k-point, spin) combination.
+                - 'coords', tuple of str: The names of the  dimensions of the returned array.
+                The number of coordinates should match the number of dimensions.
+                - 'coords_values', dict: If this variable introduces a new coordinate, you should
+                pass the values for that coordinate here. If the coordinates were already defined
+                by another variable, they will already have values. If you are unsure that the
+                coordinates are new, just pass the values for them, they will get overwritten.
+
+            Each item can also be a string indicating the name of a known variable: 'norm2', 'spin_moment', 'ipr'.
+        need_H:
+            Whether the Hamiltonian is needed to read the WFSX file.
         """
         if need_H:
             H = HamiltonianDataSource(H=fdf)
@@ -552,8 +675,12 @@ class BandsData(XarrayData):
     @new.register
     @classmethod
     def from_aiida(cls, aiida_bands: Aiida_node):
-        """
-        Creates the bands plot reading from an aiida BandsData node.
+        """Creates the bands plot reading from an aiida BandsData node.
+
+        Parameters
+        ----------
+        aiida_bands:
+            The aiida node containing the bands data (a BandsData aiida node).
         """
         plot_data = aiida_bands._get_bandplot_data(cartesian=True)
         bands = plot_data["y"]
