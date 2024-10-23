@@ -1,11 +1,13 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1-d54955e</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -17,27 +19,23 @@
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=94f02c60"></script>
-        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
-        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
-        <script>let toggleHintShow = 'Click to show';</script>
-        <script>let toggleHintHide = 'Click to hide';</script>
-        <script>let toggleOpenOnPrint = 'true';</script>
-        <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
-        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=cb2d9787"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -54,9 +52,6 @@
           <a href="../../../../index.html" class="icon icon-home">
             sisl
           </a>
-              <div class="version">
-                0.1-d54955e
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -92,7 +87,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
 </ul>
 
@@ -135,7 +130,7 @@
 
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -166,11 +161,13 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span>
-<span class="kn">from</span> <span class="nn">._cdf</span> <span class="kn">import</span> <span class="n">_devncSileTBtrans</span>
+<span class="kn">from</span> <span class="nn">._cdf</span> <span class="kn">import</span> <span class="n">ElecType</span><span class="p">,</span> <span class="n">EType</span><span class="p">,</span> <span class="n">_devncSileTBtrans</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">missing_input_fdf</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tbtncSileTBtrans&quot;</span><span class="p">,</span> <span class="s2">&quot;tbtavncSileTBtrans&quot;</span><span class="p">]</span>
 
+
+<span class="n">NormType</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span>
 
 <span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
 <span class="n">Ry2eV</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Ry&quot;</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
@@ -238,7 +235,7 @@
 <span class="sd">    are in fortran indexing (1-based), everything is returned as Python indexing (0-based)</span>
 <span class="sd">    when using Python scripts.</span>
 
-<span class="sd">    The mathematical notation described in :ref:`this document &lt;math_convention&gt;`</span>
+<span class="sd">    The mathematical notation described :ref:`here &lt;math_convention&gt;`</span>
 <span class="sd">    will be used throughout.</span>
 
 <span class="sd">    A word on DOS normalization:</span>
@@ -335,7 +332,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">tree</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">kavg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Etype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Local method for obtaining energy resolved data from the SileCDF.</span>
 
@@ -350,7 +347,7 @@
 <span class="sd">            the group location of the variable</span>
 <span class="sd">        kavg: bool, optional</span>
 <span class="sd">            whether to k-average the quantity</span>
-<span class="sd">        E: int or float, optional</span>
+<span class="sd">        E:</span>
 <span class="sd">            if provided, only extract the quantity based on the energy `E`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">E</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -390,7 +387,9 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.All&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transmission from `elec_from` to `elec_to`.</span>
 
 <span class="sd">        The transmission between two electrodes may be retrieved</span>
@@ -406,9 +405,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec_from: str, int, optional</span>
+<span class="sd">        elec_from:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        elec_to: str, int, optional</span>
+<span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned transmission is k-averaged, or an explicit (unweighed) k-point</span>
@@ -433,7 +432,9 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.reflection">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.reflection">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Out&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.T.All&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">from_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">reflection</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">from_single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reflection into electrode `elec`</span>
 
 <span class="sd">        The reflection into electrode `elec` is calculated as:</span>
@@ -454,12 +455,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the backscattered electrode</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned reflection is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
-<span class="sd">        from_single: bool, optional</span>
+<span class="sd">        from_single:</span>
 <span class="sd">           whether the reflection is calculated using the Green function and a</span>
 <span class="sd">           single scattering matrix Eq. (2) above (true), otherwise Eq. (1) will be used (false).</span>
 
@@ -491,14 +492,16 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.transmission_eig">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_eig">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Eig&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;int&gt;&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">transmission_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">transmission_eig</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transmission eigenvalues from `elec_from` to `elec_to`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec_from: str, int, optional</span>
+<span class="sd">        elec_from:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        elec_to: str, int, optional</span>
+<span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned transmission eigenvalues are k-averaged, or an explicit (unweighed) k-point</span>
@@ -522,7 +525,7 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.transmission_bulk">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_bulk">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Bulk&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">transmission_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">transmission_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Bulk transmission for the `elec` electrode</span>
 
 <span class="sd">        The bulk transmission is equivalent to creating a 2 terminal device with</span>
@@ -530,7 +533,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the bulk electrode</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned transmission are k-averaged, or an explicit (unweighed) k-point</span>
@@ -547,7 +550,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.norm">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.norm">[docs]</a>
-    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="p">:</span> <span class="n">NormType</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Normalization factor depending on the input</span>
 
 <span class="sd">        The normalization can be performed in one of the below methods.</span>
@@ -575,7 +578,7 @@
 <span class="sd">        orbitals : array_like of int or bool, optional</span>
 <span class="sd">           only return for a given set of orbitals (default to all)</span>
 <span class="sd">           *NOT* allowed with `atoms` keyword</span>
-<span class="sd">        norm : {&#39;none&#39;, &#39;atom&#39;, &#39;orbital&#39;, &#39;all&#39;}</span>
+<span class="sd">        norm :</span>
 <span class="sd">           how the normalization of the summed DOS is performed (see `norm` routine)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Cast to lower</span>
@@ -737,7 +740,13 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.DOS">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DOS.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">norm</span><span class="p">:</span> <span class="n">NormType</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Green function density of states (DOS) (1/eV).</span>
 
@@ -752,7 +761,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E : float or int, optional</span>
+<span class="sd">        E :</span>
 <span class="sd">           optionally only return the DOS of atoms at a given energy point</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned DOS is k-averaged, or an explicit (unweighed) k-point</span>
@@ -765,9 +774,9 @@
 <span class="sd">           only return for a given set of orbitals (default to all)</span>
 <span class="sd">           *NOT* allowed with `atoms` keyword. If `True` it will use all orbitals in the device.</span>
 <span class="sd">           False is equivalent to None.</span>
-<span class="sd">        sum : bool, optional</span>
+<span class="sd">        sum :</span>
 <span class="sd">           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.</span>
-<span class="sd">        norm : {&#39;none&#39;, &#39;atom&#39;, &#39;orbital&#39;, &#39;all&#39;}</span>
+<span class="sd">        norm :</span>
 <span class="sd">           how the normalization of the summed DOS is performed (see `norm` routine)</span>
 
 <span class="sd">        See Also</span>
@@ -786,13 +795,13 @@
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DOS.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">ADOS</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+        <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">norm</span><span class="p">:</span> <span class="n">NormType</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Spectral density of states (DOS) (1/eV).</span>
 
@@ -806,9 +815,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        elec:</span>
 <span class="sd">           electrode originating spectral function</span>
-<span class="sd">        E : float or int, optional</span>
+<span class="sd">        E :</span>
 <span class="sd">           optionally only return the DOS of atoms at a given energy point</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned DOS is k-averaged, or an explicit (unweighed) k-point</span>
@@ -821,9 +830,9 @@
 <span class="sd">           only return for a given set of orbitals (default to all)</span>
 <span class="sd">           *NOT* allowed with `atoms` keyword. If `True` it will use all orbitals in the device.</span>
 <span class="sd">           False is equivalent to None.</span>
-<span class="sd">        sum : bool, optional</span>
+<span class="sd">        sum :</span>
 <span class="sd">           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.</span>
-<span class="sd">        norm : {&#39;none&#39;, &#39;atom&#39;, &#39;orbital&#39;, &#39;all&#39;}</span>
+<span class="sd">        norm :</span>
 <span class="sd">           how the normalization of the summed DOS is performed (see `norm` routine).</span>
 
 <span class="sd">        See Also</span>
@@ -843,7 +852,14 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.BDOS">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.BDOS">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DOS.Elecs&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">BDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">BDOS</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">norm</span><span class="p">:</span> <span class="n">NormType</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bulk density of states (DOS) (1/eV).</span>
 
 <span class="sd">        Extract the bulk DOS from electrode `elec`.</span>
@@ -861,16 +877,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        elec:</span>
 <span class="sd">           electrode where the bulk DOS is returned</span>
-<span class="sd">        E : float or int, optional</span>
+<span class="sd">        E :</span>
 <span class="sd">           optionally only return the DOS of atoms at a given energy point</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned DOS is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
-<span class="sd">        sum : bool, optional</span>
+<span class="sd">        sum :</span>
 <span class="sd">           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.</span>
-<span class="sd">        norm : {&#39;none&#39;, &#39;atom&#39;, &#39;orbital&#39;, &#39;all&#39;}</span>
+<span class="sd">        norm :</span>
 <span class="sd">           whether the returned quantities are summed over all orbitals or normed by number of orbitals in the electrode.</span>
 <span class="sd">           Currently one cannot extract DOS per atom/orbital.</span>
 
@@ -904,7 +920,9 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.current">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.current">[docs]</a>
-    <span class="k">def</span> <span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">current</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Current from `from` to `to` using the k-weights and energy spacings in the file.</span>
 
 <span class="sd">        Calculates the current as:</span>
@@ -940,7 +958,14 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.current_parameter">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.current_parameter">[docs]</a>
     <span class="k">def</span> <span class="nf">current_parameter</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">mu_from</span><span class="p">,</span> <span class="n">kt_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">mu_to</span><span class="p">,</span> <span class="n">kt_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span><span class="p">,</span>
+        <span class="n">mu_from</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">kt_from</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span><span class="p">,</span>
+        <span class="n">mu_to</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">kt_to</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Current from `from` to `to` using the k-weights and energy spacings in the file.</span>
 
@@ -954,17 +979,17 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec_from: str, int</span>
+<span class="sd">        elec_from:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        mu_from: float</span>
+<span class="sd">        mu_from:</span>
 <span class="sd">           the chemical potential of the electrode (in eV)</span>
-<span class="sd">        kt_from: float</span>
+<span class="sd">        kt_from:</span>
 <span class="sd">           the electronic temperature of the electrode (in eV)</span>
-<span class="sd">        elec_to: str, int</span>
+<span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
-<span class="sd">        mu_to: float</span>
+<span class="sd">        mu_to:</span>
 <span class="sd">           the chemical potential of the electrode (in eV)</span>
-<span class="sd">        kt_to: float</span>
+<span class="sd">        kt_to:</span>
 <span class="sd">           the electronic temperature of the electrode (in eV)</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned current is k-averaged, or an explicit (unweighed) k-point</span>
@@ -1007,7 +1032,13 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.shot_noise">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.shot_noise">[docs]</a>
-    <span class="k">def</span> <span class="nf">shot_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">classical</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">shot_noise</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">classical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shot-noise term `from` to `to` using the k-weights</span>
 
 <span class="sd">        Calculates the shot-noise term according to `classical` (also known as the Poisson value).</span>
@@ -1028,11 +1059,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec_from: str, int, optional</span>
+<span class="sd">        elec_from:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        elec_to: str, int, optional</span>
+<span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
-<span class="sd">        classical: bool, optional</span>
+<span class="sd">        classical:</span>
 <span class="sd">           which shot-noise to calculate, default to non-classical</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned shot-noise is k-averaged, or an explicit (unweighed) k-point</span>
@@ -1084,7 +1115,9 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.noise_power">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.noise_power">[docs]</a>
-    <span class="k">def</span> <span class="nf">noise_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">noise_power</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)</span>
 
 <span class="sd">        Calculates the noise power as</span>
@@ -1104,9 +1137,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec_from: str, int, optional</span>
+<span class="sd">        elec_from:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        elec_to: str, int, optional</span>
+<span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned noise-power is k-averaged, or an explicit (unweighed) k-point</span>
@@ -1171,7 +1204,20 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.fano">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.fano">[docs]</a>
-    <span class="k">def</span> <span class="nf">fano</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">zero_T</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;zero_T&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument zero_T has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fano</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; The Fano-factor for the calculation (requires calculated transmission eigenvalues)</span>
 
 <span class="sd">        Calculate the Fano factor defined as (or through the shot-noise):</span>
@@ -1200,14 +1246,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec_from: str, int, optional</span>
+<span class="sd">        elec_from:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        elec_to: str, int, optional</span>
+<span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned Fano factor is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned. In any case the divisor will always be the k-averaged transmission.</span>
-<span class="sd">        zero_T : float, optional</span>
+<span class="sd">        atol :</span>
 <span class="sd">           any transmission eigen value lower than this value will be treated as exactly 0.</span>
 
 <span class="sd">        See Also</span>
@@ -1217,7 +1263,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">dividend</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-            <span class="n">T</span><span class="p">[</span><span class="n">T</span> <span class="o">&lt;=</span> <span class="n">zero_T</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">T</span><span class="p">[</span><span class="n">T</span> <span class="o">&lt;=</span> <span class="n">atol</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kavg</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
@@ -1254,7 +1300,9 @@
         <span class="k">return</span> <span class="n">fano</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_sparse_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_sparse_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ElecType</span><span class="p">],</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine for retrieving sparse data (orbital current, COOP)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">elec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">elec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
@@ -1370,7 +1418,13 @@
         <span class="k">return</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">rptr</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="n">mat_size</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_sparse_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ElecType</span><span class="p">],</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine for retrieving sparse matrices (orbital current, COOP)&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">)</span>
@@ -1378,7 +1432,9 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.sparse_orbital_to_atom">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.sparse_orbital_to_atom">[docs]</a>
-    <span class="k">def</span> <span class="nf">sparse_orbital_to_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sum_dup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sparse_orbital_to_atom</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">sum_dup</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce a sparse matrix in orbital sparse to a sparse matrix in atomic indices</span>
 
 <span class="sd">        This algorithm *may* keep the same non-zero entries, but will return</span>
@@ -1393,12 +1449,12 @@
 <span class="sd">        ----------</span>
 <span class="sd">        Dij : scipy.sparse.csr_matrix</span>
 <span class="sd">           the input sparse matrix in orbital format</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned data are only in the unit-cell.</span>
 <span class="sd">           If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
 <span class="sd">           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.</span>
 <span class="sd">           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.</span>
-<span class="sd">        sum_dup : bool, optional</span>
+<span class="sd">        sum_dup :</span>
 <span class="sd">           duplicates will be summed if this is true, in this case, no duplicates are</span>
 <span class="sd">           present in the returned sparse matrix. If false, duplicates may exist for</span>
 <span class="sd">           multi-orbital systems.</span>
@@ -1515,7 +1571,9 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.sparse_orbital_to_vector">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.sparse_orbital_to_vector">[docs]</a>
-    <span class="k">def</span> <span class="nf">sparse_orbital_to_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sum_dup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sparse_orbital_to_vector</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">sum_dup</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce an orbital sparse matrix to a vector contribution of each atom</span>
 
 <span class="sd">        Equivalent to calling `sparse_orbital_to_atom` and `sparse_atom_to_vector`.</span>
@@ -1529,12 +1587,12 @@
 <span class="sd">        ----------</span>
 <span class="sd">        Dij : scipy.sparse.csr_matrix</span>
 <span class="sd">           the input sparse matrix</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned data are only in the unit-cell.</span>
 <span class="sd">           If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
 <span class="sd">           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.</span>
 <span class="sd">           One may figure out the connections via `~sisl._core.geometry.Geometry.sc_index`.</span>
-<span class="sd">        sum_dup : bool, optional</span>
+<span class="sd">        sum_dup :</span>
 <span class="sd">           duplicates will be summed if this is true, in this case, no duplicates are</span>
 <span class="sd">           present in the returned sparse matrix. If false, duplicates may exist for</span>
 <span class="sd">           multi-orbital systems.</span>
@@ -1545,7 +1603,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.sparse_orbital_to_scalar">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.sparse_orbital_to_scalar">[docs]</a>
-    <span class="k">def</span> <span class="nf">sparse_orbital_to_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sparse_orbital_to_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">activity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic scalar contribution of atoms for a sparse orbital matrix</span>
 
 <span class="sd">        The atomic contribution is a single number specifying a figure of the *magnitude*</span>
@@ -1571,7 +1629,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        Dij: scipy.sparse.csr_matrix</span>
 <span class="sd">           the orbital sparse matrix.</span>
-<span class="sd">        activity: bool, optional</span>
+<span class="sd">        activity:</span>
 <span class="sd">           ``True`` to return the atomic activity, see explanation above</span>
 
 <span class="sd">        Notes</span>
@@ -1618,7 +1676,13 @@
     <span class="p">)</span>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transmission at energy `E` between orbitals originating from `elec`</span>
 
@@ -1653,12 +1717,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of the orbital transmission. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used. Be careful about passing ``0`` as that will be interpreted</span>
-<span class="sd">           as an index.</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the orbital transmission corresponding to the energy.</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of originating electrons</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned orbital transmission is k-averaged, or an explicit (unweighed) k-point</span>
@@ -1729,8 +1790,8 @@
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
@@ -1748,9 +1809,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        elec_other: str, int, optional</span>
+<span class="sd">        elec_other:</span>
 <span class="sd">           this electrode determines the *other* chemical potential. As such the orbital currents</span>
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
 <span class="sd">        kavg: bool, int, optional</span>
@@ -1845,7 +1906,14 @@
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">bond_transmission</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bond transmission between atoms at a specific energy</span>
 
@@ -1858,12 +1926,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of the transmission. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used. Be careful about passing ``0`` as that will be interpreted</span>
-<span class="sd">           as an index.</span>
-<span class="sd">        elec : str, int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the bond transmission corresponding to the energy.</span>
+<span class="sd">        elec :</span>
 <span class="sd">           the electrode of originating electrons</span>
 <span class="sd">        kavg : bool, int, optional</span>
 <span class="sd">           whether the returned bond transmissions is k-averaged, or an explicit (unweighed) k-point</span>
@@ -1878,7 +1943,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain transmissions for a subset of orbitals before calculating bond transmissions</span>
 <span class="sd">           Passed directly to `orbital_transmission`.</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned transmissions are only in the unit-cell (supercell bonds will be folded to their unit-cell equivalents).</span>
 <span class="sd">           If `True` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
 <span class="sd">           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.</span>
@@ -1920,13 +1985,13 @@
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">bond_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bond current between atoms (sum of orbital currents)</span>
 
@@ -1939,9 +2004,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec : str, int</span>
+<span class="sd">        elec :</span>
 <span class="sd">           the electrode of originating electrons</span>
-<span class="sd">        elec_other: str, int, optional</span>
+<span class="sd">        elec_other:</span>
 <span class="sd">           this electrode determines the *other* chemical potential. As such the orbital currents</span>
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
 <span class="sd">        kavg : bool, int, optional</span>
@@ -1958,7 +2023,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain currents for a subset of orbitals before calculating bond current</span>
 <span class="sd">           Passed directly to `orbital_current`.</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned currents are only in the unit-cell (supercell currents</span>
 <span class="sd">           will be folded to their unit-cell equivalents).</span>
 <span class="sd">           If `True` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
@@ -2008,7 +2073,13 @@
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">vector_transmission</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms</span>
 
@@ -2022,12 +2093,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of the transmission. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used. Be careful about passing ``0`` as that will be interpreted</span>
-<span class="sd">           as an index.</span>
-<span class="sd">        elec: str or int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the vector transmission corresponding to the energy.</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of originating electrons</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned vector transmission is k-averaged, or an explicit (unweighed) k-point</span>
@@ -2086,8 +2154,8 @@
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">vector_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
@@ -2105,9 +2173,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str or int</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of originating electrons</span>
-<span class="sd">        elec_other: str, int, optional</span>
+<span class="sd">        elec_other:</span>
 <span class="sd">           this electrode determines the *other* chemical potential. As such the vector currents</span>
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
 <span class="sd">        kavg: bool, int, optional</span>
@@ -2167,7 +2235,13 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_transmission">[docs]</a>
     <span class="k">def</span> <span class="nf">atom_transmission</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">activity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic transmission at energy `E` of atoms, a scalar quantity quantifying how much transmission flows through an atom</span>
 
@@ -2200,14 +2274,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of the transmission. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used. Be careful about passing ``0`` as that will be interpreted</span>
-<span class="sd">           as an index.</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the atomic transmission corresponding to the energy.</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        activity: bool, optional</span>
+<span class="sd">        activity:</span>
 <span class="sd">           ``True`` to return the activity, see explanation above</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned atomic transmissions are k-averaged, or an explicit (unweighed) k-point</span>
@@ -2244,7 +2315,13 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_current">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_current">[docs]</a>
     <span class="k">def</span> <span class="nf">atom_current</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">activity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic current of atoms, a scalar quantity quantifying how much currents flows through an atom</span>
 
@@ -2276,12 +2353,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str, int, optional</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the originating electrode</span>
-<span class="sd">        elec_other: str, int, optional</span>
+<span class="sd">        elec_other:</span>
 <span class="sd">           this electrode determines the *other* chemical potential. As such the orbital currents</span>
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
-<span class="sd">        activity: bool, optional</span>
+<span class="sd">        activity:</span>
 <span class="sd">           ``True`` to return the activity current, see explanation above</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point</span>
@@ -2327,7 +2404,12 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.density_matrix">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DM.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">density_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Density matrix from the Green function at energy `E` (1/eV)</span>
 
@@ -2345,10 +2427,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E : float or int</span>
-<span class="sd">           the energy or the energy index of density matrix. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E :</span>
+<span class="sd">           the density matrix corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
@@ -2359,7 +2439,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain density matrix elements for a subset of orbitals, all</span>
 <span class="sd">           other are set to 0.</span>
-<span class="sd">        geometry: Geometry, optional</span>
+<span class="sd">        geometry:</span>
 <span class="sd">           geometry that will be associated with the density matrix. By default the</span>
 <span class="sd">           geometry contained in this file will be used. However, then the</span>
 <span class="sd">           atomic species are probably incorrect, nor will the orbitals contain</span>
@@ -2384,7 +2464,13 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.Adensity_matrix">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.DM.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">Adensity_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Spectral function density matrix at energy `E` (1/eV)</span>
 
@@ -2402,12 +2488,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elec: str or int</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of originating electrons</span>
-<span class="sd">        E : float or int</span>
-<span class="sd">           the energy or the energy index of density matrix. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E :</span>
+<span class="sd">           the density matrix corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
@@ -2418,7 +2502,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain density matrix elements for a subset of orbitals, all</span>
 <span class="sd">           other are set to 0.</span>
-<span class="sd">        geometry: Geometry, optional</span>
+<span class="sd">        geometry:</span>
 <span class="sd">           geometry that will be associated with the density matrix. By default the</span>
 <span class="sd">           geometry contained in this file will be used. However, then the</span>
 <span class="sd">           atomic species are probably incorrect, nor will the orbitals contain</span>
@@ -2451,7 +2535,7 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_COOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COOP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COOP.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">orbital_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">orbital_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the Green function</span>
 
 <span class="sd">        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.</span>
@@ -2481,10 +2565,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COOP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E:</span>
+<span class="sd">           the COOP corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
@@ -2521,7 +2603,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOOP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COOP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the spectral function</span>
 
@@ -2551,11 +2633,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COOP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
-<span class="sd">        elec: str or int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the COOP values corresponding to the energy.</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
@@ -2591,7 +2671,9 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_COOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COOP">[docs]</a>
-    <span class="k">def</span> <span class="nf">atom_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">atom_COOP</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atomic COOP curve of the Green function</span>
 
 <span class="sd">        The atomic COOP are a sum over all orbital COOP:</span>
@@ -2601,10 +2683,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COOP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E:</span>
+<span class="sd">           the atomic COOP corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
@@ -2615,7 +2695,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain COOP matrix elements for a subset of orbitals, all</span>
 <span class="sd">           other are set to 0.</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned COOP are only in the unit-cell.</span>
 <span class="sd">           If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
 <span class="sd">           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.</span>
@@ -2637,7 +2717,13 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_ACOOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_ACOOP">[docs]</a>
     <span class="k">def</span> <span class="nf">atom_ACOOP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atomic COOP curve of the spectral function</span>
 
@@ -2650,11 +2736,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COOP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
-<span class="sd">        elec: str or int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the atomic COOP corresponding to the energy.</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
@@ -2666,7 +2750,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain COOP matrix elements for a subset of orbitals, all</span>
 <span class="sd">           other are set to 0.</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned COOP are only in the unit-cell.</span>
 <span class="sd">           If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
 <span class="sd">           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.</span>
@@ -2689,7 +2773,7 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_COHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COHP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COHP.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">orbital_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">orbital_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orbital resolved COHP analysis of the Green function</span>
 
 <span class="sd">        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.</span>
@@ -2704,10 +2788,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COHP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E:</span>
+<span class="sd">           the COHP corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
@@ -2741,7 +2823,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOHP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COHP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orbital resolved COHP analysis of the spectral function</span>
 
@@ -2757,11 +2839,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COHP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
-<span class="sd">        elec: str or int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the COHP corresponding to the energy.</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
@@ -2789,7 +2869,9 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_COHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COHP">[docs]</a>
-    <span class="k">def</span> <span class="nf">atom_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">atom_COHP</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atomic COHP curve of the Green function</span>
 
 <span class="sd">        The atomic COHP are a sum over all orbital COHP:</span>
@@ -2799,10 +2881,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COHP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E:</span>
+<span class="sd">           the atomic COHP corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
@@ -2813,7 +2893,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain COHP matrix elements for a subset of orbitals, all</span>
 <span class="sd">           other are set to 0.</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned COHP are only in the unit-cell.</span>
 <span class="sd">           If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
 <span class="sd">           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.</span>
@@ -2835,17 +2915,21 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_ACOHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_ACOHP">[docs]</a>
     <span class="k">def</span> <span class="nf">atom_ACOHP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atomic COHP curve of the spectral function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COHP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
-<span class="sd">        elec: str or int, optional</span>
+<span class="sd">        E:</span>
+<span class="sd">           the atomic COHP corresponding to the energy.</span>
+<span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
@@ -2857,7 +2941,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain COHP matrix elements for a subset of orbitals, all</span>
 <span class="sd">           other are set to 0.</span>
-<span class="sd">        uc : bool, optional</span>
+<span class="sd">        uc :</span>
 <span class="sd">           whether the returned COHP are only in the unit-cell.</span>
 <span class="sd">           If ``True`` this will return a sparse matrix of ``shape = (self.na, self.na)``,</span>
 <span class="sd">           else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.</span>
@@ -2922,7 +3006,7 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.info">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.info">[docs]</a>
-    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ElecType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Information about the calculated quantities available for extracting in this file</span>
 
 <span class="sd">        Parameters</span>

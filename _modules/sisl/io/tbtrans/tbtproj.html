@@ -1,11 +1,13 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbtproj &mdash; sisl 0.1-d54955e</title>
+  <title>sisl.io.tbtrans.tbtproj &mdash; sisl</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -17,27 +19,23 @@
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=94f02c60"></script>
-        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
-        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
-        <script>let toggleHintShow = 'Click to show';</script>
-        <script>let toggleHintHide = 'Click to hide';</script>
-        <script>let toggleOpenOnPrint = 'true';</script>
-        <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
-        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=cb2d9787"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -54,9 +52,6 @@
           <a href="../../../../index.html" class="icon icon-home">
             sisl
           </a>
-              <div class="version">
-                0.1-d54955e
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -92,7 +87,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
 </ul>
 
@@ -133,6 +128,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="kn">from</span> <span class="nn">sisl._core</span> <span class="kn">import</span> <span class="n">Geometry</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">DensityMatrix</span>
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
@@ -140,7 +136,7 @@
 
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">missing_input_fdf</span>
-<span class="kn">from</span> <span class="nn">.tbt</span> <span class="kn">import</span> <span class="n">tbtncSileTBtrans</span>
+<span class="kn">from</span> <span class="nn">.tbt</span> <span class="kn">import</span> <span class="n">EType</span><span class="p">,</span> <span class="n">NormType</span><span class="p">,</span> <span class="n">tbtncSileTBtrans</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tbtprojncSileTBtrans&quot;</span><span class="p">]</span>
 
@@ -220,12 +216,12 @@
     <span class="k">def</span> <span class="nf">ADOS</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec_mol_proj</span><span class="p">,</span>
-        <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+        <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">norm</span><span class="p">:</span> <span class="n">NormType</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Projected spectral density of states (DOS) (1/eV)</span>
 
@@ -253,9 +249,9 @@
 <span class="sd">        orbitals : array_like of int or bool, optional</span>
 <span class="sd">           only return for a given set of orbitals (default to all)</span>
 <span class="sd">           *NOT* allowed with `atoms` keyword</span>
-<span class="sd">        sum : bool, optional</span>
+<span class="sd">        sum :</span>
 <span class="sd">           whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.</span>
-<span class="sd">        norm : {&#39;none&#39;, &#39;atom&#39;, &#39;orbital&#39;, &#39;all&#39;}</span>
+<span class="sd">        norm :</span>
 <span class="sd">           how the normalization of the summed DOS is performed (see `norm` routine).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mol_proj_elec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mol_proj_elec</span><span class="p">(</span><span class="n">elec_mol_proj</span><span class="p">)</span>
@@ -273,7 +269,7 @@
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_transmission">[docs]</a>
-    <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">mol_proj_elec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mol_proj_elec</span><span class="p">(</span><span class="n">elec_mol_proj</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mol_proj_elec</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -338,7 +334,13 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.Adensity_matrix">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.DM.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span> <span class="nf">Adensity_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_mol_proj</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Projected spectral function density matrix at energy `E` (1/eV)</span>
 
@@ -358,10 +360,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        elec_mol_proj: str or tuple</span>
 <span class="sd">           the projected electrode of originating electrons</span>
-<span class="sd">        E : float or int</span>
-<span class="sd">           the energy or the energy index of density matrix. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E :</span>
+<span class="sd">           the density matrix corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int or array_like, optional</span>
 <span class="sd">           whether the returned density matrix is k-averaged, an explicit k-point</span>
 <span class="sd">           or a selection of k-points</span>
@@ -372,7 +372,7 @@
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain density matrix elements for a subset of orbitals, all</span>
 <span class="sd">           other are set to 0.</span>
-<span class="sd">        geometry: Geometry, optional</span>
+<span class="sd">        geometry:</span>
 <span class="sd">           geometry that will be associated with the density matrix. By default the</span>
 <span class="sd">           geometry contained in this file will be used. However, then the</span>
 <span class="sd">           atomic species are probably incorrect, nor will the orbitals contain</span>
@@ -402,7 +402,9 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_ACOOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_ACOOP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.COOP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the projected spectral function</span>
 
 <span class="sd">        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.</span>
@@ -433,10 +435,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        elec_mol_proj: str or tuple</span>
 <span class="sd">           the electrode of the spectral function</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COOP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E:</span>
+<span class="sd">           the COOP values corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int or array_like, optional</span>
 <span class="sd">           whether the returned COOP is k-averaged, an explicit k-point</span>
 <span class="sd">           or a selection of k-points</span>
@@ -474,7 +474,9 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_ACOHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_ACOHP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.COHP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orbital COHP analysis of the projected spectral function</span>
 
 <span class="sd">        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.</span>
@@ -491,10 +493,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        elec_mol_proj: str or tuple</span>
 <span class="sd">           the electrode of the projected spectral function</span>
-<span class="sd">        E: float or int</span>
-<span class="sd">           the energy or the energy index of COHP. If an integer</span>
-<span class="sd">           is passed it is the index, otherwise the index corresponding to</span>
-<span class="sd">           ``Eindex(E)`` is used.</span>
+<span class="sd">        E:</span>
+<span class="sd">           the COHP values corresponding to the energy.</span>
 <span class="sd">        kavg: bool, int or array_like, optional</span>
 <span class="sd">           whether the returned COHP is k-averaged, an explicit k-point</span>
 <span class="sd">           or a selection of k-points</span>

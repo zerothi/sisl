@@ -1,11 +1,13 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.densitymatrix &mdash; sisl 0.1-d54955e</title>
+  <title>sisl.physics.densitymatrix &mdash; sisl</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
@@ -17,27 +19,23 @@
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=94f02c60"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../../_static/copybutton.js?v=f281be69"></script>
-        <script src="../../../_static/tabs.js?v=3ee01567"></script>
-        <script>let toggleHintShow = 'Click to show';</script>
-        <script>let toggleHintHide = 'Click to hide';</script>
-        <script>let toggleOpenOnPrint = 'true';</script>
-        <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
-        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb2d9787"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -54,9 +52,6 @@
           <a href="../../../index.html" class="icon icon-home">
             sisl
           </a>
-              <div class="version">
-                0.1-d54955e
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -92,7 +87,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 </ul>
 
@@ -503,7 +498,7 @@
     <span class="k">def</span> <span class="nf">mulliken</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;orbital&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Mulliken charges from the density matrix</span>
 
-<span class="sd">        See :ref:`this document &lt;math_convention&gt;` for details on the mathematical notation.</span>
+<span class="sd">        See :ref:`here &lt;math_convention&gt;` for details on the mathematical notation.</span>
 <span class="sd">        Matrices :math:`\boldsymbol\rho` and :math:`\mathbf S` are density</span>
 <span class="sd">        and overlap matrices, respectively.</span>
 
@@ -854,7 +849,7 @@
         <span class="n">spinor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
         <span class="n">eta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;pre-compute&quot;</span><span class="p">,</span> <span class="s2">&quot;direct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;direct&quot;</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;pre-compute&quot;</span><span class="p">,</span> <span class="s2">&quot;direct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;pre-compute&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand the density matrix to the charge density on a grid</span>
@@ -897,9 +892,8 @@
 <span class="sd">           show a progressbar on stdout</span>
 <span class="sd">        method:</span>
 <span class="sd">           It determines if the orbital values are computed on the fly (direct) or they are all pre-computed</span>
-<span class="sd">           on the grid at the beginning(pre-compute).</span>
+<span class="sd">           on the grid at the beginning (pre-compute).</span>
 <span class="sd">           Pre computing orbitals results in a faster computation, but it requires more memory.</span>
-<span class="sd">           Currently pre-computing has a bug that results in out-of-bounds, it will be fixed.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -910,6 +904,16 @@
         <span class="c1"># the unit cell, since this will facilitate things greatly and it gives the</span>
         <span class="c1"># same result.</span>
         <span class="n">uc_dm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translate2uc</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;pre-compute&quot;</span><span class="p">:</span>
+            <span class="c1"># Compute orbital values on the grid</span>
+            <span class="n">psi_values</span> <span class="o">=</span> <span class="n">uc_dm</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_orbital_values</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+            <span class="c1"># Here we just set the nsc to whatever the psi values have.</span>
+            <span class="c1"># If the nsc is bigger in the DM, then some elements of the DM will be discarded.</span>
+            <span class="c1"># If the nsc is smaller in the DM, then the DM is just &quot;padded&quot; with 0s.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">uc_dm</span><span class="o">.</span><span class="n">nsc</span> <span class="o">==</span> <span class="n">psi_values</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">):</span>
+                <span class="n">uc_dm</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">psi_values</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
 
         <span class="c1"># Get the DM components with which we want to compute the density</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="n">uc_dm</span><span class="o">.</span><span class="n">_csr</span>
@@ -945,7 +949,7 @@
             <span class="c1"># Create the DM csr matrix.</span>
             <span class="n">csrDM</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">DM</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)),</span>
-                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">uc_dm</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -975,13 +979,7 @@
             <span class="n">csrDM</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;pre-compute&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s2">&quot;Currently a memory bug is happening, cannot be used until fixed, use the direct method&quot;</span>
-            <span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># Compute orbital values on the grid</span>
-                <span class="n">psi_values</span> <span class="o">=</span> <span class="n">uc_dm</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_orbital_values</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-
                 <span class="n">psi_values</span><span class="o">.</span><span class="n">reduce_orbital_products</span><span class="p">(</span>
                     <span class="n">csrDM</span><span class="p">,</span> <span class="n">uc_dm</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                 <span class="p">)</span>
@@ -1396,13 +1394,10 @@
 <span class="sd">      This is a keyword-only argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DensityMatrix.__init__">
-<a class="viewcode-back" href="../../../api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize density matrix&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
