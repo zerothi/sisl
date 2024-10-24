@@ -1,6 +1,6 @@
 .. _other:
 
-Similar solutions
+Related software
 =================
 
 One of `sisl`'s goals is an easy interaction between a variety of DFT simulations, much like `ASE`_ with
