@@ -982,6 +982,22 @@ class TestGeometry:
         lattice_3x3 = g.lattice.tile(3, 0).tile(3, 1)
         assert len(g.within_inf(lattice_3x3)[0]) == 25
 
+    def test_within_inf_gh649(self):
+        # see https://github.com/zerothi/sisl/issues/649
+
+        # Create a geometry with an atom outside of the unit cell
+        geometry = Geometry([-0.5, 0, 0], lattice=np.diag([2, 10, 10]))
+
+        search = Lattice(np.diag([3, 10, 10]))
+        ia, xyz, isc = geometry.within_inf(search, periodic=True)
+        assert np.allclose(ia, 0)
+        assert np.allclose(isc, [1, 0, 0])
+
+        search = Lattice(np.diag([2, 10, 10]))
+        ia, xyz, isc = geometry.within_inf(search, periodic=True)
+        assert np.allclose(ia, 0)
+        assert np.allclose(isc, [1, 0, 0])
+
     def test_close_sizes(self, setup):
         point = 0
 

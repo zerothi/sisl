@@ -3627,14 +3627,16 @@ class Geometry(
         # 1. Number of times each lattice vector must be expanded to fit
         #    inside the "possibly" larger `lattice`.
         idx = lattice.cell @ self.icell.T
-        tile_min = floor(idx.min(0))
+        tile_min = floor(idx.min(0)).astype(dtype=int32)
         tile_max = ceil(idx.max(0)).astype(dtype=int32)
 
         # Intrinsic offset (when atomic coordinates are outside primary unit-cell)
         fxyz = np.round(self.fxyz, decimals=5)
-        fxyz_floor = floor(fxyz).astype(dtype=int32)
-        tile_min = np.minimum(tile_min, fxyz_floor.min(0)).astype(dtype=int32)
-        tile_max = np.maximum(tile_max, ceil(idx.max(0))).astype(dtype=int32)
+        # We don't collapse this as it is necessary for correcting isc further below
+        fxyz_ifloor = floor(fxyz).astype(dtype=int32)
+        fxyz_iceil = ceil(fxyz).max(0).astype(dtype=int32)
+        tile_min = np.minimum(tile_min, fxyz_ifloor.min(0))
+        tile_max = np.maximum(tile_max, fxyz_iceil)
         del idx, fxyz
 
         # 1a) correct for origin displacement
@@ -3662,7 +3664,14 @@ class Geometry(
 
         # Make sure that full_geom doesn't return coordinates outside the unit cell
         # for non periodic directions
-        nsc = full_geom.nsc.copy()
+        nsc = full_geom.nsc.copy() // 2
+
+        # If we have atoms outside the primary unit-cell in the original
+        # cell, then we should consider an nsc large enough to encompass this
+        nsc = np.maximum(nsc, fxyz_iceil)
+        nsc = np.maximum(nsc, -fxyz_ifloor.min(0))
+        nsc = nsc * 2 + 1
+
         nsc[non_periodic] = 1
         full_geom.set_nsc(nsc)
 
@@ -3695,7 +3704,7 @@ class Geometry(
         # Convert indices to unit-cell indices and also return coordinates and
         # infinite supercell indices
         ia = self.asc2uc(idx)
-        return ia, xyz, isc - fxyz_floor[ia]
+        return ia, xyz, isc - fxyz_ifloor[ia]
 
     def _orbital_values(
         self, grid_shape: tuple[int, int, int], truncate_with_nsc: bool = False
@@ -3735,10 +3744,6 @@ class Geometry(
         # (and the neighbours that connect into the cell)
         IA, XYZ, ISC = self.within_inf(lattice, periodic=self.pbc)
         XYZ -= self.lattice.origin.reshape(1, 3)
-
-        # within_inf translates atoms to the unit cell to compute
-        # supercell indices. Here we revert that
-        ISC -= np.floor(self.fxyz[IA]).astype(int32)
 
         # Don't consider atoms that are outside of the geometry's auxiliary cell.
         if truncate_with_nsc:
