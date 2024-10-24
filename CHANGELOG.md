@@ -92,6 +92,7 @@ we hit release version 1.0.0.
 - Creation of [n]-triangulenes (`sisl.geom.triangulene`)
 - added `offset` argument in `Geometry.add_vacuum` to enable shifting atomic coordinates
 - A new `AtomicMatrixPlot` to plot sparse matrices, #668
+- Parsing of total Mulliken charges in `stdoutSileSiesta`, #691
 
 ### Fixed
 - PEP-585 compliant
