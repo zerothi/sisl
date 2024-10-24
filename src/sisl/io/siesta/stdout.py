@@ -124,7 +124,7 @@ class stdoutSileSiesta(SileSiesta):
             not_found="warn",
         ),
         _A(
-            "ns",
+            "nspecies",
             r"^redata: Number of Atomic Species",
             lambda attr, instance, match: int(match.string.split("=")[-1]),
             not_found="warn",
@@ -1000,13 +1000,16 @@ class stdoutSileSiesta(SileSiesta):
 
     @sile_fh_open(True)
     def read_charge(
-        self, name, iscf=Opt.ANY, imd=Opt.ANY, key_scf="scf", as_dataframe=False
+        self,
+        name: Literal["voronoi", "hirshfeld", "mulliken"],
+        iscf=Opt.ANY,
+        imd=Opt.ANY,
+        key_scf: str = "scf",
+        as_dataframe: bool = False,
     ):
         r"""Read charges calculated in SCF loop or MD loop (or both)
 
         Siesta enables many different modes of writing out charges.
-
-        NOTE: currently only Mulliken total atomic charges are implemented.
 
         The below table shows a list of different cases that
         may be encountered, the letters are referred to in the
@@ -1036,7 +1039,7 @@ class stdoutSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        name: {"voronoi", "hirshfeld", "mulliken"}
+        name:
             the name of the charges that you want to read
         iscf: int or Opt, optional
             index (0-based) of the scf iteration you want the charges for.
@@ -1050,9 +1053,9 @@ class stdoutSileSiesta(SileSiesta):
             the returned quantities depend on what is present.
             If ``None/Opt.NONE`` it will not return any MD charges.
             If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
-        key_scf : str, optional
+        key_scf :
             the key lookup for the scf iterations (a ":" will automatically be appended)
-        as_dataframe: boolean, optional
+        as_dataframe:
             whether charges should be returned as a pandas dataframe.
 
         Returns
@@ -1061,7 +1064,7 @@ class stdoutSileSiesta(SileSiesta):
             if a specific MD+SCF index is requested (or special cases where output is
             not complete)
         list of numpy.ndarray
-            if one both `iscf` or `imd` is different from ``None/Opt.NONE``.
+            if `iscf` or `imd` is different from ``None/Opt.NONE``.
         pandas.DataFrame
             if `as_dataframe` is requested. The dataframe will have multi-indices if multiple
             SCF or MD steps are requested.
@@ -1117,16 +1120,15 @@ class stdoutSileSiesta(SileSiesta):
 
             # We have found the header, prepare a list to read the charges
             atom_charges = []
-            line = " "
-            while line != "":
+            while (line := self.readline()) != "":
                 try:
-                    line = self.readline()
                     charge_vals = _parse_charge(line)
                     atom_charges.append(charge_vals)
                 except Exception:
                     # We already have the charge values and we reached a line that can't be parsed,
                     # this means we have reached the end.
                     break
+
             if pd is None:
                 # not as_dataframe
                 return _a.arrayf(atom_charges)
@@ -1207,9 +1209,7 @@ class stdoutSileSiesta(SileSiesta):
                 self.readline()
 
                 # Read until closing ---- line
-                line = ""
-                while "----" not in line:
-                    line = self.readline()
+                while "----" not in (line := self.readline()):
                     if "Total" in line:
                         ia, charge_vals = _parse_charge_total_nc(line)
                         atom_idx.append(ia)
@@ -1231,9 +1231,7 @@ class stdoutSileSiesta(SileSiesta):
                     else:
                         return True
 
-                line = ""
-                while "mulliken: Qtot" not in line:
-                    line = self.readline()
+                while "mulliken: Qtot" not in (line := self.readline()):
                     words = line.split()
                     if len(words) > 0 and try_parse_int(words[0]):
                         # This should be a line containing the total charge for an atom
@@ -1242,17 +1240,18 @@ class stdoutSileSiesta(SileSiesta):
                         atom_charges.append([charge])
 
             # Determine with which spin type we are dealing
-            if self.info.spin == Spin():  # UNPOLARIZED
+            if self.info.spin.is_unpolarized:  # UNPOLARIZED
                 # No spin components so just parse charge
                 atom_charges = []
                 atom_idx = []
                 header = ["e"]
                 _parse_spin_pol()
-            elif self.info.spin == Spin("polarized"):
+
+            elif self.info.spin.is_polarized:
                 # Parse both spin polarizations
                 atom_charges_pol = []
                 header = ["e", "Sz"]
-                for s in ["UP", "DOWN"]:
+                for s in ("UP", "DOWN"):
                     atom_charges = []
                     atom_idx = []
                     self.step_to(f"mulliken: Spin {s}", allow_reread=False)
@@ -1268,16 +1267,20 @@ class stdoutSileSiesta(SileSiesta):
                     atom_charges_pol_array[0, :, 0] - atom_charges_pol_array[1, :, 0]
                 )
                 atom_charges[:] = np.stack((atom_q, atom_s), axis=-1)
-            elif self.info.spin in [Spin("non-colinear"), Spin("spin-orbit")]:
+
+            elif not self.info.spin.is_diagonal:
                 # Parse each species
                 atom_charges = []
                 atom_idx = []
                 header = None
-                for _ in range(self.info.ns):
+                for _ in range(self.info.nspecies):
                     found, _ = self.step_to("Species:", allow_reread=False)
                     _parse_species_nc()
+
             else:
-                assert False  # It should never reach here
+                raise NotImplementedError(
+                    "Something went wrong... Couldn't parse file."
+                )
 
             # Convert to array and sort in the order of the atoms
             sort_idx = np.argsort(atom_idx)
@@ -1335,6 +1338,7 @@ class stdoutSileSiesta(SileSiesta):
             key_scf,
             *charge_keys,
         ]
+
         # adjust the below while loop to take into account any additional
         # segments of search_keys
         IDX_SCF_END = [0, 1]
@@ -1364,9 +1368,11 @@ class stdoutSileSiesta(SileSiesta):
         FOUND_MD = False
         FOUND_FINAL = False
 
-        # TODO whalrus
-        ret = self.step_to(search_keys, case=True, ret_index=True, allow_reread=False)
-        while ret[0]:
+        while (
+            ret := self.step_to(
+                search_keys, case=True, ret_index=True, allow_reread=False
+            )
+        )[0]:
             if ret[2] in IDX_SCF_END:
                 # we finished all SCF iterations
                 current_state = state.MD
@@ -1426,11 +1432,6 @@ class stdoutSileSiesta(SileSiesta):
                     # should we just break?
 
                 current_state = state.CHARGE
-
-            # step to next entry
-            ret = self.step_to(
-                search_keys, case=True, ret_index=True, allow_reread=False
-            )
 
         if not any((FOUND_SCF, FOUND_MD, FOUND_FINAL)):
             raise SileError(f"{self!s} does not contain any charges ({name})")
