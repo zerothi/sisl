@@ -3631,11 +3631,11 @@ class Geometry(
         tile_max = ceil(idx.max(0)).astype(dtype=int32)
 
         # Intrinsic offset (when atomic coordinates are outside primary unit-cell)
-        fxyz = self.move(1e-8).fxyz
+        fxyz = np.round(self.fxyz, decimals=5)
         fxyz_floor = floor(fxyz).astype(dtype=int32)
         tile_min = np.minimum(tile_min, fxyz_floor.min(0)).astype(dtype=int32)
         tile_max = np.maximum(tile_max, ceil(idx.max(0))).astype(dtype=int32)
-        del idx
+        del idx, fxyz
 
         # 1a) correct for origin displacement
         idx = floor(lattice.origin @ self.icell.T)
