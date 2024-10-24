@@ -67,46 +67,45 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
 .. toctree::
    :hidden:
    :maxdepth: 2
-   :caption: User Guide
+   :caption: Getting started
 
    introduction
    quickstart/index
+   cite
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: User Guide
+
    tutorials/index
+   visualization/viz/index
    scripts/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Advanced usage
+
+   api/index
    environment
-   math
-
-.. toctree::
-   :hidden:
-   :maxdepth: 2
-   :caption: Visualization
-
-   visualization/viz_module/index
-   visualization/ase/index
-
-.. toctree::
-   :hidden:
-   :maxdepth: 2
-   :caption: Toolboxes
-
    toolbox/index
 
 .. toctree::
    :hidden:
    :maxdepth: 2
-   :caption: Development details
+   :caption: Development
 
-   contribute
-   changelog/index
-   cite
-   other
+   dev/index
 
 .. toctree::
    :hidden:
    :maxdepth: 3
-   :caption: Reference documentation
+   :caption: Extras
 
-   api/index
+   math
+   changelog/index
+   other
    references
 
 

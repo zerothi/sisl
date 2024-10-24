@@ -70,7 +70,7 @@ if on_rtd:
 
 # General information about the project.
 project = "sisl"
-author = "Nick Papior"
+author = "sisl developers"
 copyright = f"2015-{date.today().year}, {author}"
 
 
@@ -92,6 +92,8 @@ extensions = [
     "sphinx.ext.todo",
     # allows to view code directly in the homepage
     "sphinx.ext.viewcode",
+    # Enable redirections
+    "sphinxext.rediraffe",
     # toggle-button on info/warning/...
     "sphinx_togglebutton",
     # allow copybutton on code-blocks
@@ -375,6 +377,12 @@ html_use_modindex = True
 html_use_index = True
 
 
+# Redirects of moved pages
+rediraffe_redirects = {
+    "contribute.rst": "dev/index.rst",
+    "visualization/viz_module/index.rst": "visualization/viz/index.rst",
+}
+
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     "papersize": "a4paper",
@@ -390,7 +398,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ("index", "sisl.tex", "sisl Documentation", "Nick Papior", "manual"),
+    ("index", "sisl.tex", project, author, "manual"),
 ]
 
 #####

@@ -2,7 +2,7 @@
 
 .. _toc-sisl-viz:
 
-``sisl.viz``
+Visualization
 ----------------------------
 
 This is a full visualization framework developed specifically for ``sisl`` to visualize

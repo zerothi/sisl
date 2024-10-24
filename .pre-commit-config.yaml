@@ -8,12 +8,12 @@
 # If pre-commit does some modification, the commit will fail. Add the
 # changes done by pre-commit and commit again.
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
-    hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+    - id: check-yaml
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
 # Black to format code with a consistent style
 - repo: https://github.com/psf/black-pre-commit-mirror
   rev: 24.2.0
@@ -44,3 +44,8 @@ repos:
         - --license-filepath
         - .LICENSE_header
         - --no-extra-eol
+#Validate our CITATION.cff
+- repo: https://github.com/citation-file-format/cff-converter-python
+  rev: ebf0b5e44d67f8beaa1cd13a0d0393ea04c6058d
+  hooks:
+    - id: validate-cff

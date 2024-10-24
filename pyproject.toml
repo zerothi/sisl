@@ -204,6 +204,7 @@ docs = [
     "sphinx-togglebutton",
     "sphinx-inline-tabs",
     "sphinxcontrib-bibtex",
+    "sphinxext-rediraffe",
     "importlib-metadata",
     "ipykernel",
     "ipywidgets",
