@@ -81,6 +81,8 @@ def test_vh_final(fname, name, sisl_files):
 def test_vhm_md(name, fname, sisl_files):
     if isinstance(fname, tuple):
         if name == "mulliken":
+            # we don't have this in the test, so simply return
+            # (this isn't a test after all)
             return
         f = sisl_files("siesta", "ancient", f"voronoi_hirshfeld_4.1_{fname[1]}.out")
     else:
