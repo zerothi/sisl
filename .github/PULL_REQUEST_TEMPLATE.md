@@ -2,6 +2,17 @@
 
  - [ ] Closes #
  - [ ] Added tests for new/changed functions?
- - [ ] Ran `isort .` and `black .` [24.2.0] at top-level
  - [ ] Documentation for functionality in `docs/`
  - [ ] Changes documented in `CHANGELOG.md`
+
+<!--
+Creating a PR will check whether the pre-commit hooks
+have runned, and if it fails, you should do this manually.
+
+Please see here: https://zerothi.github.io/sisl/contribute.html
+on how to enable the pre-commit hooks enabled in `sisl`
+
+The short message is:
+- run `isort .` at the top level
+- run `black .` (version=24.2.0) at top-level
+-->
