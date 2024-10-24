@@ -1014,9 +1014,10 @@ def translate(
     """
     g = geometry.copy()
     if atoms is None:
-        g.xyz += np.asarray(v, g.xyz.dtype)
+        g.xyz += v
+        np.asarray(v, g.xyz.dtype)
     else:
-        g.xyz[geometry._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)
+        g.xyz[geometry._sanitize_atoms(atoms).ravel(), :] += v
     return g
 
 
