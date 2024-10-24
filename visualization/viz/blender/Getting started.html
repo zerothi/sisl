@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting started &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=c3662837"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="First animation" href="First%20animation.html" />
+    <link rel="prev" title="WavefunctionPlot" href="../showcase/WavefunctionPlot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Visualization</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#basic-tutorials">Basic Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#showcase-of-plot-classes">Showcase of plot classes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#using-it-with-blender">Using it with blender</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#first-steps">First steps</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="First%20animation.html">First animation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#combining-plots">Combining plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#do-it-yourself">Do it yourself</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Visualization</a></li>
+      <li class="breadcrumb-item active">Getting started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/visualization/viz/blender/Getting started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Blender offers the possibility to control things using python. However, it has its own python interpreter and it’s not easy to
+install new packages in it. If we want to use <code class="docutils literal notranslate"><span class="pre">sisl</span></code> within it, our best bet is to create a virtual environment and then let
+blender use that python interpreter. The environment that we create, though, <strong>MUST have exactly the same python version</strong> as
+the one shipped with blender.</p>
+<p>Following, you have a step by step guide to get blender ready for plotting with sisl:</p>
+<p>1. <strong>Install blender</strong>. You can install by downloading it directly from their official webpage, or in any other way.
+Check <a class="reference external" href="https://docs.blender.org/manual/en/latest/getting_started/installing/index.html">their installation documentation</a></p>
+<p>In ubuntu we can install it with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>snap<span class="w"> </span>install<span class="w"> </span>blender
+</pre></div>
+</div>
+<p>2. <strong>Find out blender’s python version</strong>. You should check what is the version that blender is
+shipped with. Being <em class="xref py py-obj">blender</em> the name of the executable, you can run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>-b<span class="w"> </span>--python-expr<span class="w"> </span><span class="s2">&quot;import sys; print(f&#39;PYTHON VERSION: {sys.version}&#39;)&quot;</span>
+</pre></div>
+</div>
+<p>In blender 3.6 it gives an output that looks like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Blender<span class="w"> </span><span class="m">3</span>.6.3<span class="w"> </span><span class="o">(</span><span class="nb">hash</span><span class="w"> </span>d3e6b08276ba<span class="w"> </span>built<span class="w"> </span><span class="m">2023</span>-09-21<span class="w"> </span><span class="m">06</span>:13:29<span class="o">)</span>
+PYTHON<span class="w"> </span>VERSION:<span class="w"> </span><span class="m">3</span>.10.12<span class="w"> </span><span class="o">(</span>main,<span class="w"> </span>Aug<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">2023</span>,<span class="w"> </span><span class="m">22</span>:14:01<span class="o">)</span><span class="w"> </span><span class="o">[</span>GCC<span class="w"> </span><span class="m">11</span>.2.1<span class="w"> </span><span class="m">20220127</span><span class="w"> </span><span class="o">(</span>Red<span class="w"> </span>Hat<span class="w"> </span><span class="m">11</span>.2.1-9<span class="o">)]</span>
+
+Blender<span class="w"> </span>quit
+</pre></div>
+</div>
+<p>Therefore, we know that <strong>blender 3.6.3 uses python 3.10.12.</strong></p>
+<p>3. <strong>Create an environment with that python version</strong> and install sisl (<em>skip if you have it already</em>).
+In this case, we will use conda as the environment manager, since it lets us very easily select the python version.
+You probably don’t need the exact micro version. In our case asking for <code class="docutils literal notranslate"><span class="pre">3.10</span></code> is enough:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>blender-python<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
+</pre></div>
+</div>
+<p>Then install all the packages you want to use in blender:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>blender-python
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>sisl<span class="o">[</span>viz<span class="o">]</span>
+</pre></div>
+</div>
+<p>4. <strong>Find the path to the python libraries of your environment</strong>. There are many ways to get this.
+In conda, this path is in the <code class="docutils literal notranslate"><span class="pre">CONDA_PREFIX</span></code> environment variable. So you can just:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$CONDA_PREFIX</span>
+/home/miniconda3/envs/blender-python
+</pre></div>
+</div>
+<p>5. <strong>Tell blender to use the libraries in your environment</strong>. This is done with the <code class="docutils literal notranslate"><span class="pre">BLENDER_SYSTEM_PYTHON</span></code> variable,
+so you need to define it somehow for the blender process. You can specify it every time you use blender:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">BLENDER_SYSTEM_PYTHON</span><span class="o">=</span>/home/miniconda3/envs/blender-python<span class="w"> </span>blender
+</pre></div>
+</div>
+<p>or set it in your initialization files (recommended). E.g. in linux you just include this line in <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">BLENDER_SYSTEM_PYTHON</span><span class="o">=</span>/home/miniconda3/envs/blender-python
+</pre></div>
+</div>
+<p>If everything went right, you should now be able to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>-b<span class="w"> </span>--python-expr<span class="w"> </span><span class="s2">&quot;import sisl&quot;</span>
+</pre></div>
+</div>
+<p>and it shouldn’t raise any error. Congratulations, you are ready to use sisl with blender!</p>
+</section>
+<section id="first-steps">
+<h2>First steps<a class="headerlink" href="#first-steps" title="Link to this heading"></a></h2>
+<p>Now that you have everything set up, let’s open blender.</p>
+<p>At first, blender might look intimidating because of all the options that it has, but we’ll
+keep it very simple. Our aim is just to show you how to use <code class="docutils literal notranslate"><span class="pre">sisl</span></code>, the rest is in your hands.
+What you see in the center of the screen is the default cube, you can just delete it. If its selected,
+just press <code class="docutils literal notranslate"><span class="pre">Supr</span></code>.</p>
+<p>Currently, you are now in the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> tab. The easiest way to start programming is to go to the
+<code class="docutils literal notranslate"><span class="pre">Scripting</span></code> tab. It is the last tab at the right of the tool bar.</p>
+<p>You should see an interactive console and a text editor to write our scripts. Let’s make our first
+plot using the console!</p>
+<p>We want to plot graphene, so the simplest way is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
+<span class="n">geom_plot</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;blender&quot;</span><span class="p">,</span> <span class="n">bonds_scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">geom_plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If we write these lines on the console, we should get the graphene structure in the viewport.</p>
+<p>This is the 3D model. To get an image, we need to <strong>render</strong>. Rendering is a process that generates an image
+from a camera (in our case the camera is the black wireframe that we see in the viewport) and the 3D model (objects, materials, lighting…).
+We can trigger our first render by pressing <code class="docutils literal notranslate"><span class="pre">F12</span></code> or <code class="docutils literal notranslate"><span class="pre">Render</span> <span class="pre">&gt;</span> <span class="pre">Render</span> <span class="pre">image</span></code>.</p>
+<p>There are infinite things that you can tweak in blender, but one important thing to know about is the rendering engine.
+For this image, you have used <code class="docutils literal notranslate"><span class="pre">Eeve</span></code> which is the default engine. It is very fast, which makes it suitable for real-time
+rendering applications. For single images that you want to publish, it is <strong>usually worth it to use the</strong> <code class="docutils literal notranslate"><span class="pre">Cycles</span></code>
+<strong>engine</strong>. This engine does more complex calculations (following light rays as they travel through the scene). You can change it
+in the right hand side of the window, by clicking the tab with the microwave icon (<em>Render properties</em>). This should give you more realistic
+looking results.</p>
+<p>Now you <strong>know how to use sisl inside blender</strong> play with all the settings of the <code class="docutils literal notranslate"><span class="pre">GeometryPlot</span></code>, move the camera,
+change the lighting, the background, etc… to <strong>get amazing images for your talks or publications</strong>!</p>
+<p>Notice that not only <code class="docutils literal notranslate"><span class="pre">GeometryPlot</span></code> has support for blender, <code class="docutils literal notranslate"><span class="pre">GridPlot</span></code> and <code class="docutils literal notranslate"><span class="pre">GeometryPlot</span></code> also support it.
+Try to plot a grid and let’s see how it looks!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../showcase/WavefunctionPlot.html" class="btn btn-neutral float-left" title="WavefunctionPlot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="First%20animation.html" class="btn btn-neutral float-right" title="First animation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

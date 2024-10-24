@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=cb2d9787"></script>
+      <script src="../../../_static/documentation_options.js?v=c3662837"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,35 +60,34 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html"><code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Development details</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Similar solutions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
 
         </div>
@@ -3882,7 +3881,10 @@
         <span class="k">if</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">periodic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">periodic</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="n">periodic</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">periodic</span><span class="p">:</span>
+                <span class="n">periodic</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">periodic</span> <span class="o">=</span> <span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">periodic</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">listify</span><span class="p">(</span><span class="n">periodic</span><span class="p">))</span> <span class="o">|</span> <span class="n">listify</span>
@@ -3902,23 +3904,24 @@
 
         <span class="c1"># 1. Number of times each lattice vector must be expanded to fit</span>
         <span class="c1">#    inside the &quot;possibly&quot; larger `lattice`.</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">tile_max</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="c1"># Intrinsic offset (when atomic coordinates are outside primary unit-cell)</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fxyz</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tile_min</span> <span class="o">&lt;</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">tile_min</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-        <span class="n">tile_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp</span> <span class="o">&lt;</span> <span class="n">tile_max</span><span class="p">,</span> <span class="n">tile_max</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">idx</span><span class="p">,</span> <span class="n">tmp</span>
+        <span class="n">fxyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fxyz</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="c1"># We don&#39;t collapse this as it is necessary for correcting isc further below</span>
+        <span class="n">fxyz_ifloor</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">fxyz</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">fxyz_iceil</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">fxyz</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">tile_min</span><span class="p">,</span> <span class="n">fxyz_ifloor</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">tile_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">tile_max</span><span class="p">,</span> <span class="n">fxyz_iceil</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">idx</span><span class="p">,</span> <span class="n">fxyz</span>
 
         <span class="c1"># 1a) correct for origin displacement</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
-        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tile_min</span> <span class="o">&lt;</span> <span class="n">idx</span><span class="p">,</span> <span class="n">tile_min</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
-        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tile_min</span> <span class="o">&lt;</span> <span class="n">idx</span><span class="p">,</span> <span class="n">tile_min</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">tile_min</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">origin</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">tile_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">tile_min</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="c1"># 2. Reduce tiling along non-periodic directions</span>
         <span class="n">tile_min</span><span class="p">[</span><span class="n">non_periodic</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -3939,7 +3942,14 @@
 
         <span class="c1"># Make sure that full_geom doesn&#39;t return coordinates outside the unit cell</span>
         <span class="c1"># for non periodic directions</span>
-        <span class="n">nsc</span> <span class="o">=</span> <span class="n">full_geom</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">full_geom</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="c1"># If we have atoms outside the primary unit-cell in the original</span>
+        <span class="c1"># cell, then we should consider an nsc large enough to encompass this</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">nsc</span><span class="p">,</span> <span class="n">fxyz_iceil</span><span class="p">)</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">nsc</span><span class="p">,</span> <span class="o">-</span><span class="n">fxyz_ifloor</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">nsc</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+
         <span class="n">nsc</span><span class="p">[</span><span class="n">non_periodic</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">full_geom</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
 
@@ -3952,7 +3962,7 @@
         <span class="c1"># Figure out supercell connections in the smaller indices</span>
         <span class="c1"># Since we have shifted all coordinates into the primary unit cell we</span>
         <span class="c1"># are sure that these fxyz are [0:1[</span>
-        <span class="n">fxyz</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">fxyz</span> <span class="o">=</span> <span class="n">xyz</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span>
 
         <span class="c1"># Since there are numerical errors for the above operation</span>
         <span class="c1"># we *have* to account for possible sign-errors</span>
@@ -3971,7 +3981,8 @@
 
         <span class="c1"># Convert indices to unit-cell indices and also return coordinates and</span>
         <span class="c1"># infinite supercell indices</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">isc</span></div>
+        <span class="n">ia</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ia</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">isc</span> <span class="o">-</span> <span class="n">fxyz_ifloor</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span></div>
 
 
     <span class="k">def</span> <span class="nf">_orbital_values</span><span class="p">(</span>
@@ -4012,10 +4023,6 @@
         <span class="c1"># (and the neighbours that connect into the cell)</span>
         <span class="n">IA</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">ISC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">within_inf</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="p">)</span>
         <span class="n">XYZ</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-
-        <span class="c1"># within_inf translates atoms to the unit cell to compute</span>
-        <span class="c1"># supercell indices. Here we revert that</span>
-        <span class="n">ISC</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fxyz</span><span class="p">[</span><span class="n">IA</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="c1"># Don&#39;t consider atoms that are outside of the geometry&#39;s auxiliary cell.</span>
         <span class="k">if</span> <span class="n">truncate_with_nsc</span><span class="p">:</span>
@@ -5136,7 +5143,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2024, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

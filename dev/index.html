@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing to sisl &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c3662837"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mathematical notation convention" href="../math.html" />
+    <link rel="prev" title="sisl_toolbox.btd.DeviceGreen" href="../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to sisl</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#summary-of-development-process">Summary of development process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribute-external-code">Contribute external code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribute-additional-tests">Contribute additional tests</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Contributing to sisl</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/dev/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing-to-sisl">
+<span id="devindex"></span><h1>Contributing to sisl<a class="headerlink" href="#contributing-to-sisl" title="Link to this heading"></a></h1>
+<p>The sisl code is open-source, and thus we encourage external users to contribute
+back to the code base.</p>
+<p>Even if you are a non-coder, your contributions are valuable to the community!
+Please do remember that open-source projects benefits from interaction!</p>
+<p>There are many aspects of useful contributions:</p>
+<ul class="simple">
+<li><p>Code maintenance and development</p></li>
+<li><p>Creating tutorials and extending documentation</p></li>
+<li><p>Finding bugs or typos</p></li>
+<li><p>Development of the website</p></li>
+<li><p>Missing a useful feature</p></li>
+</ul>
+<p>We understand that people have different backgrounds, and thus different
+experience in coding. We try to engage as much as possible with ticket creators.</p>
+<p>In the following of this document you will find information related to the specifics
+of making a development workflow for <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>.</p>
+<section id="summary-of-development-process">
+<h2>Summary of development process<a class="headerlink" href="#summary-of-development-process" title="Link to this heading"></a></h2>
+<p>Here is a short summary of how to do developments with <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>.</p>
+<ol class="arabic">
+<li><p>If you are a first time contributor, you need to clone your repository
+and setup a few things.</p>
+<p>The procedure enables one to follow the upstream changes, while simultaneously
+have a fork where one has write access.</p>
+<ul>
+<li><p>Go to <a class="reference external" href="https://github.com/zerothi/sisl/">github.com/zerothi/sisl</a> and click the “fork” button to
+create your own copy of the code base.</p></li>
+<li><p>Clone the fork to your local machine:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/&lt;your-username&gt;/sisl.git
+</pre></div>
+</div>
+</li>
+<li><p>Add the upstream repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>upstream<span class="w"> </span>https://github.com/zerothi/sisl.git
+</pre></div>
+</div>
+</li>
+<li><p>Enable the <a class="reference external" href="https://pre-commit.com">pre-commit</a> hooks</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pre-commit
+pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+<p>This will run specific checks before you commit things to the repo.
+It ensures a consistency in the project.</p>
+</li>
+</ul>
+</li>
+<li><p>Installing the project in development mode.</p>
+<p>It is adviced to instal the project in <em>editable</em> mode for faster
+turn-around times.
+Please follow <a class="reference internal" href="../quickstart/install.html#installation-testing"><span class="std std-ref">these instructions</span></a>.</p>
+</li>
+<li><p>Developing your contribution.</p>
+<p>First start by ensuring you have the latest changes on the <code class="docutils literal notranslate"><span class="pre">main</span></code>
+branch.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>main
+git<span class="w"> </span>pull<span class="w"> </span>upstream<span class="w"> </span>main
+</pre></div>
+</div>
+<p>If you are fixing an already opened issue (say <a class="extlink-issue reference external" href="https://github.com/zerothi/sisl/issues/42">GH42</a>) it is adviced
+to name your branch according to the issue number following a sensible name:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span><span class="m">42</span>-enhancing-doc
+</pre></div>
+</div>
+<p>If no issue has been created, then just name it sensibly.</p>
+<p>Do all your commits locally as you progress.</p>
+<p>Be sure to document your changes, and write sensible documentation
+for the API.</p>
+</li>
+<li><p>To submit your contribution:</p>
+<ul>
+<li><p>Push your changes back to your fork on GitHub:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span><span class="m">42</span>-enhancing-doc
+</pre></div>
+</div>
+</li>
+<li><p>Go to <a class="reference external" href="https://github.com/zerothi/sisl/pulls">sisl’s pull request site</a>.
+The new branch will show up with a green Pull Request
+button. Make sure the title and message are clear, concise, and self-
+explanatory. Then click the button to submit it.</p></li>
+</ul>
+</li>
+<li><p>Review process.</p>
+<p>The maintainers of <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will do their best to respond as fast as possible.
+But first ensure that the CI runs successfully, if not, maintainers will likely
+wait untill it succeeds before taking any action.</p>
+</li>
+</ol>
+</section>
+<section id="contribute-external-code">
+<h2>Contribute external code<a class="headerlink" href="#contribute-external-code" title="Link to this heading"></a></h2>
+<p>External toolbox codes may be contributed <a class="reference external" href="https://github.com/zerothi/sisl/issues">here</a>, then press
+“Issue” and select <em>Contribute toolbox</em>.</p>
+<p>There are two cases of external contributions:</p>
+<ol class="arabic simple">
+<li><p>If the code is directly integratable into sisl it will be merged into the sisl source.</p></li>
+<li><p>If the code is showing how to use sisl to calculate some physical quantity but is not a general
+implementation, it will be placed in toolbox directory.</p></li>
+</ol>
+<p>Either way, any contribution is very welcome.</p>
+</section>
+<section id="contribute-additional-tests">
+<h2>Contribute additional tests<a class="headerlink" href="#contribute-additional-tests" title="Link to this heading"></a></h2>
+<p>Additional test files should be added to <a class="reference external" href="https://github.com/zerothi/sisl-files">this repository</a>.
+Please follow the guidelines there, or open up an issue at that repository
+for specific details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html" class="btn btn-neutral float-left" title="sisl_toolbox.btd.DeviceGreen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../math.html" class="btn btn-neutral float-right" title="Mathematical notation convention" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
