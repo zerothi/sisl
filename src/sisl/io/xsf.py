@@ -33,7 +33,7 @@ def _get_kw_index(key: str):
 def reset_values(*names_values, animsteps: bool = False):
     if animsteps:
 
-        def reset(self):
+        def reset(self: xsfSile):
             nonlocal names_values
             self._write_animsteps()
             for name, value in names_values:
@@ -41,7 +41,7 @@ def reset_values(*names_values, animsteps: bool = False):
 
     else:
 
-        def reset(self):
+        def reset(self: xsfSile):
             nonlocal names_values
             for name, value in names_values:
                 setattr(self, name, value)
@@ -209,9 +209,7 @@ class xsfSile(Sile):
         xyz = None
         data = None
 
-        line = " "
-        while line != "":
-            line = self.readline()
+        while line := self.readline():
 
             if line.isspace():
                 continue

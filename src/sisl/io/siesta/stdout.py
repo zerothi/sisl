@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 
@@ -103,6 +103,18 @@ def _read_scf_md_process(scfs):
     return df
 
 
+def _parse_in_dynamics(attr, instance, match):
+    """Determines whether we are in the dynamics section or in the *Final* section.
+
+    Basically it returns ``not instance.info._in_final_analysis``.
+    """
+    return not instance.info._in_final_analysis()
+
+
+def _in_final(self):
+    return self.fh.tell() >= self.info._in_final_analysis_tell
+
+
 @set_module("sisl.io.siesta")
 class stdoutSileSiesta(SileSiesta):
     """Output file from Siesta
@@ -142,10 +154,26 @@ class stdoutSileSiesta(SileSiesta):
             _parse_spin,
         ),
         _A(
-            "_final_analysis",
+            "_has_forces_in_dynamics",
+            r"^siesta: Atomic forces",
+            _parse_in_dynamics,
+        ),
+        _A(
+            "_has_stress_in_dynamics",
+            r"^siesta: Stress tensor",
+            _parse_in_dynamics,
+        ),
+        _A(
+            "_in_final_analysis_tell",
             r"^siesta: Final energy",
-            lambda attr, instance, match: lambda: True,
-            default=lambda: False,
+            lambda attr, instance, match: instance.fh.tell(),
+            default=1e12,
+        ),
+        _A(
+            "_in_final_analysis",
+            None,
+            default=_in_final,
+            found=True,
         ),
     ]
 
@@ -326,7 +354,7 @@ class stdoutSileSiesta(SileSiesta):
         ----------
         skip_input :
             the input geometry may be contained as a print-out.
-            This is not part of an MD calculation, and hence is per
+            This is not part of an MD calculation, and hence is by
             default not returned.
 
         Returns
@@ -341,9 +369,7 @@ class stdoutSileSiesta(SileSiesta):
             """Wrapper to return None"""
             return None
 
-        line = " "
-        while line != "":
-            line = self.readline()
+        while line := self.readline():
             if "outcoor" in line and "coordinates" in line:
                 func = self._r_geometry_outcoor
                 break
@@ -355,14 +381,20 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder(postprocess=postprocess_tuple(_a.arrayd))
     @sile_fh_open()
-    def read_force(self, total: bool = False, max: bool = False, key: str = "siesta"):
+    def read_force(
+        self,
+        total: bool = False,
+        max: bool = False,
+        key: Literal["siesta", "ts"] = "siesta",
+        skip_final: Optional[bool] = None,
+    ):
         """Reads the forces from the Siesta output file
 
         Parameters
         ----------
-        total: bool, optional
+        total:
             return the total forces instead of the atomic forces.
-        max: bool, optional
+        max:
             whether only the maximum atomic force should be returned for each step.
 
             Setting it to `True` is equivalent to `max(outSile.read_force())` in case atomic forces
@@ -370,10 +402,17 @@ class stdoutSileSiesta(SileSiesta):
 
             Note that this is not the same as doing `max(outSile.read_force(total=True))` since
             the forces returned in that case are averages on each axis.
-        key: {"siesta", "ts"}
+        key:
             Specifies the indicator string for the forces that are to be read.
             The function will look for a line containing ``f'{key}: Atomic forces'``
             to start reading forces.
+        skip_final:
+            the final output of the forces is duplicated when the *final*
+            output is written.
+            By default, this method will return the final forces, but
+            only **if** no other forces are found.
+            If forces from dynamics are found, then the final forces
+            will not be returned, unless explicitly requested through this flag.
 
         Returns
         -------
@@ -393,35 +432,38 @@ class stdoutSileSiesta(SileSiesta):
         if not found:
             return None
 
+        if skip_final is None:
+            # If we have final forces, default to skip the
+            # final forces when we have forces in the dynamics
+            # sections.
+            skip_final = self.info._has_forces_in_dynamics
+
         # Now read data
-        line = self.readline()
-        if "siesta:" in line:
+        if skip_final and self.info._in_final_analysis():
             # This is the final summary, we don't need to read it as it does not contain new information
             # and also it make break things since max forces are not written there
             return None
 
         F = []
         # First, we encounter the atomic forces
-        while "---" not in line:
+        while line := self.readline():
+            if "---" in line:
+                break
             line = line.split()
             if not (total or max):
                 F.append([float(x) for x in line[-3:]])
-            line = self.readline()
-            if line == "":
-                break
 
         if not F:
             F = None
 
-        line = self.readline().split()
         # Parse total forces if requested
-        if total and line:
+        line = self.readline()
+        if total and (line := line.split()):
             F = _a.arrayd([float(x) for x in line[-3:]])
 
         # And after that we can read the max force
         line = self.readline()
-        if max and line:
-            line = self.readline().split()
+        if max and (line := self.readline().split()):
             maxF = _a.arrayd(float(line[1]))
 
             # In case total is also requested, we are going to
@@ -437,17 +479,24 @@ class stdoutSileSiesta(SileSiesta):
 
     @SileBinder(postprocess=_a.arrayd)
     @sile_fh_open()
-    def read_stress(self, key: str = "static", skip_final: bool = True) -> np.ndarray:
+    def read_stress(
+        self,
+        key: Literal["static", "total", "Voigt"] = "static",
+        skip_final: Optional[bool] = None,
+    ) -> np.ndarray:
         """Reads the stresses from the Siesta output file
 
         Parameters
         ----------
-        key : {static, total, Voigt}
+        key :
            which stress to read from the output.
         skip_final:
-            the static stress tensor is duplicated in the output when running
-            MD simulations. This flag is used in case one wish to get the final
-            one.
+            the final output of the stress is duplicated when the *final*
+            output is written.
+            By default, this method will return the final stress, but
+            only **if** no other stresses are found.
+            If stresses from dynamics are found, then the final stress
+            will not be returned, unless explicitly requested through this flag.
 
         Returns
         -------
@@ -469,6 +518,17 @@ class stdoutSileSiesta(SileSiesta):
             found, line = self.step_to(search, allow_reread=False)
             found = found and key in line
 
+        if skip_final is None:
+            # If we have final stress, default to skip the
+            # final stress when we have stress in the dynamics
+            # sections.
+            skip_final = self.info._has_stress_in_dynamics
+
+        if skip_final and self.info._in_final_analysis():
+            # we are in the final section, and don't want to do
+            # anything
+            return None
+
         if not found:
             return None
 
@@ -481,26 +541,25 @@ class stdoutSileSiesta(SileSiesta):
             for _ in range(3):
                 line = self.readline().split()
                 S.append([float(x) for x in line[-3:]])
-                if skip_final:
-                    if line[0].startswith("siesta:"):
-                        return None
             S = _a.arrayd(S)
 
         return S
 
     @SileBinder(postprocess=_a.arrayd)
     @sile_fh_open()
-    def read_moment(self, orbitals=False, quantity="S") -> np.ndarray:
+    def read_moment(
+        self, orbitals: bool = False, quantity: Literal["S", "L"] = "S"
+    ) -> np.ndarray:
         """Reads the moments from the Siesta output file
 
         These will only be present in case of spin-orbit coupling.
 
         Parameters
         ----------
-        orbitals: bool, optional
+        orbitals:
            return a table with orbitally resolved
            moments.
-        quantity: {'S', 'L'}, optional
+        quantity:
            return the spin-moments or the L moments
         """
         # Read until outcoor is found
@@ -685,7 +744,7 @@ class stdoutSileSiesta(SileSiesta):
 
         return out
 
-    def read_data(self, *args, **kwargs):
+    def read_data(self, *args, **kwargs) -> Any:
         """Read specific content in the Siesta out file
 
         The currently implemented things are denoted in

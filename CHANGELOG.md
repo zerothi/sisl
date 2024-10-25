@@ -20,6 +20,10 @@ we hit release version 1.0.0.
 - fixed warning raised when reading electronic structure without Ef, #826
 - fixed precision writing of energies in GF files (siesta), #827
 - fixed reading `HSetupOnly` HSX files from Siesta, #828
+- fixed reading stresses and forces from `stdoutSileSiesta`
+  Note that generally the forces/stresses in the *Final* section of the
+  output will **not** be returned. Only if there are no other forces/stresses
+  in the output file.
 
 ### Changed
 - `tbtSileTBtrans.Eindex` changed, see #829 for details.

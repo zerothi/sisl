@@ -14,7 +14,7 @@ from sisl.io.siesta.stdout import *
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
 
-def test_md_nose_out(sisl_files):
+def test_mgco3_md_out(sisl_files):
     f = sisl_files("siesta", "MgCO3_md", "RUN.out")
     out = stdoutSileSiesta(f)
 
@@ -30,12 +30,17 @@ def test_md_nose_out(sisl_files):
     assert not np.allclose(geom0.xyz, geom.xyz)
     assert not np.allclose(geom0.xyz, geom1.xyz)
 
-    # try and read all outputs
-    # there are 5 outputs in this output file.
+    # try and read all outputs (including the final section)
+    nOutputs = 6
+    assert len(out.read_force[:](skip_final=False)) == nOutputs
+    assert len(out.read_stress[:](skip_final=False)) == nOutputs
+
+    # there are 5 dynamics outputs in this output file.
     nOutputs = 5
     assert len(out.read_geometry[:]()) == nOutputs
     assert len(out.read_force[:]()) == nOutputs
     assert len(out.read_stress[:]()) == nOutputs
+
     f0 = out.read_force()
     f = out.read_force[-1]()
     f1 = out.read_data(force=True, slice=-1)
@@ -65,7 +70,7 @@ def test_md_nose_out(sisl_files):
         assert not np.allclose(S, T)
 
 
-def test_md_nose_out_scf(sisl_files):
+def test_mgco3_md_out_scf(sisl_files):
     f = sisl_files("siesta", "MgCO3_md", "RUN.out")
     out = stdoutSileSiesta(f)
 
@@ -90,7 +95,7 @@ def test_md_nose_out_scf(sisl_files):
         assert np.allclose(scf_all[i], scf)
 
 
-def test_md_nose_out_data(sisl_files):
+def test_mgco3_md_out_data(sisl_files):
     f = sisl_files("siesta", "MgCO3_md", "RUN.out")
     out = stdoutSileSiesta(f)
 
@@ -105,7 +110,7 @@ def test_md_nose_out_data(sisl_files):
     assert e["kinetic"] == approx(3955.286834)
 
 
-def test_md_nose_out_info(sisl_files):
+def test_mgco3_md_out_info(sisl_files):
     f = sisl_files("siesta", "MgCO3_md", "RUN.out")
     out = stdoutSileSiesta(f)
     assert out.info.completed
@@ -115,7 +120,7 @@ def test_md_nose_out_info(sisl_files):
     assert out.info.no == geom.no
 
 
-def test_md_nose_out_dataframe(sisl_files):
+def test_mgco3_md_out_dataframe(sisl_files):
     pytest.importorskip("pandas", reason="pandas not available")
     f = sisl_files("siesta", "MgCO3_md", "RUN.out")
     out = stdoutSileSiesta(f)
@@ -132,7 +137,7 @@ def test_md_nose_out_dataframe(sisl_files):
     assert df.index.names == ["iscf"]
 
 
-def test_md_nose_out_energy(sisl_files):
+def test_mgco3_md_out_energy(sisl_files):
     f = sisl_files("siesta", "MgCO3_md", "RUN.out")
     energy = stdoutSileSiesta(f).read_energy()
     assert isinstance(energy, sisl.utils.PropertyDict)
@@ -141,7 +146,7 @@ def test_md_nose_out_energy(sisl_files):
     assert hasattr(basis, "enthalpy")
 
 
-def test_md_nose_pao_basis(sisl_files):
+def test_mgco3_md_pao_basis(sisl_files):
     f = sisl_files("siesta", "MgCO3_md", "RUN.out")
 
     block = """

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import gzip
+import inspect
 import logging
 import re
 from collections.abc import Callable
@@ -14,6 +15,7 @@ from operator import contains
 from os.path import basename, splitext
 from pathlib import Path
 from textwrap import dedent, indent
+from types import MethodType
 from typing import Any, Optional, Union
 
 from sisl._environ import get_environ_variable
@@ -658,15 +660,15 @@ class BaseSile:
         return f"{self.__class__.__name__}({self.base_file!s}, base={d!s})"
 
 
-def sile_fh_open(from_closed=False, reset=None):
+def sile_fh_open(from_closed: bool = False, reset: Callable[[BaseSile], None] = None):
     """Method decorator for objects to directly implement opening of the
     file-handle upon entry (if it isn't already).
 
     Parameters
     ----------
-    from_closed : bool, optional
+    from_closed :
        ensure the wrapped function *must* open the file, otherwise it will seek to 0.
-    reset : callable, optional
+    reset :
        in case the file gets opened a new, then the `reset` method will be called as
        ``reset(self)``
     """
@@ -682,17 +684,10 @@ def sile_fh_open(from_closed=False, reset=None):
 
             @wraps(func)
             def pre_open(self, *args, **kwargs):
-                # only call reset if the file should be reset
-                _reset = reset
-                if hasattr(self, "fh"):
-
-                    def _reset(self):
-                        pass
-
                 with self:
-                    # REMARK this requires the __enter__ to seek(0)
-                    # for the file, and currently it does
-                    _reset(self)
+                    # This happens when the file seeks to 0,
+                    # so basically the same as re-opening the file
+                    reset(self)
                     return func(self, *args, **kwargs)
 
             return pre_open
@@ -787,13 +782,16 @@ class Info:
             self._instance = instance
             self._attrs = []
             self._properties = []
+            self._searching = False
 
             # add the properties
             for prop in instance._info_attributes_:
                 if isinstance(prop, dict):
-                    prop = InfoAttr(**prop)
+                    prop = InfoAttr(instance=instance, **prop)
+                elif isinstance(prop, (tuple, list)):
+                    prop = InfoAttr(*prop, instance=instance)
                 else:
-                    prop = prop.copy()
+                    prop = prop.copy(instance=instance)
                 self.add_property(prop)
 
             # Patch the readline of the instance
@@ -816,8 +814,19 @@ class Info:
 
         def add_property(self, prop: InfoAttr) -> None:
             """Add a new property to be reachable from the .info"""
-            self._attrs.append(prop.attr)
+            self._attrs.append(prop.name)
             self._properties.append(prop)
+
+        def get_property(self, prop: str) -> None:
+            """Add a new property to be reachable from the .info"""
+            if prop not in self._attrs:
+                inst = self._instance
+                raise AttributeError(
+                    f"{inst.__class__.__name__}.info.{prop} does not exist, did you mistype?"
+                )
+
+            idx = self._attrs.index(prop)
+            return self._properties[idx]
 
         def __str__(self):
             """Return a string of the contained attributes, with the values they currently contain"""
@@ -829,19 +838,15 @@ class Info:
         def __getattr__(self, attr):
             """Overwrite the attribute retrieval to be able to fetch the actual values from the information"""
             inst = self._instance
-            if attr not in self._attrs:
-                raise AttributeError(
-                    f"{inst.__class__.__name__}.info.{attr} does not exist, did you mistype?"
-                )
+            prop = self.get_property(attr)
 
-            idx = self._attrs.index(attr)
-            prop = self._properties[idx]
-            if prop.found:
+            if prop.found or self._searching:
                 # only when hitting the new line will this change...
                 return prop.value
 
             # we need to parse the rest of the file
             # This is not ideal, but...
+            self._searching = True
             loc = None
             try:
                 loc = inst.fh.tell()
@@ -857,6 +862,7 @@ class Info:
             if not prop.found:
                 prop.not_found(inst, prop)
 
+            self._searching = False
             return prop.value
 
     class InfoAttr:
@@ -864,7 +870,7 @@ class Info:
 
         This consists of:
 
-        attr:
+        name:
             the name of the attribute
             This will be the `sile.info.<name>` access point.
         searcher:
@@ -896,10 +902,11 @@ class Info:
         """
 
         __slots__ = (
-            "attr",
+            "name",
             "searcher",
             "parser",
             "updatable",
+            "default",
             "value",
             "found",
             "doc",
@@ -908,7 +915,7 @@ class Info:
 
         def __init__(
             self,
-            attr: str,
+            name: str,
             searcher: Union[Callable[[InfoAttr, BaseSile, str], str], str, re.Pattern],
             parser: Callable[
                 [InfoAttr, BaseSile, Union[str, re.Match]], Any
@@ -917,12 +924,16 @@ class Info:
             updatable: bool = False,
             default: Optional[Any] = None,
             found: bool = False,
-            not_found: Optional[Callable[[Any, InfoAttr], None]] = None,
+            not_found: Union[None, str, Callable[[Any, InfoAttr], None]] = None,
+            instance: Any = None,
         ):
-            self.attr = attr
+            self.name = name
 
             if isinstance(searcher, str):
                 searcher = re.compile(searcher)
+
+            elif searcher is None:
+                searcher = lambda info, instance, line: line
 
             if isinstance(searcher, re.Pattern):
 
@@ -932,7 +943,7 @@ class Info:
                     match = searcher.match(line)
                     if match:
                         info.value = info.parser(info, instance, match)
-                        # print(f"found {info.attr}={info.value} with {line}")
+                        # print(f"found {info.name}={info.value} with {line}")
                         info.found = True
                         return True
 
@@ -947,6 +958,16 @@ class Info:
             self.searcher = used_searcher
             self.parser = parser
             self.updatable = updatable
+
+            # Figure out if `self` is in the arguments of `default`
+            # If so, instance bind it, use MethodType
+            if callable(default) and instance is not None:
+                if "self" in inspect.signature(default).parameters:
+                    # Do a type-binding
+                    default = MethodType(default, instance)
+
+            self.default = default
+            # Also set the actual value to the default one
             self.value = default
             self.found = found
             self.doc = doc
@@ -958,13 +979,13 @@ class Info:
 
                     def not_found(obj, attr):
                         raise method(
-                            f"Attribute {attr.attr} could not be found in {obj}."
+                            f"Attribute {attr.name} could not be found in {obj}."
                         )
 
                 else:
 
                     def not_found(obj, attr):
-                        method(f"Attribute {attr.attr} could not be found in {obj}.")
+                        method(f"Attribute {attr.name} could not be found in {obj}.")
 
                 return not_found
 
@@ -996,9 +1017,13 @@ class Info:
 
             return self.searcher(self, instance, line)
 
-        def copy(self):
-            return self.__class__(
-                attr=self.attr,
+        def reset(self):
+            """Reset the property to the default value"""
+            self.value = self.default
+
+        def copy(self, instance: Any = None):
+            obj = self.__class__(
+                name=self.name,
                 searcher=self.searcher,
                 parser=self.parser,
                 doc=self.doc,
@@ -1006,7 +1031,9 @@ class Info:
                 default=self.value,
                 found=self.found,
                 not_found=self.not_found,
+                instance=instance,
             )
+            return obj
 
         def documentation(self):
             """Returns a documentation string for this object"""
@@ -1014,7 +1041,7 @@ class Info:
                 doc = "\n" + indent(dedent(self.doc), " " * 4)
             else:
                 doc = ""
-            return f"{self.attr}[{self.value}]: r'{self.searcher.pattern}'{doc}"
+            return f"{self.name}[{self.value}]: r'{self.searcher.pattern}'{doc}"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
