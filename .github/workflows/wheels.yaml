@@ -47,10 +47,6 @@ jobs:
       CIBW_TEST_EXTRAS: "test"
 
       CIBW_SKIP: "*-musllinux_aarch64 pp*"
-      # For now we use manylinux 2014, which supports ubuntu 20.
-      # We should in principle bump to 2_28, but that only supports ubuntu 21
-      # Perhaps in some later release
-      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
       # Deployment of the SDK in MacOS
       MACOSX_DEPLOYMENT_TARGET: "${{ matrix.deployment_target }}"
 
@@ -88,6 +84,19 @@ jobs:
         with:
           compiler: gcc
           version: 11
+
+      - name: Build wheels for CPython 3.13
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+          CIBW_BUILD: "cp313-* cp313t-*"
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+          CIBW_BUILD_FRONTEND:
+            "pip; args: --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
+          CIBW_FREE_THREADED_SUPPORT: true
+          CIBW_BEFORE_TEST: >-
+            pip install --pre
+            --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
+            numpy
 
       - name: Build wheels for CPython 3.12
         uses: pypa/cibuildwheel@v2.21.3
