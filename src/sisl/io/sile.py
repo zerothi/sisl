@@ -770,101 +770,6 @@ class Info:
         super().__init__(*args, **kwargs)
         self.info = _Info(self)
 
-    class _Info:
-        """The actual .info object that will attached to the instance.
-
-        As of now this is problematic to document.
-        We should figure out a way to do that.
-        """
-
-        def __init__(self, instance):
-            # attach this info instance to the instance
-            self._instance = instance
-            self._attrs = []
-            self._properties = []
-            self._searching = False
-
-            # add the properties
-            for prop in instance._info_attributes_:
-                if isinstance(prop, dict):
-                    prop = InfoAttr(instance=instance, **prop)
-                elif isinstance(prop, (tuple, list)):
-                    prop = InfoAttr(*prop, instance=instance)
-                else:
-                    prop = prop.copy(instance=instance)
-                self.add_property(prop)
-
-            # Patch the readline of the instance
-            def patch(info):
-                # grab the function to be patched
-                properties = info._properties
-                func = info._instance.readline
-
-                @wraps(func)
-                def readline(*args, **kwargs):
-                    line = func(*args, **kwargs)
-                    for prop in properties:
-                        prop.process(info._instance, line)
-                    return line
-
-                return readline
-
-            if len(self) > 0:
-                self._instance.readline = patch(self)
-
-        def add_property(self, prop: InfoAttr) -> None:
-            """Add a new property to be reachable from the .info"""
-            self._attrs.append(prop.name)
-            self._properties.append(prop)
-
-        def get_property(self, prop: str) -> None:
-            """Add a new property to be reachable from the .info"""
-            if prop not in self._attrs:
-                inst = self._instance
-                raise AttributeError(
-                    f"{inst.__class__.__name__}.info.{prop} does not exist, did you mistype?"
-                )
-
-            idx = self._attrs.index(prop)
-            return self._properties[idx]
-
-        def __str__(self):
-            """Return a string of the contained attributes, with the values they currently contain"""
-            return "\n".join([p.documentation() for p in self._properties])
-
-        def __len__(self) -> int:
-            return len(self._properties)
-
-        def __getattr__(self, attr):
-            """Overwrite the attribute retrieval to be able to fetch the actual values from the information"""
-            inst = self._instance
-            prop = self.get_property(attr)
-
-            if prop.found or self._searching:
-                # only when hitting the new line will this change...
-                return prop.value
-
-            # we need to parse the rest of the file
-            # This is not ideal, but...
-            self._searching = True
-            loc = None
-            try:
-                loc = inst.fh.tell()
-            except AttributeError:
-                pass
-            with inst:
-                line = inst.readline()
-                while not (prop.found or line == ""):
-                    line = inst.readline()
-            if loc is not None:
-                inst.fh.seek(loc)
-
-            if not prop.found:
-                prop.not_found(inst, prop)
-
-            self._searching = False
-            return prop.value
-
     class InfoAttr:
         """Holder for parsing lines and extracting information from text files
 
@@ -1042,6 +947,101 @@ class Info:
             else:
                 doc = ""
             return f"{self.name}[{self.value}]: r'{self.searcher.pattern}'{doc}"
+
+    class _Info:
+        """The actual .info object that will attached to the instance.
+
+        As of now this is problematic to document.
+        We should figure out a way to do that.
+        """
+
+        def __init__(self, instance):
+            # attach this info instance to the instance
+            self._instance = instance
+            self._attrs = []
+            self._properties = []
+            self._searching = False
+
+            # add the properties
+            for prop in instance._info_attributes_:
+                if isinstance(prop, dict):
+                    prop = instance.InfoAttr(instance=instance, **prop)
+                elif isinstance(prop, (tuple, list)):
+                    prop = instance.InfoAttr(*prop, instance=instance)
+                else:
+                    prop = prop.copy(instance=instance)
+                self.add_property(prop)
+
+            # Patch the readline of the instance
+            def patch(info):
+                # grab the function to be patched
+                properties = info._properties
+                func = info._instance.readline
+
+                @wraps(func)
+                def readline(*args, **kwargs):
+                    line = func(*args, **kwargs)
+                    for prop in properties:
+                        prop.process(info._instance, line)
+                    return line
+
+                return readline
+
+            if len(self) > 0:
+                self._instance.readline = patch(self)
+
+        def add_property(self, prop: InfoAttr) -> None:
+            """Add a new property to be reachable from the .info"""
+            self._attrs.append(prop.name)
+            self._properties.append(prop)
+
+        def get_property(self, prop: str) -> None:
+            """Add a new property to be reachable from the .info"""
+            if prop not in self._attrs:
+                inst = self._instance
+                raise AttributeError(
+                    f"{inst.__class__.__name__}.info.{prop} does not exist, did you mistype?"
+                )
+
+            idx = self._attrs.index(prop)
+            return self._properties[idx]
+
+        def __str__(self):
+            """Return a string of the contained attributes, with the values they currently contain"""
+            return "\n".join([p.documentation() for p in self._properties])
+
+        def __len__(self) -> int:
+            return len(self._properties)
+
+        def __getattr__(self, attr):
+            """Overwrite the attribute retrieval to be able to fetch the actual values from the information"""
+            inst = self._instance
+            prop = self.get_property(attr)
+
+            if prop.found or self._searching:
+                # only when hitting the new line will this change...
+                return prop.value
+
+            # we need to parse the rest of the file
+            # This is not ideal, but...
+            self._searching = True
+            loc = None
+            try:
+                loc = inst.fh.tell()
+            except AttributeError:
+                pass
+            with inst:
+                line = inst.readline()
+                while not (prop.found or line == ""):
+                    line = inst.readline()
+            if loc is not None:
+                inst.fh.seek(loc)
+
+            if not prop.found:
+                prop.not_found(inst, prop)
+
+            self._searching = False
+            return prop.value
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

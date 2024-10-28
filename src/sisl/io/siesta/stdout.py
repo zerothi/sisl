@@ -28,7 +28,6 @@ __all__ = ["stdoutSileSiesta", "outSileSiesta"]
 
 
 Bohr2Ang = unit_convert("Bohr", "Ang")
-_A = SileSiesta.InfoAttr
 
 
 def _ensure_atoms(atoms):
@@ -123,55 +122,55 @@ class stdoutSileSiesta(SileSiesta):
     """
 
     _info_attributes_ = [
-        _A(
-            "na",
-            r"^initatomlists: Number of atoms",
-            lambda attr, instance, match: int(match.string.split()[-3]),
+        dict(
+            name="na",
+            searcher=r"^initatomlists: Number of atoms",
+            parser=lambda attr, instance, match: int(match.string.split()[-3]),
             not_found="warn",
         ),
-        _A(
-            "no",
-            r"^initatomlists: Number of atoms",
-            lambda attr, instance, match: int(match.string.split()[-2]),
+        dict(
+            name="no",
+            searcher=r"^initatomlists: Number of atoms",
+            parser=lambda attr, instance, match: int(match.string.split()[-2]),
             not_found="warn",
         ),
-        _A(
-            "nspecies",
-            r"^redata: Number of Atomic Species",
-            lambda attr, instance, match: int(match.string.split("=")[-1]),
+        dict(
+            name="nspecies",
+            searcher=r"^redata: Number of Atomic Species",
+            parser=lambda attr, instance, match: int(match.string.split("=")[-1]),
             not_found="warn",
         ),
-        _A(
-            "completed",
-            r".*Job completed",
-            lambda attr, instance, match: lambda: True,
+        dict(
+            name="completed",
+            searcher=r".*Job completed",
+            parser=lambda attr, instance, match: lambda: True,
             default=lambda: False,
             not_found="warn",
         ),
-        _A(
-            "spin",
-            r"^redata: Spin configuration",
-            _parse_spin,
+        dict(
+            name="spin",
+            searcher=r"^redata: Spin configuration",
+            parser=_parse_spin,
         ),
-        _A(
-            "_has_forces_in_dynamics",
-            r"^siesta: Atomic forces",
-            _parse_in_dynamics,
+        dict(
+            name="_has_forces_in_dynamics",
+            searcher=r"^siesta: Atomic forces",
+            parser=_parse_in_dynamics,
         ),
-        _A(
-            "_has_stress_in_dynamics",
-            r"^siesta: Stress tensor",
-            _parse_in_dynamics,
+        dict(
+            name="_has_stress_in_dynamics",
+            searcher=r"^siesta: Stress tensor",
+            parser=_parse_in_dynamics,
         ),
-        _A(
-            "_in_final_analysis_tell",
-            r"^siesta: Final energy",
-            lambda attr, instance, match: instance.fh.tell(),
+        dict(
+            name="_in_final_analysis_tell",
+            searcher=r"^siesta: Final energy",
+            parser=lambda attr, instance, match: instance.fh.tell(),
             default=1e12,
         ),
-        _A(
-            "_in_final_analysis",
-            None,
+        dict(
+            name="_in_final_analysis",
+            searcher=None,
             default=_in_final,
             found=True,
         ),

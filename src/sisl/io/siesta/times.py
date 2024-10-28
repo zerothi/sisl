@@ -14,43 +14,45 @@ from .sile import SileSiesta
 
 __all__ = ["timesSileSiesta"]
 
-_A = SileSiesta.InfoAttr
-
 
 @set_module("sisl.io.siesta")
 class timesSileSiesta(SileSiesta):
-    """Time information from the Siesta run"""
+    """Time information from the Siesta run
+
+    The timings are stored in either the ``TIMES`` or
+    the ``<SystemLabel>.times`` files.
+    """
 
     _info_attributes_ = [
-        _A(
-            "processors",
-            r"^timer: Number of nodes",
-            lambda attr, instance, match: int(match.string.split()[-1]),
+        dict(
+            name="processors",
+            searcher=r"^timer: Number of nodes",
+            parser=lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
-        _A(
-            "threads",
-            r"^timer: Number of threads per node",
-            lambda attr, instance, match: int(match.string.split()[-1]),
+        dict(
+            name="threads",
+            searcher=r"^timer: Number of threads per node",
+            parser=lambda attr, instance, match: int(match.string.split()[-1]),
             default=1,
             not_found="info",
         ),
-        _A(
-            "processor_reference",
-            r"^timer: Times refer to node",
-            lambda attr, instance, match: int(match.string.split()[-1]),
+        dict(
+            name="processor_reference",
+            searcher=r"^timer: Times refer to node",
+            parser=lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
-        _A(
-            "wall_clock",
-            r"^timer: Total elapsed wall-clock",
-            lambda attr, instance, match: float(match.string.split()[-1]),
+        dict(
+            name="wall_clock",
+            searcher=r"^timer: Total elapsed wall-clock",
+            parser=lambda attr, instance, match: float(match.string.split()[-1]),
             not_found="error",
         ),
     ]
 
     @sile_fh_open(True)
-    def read_data(self):
+    def read_data(self) -> xarray.DataArray:
         r"""Returns data associated with the times file
 
         Returns
@@ -117,4 +119,5 @@ class timesSileSiesta(SileSiesta):
         return data
 
 
-add_sile("TIMES", timesSileSiesta, gzip=True)
+# This will both allow TIMES + siesta.times
+add_sile("TIMES", timesSileSiesta, case=False, gzip=True)
