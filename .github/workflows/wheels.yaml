@@ -90,13 +90,13 @@ jobs:
         env:
           CIBW_BUILD: "cp313-* cp313t-*"
           CIBW_ARCHS: ${{ matrix.cibw_archs }}
-          #CIBW_BUILD_FRONTEND:
-          #  "pip; args: --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
+          CIBW_BUILD_FRONTEND:
+            "pip; args: --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
           CIBW_FREE_THREADED_SUPPORT: true
-          #CIBW_BEFORE_TEST: >-
-          #  pip install --pre
-          #  --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
-          #  numpy scipy
+          CIBW_BEFORE_TEST: >-
+            pip install --pre
+            --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
+            numpy scipy
 
       - name: Build wheels for CPython 3.12
         uses: pypa/cibuildwheel@v2.21.3
