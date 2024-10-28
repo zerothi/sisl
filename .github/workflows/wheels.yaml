@@ -147,7 +147,6 @@ jobs:
           if-no-files-found: error
 
   upload_pypi:
-    needs: [test_testpypi]
     name: Publish package to Pypi
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
