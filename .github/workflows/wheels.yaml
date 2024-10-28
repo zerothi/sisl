@@ -26,79 +26,56 @@ jobs:
   # and python versions so that builds are ran in parallel.
   # The job matrix is basically copied from https://github.com/scikit-learn/scikit-learn/blob/main/.github/workflows/wheels.yml
   wheels:
-    name: cp${{ matrix.python[0] }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    name: cp${{ matrix.os }}-${{ matrix.cibw_archs }}
     runs-on: ${{ matrix.os }}
+    needs: sdist
+
+    env:
+      CIBW_BUILD_VERBOSITY: 3
+      CIBW_BEFORE_BUILD: >-
+        rm -rf {package}/build
+      # Instead of running pytest directly, we use a bash script that will set up
+      # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
+      # the sisl-files directory, which contains files for testing.
+      CIBW_TEST_COMMAND: >-
+        bash {project}/tools/build_tools/test_wheels.sh
+      CIBW_TEST_REQUIRES: "joblib"
+      CIBW_TEST_EXTRAS: "test"
+
+      CIBW_SKIP: "*-musllinux_aarch64 pp*"
+      # For now we use manylinux 2014, which supports ubuntu 20.
+      # We should in principle bump to 2_28, but that only supports ubuntu 21
+      # Perhaps in some later release
+      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+      # Deployment of the SDK in MacOS
+      MACOSX_DEPLOYMENT_TARGET: "10.12"
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
         include:
-          # Window 64 bit
-          #- os: windows-latest
-          #  python: ["310", "3.10"]
-          #  platform_id: win_amd64
-
           # Linux 64 bit manylinux2014
-          - os: ubuntu-latest
-            python: ["39", "3.9"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: ["310", "3.10"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: ["311", "3.11"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: ["312", "3.12"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: ["313", "3.13"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
+          - os: ubuntu-20.04
+            cibw_archs: "x86_64"
+          - os: ubuntu-20.04
+            cibw_archs: "aarch64"
 
           # MacOS x86_64
-          - os: macos-12
-            python: ["39", "3.9"]
-            platform_id: macosx_x86_64
-          - os: macos-12
-            python: ["310", "3.10"]
-            platform_id: macosx_x86_64
-          - os: macos-12
-            python: ["311", "3.11"]
-            platform_id: macosx_x86_64
-          - os: macos-12
-            python: ["312", "3.12"]
-            platform_id: macosx_x86_64
-          - os: macos-12
-            python: ["313", "3.13"]
-            platform_id: macosx_x86_64
-
-          # MacOS arm64
+          - os: macos-13
+            cibw_archs: "x86_64"
           - os: macos-14
-            python: ["39", "3.9"]
-            platform_id: macosx_arm64
-          - os: macos-14
-            python: ["310", "3.10"]
-            platform_id: macosx_arm64
-          - os: macos-14
-            python: ["311", "3.11"]
-            platform_id: macosx_arm64
-          - os: macos-14
-            python: ["312", "3.12"]
-            platform_id: macosx_arm64
-          - os: macos-14
-            python: ["313", "3.13"]
-            platform_id: macosx_arm64
+            cibw_archs: "arm64"
 
     steps:
 
-      - name: Checkout sisl
-        uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: matrix.cibw_archs == 'aarch64'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - uses: actions/checkout@v4
 
       - name: Ensure fortran
         uses: fortran-lang/setup-fortran@v1
@@ -106,27 +83,19 @@ jobs:
           compiler: gcc
           version: 11
 
-      - name: Print-out commit information
-        run: |
-          echo "branch: ${{ github.event.inputs.branch }}"
-          echo "hash: ${{ github.sha }}"
-          echo "python-version: ${{ matrix.python[0] }} - ${{ matrix.python[1] }}"
-
-      - name: Build and test wheels
+      - name: Build wheels for CPython 3.12
+        uses: pypa/cibuildwheel@2.21.3
         env:
-          CIBW_BUILD: cp${{ matrix.python[0] }}-${{ matrix.platform_id }}
-          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
-          CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
-        shell: bash -el {0}
-        run: |
-          bash -e tools/build_tools/build_wheels.sh
+          CIBW_BUILD: "cp312-*"
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
 
       # Upload the wheel to the action's artifact.
       - name: Store artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifact-cp${{ matrix.python[0] }}-${{ matrix.platform_id }}
+          name: cibw-wheels-${{ runner.os }}-${{ matrix.cibw_archs }}
           path: ./wheelhouse/*.whl
+          if-no-files-found: error
 
   # Build the source distribution as well
   sdist:
@@ -134,6 +103,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Build sdist
         run: |
@@ -141,7 +112,9 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          name: cibw-sdist
           path: dist/*.tar.gz
+          if-no-files-found: error
 
   # Upload to testpypi
   upload_testpypi:
@@ -177,7 +150,7 @@ jobs:
       - name: Python installation
         uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
       - name: Wait for testpypi to catch up
         run: |

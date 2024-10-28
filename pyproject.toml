@@ -330,36 +330,3 @@ extend-exclude = """
  | .*/\\..*
 )
 """
-
-
-[tool.cibuildwheel]
-build-verbosity = 3
-archs = ["auto"]
-
-test-requires = ["pytest", "joblib"]
-test-extras = "test"
-
-skip = [
-    "pp*",
-    "*musllinux*",
-]
-
-test-skip = ""
-
-# Instead of running pytest directly, we use a bash script that will set up
-# the appropiate value for the SISL_FILES_TEST variable, a path pointing to
-# the sisl-files directory, which contains files for testing.
-test-command = "bash {project}/tools/build_tools/test_wheels.sh"
-
-[tool.cibuildwheel.linux]
-
-
-[[tool.cibuildwheel.overrides]]
-# basically adding to test-requires for windows
-select = "*win*"
-inherit.test-requires = "prepend"
-test-requires = "delvewheel"
-
-[tool.cibuildwheel.windows]
-
-[tool.cibuildwheel.macos]
