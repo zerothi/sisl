@@ -58,8 +58,6 @@ jobs:
           # Linux 64 bit manylinux2014
           - os: ubuntu-20.04
             cibw_archs: "x86_64"
-          - os: ubuntu-20.04
-            cibw_archs: "aarch64"
 
           # MacOS x86_64
           - os: macos-13
@@ -88,7 +86,7 @@ jobs:
       - name: Build wheels for CPython 3.13
         uses: pypa/cibuildwheel@v2.21.3
         env:
-          CIBW_BUILD: "cp313-* cp313t-*"
+          CIBW_BUILD: "cp313t-* cp313-*"
           CIBW_ARCHS: ${{ matrix.cibw_archs }}
           CIBW_BUILD_FRONTEND:
             "pip; args: --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
@@ -104,7 +102,24 @@ jobs:
           CIBW_BUILD: "cp312-*"
           CIBW_ARCHS: ${{ matrix.cibw_archs }}
 
-      # Upload the wheel to the action's artifact.
+      - name: Build wheels for CPython 3.11
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+          CIBW_BUILD: "cp311-*"
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+
+      - name: Build wheels for CPython 3.10
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+          CIBW_BUILD: "cp310-*"
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+
+      - name: Build wheels for CPython 3.9
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+          CIBW_BUILD: "cp39-*"
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+
       - name: Store artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -131,81 +146,6 @@ jobs:
           path: dist/*.tar.gz
           if-no-files-found: error
 
-  # Upload to testpypi
-  upload_testpypi:
-    needs: [sdist, wheels]
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-    name: Publish package to TestPyPI
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: cibw-*
-          path: dist
-          merge-multiple: True
-
-      - name: Print packages
-        run: ls dist
-
-      - uses: pypa/gh-action-pypi-publish@v1.10.3
-        with:
-          user: __token__
-          password: ${{ secrets.TESTPYPI_TOKEN }}
-          repository-url: https://test.pypi.org/legacy/
-
-  # Check that the testpypi installation works
-  test_testpypi:
-    needs: [upload_testpypi]
-    name: Test installation from TestPyPi
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      # If one of the jobs fails, continue with the others.
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-13, macos-14]
-
-    steps:
-      - name: Python installation
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Wait for testpypi to catch up
-        run: |
-          sleep 20
-          version=${GITHUB_REF#refs/*/v}
-          echo "SISL_VERSION=${version#refs/*/}" >> $GITHUB_ENV
-          ls -lh
-
-      - name: Install sisl + dependencies (oldest numpy, not ARM)
-        if: matrix.os != 'macos-14'
-        run: |
-          python -m pip install -v \
-            --progress-bar=off \
-            --index-url https://test.pypi.org/simple/ \
-            --extra-index-url https://pypi.org/simple/ \
-            "sisl[test,viz]==${{ env.SISL_VERSION }}" \
-            "numpy==1.21.*" "scipy==1.6.*" "xarray==0.21.*"
-
-      - name: Install sisl + dependencies (arm)
-        if: matrix.os == 'macos-14'
-        run: |
-          python -m pip install -v \
-            --progress-bar=off \
-            --index-url https://test.pypi.org/simple/ \
-            --extra-index-url https://pypi.org/simple/ \
-            "sisl[test,viz]==${{ env.SISL_VERSION }}"
-
-      - name: sisl debug info
-        run: |
-          python -c 'from sisl._debug_info import * ; print_debug_info()'
-
-      - name: Test the installation
-        run: |
-          pytest --pyargs sisl
-
-  # Upload to PyPI on every tag
   upload_pypi:
     needs: [test_testpypi]
     name: Publish package to Pypi
