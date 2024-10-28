@@ -18,9 +18,6 @@ from .sile import SileVASP
 __all__ = ["carSileVASP"]
 
 
-_A = SileVASP.InfoAttr
-
-
 def _search_name(info, instance, line):
     """Names for CAR files are always in the first line"""
     return instance._line == 1
@@ -34,9 +31,9 @@ class carSileVASP(SileVASP):
     """
 
     _info_attributes_ = [
-        _A(
-            "name",
-            _search_name,
+        dict(
+            name="name",
+            searcher=_search_name,
             default="<unknown>",
             not_found="error",
         ),

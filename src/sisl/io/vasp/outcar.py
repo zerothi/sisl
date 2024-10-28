@@ -18,25 +18,22 @@ from .sile import SileVASP
 __all__ = ["outcarSileVASP"]
 
 
-_A = SileVASP.InfoAttr
-
-
 @set_module("sisl.io.vasp")
 class outcarSileVASP(SileVASP):
     """OUTCAR file from VASP"""
 
     _info_attributes_ = [
-        _A(
-            "completed",
-            r".*General timing and accounting",
-            lambda attr, instance, match: lambda: True,
+        dict(
+            name="completed",
+            searcher=r".*General timing and accounting",
+            parser=lambda attr, instance, match: lambda: True,
             default=lambda: False,
             not_found="warn",
         ),
-        _A(
-            "accuracy_reached",
-            r".*reached required accuracy",
-            lambda attr, instance, match: lambda: True,
+        dict(
+            name="accuracy_reached",
+            searcher=r".*reached required accuracy",
+            parser=lambda attr, instance, match: lambda: True,
             default=lambda: False,
             not_found="warn",
         ),

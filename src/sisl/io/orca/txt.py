@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import Optional
+
 import numpy as np
 
 from sisl._core.geometry import Geometry
@@ -18,30 +20,28 @@ from .sile import SileORCA
 
 __all__ = ["txtSileORCA"]
 
-_A = SileORCA.InfoAttr
-
 
 @set_module("sisl.io.orca")
 class txtSileORCA(SileORCA):
     """Output from the ORCA property.txt file"""
 
     _info_attributes_ = [
-        _A(
-            "na",
-            r".*Number of atoms:",
-            lambda attr, instance, match: int(match.string.split()[-1]),
+        dict(
+            name="na",
+            searcher=r".*Number of atoms:",
+            parser=lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
-        _A(
-            "no",
-            r".*number of basis functions:",
-            lambda attr, instance, match: int(match.string.split()[-1]),
+        dict(
+            name="no",
+            searcher=r".*number of basis functions:",
+            parser=lambda attr, instance, match: int(match.string.split()[-1]),
             not_found="error",
         ),
-        _A(
-            "vdw_correction",
-            r".*\$ VdW_Correction",
-            lambda attr, instance, match: True,
+        dict(
+            name="vdw_correction",
+            searcher=r".*\$ VdW_Correction",
+            parser=lambda attr, instance, match: True,
             default=False,
             not_found="ignore",
         ),
@@ -65,7 +65,7 @@ class txtSileORCA(SileORCA):
 
     @SileBinder(postprocess=np.array)
     @sile_fh_open()
-    def read_electrons(self):
+    def read_electrons(self) -> Optional[tuple[float, float]]:
         """Read number of electrons (alpha, beta)
 
         Returns
@@ -83,7 +83,7 @@ class txtSileORCA(SileORCA):
 
     @SileBinder()
     @sile_fh_open()
-    def read_energy(self, units: UnitsVar = "eV"):
+    def read_energy(self, units: UnitsVar = "eV") -> PropertyDict:
         """Reads the energy blocks
 
         Parameters
