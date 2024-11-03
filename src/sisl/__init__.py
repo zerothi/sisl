@@ -88,6 +88,8 @@ del log_file
 # import the common options used
 from ._common import *
 
+from ._core import *
+
 # Import warning classes
 # We currently do not import warn and info
 # as they are too generic names in case one does from sisl import *
@@ -105,8 +107,6 @@ from .unit import unit_group, unit_convert, unit_default, units
 
 # Below are sisl-specific imports
 from .shape import *
-
-from ._core import *
 
 # Physical quantities and required classes
 from .physics import *

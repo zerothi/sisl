@@ -1,3 +1,9 @@
+set_property(DIRECTORY
+  APPEND
+  PROPERTY INCLUDE_DIRECTORIES
+  ${CMAKE_CURRENT_SOURCE_DIR}/_core
+  )
+
 foreach(source _indices _math_small)
   add_cython_library(
     SOURCE ${source}.pyx
@@ -29,6 +35,7 @@ endforeach()
 get_directory_property( SISL_DEFINITIONS DIRECTORY
   ${CMAKE_CURRENT_SOURCE_DIR}
   COMPILE_DEFINITIONS )
+
 # Join to stringify list
 list(JOIN SISL_DEFINITIONS " " SISL_DEFINITIONS)
 
