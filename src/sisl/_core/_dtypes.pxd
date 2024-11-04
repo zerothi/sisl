@@ -30,6 +30,7 @@ ctypedef fused ints_st:
     int
     long
 
+
 ctypedef fused floats_st:
     float
     double
@@ -41,14 +42,6 @@ ctypedef fused complexs_st:
 
 
 ctypedef fused floatcomplexs_st:
-    float
-    double
-    float complex
-    double complex
-
-
-# Another one to have two separate ctypes (cross-product of type-defs)
-ctypedef fused floatcomplexs2_st:
     float
     double
     float complex
@@ -69,7 +62,6 @@ ctypedef fused numerics_st:
     double
     float complex
     double complex
-
 
 ctypedef fused _type2dtype_types_st:
     short

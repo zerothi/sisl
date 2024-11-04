@@ -23,6 +23,7 @@ from sisl._core._dtypes cimport (
     floats_st,
     ints_st,
     numerics_st,
+    reals_st,
     ssize_st,
     type2dtype,
 )
@@ -71,7 +72,7 @@ def _phase_csr(ints_st[::1] ptr,
                ints_st[::1] ncol,
                ints_st[::1] col,
                numerics_st[:, ::1] D,
-               const int idx,
+               const ints_st idx,
                floatcomplexs_st[::1] phases,
                const int p_opt):
 
@@ -99,7 +100,7 @@ def _phase_csr(ints_st[::1] ptr,
 
                     tmp = v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]]
                     s_idx = _index_sorted(tmp, c)
-                    v[v_ptr[r] + s_idx] += <floatcomplexs_st> D[ind, idx]
+                    v[v_ptr[r] + s_idx] += <floatcomplexs_st> (D[ind, idx])
 
         elif p_opt == 0:
             for r in range(nr):
@@ -150,7 +151,7 @@ def _phase_array(ints_st[::1] ptr,
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] % nr
-                    v[r, c] += <floatcomplexs_st> D[ind, idx]
+                    v[r, c] += <floatcomplexs_st> (D[ind, idx])
 
         elif p_opt == 0:
             for r in range(nr):

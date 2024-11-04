@@ -7,7 +7,7 @@ import numpy as np
 
 cimport numpy as cnp
 
-from sisl._core._dtypes cimport floats_st
+from sisl._core._dtypes cimport floats_st, ints_st
 
 from ._common import comply_gauge
 from ._matrix_phase import *
@@ -24,22 +24,23 @@ def _phase_dk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
     # This is the differentiated matrix with respect to k
     # See _phase.pyx, we are using exp(i k.R/r)
     #  i R
-    if gauge == 'cell':
-        iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        iRs = (1j * np.dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
-        p_opt = 1
 
-    elif gauge == 'atom':
+    if gauge == 'atom':
         M.finalize()
         rij = M.Rij()._csr._D
         iRs = (1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
         del rij
         p_opt = 0
 
+    elif gauge == 'cell':
+        iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
+        iRs = (1j * np.dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
+        p_opt = 1
+
     return p_opt, iRs
 
 
-def matrix_dk(gauge, M, const int idx, sc, cnp.ndarray[floats_st] k, dtype, format):
+def matrix_dk(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, iRs = _phase_dk(gauge, M, sc, k, dtype)
 
@@ -67,7 +68,7 @@ def matrix_dk_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
 
-def matrix_dk_nc_diag(gauge, M, const int idx, sc, cnp.ndarray[floats_st] k, dtype, format):
+def matrix_dk_nc_diag(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, iRs = _phase_dk(gauge, M, sc, k, dtype)
 

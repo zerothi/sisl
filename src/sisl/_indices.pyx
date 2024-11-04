@@ -14,6 +14,7 @@ from sisl._core._dtypes cimport floats_st, ints_st, ssize_st, type2dtype
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices_only(ints_st[::1] element, ints_st[::1] test_element):
     """ Return indices of all `test_element` in the element array.
 
@@ -66,6 +67,7 @@ def indices_only(ints_st[::1] element, ints_st[::1] test_element):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices(ints_st[::1] element, ints_st[::1] test_element, ints_st offset=0,
             both_sorted: bool = False):
     """ Return indices of all `test_element` in the search array. If not found the index will be ``-1``
@@ -142,6 +144,7 @@ def indices(ints_st[::1] element, ints_st[::1] test_element, ints_st offset=0,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices_in_cylinder(floats_st[:, ::1] dxyz, const floats_st R, const floats_st h):
     """ Indices for all coordinates that are within a cylinde radius `R` and height `h`
 
@@ -194,6 +197,7 @@ def indices_in_cylinder(floats_st[:, ::1] dxyz, const floats_st R, const floats_
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices_in_sphere(floats_st[:, ::1] dxyz, const floats_st R):
     """ Indices for all coordinates that are within a sphere of radius `R`
 
@@ -232,6 +236,7 @@ def indices_in_sphere(floats_st[:, ::1] dxyz, const floats_st R):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices_in_sphere_with_dist(floats_st[:, ::1] dxyz, const floats_st R):
     """ Indices and the distances for all coordinates that are within a sphere of radius `R`
 
@@ -290,6 +295,7 @@ def indices_in_sphere_with_dist(floats_st[:, ::1] dxyz, const floats_st R):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices_le(ndarray a, const floats_st V):
     """ Indices for all values in `a` that are ``<= V``
 
@@ -370,6 +376,7 @@ cdef ssize_st _indices_le2(const floats_st[:, ::1] a, const floats_st V, int[::1
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices_fabs_le(ndarray a, const floats_st V):
     """ Indices for all values in `a` that are ``| | <= V``
 
@@ -478,6 +485,7 @@ cdef ssize_st _indices_fabs_le2(const floats_st[:, ::1] a, const floats_st V, in
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def indices_gt_le(ndarray a, const floats_st V1, const floats_st V2):
     cdef ndarray[int32_t, mode='c'] IDX = np.empty([a.shape[0]], dtype=np.int32)
     cdef int[::1] idx = IDX
@@ -565,6 +573,7 @@ cdef inline bint in_1d(const ints_st[::1] array, const ints_st v) noexcept nogil
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def index_sorted(ints_st[::1] a, const ints_st v):
     """ Return index for the value v in a sorted array, otherwise return -1
 
@@ -630,6 +639,7 @@ cdef ssize_st _index_sorted(const ints_st[::1] a, const _ints_index_sorted_st v)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def is_sorted_unique(ints_st[::1] a):
     """ Return True/False if all elements of the sorted array `a` are unique
 
@@ -659,6 +669,7 @@ def is_sorted_unique(ints_st[::1] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.initializedcheck(False)
 def list_index_le(ints_st[::1] a, ints_st[::1] b):
     """ Find indices for each ``a`` such that the returned ``a[i] <= b[ret[i]]`` where `b` is assumed sorted
 

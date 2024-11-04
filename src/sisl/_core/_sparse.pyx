@@ -46,6 +46,7 @@ def fold_csr_matrix(ints_st[::1] ptr,
     cdef ndarray[ints_st, mode='c'] FOLD_ptr = np.empty([nr + 1], dtype=dtype)
     cdef ndarray[ints_st, mode='c'] FOLD_ncol = np.empty([nr], dtype=dtype)
     cdef ndarray[ints_st, mode='c'] FOLD_col = np.empty([inline_sum(ncol)], dtype=dtype)
+
     cdef ints_st[::1] fold_ptr = FOLD_ptr
     cdef ints_st[::1] fold_ncol = FOLD_ncol
     cdef ints_st[::1] fold_col = FOLD_col
@@ -61,21 +62,29 @@ def fold_csr_matrix(ints_st[::1] ptr,
     for r in range(nr):
 
         # Initialize the pointer arrays
-        if ncol[r] > 0:
-            fold_ncol[r] = 1
-            fold_col[fold_ptr[r]] = col[ptr[r]] % nr
-        else:
-            fold_ncol[r] = 0
+        # Even though large supercells has *many* double entries (after folding)
+        # this turns out to be faster than incrementally searching
+        # the array.
+        # This kind-of-makes sense.
+        # We can do:
+        #  1.
+        #    a) build a full list of folded items
+        #    b) find unique (and sorted) elements
+        # or
+        #  2.
+        #    a) incrementally add a value, only
+        #       if it does not exist.
+        # 1. creates a bigger temporary array, but only
+        #    adds unique values 1 time through numpy fast algorithm
+        # 2. searchs an array (of seemingly small arrays) ncol times
+        #    which can be quite heavy.
+        tmp = col[ptr[r]:ptr[r] + ncol[r]].copy()
+        for ind in range(ncol[r]):
+            tmp[ind] %= nr
 
-        for ind in range(ptr[r] + 1, ptr[r] + ncol[r]):
-            c = col[ind] % nr
-            if not in_1d(fold_col[fold_ptr[r]:fold_ptr[r] + fold_ncol[r]], c):
-                fold_col[fold_ptr[r] + fold_ncol[r]] = c
-                fold_ncol[r] += 1
-
-        # Sort indices (we should implement our own sorting algorithm)
-        tmp = np.sort(fold_col[fold_ptr[r]:fold_ptr[r] + fold_ncol[r]])
-        for ind in range(fold_ncol[r]):
+        tmp = np.unique(tmp)
+        fold_ncol[r] = tmp.shape[0]
+        for ind in range(tmp.shape[0]):
             fold_col[fold_ptr[r] + ind] = tmp[ind]
 
         fold_ptr[r + 1] = fold_ptr[r] + fold_ncol[r]
@@ -121,36 +130,24 @@ def fold_csr_matrix_nc(ints_st[::1] ptr,
     for r in range(nr):
         rr = r * 2
 
-        # Initialize the pointer arrays
-        if ncol[r] > 0:
-            c = (col[ptr[r]] % nr) * 2
-            fold_ncol[rr] = 2
-            fold_col[fold_ptr[rr]] = c
-            fold_col[fold_ptr[rr] + 1] = c + 1
-        else:
-            fold_ncol[rr] = 0
+        tmp = col[ptr[r]:ptr[r] + ncol[r]].copy()
+        for ind in range(ncol[r]):
+            tmp[ind] = (tmp[ind] % nr) * 2
 
-        for ind in range(ptr[r] + 1, ptr[r] + ncol[r]):
-            c = (col[ind] % nr) * 2
-            if not in_1d(fold_col[fold_ptr[rr]:fold_ptr[rr] + fold_ncol[rr]], c):
-                fold_col[fold_ptr[rr] + fold_ncol[rr]] = c
-                fold_col[fold_ptr[rr] + fold_ncol[rr] + 1] = c + 1
-                fold_ncol[rr] += 2
+        tmp = np.unique(tmp)
 
         # Duplicate pointers and counters for next row (off-diagonal)
-        fold_ptr[rr + 1] = fold_ptr[rr] + fold_ncol[rr]
+        fold_ncol[rr] = tmp.shape[0] * 2
         fold_ncol[rr + 1] = fold_ncol[rr]
+        fold_ptr[rr + 1] = fold_ptr[rr] + fold_ncol[rr]
+        fold_ptr[rr + 2] = fold_ptr[rr + 1] + fold_ncol[rr]
 
-        # Sort indices (we should implement our own sorting algorithm)
-        tmp = np.sort(fold_col[fold_ptr[rr]:fold_ptr[rr] + fold_ncol[rr]])
-        for ind in range(fold_ncol[rr]):
-            c = tmp[ind]
-            fold_col[fold_ptr[rr] + ind] = c
-            # Copy to next row as well
-            fold_col[fold_ptr[rr+1] + ind] = c
+        for ind in range(tmp.shape[0]):
+            fold_col[fold_ptr[rr] + ind * 2] = tmp[ind]
+            fold_col[fold_ptr[rr] + ind * 2 + 1] = tmp[ind] + 1
+            fold_col[fold_ptr[rr+1] + ind * 2] = tmp[ind]
+            fold_col[fold_ptr[rr+1] + ind * 2 + 1] = tmp[ind] + 1
 
-        # Increment the next row
-        fold_ptr[rr + 2] = fold_ptr[rr + 1] + fold_ncol[rr + 1]
         nz += fold_ncol[rr] * 2
 
     if nz > fold_col.shape[0]:

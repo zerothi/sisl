@@ -6,7 +6,7 @@ cimport cython
 import numpy as np
 cimport numpy as cnp
 
-from sisl._core._dtypes cimport floats_st
+from sisl._core._dtypes cimport floats_st, ints_st
 from ._common import comply_gauge
 from ._matrix_phase import *
 from ._matrix_phase_sc import *
@@ -41,7 +41,7 @@ def _phase_k(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
 
     return p_opt, phases
 
-def matrix_k(gauge, M, const int idx, sc, cnp.ndarray[floats_st] k, dtype, format):
+def matrix_k(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype)
     p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
 
@@ -97,7 +97,7 @@ def matrix_k_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     return _phase_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
 
-def matrix_k_nc_diag(gauge, M, const int idx, sc, cnp.ndarray[floats_st] k, dtype, format):
+def matrix_k_nc_diag(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
 
