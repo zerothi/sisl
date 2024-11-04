@@ -9,6 +9,7 @@ set_property(DIRECTORY
 
 foreach(source
     _bloch _phase
+    _matrix_utils
     _matrix_k _matrix_dk _matrix_ddk
     _matrix_phase _matrix_phase_sc _matrix_phase3
     )

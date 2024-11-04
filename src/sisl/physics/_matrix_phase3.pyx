@@ -23,6 +23,13 @@ from sisl._core._dtypes cimport (
     type2dtype,
 )
 
+from ._matrix_utils cimport (
+    _f_matrix_box_so,
+    _matrix_box_nc,
+    _matrix_box_so_cmplx,
+    _matrix_box_so_real,
+)
+
 __all__ = [
     "_phase3_csr",
     "_phase3_array",
@@ -167,6 +174,8 @@ def _phase3_csr_nc(ints_st[::1] ptr,
     cdef ints_st nr = ncol.shape[0]
     cdef ints_st r, rr, ind, s, c
     cdef ints_st s_idx
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
 
     with nogil:
         if p_opt == 0:
@@ -176,26 +185,28 @@ def _phase3_csr_nc(ints_st[::1] ptr,
                     c = (col[ind] % nr) * 2
                     s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
+                    d = &D[ind, 0]
+
                     ph = phases[ind, 0]
-                    Vx[v_ptr[rr] + s_idx] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vx[v_ptr[rr] + s_idx+1] += ph * v12
-                    Vx[v_ptr[rr+1] + s_idx] += ph * v12.conjugate()
-                    Vx[v_ptr[rr+1] + s_idx+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vx[v_ptr[rr] + s_idx] += M[0]
+                    Vx[v_ptr[rr] + s_idx+1] += M[1]
+                    Vx[v_ptr[rr+1] + s_idx] += M[2]
+                    Vx[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[ind, 1]
-                    Vy[v_ptr[rr] + s_idx] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vy[v_ptr[rr] + s_idx+1] += ph * v12
-                    Vy[v_ptr[rr+1] + s_idx] += ph * v12.conjugate()
-                    Vy[v_ptr[rr+1] + s_idx+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vy[v_ptr[rr] + s_idx] += M[0]
+                    Vy[v_ptr[rr] + s_idx+1] += M[1]
+                    Vy[v_ptr[rr+1] + s_idx] += M[2]
+                    Vy[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[ind, 2]
-                    Vz[v_ptr[rr] + s_idx] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vz[v_ptr[rr] + s_idx+1] += ph * v12
-                    Vz[v_ptr[rr+1] + s_idx] += ph * v12.conjugate()
-                    Vz[v_ptr[rr+1] + s_idx+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vz[v_ptr[rr] + s_idx] += M[0]
+                    Vz[v_ptr[rr] + s_idx+1] += M[1]
+                    Vz[v_ptr[rr+1] + s_idx] += M[2]
+                    Vz[v_ptr[rr+1] + s_idx+1] += M[3]
 
         else:
             for r in range(nr):
@@ -206,27 +217,28 @@ def _phase3_csr_nc(ints_st[::1] ptr,
 
                     s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
+                    d = &D[ind, 0]
 
                     ph = phases[s, 0]
-                    Vx[v_ptr[rr] + s_idx] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vx[v_ptr[rr] + s_idx+1] += ph * v12
-                    Vx[v_ptr[rr+1] + s_idx] += ph * v12.conjugate()
-                    Vx[v_ptr[rr+1] + s_idx+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vx[v_ptr[rr] + s_idx] += M[0]
+                    Vx[v_ptr[rr] + s_idx+1] += M[1]
+                    Vx[v_ptr[rr+1] + s_idx] += M[2]
+                    Vx[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[s, 1]
-                    Vy[v_ptr[rr] + s_idx] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vy[v_ptr[rr] + s_idx+1] += ph * v12
-                    Vy[v_ptr[rr+1] + s_idx] += ph * v12.conjugate()
-                    Vy[v_ptr[rr+1] + s_idx+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vy[v_ptr[rr] + s_idx] += M[0]
+                    Vy[v_ptr[rr] + s_idx+1] += M[1]
+                    Vy[v_ptr[rr+1] + s_idx] += M[2]
+                    Vy[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[s, 2]
-                    Vz[v_ptr[rr] + s_idx] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vz[v_ptr[rr] + s_idx+1] += ph * v12
-                    Vz[v_ptr[rr+1] + s_idx] += ph * v12.conjugate()
-                    Vz[v_ptr[rr+1] + s_idx+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vz[v_ptr[rr] + s_idx] += M[0]
+                    Vz[v_ptr[rr] + s_idx+1] += M[1]
+                    Vz[v_ptr[rr+1] + s_idx] += M[2]
+                    Vz[v_ptr[rr+1] + s_idx+1] += M[3]
 
     nr = nr * 2
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
@@ -250,9 +262,11 @@ def _phase3_array_nc(ints_st[::1] ptr,
     cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] Vy = np.zeros([nr * 2, nr * 2], dtype=dtype)
     cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] Vz = np.zeros([nr * 2, nr * 2], dtype=dtype)
 
-    cdef complexs_st ph, vv
+    cdef complexs_st ph
     cdef ints_st r, rr, ind, s, c
     cdef ints_st s_idx
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
 
     with nogil:
         if p_opt == 0:
@@ -261,26 +275,28 @@ def _phase3_array_nc(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = (col[ind] % nr) * 2
 
+                    d = &D[ind, 0]
+
                     ph = phases[ind, 0]
-                    Vx[rr, c] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vx[rr, c+1] += ph * v12
-                    Vx[rr+1, c] += ph * v12.conjugate()
-                    Vx[rr+1, c+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vx[rr, c] += M[0]
+                    Vx[rr, c+1] += M[1]
+                    Vx[rr+1, c] += M[2]
+                    Vx[rr+1, c+1] += M[3]
 
                     ph = phases[ind, 1]
-                    Vy[rr, c] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vy[rr, c+1] += ph * v12
-                    Vy[rr+1, c] += ph * v12.conjugate()
-                    Vy[rr+1, c+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vy[rr, c] += M[0]
+                    Vy[rr, c+1] += M[1]
+                    Vy[rr+1, c] += M[2]
+                    Vy[rr+1, c+1] += M[3]
 
                     ph = phases[ind, 2]
-                    Vz[rr, c] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vz[rr, c+1] += ph * v12
-                    Vz[rr+1, c] += ph * v12.conjugate()
-                    Vz[rr+1, c+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vz[rr, c] += M[0]
+                    Vz[rr, c+1] += M[1]
+                    Vz[rr+1, c] += M[2]
+                    Vz[rr+1, c+1] += M[3]
 
         else:
             for r in range(nr):
@@ -289,26 +305,28 @@ def _phase3_array_nc(ints_st[::1] ptr,
                     c = (col[ind] % nr) * 2
                     s = col[ind] / nr
 
+                    d = &D[ind, 0]
+
                     ph = phases[s, 0]
-                    Vx[rr, c] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vx[rr, c+1] += ph * v12
-                    Vx[rr+1, c] += ph * v12.conjugate()
-                    Vx[rr+1, c+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vx[rr, c] += M[0]
+                    Vx[rr, c+1] += M[1]
+                    Vx[rr+1, c] += M[2]
+                    Vx[rr+1, c+1] += M[3]
 
                     ph = phases[s, 1]
-                    Vy[rr, c] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vy[rr, c+1] += ph * v12
-                    Vy[rr+1, c] += ph * v12.conjugate()
-                    Vy[rr+1, c+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vy[rr, c] += M[0]
+                    Vy[rr, c+1] += M[1]
+                    Vy[rr+1, c] += M[2]
+                    Vy[rr+1, c+1] += M[3]
 
                     ph = phases[s, 2]
-                    Vz[rr, c] += ph * D[ind, 0]
-                    v12 = (D[ind, 2] + 1j * D[ind, 3])
-                    Vz[rr, c+1] += ph * v12
-                    Vz[rr+1, c] += ph * v12.conjugate()
-                    Vz[rr+1, c+1] += ph * D[ind, 1]
+                    _matrix_box_nc(d, ph, M)
+                    Vz[rr, c] += M[0]
+                    Vz[rr, c+1] += M[1]
+                    Vz[rr+1, c] += M[2]
+                    Vz[rr+1, c+1] += M[3]
 
     return Vx, Vy, Vz
 
@@ -325,8 +343,7 @@ def _phase3_array_nc(ints_st[::1] ptr,
 def _phase3_csr_so(ints_st[::1] ptr,
                    ints_st[::1] ncol,
                    ints_st[::1] col,
-                   # complexs_st requires only 4 indices...
-                   floats_st[:, ::1] D,
+                   numerics_st[:, ::1] D,
                    complexs_st[:, ::1] phases,
                    const int p_opt):
 
@@ -340,12 +357,20 @@ def _phase3_csr_so(ints_st[::1] ptr,
     cdef cnp.ndarray[complexs_st, mode='c'] Vx = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef cnp.ndarray[complexs_st, mode='c'] Vy = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef cnp.ndarray[complexs_st, mode='c'] Vz = np.zeros([v_col.shape[0]], dtype=dtype)
-    cdef complexs_st ph, vv
+    cdef complexs_st ph
 
     # Local columns (not in NC form)
     cdef ints_st nr = ncol.shape[0]
     cdef ints_st r, rr, ind, s, c
     cdef ints_st s_idx
+    cdef _f_matrix_box_so func
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_so_cmplx
+    else:
+        func = _matrix_box_so_real
 
     with nogil:
         if p_opt == 0:
@@ -355,35 +380,28 @@ def _phase3_csr_so(ints_st[::1] ptr,
                     c = (col[ind] % nr) * 2
                     s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
+                    d = &D[ind, 0]
+
                     ph = phases[ind, 0]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    Vx[v_ptr[rr] + s_idx] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    Vx[v_ptr[rr] + s_idx+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    Vx[v_ptr[rr+1] + s_idx] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    Vx[v_ptr[rr+1] + s_idx+1] += ph * vv
+                    func(d, ph, M)
+                    Vx[v_ptr[rr] + s_idx] += M[0]
+                    Vx[v_ptr[rr] + s_idx+1] += M[1]
+                    Vx[v_ptr[rr+1] + s_idx] += M[2]
+                    Vx[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[ind, 1]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    Vy[v_ptr[rr] + s_idx] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    Vy[v_ptr[rr] + s_idx+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    Vy[v_ptr[rr+1] + s_idx] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    Vy[v_ptr[rr+1] + s_idx+1] += ph * vv
+                    func(d, ph, M)
+                    Vy[v_ptr[rr] + s_idx] += M[0]
+                    Vy[v_ptr[rr] + s_idx+1] += M[1]
+                    Vy[v_ptr[rr+1] + s_idx] += M[2]
+                    Vy[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[ind, 2]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    Vz[v_ptr[rr] + s_idx] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    Vz[v_ptr[rr] + s_idx+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    Vz[v_ptr[rr+1] + s_idx] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    Vz[v_ptr[rr+1] + s_idx+1] += ph * vv
+                    func(d, ph, M)
+                    Vz[v_ptr[rr] + s_idx] += M[0]
+                    Vz[v_ptr[rr] + s_idx+1] += M[1]
+                    Vz[v_ptr[rr+1] + s_idx] += M[2]
+                    Vz[v_ptr[rr+1] + s_idx+1] += M[3]
 
         else:
             for r in range(nr):
@@ -394,35 +412,28 @@ def _phase3_csr_so(ints_st[::1] ptr,
 
                     s_idx = _index_sorted(v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]], c)
 
+                    d = &D[ind, 0]
+
                     ph = phases[s, 0]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    Vx[v_ptr[rr] + s_idx] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    Vx[v_ptr[rr] + s_idx+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    Vx[v_ptr[rr+1] + s_idx] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    Vx[v_ptr[rr+1] + s_idx+1] += ph * vv
+                    func(d, ph, M)
+                    Vx[v_ptr[rr] + s_idx] += M[0]
+                    Vx[v_ptr[rr] + s_idx+1] += M[1]
+                    Vx[v_ptr[rr+1] + s_idx] += M[2]
+                    Vx[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[s, 1]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    Vy[v_ptr[rr] + s_idx] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    Vy[v_ptr[rr] + s_idx+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    Vy[v_ptr[rr+1] + s_idx] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    Vy[v_ptr[rr+1] + s_idx+1] += ph * vv
+                    func(d, ph, M)
+                    Vy[v_ptr[rr] + s_idx] += M[0]
+                    Vy[v_ptr[rr] + s_idx+1] += M[1]
+                    Vy[v_ptr[rr+1] + s_idx] += M[2]
+                    Vy[v_ptr[rr+1] + s_idx+1] += M[3]
 
                     ph = phases[s, 2]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    Vz[v_ptr[rr] + s_idx] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    Vz[v_ptr[rr] + s_idx+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    Vz[v_ptr[rr+1] + s_idx] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    Vz[v_ptr[rr+1] + s_idx+1] += ph * vv
+                    func(d, ph, M)
+                    Vz[v_ptr[rr] + s_idx] += M[0]
+                    Vz[v_ptr[rr] + s_idx+1] += M[1]
+                    Vz[v_ptr[rr+1] + s_idx] += M[2]
+                    Vz[v_ptr[rr+1] + s_idx+1] += M[3]
 
     nr = nr * 2
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
@@ -435,8 +446,7 @@ def _phase3_csr_so(ints_st[::1] ptr,
 def _phase3_array_so(ints_st[::1] ptr,
                      ints_st[::1] ncol,
                      ints_st[::1] col,
-                     # complexs_st requires only 4 indices...
-                     floats_st[:, ::1] D,
+                     numerics_st[:, ::1] D,
                      complexs_st[:, ::1] phases,
                      const int p_opt):
 
@@ -450,9 +460,17 @@ def _phase3_array_so(ints_st[::1] ptr,
     cdef complexs_st[:, ::1] vy = Vy
     cdef complexs_st[:, ::1] vz = Vz
 
-    cdef complexs_st ph, vv
+    cdef complexs_st ph
     cdef ints_st r, rr, ind, s, c
     cdef ints_st s_idx
+    cdef _f_matrix_box_so func
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_so_cmplx
+    else:
+        func = _matrix_box_so_real
 
     with nogil:
         if p_opt == 0:
@@ -461,35 +479,28 @@ def _phase3_array_so(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = (col[ind] % nr) * 2
 
+                    d = &D[ind, 0]
+
                     ph = phases[ind, 0]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    vx[rr, c] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    vx[rr, c+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    vx[rr+1, c] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    vx[rr+1, c+1] += ph * vv
+                    func(d, ph, M)
+                    vx[rr, c] += M[0]
+                    vx[rr, c+1] += M[1]
+                    vx[rr+1, c] += M[2]
+                    vx[rr+1, c+1] += M[3]
 
                     ph = phases[ind, 1]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    vy[rr, c] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    vy[rr, c+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    vy[rr+1, c] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    vy[rr+1, c+1] += ph * vv
+                    func(d, ph, M)
+                    vy[rr, c] += M[0]
+                    vy[rr, c+1] += M[1]
+                    vy[rr+1, c] += M[2]
+                    vy[rr+1, c+1] += M[3]
 
                     ph = phases[ind, 2]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    vz[rr, c] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    vz[rr, c+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    vz[rr+1, c] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    vz[rr+1, c+1] += ph * vv
+                    func(d, ph, M)
+                    vz[rr, c] += M[0]
+                    vz[rr, c+1] += M[1]
+                    vz[rr+1, c] += M[2]
+                    vz[rr+1, c+1] += M[3]
 
         else:
             for r in range(nr):
@@ -498,34 +509,27 @@ def _phase3_array_so(ints_st[::1] ptr,
                     c = (col[ind] % nr) * 2
                     s = col[ind] / nr
 
+                    d = &D[ind, 0]
+
                     ph = phases[s, 0]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    vx[rr, c] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    vx[rr, c+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    vx[rr+1, c] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    vx[rr+1, c+1] += ph * vv
+                    func(d, ph, M)
+                    vx[rr, c] += M[0]
+                    vx[rr, c+1] += M[1]
+                    vx[rr+1, c] += M[2]
+                    vx[rr+1, c+1] += M[3]
 
                     ph = phases[s, 1]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    vy[rr, c] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    vy[rr, c+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    vy[rr+1, c] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    vy[rr+1, c+1] += ph * vv
+                    func(d, ph, M)
+                    vy[rr, c] += M[0]
+                    vy[rr, c+1] += M[1]
+                    vy[rr+1, c] += M[2]
+                    vy[rr+1, c+1] += M[3]
 
                     ph = phases[s, 2]
-                    vv = (D[ind, 0] + 1j * D[ind, 4])
-                    vz[rr, c] += ph * vv
-                    vv = (D[ind, 2] + 1j * D[ind, 3])
-                    vz[rr, c+1] += ph * vv
-                    vv = (D[ind, 6] + 1j * D[ind, 7])
-                    vz[rr+1, c] += ph * vv
-                    vv = (D[ind, 1] + 1j * D[ind, 5])
-                    vz[rr+1, c+1] += ph * vv
+                    func(d, ph, M)
+                    vz[rr, c] += M[0]
+                    vz[rr, c+1] += M[1]
+                    vz[rr+1, c] += M[2]
+                    vz[rr+1, c+1] += M[3]
 
     return Vx, Vy, Vz

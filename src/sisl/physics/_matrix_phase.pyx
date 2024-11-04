@@ -27,6 +27,13 @@ from sisl._core._dtypes cimport (
     type2dtype,
 )
 
+from ._matrix_utils cimport (
+    _f_matrix_box_so,
+    _matrix_box_nc,
+    _matrix_box_so_cmplx,
+    _matrix_box_so_real,
+)
+
 __all__ = [
     "_phase_csr",
     "_phase_array",
@@ -317,7 +324,9 @@ def _phase_csr_nc(ints_st[::1] ptr,
     cdef ints_st nr = ncol.shape[0]
     cdef ints_st r, rr, ind, s, s_idx, c
 
-    cdef complexs_st ph, d
+    cdef complexs_st ph
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
 
     with nogil:
         if p_opt == -1:
@@ -330,9 +339,9 @@ def _phase_csr_nc(ints_st[::1] ptr,
                     s_idx = _index_sorted(tmp, c)
 
                     v[v_ptr[rr] + s_idx] += D[ind, 0]
-                    d = (D[ind, 2] + 1j * D[ind, 3])
-                    v[v_ptr[rr] + s_idx+1] += d
-                    v[v_ptr[rr+1] + s_idx] += d.conjugate()
+                    ph = (D[ind, 2] + 1j * D[ind, 3])
+                    v[v_ptr[rr] + s_idx+1] += ph
+                    v[v_ptr[rr+1] + s_idx] += ph.conjugate()
                     v[v_ptr[rr+1] + s_idx+1] += D[ind, 1]
 
         elif p_opt == 0:
@@ -345,11 +354,12 @@ def _phase_csr_nc(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    v[v_ptr[rr] + s_idx] += (D[ind, 0] * ph)
-                    v[v_ptr[rr] + s_idx+1] += ((D[ind, 2] + 1j * D[ind, 3]) *
-                    ph)
-                    v[v_ptr[rr+1] + s_idx] += ((D[ind, 2] + 1j * D[ind, 3]).conjugate() * ph)
-                    v[v_ptr[rr+1] + s_idx+1] += (D[ind, 1] * ph)
+                    d = &D[ind, 0]
+                    _matrix_box_nc(d, ph, M)
+                    v[v_ptr[rr] + s_idx] += M[0]
+                    v[v_ptr[rr] + s_idx+1] += M[1]
+                    v[v_ptr[rr+1] + s_idx] += M[2]
+                    v[v_ptr[rr+1] + s_idx+1] += M[3]
 
         else:
             for r in range(nr):
@@ -362,12 +372,12 @@ def _phase_csr_nc(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    v[v_ptr[rr] + s_idx] += (D[ind, 0] * ph)
-                    v[v_ptr[rr] + s_idx+1] += ((D[ind, 2] + 1j * D[ind, 3]) *
-                    ph)
-                    v[v_ptr[rr+1] + s_idx] += ((D[ind, 2] + 1j * D[ind,
-                    3]).conjugate() * ph)
-                    v[v_ptr[rr+1] + s_idx+1] += (D[ind, 1] * ph)
+                    d = &D[ind, 0]
+                    _matrix_box_nc(d, ph, M)
+                    v[v_ptr[rr] + s_idx] += M[0]
+                    v[v_ptr[rr] + s_idx+1] += M[1]
+                    v[v_ptr[rr+1] + s_idx] += M[2]
+                    v[v_ptr[rr+1] + s_idx+1] += M[3]
 
     nr = nr * 2
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -394,7 +404,9 @@ def _phase_array_nc(ints_st[::1] ptr,
     # Local columns
     cdef ints_st r, rr, ind, s, c
 
-    cdef complexs_st ph, d
+    cdef complexs_st ph
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
 
     with nogil:
         if p_opt == -1:
@@ -404,9 +416,9 @@ def _phase_array_nc(ints_st[::1] ptr,
                     c = (col[ind] % nr) * 2
 
                     v[rr, c] += <complexs_st> D[ind, 0]
-                    d = <complexs_st> (D[ind, 2] + 1j * D[ind, 3])
-                    v[rr, c + 1] += d
-                    v[rr + 1, c] += d.conjugate()
+                    ph = <complexs_st> (D[ind, 2] + 1j * D[ind, 3])
+                    v[rr, c + 1] += ph
+                    v[rr + 1, c] += ph.conjugate()
                     v[rr + 1, c + 1] += <complexs_st> D[ind, 1]
 
         elif p_opt == 0:
@@ -416,11 +428,12 @@ def _phase_array_nc(ints_st[::1] ptr,
                     c = (col[ind] % nr) * 2
                     ph = phases[ind]
 
-                    v[rr, c] += <complexs_st> (D[ind, 0] * ph)
-                    v[rr, c + 1] += <complexs_st> ((D[ind, 2] + 1j * D[ind, 3]) * ph)
-                    v[rr + 1, c] += <complexs_st> ((D[ind, 2] + 1j * D[ind, 3]).conjugate() *
-                    ph)
-                    v[rr + 1, c + 1] += <complexs_st> (D[ind, 1] * ph)
+                    d = &D[ind, 0]
+                    _matrix_box_nc(d, ph, M)
+                    v[rr, c] += M[0]
+                    v[rr, c + 1] += M[1]
+                    v[rr + 1, c] += M[2]
+                    v[rr + 1, c + 1] += M[3]
 
         else:
             for r in range(nr):
@@ -430,11 +443,12 @@ def _phase_array_nc(ints_st[::1] ptr,
                     s = col[ind] / nr
                     ph = phases[s]
 
-                    v[rr, c] += <complexs_st> (D[ind, 0] * ph)
-                    v[rr, c + 1] += <complexs_st> ((D[ind, 2] + 1j * D[ind, 3]) * ph)
-                    v[rr + 1, c] += <complexs_st> ((D[ind, 2] + 1j * D[ind, 3]).conjugate() *
-                    ph)
-                    v[rr + 1, c + 1] += <complexs_st> (D[ind, 1] * ph)
+                    d = &D[ind, 0]
+                    _matrix_box_nc(d, ph, M)
+                    v[rr, c] += M[0]
+                    v[rr, c + 1] += M[1]
+                    v[rr + 1, c] += M[2]
+                    v[rr + 1, c + 1] += M[3]
 
     return V
 
@@ -447,8 +461,7 @@ def _phase_array_nc(ints_st[::1] ptr,
 def _phase_csr_so(ints_st[::1] ptr,
                   ints_st[::1] ncol,
                   ints_st[::1] col,
-                  # complexs_st requires only 4 indices...
-                  floats_st[:, ::1] D,
+                  numerics_st[:, ::1] D,
                   complexs_st[::1] phases,
                   const int p_opt):
 
@@ -468,6 +481,14 @@ def _phase_csr_so(ints_st[::1] ptr,
     cdef ints_st r, rr, ind, s, s_idx, c
 
     cdef complexs_st ph
+    cdef _f_matrix_box_so func
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_so_cmplx
+    else:
+        func = _matrix_box_so_real
 
     with nogil:
         if p_opt == -1:
@@ -494,10 +515,12 @@ def _phase_csr_so(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    v[v_ptr[rr] + s_idx] += ((D[ind, 0] + 1j * D[ind, 4]) * ph)
-                    v[v_ptr[rr] + s_idx+1] += ((D[ind, 2] + 1j * D[ind, 3]) * ph)
-                    v[v_ptr[rr+1] + s_idx] += ((D[ind, 6] + 1j * D[ind, 7]) * ph)
-                    v[v_ptr[rr+1] + s_idx+1] += ((D[ind, 1] + 1j * D[ind, 5]) * ph)
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[v_ptr[rr] + s_idx] += M[0]
+                    v[v_ptr[rr] + s_idx+1] += M[1]
+                    v[v_ptr[rr+1] + s_idx] += M[2]
+                    v[v_ptr[rr+1] + s_idx+1] += M[3]
 
         else:
             for r in range(nr):
@@ -510,10 +533,12 @@ def _phase_csr_so(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    v[v_ptr[rr] + s_idx] += ((D[ind, 0] + 1j * D[ind, 4]) * ph)
-                    v[v_ptr[rr] + s_idx+1] += ((D[ind, 2] + 1j * D[ind, 3]) * ph)
-                    v[v_ptr[rr+1] + s_idx] += ((D[ind, 6] + 1j * D[ind, 7]) * ph)
-                    v[v_ptr[rr+1] + s_idx+1] += ((D[ind, 1] + 1j * D[ind, 5]) * ph)
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[v_ptr[rr] + s_idx] += M[0]
+                    v[v_ptr[rr] + s_idx+1] += M[1]
+                    v[v_ptr[rr+1] + s_idx] += M[2]
+                    v[v_ptr[rr+1] + s_idx+1] += M[3]
 
     nr = nr * 2
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -526,8 +551,7 @@ def _phase_csr_so(ints_st[::1] ptr,
 def _phase_array_so(ints_st[::1] ptr,
                     ints_st[::1] ncol,
                     ints_st[::1] col,
-                    # complexs_st requires only 4 indices...
-                    floats_st[:, ::1] D,
+                    numerics_st[:, ::1] D,
                     complexs_st[::1] phases,
                     const int p_opt):
 
@@ -541,6 +565,14 @@ def _phase_array_so(ints_st[::1] ptr,
     cdef ints_st r, rr, s, c, ind
 
     cdef complexs_st ph
+    cdef _f_matrix_box_so func
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_so_cmplx
+    else:
+        func = _matrix_box_so_real
 
     with nogil:
         if p_opt == -1:
@@ -561,10 +593,12 @@ def _phase_array_so(ints_st[::1] ptr,
                     c = (col[ind] % nr) * 2
                     ph = phases[ind]
 
-                    v[rr, c] += ((D[ind, 0] + 1j * D[ind, 4]) * ph)
-                    v[rr, c + 1] += ((D[ind, 2] + 1j * D[ind, 3]) * ph)
-                    v[rr + 1, c] += ((D[ind, 6] + 1j * D[ind, 7]) * ph)
-                    v[rr + 1, c + 1] += ((D[ind, 1] + 1j * D[ind, 5]) * ph)
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[rr, c] += M[0]
+                    v[rr, c + 1] += M[1]
+                    v[rr + 1, c] += M[2]
+                    v[rr + 1, c + 1] += M[3]
 
         else:
             for r in range(nr):
@@ -574,9 +608,11 @@ def _phase_array_so(ints_st[::1] ptr,
                     s = col[ind] / nr
                     ph = phases[s]
 
-                    v[rr, c] += ((D[ind, 0] + 1j * D[ind, 4]) * ph)
-                    v[rr, c + 1] += ((D[ind, 2] + 1j * D[ind, 3]) * ph)
-                    v[rr + 1, c] += ((D[ind, 6] + 1j * D[ind, 7]) * ph)
-                    v[rr + 1, c + 1] += ((D[ind, 1] + 1j * D[ind, 5]) * ph)
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[rr, c] += M[0]
+                    v[rr, c + 1] += M[1]
+                    v[rr + 1, c] += M[2]
+                    v[rr + 1, c + 1] += M[3]
 
     return V

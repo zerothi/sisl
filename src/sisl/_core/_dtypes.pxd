@@ -34,9 +34,11 @@ ctypedef fused floats_st:
     float
     double
 
+
 ctypedef fused complexs_st:
     float complex
     double complex
+
 
 ctypedef fused floatcomplexs_st:
     float
@@ -52,6 +54,13 @@ ctypedef fused floatcomplexs2_st:
     float complex
     double complex
 
+
+# We need this fused data-type to omit complex data-types
+ctypedef fused reals_st:
+    int
+    long
+    float
+    double
 
 ctypedef fused numerics_st:
     int
