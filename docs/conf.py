@@ -380,7 +380,7 @@ html_use_index = True
 # Redirects of moved pages
 rediraffe_redirects = {
     "contribute.rst": "dev/index.rst",
-    "visualization/viz_module/index.rst": "visualization/viz/index.rst",
+    "visualization/viz_module/index.rst": "visualization/index.rst",
 }
 
 latex_elements = {

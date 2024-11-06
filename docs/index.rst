@@ -79,7 +79,7 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
    :caption: User Guide
 
    tutorials/index
-   visualization/viz/index
+   visualization/index
    scripts/index
 
 .. toctree::
