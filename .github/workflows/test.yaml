@@ -64,19 +64,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.9', '3.12']
+        python-version: ['3.9', '3.13']
         full-test: [true, false]
         minimal-dep: [true, false]
-        os: [ubuntu-latest, macos-12, macos-14]
+        os: [ubuntu-latest, macos-13, macos-latest]
         exclude:
-          # only full test suite on 3.12
-          - python-version: '3.12'
+          # only full test suite on 3.13
+          - python-version: '3.13'
             full-test: false
-          # no minimal dependency on 3.12
-          - python-version: '3.12'
+          # no minimal dependency on 3.13
+          - python-version: '3.13'
             minimal-dep: true
           # minimal dependency on ARM does not make sense (wheels not present)
-          - os: macos-14
+          - os: macos-latest
             minimal-dep: true
           # only run full test suite for minimal-dependency checks
           - full-test: false
