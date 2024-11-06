@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=c3662837"></script>
+      <script src="../../../_static/documentation_options.js?v=64af3cb3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,7 +69,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/index.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
@@ -121,6 +121,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
@@ -131,6 +132,7 @@
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">basename</span><span class="p">,</span> <span class="n">splitext</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span><span class="p">,</span> <span class="n">indent</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">MethodType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">sisl._environ</span> <span class="kn">import</span> <span class="n">get_environ_variable</span>
@@ -787,15 +789,15 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_file</span><span class="si">!s}</span><span class="s2">, base=</span><span class="si">{</span><span class="n">d</span><span class="si">!s}</span><span class="s2">)&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">sile_fh_open</span><span class="p">(</span><span class="n">from_closed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">sile_fh_open</span><span class="p">(</span><span class="n">from_closed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">reset</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseSile</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method decorator for objects to directly implement opening of the</span>
 <span class="sd">    file-handle upon entry (if it isn&#39;t already).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    from_closed : bool, optional</span>
+<span class="sd">    from_closed :</span>
 <span class="sd">       ensure the wrapped function *must* open the file, otherwise it will seek to 0.</span>
-<span class="sd">    reset : callable, optional</span>
+<span class="sd">    reset :</span>
 <span class="sd">       in case the file gets opened a new, then the `reset` method will be called as</span>
 <span class="sd">       ``reset(self)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -811,17 +813,10 @@
 
             <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">pre_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-                <span class="c1"># only call reset if the file should be reset</span>
-                <span class="n">_reset</span> <span class="o">=</span> <span class="n">reset</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
-
-                    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                        <span class="k">pass</span>
-
                 <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                    <span class="c1"># REMARK this requires the __enter__ to seek(0)</span>
-                    <span class="c1"># for the file, and currently it does</span>
-                    <span class="n">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                    <span class="c1"># This happens when the file seeks to 0,</span>
+                    <span class="c1"># so basically the same as re-opening the file</span>
+                    <span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">pre_open</span>
@@ -904,96 +899,12 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="n">_Info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">class</span> <span class="nc">_Info</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The actual .info object that will attached to the instance.</span>
-
-<span class="sd">        As of now this is problematic to document.</span>
-<span class="sd">        We should figure out a way to do that.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
-            <span class="c1"># attach this info instance to the instance</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="n">instance</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="c1"># add the properties</span>
-            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">_info_attributes_</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="n">prop</span> <span class="o">=</span> <span class="n">InfoAttr</span><span class="p">(</span><span class="o">**</span><span class="n">prop</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_property</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
-
-            <span class="c1"># Patch the readline of the instance</span>
-            <span class="k">def</span> <span class="nf">patch</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
-                <span class="c1"># grab the function to be patched</span>
-                <span class="n">properties</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">_properties</span>
-                <span class="n">func</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">_instance</span><span class="o">.</span><span class="n">readline</span>
-
-                <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-                <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
-                        <span class="n">prop</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">_instance</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">line</span>
-
-                <span class="k">return</span> <span class="n">readline</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span><span class="o">.</span><span class="n">readline</span> <span class="o">=</span> <span class="n">patch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">add_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">:</span> <span class="n">InfoAttr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Add a new property to be reachable from the .info&quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">attr</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Return a string of the contained attributes, with the values they currently contain&quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">documentation</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">])</span>
-
-        <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Overwrite the attribute retrieval to be able to fetch the actual values from the information&quot;&quot;&quot;</span>
-            <span class="n">inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span>
-            <span class="k">if</span> <span class="n">attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inst</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.info.</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> does not exist, did you mistype?&quot;</span>
-                <span class="p">)</span>
-
-            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-            <span class="n">prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">found</span><span class="p">:</span>
-                <span class="c1"># only when hitting the new line will this change...</span>
-                <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
-
-            <span class="c1"># we need to parse the rest of the file</span>
-            <span class="c1"># This is not ideal, but...</span>
-            <span class="n">loc</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">loc</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="k">with</span> <span class="n">inst</span><span class="p">:</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">found</span> <span class="ow">or</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">loc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">inst</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">prop</span><span class="o">.</span><span class="n">found</span><span class="p">:</span>
-                <span class="n">prop</span><span class="o">.</span><span class="n">not_found</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
-
     <span class="k">class</span> <span class="nc">InfoAttr</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Holder for parsing lines and extracting information from text files</span>
 
 <span class="sd">        This consists of:</span>
 
-<span class="sd">        attr:</span>
+<span class="sd">        name:</span>
 <span class="sd">            the name of the attribute</span>
 <span class="sd">            This will be the `sile.info.&lt;name&gt;` access point.</span>
 <span class="sd">        searcher:</span>
@@ -1025,10 +936,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;attr&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
             <span class="s2">&quot;searcher&quot;</span><span class="p">,</span>
             <span class="s2">&quot;parser&quot;</span><span class="p">,</span>
             <span class="s2">&quot;updatable&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">,</span>
             <span class="s2">&quot;value&quot;</span><span class="p">,</span>
             <span class="s2">&quot;found&quot;</span><span class="p">,</span>
             <span class="s2">&quot;doc&quot;</span><span class="p">,</span>
@@ -1037,7 +949,7 @@
 
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">searcher</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">InfoAttr</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">],</span>
             <span class="n">parser</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
                 <span class="p">[</span><span class="n">InfoAttr</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">Match</span><span class="p">]],</span> <span class="n">Any</span>
@@ -1046,12 +958,16 @@
             <span class="n">updatable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">not_found</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">InfoAttr</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">not_found</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">InfoAttr</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">instance</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">attr</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">searcher</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">searcher</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">searcher</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">searcher</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">searcher</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">info</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">searcher</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">):</span>
 
@@ -1061,7 +977,7 @@
                     <span class="n">match</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
                         <span class="n">info</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">parser</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">)</span>
-                        <span class="c1"># print(f&quot;found {info.attr}={info.value} with {line}&quot;)</span>
+                        <span class="c1"># print(f&quot;found {info.name}={info.value} with {line}&quot;)</span>
                         <span class="n">info</span><span class="o">.</span><span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">return</span> <span class="kc">True</span>
 
@@ -1076,6 +992,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span> <span class="o">=</span> <span class="n">used_searcher</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">updatable</span> <span class="o">=</span> <span class="n">updatable</span>
+
+            <span class="c1"># Figure out if `self` is in the arguments of `default`</span>
+            <span class="c1"># If so, instance bind it, use MethodType</span>
+            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">default</span><span class="p">)</span> <span class="ow">and</span> <span class="n">instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;self&quot;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+                    <span class="c1"># Do a type-binding</span>
+                    <span class="n">default</span> <span class="o">=</span> <span class="n">MethodType</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+            <span class="c1"># Also set the actual value to the default one</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">found</span> <span class="o">=</span> <span class="n">found</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span>
@@ -1087,13 +1013,13 @@
 
                     <span class="k">def</span> <span class="nf">not_found</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="n">method</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Attribute </span><span class="si">{</span><span class="n">attr</span><span class="o">.</span><span class="n">attr</span><span class="si">}</span><span class="s2"> could not be found in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Attribute </span><span class="si">{</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> could not be found in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.&quot;</span>
                         <span class="p">)</span>
 
                 <span class="k">else</span><span class="p">:</span>
 
                     <span class="k">def</span> <span class="nf">not_found</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-                        <span class="n">method</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attribute </span><span class="si">{</span><span class="n">attr</span><span class="o">.</span><span class="n">attr</span><span class="si">}</span><span class="s2"> could not be found in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                        <span class="n">method</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attribute </span><span class="si">{</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> could not be found in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
                 <span class="k">return</span> <span class="n">not_found</span>
 
@@ -1125,9 +1051,13 @@
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
-                <span class="n">attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attr</span><span class="p">,</span>
+        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Reset the property to the default value&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
+
+        <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">searcher</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="p">,</span>
                 <span class="n">parser</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="p">,</span>
                 <span class="n">doc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">,</span>
@@ -1135,7 +1065,9 @@
                 <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                 <span class="n">found</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">found</span><span class="p">,</span>
                 <span class="n">not_found</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">not_found</span><span class="p">,</span>
+                <span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="k">return</span> <span class="n">obj</span>
 
         <span class="k">def</span> <span class="nf">documentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns a documentation string for this object&quot;&quot;&quot;</span>
@@ -1143,7 +1075,102 @@
                 <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">indent</span><span class="p">(</span><span class="n">dedent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">),</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">attr</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">]: r&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">doc</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">]: r&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">doc</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">class</span> <span class="nc">_Info</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The actual .info object that will attached to the instance.</span>
+
+<span class="sd">        As of now this is problematic to document.</span>
+<span class="sd">        We should figure out a way to do that.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+            <span class="c1"># attach this info instance to the instance</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="n">instance</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_searching</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1"># add the properties</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">_info_attributes_</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">prop</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">InfoAttr</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span> <span class="o">**</span><span class="n">prop</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+                    <span class="n">prop</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">InfoAttr</span><span class="p">(</span><span class="o">*</span><span class="n">prop</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_property</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+
+            <span class="c1"># Patch the readline of the instance</span>
+            <span class="k">def</span> <span class="nf">patch</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+                <span class="c1"># grab the function to be patched</span>
+                <span class="n">properties</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">_properties</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">_instance</span><span class="o">.</span><span class="n">readline</span>
+
+                <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+                        <span class="n">prop</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">_instance</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">line</span>
+
+                <span class="k">return</span> <span class="n">readline</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span><span class="o">.</span><span class="n">readline</span> <span class="o">=</span> <span class="n">patch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">add_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">:</span> <span class="n">InfoAttr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Add a new property to be reachable from the .info&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Add a new property to be reachable from the .info&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">:</span>
+                <span class="n">inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inst</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.info.</span><span class="si">{</span><span class="n">prop</span><span class="si">}</span><span class="s2"> does not exist, did you mistype?&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Return a string of the contained attributes, with the values they currently contain&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">documentation</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Overwrite the attribute retrieval to be able to fetch the actual values from the information&quot;&quot;&quot;</span>
+            <span class="n">inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span>
+            <span class="n">prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">found</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_searching</span><span class="p">:</span>
+                <span class="c1"># only when hitting the new line will this change...</span>
+                <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="c1"># we need to parse the rest of the file</span>
+            <span class="c1"># This is not ideal, but...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_searching</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">loc</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">with</span> <span class="n">inst</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">found</span> <span class="ow">or</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">loc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">inst</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">prop</span><span class="o">.</span><span class="n">found</span><span class="p">:</span>
+                <span class="n">prop</span><span class="o">.</span><span class="n">not_found</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_searching</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

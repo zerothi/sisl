@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=c3662837"></script>
+      <script src="../../../../_static/documentation_options.js?v=64af3cb3"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,7 +69,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/index.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
@@ -122,7 +122,7 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -145,7 +145,6 @@
 
 
 <span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
-<span class="n">_A</span> <span class="o">=</span> <span class="n">SileSiesta</span><span class="o">.</span><span class="n">InfoAttr</span>
 
 
 <span class="k">def</span> <span class="nf">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
@@ -159,7 +158,7 @@
 
 <span class="k">def</span> <span class="nf">_parse_spin</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse &#39;redata: Spin configuration *= &lt;value&gt;&#39;&quot;&quot;&quot;</span>
-    <span class="n">opt</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;spin-orbit&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;spin-orbit&quot;</span><span class="p">)</span>
@@ -220,6 +219,18 @@
     <span class="k">return</span> <span class="n">df</span>
 
 
+<span class="k">def</span> <span class="nf">_parse_in_dynamics</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines whether we are in the dynamics section or in the *Final* section.</span>
+
+<span class="sd">    Basically it returns ``not instance.info._in_final_analysis``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_in_final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis_tell</span>
+
+
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">stdoutSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Output file from Siesta</span>
@@ -228,35 +239,57 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_info_attributes_</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;na&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;^initatomlists: Number of atoms&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">]),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;na&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^initatomlists: Number of atoms&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">]),</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;no&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;^initatomlists: Number of atoms&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">]),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^initatomlists: Number of atoms&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">]),</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;completed&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;.*Job completed&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nspecies&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^redata: Number of Atomic Species&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;completed&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;.*Job completed&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;spin&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;^redata: Spin configuration&quot;</span><span class="p">,</span>
-            <span class="n">_parse_spin</span><span class="p">,</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^redata: Spin configuration&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="n">_parse_spin</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;_final_analysis&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;^siesta: Final energy&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;_has_forces_in_dynamics&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^siesta: Atomic forces&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="n">_parse_in_dynamics</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;_has_stress_in_dynamics&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^siesta: Stress tensor&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="n">_parse_in_dynamics</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;_in_final_analysis_tell&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^siesta: Final energy&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="n">instance</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">(),</span>
+            <span class="n">default</span><span class="o">=</span><span class="mf">1e12</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;_in_final_analysis&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="n">_in_final</span><span class="p">,</span>
+            <span class="n">found</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">]</span>
 
@@ -445,7 +478,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        skip_input :</span>
 <span class="sd">            the input geometry may be contained as a print-out.</span>
-<span class="sd">            This is not part of an MD calculation, and hence is per</span>
+<span class="sd">            This is not part of an MD calculation, and hence is by</span>
 <span class="sd">            default not returned.</span>
 
 <span class="sd">        Returns</span>
@@ -460,9 +493,7 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Wrapper to return None&quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
-        <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">line</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;outcoor&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;coordinates&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                 <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_outcoor</span>
                 <span class="k">break</span>
@@ -477,14 +508,20 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_force">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess_tuple</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">))</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">max</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;siesta&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">total</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="nb">max</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">key</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;siesta&quot;</span><span class="p">,</span> <span class="s2">&quot;ts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;siesta&quot;</span><span class="p">,</span>
+        <span class="n">skip_final</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the forces from the Siesta output file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        total: bool, optional</span>
+<span class="sd">        total:</span>
 <span class="sd">            return the total forces instead of the atomic forces.</span>
-<span class="sd">        max: bool, optional</span>
+<span class="sd">        max:</span>
 <span class="sd">            whether only the maximum atomic force should be returned for each step.</span>
 
 <span class="sd">            Setting it to `True` is equivalent to `max(outSile.read_force())` in case atomic forces</span>
@@ -492,10 +529,17 @@
 
 <span class="sd">            Note that this is not the same as doing `max(outSile.read_force(total=True))` since</span>
 <span class="sd">            the forces returned in that case are averages on each axis.</span>
-<span class="sd">        key: {&quot;siesta&quot;, &quot;ts&quot;}</span>
+<span class="sd">        key:</span>
 <span class="sd">            Specifies the indicator string for the forces that are to be read.</span>
 <span class="sd">            The function will look for a line containing ``f&#39;{key}: Atomic forces&#39;``</span>
 <span class="sd">            to start reading forces.</span>
+<span class="sd">        skip_final:</span>
+<span class="sd">            the final output of the forces is duplicated when the *final*</span>
+<span class="sd">            output is written.</span>
+<span class="sd">            By default, this method will return the final forces, but</span>
+<span class="sd">            only **if** no other forces are found.</span>
+<span class="sd">            If forces from dynamics are found, then the final forces</span>
+<span class="sd">            will not be returned, unless explicitly requested through this flag.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -515,35 +559,38 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
+        <span class="k">if</span> <span class="n">skip_final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># If we have final forces, default to skip the</span>
+            <span class="c1"># final forces when we have forces in the dynamics</span>
+            <span class="c1"># sections.</span>
+            <span class="n">skip_final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_has_forces_in_dynamics</span>
+
         <span class="c1"># Now read data</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;siesta:&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">skip_final</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis</span><span class="p">():</span>
             <span class="c1"># This is the final summary, we don&#39;t need to read it as it does not contain new information</span>
             <span class="c1"># and also it make break things since max forces are not written there</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">F</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># First, we encounter the atomic forces</span>
-        <span class="k">while</span> <span class="s2">&quot;---&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">line</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;---&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">break</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">total</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">):</span>
                 <span class="n">F</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]])</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="k">break</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">F</span><span class="p">:</span>
             <span class="n">F</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="c1"># Parse total forces if requested</span>
-        <span class="k">if</span> <span class="n">total</span> <span class="ow">and</span> <span class="n">line</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">total</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line</span> <span class="o">:=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()):</span>
             <span class="n">F</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]])</span>
 
         <span class="c1"># And after that we can read the max force</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">max</span> <span class="ow">and</span> <span class="n">line</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">max</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()):</span>
             <span class="n">maxF</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
             <span class="c1"># In case total is also requested, we are going to</span>
@@ -562,17 +609,24 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_stress">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_stress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;static&quot;</span><span class="p">,</span> <span class="n">skip_final</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">read_stress</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">key</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;static&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">,</span> <span class="s2">&quot;Voigt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;static&quot;</span><span class="p">,</span>
+        <span class="n">skip_final</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the stresses from the Siesta output file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key : {static, total, Voigt}</span>
+<span class="sd">        key :</span>
 <span class="sd">           which stress to read from the output.</span>
 <span class="sd">        skip_final:</span>
-<span class="sd">            the static stress tensor is duplicated in the output when running</span>
-<span class="sd">            MD simulations. This flag is used in case one wish to get the final</span>
-<span class="sd">            one.</span>
+<span class="sd">            the final output of the stress is duplicated when the *final*</span>
+<span class="sd">            output is written.</span>
+<span class="sd">            By default, this method will return the final stress, but</span>
+<span class="sd">            only **if** no other stresses are found.</span>
+<span class="sd">            If stresses from dynamics are found, then the final stress</span>
+<span class="sd">            will not be returned, unless explicitly requested through this flag.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -594,6 +648,17 @@
             <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">found</span> <span class="o">=</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">line</span>
 
+        <span class="k">if</span> <span class="n">skip_final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># If we have final stress, default to skip the</span>
+            <span class="c1"># final stress when we have stress in the dynamics</span>
+            <span class="c1"># sections.</span>
+            <span class="n">skip_final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_has_stress_in_dynamics</span>
+
+        <span class="k">if</span> <span class="n">skip_final</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis</span><span class="p">():</span>
+            <span class="c1"># we are in the final section, and don&#39;t want to do</span>
+            <span class="c1"># anything</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -606,9 +671,6 @@
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="n">S</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]])</span>
-                <span class="k">if</span> <span class="n">skip_final</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;siesta:&quot;</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="kc">None</span>
             <span class="n">S</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">S</span></div>
@@ -618,17 +680,19 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_moment">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">read_moment</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;S&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the moments from the Siesta output file</span>
 
 <span class="sd">        These will only be present in case of spin-orbit coupling.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        orbitals: bool, optional</span>
+<span class="sd">        orbitals:</span>
 <span class="sd">           return a table with orbitally resolved</span>
 <span class="sd">           moments.</span>
-<span class="sd">        quantity: {&#39;S&#39;, &#39;L&#39;}, optional</span>
+<span class="sd">        quantity:</span>
 <span class="sd">           return the spin-moments or the L moments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Read until outcoor is found</span>
@@ -819,7 +883,7 @@
 
 <div class="viewcode-block" id="stdoutSileSiesta.read_data">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read specific content in the Siesta out file</span>
 
 <span class="sd">        The currently implemented things are denoted in</span>
@@ -1140,13 +1204,16 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_charge">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">iscf</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span> <span class="n">imd</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span> <span class="n">key_scf</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;voronoi&quot;</span><span class="p">,</span> <span class="s2">&quot;hirshfeld&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">],</span>
+        <span class="n">iscf</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
+        <span class="n">imd</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
+        <span class="n">key_scf</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scf&quot;</span><span class="p">,</span>
+        <span class="n">as_dataframe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read charges calculated in SCF loop or MD loop (or both)</span>
 
 <span class="sd">        Siesta enables many different modes of writing out charges.</span>
-
-<span class="sd">        NOTE: currently Mulliken charges are not implemented.</span>
 
 <span class="sd">        The below table shows a list of different cases that</span>
 <span class="sd">        may be encountered, the letters are referred to in the</span>
@@ -1171,12 +1238,12 @@
 <span class="sd">        the SCF charges are not present. For `Opt.ANY` it will return</span>
 <span class="sd">        the most information, effectively SCF will be returned if present.</span>
 
-<span class="sd">        Currently Mulliken is not implemented, any help in reading this would be</span>
-<span class="sd">        very welcome.</span>
+<span class="sd">        Currently orbitally-resolved Mulliken is not implemented, any help in</span>
+<span class="sd">        reading this would be very welcome.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        name: {&quot;voronoi&quot;, &quot;hirshfeld&quot;}</span>
+<span class="sd">        name:</span>
 <span class="sd">            the name of the charges that you want to read</span>
 <span class="sd">        iscf: int or Opt, optional</span>
 <span class="sd">            index (0-based) of the scf iteration you want the charges for.</span>
@@ -1190,9 +1257,9 @@
 <span class="sd">            the returned quantities depend on what is present.</span>
 <span class="sd">            If ``None/Opt.NONE`` it will not return any MD charges.</span>
 <span class="sd">            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.</span>
-<span class="sd">        key_scf : str, optional</span>
+<span class="sd">        key_scf :</span>
 <span class="sd">            the key lookup for the scf iterations (a &quot;:&quot; will automatically be appended)</span>
-<span class="sd">        as_dataframe: boolean, optional</span>
+<span class="sd">        as_dataframe:</span>
 <span class="sd">            whether charges should be returned as a pandas dataframe.</span>
 
 <span class="sd">        Returns</span>
@@ -1201,7 +1268,7 @@
 <span class="sd">            if a specific MD+SCF index is requested (or special cases where output is</span>
 <span class="sd">            not complete)</span>
 <span class="sd">        list of numpy.ndarray</span>
-<span class="sd">            if one both `iscf` or `imd` is different from ``None/Opt.NONE``.</span>
+<span class="sd">            if `iscf` or `imd` is different from ``None/Opt.NONE``.</span>
 <span class="sd">        pandas.DataFrame</span>
 <span class="sd">            if `as_dataframe` is requested. The dataframe will have multi-indices if multiple</span>
 <span class="sd">            SCF or MD steps are requested.</span>
@@ -1257,16 +1324,15 @@
 
             <span class="c1"># We have found the header, prepare a list to read the charges</span>
             <span class="n">atom_charges</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
-            <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">line</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
                     <span class="n">charge_vals</span> <span class="o">=</span> <span class="n">_parse_charge</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                     <span class="n">atom_charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge_vals</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="c1"># We already have the charge values and we reached a line that can&#39;t be parsed,</span>
                     <span class="c1"># this means we have reached the end.</span>
                     <span class="k">break</span>
+
             <span class="k">if</span> <span class="n">pd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># not as_dataframe</span>
                 <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayf</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">)</span>
@@ -1287,7 +1353,159 @@
         <span class="c1"># define helper function for reading voronoi+hirshfeld charges</span>
         <span class="k">def</span> <span class="nf">_mulliken_charges</span><span class="p">():</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Read output from Mulliken charges&quot;&quot;&quot;</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Mulliken charges are not implemented currently&quot;</span><span class="p">)</span>
+            <span class="k">nonlocal</span> <span class="n">pd</span>
+
+            <span class="c1"># Expecting something like this (NC/SOC)</span>
+            <span class="c1"># mulliken: Atomic and Orbital Populations:</span>
+
+            <span class="c1"># Species: Cl</span>
+
+            <span class="c1"># Atom      Orb        Charge      Spin       Svec</span>
+            <span class="c1"># ----------------------------------------------------------------</span>
+            <span class="c1">#     1  1 3s         1.75133   0.00566      0.004   0.004  -0.000</span>
+            <span class="c1">#     1  2 3s         0.09813   0.00658     -0.005  -0.005   0.000</span>
+            <span class="c1">#     1  3 3py        1.69790   0.21531     -0.161  -0.142   0.018</span>
+            <span class="c1">#     1  4 3pz        1.72632   0.15770     -0.086  -0.132  -0.008</span>
+            <span class="c1">#     1  5 3px        1.81369   0.01618     -0.004   0.015  -0.004</span>
+            <span class="c1">#     1  6 3py       -0.04663   0.02356     -0.017  -0.016  -0.000</span>
+            <span class="c1">#     1  7 3pz       -0.04167   0.01560     -0.011  -0.011   0.001</span>
+            <span class="c1">#     1  8 3px       -0.02977   0.00920     -0.006  -0.007   0.000</span>
+            <span class="c1">#     1  9 3Pdxy      0.00595   0.00054     -0.000  -0.000  -0.000</span>
+            <span class="c1">#     1 10 3Pdyz      0.00483   0.00073     -0.001  -0.001  -0.000</span>
+            <span class="c1">#     1 11 3Pdz2      0.00515   0.00098     -0.001  -0.001  -0.000</span>
+            <span class="c1">#     1 12 3Pdxz      0.00604   0.00039     -0.000  -0.000   0.000</span>
+            <span class="c1">#     1 13 3Pdx2-y2   0.00607   0.00099     -0.001  -0.001   0.000</span>
+            <span class="c1">#     1     Total     6.99733   0.41305     -0.288  -0.296   0.007</span>
+
+            <span class="c1"># Define the function that parses the charges</span>
+            <span class="k">def</span> <span class="nf">_parse_charge_total_nc</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>  <span class="c1"># non-colinear and soc</span>
+                <span class="n">atom_idx</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="o">*</span><span class="n">vals</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="c1"># assert that this is a proper line</span>
+                <span class="c1"># this should catch cases where the following line of charge output</span>
+                <span class="c1"># is still parseable</span>
+                <span class="c1"># atom_idx = int(atom_idx)</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vals</span><span class="p">))</span>
+
+            <span class="k">def</span> <span class="nf">_parse_charge_total</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>  <span class="c1"># unpolarized and colinear spin</span>
+                <span class="n">atom_idx</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+            <span class="c1"># Define the function that parses a single species</span>
+            <span class="k">def</span> <span class="nf">_parse_species_nc</span><span class="p">():</span>  <span class="c1"># non-colinear and soc</span>
+                <span class="k">nonlocal</span> <span class="n">header</span><span class="p">,</span> <span class="n">atom_idx</span><span class="p">,</span> <span class="n">atom_charges</span>
+
+                <span class="c1"># The mulliken charges are organized per species where the charges</span>
+                <span class="c1"># for each species are enclosed by dashes (-----)</span>
+
+                <span class="c1"># Step to header</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Atom&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">header</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Charge&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Spin&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                            <span class="s2">&quot;Svec&quot;</span><span class="p">,</span> <span class="s2">&quot;Sx Sy Sz&quot;</span>
+                        <span class="p">)</span>  <span class="c1"># Split Svec into Cartesian components</span>
+                        <span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+
+                <span class="c1"># Skip over the starting ---- line</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+                <span class="c1"># Read until closing ---- line</span>
+                <span class="k">while</span> <span class="s2">&quot;----&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">line</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()):</span>
+                    <span class="k">if</span> <span class="s2">&quot;Total&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="n">ia</span><span class="p">,</span> <span class="n">charge_vals</span> <span class="o">=</span> <span class="n">_parse_charge_total_nc</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                        <span class="n">atom_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
+                        <span class="n">atom_charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge_vals</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">_parse_spin_pol</span><span class="p">():</span>  <span class="c1"># unpolarized and colinear spin</span>
+                <span class="k">nonlocal</span> <span class="n">atom_idx</span><span class="p">,</span> <span class="n">atom_charges</span>
+
+                <span class="c1"># The mulliken charges are organized per spin</span>
+                <span class="c1"># polarization (UP/DOWN). The end of a spin</span>
+                <span class="c1"># block is marked by a Qtot</span>
+
+                <span class="c1"># Read until we encounter &quot;mulliken: Qtot&quot;</span>
+                <span class="k">def</span> <span class="nf">try_parse_int</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+
+                <span class="k">while</span> <span class="s2">&quot;mulliken: Qtot&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">line</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()):</span>
+                    <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">try_parse_int</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="c1"># This should be a line containing the total charge for an atom</span>
+                        <span class="n">ia</span><span class="p">,</span> <span class="n">charge</span> <span class="o">=</span> <span class="n">_parse_charge_total</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                        <span class="n">atom_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
+                        <span class="n">atom_charges</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">charge</span><span class="p">])</span>
+
+            <span class="c1"># Determine with which spin type we are dealing</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>  <span class="c1"># UNPOLARIZED</span>
+                <span class="c1"># No spin components so just parse charge</span>
+                <span class="n">atom_charges</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">atom_idx</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">]</span>
+                <span class="n">_parse_spin_pol</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
+                <span class="c1"># Parse both spin polarizations</span>
+                <span class="n">atom_charges_pol</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;Sz&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;UP&quot;</span><span class="p">,</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">):</span>
+                    <span class="n">atom_charges</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">atom_idx</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mulliken: Spin </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">_parse_spin_pol</span><span class="p">()</span>
+                    <span class="n">atom_charges_pol</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">)</span>
+
+                <span class="c1"># Compute the charge and spin of each atom</span>
+                <span class="n">atom_charges_pol_array</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayf</span><span class="p">(</span><span class="n">atom_charges_pol</span><span class="p">)</span>
+                <span class="n">atom_q</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">atom_charges_pol_array</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">atom_charges_pol_array</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">atom_s</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">atom_charges_pol_array</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">atom_charges_pol_array</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">atom_charges</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">atom_q</span><span class="p">,</span> <span class="n">atom_s</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+                <span class="c1"># Parse each species</span>
+                <span class="n">atom_charges</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">atom_idx</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">nspecies</span><span class="p">):</span>
+                    <span class="n">found</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Species:&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">_parse_species_nc</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;Something went wrong... Couldn&#39;t parse file.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Convert to array and sort in the order of the atoms</span>
+            <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">)</span>
+            <span class="n">atom_charges_array</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayf</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">)[</span><span class="n">sort_idx</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">pd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># not as_dataframe</span>
+                <span class="k">return</span> <span class="n">atom_charges_array</span>
+
+            <span class="c1"># determine how many columns we have</span>
+            <span class="c1"># this will remove atom indices and species, so only inside</span>
+            <span class="n">ncols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">assert</span> <span class="n">ncols</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+
+            <span class="c1"># the precision is limited, so no need for double precision</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">atom_charges_array</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="n">stop</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;atom&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
 
         <span class="c1"># Check that a known charge has been requested</span>
         <span class="k">if</span> <span class="n">namel</span> <span class="o">==</span> <span class="s2">&quot;voronoi&quot;</span><span class="p">:</span>
@@ -1324,6 +1542,7 @@
             <span class="n">key_scf</span><span class="p">,</span>
             <span class="o">*</span><span class="n">charge_keys</span><span class="p">,</span>
         <span class="p">]</span>
+
         <span class="c1"># adjust the below while loop to take into account any additional</span>
         <span class="c1"># segments of search_keys</span>
         <span class="n">IDX_SCF_END</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -1353,9 +1572,11 @@
         <span class="n">FOUND_MD</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">FOUND_FINAL</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># TODO whalrus</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">while</span> <span class="p">(</span>
+            <span class="n">ret</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span>
+                <span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">IDX_SCF_END</span><span class="p">:</span>
                 <span class="c1"># we finished all SCF iterations</span>
                 <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">MD</span>
@@ -1415,11 +1636,6 @@
                     <span class="c1"># should we just break?</span>
 
                 <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">CHARGE</span>
-
-            <span class="c1"># step to next entry</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span>
-                <span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span>
-            <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">((</span><span class="n">FOUND_SCF</span><span class="p">,</span> <span class="n">FOUND_MD</span><span class="p">,</span> <span class="n">FOUND_FINAL</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> does not contain any charges (</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>

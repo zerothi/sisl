@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=c3662837"></script>
+      <script src="../../../_static/documentation_options.js?v=64af3cb3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -72,7 +72,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/index.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
@@ -224,7 +224,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_energy" title="sisl.io.siesta.stdoutSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a>()</p></td>
 <td><p>Reads the final energy distribution</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a>([total, max, key])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a>([total, max, key, skip_final])</p></td>
 <td><p>Reads the forces from the Siesta output file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_geometry" title="sisl.io.siesta.stdoutSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([skip_input])</p></td>
@@ -286,7 +286,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>skip_input</strong> – the input geometry may be contained as a print-out.
-This is not part of an MD calculation, and hence is per
+This is not part of an MD calculation, and hence is by
 default not returned.</p></li>
 <li><p><strong>axes</strong> – The axes to project the geometry to.</p></li>
 <li><p><strong>atoms</strong> – The atoms to plot. If None, all atoms are plotted.</p></li>
@@ -353,10 +353,9 @@ specifying which species in the calculation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.stdoutSileSiesta.read_charge">
-<span class="sig-name descname"><span class="pre">read_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_charge" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'voronoi'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'hirshfeld'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mulliken'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_scf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'scf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_charge" title="Link to this definition"></a></dt>
 <dd><p>Read charges calculated in SCF loop or MD loop (or both)</p>
 <p>Siesta enables many different modes of writing out charges.</p>
-<p>NOTE: currently Mulliken charges are not implemented.</p>
 <p>The below table shows a list of different cases that
 may be encountered, the letters are referred to in the
 return section to indicate what is returned.</p>
@@ -449,12 +448,12 @@ return section to indicate what is returned.</p>
 passing an integer or <em class="xref py py-obj">Opt.ALL</em> for <em class="xref py py-obj">iscf</em> will raise an error if
 the SCF charges are not present. For <em class="xref py py-obj">Opt.ANY</em> it will return
 the most information, effectively SCF will be returned if present.</p>
-<p>Currently Mulliken is not implemented, any help in reading this would be
-very welcome.</p>
+<p>Currently orbitally-resolved Mulliken is not implemented, any help in
+reading this would be very welcome.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;voronoi&quot;,</span> <span class="pre">&quot;hirshfeld&quot;}</span></code>) – the name of the charges that you want to read</p></li>
+<li><p><strong>name</strong> – the name of the charges that you want to read</p></li>
 <li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Opt</span></code>, <em>optional</em>) – index (0-based) of the scf iteration you want the charges for.
 If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em> are used, then
 the returned quantities depend on what is present.
@@ -465,15 +464,15 @@ If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref
 the returned quantities depend on what is present.
 If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any MD charges.
 If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
-<li><p><strong>key_scf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – the key lookup for the scf iterations (a “:” will automatically be appended)</p></li>
-<li><p><strong>as_dataframe</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>) – whether charges should be returned as a pandas dataframe.</p></li>
+<li><p><strong>key_scf</strong> – the key lookup for the scf iterations (a “:” will automatically be appended)</p></li>
+<li><p><strong>as_dataframe</strong> – whether charges should be returned as a pandas dataframe.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – if a specific MD+SCF index is requested (or special cases where output is
 not complete)</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – if one both <em class="xref py py-obj">iscf</em> or <em class="xref py py-obj">imd</em> is different from <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – if <em class="xref py py-obj">iscf</em> or <em class="xref py py-obj">imd</em> is different from <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code>.</p></li>
 <li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> – if <em class="xref py py-obj">as_dataframe</em> is requested. The dataframe will have multi-indices if multiple
 SCF or MD steps are requested.</p></li>
 </ul>
@@ -484,7 +483,7 @@ SCF or MD steps are requested.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.stdoutSileSiesta.read_data">
-<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_data" title="Link to this definition"></a></dt>
 <dd><p>Read specific content in the Siesta out file</p>
 <p>The currently implemented things are denoted in
 the parameters list.
@@ -568,21 +567,27 @@ of keywords, so:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.stdoutSileSiesta.read_force">
-<span class="sig-name descname"><span class="pre">read_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'siesta'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'siesta'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'ts'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'siesta'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_final</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="Link to this definition"></a></dt>
 <dd><p>Reads the forces from the Siesta output file</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
-<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – return the total forces instead of the atomic forces.</p></li>
-<li><p><strong>max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether only the maximum atomic force should be returned for each step.</p>
+<li><p><strong>total</strong> – return the total forces instead of the atomic forces.</p></li>
+<li><p><strong>max</strong> – whether only the maximum atomic force should be returned for each step.</p>
 <p>Setting it to <em class="xref py py-obj">True</em> is equivalent to <em class="xref py py-obj">max(outSile.read_force())</em> in case atomic forces
 are written in the output file (<em class="xref py py-obj">WriteForces .true.</em> in the fdf file)</p>
 <p>Note that this is not the same as doing <em class="xref py py-obj">max(outSile.read_force(total=True))</em> since
 the forces returned in that case are averages on each axis.</p>
 </li>
-<li><p><strong>key</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;siesta&quot;,</span> <span class="pre">&quot;ts&quot;}</span></code>) – Specifies the indicator string for the forces that are to be read.
+<li><p><strong>key</strong> – Specifies the indicator string for the forces that are to be read.
 The function will look for a line containing <code class="docutils literal notranslate"><span class="pre">f'{key}:</span> <span class="pre">Atomic</span> <span class="pre">forces'</span></code>
 to start reading forces.</p></li>
+<li><p><strong>skip_final</strong> – the final output of the forces is duplicated when the <em>final</em>
+output is written.
+By default, this method will return the final forces, but
+only <strong>if</strong> no other forces are found.
+If forces from dynamics are found, then the final forces
+will not be returned, unless explicitly requested through this flag.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -627,7 +632,7 @@ will loose the slice after each call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>skip_input</strong> – the input geometry may be contained as a print-out.
-This is not part of an MD calculation, and hence is per
+This is not part of an MD calculation, and hence is by
 default not returned.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -657,15 +662,15 @@ will loose the slice after each call.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.stdoutSileSiesta.read_moment">
-<span class="sig-name descname"><span class="pre">read_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'S'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'S'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'L'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'S'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="Link to this definition"></a></dt>
 <dd><p>Reads the moments from the Siesta output file</p>
 <p>These will only be present in case of spin-orbit coupling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – return a table with orbitally resolved
+<li><p><strong>orbitals</strong> – return a table with orbitally resolved
 moments.</p></li>
-<li><p><strong>quantity</strong> (<code class="docutils literal notranslate"><span class="pre">{'S',</span> <span class="pre">'L'}</span></code>, <em>optional</em>) – return the spin-moments or the L moments</p></li>
+<li><p><strong>quantity</strong> – return the spin-moments or the L moments</p></li>
 </ul>
 </dd>
 </dl>
@@ -730,15 +735,18 @@ will loose the slice after each call.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.stdoutSileSiesta.read_stress">
-<span class="sig-name descname"><span class="pre">read_stress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_final</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_stress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_stress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'static'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'total'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Voigt'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_final</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_stress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="Link to this definition"></a></dt>
 <dd><p>Reads the stresses from the Siesta output file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<code class="docutils literal notranslate"><span class="pre">{static,</span> <span class="pre">total,</span> <span class="pre">Voigt}</span></code>) – which stress to read from the output.</p></li>
-<li><p><strong>skip_final</strong> – the static stress tensor is duplicated in the output when running
-MD simulations. This flag is used in case one wish to get the final
-one.</p></li>
+<li><p><strong>key</strong> – which stress to read from the output.</p></li>
+<li><p><strong>skip_final</strong> – the final output of the stress is duplicated when the <em>final</em>
+output is written.
+By default, this method will return the final stress, but
+only <strong>if</strong> no other stresses are found.
+If stresses from dynamics are found, then the final stress
+will not be returned, unless explicitly requested through this flag.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

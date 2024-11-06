@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=c3662837"></script>
+      <script src="../../../../_static/documentation_options.js?v=64af3cb3"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,7 +69,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/index.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
@@ -120,6 +120,8 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">sisl._core.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
@@ -135,30 +137,28 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;txtSileORCA&quot;</span><span class="p">]</span>
 
-<span class="n">_A</span> <span class="o">=</span> <span class="n">SileORCA</span><span class="o">.</span><span class="n">InfoAttr</span>
-
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.orca&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">txtSileORCA</span><span class="p">(</span><span class="n">SileORCA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Output from the ORCA property.txt file&quot;&quot;&quot;</span>
 
     <span class="n">_info_attributes_</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;na&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;.*Number of atoms:&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;na&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;.*Number of atoms:&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;no&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;.*number of basis functions:&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;.*number of basis functions:&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;vdw_correction&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;.*\$ VdW_Correction&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;vdw_correction&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;.*\$ VdW_Correction&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
         <span class="p">),</span>
@@ -184,7 +184,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.read_electrons">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_electrons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_electrons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read number of electrons (alpha, beta)</span>
 
 <span class="sd">        Returns</span>
@@ -205,7 +205,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA.read_energy">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PropertyDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the energy blocks</span>
 
 <span class="sd">        Parameters</span>

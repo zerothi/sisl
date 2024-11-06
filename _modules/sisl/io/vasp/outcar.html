@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=c3662837"></script>
+      <script src="../../../../_static/documentation_options.js?v=64af3cb3"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,7 +69,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/index.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
@@ -135,25 +135,22 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;outcarSileVASP&quot;</span><span class="p">]</span>
 
 
-<span class="n">_A</span> <span class="o">=</span> <span class="n">SileVASP</span><span class="o">.</span><span class="n">InfoAttr</span>
-
-
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.vasp&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">outcarSileVASP</span><span class="p">(</span><span class="n">SileVASP</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;OUTCAR file from VASP&quot;&quot;&quot;</span>
 
     <span class="n">_info_attributes_</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;completed&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;.*General timing and accounting&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;completed&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;.*General timing and accounting&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="n">_A</span><span class="p">(</span>
-            <span class="s2">&quot;accuracy_reached&quot;</span><span class="p">,</span>
-            <span class="sa">r</span><span class="s2">&quot;.*reached required accuracy&quot;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;accuracy_reached&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;.*reached required accuracy&quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
         <span class="p">),</span>
