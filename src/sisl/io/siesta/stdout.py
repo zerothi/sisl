@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import os
+from collections import namedtuple
 from functools import lru_cache
 from typing import Literal, Optional
 
 import numpy as np
+from matplotlib import namedtuple
 
 import sisl._array as _a
 from sisl import Atom, Atoms, Geometry, Lattice
@@ -110,6 +112,23 @@ def _parse_in_dynamics(attr, instance, match):
     return not instance.info._in_final_analysis()
 
 
+def _parse_version(attr, instance, match):
+    opt = match.string.split(":", maxsplit=1)[-1].strip()
+
+    version, *spec = opt.split("-", maxsplit=1)
+    try:
+        version = tuple(int(v) for v in version.split("."))
+    except:
+        version = (0, 0, 0)
+
+    # Convert version to a tuple
+    Version = namedtuple("Version", "version spec")
+
+    version = Version(version, spec)
+
+    return version
+
+
 def _in_final(self):
     return self.fh.tell() >= self.info._in_final_analysis_tell
 
@@ -122,6 +141,12 @@ class stdoutSileSiesta(SileSiesta):
     """
 
     _info_attributes_ = [
+        dict(
+            name="version",
+            searcher=r"^Version[ ]*: ",
+            parser=_parse_version,
+            not_found="warn",
+        ),
         dict(
             name="na",
             searcher=r"^initatomlists: Number of atoms",
@@ -1059,7 +1084,7 @@ class stdoutSileSiesta(SileSiesta):
     @sile_fh_open(True)
     def read_charge(
         self,
-        name: Literal["voronoi", "hirshfeld", "mulliken"],
+        name: Literal["voronoi", "hirshfeld", "mulliken", "mulliken:<5.2"],
         iscf=Opt.ANY,
         imd=Opt.ANY,
         key_scf: str = "scf",
@@ -1082,7 +1107,11 @@ class stdoutSileSiesta(SileSiesta):
         +-----------+-----+-----+--------+-------+------------------+
         | Hirshfeld | +   | +   | +      | +     | -                |
         +-----------+-----+-----+--------+-------+------------------+
-        | Mulliken  | +   | +   | +      | +     | +                |
+        | Mulliken  | +   | +   | +      | +     | -                |
+        |   (>=5.2) |     |     |        |       |                  |
+        +-----------+-----+-----+--------+-------+------------------+
+        | Mulliken  | +   | +   | +      | +     | (+)              |
+        |     <5.2  |     |     |        |       |                  |
         +-----------+-----+-----+--------+-------+------------------+
 
         Notes
@@ -1145,8 +1174,8 @@ class stdoutSileSiesta(SileSiesta):
                 return _a.arrayf([[None]])
 
         # define helper function for reading voronoi+hirshfeld charges
-        def _voronoi_hirshfeld_charges():
-            """Read output from Voronoi/Hirshfeld charges"""
+        def _charges():
+            """Read output from Voronoi/Hirshfeld/Mulliken charges"""
             nonlocal pd
 
             # Expecting something like this (NC/SOC)
@@ -1157,11 +1186,17 @@ class stdoutSileSiesta(SileSiesta):
             # Voronoi Atomic Populations:
             # Atom #     dQatom  Atom pop        Sz  Species
             #      1   -0.02936   4.02936   0.00000  C
+            # In 5.2 this now looks like this:
+            # Voronoi Atomic Populations:
+            # Atom #  charge [q]  valence [e]        Sz  Species
+            #      1    -0.02936      4.02936   0.00000  C
 
             # first line is the header
             header = (
                 self.readline()
-                .replace("dQatom", "dq")  # dQatom in master
+                .replace("charge [q]", "dq")  # charge [q] in 5.2
+                .replace("valence [e]", "e")  # in 5.2
+                .replace("dQatom", "dq")  # dQatom in 5.0
                 .replace(" Qatom", " dq")  # Qatom in 4.1
                 .replace("Atom pop", "e")  # not found in 4.1
                 .split()
@@ -1205,7 +1240,7 @@ class stdoutSileSiesta(SileSiesta):
             )
 
         # define helper function for reading voronoi+hirshfeld charges
-        def _mulliken_charges():
+        def _mulliken_charges_pre52():
             """Read output from Mulliken charges"""
             nonlocal pd
 
@@ -1361,22 +1396,41 @@ class stdoutSileSiesta(SileSiesta):
                 index=pd.RangeIndex(stop=len(atom_charges), name="atom"),
             )
 
+        # split method to retrieve options
+        namel, *opts = namel.split(":")
+
         # Check that a known charge has been requested
         if namel == "voronoi":
-            _r_charge = _voronoi_hirshfeld_charges
+            _r_charge = _charges
             charge_keys = [
                 "Voronoi Atomic Populations",
                 "Voronoi Net Atomic Populations",
             ]
         elif namel == "hirshfeld":
-            _r_charge = _voronoi_hirshfeld_charges
+            _r_charge = _charges
             charge_keys = [
                 "Hirshfeld Atomic Populations",
                 "Hirshfeld Net Atomic Populations",
             ]
         elif namel == "mulliken":
-            _r_charge = _mulliken_charges
+            _r_charge = _mulliken_charges_pre52
             charge_keys = ["mulliken: Atomic and Orbital Populations"]
+            if "<5.2" in opts:
+                pass
+
+            else:
+                # check if version is understandable
+                version = self.info.version
+                try:
+                    if version.version[:2] >= (5, 2):
+                        _r_charge = _charges
+                        charge_keys = [
+                            "Mulliken Atomic Populations",
+                            "Mulliken Net Atomic Populations",
+                        ]
+                except:
+                    pass
+
         else:
             raise ValueError(
                 f"{self.__class__.__name__}.read_charge name argument should be one of [voronoi, hirshfeld, mulliken], got {name}?"
