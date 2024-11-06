@@ -16,8 +16,13 @@ we hit release version 1.0.0.
       sisl.geom.graphene
 
 ### Fixed
-
 - `projection` arguments of several functions has been streamlined
+
+### Changed
+- internal Cython code for performance improvements.
+  This yield significant perf. improvements for DFT sparse matrices
+  with *many* edges in the sparse matrix, but a perf. hit for very
+  small TB matrices.
 
 
 ## [0.15.2] - 2024-11-06
