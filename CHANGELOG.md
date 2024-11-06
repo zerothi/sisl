@@ -12,6 +12,7 @@ we hit release version 1.0.0.
 - Parsing of total Mulliken charges in `stdoutSileSiesta`, #691
 
 ### Fixed
+- reading charges from Siesta 5.2 output files, #856
 - a read problem for very big simulations (related to `orbindxSileSiesta`)
 - bug-fix for `tbtSileTBtrans.Eindex` handling of integers, #829
   This is a regression fix, integers will now be handled differently
