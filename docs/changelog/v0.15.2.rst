@@ -1,0 +1,60 @@
+
+Released 6 of November 2024.
+
+Contributors
+============
+
+A total of 3 people contributed to this release. People with a "+" by their
+names contributed a patch for the first time.
+
+* Arnold Kole +
+* Nick Papior
+* Pol Febrer
+
+Pull requests merged
+====================
+
+A total of 17 pull requests were merged for this release.
+
+* :pull:`#691 <691>`: Parsing of Mulliken charges from SIESTA stdout
+* :pull:`#830 <830>`: Bump pypa/gh-action-pypi-publish from 1.10.1 to 1.10.2
+* :pull:`#833 <833>`: Fixed spin polarized fatbands
+* :pull:`#834 <834>`: Bump JamesIves/github-pages-deploy-action from 4.6.4 to 4.6.8
+* :pull:`#836 <836>`: Fix orbital values when an orbital is completely outside of the...
+* :pull:`#837 <837>`: Bump pypa/gh-action-pypi-publish from 1.10.2 to 1.10.3
+* :pull:`#843 <843>`: Fix sparse grid tests
+* :pull:`#844 <844>`: Fix failing test for minimal dependencies
+* :pull:`#845 <845>`: Accessors and grouping documentation entries
+* :pull:`#846 <846>`: fixed bug reading geometry from ncSileSiesta
+* :pull:`#848 <848>`: Allow for any type of integer when requesting neighbor items
+* :pull:`#849 <849>`: Improve plotables documentation
+* :pull:`#850 <850>`: trying to fix the within_inf problem
+* :pull:`#851 <851>`: major restructure of the documentation
+* :pull:`#855 <855>`: Bump pypa/gh-action-pypi-publish from 1.10.3 to 1.11.0
+* :pull:`#857 <857>`: fixed 5.2 reading of charges
+* :pull:`#859 <859>`: Use cutoff from basis files (xml, nc)
+
+Added
+^^^^^
+* added `timesSileSiesta` which can read siesta TIMES output
+* Parsing of total Mulliken charges in `stdoutSileSiesta`, :pull:`#691 <691>`
+
+Fixed
+^^^^^
+* reading charges from Siesta 5.2 output files, :pull:`#856 <856>`
+* a read problem for very big simulations (related to `orbindxSileSiesta`)
+* bug-fix for `tbtSileTBtrans.Eindex` handling of integers, :pull:`#829 <829>`
+  This is a regression fix, integers will now be handled differently
+  than prior releases.
+  A warning is raised to inform users.
+* fixed warning raised when reading electronic structure without Ef, :pull:`#826 <826>`
+* fixed precision writing of energies in GF files (siesta), :pull:`#827 <827>`
+* fixed reading `HSetupOnly` HSX files from Siesta, :pull:`#828 <828>`
+* fixed reading stresses and forces from `stdoutSileSiesta`
+  Note that generally the forces/stresses in the *Final* section of the
+  output will **not** be returned. Only if there are no other forces/stresses
+  in the output file.
+
+Changed
+^^^^^^^
+* `tbtSileTBtrans.Eindex` changed, see :pull:`#829 <829>` for details.
