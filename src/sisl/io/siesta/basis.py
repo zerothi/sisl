@@ -75,8 +75,14 @@ class ionxmlSileSiesta(SileSiesta):
             # \int psi^\dagger psi == 1
             psi = dat[1::2] * r**l / Bohr2Ang ** (3.0 / 2.0)
 
+            # Get the cutoff radius if it is specified. Otherwise an optimized
+            # radius is computed from the radial function by the Orbital class.
+            R = rad.find("cutoff")
+            if R is not None:
+                R = float(R.text) * Bohr2Ang
+
             # Create the sphericalorbital and then the atomicorbital
-            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), q0)
+            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), q0, R=R)
 
             # This will be -l:l (this is the way siesta does it)
             orbital.extend(sorb.toAtomicOrbital(n=n, zeta=z, P=P))
@@ -109,6 +115,7 @@ class ionncSileSiesta(SileCDFSiesta):
         orb_q0 = self._variable("orbnl_pop")[:]  # q0 for the orbitals
         orb_delta = self._variable("delta")[:]  # delta for the functions
         orb_psi = self._variable("orb")[:, :]
+        cutoff = self._variable("cutoff")[:]
 
         # Now loop over all orbitals
         orbital = []
@@ -136,8 +143,10 @@ class ionncSileSiesta(SileCDFSiesta):
             # \int psi^\dagger psi == 1
             psi = orb_psi[io, :] * r**l / Bohr2Ang ** (3.0 / 2.0)
 
+            R = cutoff[io] * Bohr2Ang
+
             # Create the sphericalorbital and then the atomicorbital
-            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), orb_q0[io])
+            sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), orb_q0[io], R=R)
 
             # This will be -l:l (this is the way siesta does it)
             orbital.extend(sorb.toAtomicOrbital(n=n, zeta=z, P=P))
