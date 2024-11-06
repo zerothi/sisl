@@ -9,7 +9,6 @@ from functools import lru_cache
 from typing import Literal, Optional
 
 import numpy as np
-from matplotlib import namedtuple
 
 import sisl._array as _a
 from sisl import Atom, Atoms, Geometry, Lattice
