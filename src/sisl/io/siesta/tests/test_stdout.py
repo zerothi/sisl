@@ -40,6 +40,8 @@ def test_mgco3_md_out(sisl_files):
     assert len(out.read_geometry[:]()) == nOutputs
     assert len(out.read_force[:]()) == nOutputs
     assert len(out.read_stress[:]()) == nOutputs
+    # slicing using ellipsis (same as above)
+    assert len(out.read_stress[...]()) == nOutputs
 
     f0 = out.read_force()
     f = out.read_force[-1]()
