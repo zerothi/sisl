@@ -109,10 +109,6 @@ class SileSlicer:
         start = 0
         stop = inf
 
-        if key is Ellipsis:
-            # Allow [...] to extract all"
-            key = slice(None)
-
         if isinstance(key, Integral):
             if key >= 0:
                 start = key
