@@ -584,6 +584,7 @@ class PlotlyFigure(Figure):
                 "legendgroup": name,
                 "showlegend": kwargs.pop("showlegend", None),
                 "fill": "toself",
+                "opacity": line.get("opacity"),
                 "meta": kwargs.pop("meta", {}),
             },
             row=row,

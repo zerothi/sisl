@@ -291,7 +291,7 @@ def fatbands_plot(
         orb_dim="orb",
         spin_dim="spin",
         sanitize_group=orbital_manager,
-        group_vars=("color", "dash"),
+        group_vars=("color", "dash", "opacity"),
         groups_dim="group",
         drop_empty=True,
         spin_reduce=False,

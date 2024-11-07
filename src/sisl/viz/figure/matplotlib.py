@@ -238,6 +238,7 @@ class MatplotlibFigure(Figure):
         return {
             "dash": "dashed",
             "dot": "dotted",
+            None: "solid",
         }.get(dash, dash)
 
     def _sanitize_colorscale(self, colorscale):
@@ -380,6 +381,8 @@ class MatplotlibFigure(Figure):
         # Set the values used for colormapping
         lc.set_linewidth(line.get("width", 1))
         lc.set_linestyle(self._plotly_dash_to_matplotlib(line.get("dash", "solid")))
+        lc.set_color(line.get("color"))
+        lc.set_alpha(line.get("opacity"))
 
         axes = _axes or self._get_subplot_axes(row=row, col=col)
 
@@ -411,11 +414,21 @@ class MatplotlibFigure(Figure):
 
         if dependent_axis in ("y", None):
             axes.fill_between(
-                x, y + spacing, y - spacing, color=line.get("color"), label=name
+                x,
+                y + spacing,
+                y - spacing,
+                color=line.get("color"),
+                label=name,
+                alpha=line.get("opacity"),
             )
         elif dependent_axis == "x":
             axes.fill_betweenx(
-                y, x + spacing, x - spacing, color=line.get("color"), label=name
+                y,
+                x + spacing,
+                x - spacing,
+                color=line.get("color"),
+                label=name,
+                alpha=line.get("opacity"),
             )
         else:
             raise ValueError(
@@ -435,6 +448,7 @@ class MatplotlibFigure(Figure):
         col=None,
         _axes=None,
         meta={},
+        legendgroup=None,
         **kwargs,
     ):
         axes = _axes or self._get_subplot_axes(row=row, col=col)
