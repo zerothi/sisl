@@ -222,7 +222,7 @@ cdef Py_ssize_t _indices_in_cylinder(const double[:, ::1] dxyz, const double R, 
         skip = 0
         for j in range(xyz-1):
             skip |= dxyz[i, j] > R
-        if skip or dxyz[i, -1] > h: continue
+        if skip or dxyz[i, xyz-1] > h: continue
 
         L2 = 0.
         for j in range(xyz-1):
