@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import Literal
 
 import numpy as np
 from scipy.sparse import SparseEfficiencyWarning, csr_matrix
@@ -13,6 +14,7 @@ import sisl.linalg as lin
 from sisl import Geometry
 from sisl._core.sparse import issparse
 from sisl._core.sparse_geometry import SparseOrbital
+from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.typing import AtomsIndex, GaugeType, KPoint
@@ -27,6 +29,85 @@ __all__ = ["SparseOrbitalBZ", "SparseOrbitalBZSpin"]
 
 # Filter warnings from the sparse library
 warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
+
+
+def _get_spin(M, spin, what: Literal["trace", "box", "vector"] = "box"):
+    M = M.T
+    if what == "trace":
+        if spin.spinor == 2:
+            # we have both up+down
+            # TODO fix spin-orbit with complex values
+            return M[0] + M[1]
+        return M[0]
+
+    if what == "vector":
+        m = np.empty([3, M.shape[1]], dtype=dtype_complex_to_real(M.dtype))
+        if spin.is_unpolarized:
+            # no spin-density
+            m[...] = 0.0
+        else:
+            # Same for all spin-configurations
+            m[2] = (M[0] - M[1]).real
+
+            # These indices should be reflected in sisl/physics/sparse.py
+            # for the Mxy[ri] indices in the reset method
+            if spin.is_polarized:
+                m[:2, :] = 0.0
+            elif spin.is_noncolinear:
+                if spin.dkind == "f":
+                    m[0] = 2 * M[2]
+                    m[1] = -2 * M[3]
+                else:
+                    m[0] = 2 * M[2].real
+                    m[1] = -2 * M[2].imag
+            else:
+                # spin-orbit
+                if spin.dkind == "f":
+                    m[0] = M[2] + M[6]
+                    m[1] = -M[3] + M[7]
+                else:
+                    tmp = M[2].conj() + M[3]
+                    m[0] = tmp.real
+                    m[1] = tmp.imag
+        return m
+
+    if what == "box":
+        m = np.empty([2, 2, M.shape[1]], dtype=dtype_real_to_complex(M.dtype))
+        if spin.is_unpolarized:
+            # no spin-density
+            m[...] = 0.0
+            m[0, 0] = M[0]
+            m[1, 1] = M[0]
+        elif spin.is_polarized:
+            m[...] = 0.0
+            m[0, 0] = M[0]
+            m[1, 1] = M[1]
+        elif spin.is_noncolinear:
+            if spin.dkind == "f":
+                m[0, 0] = M[0]
+                m[1, 1] = M[1]
+                m[0, 1] = M[2] + 1j * M[3]
+                m[1, 0] = m[0, 1].conj()
+            else:
+                m[0, 0] = M[0]
+                m[1, 1] = M[1]
+                m[0, 1] = M[2]
+                m[1, 0] = M[2].conj()
+        else:
+            if spin.dkind == "f":
+                m[0, 0] = M[0] + 1j * M[4]
+                m[1, 1] = M[1] + 1j * M[5]
+                m[0, 1] = M[2] + 1j * M[3]
+                m[1, 0] = M[6] + 1j * M[7]
+            else:
+                m[0, 0] = M[0]
+                m[1, 1] = M[1]
+                m[0, 1] = M[2]
+                m[1, 0] = M[3]
+
+        return m
+
+    raise ValueError(f"Wrong 'what' argument got {what}.")
 
 
 @set_module("sisl.physics")
@@ -815,7 +896,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 self.M22 = 1
                 self.M12 = 2
                 self.M21 = 3
-                raise NotImplementedError("Currently not implemented")
+
             # The overlap is the same as non-collinear
             self.Pk = self._Pk_spin_orbit
             self.Sk = self._Sk_non_colinear
@@ -836,7 +917,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         r"""Associated spin class"""
         return self._spin
 
-    def create_construct(self, R, param):
+    def create_construct(self, R, params):
         r"""Create a simple function for passing to the `construct` function.
 
         This is to relieve the creation of simplistic
@@ -846,7 +927,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         >>> def func(self, ia, atoms, atoms_xyz=None):
         ...     idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
-        ...     for ix, p in zip(idx, param):
+        ...     for ix, p in zip(idx, params):
         ...         self[ia, ix] = p
 
         In the non-colinear case the matrix element :math:`\mathbf M_{ij}` will be set
@@ -865,79 +946,88 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        R : array_like
+        R :
            radii parameters for different shells.
-           Must have same length as `param` or one less.
+           Must have same length as `params` or one less.
            If one less it will be extended with ``R[0]/100``
-        param : array_like
+        params :
            coupling constants corresponding to the `R`
-           ranges. ``param[0,:]`` are the elements
+           ranges. ``params[0,:]`` are the elements
            for the all atoms within ``R[0]`` of each atom.
 
         See Also
         --------
         construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
         """
-        if len(R) != len(param):
+        if len(R) != len(params):
             raise ValueError(
-                f"{self.__class__.__name__}.create_construct got different lengths of `R` and `param`"
+                f"{self.__class__.__name__}.create_construct got different lengths of 'R' and 'params'"
             )
         if not self.spin.is_diagonal:
+            # This portion of code splits the construct into doing Hermitian
+            # assignments. This probably needs rigorous testing.
+
+            dtype_cplx = dtype_real_to_complex(self.dtype)
+
             is_complex = self.dkind == "c"
             if self.spin.is_spinorbit:
                 if is_complex:
                     nv = 4
                     # Hermitian parameters
-                    paramH = [
+                    # The input order is [uu, dd, ud, du]
+                    paramsH = [
                         [p[0].conj(), p[1].conj(), p[3].conj(), p[2].conj(), *p[4:]]
-                        for p in param
+                        for p in params
                     ]
                 else:
                     nv = 8
                     # Hermitian parameters
-                    paramH = [
+                    # The input order is [Ruu, Rdd, Rud, Iud, Iuu, Idd, Rdu, idu]
+                    paramsH = [
                         [p[0], p[1], p[6], -p[7], -p[4], -p[5], p[2], -p[3], *p[8:]]
-                        for p in param
+                        for p in params
                     ]
                 if not self.orthogonal:
                     nv += 1
 
                 # ensure we have correct number of values
-                assert all(len(p) == nv for p in param)
+                assert all(len(p) == nv for p in params)
 
                 if R[0] <= 0.1001:  # no atom closer than 0.1001 Ang!
                     # We check that the the parameters here is Hermitian
-                    p = param[0]
+                    p = params[0]
                     if is_complex:
-                        onsite = np.array([[p[0], p[2]], [p[3], p[1]]], self.dtype)
+                        onsite = np.array([[p[0], p[2]], [p[3], p[1]]], dtype_cplx)
                     else:
                         onsite = np.array(
                             [
                                 [p[0] + 1j * p[4], p[2] + 1j * p[3]],
                                 [p[6] + 1j * p[7], p[1] + 1j * p[5]],
                             ],
-                            np.complex128,
+                            dtype_cplx,
                         )
                     if not np.allclose(onsite, onsite.T.conj()):
                         warn(
-                            f"{self.__class__.__name__}.create_construct is NOT Hermitian for on-site terms. This is your responsibility!"
+                            f"{self.__class__.__name__}.create_construct is NOT "
+                            "Hermitian for on-site terms. This is your responsibility! "
+                            "The code will continue silently, be AWARE!"
                         )
 
             elif self.spin.is_noncolinear:
                 if is_complex:
                     nv = 3
                     # Hermitian parameters
-                    paramH = [[p[0].conj(), p[1].conj(), p[2], *p[3:]] for p in param]
+                    paramsH = [[p[0].conj(), p[1].conj(), p[2], *p[3:]] for p in params]
                 else:
                     nv = 4
                     # Hermitian parameters
-                    # Note that we don"t need to do anything here.
+                    # Note that we don't need to do anything here.
                     # H_ij = [[0, 2 + 1j 3],
                     #         [2 - 1j 3, 1]]
                     # H_ji = [[0, 2 + 1j 3],
                     #         [2 - 1j 3, 1]]
                     # H_ij^H == H_ji^H
-                    paramH = param
+                    paramsH = params
                 if not self.orthogonal:
                     nv += 1
 
@@ -945,21 +1035,25 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 # Since the values are ensured Hermitian in the on-site case anyways.
 
                 # ensure we have correct number of values
-                assert all(len(p) == nv for p in param)
+                assert all(len(p) == nv for p in params)
 
             na = self.geometry.na
 
             # Now create the function that returns the assignment function
             def func(self, ia, atoms, atoms_xyz=None):
                 idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
-                for ix, p, pc in zip(idx, param, paramH):
+                for ix, p, pc in zip(idx, params, paramsH):
                     ix_ge = (ix % na) >= ia
                     self[ia, ix[ix_ge]] = p
                     self[ia, ix[~ix_ge]] = pc
 
+            func.R = R
+            func.params = params
+            func.paramsH = paramsH
+
             return func
 
-        return super().create_construct(R, param)
+        return super().create_construct(R, params)
 
     def __len__(self):
         r"""Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals)"""

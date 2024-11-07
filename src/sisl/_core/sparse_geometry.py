@@ -652,7 +652,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """
         if len(R) != len(params):
             raise ValueError(
-                f"{self.__class__.__name__}.create_construct got different lengths of `R` and `param`"
+                f"{self.__class__.__name__}.create_construct got different lengths of 'R' and 'params'"
             )
 
         def func(self, ia, atoms, atoms_xyz=None):
