@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import numpy as np
 
-import sisl as si
 import sisl._array as _a
 from sisl.messages import warn
 
