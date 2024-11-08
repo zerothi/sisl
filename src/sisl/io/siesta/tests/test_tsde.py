@@ -73,7 +73,7 @@ def test_si_pdos_kgrid_tsde_edm_dtypes(sisl_files, sisl_tmp, matrix):
         M.write(fnc)
         # The overlap should be here...
         M1 = M.read(fnc)
-        assert np.allclose(mull, M.mulliken(), atol=1e-5)
+        assert np.allclose(mull, M1.mulliken(), atol=1e-5)
 
 
 @pytest.mark.filterwarnings("ignore", message="*wrong sparse pattern")
