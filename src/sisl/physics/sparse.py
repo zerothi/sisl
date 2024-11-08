@@ -874,7 +874,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 self.M11 = 0
                 self.M22 = 1
                 self.M12 = 2
-                raise NotImplementedError("Currently not implemented")
             self.Pk = self._Pk_non_colinear
             self.Sk = self._Sk_non_colinear
             self.dPk = self._dPk_non_colinear
@@ -1616,6 +1615,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         -----
         The transformation matrix does *not* act on the rows and columns, only on the
         final dimension of the matrix.
+
+        The matrix transformation is done like this:
+
+        >>> out = in @ matrix.T
+
+        Meaning that ``matrix[0, :]`` will be the factors of the input matrix elements.
 
         Parameters
         ----------

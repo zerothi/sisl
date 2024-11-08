@@ -128,11 +128,11 @@ def test_tshs_soc_pt2_xx_dtypes(sisl_files, sisl_tmp):
     fnc = sisl_tmp("tmp.nc")
     for HS in data:
         HS.write(f)
-        HS1 = sisl.physics.Hamiltonian.read(f)
+        HS1 = HS.read(f)
         assert np.allclose(eigs, HS1.eigh(k), atol=1e-5)
 
         HS.write(fnc)
-        HS1 = sisl.physics.Hamiltonian.read(fnc)
+        HS1 = HS.read(fnc)
         assert np.allclose(eigs, HS1.eigh(k), atol=1e-5)
 
 
