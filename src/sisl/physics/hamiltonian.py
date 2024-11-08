@@ -328,7 +328,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # For non-collinear and SO only the diagonal (real) components
             # should be shifted.
             for i in range(self.spin.spinor):
-                self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E[i]
+                self._csr._D[:, i].real += self._csr._D[:, self.S_idx].real * E[i]
 
     def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):
         """Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`

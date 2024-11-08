@@ -32,78 +32,77 @@ warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
 
 
 def _get_spin(M, spin, what: Literal["trace", "box", "vector"] = "box"):
-    M = M.T
     if what == "trace":
         if spin.spinor == 2:
             # we have both up+down
             # TODO fix spin-orbit with complex values
-            return M[0] + M[1]
-        return M[0]
+            return M[..., 0] + M[..., 1]
+        return M[..., 0]
 
     if what == "vector":
-        m = np.empty([3, M.shape[1]], dtype=dtype_complex_to_real(M.dtype))
+        m = np.empty(M.shape[:-1] + (3,), dtype=dtype_complex_to_real(M.dtype))
         if spin.is_unpolarized:
             # no spin-density
             m[...] = 0.0
         else:
             # Same for all spin-configurations
-            m[2] = (M[0] - M[1]).real
+            m[..., 2] = (M[..., 0] - M[..., 1]).real
 
             # These indices should be reflected in sisl/physics/sparse.py
             # for the Mxy[ri] indices in the reset method
             if spin.is_polarized:
-                m[:2, :] = 0.0
+                m[..., :2] = 0.0
             elif spin.is_noncolinear:
-                if spin.dkind == "f":
-                    m[0] = 2 * M[2]
-                    m[1] = -2 * M[3]
+                if spin.dkind in ("f", "i"):
+                    m[..., 0] = 2 * M[..., 2]
+                    m[..., 1] = -2 * M[..., 3]
                 else:
-                    m[0] = 2 * M[2].real
-                    m[1] = -2 * M[2].imag
+                    m[..., 0] = 2 * M[..., 2].real
+                    m[..., 1] = -2 * M[..., 2].imag
             else:
                 # spin-orbit
-                if spin.dkind == "f":
-                    m[0] = M[2] + M[6]
-                    m[1] = -M[3] + M[7]
+                if spin.dkind in ("f", "i"):
+                    m[..., 0] = M[..., 2] + M[..., 6]
+                    m[..., 1] = -M[..., 3] + M[..., 7]
                 else:
-                    tmp = M[2].conj() + M[3]
-                    m[0] = tmp.real
-                    m[1] = tmp.imag
+                    tmp = M[..., 2].conj() + M[..., 3]
+                    m[..., 0] = tmp.real
+                    m[..., 1] = tmp.imag
         return m
 
     if what == "box":
-        m = np.empty([2, 2, M.shape[1]], dtype=dtype_real_to_complex(M.dtype))
+        m = np.empty(M.shape[:-1] + (2, 2), dtype=dtype_real_to_complex(M.dtype))
         if spin.is_unpolarized:
             # no spin-density
             m[...] = 0.0
-            m[0, 0] = M[0]
-            m[1, 1] = M[0]
+            m[..., 0, 0] = M[..., 0]
+            m[..., 1, 1] = M[..., 0]
         elif spin.is_polarized:
             m[...] = 0.0
-            m[0, 0] = M[0]
-            m[1, 1] = M[1]
+            m[..., 0, 0] = M[..., 0]
+            m[..., 1, 1] = M[..., 1]
         elif spin.is_noncolinear:
-            if spin.dkind == "f":
-                m[0, 0] = M[0]
-                m[1, 1] = M[1]
-                m[0, 1] = M[2] + 1j * M[3]
-                m[1, 0] = m[0, 1].conj()
+            if spin.dkind in ("f", "i"):
+                m[..., 0, 0] = M[..., 0]
+                m[..., 1, 1] = M[..., 1]
+                m[..., 0, 1] = M[..., 2] + 1j * M[..., 3]
+                m[..., 1, 0] = m[..., 0, 1].conj()
             else:
-                m[0, 0] = M[0]
-                m[1, 1] = M[1]
-                m[0, 1] = M[2]
-                m[1, 0] = M[2].conj()
+                m[..., 0, 0] = M[..., 0]
+                m[..., 1, 1] = M[..., 1]
+                m[..., 0, 1] = M[..., 2]
+                m[..., 1, 0] = M[..., 2].conj()
         else:
-            if spin.dkind == "f":
-                m[0, 0] = M[0] + 1j * M[4]
-                m[1, 1] = M[1] + 1j * M[5]
-                m[0, 1] = M[2] + 1j * M[3]
-                m[1, 0] = M[6] + 1j * M[7]
+            if spin.dkind in ("f", "i"):
+                m[..., 0, 0] = M[..., 0] + 1j * M[..., 4]
+                m[..., 1, 1] = M[..., 1] + 1j * M[..., 5]
+                m[..., 0, 1] = M[..., 2] + 1j * M[..., 3]
+                m[..., 1, 0] = M[..., 6] + 1j * M[..., 7]
             else:
-                m[0, 0] = M[0]
-                m[1, 1] = M[1]
-                m[0, 1] = M[2]
-                m[1, 0] = M[3]
+                m[..., 0, 0] = M[..., 0]
+                m[..., 1, 1] = M[..., 1]
+                m[..., 0, 1] = M[..., 2]
+                m[..., 1, 0] = M[..., 3]
 
         return m
 
@@ -165,6 +164,8 @@ class SparseOrbitalBZ(SparseOrbital):
 
     def _reset(self):
         r"""Reset object according to the options, please refer to `SparseOrbital.reset` for details"""
+        # Update the shape
+        self._csr._shape = self.shape[:-1] + self._csr._D.shape[-1:]
         if self.orthogonal:
             self.Sk = self._Sk_diagonal
             self.S_idx = -100
@@ -844,6 +845,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         r"""Reset object according to the options, please refer to `SparseOrbital.reset` for details"""
         super()._reset()
 
+        # Update the dtype of the spin
+        self._spin = Spin(self.spin, dtype=self.dtype)
+
         if self.spin.is_unpolarized:
             self.UP = 0
             self.DOWN = 0
@@ -861,7 +865,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             self.dSk = self._dSk
 
         elif self.spin.is_noncolinear:
-            if self.spin.dkind == "f":
+            if self.spin.dkind in ("f", "i"):
                 self.M11 = 0
                 self.M22 = 1
                 self.M12r = 2
@@ -879,7 +883,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             self.ddSk = self._ddSk_non_colinear
 
         elif self.spin.is_spinorbit:
-            if self.spin.dkind == "f":
+            if self.spin.dkind in ("f", "i"):
                 self.SX = np.array([0, 0, 1, 0, 0, 0, 1, 0], self.dtype)
                 self.SY = np.array([0, 0, 0, -1, 0, 0, 0, 1], self.dtype)
                 self.SZ = np.array([1, -1, 0, 0, 0, 0, 0, 0], self.dtype)
@@ -1497,7 +1501,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         if sp.is_spinorbit:
             if hermitian and spin:
                 # conjugate the imaginary value and transpose spin-box
-                if sp.dkind == "f":
+                if sp.dkind in ("f", "i"):
                     # imaginary components (including transposing)
                     #    12,11,22,21
                     D[:, [3, 4, 5, 7]] = -D[:, [7, 4, 5, 3]]
@@ -1507,7 +1511,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     D[:, [0, 1, 2, 3]] = np.conj(D[:, [0, 1, 3, 2]])
             elif hermitian:
                 # conjugate the imaginary value
-                if sp.dkind == "f":
+                if sp.dkind in ("f", "i"):
                     # imaginary components
                     #    12,11,22,21
                     D[:, [3, 4, 5, 7]] *= -1.0
@@ -1515,7 +1519,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     D[:, :] = np.conj(D[:, :])
             elif spin:
                 # transpose spin-box, 12 <-> 21
-                if sp.dkind == "f":
+                if sp.dkind in ("f", "i"):
                     D[:, [2, 3, 6, 7]] = D[:, [6, 7, 2, 3]]
                 else:
                     D[:, [2, 3]] = D[:, [3, 2]]
@@ -1532,7 +1536,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 # So for transposing we should negate the sign
                 # to ensure we put the opposite value in the
                 # correct place.
-                if sp.dkind == "f":
+                if sp.dkind in ("f", "i"):
                     D[:, 3] = -D[:, 3]
                 else:
                     D[:, 2] = np.conj(D[:, 2])
@@ -1556,7 +1560,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         # Apply Pauli-Y on the left and right of each spin-box
         if sp.is_spinorbit:
-            if sp.dkind == "f":
+            if sp.dkind in ("f", "i"):
                 # [R11, R22, R12, I12, I11, I22, R21, I21]
                 # [R11, R22] = [R22, R11]
                 # [I12, I21] = [I21, I12] (conj + Y @ Y[sign-changes conj])
@@ -1567,7 +1571,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             else:
                 raise NotImplementedError
         elif sp.is_noncolinear:
-            if sp.dkind == "f":
+            if sp.dkind in ("f", "i"):
                 # [R11, R22, R12, I12]
                 D[:, 2] = -D[:, 2]
             else:
@@ -1687,7 +1691,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         )
         new._csr = self._csr.transform(matrix, dtype=dtype)
 
-        if not orthogonal and self.orthogonal:
+        if self.orthogonal and not orthogonal:
             # set identity overlap matrix, loop over rows
             for i in range(new._csr.shape[0]):
                 new._csr[i, i, -1] = 1.0

@@ -56,7 +56,7 @@ class Spin:
     #: The :math:`\boldsymbol\sigma_z` Pauli matrix
     Z = np.array([[1, 0], [0, -1]], np.complex128)
 
-    __slots__ = ("_size", "_kind", "_dtype")
+    __slots__ = ("_kind", "_dtype")
 
     def __init__(self, kind="", dtype=None):
         if isinstance(kind, Spin):
@@ -64,7 +64,6 @@ class Spin:
                 dtype = kind._dtype
             self._kind = kind._kind
             self._dtype = dtype
-            self._size = kind._size
             return
 
         if dtype is None:
@@ -107,24 +106,6 @@ class Spin:
         # Now assert the checks
         self._kind = kind
 
-        if np.dtype(dtype).kind == "c":
-            size = {
-                self.UNPOLARIZED: 1,
-                self.POLARIZED: 2,
-                self.NONCOLINEAR: 4,
-                self.SPINORBIT: 4,
-            }.get(kind)
-
-        else:
-            size = {
-                self.UNPOLARIZED: 1,
-                self.POLARIZED: 2,
-                self.NONCOLINEAR: 4,
-                self.SPINORBIT: 8,
-            }.get(kind)
-
-        self._size = size
-
     def __str__(self):
         if self.is_unpolarized:
             return f"{self.__class__.__name__}{{unpolarized, kind={self.dkind}}}"
@@ -151,12 +132,32 @@ class Spin:
     @property
     def size(self):
         """Number of elements to describe the spin-components"""
-        return self._size
+        size = {
+            "c": {
+                self.UNPOLARIZED: 1,
+                self.POLARIZED: 2,
+                self.NONCOLINEAR: 3,
+                self.SPINORBIT: 4,
+            },
+            "i": {
+                self.UNPOLARIZED: 1,
+                self.POLARIZED: 2,
+                self.NONCOLINEAR: 4,
+                self.SPINORBIT: 8,
+            },
+            "f": {
+                self.UNPOLARIZED: 1,
+                self.POLARIZED: 2,
+                self.NONCOLINEAR: 4,
+                self.SPINORBIT: 8,
+            },
+        }[self.dkind][self.kind]
+        return size
 
     @property
     def spinor(self):
         """Number of spinor components (1 or 2)"""
-        return min(2, self._size)
+        return min(2, self.size)
 
     @property
     def kind(self):
@@ -196,7 +197,7 @@ class Spin:
         return self.kind == Spin.SPINORBIT
 
     def __len__(self):
-        return self._size
+        return self.size
 
     # Comparisons
     def __lt__(self, other):
@@ -221,6 +222,5 @@ class Spin:
         return {"size": self.size, "kind": self.kind, "dtype": self.dtype}
 
     def __setstate__(self, state):
-        self._size = state["size"]
         self._kind = state["kind"]
         self._dtype = state["dtype"]

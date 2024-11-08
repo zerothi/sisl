@@ -28,6 +28,34 @@ def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
     assert np.allclose(HS1._csr._D, HS2._csr._D)
 
 
+@pytest.mark.filterwarnings("ignore", message="*Casting complex values")
+def test_tshs_si_pdos_dtypes(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
+    data = []
+    eigs = None
+    k = [0.1] * 3
+    for dtype in (np.float32, np.float64, np.complex64, np.complex128):
+        HS = si.read_hamiltonian(dtype=dtype)
+        data.append(HS)
+        assert HS.dtype == dtype
+
+        if eigs is None:
+            eigs = HS.eigh(k)
+        else:
+            assert np.allclose(eigs, HS.eigh(k), atol=1e-5)
+
+    f = sisl_tmp("tmp.TSHS")
+    fnc = sisl_tmp("tmp.nc")
+    for HS in data:
+        HS.write(f)
+        HS1 = HS.read(f)
+        assert np.allclose(eigs, HS1.eigh(k), atol=1e-5)
+
+        HS.write(fnc)
+        HS1 = HS.read(fnc)
+        assert np.allclose(eigs, HS1.eigh(k), atol=1e-5)
+
+
 def test_tshs_si_pdos_kgrid_tofromnc(sisl_files, sisl_tmp):
     pytest.importorskip("netCDF4")
     si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
@@ -78,6 +106,34 @@ def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
     HS1.finalize()
     HS2.finalize()
     assert np.allclose(HS1._csr._D, HS2._csr._D)
+
+
+@pytest.mark.filterwarnings("ignore", message="*Casting complex values")
+def test_tshs_soc_pt2_xx_dtypes(sisl_files, sisl_tmp):
+    fdf = sisl.get_sile(sisl_files("siesta", "Pt2_soc", "Pt2.fdf"))
+    data = []
+    eigs = None
+    k = [0.1] * 3
+    for dtype in (np.float32, np.float64, np.complex64, np.complex128):
+        HS = fdf.read_hamiltonian(dtype=dtype)
+        data.append(HS)
+        assert HS.dtype == dtype
+
+        if eigs is None:
+            eigs = HS.eigh(k)
+        else:
+            assert np.allclose(eigs, HS.eigh(k), atol=1e-5)
+
+    f = sisl_tmp("tmp.TSHS")
+    fnc = sisl_tmp("tmp.nc")
+    for HS in data:
+        HS.write(f)
+        HS1 = sisl.physics.Hamiltonian.read(f)
+        assert np.allclose(eigs, HS1.eigh(k), atol=1e-5)
+
+        HS.write(fnc)
+        HS1 = sisl.physics.Hamiltonian.read(fnc)
+        assert np.allclose(eigs, HS1.eigh(k), atol=1e-5)
 
 
 def test_tshs_soc_pt2_xx_pdos(sisl_files):

@@ -250,7 +250,7 @@ class ncSileSiesta(SileCDFSiesta):
             H._csr._D[:, i] = sp.variables["H"][i, :] * Ry2eV
 
         # fix siesta specific notation
-        _mat_spin_convert(H)
+        _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
 
         # Shift to the Fermi-level
         Ef = -self._value("Ef")[:] * Ry2eV
@@ -285,7 +285,7 @@ class ncSileSiesta(SileCDFSiesta):
             DM._csr._D[:, i] = sp.variables["DM"][i, :]
 
         # fix siesta specific notation
-        _mat_spin_convert(DM)
+        _mat_siesta2sisl(DM, dtype=kwargs.get("dtype"))
 
         return DM.transpose(spin=False, sort=kwargs.get("sort", True))
 
@@ -305,7 +305,7 @@ class ncSileSiesta(SileCDFSiesta):
                 EDM._csr._D[:, i] -= sp.variables["DM"][i, :] * Ef[i]
 
         # fix siesta specific notation
-        _mat_spin_convert(EDM)
+        _mat_siesta2sisl(EDM, dtype=kwargs.get("dtype"))
 
         return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
 
@@ -613,7 +613,8 @@ class ncSileSiesta(SileCDFSiesta):
         Ef : float, optional
            the Fermi level of the electronic structure (in eV), default to 0.
         """
-        csr = H.transpose(spin=False, sort=False)._csr
+        H = H.transpose(spin=False, sort=False)
+        csr = H._csr
         if csr.nnz == 0:
             raise SileError(
                 f"{self}.write_hamiltonian cannot write a zero element sparse matrix!"
@@ -622,7 +623,8 @@ class ncSileSiesta(SileCDFSiesta):
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr)
         csr.finalize(sort=kwargs.get("sort", True))
-        _mat_spin_convert(csr, H.spin)
+
+        _mat_siesta2sisl(H, dtype=np.float64)
 
         # Ensure that the geometry is written
         self.write_geometry(H.geometry)
@@ -671,7 +673,8 @@ class ncSileSiesta(SileCDFSiesta):
         DM : DensityMatrix
            the model to be saved in the NC file
         """
-        csr = DM.transpose(spin=False, sort=False)._csr
+        DM = DM.transpose(spin=False, sort=False)
+        csr = DM._csr
         if csr.nnz == 0:
             raise SileError(
                 f"{self}.write_density_matrix cannot write a zero element sparse matrix!"
@@ -680,7 +683,7 @@ class ncSileSiesta(SileCDFSiesta):
         # Convert to siesta CSR (we don't need to sort this matrix)
         _csr_to_siesta(DM.geometry, csr)
         csr.finalize(sort=kwargs.get("sort", True))
-        _mat_spin_convert(csr, DM.spin)
+        _mat_siesta2sisl(DM, dtype=np.float64)
 
         # Ensure that the geometry is written
         self.write_geometry(DM.geometry)
@@ -728,7 +731,8 @@ class ncSileSiesta(SileCDFSiesta):
         EDM : EnergyDensityMatrix
            the model to be saved in the NC file
         """
-        csr = EDM.transpose(spin=False, sort=False)._csr
+        EDM = EDM.transpose(spin=False, sort=False)
+        csr = EDM._csr
         if csr.nnz == 0:
             raise SileError(
                 f"{self}.write_energy_density_matrix cannot write a zero element sparse matrix!"
@@ -737,7 +741,7 @@ class ncSileSiesta(SileCDFSiesta):
         # no need to sort this matrix
         _csr_to_siesta(EDM.geometry, csr)
         csr.finalize(sort=kwargs.get("sort", True))
-        _mat_spin_convert(csr, EDM.spin)
+        _mat_siesta2sisl(EDM, dtype=np.float64)
 
         # Ensure that the geometry is written
         self.write_geometry(EDM.geometry)

@@ -21,7 +21,8 @@ from sisl.unit.siesta import unit_convert
 from ..siesta._help import (
     _csr_from_sc_off,
     _csr_to_siesta,
-    _mat_spin_convert,
+    _mat_siesta2sisl,
+    _mat_sisl2siesta,
     _siesta_sc_off,
 )
 from ..sile import SileError, add_sile, sile_raise_write
@@ -436,7 +437,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
         The input options for `TBtrans`_ determine whether this is a self-energy term
         or a Hamiltonian term.
         """
-        csr = delta._csr.copy()
+        out_delta = delta.copy()
+        csr = out_delta._csr
         if csr.nnz == 0:
             raise SileError(
                 f"{self!s}.write_overlap cannot write a zero element sparse matrix!"
@@ -446,7 +448,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         _csr_to_siesta(delta.geometry, csr, diag=False)
         # delta should always write sorted matrices
         csr.finalize(sort=True)
-        _mat_spin_convert(csr, delta.spin)
+        _mat_sisl2siesta(out_delta)
 
         # Ensure that the geometry is written
         self.write_geometry(delta.geometry)
@@ -557,9 +559,9 @@ class deltancSileTBtrans(SileCDFTBtrans):
         csize[-1] = csr.nnz
 
         if delta.spin.kind > delta.spin.POLARIZED:
-            print(delta.spin)
             raise ValueError(
-                f"{self.__class__.__name__}.write_delta only allows spin-polarized delta values"
+                f"{self.__class__.__name__}.write_delta only allows spin-polarized "
+                f"delta values, got {delta.spin!s}"
             )
 
         if delta.dtype.kind == "c":
@@ -667,7 +669,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         # Convert from isc to sisl isc
         _csr_from_sc_off(C.geometry, lvl.variables["isc_off"][:, :], C._csr)
-        _mat_spin_convert(C)
+        _mat_siesta2sisl(C, dtype=kwargs.get("dtype"))
 
         return C
 

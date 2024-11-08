@@ -528,7 +528,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         rows, cols, DM = _to_coo(self._csr)
 
         # Convert to requested matrix form
-        D = _get_spin(DM, self.spin, what)
+        D = _get_spin(DM, self.spin, what).T
 
         # Define a matrix-matrix multiplication
         def mm(A, B):
