@@ -29,8 +29,10 @@ from sisl._core._dtypes cimport (
 )
 
 from ._matrix_utils cimport (
+    _f_matrix_box_nc,
     _f_matrix_box_so,
-    _matrix_box_nc,
+    _matrix_box_nc_cmplx,
+    _matrix_box_nc_real,
     _matrix_box_so_cmplx,
     _matrix_box_so_real,
 )
@@ -326,8 +328,14 @@ def _phase_csr_nc(ints_st[::1] ptr,
     cdef ints_st r, rr, ind, s, s_idx, c
 
     cdef complexs_st ph
+    cdef _f_matrix_box_nc func
     cdef numerics_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_nc_cmplx
+    else:
+        func = _matrix_box_nc_real
 
     with nogil:
         if p_opt == -1:
@@ -356,7 +364,7 @@ def _phase_csr_nc(ints_st[::1] ptr,
                     s_idx = _index_sorted(tmp, c)
 
                     d = &D[ind, 0]
-                    _matrix_box_nc(d, ph, M)
+                    func(d, ph, M)
                     v[v_ptr[rr] + s_idx] += M[0]
                     v[v_ptr[rr] + s_idx+1] += M[1]
                     v[v_ptr[rr+1] + s_idx] += M[2]
@@ -374,7 +382,7 @@ def _phase_csr_nc(ints_st[::1] ptr,
                     s_idx = _index_sorted(tmp, c)
 
                     d = &D[ind, 0]
-                    _matrix_box_nc(d, ph, M)
+                    func(d, ph, M)
                     v[v_ptr[rr] + s_idx] += M[0]
                     v[v_ptr[rr] + s_idx+1] += M[1]
                     v[v_ptr[rr+1] + s_idx] += M[2]
@@ -406,8 +414,14 @@ def _phase_array_nc(ints_st[::1] ptr,
     cdef ints_st r, rr, ind, s, c
 
     cdef complexs_st ph
+    cdef _f_matrix_box_nc func
     cdef numerics_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_nc_cmplx
+    else:
+        func = _matrix_box_nc_real
 
     with nogil:
         if p_opt == -1:
@@ -430,7 +444,7 @@ def _phase_array_nc(ints_st[::1] ptr,
                     ph = phases[ind]
 
                     d = &D[ind, 0]
-                    _matrix_box_nc(d, ph, M)
+                    func(d, ph, M)
                     v[rr, c] += M[0]
                     v[rr, c + 1] += M[1]
                     v[rr + 1, c] += M[2]
@@ -445,7 +459,7 @@ def _phase_array_nc(ints_st[::1] ptr,
                     ph = phases[s]
 
                     d = &D[ind, 0]
-                    _matrix_box_nc(d, ph, M)
+                    func(d, ph, M)
                     v[rr, c] += M[0]
                     v[rr, c + 1] += M[1]
                     v[rr + 1, c] += M[2]

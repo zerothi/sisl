@@ -26,14 +26,26 @@ M[3] == spin[1, 1]
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-cdef inline void _matrix_box_nc(const numerics_st *data,
-                                const complexs_st phase,
-                                complexs_st *M) noexcept nogil:
+cdef inline void _matrix_box_nc_real(const reals_st *data,
+                                     const complexs_st phase,
+                                     complexs_st *M) noexcept nogil:
     M[0] = <complexs_st> (data[0] * phase)
     M[1] = <complexs_st> ((data[2] + 1j * data[3]) * phase)
     M[2] = <complexs_st> ((data[2] + 1j * data[3]).conjugate() * phase)
     M[3] = <complexs_st> (data[1] * phase)
 
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+@cython.cdivision(True)
+cdef inline void _matrix_box_nc_cmplx(const _internal_complexs_st *data,
+                                      const complexs_st phase,
+                                      complexs_st *M) noexcept nogil:
+    M[0] = <complexs_st> (data[0] * phase)
+    M[1] = <complexs_st> (data[2] * phase)
+    M[2] = <complexs_st> (data[2].conjugate() * phase)
+    M[3] = <complexs_st> (data[1] * phase)
 
 
 @cython.boundscheck(False)
