@@ -162,7 +162,7 @@ jobs:
       - name: Print packages
         run: ls dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.11.0
+      - uses: pypa/gh-action-pypi-publish@v1.12.2
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN }}
@@ -235,7 +235,7 @@ jobs:
           path: dist
           merge-multiple: True
 
-      - uses: pypa/gh-action-pypi-publish@v1.11.0
+      - uses: pypa/gh-action-pypi-publish@v1.12.2
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
