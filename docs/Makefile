@@ -8,6 +8,7 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = build
+LINKCHECKDIR  = $(BUILDDIR)/linkcheck
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -21,7 +22,6 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-LINKCHECKDIR  = build/linkcheck
 
 .PHONY: spelling spell
 spell: spelling
