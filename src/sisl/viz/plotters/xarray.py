@@ -9,7 +9,7 @@ import typing
 import numpy as np
 from xarray import DataArray
 
-import sisl.viz.plotters.plot_actions as plot_actions
+from . import plot_actions
 
 # from sisl.viz.nodes.processors.grid import get_isos
 

@@ -8,8 +8,9 @@ from typing import Optional
 import numpy as np
 import xarray as xr
 
-import sisl.viz.plotters.plot_actions as plot_actions
 from sisl.viz.processors.grid import get_isos
+
+from . import plot_actions
 
 
 def draw_grid(
