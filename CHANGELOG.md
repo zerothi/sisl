@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.3] - YYYY-MM-DD
 
 ### Added
+- added ADOS extraction of PDOS data in `sisl.viz`
 - enabled submodule access without imports:
 
       import sisl
