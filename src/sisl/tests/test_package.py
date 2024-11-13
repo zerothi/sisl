@@ -32,13 +32,17 @@ def test_submodule_attr_access():
         "linalg",
         "shape",
         "mixing",
-        "viz",
         "utils",
         "unit",
         "C",
         "constant",
     ):
         getattr(sisl, mod)
+
+
+def test_submodule_attr_access_viz():
+    pytest.importorskip("plotly")
+    sisl.viz
 
 
 def test_import_in_io():
