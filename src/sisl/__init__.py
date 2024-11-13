@@ -95,6 +95,9 @@ from ._common import *
 from .messages import SislException, SislWarning, SislInfo, SislError
 from .messages import SislDeprecation
 
+# Simple access
+import sisl.constant as C
+
 # load the most commonly, and basic classes
 # The unit contain the SI standard conversions using
 # all digits (not program specific)
@@ -208,7 +211,11 @@ def __getattr__(attr):
         import sisl.unit as unit
 
         return unit
-    if attr in ("C", "constant"):
+    if attr == "C":
+        import sisl.constant as C
+
+        return constant
+    if attr == "constant":
         import sisl.constant as constant
 
         return constant

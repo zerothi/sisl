@@ -27,7 +27,6 @@ Or conda (only possible if inside a conda environment):
 # placeholders.
 from sisl._lazy_viz import clear_viz_placeholders
 
-print("CALLING clear")
 clear_viz_placeholders()
 
 del clear_viz_placeholders
