@@ -54,7 +54,13 @@ class _ncSileTBtrans(SileCDFTBtrans):
         return lattice
 
     def read_geometry(self, *args, **kwargs) -> Geometry:
-        """Returns `Geometry` object from this file"""
+        """Returns `Geometry` object from this file
+
+        Parameters
+        ----------
+        atoms :
+            atoms used instead of random species
+        """
         lattice = self.read_lattice()
 
         xyz = _a.arrayd(np.copy(self.xa))
@@ -64,23 +70,23 @@ class _ncSileTBtrans(SileCDFTBtrans):
         lasto = _a.arrayi(np.copy(self.lasto) + 1)
         nos = np.diff(lasto, prepend=0)
 
-        if "atom" in kwargs:
-            # The user "knows" which atoms are present
-            atms = kwargs["atom"]
+        atoms = kwargs.get("atoms", kwargs.get("atom"))
+
+        if atoms is not None:
             # Check that all atoms have the correct number of orbitals.
             # Otherwise we will correct them
-            for i in range(len(atms)):
-                if atms[i].no != nos[i]:
-                    atms[i] = Atom(atms[i].Z, [-1] * nos[i], tag=atms[i].tag)
+            for i in range(len(atoms)):
+                if atoms[i].no != nos[i]:
+                    atoms[i] = Atom(atoms[i].Z, [-1] * nos[i], tag=atoms[i].tag)
 
         else:
             # Default to Hydrogen atom with nos[ia] orbitals
             # This may be counterintuitive but there is no storage of the
             # actual species
-            atms = [Atom("H", [-1] * o) for o in nos]
+            atoms = [Atom("H", [-1] * o) for o in nos]
 
         # Create and return geometry object
-        geom = Geometry(xyz, atms, lattice=lattice)
+        geom = Geometry(xyz, atoms, lattice=lattice)
 
         return geom
 
