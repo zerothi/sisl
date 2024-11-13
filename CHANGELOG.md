@@ -8,6 +8,12 @@ we hit release version 1.0.0.
 
 ## [0.15.3] - YYYY-MM-DD
 
+### Added
+- enabled submodule access without imports:
+
+      import sisl
+      sisl.geom.graphene
+
 
 ## [0.15.2] - 2024-11-06
 

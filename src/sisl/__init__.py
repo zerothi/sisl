@@ -95,26 +95,13 @@ from ._common import *
 from .messages import SislException, SislWarning, SislInfo, SislError
 from .messages import SislDeprecation
 
+# Simple access
+import sisl.constant as C
+
 # load the most commonly, and basic classes
 # The unit contain the SI standard conversions using
 # all digits (not program specific)
 from .unit import unit_group, unit_convert, unit_default, units
-from . import unit
-
-# Import numerical constants (they required unit)
-from . import constant
-
-# To make it easier to type ;)
-C = constant
-
-# Specific linear algebra
-from . import linalg
-
-# Utilities
-from . import utils
-
-# Mixing
-from . import mixing
 
 # Below are sisl-specific imports
 from .shape import *
@@ -133,7 +120,6 @@ from .physics import *
 #  sisl.get_sile
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
-from . import io
 from .io.sile import (
     add_sile,
     get_sile_class,
@@ -161,12 +147,6 @@ Lattice.new.register("Sile", Lattice.new._dispatchs[str])
 Lattice.to.register(BaseSile, Lattice.to._dispatchs[str])
 Lattice.to.register("Sile", Lattice.to._dispatchs[str])
 
-# Import the default geom structure
-# This enables:
-# import sisl
-# sisl.geom.graphene
-from . import geom
-
 from ._nodify import on_nodify as __nodify__
 
 # Set all the placeholders for the plot attribute
@@ -175,26 +155,73 @@ from ._lazy_viz import set_viz_placeholders
 
 set_viz_placeholders()
 
-# If someone tries to get the viz attribute, we will load the viz module
-_LOADED_VIZ = False
-
-
-def __getattr__(name):
-    global _LOADED_VIZ
-    if name == "viz" and not _LOADED_VIZ:
-        _LOADED_VIZ = True
-        import sisl.viz
-
-        return sisl.viz
-    raise AttributeError(f"module {__name__} has no attribute {name}")
-
-
 from ._ufuncs import expose_registered_methods
 
 expose_registered_methods("sisl")
 expose_registered_methods("sisl.physics")
 
 del expose_registered_methods
+
+
+# Lazy load modules to easier access sub-modules
+def __getattr__(attr):
+    """Enables simpler access of sub-modules, without having to import them"""
+
+    # One can test that this is only ever called once
+    # per sub-module.
+    # Insert a print statement, and you'll see that:
+    # import sisl
+    # sisl.geom
+    # sisl.geom
+    # will only print *once*.
+
+    if attr == "geom":
+        import sisl.geom as geom
+
+        return geom
+    if attr == "io":
+        import sisl.io as io
+
+        return io
+    if attr == "physics":
+        import sisl.physics as physics
+
+        return physics
+    if attr == "linalg":
+        import sisl.linalg as linalg
+
+        return linalg
+    if attr == "shape":
+        import sisl.shape as shape
+
+        return shape
+    if attr == "mixing":
+        import sisl.mixing as mixing
+
+        return mixing
+    if attr == "viz":
+        import sisl.viz as viz
+
+        return viz
+    if attr == "utils":
+        import sisl.utils as utils
+
+        return utils
+    if attr == "unit":
+        import sisl.unit as unit
+
+        return unit
+    if attr == "C":
+        import sisl.constant as C
+
+        return constant
+    if attr == "constant":
+        import sisl.constant as constant
+
+        return constant
+
+    raise AttributeError(f"module {__name__} has no attribute {attr}")
+
 
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith("_")]

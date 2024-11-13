@@ -24,6 +24,27 @@ def test_import_simple():
     sisl.io.xyzSile
 
 
+def test_submodule_attr_access():
+    for mod in (
+        "geom",
+        "io",
+        "physics",
+        "linalg",
+        "shape",
+        "mixing",
+        "utils",
+        "unit",
+        "C",
+        "constant",
+    ):
+        getattr(sisl, mod)
+
+
+def test_submodule_attr_access_viz():
+    pytest.importorskip("plotly")
+    sisl.viz
+
+
 def test_import_in_io():
     # The imports should only be visible in the io module
     with pytest.raises(AttributeError):

@@ -102,8 +102,8 @@ We want to plot graphene, so the simplest way is
 
 .. code-block:: python
 
-    import sisl
-    geom_plot = sisl.geom.graphene().plot(backend="blender", bonds_scale=0.01)
+    import sisl as si
+    geom_plot = si.geom.graphene().plot(backend="blender", bonds_scale=0.01)
     geom_plot.show()
 
 If we write these lines on the console, we should get the graphene structure in the viewport.

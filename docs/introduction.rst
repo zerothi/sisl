@@ -12,7 +12,7 @@ and perform a large variation of tasks.
    typically only targets a limited number of atoms. One of the main
    features of sisl is the enourmously fast creation and manipulation of
    very large geometries such as attaching two geometries together,
-   rotating atoms, removing atoms, changing bond-lengths etc. 
+   rotating atoms, removing atoms, changing bond-lengths etc.
    Everything is optimized for extremely large scale systems `>1,000,000` atoms
    such that creating geometries for tight-binding models becomes a breeze.
 
@@ -54,8 +54,8 @@ additions, removal etc. of different atoms/geometries, for instance to generate 
 graphene flake one can use this small snippet:
 
 
-   >>> import sisl
-   >>> graphene = sisl.geom.graphene(1.42).repeat(100, 0).repeat(100, 1)
+   >>> import sisl as si
+   >>> graphene = si.geom.graphene(1.42).repeat(100, 0).repeat(100, 1)
 
 which generates a graphene flake of :math:`2 \cdot 100 \cdot 100 = 20000` atoms.
 

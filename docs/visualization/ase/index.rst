@@ -7,10 +7,10 @@ plotted.
 
 .. code-block::
 
-   import sisl
+   import sisl as si
    from ase.visualize import view
 
-   geom = sisl.geom.graphene()
+   geom = si.geom.graphene()
    view(geom.to.ase())
 
 will open a new window showing the atoms.

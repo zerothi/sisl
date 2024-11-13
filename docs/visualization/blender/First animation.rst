@@ -5,12 +5,12 @@ Below is a script that generates an animation of graphene breathing in blender:
 
 .. code-block:: python
 
-    import sisl
+    import sisl as si
     from sisl.viz import merge_plots
 
     plots = []
     for color, opacity, scale in zip(["red", "orange", "green"], [1, 0.2, 1], [0.5, 1, 0.5]):
-        geom_plot = sisl.geom.graphene().plot(backend="blender",
+        geom_plot = si.geom.graphene().plot(backend="blender",
             atoms_style={"color": color, "opacity": opacity},
             bonds_scale=0.01,
             atoms_scale=scale
