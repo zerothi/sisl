@@ -19,6 +19,25 @@ def si_pdos_kgrid_geom(with_orbs=True):
     return sisl.geom.diamond(5.43, sisl.Atom("Si"))
 
 
+@pytest.mark.parametrize("order", ["HSX", "TSHS"])
+def test_si_pdos_kgrid_H_eig(sisl_files, sisl_tmp, order):
+    fdf = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"))
+    H = fdf.read_hamiltonian(order=order)
+
+    eigs = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.EIG")).read_data()
+    bz = sisl.get_sile(
+        sisl_files("siesta", "Si_pdos_k", "Si_pdos.KP")
+    ).read_brillouinzone(H.geometry)
+
+    # Now see if we get the same data...
+    for ispin in range(eigs.shape[0]):
+        for i, (eig, k) in enumerate(zip(eigs[ispin], bz)):
+            if i > 10:
+                break
+            Heig = H.eigh(k, spin=ispin)
+            assert np.allclose(eig, Heig)
+
+
 def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.HSX"))
     si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
@@ -135,3 +154,44 @@ def test_si_pdos_kgrid_hsx_1_same_tshs(sisl_files, sisl_tmp):
     assert np.allclose(gx.lattice.cell, gt.lattice.cell)
     assert np.allclose(gx.xyz, gt.xyz)
     assert np.allclose(gx.nsc, gt.nsc)
+
+
+@pytest.mark.parametrize("order", ["HSX", "TSHS"])
+def test_srti03_H_eig(sisl_files, sisl_tmp, order):
+    fdf = sisl.get_sile(sisl_files("siesta", "SrTiO3", "non-collinear", "SrTiO3.fdf"))
+    H = fdf.read_hamiltonian(order=order)
+
+    eigs = sisl.get_sile(
+        sisl_files("siesta", "SrTiO3", "non-collinear", "SrTiO3.EIG")
+    ).read_data()
+    bz = sisl.get_sile(
+        sisl_files("siesta", "SrTiO3", "non-collinear", "SrTiO3.KP")
+    ).read_brillouinzone(H.geometry)
+
+    # Now see if we get the same data...
+    for i, (eig, k) in enumerate(zip(eigs[0], bz)):
+        if i > 10:
+            break
+        Heig = H.eigh(k)
+        assert np.allclose(eig, Heig)
+
+
+@pytest.mark.parametrize("order", ["HSX"])
+def test_bi_hexagonal_H_eig(sisl_files, sisl_tmp, order):
+    N = 20
+    fdf = sisl.get_sile(sisl_files("siesta", "Bi_hexagonal", "Bi_hexagonal.fdf"))
+    H = fdf.read_hamiltonian(order=order)
+
+    eigs = sisl.get_sile(
+        sisl_files("siesta", "Bi_hexagonal", "Bi_hexagonal.EIG")
+    ).read_data()
+    bz = sisl.get_sile(
+        sisl_files("siesta", "Bi_hexagonal", "Bi_hexagonal.KP")
+    ).read_brillouinzone(H.geometry)
+
+    # Now see if we get the same data...
+    for i, (eig, k) in enumerate(zip(eigs[0], bz)):
+        if i > 10:
+            break
+        Heig = H.eigh(k)
+        assert np.allclose(eig, Heig)
