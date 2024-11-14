@@ -56,43 +56,6 @@ def velocity(state: StateCElectron, *args, **kwargs):
 
 
 @register_sisl_dispatch(StateCElectron, module="sisl.physics")
-def position(state: StateCElectron, *args, **kwargs):
-    r"""Calculate position for the states
-
-    This routine calls ``derivative(1, *args, **kwargs)`` and returns the velocity for the states.
-
-    Note that the coefficients associated with the `StateCElectron` *must* correspond
-    to the energies of the states.
-
-    The unit is Ang/ps.
-
-    Notes
-    -----
-    The velocities are calculated without the Berry curvature contribution see Eq. (2) in :cite:`Wang2006`.
-    It is thus typically denoted as the *effective velocity operater* (see Ref. 21 in :cite:`Wang2006`.
-    The missing contribution may be added in later editions, for completeness sake, it is:
-
-    .. math::
-       \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)
-
-    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
-
-    Parameters
-    ----------
-    *args, **kwargs:
-        arguments passed directly to `derivative`, see that method
-        for argument details.
-
-    See Also
-    --------
-    derivative : for details of the implementation
-    """
-    v = state.derivative(1, *args, **kwargs)
-    v *= _velocity_const
-    return v
-
-
-@register_sisl_dispatch(StateCElectron, module="sisl.physics")
 def berry_curvature(
     state: StateCElectron,
     sum: bool = True,
