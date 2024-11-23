@@ -22,7 +22,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=64af3cb3"></script>
+      <script src="_static/documentation_options.js?v=4c7be489"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -167,8 +167,8 @@ output files.</p>
 <p>Geometries can easily be generated from basic routines and enables easy repetitions,
 additions, removal etc. of different atoms/geometries, for instance to generate a
 graphene flake one can use this small snippet:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sisl</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graphene</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">(</span><span class="mf">1.42</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graphene</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">(</span><span class="mf">1.42</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>which generates a graphene flake of <span class="math notranslate nohighlight">\(2 \cdot 100 \cdot 100 = 20000\)</span> atoms.</p>

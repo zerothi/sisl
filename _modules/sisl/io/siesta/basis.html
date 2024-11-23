@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=64af3cb3"></script>
+      <script src="../../../../_static/documentation_options.js?v=4c7be489"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -194,8 +194,14 @@
             <span class="c1"># \int psi^\dagger psi == 1</span>
             <span class="n">psi</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
+            <span class="c1"># Get the cutoff radius if it is specified. Otherwise an optimized</span>
+            <span class="c1"># radius is computed from the radial function by the Orbital class.</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">rad</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;cutoff&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">R</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
+
             <span class="c1"># Create the sphericalorbital and then the atomicorbital</span>
-            <span class="n">sorb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">q0</span><span class="p">)</span>
+            <span class="n">sorb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
 
             <span class="c1"># This will be -l:l (this is the way siesta does it)</span>
             <span class="n">orbital</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sorb</span><span class="o">.</span><span class="n">toAtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">zeta</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">))</span>
@@ -231,6 +237,7 @@
         <span class="n">orb_q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orbnl_pop&quot;</span><span class="p">)[:]</span>  <span class="c1"># q0 for the orbitals</span>
         <span class="n">orb_delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)[:]</span>  <span class="c1"># delta for the functions</span>
         <span class="n">orb_psi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;orb&quot;</span><span class="p">)[:,</span> <span class="p">:]</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s2">&quot;cutoff&quot;</span><span class="p">)[:]</span>
 
         <span class="c1"># Now loop over all orbitals</span>
         <span class="n">orbital</span> <span class="o">=</span> <span class="p">[]</span>
@@ -258,8 +265,10 @@
             <span class="c1"># \int psi^\dagger psi == 1</span>
             <span class="n">psi</span> <span class="o">=</span> <span class="n">orb_psi</span><span class="p">[</span><span class="n">io</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="n">l</span> <span class="o">/</span> <span class="n">Bohr2Ang</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
+            <span class="n">R</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">[</span><span class="n">io</span><span class="p">]</span> <span class="o">*</span> <span class="n">Bohr2Ang</span>
+
             <span class="c1"># Create the sphericalorbital and then the atomicorbital</span>
-            <span class="n">sorb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">orb_q0</span><span class="p">[</span><span class="n">io</span><span class="p">])</span>
+            <span class="n">sorb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">Bohr2Ang</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">orb_q0</span><span class="p">[</span><span class="n">io</span><span class="p">],</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
 
             <span class="c1"># This will be -l:l (this is the way siesta does it)</span>
             <span class="n">orbital</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sorb</span><span class="o">.</span><span class="n">toAtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">zeta</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">))</span>

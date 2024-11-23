@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.8.1 &mdash; sisl</title>
+  <title>Contributors &mdash; sisl</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -40,8 +40,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="0.8.0" href="v0.8.0.html" />
-    <link rel="prev" title="0.8.2" href="v0.8.2.html" /> 
+    <link rel="next" title="0.15.1" href="v0.15.1.html" />
+    <link rel="prev" title="Release notes" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -90,8 +90,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Release notes</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#changelogs">Changelogs</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="v0.15.2.html">Contributors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="v0.15.2.html#pull-requests-merged">Pull requests merged</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Contributors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#added">Added</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fixed">Fixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#changed">Changed</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="v0.15.1.html">0.15.1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="v0.15.0.html">0.15.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="v0.14.3.html">0.14.3</a></li>
@@ -116,11 +121,7 @@
 <li class="toctree-l3"><a class="reference internal" href="v0.8.4.html">0.8.4</a></li>
 <li class="toctree-l3"><a class="reference internal" href="v0.8.3.html">0.8.3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="v0.8.2.html">0.8.2</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">0.8.1</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#contributors">Contributors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="v0.8.1.html">0.8.1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="v0.8.0.html">0.8.0</a></li>
 </ul>
 </li>
@@ -145,9 +146,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Release notes</a></li>
-      <li class="breadcrumb-item active">0.8.1</li>
+      <li class="breadcrumb-item active">Contributors</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/changelog/v0.8.1.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/changelog/v0.15.2.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -155,51 +156,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="id1">
-<h1>0.8.1<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
-<p>Released 23 of February 2017.</p>
+  <p>Released 6 of November 2024.</p>
 <section id="contributors">
-<h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
-<p>A total of 1 people contributed to this release.  People with a “+” by their
+<h1>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h1>
+<p>A total of 3 people contributed to this release. People with a “+” by their
 names contributed a patch for the first time.</p>
 <ul class="simple">
+<li><p>Arnold Kole +</p></li>
 <li><p>Nick Papior</p></li>
+<li><p>Pol Febrer</p></li>
 </ul>
 </section>
 <section id="pull-requests-merged">
-<h2>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Link to this heading"></a></h2>
-<p>A total of 0 pull requests were merged for this release.</p>
-<ul>
-<li><p>Fix a bug when reading non-Gamma TSHS files, now the
-supercell information is correct.</p></li>
-<li><p>tbtncSileSiesta now distinguishes between:
-electronic_temperature [K] and kT [eV]
-where the units are not the same.</p></li>
-<li><p>Fixed TBT_DN.nc TBT_UP.nc detection as a <em class="xref py py-obj">Sile</em></p></li>
-<li><p>Added information printout for the TBT.nc files</p>
-<blockquote>
-<div><p>sdata siesta.TBT.nc –info</p>
-</div></blockquote>
-<p>will print out what information is contained in the file.</p>
-</li>
-<li><p><em class="xref py py-obj">Atoms</em> overhauled with a lot of the utility routines
-inherent to the <em class="xref py py-obj">Geometry</em> object.
-It is now much faster to perform operations on this
-object.</p></li>
-<li><p>The FDF sile now allows setting and retrieving variables
-from the fdf file. Hence one may now set specific
-fdf flags via:</p>
-<blockquote>
-<div><p>sdata RUN.fdf –set SolutionMethod Transiesta</p>
-</div></blockquote>
-</li>
-<li><p>Changed default output precision for TXT files to .8f.
-Additionally one may use flag <em class="xref py py-obj">–format</em> in <em class="xref py py-obj">sgeom</em> to
-define the precision.</p></li>
-<li><p><em class="xref py py-obj">Shape</em> has been added. There are now several Shapes
-which may be used to easily find atoms within a given Shape.
-This should in principle allow construction of very complex Shapes
-and easier construction of complex Hamiltonians</p></li>
+<h1>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Link to this heading"></a></h1>
+<p>A total of 17 pull requests were merged for this release.</p>
+<ul class="simple">
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/691">#691</a>: Parsing of Mulliken charges from SIESTA stdout</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/830">#830</a>: Bump pypa/gh-action-pypi-publish from 1.10.1 to 1.10.2</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/833">#833</a>: Fixed spin polarized fatbands</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/834">#834</a>: Bump JamesIves/github-pages-deploy-action from 4.6.4 to 4.6.8</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/836">#836</a>: Fix orbital values when an orbital is completely outside of the…</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/837">#837</a>: Bump pypa/gh-action-pypi-publish from 1.10.2 to 1.10.3</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/843">#843</a>: Fix sparse grid tests</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/844">#844</a>: Fix failing test for minimal dependencies</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/845">#845</a>: Accessors and grouping documentation entries</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/846">#846</a>: fixed bug reading geometry from ncSileSiesta</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/848">#848</a>: Allow for any type of integer when requesting neighbor items</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/849">#849</a>: Improve plotables documentation</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/850">#850</a>: trying to fix the within_inf problem</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/851">#851</a>: major restructure of the documentation</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/855">#855</a>: Bump pypa/gh-action-pypi-publish from 1.10.3 to 1.11.0</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/857">#857</a>: fixed 5.2 reading of charges</p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/859">#859</a>: Use cutoff from basis files (xml, nc)</p></li>
+</ul>
+<section id="added">
+<h2>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>added <em class="xref py py-obj">timesSileSiesta</em> which can read siesta TIMES output</p></li>
+<li><p>Parsing of total Mulliken charges in <em class="xref py py-obj">stdoutSileSiesta</em>, <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/691">#691</a></p></li>
+</ul>
+</section>
+<section id="fixed">
+<h2>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>reading charges from Siesta 5.2 output files, <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/856">#856</a></p></li>
+<li><p>a read problem for very big simulations (related to <em class="xref py py-obj">orbindxSileSiesta</em>)</p></li>
+<li><p>bug-fix for <em class="xref py py-obj">tbtSileTBtrans.Eindex</em> handling of integers, <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/829">#829</a>
+This is a regression fix, integers will now be handled differently
+than prior releases.
+A warning is raised to inform users.</p></li>
+<li><p>fixed warning raised when reading electronic structure without Ef, <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/826">#826</a></p></li>
+<li><p>fixed precision writing of energies in GF files (siesta), <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/827">#827</a></p></li>
+<li><p>fixed reading <em class="xref py py-obj">HSetupOnly</em> HSX files from Siesta, <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/828">#828</a></p></li>
+<li><p>fixed reading stresses and forces from <em class="xref py py-obj">stdoutSileSiesta</em>
+Note that generally the forces/stresses in the <em>Final</em> section of the
+output will <strong>not</strong> be returned. Only if there are no other forces/stresses
+in the output file.</p></li>
+</ul>
+</section>
+<section id="changed">
+<h2>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><em class="xref py py-obj">tbtSileTBtrans.Eindex</em> changed, see <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/829">#829</a> for details.</p></li>
 </ul>
 </section>
 </section>
@@ -208,8 +226,8 @@ and easier construction of complex Hamiltonians</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="v0.8.2.html" class="btn btn-neutral float-left" title="0.8.2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="v0.8.0.html" class="btn btn-neutral float-right" title="0.8.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Release notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="v0.15.1.html" class="btn btn-neutral float-right" title="0.15.1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

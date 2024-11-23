@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=64af3cb3"></script>
+      <script src="../../../../_static/documentation_options.js?v=4c7be489"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -121,6 +121,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
@@ -227,6 +228,23 @@
     <span class="k">return</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis</span><span class="p">()</span>
 
 
+<span class="k">def</span> <span class="nf">_parse_version</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">version</span><span class="p">,</span> <span class="o">*</span><span class="n">spec</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Convert version to a tuple</span>
+    <span class="n">Version</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Version&quot;</span><span class="p">,</span> <span class="s2">&quot;version spec&quot;</span><span class="p">)</span>
+
+    <span class="n">version</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">version</span>
+
+
 <span class="k">def</span> <span class="nf">_in_final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis_tell</span>
 
@@ -239,6 +257,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_info_attributes_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span>
+            <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^Version[ ]*: &quot;</span><span class="p">,</span>
+            <span class="n">parser</span><span class="o">=</span><span class="n">_parse_version</span><span class="p">,</span>
+            <span class="n">not_found</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
         <span class="nb">dict</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s2">&quot;na&quot;</span><span class="p">,</span>
             <span class="n">searcher</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^initatomlists: Number of atoms&quot;</span><span class="p">,</span>
@@ -1205,7 +1229,7 @@
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;voronoi&quot;</span><span class="p">,</span> <span class="s2">&quot;hirshfeld&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">],</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;voronoi&quot;</span><span class="p">,</span> <span class="s2">&quot;hirshfeld&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken:&lt;5.2&quot;</span><span class="p">],</span>
         <span class="n">iscf</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
         <span class="n">imd</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
         <span class="n">key_scf</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scf&quot;</span><span class="p">,</span>
@@ -1228,7 +1252,11 @@
 <span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
 <span class="sd">        | Hirshfeld | +   | +   | +      | +     | -                |</span>
 <span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
-<span class="sd">        | Mulliken  | +   | +   | +      | +     | +                |</span>
+<span class="sd">        | Mulliken  | +   | +   | +      | +     | -                |</span>
+<span class="sd">        |   (&gt;=5.2) |     |     |        |       |                  |</span>
+<span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
+<span class="sd">        | Mulliken  | +   | +   | +      | +     | (+)              |</span>
+<span class="sd">        |     &lt;5.2  |     |     |        |       |                  |</span>
 <span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
 
 <span class="sd">        Notes</span>
@@ -1291,8 +1319,8 @@
                 <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayf</span><span class="p">([[</span><span class="kc">None</span><span class="p">]])</span>
 
         <span class="c1"># define helper function for reading voronoi+hirshfeld charges</span>
-        <span class="k">def</span> <span class="nf">_voronoi_hirshfeld_charges</span><span class="p">():</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Read output from Voronoi/Hirshfeld charges&quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_charges</span><span class="p">():</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Read output from Voronoi/Hirshfeld/Mulliken charges&quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">pd</span>
 
             <span class="c1"># Expecting something like this (NC/SOC)</span>
@@ -1303,11 +1331,17 @@
             <span class="c1"># Voronoi Atomic Populations:</span>
             <span class="c1"># Atom #     dQatom  Atom pop        Sz  Species</span>
             <span class="c1">#      1   -0.02936   4.02936   0.00000  C</span>
+            <span class="c1"># In 5.2 this now looks like this:</span>
+            <span class="c1"># Voronoi Atomic Populations:</span>
+            <span class="c1"># Atom #  charge [q]  valence [e]        Sz  Species</span>
+            <span class="c1">#      1    -0.02936      4.02936   0.00000  C</span>
 
             <span class="c1"># first line is the header</span>
             <span class="n">header</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;dQatom&quot;</span><span class="p">,</span> <span class="s2">&quot;dq&quot;</span><span class="p">)</span>  <span class="c1"># dQatom in master</span>
+                <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;charge [q]&quot;</span><span class="p">,</span> <span class="s2">&quot;dq&quot;</span><span class="p">)</span>  <span class="c1"># charge [q] in 5.2</span>
+                <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;valence [e]&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">)</span>  <span class="c1"># in 5.2</span>
+                <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;dQatom&quot;</span><span class="p">,</span> <span class="s2">&quot;dq&quot;</span><span class="p">)</span>  <span class="c1"># dQatom in 5.0</span>
                 <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; Qatom&quot;</span><span class="p">,</span> <span class="s2">&quot; dq&quot;</span><span class="p">)</span>  <span class="c1"># Qatom in 4.1</span>
                 <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Atom pop&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">)</span>  <span class="c1"># not found in 4.1</span>
                 <span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -1351,7 +1385,7 @@
             <span class="p">)</span>
 
         <span class="c1"># define helper function for reading voronoi+hirshfeld charges</span>
-        <span class="k">def</span> <span class="nf">_mulliken_charges</span><span class="p">():</span>
+        <span class="k">def</span> <span class="nf">_mulliken_charges_pre52</span><span class="p">():</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Read output from Mulliken charges&quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">pd</span>
 
@@ -1507,22 +1541,41 @@
                 <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="n">stop</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;atom&quot;</span><span class="p">),</span>
             <span class="p">)</span>
 
+        <span class="c1"># split method to retrieve options</span>
+        <span class="n">namel</span><span class="p">,</span> <span class="o">*</span><span class="n">opts</span> <span class="o">=</span> <span class="n">namel</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
         <span class="c1"># Check that a known charge has been requested</span>
         <span class="k">if</span> <span class="n">namel</span> <span class="o">==</span> <span class="s2">&quot;voronoi&quot;</span><span class="p">:</span>
-            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_voronoi_hirshfeld_charges</span>
+            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_charges</span>
             <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="s2">&quot;Voronoi Atomic Populations&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Voronoi Net Atomic Populations&quot;</span><span class="p">,</span>
             <span class="p">]</span>
         <span class="k">elif</span> <span class="n">namel</span> <span class="o">==</span> <span class="s2">&quot;hirshfeld&quot;</span><span class="p">:</span>
-            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_voronoi_hirshfeld_charges</span>
+            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_charges</span>
             <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="s2">&quot;Hirshfeld Atomic Populations&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Hirshfeld Net Atomic Populations&quot;</span><span class="p">,</span>
             <span class="p">]</span>
         <span class="k">elif</span> <span class="n">namel</span> <span class="o">==</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">:</span>
-            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_mulliken_charges</span>
+            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_mulliken_charges_pre52</span>
             <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mulliken: Atomic and Orbital Populations&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;&lt;5.2&quot;</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># check if version is understandable</span>
+                <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">version</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                        <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_charges</span>
+                        <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="s2">&quot;Mulliken Atomic Populations&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;Mulliken Net Atomic Populations&quot;</span><span class="p">,</span>
+                        <span class="p">]</span>
+                <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_charge name argument should be one of [voronoi, hirshfeld, mulliken], got </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">?&quot;</span>

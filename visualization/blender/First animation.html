@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=64af3cb3"></script>
+      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -132,12 +132,12 @@
   <section id="first-animation">
 <h1>First animation<a class="headerlink" href="#first-animation" title="Link to this heading"></a></h1>
 <p>Below is a script that generates an animation of graphene breathing in blender:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
 <span class="kn">from</span> <span class="nn">sisl.viz</span> <span class="kn">import</span> <span class="n">merge_plots</span>
 
 <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">color</span><span class="p">,</span> <span class="n">opacity</span><span class="p">,</span> <span class="n">scale</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]):</span>
-    <span class="n">geom_plot</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;blender&quot;</span><span class="p">,</span>
+    <span class="n">geom_plot</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;blender&quot;</span><span class="p">,</span>
         <span class="n">atoms_style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="n">opacity</span><span class="p">},</span>
         <span class="n">bonds_scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
         <span class="n">atoms_scale</span><span class="o">=</span><span class="n">scale</span>

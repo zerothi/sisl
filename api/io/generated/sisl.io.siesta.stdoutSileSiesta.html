@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=64af3cb3"></script>
+      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -353,7 +353,7 @@ specifying which species in the calculation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.stdoutSileSiesta.read_charge">
-<span class="sig-name descname"><span class="pre">read_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'voronoi'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'hirshfeld'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mulliken'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_scf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'scf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_charge" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'voronoi'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'hirshfeld'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mulliken'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mulliken:&lt;5.2'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_scf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'scf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_charge" title="Link to this definition"></a></dt>
 <dd><p>Read charges calculated in SCF loop or MD loop (or both)</p>
 <p>Siesta enables many different modes of writing out charges.</p>
 <p>The below table shows a list of different cases that
@@ -419,10 +419,10 @@ return section to indicate what is returned.</p>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><p>Mulliken</p></td>
-<td><ul class="simple">
-<li></li>
-</ul>
+<tr class="row-odd"><td><dl class="simple">
+<dt>Mulliken</dt><dd><p>(&gt;=5.2)</p>
+</dd>
+</dl>
 </td>
 <td><ul class="simple">
 <li></li>
@@ -440,6 +440,33 @@ return section to indicate what is returned.</p>
 <li></li>
 </ul>
 </td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><dl class="simple">
+<dt>Mulliken</dt><dd><p>&lt;5.2</p>
+</dd>
+</dl>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>(+)</p></td>
 </tr>
 </tbody>
 </table>
