@@ -231,7 +231,8 @@ def test_state_inner_projections():
     state = State(ar(n, g.no), parent=g)
 
     for projs, shape in (
-        (("diag", "diagonal", "sum", True), (n,)),
+        (("diag", "diagonal", True), (n,)),
+        (("trace", "sum"), tuple()),
         (("matrix", False), (n, n)),
         (("basis", "orbitals", "orbital"), (n, g.no)),
         (("atoms", "atom"), (n, g.na)),
@@ -248,9 +249,10 @@ def test_state_norm_projections():
     assert state.shape[0] != state.shape[1]
 
     for projs, shape in (
-        (("sum", True), (n,)),
-        (("basis", "orbitals", "orbital"), (n, g.no)),
-        (("atoms", "atom"), (n, g.na)),
+        (("diagonal", True), (n,)),
+        (("trace", "sum"), tuple()),
+        (("hadamard", "basis", "orbitals", "orbital"), (n, g.no)),
+        (("atoms", "atom", "hadamard:atoms"), (n, g.na)),
     ):
         for proj in projs:
             data = state.norm2(projection=proj)

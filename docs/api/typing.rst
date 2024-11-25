@@ -48,6 +48,12 @@ The typing types are shown below:
    LatticeLike
    LatticeOrGeometry
    LatticeOrGeometryLike
+   ProjectionTypeMatrix
+   ProjectionTypeTrace
+   ProjectionTypeDiag
+   ProjectionTypeHadamard
+   ProjectionTypeHadamardAtoms
+   ProjectionType
    SileLike
    SparseMatrix
    SparseMatrixExt

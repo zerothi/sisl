@@ -89,6 +89,7 @@ Sparse matrices
 
 """
 
+from ._common import *
 from ._feature import *
 from .distribution import *
 from .sparse import *

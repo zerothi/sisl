@@ -9,7 +9,7 @@ import sisl._array as _a
 from sisl._internal import set_module
 from sisl.typing import GaugeType
 
-from ._feature import comply_gauge
+from ._common import comply_gauge
 from .distribution import get_distribution
 from .electron import EigenstateElectron, EigenvalueElectron
 from .sparse import SparseOrbitalBZSpin
