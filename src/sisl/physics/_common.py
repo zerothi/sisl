@@ -3,9 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from enum import StrEnum
-from typing import get_args
-
 from sisl.typing import GaugeType, ProjectionType
 
 __all__ = ["comply_gauge", "comply_projection"]
