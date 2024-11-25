@@ -28,12 +28,13 @@ def test_EigenstateElectron_norm2():
     assert len(state) == H.no
     assert state.norm2()[0] == pytest.approx(1)
     assert state.norm2().shape == (H.no,)
-    for p in ("sum", "orbital", "atom"):
+    for p in ("diagonal", "orbital", "atom"):
         assert state.norm2(projection=p).sum() == pytest.approx(H.no)
 
     ns = 3
     state3 = state.sub(range(ns))
-    assert state3.norm2(projection="sum").shape == (ns,)
+    assert state3.norm2(projection="trace").ndim == 0
+    assert state3.norm2(projection="diagonal").shape == (ns,)
     assert state3.norm2(projection="orbital").shape == (ns, H.no)
     assert state3.norm2(projection="atom").shape == (ns, H.na)
     assert state3.norm2(projection="atom").sum() == pytest.approx(ns)

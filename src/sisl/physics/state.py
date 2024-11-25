@@ -17,9 +17,10 @@ from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
 from sisl.messages import deprecate_argument, warn
-from sisl.typing import CartesianAxes, GaugeType
+from sisl.typing import CartesianAxes, GaugeType, ProjectionType
+from sisl.typing._physics import ProjectionTypeHadamard, ProjectionTypeHadamardAtoms
 
-from ._feature import comply_gauge
+from ._common import comply_gauge, comply_projection
 
 __all__ = ["degenerate_decouple", "Coefficient", "State", "StateC"]
 
@@ -489,7 +490,12 @@ state coefficients
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "atoms", "basis"] = "sum"):
+    def norm2(
+        self,
+        projection: Union[
+            ProjectionType, ProjectionTypeHadamard, ProjectionTypeHadamardAtoms
+        ] = "diagonal",
+    ):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
 
         Parameters
@@ -549,7 +555,7 @@ state coefficients
           order parameter for the IPR
         """
         # This *has* to be a real value C * C^* == real
-        state_abs2 = self.norm2(projection="basis").real
+        state_abs2 = self.norm2(projection="hadamard").real
         assert q >= 2, f"{self.__class__.__name__}.ipr requires q>=2"
         # abs2 is already having the exponent 2
         return (state_abs2**q).sum(-1) / state_abs2.sum(-1) ** q
@@ -659,7 +665,9 @@ state coefficients
         self,
         ket=None,
         matrix=None,
-        projection: Literal["diag", "atoms", "basis", "matrix"] = "diag",
+        projection: Union[
+            ProjectionType, ProjectionTypeHadamard, ProjectionTypeHadamardAtoms
+        ] = "diagonal",
     ):
         r"""Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
 
@@ -695,14 +703,17 @@ state coefficients
             This can be used to sum specific sub-elements, return the diagonal, or the
             full matrix.
 
-            * ``diag`` only return the diagonal of the inner product
-            * ``matrix`` a matrix with diagonals and the off-diagonals
-            * ``basis`` only do inner products for individual states, but return them basis-resolved
+            * ``diagonal`` only return the diagonal of the inner product ('ii' elements)
+            * ``matrix`` a matrix with diagonals and the off-diagonals ('ij' elements)
+            * ``hadamard`` only do element wise products for the states (equivalent to
+            basis resolved inner-products)
             * ``atoms`` only do inner products for individual states, but return them atom-resolved
 
         Notes
         -----
-        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used. One have to add the overlap matrix in the `matrix` argument, if needed.
+        This does *not* take into account a possible overlap matrix when
+        non-orthogonal basis sets are used.
+        One have to add the overlap matrix in the `matrix` argument, if needed.
 
         Raises
         ------
@@ -758,19 +769,15 @@ state coefficients
                     f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}"
                 )
 
-        projection = {
-            # temporary work-around for older codes where project/diag=T|F were allowed
-            True: "diag",
-            False: "matrix",
-            "sum": "diag",  # still allowed here (for bypass options)
-            "atoms": "atom",  # plural s allowed
-            "orbitals": "orbital",  # still allowed here (for bypass options)
-        }.get(projection, projection)
+        if isinstance(projection, bool):
+            projection = "diagonal" if projection else "matrix"
+        projection = comply_projection(projection)
 
-        if projection in ("diag", "diagonal"):
+        if projection == "diagonal":
             if bra.shape[0] != ket.shape[0]:
                 raise ValueError(
-                    f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors."
+                    f"{self.__class__.__name__}.inner diagonal matrix product is "
+                    "non-square, please use projection!=diagonal or reduce number of vectors."
                 )
             if ndim == 2:
                 Aij = einsum("ij,ji->i", np.conj(bra), M @ ket.T)
@@ -779,7 +786,7 @@ state coefficients
             elif ndim == 0:
                 Aij = einsum("ij,ij->i", np.conj(bra), ket) * M
 
-        elif projection in ("matrix", "none"):
+        elif projection == "matrix":
             if ndim == 2:
                 Aij = np.conj(bra) @ (M @ ket.T)
             elif ndim == 1:
@@ -787,34 +794,50 @@ state coefficients
             elif ndim == 0:
                 Aij = einsum("ij,kj->ik", np.conj(bra), ket) * M
 
-        elif projection in ("atom", "basis", "orbital"):
+        elif projection == "hadamard":
             if ndim == 2:
                 Aij = np.conj(bra) * (M @ ket.T).T
             else:
                 Aij = np.conj(bra) * ket * M
 
-            # Now do the projection
-            if projection == "atom":
-                # Now we need to convert it
-                geom = self._geometry()
-                if Aij.shape[1] == geom.no * 2:
-                    # We have some kind of spin-configuration (hidden)
-                    def mapper(atom):
-                        return np.arange(
-                            geom.firsto[atom] * 2, geom.firsto[atom + 1] * 2
-                        )
+        elif projection == "hadamard:atoms":
+            if ndim == 2:
+                Aij = np.conj(bra) * (M @ ket.T).T
+            else:
+                Aij = np.conj(bra) * ket * M
 
-                elif Aij.shape[1] == geom.no:
+            # Now we need to convert it
+            geom = self._geometry()
+            if Aij.shape[1] == geom.no * 2:
+                # We have some kind of spin-configuration (hidden)
+                def mapper(atom):
+                    return np.arange(geom.firsto[atom] * 2, geom.firsto[atom + 1] * 2)
 
-                    def mapper(atom):
-                        return np.arange(geom.firsto[atom], geom.firsto[atom + 1])
+            elif Aij.shape[1] == geom.no:
 
-                else:
-                    raise RuntimeError(
-                        f"{self.__class__.__name__}.inner could not determine "
-                        "the correct atom conversions."
-                    )
-                Aij = geom.apply(Aij, np.sum, mapper, axis=1)
+                def mapper(atom):
+                    return np.arange(geom.firsto[atom], geom.firsto[atom + 1])
+
+            else:
+                raise RuntimeError(
+                    f"{self.__class__.__name__}.inner could not determine "
+                    "the correct atom conversions."
+                )
+            Aij = geom.apply(Aij, np.sum, mapper, axis=1)
+
+        elif projection == "trace":
+            if bra.shape[0] != ket.shape[0]:
+                raise ValueError(
+                    f"{self.__class__.__name__}.inner diagonal matrix product is "
+                    "non-square, cannot do the trace."
+                )
+            if ndim == 2:
+                Aij = einsum("ij,ji->i", np.conj(bra), M @ ket.T).sum()
+            elif ndim == 1:
+                Aij = einsum("ij,j,ij->i", np.conj(bra), M, ket).sum()
+            elif ndim == 0:
+                Aij = (einsum("ij,ij->i", np.conj(bra), ket) * M).sum()
+
         else:
             raise ValueError(
                 f"{self.__class__.__name__}.inner got unknown argument 'projection'={projection}"
@@ -919,8 +942,8 @@ state coefficients
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm = self.norm2(projection="basis").real
-        onorm = other.norm2(projection="basis").real
+        snorm = self.norm2(projection="hadamard").real
+        onorm = other.norm2(projection="hadamard").real
 
         # Now find new orderings
         show_warn = False

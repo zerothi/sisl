@@ -1252,7 +1252,7 @@ class TestHamiltonian:
         es = H.eigenstate()
         PDOS = es.PDOS(E, dist)[..., 0]
         SM = es.spin_moment()
-        SMp = es.spin_moment(project=True)
+        SMp = es.spin_moment(projection=True)
 
         # now check with spin stuff
         pdos = es.inner().real
@@ -1288,7 +1288,7 @@ class TestHamiltonian:
         es = H.eigenstate()
         PDOS = es.PDOS(E, dist)[..., 0]
         SM = es.spin_moment()
-        SMp = es.spin_moment(project=True)
+        SMp = es.spin_moment(projection=True)
 
         # now check with spin stuff
         pdos = es.inner().real
@@ -1636,7 +1636,7 @@ class TestHamiltonian:
             assert np.allclose(sm[2], sm2)
             assert np.allclose(sm[2], sm3)
 
-            om = es.spin_moment(project=True)
+            om = es.spin_moment(projection=True)
             assert np.allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
@@ -1710,7 +1710,7 @@ class TestHamiltonian:
 
             sm = es.spin_moment()
 
-            om = es.spin_moment(project=True)
+            om = es.spin_moment(projection=True)
             assert np.allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
@@ -1795,7 +1795,7 @@ class TestHamiltonian:
             assert np.allclose(sm[2], sm2)
             assert np.allclose(sm[2], sm3)
 
-            om = es.spin_moment(project=True)
+            om = es.spin_moment(projection=True)
             assert np.allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))

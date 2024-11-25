@@ -8,7 +8,7 @@ import numpy as np
 
 cimport numpy as np
 
-from ._feature import comply_gauge
+from ._common import comply_gauge
 from ._matrix_phase3 import *
 from ._matrix_phase3_nc import *
 from ._matrix_phase3_so import *

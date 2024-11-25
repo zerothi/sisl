@@ -219,6 +219,10 @@ def __getattr__(attr):
         import sisl.constant as constant
 
         return constant
+    if attr == "typing":
+        import sisl.typing as typing
+
+        return typing
 
     raise AttributeError(f"module {__name__} has no attribute {attr}")
 

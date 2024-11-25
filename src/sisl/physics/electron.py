@@ -88,7 +88,14 @@ from sisl.messages import (
     progressbar,
     warn,
 )
-from sisl.typing import CartesianAxisStrLiteral
+from sisl.physics._common import comply_projection
+from sisl.typing import (
+    CartesianAxisStrLiteral,
+    ProjectionType,
+    ProjectionTypeHadamard,
+    ProjectionTypeHadamardAtoms,
+)
+from sisl.typing._physics import ProjectionTypeDiag
 from sisl.utils.misc import direction
 
 if TYPE_CHECKING:
@@ -329,7 +336,7 @@ def COP(E, eig, state, M, distribution="gaussian", atol: float = 1e-10):
     distribution : func or str, optional
        a function that accepts :math:`E-\epsilon` as argument and calculates the
        distribution function.
-    atol : float, optional
+    atol :
        tolerance value where the distribution should be above before
        considering an eigenstate to contribute to an energy point,
        a higher value means that more energy points are discarded and so the calculation
@@ -437,7 +444,20 @@ def COP(E, eig, state, M, distribution="gaussian", atol: float = 1e-10):
 
 
 @set_module("sisl.physics.electron")
-def spin_moment(state, S=None, project: bool = False):
+@deprecate_argument(
+    "project",
+    "projection",
+    "argument project has been deprecated in favor of projection",
+    "0.15",
+    "0.16",
+)
+def spin_moment(
+    state,
+    S=None,
+    projection: Union[
+        ProjectionTypeTrace, ProjectionTypeDiag, ProjectionTypeHadamard, True, False
+    ] = "diagonal",
+):
     r""" Spin magnetic moment (spin texture) and optionally orbitally resolved moments
 
     This calculation only makes sense for non-colinear calculations.
@@ -458,7 +478,7 @@ def spin_moment(state, S=None, project: bool = False):
        \\
        \mathbf{S}_\alpha^z &= \langle \psi_\alpha | \boldsymbol\sigma_z \mathbf S | \psi_\alpha \rangle
 
-    If `project` is true, the above will be the orbitally resolved quantities.
+    If `projection` is orbitals/basis/true, the above will be the orbitally resolved quantities.
 
     Parameters
     ----------
@@ -468,8 +488,8 @@ def spin_moment(state, S=None, project: bool = False):
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors
        has been evaluated at.
-    project: bool, optional
-       whether the spin-moments will be orbitally resolved or not
+    projection:
+       how the projection should be done
 
     Notes
     -----
@@ -485,10 +505,15 @@ def spin_moment(state, S=None, project: bool = False):
     Returns
     -------
     numpy.ndarray
-        spin moments per state with final dimension ``(3, state.shape[0])``, or ``(3, state.shape[0], state.shape[1]//2)`` if project is true
+        spin moments per state with final dimension ``(3, state.shape[0])``, or ``(3,
+        state.shape[0], state.shape[1]//2)`` if projection is orbitals/basis/true
     """
     if state.ndim == 1:
-        return spin_moment(state.reshape(1, -1), S, project)[0]
+        return spin_moment(state.reshape(1, -1), S, projection)[0]
+
+    if isinstance(projection, bool):
+        projection = "hadamard" if projection else "diagonal"
+    projection = comply_projection(projection)
 
     if S is None:
         S = _FakeMatrix(state.shape[1] // 2, state.shape[1] // 2)
@@ -498,7 +523,7 @@ def spin_moment(state, S=None, project: bool = False):
 
     # see PDOS for details related to the spin-box calculations
 
-    if project:
+    if projection == "hadamard":
         s = empty(
             [3, state.shape[0], state.shape[1] // 2],
             dtype=state.real.dtype,
@@ -514,7 +539,7 @@ def spin_moment(state, S=None, project: bool = False):
             s[0, i] = D1.real + D2.real
             s[1, i] = D2.imag - D1.imag
 
-    else:
+    elif projection == "diagonal":
         s = empty([3, state.shape[0]], dtype=state.real.dtype)
 
         # TODO consider doing this all in a few lines
@@ -528,6 +553,20 @@ def spin_moment(state, S=None, project: bool = False):
             s[2, i] = D[0, 0].real - D[1, 1].real
             s[0, i] = D[1, 0].real + D[0, 1].real
             s[1, i] = D[0, 1].imag - D[1, 0].imag
+
+    elif projection == "trace":
+        s = empty([3], dtype=state.real.dtype)
+
+        for i in range(len(state)):
+            cs = conj(state[i]).reshape(-1, 2)
+            Sstate = S @ state[i].reshape(-1, 2)
+            D = cs.T @ Sstate
+            s[2] = (D[0, 0].real - D[1, 1].real).sum()
+            s[0] = (D[1, 0].real + D[0, 1].real).sum()
+            s[1] = (D[0, 1].imag - D[1, 0].imag).sum()
+
+    else:
+        raise ValueError(f"spin_moment got wrong 'projection' argument: {projection}.")
 
     return s
 
@@ -561,7 +600,7 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
        have been evaluated at.
     sum:
         whether the spin-contamination should be summed for all states (a single number returned).
-        If false, a spin-contamination per state per spin-channel will be returned.
+        If sum, a spin-contamination per state per spin-channel will be returned.
 
     Notes
     -----
@@ -1671,7 +1710,12 @@ class _electron_State:
         "0.15",
         "0.16",
     )
-    def norm2(self, projection: Literal["sum", "orbitals", "basis", "atoms"] = "sum"):
+    def norm2(
+        self,
+        projection: Union[
+            ProjectionType, ProjectionTypeHadamard, ProjectionTypeHadamardAtoms
+        ] = "diagonal",
+    ):
         r"""Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
         :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis
@@ -1693,7 +1737,14 @@ class _electron_State:
         """
         return self.inner(matrix=self.Sk(), projection=projection)
 
-    def spin_moment(self, project=False):
+    @deprecate_argument(
+        "project",
+        "projection",
+        "argument project has been deprecated in favor of projection",
+        "0.15",
+        "0.16",
+    )
+    def spin_moment(self, projection="diagonal"):
         r"""Calculate spin moment from the states
 
         This routine calls `~sisl.physics.electron.spin_moment` with appropriate arguments
@@ -1703,10 +1754,10 @@ class _electron_State:
 
         Parameters
         ----------
-        project : bool, optional
+        projection:
            whether the moments are orbitally resolved or not
         """
-        return spin_moment(self.state, self.Sk(), project=project)
+        return spin_moment(self.state, self.Sk(), projection=projection)
 
     def wavefunction(self, grid, spinor=0, eta=None):
         r"""Expand the coefficients as the wavefunction on `grid` *as-is*
