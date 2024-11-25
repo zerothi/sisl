@@ -624,7 +624,7 @@ class ncSileSiesta(SileCDFSiesta):
         _csr_to_siesta(H.geometry, csr)
         csr.finalize(sort=kwargs.get("sort", True))
 
-        _mat_siesta2sisl(H, dtype=np.float64)
+        _mat_sisl2siesta(H, dtype=np.float64)
 
         # Ensure that the geometry is written
         self.write_geometry(H.geometry)
@@ -683,7 +683,7 @@ class ncSileSiesta(SileCDFSiesta):
         # Convert to siesta CSR (we don't need to sort this matrix)
         _csr_to_siesta(DM.geometry, csr)
         csr.finalize(sort=kwargs.get("sort", True))
-        _mat_siesta2sisl(DM, dtype=np.float64)
+        _mat_sisl2siesta(DM, dtype=np.float64)
 
         # Ensure that the geometry is written
         self.write_geometry(DM.geometry)
@@ -741,7 +741,7 @@ class ncSileSiesta(SileCDFSiesta):
         # no need to sort this matrix
         _csr_to_siesta(EDM.geometry, csr)
         csr.finalize(sort=kwargs.get("sort", True))
-        _mat_siesta2sisl(EDM, dtype=np.float64)
+        _mat_sisl2siesta(EDM, dtype=np.float64)
 
         # Ensure that the geometry is written
         self.write_geometry(EDM.geometry)
