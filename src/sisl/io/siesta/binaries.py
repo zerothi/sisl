@@ -721,8 +721,9 @@ class tsdeSileSiesta(dmSileSiesta):
         Ef :
            fermi-level to be contained
         """
-        DM = DM.transpose(spin=False, sort=False)
-        EDM = EDM.transpose(spin=False, sort=False)
+        sort = kwargs.get("sort", True)
+        DM = DM.transpose(spin=False, sort=sort)
+        EDM = EDM.transpose(spin=False, sort=sort)
         DM._csr.align(EDM._csr)
         EDM._csr.align(DM._csr)
 
@@ -734,7 +735,6 @@ class tsdeSileSiesta(dmSileSiesta):
 
         _csr_to_siesta(DM.geometry, DM._csr)
         _csr_to_siesta(DM.geometry, EDM._csr)
-        sort = kwargs.get("sort", True)
         DM._csr.finalize(sort=sort)
         EDM._csr.finalize(sort=sort)
         _mat_sisl2siesta(DM, dtype=np.float64)

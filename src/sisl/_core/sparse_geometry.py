@@ -1003,15 +1003,17 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         atoms = np.arange(self.geometry.na).reshape(-1, reps).T.ravel()
         return self.sub(atoms).untile(reps, axis, segment, *args, sym=sym, **kwargs)
 
-    def finalize(self):
+    def finalize(self, *args, **kwargs):
         """Finalizes the model
 
         Finalizes the model so that all non-used elements are removed. I.e. this simply reduces the memory requirement for the sparse matrix.
 
-        Note that adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
+        Notes
+        -----
+        Adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
         internal data-representation.
         """
-        self._csr.finalize()
+        self._csr.finalize(*args, **kwargs)
 
     def tocsr(self, dim: int = 0, isc=None, **kwargs):
         """Return a :class:`~scipy.sparse.csr_matrix` for the specified dimension

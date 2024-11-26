@@ -253,8 +253,8 @@ class ncSileSiesta(SileCDFSiesta):
         _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
 
         # Shift to the Fermi-level
-        Ef = -self._value("Ef")[:] * Ry2eV
-        H.shift(Ef)
+        Ef = self._value("Ef")[:] * Ry2eV
+        H.shift(-Ef)
 
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
 

@@ -404,7 +404,7 @@ column indices of the sparse elements
         shape[2] = dim
         shape = tuple(shape)
 
-        offsets = array_fill_repeat(offsets, shape[0], cls=dtype)
+        offsets = array_fill_repeat(offsets, shape[0], cls=np.int32)
 
         # Create the index-pointer, data and values
         data = array_fill_repeat(diagonals, shape[0], axis=0, cls=dtype)
@@ -488,7 +488,7 @@ column indices of the sparse elements
         """Whether the contained data is finalized and non-used elements have been removed"""
         return self._finalized
 
-    def finalize(self, sort=True):
+    def finalize(self, sort: bool = True):
         """Finalizes the sparse matrix by removing all non-set elements
 
         One may still interact with the sparse matrix as one would previously.

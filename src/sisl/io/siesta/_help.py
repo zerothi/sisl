@@ -127,7 +127,8 @@ def _mat2dtype(M, dtype: np.dtype) -> None:
                 csr._D = csr._D.astype(dtype)
             elif spin.is_noncolinear:
                 D = np.empty(shape[:-1] + (shape[-1] - 1,), dtype=dtype)
-                D[..., [0, 1]] = csr._D[..., [0, 1]].astype(dtype)
+                # These should be real only anyways!
+                D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
                 D[..., 2] = toc(csr._D, 2, 3)
                 if D.shape[-1] > 4:
                     D[..., 3:] = csr._D[..., 4:].astype(dtype)
@@ -158,11 +159,12 @@ def _mat2dtype(M, dtype: np.dtype) -> None:
                 csr._D = csr._D.astype(dtype)
             elif spin.is_noncolinear:
                 D = np.empty(shape[:-1] + (shape[-1] + 1,), dtype=dtype)
-                D[..., [0, 1]] = csr._D[..., [0, 1]].astype(dtype)
+                # These should be real only anyways!
+                D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
                 D[..., 2] = csr._D[..., 2].real.astype(dtype)
                 D[..., 3] = csr._D[..., 2].imag.astype(dtype)
                 if D.shape[-1] > 4:
-                    D[..., 4:] = csr._D[..., 3:].astype(dtype)
+                    D[..., 4:] = csr._D[..., 3:].real.astype(dtype)
                 csr._D = D
             elif spin.is_spinorbit:
                 D = np.empty(shape[:-1] + (shape[-1] + 4,), dtype=dtype)
@@ -175,7 +177,7 @@ def _mat2dtype(M, dtype: np.dtype) -> None:
                 D[..., 6] = csr._D[..., 3].real.astype(dtype)
                 D[..., 7] = csr._D[..., 3].imag.astype(dtype)
                 if D.shape[-1] > 8:
-                    D[..., 8:] = csr._D[..., 4:].astype(dtype)
+                    D[..., 8:] = csr._D[..., 4:].real.astype(dtype)
                 csr._D = D
             else:
                 raise NotImplementedError

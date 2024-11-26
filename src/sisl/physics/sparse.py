@@ -979,7 +979,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     # Hermitian parameters
                     # The input order is [uu, dd, ud, du]
                     paramsH = [
-                        [p[0].conj(), p[1].conj(), p[3].conj(), p[2].conj(), *p[4:]]
+                        [
+                            p[0].conjugate(),
+                            p[1].conjugate(),
+                            p[3].conjugate(),
+                            p[2].conjugate(),
+                            *p[4:],
+                        ]
                         for p in params
                     ]
                 else:
@@ -1009,7 +1015,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                             ],
                             dtype_cplx,
                         )
-                    if not np.allclose(onsite, onsite.T.conj()):
+                    if not np.allclose(onsite, onsite.T.conjugate()):
                         warn(
                             f"{self.__class__.__name__}.create_construct is NOT "
                             "Hermitian for on-site terms. This is your responsibility! "
@@ -1020,7 +1026,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 if is_complex:
                     nv = 3
                     # Hermitian parameters
-                    paramsH = [[p[0].conj(), p[1].conj(), p[2], *p[3:]] for p in params]
+                    paramsH = [
+                        [p[0].conjugate(), p[1].conjugate(), p[2], *p[3:]]
+                        for p in params
+                    ]
                 else:
                     nv = 4
                     # Hermitian parameters
