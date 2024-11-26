@@ -246,7 +246,7 @@ class ncSileSiesta(SileCDFSiesta):
                 f"{self}.read_hamiltonian requires the stored matrix to be in Ry!"
             )
 
-        for i in range(len(H.spin)):
+        for i in range(H.spin.size(H.dtype)):
             H._csr._D[:, i] = sp.variables["H"][i, :] * Ry2eV
 
         # fix siesta specific notation
@@ -281,7 +281,7 @@ class ncSileSiesta(SileCDFSiesta):
         DM = self._r_class_spin(DensityMatrix, **kwargs)
 
         sp = self.groups["SPARSE"]
-        for i in range(len(DM.spin)):
+        for i in range(DM.spin.size(DM.dtype)):
             DM._csr._D[:, i] = sp.variables["DM"][i, :]
 
         # fix siesta specific notation
@@ -299,7 +299,7 @@ class ncSileSiesta(SileCDFSiesta):
             Ef = np.tile(Ef, 2)
 
         sp = self.groups["SPARSE"]
-        for i in range(len(EDM.spin)):
+        for i in range(EDM.spin.size(EDM.dtype)):
             EDM._csr._D[:, i] = sp.variables["EDM"][i, :] * Ry2eV
             if i < 2 and "DM" in sp.variables:
                 EDM._csr._D[:, i] -= sp.variables["DM"][i, :] * Ef[i]
@@ -629,7 +629,7 @@ class ncSileSiesta(SileCDFSiesta):
         # Ensure that the geometry is written
         self.write_geometry(H.geometry)
 
-        self._crt_dim(self, "spin", len(H.spin))
+        self._crt_dim(self, "spin", H.spin.size(H.dtype))
 
         if H.dkind != "f":
             raise NotImplementedError(
@@ -660,7 +660,7 @@ class ncSileSiesta(SileCDFSiesta):
         )
         v.info = "Hamiltonian"
         v.unit = "Ry"
-        for i in range(len(H.spin)):
+        for i in range(H.spin.size(H.dtype)):
             v[i, :] = csr._D[:, i] / Ry2eV
 
         self._write_settings()
@@ -688,7 +688,7 @@ class ncSileSiesta(SileCDFSiesta):
         # Ensure that the geometry is written
         self.write_geometry(DM.geometry)
 
-        self._crt_dim(self, "spin", len(DM.spin))
+        self._crt_dim(self, "spin", DM.spin.size(DM.dtype))
 
         if DM.dkind != "f":
             raise NotImplementedError(
@@ -718,7 +718,7 @@ class ncSileSiesta(SileCDFSiesta):
             **self._cmp_args,
         )
         v.info = "Density matrix"
-        for i in range(len(DM.spin)):
+        for i in range(DM.spin.size(DM.dtype)):
             v[i, :] = csr._D[:, i]
 
         self._write_settings()
@@ -746,7 +746,7 @@ class ncSileSiesta(SileCDFSiesta):
         # Ensure that the geometry is written
         self.write_geometry(EDM.geometry)
 
-        self._crt_dim(self, "spin", len(EDM.spin))
+        self._crt_dim(self, "spin", EDM.spin.size(EDM.dtype))
 
         if EDM.dkind != "f":
             raise NotImplementedError(
@@ -781,7 +781,7 @@ class ncSileSiesta(SileCDFSiesta):
         )
         v.info = "Energy density matrix"
         v.unit = "Ry"
-        for i in range(len(EDM.spin)):
+        for i in range(EDM.spin.size(EDM.dtype)):
             v[i, :] = csr._D[:, i] / Ry2eV
 
         self._write_settings()

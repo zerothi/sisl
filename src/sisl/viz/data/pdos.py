@@ -462,8 +462,8 @@ class PDOSData(OrbitalData):
         sizes = wfsx_sile.read_sizes()
         # Check that spin sizes of hamiltonian and wfsx file match
         assert (
-            H.spin.size == sizes.nspin
-        ), f"Hamiltonian has spin size {H.spin.size} while file has spin size {sizes.nspin}"
+            H.spin.size(H.dtype) == sizes.nspin
+        ), f"Hamiltonian has spin size {H.spin.size(H.dtype)} while file has spin size {sizes.nspin}"
         # Get the size of the spin channel. The size returned might be 8 if it is a spin-orbit
         # calculation, but we need only 4 spin channels (total, x, y and z), same as with non-colinear
         nspin = min(4, sizes.nspin)

@@ -169,7 +169,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 out._csr._D[:, [0, 1]] = out._csr._D[:, [1, 0]]
 
             else:
-                spin = Spin("nc", dtype=self.dtype)
+                spin = Spin("nc")
                 out = self.__class__(
                     self.geometry,
                     dtype=self.dtype,
@@ -305,7 +305,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         elif self.spin.is_polarized:
             if vec[:2] @ vec[:2] > 1e-6:
-                spin = Spin("nc", dtype=self.dtype)
+                spin = Spin("nc")
                 out = self.__class__(
                     self.geometry,
                     dtype=self.dtype,
@@ -768,7 +768,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             DM = _a.emptyz([self.nnz, 2, 2])
             idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
-            if self.spin.kind == Spin.NONCOLINEAR:
+            if self.spin.is_noncolinear:
                 # non-collinear
                 DM[:, 0, 0] = csr._D[idx, 0]
                 DM[:, 0, 1] = csr._D[idx, 2] + 1j * csr._D[idx, 3]

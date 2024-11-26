@@ -610,7 +610,7 @@ class dmSileSiesta(SileBinSiesta):
             dm = csr._D[:, : DM.S_idx]
 
         # Ensure shapes (say if only 1 spin)
-        dm.shape = (-1, len(DM.spin))
+        dm.shape = (-1, DM.spin.size(DM.dtype))
 
         nsc = DM.geometry.lattice.nsc.astype(np.int32)
 
@@ -2583,7 +2583,7 @@ class _gfSileSiesta(SileBinSiesta):
         """
         if obj is None:
             obj = bz.parent
-        nspin = len(obj.spin)
+        nspin = obj.spin.size(obj.dtype)
         cell = obj.geometry.lattice.cell
         na_u = obj.geometry.na
         no_u = obj.geometry.no

@@ -23,6 +23,7 @@ we hit release version 1.0.0.
   This yield significant perf. improvements for DFT sparse matrices
   with *many* edges in the sparse matrix, but a perf. hit for very
   small TB matrices.
+- dtype removed from `Spin` class
 
 
 ## [0.15.2] - 2024-11-06

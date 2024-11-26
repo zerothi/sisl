@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import Union
+
 import numpy as np
 
 from sisl._internal import set_module
@@ -36,8 +38,6 @@ class Spin:
     ----------
     kind : str or int, Spin, optional
        specify the spin kind
-    dtype : numpy.dtype, optional
-       the data-type used for the spin-component. Default is ``np.float64``
     """
 
     #: Constant for an un-polarized spin configuration
@@ -56,21 +56,12 @@ class Spin:
     #: The :math:`\boldsymbol\sigma_z` Pauli matrix
     Z = np.array([[1, 0], [0, -1]], np.complex128)
 
-    __slots__ = ("_kind", "_dtype")
+    __slots__ = ("_kind",)
 
-    def __init__(self, kind="", dtype=None):
+    def __init__(self, kind: Union[str, int] = "unpolarized"):
         if isinstance(kind, Spin):
-            if dtype is None:
-                dtype = kind._dtype
             self._kind = kind._kind
-            self._dtype = dtype
             return
-
-        if dtype is None:
-            dtype = np.float64
-
-        # Copy data-type
-        self._dtype = dtype
 
         if isinstance(kind, str):
             kind = kind.lower()
@@ -106,84 +97,75 @@ class Spin:
         # Now assert the checks
         self._kind = kind
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.is_unpolarized:
-            return f"{self.__class__.__name__}{{unpolarized, kind={self.dkind}}}"
+            return f"{self.__class__.__name__}{{unpolarized}}"
         if self.is_polarized:
-            return f"{self.__class__.__name__}{{polarized, kind={self.dkind}}}"
+            return f"{self.__class__.__name__}{{polarized}}"
         if self.is_noncolinear:
-            return f"{self.__class__.__name__}{{non-colinear, kind={self.dkind}}}"
-        return f"{self.__class__.__name__}{{spin-orbit, kind={self.dkind}}}"
+            return f"{self.__class__.__name__}{{non-colinear}}"
+        return f"{self.__class__.__name__}{{spin-orbit}}"
 
     def copy(self):
         """Create a copy of the spin-object"""
-        return Spin(self.kind, self.dtype)
+        return Spin(self.kind)
 
-    @property
-    def dtype(self):
-        """Data-type of the spin configuration"""
-        return self._dtype
+    def size(self, dtype: np.dtype) -> int:
+        """Number of elements to describe the spin-components
 
-    @property
-    def dkind(self):
-        """Data-type kind"""
-        return np.dtype(self._dtype).kind
-
-    @property
-    def size(self):
-        """Number of elements to describe the spin-components"""
-        size = {
-            "c": {
+        Parameters
+        ----------
+        dtype:
+            data-type used to represent the spin-configuration
+        """
+        dkind = np.dtype(dtype).kind
+        if dkind == "c":
+            return {
                 self.UNPOLARIZED: 1,
                 self.POLARIZED: 2,
                 self.NONCOLINEAR: 3,
                 self.SPINORBIT: 4,
-            },
-            "i": {
-                self.UNPOLARIZED: 1,
-                self.POLARIZED: 2,
-                self.NONCOLINEAR: 4,
-                self.SPINORBIT: 8,
-            },
-            "f": {
-                self.UNPOLARIZED: 1,
-                self.POLARIZED: 2,
-                self.NONCOLINEAR: 4,
-                self.SPINORBIT: 8,
-            },
-        }[self.dkind][self.kind]
-        return size
+            }[self.kind]
+
+        return {
+            self.UNPOLARIZED: 1,
+            self.POLARIZED: 2,
+            self.NONCOLINEAR: 4,
+            self.SPINORBIT: 8,
+        }[self.kind]
 
     @property
-    def spinor(self):
+    def spinor(self) -> int:
         """Number of spinor components (1 or 2)"""
-        return min(2, self.size)
+        if self.is_unpolarized:
+            return 1
+        return 2
 
     @property
-    def kind(self):
+    def kind(self) -> int:
         """A unique ID for the kind of spin configuration"""
         return self._kind
 
     @property
-    def is_unpolarized(self):
+    def is_unpolarized(self) -> bool:
         """True if the configuration is not polarized"""
         # Regardless of data-type
         return self.kind == Spin.UNPOLARIZED
 
     @property
-    def is_polarized(self):
+    def is_polarized(self) -> bool:
         """True if the configuration is polarized"""
         return self.kind == Spin.POLARIZED
 
     is_colinear = is_polarized
 
     @property
-    def is_noncolinear(self):
+    def is_noncolinear(self) -> bool:
         """True if the configuration non-collinear"""
         return self.kind == Spin.NONCOLINEAR
 
     @property
-    def is_diagonal(self):
+    def is_diagonal(self) -> bool:
         """Whether the spin-box is only using the diagonal components
 
         This will return true for non-polarized and polarized spin configurations.
@@ -192,35 +174,31 @@ class Spin:
         return self.kind in (Spin.UNPOLARIZED, Spin.POLARIZED)
 
     @property
-    def is_spinorbit(self):
+    def is_spinorbit(self) -> bool:
         """True if the configuration is spin-orbit"""
         return self.kind == Spin.SPINORBIT
 
-    def __len__(self):
-        return self.size
-
     # Comparisons
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         return self.kind < other.kind
 
-    def __le__(self, other):
+    def __le__(self, other) -> bool:
         return self.kind <= other.kind
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.kind == other.kind
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
         return not self == other
 
-    def __gt__(self, other):
+    def __gt__(self, other) -> bool:
         return self.kind > other.kind
 
-    def __ge__(self, other):
+    def __ge__(self, other) -> bool:
         return self.kind >= other.kind
 
-    def __getstate__(self):
-        return {"size": self.size, "kind": self.kind, "dtype": self.dtype}
+    def __getstate__(self) -> dict:
+        return {"kind": self.kind}
 
     def __setstate__(self, state):
         self._kind = state["kind"]
-        self._dtype = state["dtype"]

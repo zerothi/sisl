@@ -453,7 +453,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Ensure that the geometry is written
         self.write_geometry(delta.geometry)
 
-        self._crt_dim(self, "spin", len(delta.spin))
+        self._crt_dim(self, "spin", delta.spin.size(delta.dtype))
 
         # Determine the type of delta we are storing...
         k = kwargs.get("k", None)
@@ -583,7 +583,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 attrs={"info": "Imaginary part of delta", "unit": "Ry"},
                 **self._cmp_args,
             )
-            for i in range(len(delta.spin)):
+            for i in range(delta.spin.size(delta.dtype)):
                 sl[-2] = i
                 v1[sl] = csr._D[:, i].real * eV2Ry
                 v2[sl] = csr._D[:, i].imag * eV2Ry
@@ -598,7 +598,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 attrs={"info": "delta", "unit": "Ry"},
                 **self._cmp_args,
             )
-            for i in range(len(delta.spin)):
+            for i in range(delta.spin.size(delta.dtype)):
                 sl[-2] = i
                 v[sl] = csr._D[:, i] * eV2Ry
 
