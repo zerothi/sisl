@@ -24,6 +24,9 @@ listify = sisl.utils.listify
 @pytest.mark.parametrize("read_dtype", [np.float64, np.complex128])
 @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex128])
 def test_non_colinear(sisl_tmp, sort, matrix, ext, dtype, read_dtype):
+    if ext == "nc":
+        pytest.importorskip("netCDF4")
+
     M = getattr(sisl, matrix)(sisl.geom.graphene(), spin=sisl.Spin("NC"), dtype=dtype)
     if np.issubdtype(dtype, np.complexfloating):
         onsite = [0.1 + 0j, 0.2 + 0j, 0.3 + 0.4j]
@@ -73,6 +76,9 @@ def test_non_colinear(sisl_tmp, sort, matrix, ext, dtype, read_dtype):
 @pytest.mark.parametrize("read_dtype", [np.float64, np.complex128])
 @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex128])
 def test_spin_orbit(sisl_tmp, sort, matrix, ext, dtype, read_dtype):
+    if ext == "nc":
+        pytest.importorskip("netCDF4")
+
     M = getattr(sisl, matrix)(sisl.geom.graphene(), spin=sisl.Spin("SO"), dtype=dtype)
     if np.issubdtype(dtype, np.complexfloating):
         onsite = [0.1 + 0j, 0.2 + 0j, 0.3 + 0.4j, 0.3 - 0.4j]

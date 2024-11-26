@@ -1303,7 +1303,7 @@ else:
 
             exe = Path(sys.executable).name
             msg = f"Could not import netCDF4. Please install it using '{exe} -m pip install netCDF4'"
-            raise SileError(msg) from e
+            raise SileError(msg)
 
     netCDF4 = _mock_netCDF4()
 
