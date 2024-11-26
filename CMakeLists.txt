@@ -65,7 +65,6 @@ add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
 #: lib, perhaps we should change this
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
-
 # Determine whether we are in CIBUILDWHEEL
 # and whether we are building for the universal target
 set(_def_fortran TRUE)
@@ -81,6 +80,8 @@ option(WITH_FORTRAN
 
 # Define all options for the user
 if( WITH_FORTRAN )
+  enable_language(Fortran)
+
   set(F2PY_REPORT_ON_ARRAY_COPY 10
     CACHE STRING
     "The minimum (element) size of arrays before warning about copies")
@@ -209,6 +210,18 @@ if(WITH_FORTRAN)
 endif(WITH_FORTRAN)
 
 
+message(STATUS "Python variables:")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+cmake_print_variables(Python_INCLUDE_DIRS)
+cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
+if(WITH_FORTRAN)
+  cmake_print_variables(Python_NumPy_F2Py_INCLUDE_DIR)
+endif()
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+
 message(STATUS "sisl options")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
@@ -225,18 +238,6 @@ if(WITH_FORTRAN)
     cmake_print_variables(F2PY_REPORT_ON_ARRAY_COPY)
   endif()
   cmake_print_variables(WITH_F2PY_REPORT_EXIT)
-endif()
-
-list(POP_BACK CMAKE_MESSAGE_INDENT)
-
-
-message(STATUS "Python variables:")
-list(APPEND CMAKE_MESSAGE_INDENT "  ")
-
-cmake_print_variables(Python_INCLUDE_DIRS)
-cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
-if(WITH_FORTRAN)
-  cmake_print_variables(Python_NumPy_F2Py_INCLUDE_DIR)
 endif()
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)

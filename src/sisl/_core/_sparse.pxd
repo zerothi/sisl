@@ -1,2 +1,6 @@
 # Define the interfaces for the functions exposed through cimport
-cdef Py_ssize_t inline_sum(const int[::1] array) nogil
+from sisl._core._dtypes cimport ints_st
+
+
+cdef void ncol2ptr_nc(const ints_st nr, const ints_st[::1] ncol, ints_st[::1] ptr, const
+ints_st per_elem) noexcept nogil

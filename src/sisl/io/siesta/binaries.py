@@ -396,6 +396,8 @@ class tshsSileSiesta(onlysSileSiesta):
         )
 
         # Check whether it is an orthogonal basis set
+        # TODO, this is not an exhaustive test, but is *fine* for most
+        # cases
         orthogonal = np.abs(dS).sum() == geom.no
 
         # Create the Hamiltonian container
@@ -418,7 +420,7 @@ class tshsSileSiesta(onlysSileSiesta):
             H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
             H._csr._D[:, spin] = dS[:]
 
-        _mat_spin_convert(H)
+        _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
 
         # Convert to sisl supercell
         # equivalent as _csr_from_siesta with explicit isc from file
@@ -442,7 +444,8 @@ class tshsSileSiesta(onlysSileSiesta):
         """Writes the Hamiltonian to a siesta.TSHS file"""
         # we sort below, so no need to do it here
         # see onlysSileSiesta.read_overlap for .transpose()
-        csr = H.transpose(spin=False, sort=False)._csr
+        H = H.transpose(spin=False, sort=False)
+        csr = H._csr
         if csr.nnz == 0:
             raise SileError(
                 f"{self!r}.write_hamiltonian cannot write "
@@ -454,7 +457,7 @@ class tshsSileSiesta(onlysSileSiesta):
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr, diag=True)
         csr.finalize(sort=sort)
-        _mat_spin_convert(csr, H.spin)
+        _mat_sisl2siesta(H, dtype=np.float64)
 
         # Extract the data to pass to the fortran routine
         cell = H.geometry.cell
@@ -566,7 +569,7 @@ class dmSileSiesta(SileBinSiesta):
         # DM file does not contain overlap matrix... so neglect it for now.
         DM._csr._D[:, spin] = 0.0
 
-        _mat_spin_convert(DM)
+        _mat_siesta2sisl(DM, dtype=kwargs.get("dtype"))
 
         # Convert the supercells to sisl supercells
         if nsc[0] != 0 or geom.no_s >= col.max():
@@ -584,7 +587,8 @@ class dmSileSiesta(SileBinSiesta):
 
     def write_density_matrix(self, DM, **kwargs):
         """Writes the density matrix to a siesta.DM file"""
-        csr = DM.transpose(spin=False, sort=False)._csr
+        DM = DM.transpose(spin=False, sort=False)
+        csr = DM._csr
         # This ensures that we don"t have any *empty* elements
         if csr.nnz == 0:
             raise SileError(
@@ -596,7 +600,8 @@ class dmSileSiesta(SileBinSiesta):
         # We do not really need to sort this one, but we do for consistency
         # of the interface.
         csr.finalize(sort=kwargs.get("sort", True))
-        _mat_spin_convert(csr, DM.spin)
+
+        _mat_sisl2siesta(DM, dtype=np.float64)
 
         # Get DM
         if DM.orthogonal:
@@ -674,7 +679,7 @@ class tsdeSileSiesta(dmSileSiesta):
         # EDM file does not contain overlap matrix... so neglect it for now.
         EDM._csr._D[:, spin] = 0.0
 
-        _mat_spin_convert(EDM)
+        _mat_siesta2sisl(EDM, dtype=kwargs.get("dtype"))
 
         # Convert the supercells to sisl supercells
         if nsc[0] != 0 or geom.no_s >= col.max():
@@ -704,7 +709,7 @@ class tsdeSileSiesta(dmSileSiesta):
         self._fortran_check("read_fermi_level", "could not read fermi-level.")
         return Ef
 
-    def write_density_matrices(self, DM, EDM, Ef=0.0, **kwargs):
+    def write_density_matrices(self, DM, EDM, Ef: float = 0.0, **kwargs):
         r"""Writes the density matrix to a siesta.DM file
 
         Parameters
@@ -713,31 +718,32 @@ class tsdeSileSiesta(dmSileSiesta):
            density matrix to write to the file
         EDM : EnergyDensityMatrix
            energy density matrix to write to the file
-        Ef : float, optional
+        Ef :
            fermi-level to be contained
         """
-        DMcsr = DM.transpose(spin=False, sort=False)._csr
-        EDMcsr = EDM.transpose(spin=False, sort=False)._csr
-        DMcsr.align(EDMcsr)
-        EDMcsr.align(DMcsr)
+        sort = kwargs.get("sort", True)
+        DM = DM.transpose(spin=False, sort=sort)
+        EDM = EDM.transpose(spin=False, sort=sort)
+        DM._csr.align(EDM._csr)
+        EDM._csr.align(DM._csr)
 
-        if DMcsr.nnz == 0:
+        if DM._csr.nnz == 0:
             raise SileError(
                 f"{self!r}.write_density_matrices cannot write "
                 "a zero element sparse matrix!"
             )
 
-        _csr_to_siesta(DM.geometry, DMcsr)
-        _csr_to_siesta(DM.geometry, EDMcsr)
-        sort = kwargs.get("sort", True)
-        DMcsr.finalize(sort=sort)
-        EDMcsr.finalize(sort=sort)
-        _mat_spin_convert(DMcsr, DM.spin)
-        _mat_spin_convert(EDMcsr, EDM.spin)
+        _csr_to_siesta(DM.geometry, DM._csr)
+        _csr_to_siesta(DM.geometry, EDM._csr)
+        DM._csr.finalize(sort=sort)
+        EDM._csr.finalize(sort=sort)
+        _mat_sisl2siesta(DM, dtype=np.float64)
+        _mat_sisl2siesta(EDM, dtype=np.float64)
 
         # Ensure everything is correct
         if not (
-            np.allclose(DMcsr.ncol, EDMcsr.ncol) and np.allclose(DMcsr.col, EDMcsr.col)
+            np.allclose(DM._csr.ncol, EDM._csr.ncol)
+            and np.allclose(DM._csr.col, EDM._csr.col)
         ):
             raise ValueError(
                 f"{self!r}.write_density_matrices got non compatible "
@@ -745,21 +751,21 @@ class tsdeSileSiesta(dmSileSiesta):
             )
 
         if DM.orthogonal:
-            dm = DMcsr._D
+            dm = DM._csr._D
         else:
-            dm = DMcsr._D[:, : DM.S_idx]
+            dm = DM._csr._D[:, : DM.S_idx]
         if EDM.orthogonal:
-            edm = EDMcsr._D
+            edm = EDM._csr._D
         else:
-            edm = EDMcsr._D[:, : EDM.S_idx]
+            edm = EDM._csr._D[:, : EDM.S_idx]
 
         nsc = DM.geometry.lattice.nsc.astype(np.int32)
 
         _siesta.write_tsde_dm_edm(
             self.file,
             nsc,
-            DMcsr.ncol,
-            DMcsr.col + 1,
+            DM._csr.ncol,
+            DM._csr.col + 1,
             _toF(dm, np.float64),
             _toF(edm, np.float64, _eV2Ry),
             Ef * _eV2Ry,
@@ -1348,7 +1354,7 @@ class hsxSileSiesta(SileBinSiesta):
             )
 
         # Create the Hamiltonian container
-        H = Hamiltonian(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
+        H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
@@ -1361,7 +1367,7 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
         H._csr._D[:, spin] = dS[:]
 
-        _mat_spin_convert(H)
+        _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
 
         # Convert the supercells to sisl supercells
         if no_s // no == np.prod(geom.nsc):
@@ -1392,7 +1398,7 @@ class hsxSileSiesta(SileBinSiesta):
             )
 
         # Create the Hamiltonian container
-        H = Hamiltonian(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
+        H = Hamiltonian(geom, spin, nnzpr=1, orthogonal=False)
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
@@ -1406,7 +1412,7 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
         H._csr._D[:, spin] = dS[:]
 
-        _mat_spin_convert(H)
+        _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
 
         # Convert the supercells to sisl supercells
         _csr_from_sc_off(H.geometry, isc.T, H._csr)
@@ -1440,7 +1446,7 @@ class hsxSileSiesta(SileBinSiesta):
             )
 
         # Create the Hamiltonian container
-        S = Overlap(geom, nnzpr=1, dtype=np.float32)
+        S = Overlap(geom, nnzpr=1)
 
         # Create the new sparse matrix
         S._csr.ncol = ncol.astype(np.int32, copy=False)

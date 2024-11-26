@@ -4,15 +4,14 @@ set_property(DIRECTORY
   APPEND
   PROPERTY INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/..
+  ${CMAKE_CURRENT_SOURCE_DIR}/../_core
   )
 
-foreach(source 
+foreach(source
     _bloch _phase
     _matrix_utils
     _matrix_k _matrix_dk _matrix_ddk
-    _matrix_phase _matrix_phase_nc_diag _matrix_phase_nc _matrix_phase_so
-    _matrix_phase3 _matrix_phase3_nc _matrix_phase3_so
-    _matrix_sc_phase _matrix_sc_phase_nc_diag _matrix_sc_phase_nc _matrix_sc_phase_so
+    _matrix_phase _matrix_phase_sc _matrix_phase3
     )
   add_cython_library(
     SOURCE ${source}.pyx

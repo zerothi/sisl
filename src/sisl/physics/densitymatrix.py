@@ -24,38 +24,10 @@ from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import deprecate_argument, progressbar, warn
 from sisl.typing import AtomsIndex, GaugeType, SeqFloat
 
-from .sparse import SparseOrbitalBZSpin
+from .sparse import SparseOrbitalBZSpin, _get_spin
 from .spin import Spin
 
 __all__ = ["DensityMatrix"]
-
-
-def _get_density(DM, orthogonal, what="sum"):
-    DM = DM.T
-    if orthogonal:
-        off = 0
-    else:
-        off = 1
-    if what == "sum":
-        if DM.shape[0] in (2 + off, 4 + off, 8 + off):
-            return DM[0] + DM[1]
-        return DM[0]
-    if what == "spin":
-        m = np.empty([3, DM.shape[1]], dtype=DM.dtype)
-        if DM.shape[0] == 8 + off:
-            m[0] = DM[2] + DM[6]
-            m[1] = -DM[3] + DM[7]
-            m[2] = DM[0] - DM[1]
-        elif DM.shape[0] == 4 + off:
-            m[0] = 2 * DM[2]
-            m[1] = -2 * DM[3]
-            m[2] = DM[0] - DM[1]
-        elif DM.shape[0] == 2 + off:
-            m[:2, :] = 0.0
-            m[2] = DM[0] - DM[1]
-        elif DM.shape[0] == 1 + off:
-            m[...] = 0.0
-        return m
 
 
 class _densitymatrix(SparseOrbitalBZSpin):
@@ -539,10 +511,10 @@ class _densitymatrix(SparseOrbitalBZSpin):
         m, *opts = method.split(":")
 
         # only extract the summed density
-        what = "sum"
+        what = "trace"
         if "spin" in opts:
             # do this for each spin x, y, z
-            what = "spin"
+            what = "vector"
             del opts[opts.index("spin")]
 
         # Check that there are no un-used options
@@ -556,7 +528,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         rows, cols, DM = _to_coo(self._csr)
 
         # Convert to requested matrix form
-        D = _get_density(DM, self.orthogonal, what)
+        D = _get_spin(DM, self.spin, what).T
 
         # Define a matrix-matrix multiplication
         def mm(A, B):

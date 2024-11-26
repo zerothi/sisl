@@ -11,7 +11,7 @@ from sisl.messages import warn
 __all__ = ["_siesta_sc_off"]
 __all__ += ["_csr_from_siesta", "_csr_from_sc_off"]
 __all__ += ["_csr_to_siesta", "_csr_to_sc_off"]
-__all__ += ["_mat_spin_convert", "_fc_correct"]
+__all__ += ["_mat_sisl2siesta", "_mat_siesta2sisl", "_fc_correct"]
 
 
 def _siesta_sc_off(nsc):
@@ -98,45 +98,179 @@ def _csr_from(col_from, csr):
     csr.translate_columns(col_from, col_to)
 
 
-def _mat_spin_convert(M, spin=None):
+def _mat2dtype(M, dtype: np.dtype) -> None:
+    """Change the internal CSR matrix in `M` to a follow `dtype`"""
+
+    if M.dtype == dtype:
+        return M
+
+    spin = M.spin
+    csr = M._csr
+    shape = csr._D.shape
+
+    # Change details
+    old_dtype = np.dtype(M.dtype)
+    new_dtype = np.dtype(dtype)
+
+    def toc(D, re, im):
+        return (D[..., re] + 1j * D[..., im]).astype(dtype, copy=False)
+
+    if old_dtype.kind in ("f", "i"):
+        if new_dtype.kind in ("f", "i"):
+            # this is just simple casting
+            csr._D = csr._D.astype(dtype)
+        elif new_dtype.kind == "c":
+            # we need to *collect it
+            if spin.is_diagonal:
+                # this is just simple casting,
+                # each diagonal component has its own index
+                csr._D = csr._D.astype(dtype)
+            elif spin.is_noncolinear:
+                D = np.empty(shape[:-1] + (shape[-1] - 1,), dtype=dtype)
+                # These should be real only anyways!
+                D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
+                D[..., 2] = toc(csr._D, 2, 3)
+                if D.shape[-1] > 4:
+                    D[..., 3:] = csr._D[..., 4:].astype(dtype)
+                csr._D = D
+            elif spin.is_spinorbit:
+                D = np.empty(shape[:-1] + (shape[-1] - 4,), dtype=dtype)
+                D[..., 0] = toc(csr._D, 0, 4)
+                D[..., 1] = toc(csr._D, 1, 5)
+                D[..., 2] = toc(csr._D, 2, 3)
+                D[..., 3] = toc(csr._D, 6, 7)
+                if D.shape[-1] > 4:
+                    D[..., 4:] = csr._D[..., 8:].astype(dtype)
+                csr._D = D
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+
+    elif old_dtype.kind == "c":
+        if new_dtype.kind == "c":
+            # this is just simple casting
+            csr._D = csr._D.astype(dtype)
+        elif new_dtype.kind in ("f", "i"):
+            # we need to *collect it
+            if spin.is_diagonal:
+                # this is just simple casting,
+                # each diagonal component has its own index
+                csr._D = csr._D.astype(dtype)
+            elif spin.is_noncolinear:
+                D = np.empty(shape[:-1] + (shape[-1] + 1,), dtype=dtype)
+                # These should be real only anyways!
+                D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
+                D[..., 2] = csr._D[..., 2].real.astype(dtype)
+                D[..., 3] = csr._D[..., 2].imag.astype(dtype)
+                if D.shape[-1] > 4:
+                    D[..., 4:] = csr._D[..., 3:].real.astype(dtype)
+                csr._D = D
+            elif spin.is_spinorbit:
+                D = np.empty(shape[:-1] + (shape[-1] + 4,), dtype=dtype)
+                D[..., 0] = csr._D[..., 0].real.astype(dtype)
+                D[..., 1] = csr._D[..., 1].real.astype(dtype)
+                D[..., 2] = csr._D[..., 2].real.astype(dtype)
+                D[..., 3] = csr._D[..., 2].imag.astype(dtype)
+                D[..., 4] = csr._D[..., 0].imag.astype(dtype)
+                D[..., 5] = csr._D[..., 1].imag.astype(dtype)
+                D[..., 6] = csr._D[..., 3].real.astype(dtype)
+                D[..., 7] = csr._D[..., 3].imag.astype(dtype)
+                if D.shape[-1] > 8:
+                    D[..., 8:] = csr._D[..., 4:].real.astype(dtype)
+                csr._D = D
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+    M._reset()
+
+
+def _mat_siesta2sisl(M, dtype: Optional[np.dtype] = None) -> None:
     """Conversion of Siesta spin matrices to sisl spin matrices
 
     The matrices from Siesta are given in a format adheering to the following
-    concept:
+    concept.
 
-    A non-colinear calculation has the following entries (in C-index) for
-    the sparse matrix:
+    There are two cases:
 
-    H[:, [0, 1, 2, 3]]
-    H11 == H[:, 0]
-    H22 == H[:, 1]
-    H12 == H[:, 2] - 1j H[:, 3] # spin-box Hermitian
-    H21 == H[:, 2] + 1j H[:, 3]
+    1. A non-colinear calculation:
 
-    Although it really does not make sense to change anything, we
-    do change it to adhere to the spin-orbit case (see below).
-    I.e. what Siesta *saves* is the -Im[H12], which we now store
-    as Im[H12].
+       Siesta uses this convention:
 
+            H[:, [0, 1, 2, 3]]
+            H11 == H[:, 0]
+            H22 == H[:, 1]
+            H12 == H[:, 2] - 1j H[:, 3] # spin-box Hermitian
+            H21 == H[:, 2] + 1j H[:, 3]
 
-    A spin-orbit calculation has the following entries (in C-index) for
-    the sparse matrix:
+       In sisl we use this convention, see `Hamiltonian`:
 
-    H[:, [0, 1, 2, 3, 4, 5, 6, 7]]
-    H11 == H[:, 0] + 1j H[:, 4]
-    H22 == H[:, 1] + 1j H[:, 5]
-    H12 == H[:, 2] + 1j H[:, 3] # spin-box Hermitian
-    H21 == H[:, 6] + 1j H[:, 7]
+            H11 == H[:, 0]
+            H22 == H[:, 1]
+            H12 == H[:, 2] + 1j H[:, 3] # spin-box Hermitian
+            H21 == H[:, 2] - 1j H[:, 3]
+
+    2. A spin-orbit calculation:
+
+       Siesta uses this convention:
+
+            H[:, [0, 1, 2, 3, 4, 5, 6, 7]]
+            H11 == H[:, 0] + 1j H[:, 4]
+            H22 == H[:, 1] + 1j H[:, 5]
+            H12 == H[:, 2] - 1j H[:, 3]
+            H21 == H[:, 6] + 1j H[:, 7]
+
+       In sisl we use this convention, see `Hamiltonian`:
+
+            H[:, [0, 1, 2, 3, 4, 5, 6, 7]]
+            H11 == H[:, 0] + 1j H[:, 4]
+            H22 == H[:, 1] + 1j H[:, 5]
+            H12 == H[:, 2] + 1j H[:, 3]
+            H21 == H[:, 6] + 1j H[:, 7]
+
+    On top of this it depends on whether the data-type is complex
+    or not.
     """
-    if spin is None:
-        if M.spin.is_noncolinear:
+    if dtype is None:
+        dtype = M.dtype
+
+    spin = M.spin
+
+    if spin.is_noncolinear:
+        if np.dtype(M.dtype).kind in ("f", "i"):
             M._csr._D[:, 3] = -M._csr._D[:, 3]
-        elif M.spin.is_spinorbit:
-            M._csr._D[:, 3] = -M._csr._D[:, 3]
-    elif spin.is_noncolinear:
-        M._D[:, 3] = -M._D[:, 3]
+        else:
+            M._csr._D[:, 2] = M._csr._D[:, 2].conj()
     elif spin.is_spinorbit:
-        M._D[:, 3] = -M._D[:, 3]
+        if np.dtype(M.dtype).kind in ("f", "i"):
+            M._csr._D[:, 3] = -M._csr._D[:, 3]
+        else:
+            M._csr._D[:, 2] = M._csr._D[:, 2].conj()
+
+    _mat2dtype(M, dtype)
+
+
+def _mat_sisl2siesta(M, dtype: Optional[np.dtype] = None) -> None:
+    """Conversion of sisl to Siesta spin matrices"""
+    if dtype is None:
+        dtype = M.dtype
+
+    # convert to float
+    _mat2dtype(M, dtype)
+
+    spin = M.spin
+
+    if spin.is_noncolinear:
+        if np.dtype(M.dtype).kind in ("f", "i"):
+            M._csr._D[:, 3] = -M._csr._D[:, 3]
+        else:
+            M._csr._D[:, 2] = M._csr._D[:, 2].conj()
+    elif spin.is_spinorbit:
+        if np.dtype(M.dtype).kind in ("f", "i"):
+            M._csr._D[:, 3] = -M._csr._D[:, 3]
+        else:
+            M._csr._D[:, 2] = M._csr._D[:, 2].conj()
 
 
 def _geom2hsx(geometry):

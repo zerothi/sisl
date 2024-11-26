@@ -48,6 +48,34 @@ def test_si_pdos_kgrid_tsde_edm(sisl_files):
     assert np.allclose(EDM1._csr._D[:, :-1], EDM2._csr._D[:, :-1])
 
 
+@pytest.mark.filterwarnings("ignore", message="*Casting complex values")
+@pytest.mark.parametrize(("matrix"), ["density", "energy_density"])
+def test_si_pdos_kgrid_tsde_edm_dtypes(sisl_files, sisl_tmp, matrix):
+    fdf = sisl.get_sile(
+        sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf"),
+        base=sisl_files("siesta", "Si_pdos_k"),
+    )
+    data = []
+    mull = None
+
+    for dtype in (np.float32, np.float64, np.complex64, np.complex128):
+        M = getattr(fdf, f"read_{matrix}_matrix")(dtype=dtype)
+        data.append(M)
+        assert M.dtype == dtype
+
+        if mull is None:
+            mull = M.mulliken()
+        else:
+            assert np.allclose(mull, M.mulliken(), atol=1e-5)
+
+    fnc = sisl_tmp("tmp.nc")
+    for M in data:
+        M.write(fnc)
+        # The overlap should be here...
+        M1 = M.read(fnc)
+        assert np.allclose(mull, M1.mulliken(), atol=1e-5)
+
+
 @pytest.mark.filterwarnings("ignore", message="*wrong sparse pattern")
 def test_si_pdos_kgrid_tsde_dm_edm_rw(sisl_files, sisl_tmp):
     fdf = sisl.get_sile(

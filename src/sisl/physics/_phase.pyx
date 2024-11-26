@@ -2,33 +2,36 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 cimport cython
-from libc.math cimport fabs
-
-import numpy as np
-
-cimport numpy as np
+from libc.math cimport fabs, fabsf
 
 from numpy import complex64, complex128, dot, exp, float32, float64, ndarray, ones, pi
 
-from numpy cimport complex64_t, complex128_t, float32_t, float64_t, ndarray
-
-__all__ = ['phase_dtype', 'phase_rsc', 'phase_rij']
+from sisl._core._dtypes cimport floats_st
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int is_gamma(const double[::1] k) noexcept nogil:
-    if fabs(k[0]) > 0.0000001:
-        return 0
-    if fabs(k[1]) > 0.0000001:
-        return 0
-    if fabs(k[2]) > 0.0000001:
-        return 0
+cdef inline bint is_gamma(const floats_st[::1] k) noexcept nogil:
+    if floats_st is cython.float:
+        if fabsf(k[0]) > 0.0000001:
+            return 0
+        if fabsf(k[1]) > 0.0000001:
+            return 0
+        if fabsf(k[2]) > 0.0000001:
+            return 0
+
+    else:
+        if fabs(k[0]) > 0.0000001:
+            return 0
+        if fabs(k[1]) > 0.0000001:
+            return 0
+        if fabs(k[2]) > 0.0000001:
+            return 0
     return 1
 
 
-def phase_dtype(ndarray[float64_t, ndim=1, mode='c'] k, M_dtype, R_dtype, force_complex=False):
+def phase_dtype(const floats_st[::1] k, M_dtype, R_dtype, force_complex: bool=False):
     if is_gamma(k) and not force_complex:
         if R_dtype is None:
             return M_dtype
@@ -52,7 +55,7 @@ def phase_dtype(ndarray[float64_t, ndim=1, mode='c'] k, M_dtype, R_dtype, force_
     return R_dtype
 
 
-def phase_rsc(sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):
+def phase_rsc(sc, const floats_st[::1] k, dtype):
     """ Calculate the phases for the supercell interactions using k """
 
     # Figure out if this is a Gamma point or not
@@ -66,7 +69,7 @@ def phase_rsc(sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):
     return phases
 
 
-def phase_rij(rij, sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):
+def phase_rij(rij, sc, const floats_st[::1] k, dtype):
     """ Calculate the phases for the distance matrix using k """
 
     # Figure out if this is a Gamma point or not

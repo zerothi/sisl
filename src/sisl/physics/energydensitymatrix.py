@@ -326,7 +326,7 @@ class EnergyDensityMatrix(_densitymatrix):
             return
 
         for i in range(self.spin.spinor):
-            self._csr._D[:, i] += DM._csr._D[:, i] * E[i]
+            self._csr._D[:, i].real += DM._csr._D[:, i].real * E[i]
 
     @staticmethod
     def read(sile, *args, **kwargs):
