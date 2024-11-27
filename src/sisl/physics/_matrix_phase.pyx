@@ -1,6 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cython
 
 import numpy as np
@@ -11,11 +12,7 @@ from scipy.sparse import csr_matrix
 
 from sisl._indices cimport _index_sorted
 
-from sisl._core._sparse import (
-    fold_csr_matrix,
-    fold_csr_matrix_nc,
-    fold_csr_matrix_nc_diag,
-)
+from sisl._core._sparse import fold_csr_matrix, fold_csr_matrix_diag
 
 from sisl._core._dtypes cimport (
     complexs_st,
@@ -29,8 +26,11 @@ from sisl._core._dtypes cimport (
 )
 
 from ._matrix_utils cimport (
+    _f_matrix_box_nambu,
     _f_matrix_box_nc,
     _f_matrix_box_so,
+    _matrix_box_nambu_cmplx,
+    _matrix_box_nambu_real,
     _matrix_box_nc_cmplx,
     _matrix_box_nc_real,
     _matrix_box_so_cmplx,
@@ -42,10 +42,12 @@ __all__ = [
     "_phase_array",
     "_phase_csr_nc",
     "_phase_array_nc",
-    "_phase_csr_nc_diag",
-    "_phase_array_nc_diag",
+    "_phase_csr_diag",
+    "_phase_array_diag",
     "_phase_csr_so",
     "_phase_array_so",
+    "_phase_csr_nambu",
+    "_phase_array_nambu",
 ]
 
 """
@@ -66,10 +68,6 @@ p_opt == 1:
 """
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_csr(ints_st[::1] ptr,
                ints_st[::1] ncol,
                ints_st[::1] col,
@@ -126,10 +124,6 @@ def _phase_csr(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_array(ints_st[::1] ptr,
                  ints_st[::1] ncol,
                  ints_st[::1] col,
@@ -171,20 +165,17 @@ def _phase_array(ints_st[::1] ptr,
     return V
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
-def _phase_csr_nc_diag(ints_st[::1] ptr,
-                       ints_st[::1] ncol,
-                       ints_st[::1] col,
-                       numerics_st[:, ::1] D,
-                       const int idx,
-                       complexs_st[::1] phases,
-                       const int p_opt):
+def _phase_csr_diag(ints_st[::1] ptr,
+                    ints_st[::1] ncol,
+                    ints_st[::1] col,
+                    numerics_st[:, ::1] D,
+                    const int idx,
+                    complexs_st[::1] phases,
+                    const int p_opt,
+                    const int per_row):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc_diag(ptr, ncol, col)
+    V_PTR, V_NCOL, V_COL = fold_csr_matrix_diag(ptr, ncol, col, per_row)
     cdef ints_st[::1] v_ptr = V_PTR
     cdef ints_st[::1] v_ncol = V_NCOL
     cdef ints_st[::1] v_col = V_COL
@@ -196,115 +187,108 @@ def _phase_csr_nc_diag(ints_st[::1] ptr,
 
     # Local columns
     cdef ints_st nr = ncol.shape[0]
-    cdef ints_st r, rr, ind, s, s_idx, c
+    cdef ints_st r, rr, ind, s, s_idx, c, ic
 
     cdef complexs_st d
 
     with nogil:
         if p_opt == -1:
             for r in range(nr):
-                rr = r * 2
+                rr = r * per_row
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    c = (col[ind] % nr) * 2
+                    c = (col[ind] % nr) * per_row
 
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
                     d = <complexs_st> D[ind, idx]
-                    v[v_ptr[rr] + s_idx] += d
-                    v[v_ptr[rr+1] + s_idx] += d
+                    for ic in range(per_row):
+                        v[v_ptr[rr+ic] + s_idx] += d
 
         elif p_opt == 0:
             for r in range(nr):
-                rr = r * 2
+                rr = r * per_row
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    c = (col[ind] % nr) * 2
+                    c = (col[ind] % nr) * per_row
 
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
                     d = (phases[ind] * D[ind, idx])
-                    v[v_ptr[rr] + s_idx] += d
-                    v[v_ptr[rr+1] + s_idx] += d
+                    for ic in range(per_row):
+                        v[v_ptr[rr+ic] + s_idx] += d
 
         else:
             for r in range(nr):
-                rr = r * 2
+                rr = r * per_row
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    c = (col[ind] % nr) * 2
+                    c = (col[ind] % nr) * per_row
                     s = col[ind] / nr
 
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
                     d = (phases[s] * D[ind, idx])
-                    v[v_ptr[rr] + s_idx] += d
-                    v[v_ptr[rr+1] + s_idx] += d
+                    for ic in range(per_row):
+                        v[v_ptr[rr+ic] + s_idx] += d
 
-    nr = nr * 2
+    nr = nr * per_row
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
-def _phase_array_nc_diag(ints_st[::1] ptr,
-                         ints_st[::1] ncol,
-                         ints_st[::1] col,
-                         numerics_st[:, ::1] D,
-                         const int idx,
-                         complexs_st[::1] phases,
-                         const int p_opt):
+def _phase_array_diag(ints_st[::1] ptr,
+                      ints_st[::1] ncol,
+                      ints_st[::1] col,
+                      numerics_st[:, ::1] D,
+                      const int idx,
+                      complexs_st[::1] phases,
+                      const int p_opt,
+                      const int per_row):
 
     cdef ints_st[::1] tmp
     cdef ints_st nr = ncol.shape[0]
 
     cdef object dtype = type2dtype[complexs_st](1)
-    cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] V = np.zeros([nr * 2, nr * 2], dtype=dtype)
+    cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] V = np.zeros([nr * per_row, nr * per_row], dtype=dtype)
     cdef complexs_st[:, ::1] v = V
 
     # Local columns
-    cdef ints_st r, rr, ind, s, c
+    cdef ints_st r, rr, ind, s, c, ic
 
     cdef complexs_st d
 
     with nogil:
         if p_opt == -1:
             for r in range(nr):
-                rr = r * 2
+                rr = r * per_row
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    c = (col[ind] % nr) * 2
+                    c = (col[ind] % nr) * per_row
                     d = D[ind, idx]
-                    v[rr, c] += d
-                    v[rr + 1, c + 1] += d
+                    for ic in range(per_row):
+                        v[rr + ic, c + ic] += d
 
         elif p_opt == 0:
             for r in range(nr):
-                rr = r * 2
+                rr = r * per_row
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    c = (col[ind] % nr) * 2
+                    c = (col[ind] % nr) * per_row
                     d = (phases[ind] * D[ind, idx])
-                    v[rr, c] += d
-                    v[rr + 1, c + 1] += d
+                    for ic in range(per_row):
+                        v[rr + ic, c + ic] += d
 
         else:
             for r in range(nr):
-                rr = r * 2
+                rr = r * per_row
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    c = (col[ind] % nr) * 2
+                    c = (col[ind] % nr) * per_row
                     s = col[ind] / nr
                     d = (phases[s] * D[ind, idx])
-                    v[rr, c] += d
-                    v[rr + 1, c + 1] += d
+                    for ic in range(per_row):
+                        v[rr + ic, c + ic] += d
 
     return V
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_csr_nc(ints_st[::1] ptr,
                   ints_st[::1] ncol,
                   ints_st[::1] col,
@@ -313,7 +297,7 @@ def _phase_csr_nc(ints_st[::1] ptr,
                   const int p_opt):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(ptr, ncol, col)
+    V_PTR, V_NCOL, V_COL = fold_csr_matrix(ptr, ncol, col, 2)
     cdef ints_st[::1] v_ptr = V_PTR
     cdef ints_st[::1] v_ncol = V_NCOL
     cdef ints_st[::1] v_col = V_COL
@@ -392,10 +376,6 @@ def _phase_csr_nc(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_array_nc(ints_st[::1] ptr,
                     ints_st[::1] ncol,
                     ints_st[::1] col,
@@ -468,11 +448,6 @@ def _phase_array_nc(ints_st[::1] ptr,
     return V
 
 
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_csr_so(ints_st[::1] ptr,
                   ints_st[::1] ncol,
                   ints_st[::1] col,
@@ -481,7 +456,7 @@ def _phase_csr_so(ints_st[::1] ptr,
                   const int p_opt):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(ptr, ncol, col)
+    V_PTR, V_NCOL, V_COL = fold_csr_matrix(ptr, ncol, col, 2)
     cdef ints_st[::1] v_ptr = V_PTR
     cdef ints_st[::1] v_ncol = V_NCOL
     cdef ints_st[::1] v_col = V_COL
@@ -559,10 +534,6 @@ def _phase_csr_so(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_array_so(ints_st[::1] ptr,
                     ints_st[::1] ncol,
                     ints_st[::1] col,
@@ -629,5 +600,202 @@ def _phase_array_so(ints_st[::1] ptr,
                     v[rr, c + 1] += M[1]
                     v[rr + 1, c] += M[2]
                     v[rr + 1, c + 1] += M[3]
+
+    return V
+
+
+def _phase_csr_nambu(ints_st[::1] ptr,
+                     ints_st[::1] ncol,
+                     ints_st[::1] col,
+                     numerics_st[:, ::1] D,
+                     complexs_st[::1] phases,
+                     const int p_opt):
+
+    # Now create the folded sparse elements
+    V_PTR, V_NCOL, V_COL = fold_csr_matrix(ptr, ncol, col, 4)
+    cdef ints_st[::1] v_ptr = V_PTR
+    cdef ints_st[::1] v_ncol = V_NCOL
+    cdef ints_st[::1] v_col = V_COL
+    cdef ints_st[::1] tmp
+
+    cdef object dtype = type2dtype[complexs_st](1)
+    cdef cnp.ndarray[complexs_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
+    cdef complexs_st[::1] v = V
+
+    # Local columns
+    cdef ints_st nr = ncol.shape[0]
+    cdef ints_st r, rr, ind, s, s_idx, c
+
+    cdef complexs_st ph
+    cdef _f_matrix_box_nambu func
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0, 0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_nambu_cmplx
+    else:
+        func = _matrix_box_nambu_real
+
+    with nogil:
+        if p_opt == -1:
+            pass
+
+        elif p_opt == 0:
+            for r in range(nr):
+                rr = r * 4
+                for ind in range(ptr[r], ptr[r] + ncol[r]):
+                    c = (col[ind] % nr) * 4
+                    ph = phases[ind]
+
+                    tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
+                    s_idx = _index_sorted(tmp, c)
+
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[v_ptr[rr] + s_idx] += M[0]
+                    v[v_ptr[rr] + s_idx+1] += M[1]
+                    v[v_ptr[rr+1] + s_idx] += M[2]
+                    v[v_ptr[rr+1] + s_idx+1] += M[3]
+                    # Delta
+                    v[v_ptr[rr] + s_idx+2] += M[4]
+                    v[v_ptr[rr] + s_idx+3] += M[5]
+                    v[v_ptr[rr+1] + s_idx+2] += M[6]
+                    v[v_ptr[rr+1] + s_idx+3] += M[7]
+                    # Delta^dagger
+                    v[v_ptr[rr+2] + s_idx] += M[4].conjugate()
+                    v[v_ptr[rr+2] + s_idx+1] += M[6].conjugate()
+                    v[v_ptr[rr+3] + s_idx] += M[5].conjugate()
+                    v[v_ptr[rr+3] + s_idx+1] += M[7].conjugate()
+                    # -H^*
+                    v[v_ptr[rr+2] + s_idx+2] += -M[0].conjugate()
+                    v[v_ptr[rr+2] + s_idx+3] += -M[1].conjugate()
+                    v[v_ptr[rr+3] + s_idx+2] += -M[2].conjugate()
+                    v[v_ptr[rr+3] + s_idx+3] += -M[3].conjugate()
+
+        else:
+            for r in range(nr):
+                rr = r * 4
+                for ind in range(ptr[r], ptr[r] + ncol[r]):
+                    c = (col[ind] % nr) * 4
+                    s = col[ind] / nr
+                    ph = phases[s]
+
+                    tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
+                    s_idx = _index_sorted(tmp, c)
+
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[v_ptr[rr] + s_idx] += M[0]
+                    v[v_ptr[rr] + s_idx+1] += M[1]
+                    v[v_ptr[rr+1] + s_idx] += M[2]
+                    v[v_ptr[rr+1] + s_idx+1] += M[3]
+                    # Delta
+                    v[v_ptr[rr] + s_idx+2] += M[4]
+                    v[v_ptr[rr] + s_idx+3] += M[5]
+                    v[v_ptr[rr+1] + s_idx+2] += M[6]
+                    v[v_ptr[rr+1] + s_idx+3] += M[7]
+                    # Delta^dagger
+                    v[v_ptr[rr+2] + s_idx] += M[4].conjugate()
+                    v[v_ptr[rr+2] + s_idx+1] += M[6].conjugate()
+                    v[v_ptr[rr+3] + s_idx] += M[5].conjugate()
+                    v[v_ptr[rr+3] + s_idx+1] += M[7].conjugate()
+                    # -H^*
+                    v[v_ptr[rr+2] + s_idx+2] += -M[0].conjugate()
+                    v[v_ptr[rr+2] + s_idx+3] += -M[1].conjugate()
+                    v[v_ptr[rr+3] + s_idx+2] += -M[2].conjugate()
+                    v[v_ptr[rr+3] + s_idx+3] += -M[3].conjugate()
+
+    nr = nr * 4
+    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
+
+
+def _phase_array_nambu(ints_st[::1] ptr,
+                       ints_st[::1] ncol,
+                       ints_st[::1] col,
+                       numerics_st[:, ::1] D,
+                       complexs_st[::1] phases,
+                       const int p_opt):
+
+    cdef ints_st nr = ncol.shape[0]
+
+    cdef object dtype = type2dtype[complexs_st](1)
+    cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] V = np.zeros([nr * 4, nr * 4], dtype=dtype)
+    cdef complexs_st[:, ::1] v = V
+
+    # Local columns
+    cdef ints_st r, rr, s, c, ind
+
+    cdef complexs_st ph
+    cdef _f_matrix_box_nambu func
+    cdef numerics_st *d
+    cdef complexs_st *M = [0, 0, 0, 0, 0, 0, 0, 0]
+
+    if numerics_st in complexs_st:
+        func = _matrix_box_nambu_cmplx
+    else:
+        func = _matrix_box_nambu_real
+
+    with nogil:
+        if p_opt == -1:
+            pass
+
+        elif p_opt == 0:
+            for r in range(nr):
+                rr = r * 4
+                for ind in range(ptr[r], ptr[r] + ncol[r]):
+                    c = (col[ind] % nr) * 4
+                    ph = phases[ind]
+
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[rr, c] += M[0]
+                    v[rr, c+1] += M[1]
+                    v[rr+1, c] += M[2]
+                    v[rr+1, c+1] += M[3]
+                    # Delta
+                    v[rr, c+2] += M[4]
+                    v[rr, c+3] += M[5]
+                    v[rr+1, c+2] += M[6]
+                    v[rr+1, c+3] += M[7]
+                    # Delta^dagger
+                    v[rr+2, c] += M[4].conjugate()
+                    v[rr+2, c+1] += M[6].conjugate()
+                    v[rr+3, c] += M[5].conjugate()
+                    v[rr+3, c+1] += M[7].conjugate()
+                    # -H^*
+                    v[rr+2, c+2] += -M[0].conjugate()
+                    v[rr+2, c+3] += -M[1].conjugate()
+                    v[rr+3, c+2] += -M[2].conjugate()
+                    v[rr+3, c+3] += -M[3].conjugate()
+
+        else:
+            for r in range(nr):
+                rr = r * 4
+                for ind in range(ptr[r], ptr[r] + ncol[r]):
+                    c = (col[ind] % nr) * 4
+                    s = col[ind] / nr
+                    ph = phases[s]
+
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    v[rr, c] += M[0]
+                    v[rr, c+1] += M[1]
+                    v[rr+1, c] += M[2]
+                    v[rr+1, c+1] += M[3]
+                    # Delta
+                    v[rr, c+2] += M[4]
+                    v[rr, c+3] += M[5]
+                    v[rr+1, c+2] += M[6]
+                    v[rr+1, c+3] += M[7]
+                    # Delta^dagger
+                    v[rr+2, c] += M[4].conjugate()
+                    v[rr+2, c+1] += M[6].conjugate()
+                    v[rr+3, c] += M[5].conjugate()
+                    v[rr+3, c+1] += M[7].conjugate()
+                    # -H^*
+                    v[rr+2, c+2] += -M[0].conjugate()
+                    v[rr+2, c+3] += -M[1].conjugate()
+                    v[rr+3, c+2] += -M[2].conjugate()
+                    v[rr+3, c+3] += -M[3].conjugate()
 
     return V

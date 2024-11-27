@@ -142,6 +142,19 @@ def _mat2dtype(M, dtype: np.dtype) -> None:
                 if D.shape[-1] > 4:
                     D[..., 4:] = csr._D[..., 8:].astype(dtype)
                 csr._D = D
+            elif spin.is_nambu:
+                D = np.empty(shape[:-1] + (shape[-1] - 8,), dtype=dtype)
+                D[..., 0] = toc(csr._D, 0, 4)
+                D[..., 1] = toc(csr._D, 1, 5)
+                D[..., 2] = toc(csr._D, 2, 3)
+                D[..., 3] = toc(csr._D, 6, 7)
+                D[..., 4] = toc(csr._D, 8, 9)  # S
+                D[..., 5] = toc(csr._D, 10, 11)  # Tuu
+                D[..., 6] = toc(csr._D, 12, 13)  # Tdd
+                D[..., 7] = toc(csr._D, 14, 15)  # T0
+                if D.shape[-1] > 8:
+                    D[..., 8:] = csr._D[..., 16:].astype(dtype)
+                csr._D = D
             else:
                 raise NotImplementedError
         else:
@@ -178,6 +191,27 @@ def _mat2dtype(M, dtype: np.dtype) -> None:
                 D[..., 7] = csr._D[..., 3].imag.astype(dtype)
                 if D.shape[-1] > 8:
                     D[..., 8:] = csr._D[..., 4:].real.astype(dtype)
+                csr._D = D
+            elif spin.is_nambu:
+                D = np.empty(shape[:-1] + (shape[-1] + 8,), dtype=dtype)
+                D[..., 0] = csr._D[..., 0].real.astype(dtype)
+                D[..., 1] = csr._D[..., 1].real.astype(dtype)
+                D[..., 2] = csr._D[..., 2].real.astype(dtype)
+                D[..., 3] = csr._D[..., 2].imag.astype(dtype)
+                D[..., 4] = csr._D[..., 0].imag.astype(dtype)
+                D[..., 5] = csr._D[..., 1].imag.astype(dtype)
+                D[..., 6] = csr._D[..., 3].real.astype(dtype)
+                D[..., 7] = csr._D[..., 3].imag.astype(dtype)
+                D[..., 8] = csr._D[..., 4].real.astype(dtype)  # S
+                D[..., 9] = csr._D[..., 4].imag.astype(dtype)
+                D[..., 10] = csr._D[..., 5].real.astype(dtype)  # Tuu
+                D[..., 11] = csr._D[..., 5].imag.astype(dtype)
+                D[..., 12] = csr._D[..., 6].real.astype(dtype)  # Tdd
+                D[..., 13] = csr._D[..., 6].imag.astype(dtype)
+                D[..., 14] = csr._D[..., 7].real.astype(dtype)  # T0
+                D[..., 15] = csr._D[..., 7].imag.astype(dtype)
+                if D.shape[-1] > 16:
+                    D[..., 16:] = csr._D[..., 8:].real.astype(dtype)
                 csr._D = D
             else:
                 raise NotImplementedError
@@ -237,12 +271,7 @@ def _mat_siesta2sisl(M, dtype: Optional[np.dtype] = None) -> None:
 
     spin = M.spin
 
-    if spin.is_noncolinear:
-        if np.dtype(M.dtype).kind in ("f", "i"):
-            M._csr._D[:, 3] = -M._csr._D[:, 3]
-        else:
-            M._csr._D[:, 2] = M._csr._D[:, 2].conj()
-    elif spin.is_spinorbit:
+    if spin.kind in (spin.NONCOLINEAR, spin.SPINORBIT, spin.NAMBU):
         if np.dtype(M.dtype).kind in ("f", "i"):
             M._csr._D[:, 3] = -M._csr._D[:, 3]
         else:
@@ -261,12 +290,7 @@ def _mat_sisl2siesta(M, dtype: Optional[np.dtype] = None) -> None:
 
     spin = M.spin
 
-    if spin.is_noncolinear:
-        if np.dtype(M.dtype).kind in ("f", "i"):
-            M._csr._D[:, 3] = -M._csr._D[:, 3]
-        else:
-            M._csr._D[:, 2] = M._csr._D[:, 2].conj()
-    elif spin.is_spinorbit:
+    if spin.kind in (spin.NONCOLINEAR, spin.SPINORBIT, spin.NAMBU):
         if np.dtype(M.dtype).kind in ("f", "i"):
             M._csr._D[:, 3] = -M._csr._D[:, 3]
         else:

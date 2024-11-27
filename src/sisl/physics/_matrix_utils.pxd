@@ -36,3 +36,15 @@ cdef void _matrix_box_so_real(const reals_st *data,
 cdef void _matrix_box_so_cmplx(const _internal_complexs_st *data,
                                const complexs_st phase,
                                complexs_st *M) noexcept nogil
+
+ctypedef void(*_f_matrix_box_nambu)(const numerics_st *data,
+                                    const complexs_st phase,
+                                    complexs_st *M) noexcept nogil
+
+cdef void _matrix_box_nambu_real(const reals_st *data,
+                                 const complexs_st phase,
+                                 complexs_st *M) noexcept nogil
+
+cdef void _matrix_box_nambu_cmplx(const _internal_complexs_st *data,
+                                  const complexs_st phase,
+                                  complexs_st *M) noexcept nogil

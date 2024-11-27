@@ -962,7 +962,11 @@ def shc(
 
     dtype = eigenstate_kwargs.get("dtype", np.complex128)
 
-    m = _create_sigma(H.no, sigma, dtype, eigenstate_kwargs.get("format", "csr"))
+    if H.spin.is_nambu:
+        no = H.no * 2
+    else:
+        no = H.no
+    m = _create_sigma(no, sigma, dtype, eigenstate_kwargs.get("format", "csr"))
 
     # To reduce (heavily) the computational load, we pre-setup the
     # operators here.
@@ -1252,7 +1256,9 @@ def berry_phase(
 
 
 @set_module("sisl.physics.electron")
-def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
+def wavefunction(
+    v, grid, geometry=None, k=None, spinor=0, spin: Optional[Spin] = None, eta=None
+):
     r"""Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
     This routine calculates the real-space wave-function components in the
@@ -1316,7 +1322,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
        eigenstate object has been created from a parent object with a `Spin` object
        contained, *and* if the spin-configuration is non-colinear or spin-orbit coupling.
        Default to the first spinor component.
-    spin : Spin, optional
+    spin :
        specification of the spin configuration of the orbital coefficients. This only has
        influence for non-colinear wavefunctions where `spinor` choice is important.
     eta : bool, optional
@@ -1363,15 +1369,21 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
     if spin is None:
         if len(v) // 2 == geometry.no:
-            # We can see from the input that the vector *must* be a non-colinear calculation
+            # the input corresponds to a non-collinear calculation
             v = v.reshape(-1, 2)[:, spinor]
             info(
                 "wavefunction: assumes the input wavefunction coefficients to originate from a non-colinear calculation!"
             )
+        elif len(v) // 4 == geometry.no:
+            # the input corresponds to a NAMBU calculation
+            v = v.reshape(-1, 4)[:, spinor]
+            info(
+                "wavefunction: assumes the input wavefunction coefficients to originatefrom a nambu calculation!"
+            )
 
     elif spin.kind > Spin.POLARIZED:
-        # For non-colinear cases the user selects the spinor component.
-        v = v.reshape(-1, 2)[:, spinor]
+        # For non-colinear+nambu cases the user selects the spinor component.
+        v = v.reshape(-1, spin.spinor)[:, spinor]
 
     if len(v) != geometry.no:
         raise ValueError(

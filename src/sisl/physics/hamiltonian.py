@@ -320,14 +320,19 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # When the energy is zero, there is no shift
             return
 
+        if self.spin.is_nambu:
+            nspin = 2
+        else:
+            nspin = self.spin.spinor
+
         if self.orthogonal:
             for i in range(self.shape[0]):
-                for j in range(self.spin.spinor):
+                for j in range(nspin):
                     self[i, i, j] = self[i, i, j] + E[j]
         else:
             # For non-collinear and SO only the diagonal (real) components
             # should be shifted.
-            for i in range(self.spin.spinor):
+            for i in range(nspin):
                 self._csr._D[:, i].real += self._csr._D[:, self.S_idx].real * E[i]
 
     def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):

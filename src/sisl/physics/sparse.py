@@ -19,9 +19,21 @@ from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.typing import AtomsIndex, GaugeType, KPoint
 
-from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_nc_diag, matrix_ddk_so
-from ._matrix_dk import matrix_dk, matrix_dk_nc, matrix_dk_nc_diag, matrix_dk_so
-from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_nc_diag, matrix_k_so
+from ._matrix_ddk import (
+    matrix_ddk,
+    matrix_ddk_diag,
+    matrix_ddk_nambu,
+    matrix_ddk_nc,
+    matrix_ddk_so,
+)
+from ._matrix_dk import (
+    matrix_dk,
+    matrix_dk_diag,
+    matrix_dk_nambu,
+    matrix_dk_nc,
+    matrix_dk_so,
+)
+from ._matrix_k import matrix_k, matrix_k_diag, matrix_k_nambu, matrix_k_nc, matrix_k_so
 from .spin import Spin
 
 __all__ = ["SparseOrbitalBZ", "SparseOrbitalBZSpin"]
@@ -675,8 +687,31 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_ddk_nc_diag(
-            gauge, self, self.S_idx, self.lattice, k, dtype, format
+        return matrix_ddk_diag(
+            gauge, self, self.S_idx, 2, self.lattice, k, dtype, format
+        )
+
+    def _ddSk_nambu(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format: str = "csr",
+    ):
+        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` for Nambu spin, differentiated with respect to `k`
+
+        Parameters
+        ----------
+        k : array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge :
+           chosen gauge
+        """
+        k = _a.asarrayd(k).ravel()
+        return matrix_ddk_diag(
+            gauge, self, self.S_idx, 4, self.lattice, k, dtype, format
         )
 
     def eig(
@@ -835,6 +870,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     2: Spin.POLARIZED,
                     4: Spin.NONCOLINEAR,
                     8: Spin.SPINORBIT,
+                    16: Spin.NAMBU,
                 }.get(dim)
         else:
             spin = kwargs.pop("spin")
@@ -910,6 +946,42 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             self.ddPk = self._ddPk_spin_orbit
             self.ddSk = self._ddSk_non_colinear
 
+        elif self.spin.is_nambu:
+            if self.dkind in ("f", "i"):
+                self.M11r = 0
+                self.M22r = 1
+                self.M12r = 2
+                self.M12i = 3
+                self.M11i = 4
+                self.M22i = 5
+                self.M21r = 6
+                self.M21i = 7
+                self.MSr = 8
+                self.MSi = 9
+                self.MT11r = 10
+                self.MT11i = 11
+                self.MT22r = 12
+                self.MT22i = 13
+                self.MT0r = 14
+                self.MT0i = 15
+            else:
+                self.M11 = 0
+                self.M22 = 1
+                self.M12 = 2
+                self.M21 = 3
+                self.MS = 4
+                self.MT11 = 5
+                self.MT22 = 6
+                self.MT0 = 7
+
+            # The overlap is the same as non-collinear
+            self.Pk = self._Pk_nambu
+            self.Sk = self._Sk_nambu
+            self.dPk = self._dPk_nambu
+            self.dSk = self._dSk_nambu
+            self.ddPk = self._ddPk_nambu
+            self.ddSk = self._ddSk_nambu
+
         if self.orthogonal:
             self.Sk = self._Sk_diagonal
 
@@ -975,6 +1047,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             dtype_cplx = dtype_real_to_complex(self.dtype)
 
             is_complex = self.dkind == "c"
+            if self.spin.is_nambu:
+                raise NotImplementedError
             if self.spin.is_spinorbit:
                 if is_complex:
                     nv = 4
@@ -1092,7 +1166,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             Spin.POLARIZED: "polarized",
             Spin.NONCOLINEAR: "noncolinear",
             Spin.SPINORBIT: "spinorbit",
-        }.get(self.spin._kind, f"unkown({self.spin._kind})")
+            Spin.NAMBU: "nambu",
+        }.get(self.spin.kind, f"unkown({self.spin.kind})")
         return f"<{self.__module__}.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}, spin={spin}>"
 
     def _Pk_unpolarized(
@@ -1180,6 +1255,27 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k = _a.asarrayd(k).ravel()
         return matrix_k_so(gauge, self, self.lattice, k, dtype, format)
 
+    def _Pk_nambu(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format: str = "csr",
+    ):
+        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
+
+        Parameters
+        ----------
+        k : array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge :
+           chosen gauge
+        """
+        k = _a.asarrayd(k).ravel()
+        return matrix_k_nambu(gauge, self, self.lattice, k, dtype, format)
+
     def _dPk_unpolarized(
         self,
         k: KPoint = (0, 0, 0),
@@ -1251,7 +1347,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "cell",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1264,6 +1360,27 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         k = _a.asarrayd(k).ravel()
         return matrix_dk_so(gauge, self, self.lattice, k, dtype, format)
+
+    def _dPk_nambu(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format: str = "csr",
+    ):
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu spin system, differentiated with respect to `k`
+
+        Parameters
+        ----------
+        k : array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge :
+           chosen gauge
+        """
+        k = _a.asarrayd(k).ravel()
+        return matrix_dk_nambu(gauge, self, self.lattice, k, dtype, format)
 
     def _ddPk_non_colinear(
         self,
@@ -1293,7 +1410,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "cell",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1306,6 +1423,27 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         k = _a.asarrayd(k).ravel()
         return matrix_ddk_so(gauge, self, self.lattice, k, dtype, format)
+
+    def _ddPk_nambu(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format: str = "csr",
+    ):
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system, differentiated with respect to `k`
+
+        Parameters
+        ----------
+        k : array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge :
+           chosen gauge
+        """
+        k = _a.asarrayd(k).ravel()
+        return matrix_ddk_nambu(gauge, self, self.lattice, k, dtype, format)
 
     def _Sk(
         self,
@@ -1346,7 +1484,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_k_nc_diag(gauge, self, self.S_idx, self.lattice, k, dtype, format)
+        return matrix_k_diag(gauge, self, self.S_idx, 2, self.lattice, k, dtype, format)
+
+    def _Sk_nambu(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format: str = "csr",
+    ):
+        r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
+
+        Parameters
+        ----------
+        k : array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge :
+           chosen gauge
+        """
+        k = _a.asarrayd(k).ravel()
+        return matrix_k_diag(gauge, self, self.S_idx, 4, self.lattice, k, dtype, format)
 
     def _dSk_non_colinear(
         self,
@@ -1367,8 +1526,31 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_dk_nc_diag(
-            gauge, self, self.S_idx, self.lattice, k, dtype, format
+        return matrix_dk_diag(
+            gauge, self, self.S_idx, 2, self.lattice, k, dtype, format
+        )
+
+    def _dSk_nambu(
+        self,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        gauge: GaugeType = "cell",
+        format: str = "csr",
+    ):
+        r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
+
+        Parameters
+        ----------
+        k : array_like, optional
+           k-point (default is Gamma point)
+        dtype : numpy.dtype, optional
+           default to `numpy.complex128`
+        gauge :
+           chosen gauge
+        """
+        k = _a.asarrayd(k).ravel()
+        return matrix_dk_diag(
+            gauge, self, self.S_idx, 4, self.lattice, k, dtype, format
         )
 
     def eig(
