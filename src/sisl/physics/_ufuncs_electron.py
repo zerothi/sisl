@@ -340,7 +340,11 @@ def spin_berry_curvature(
     dtype = np.result_type(state.dtype, state.info.get("dtype", np.complex128))
 
     # no is not including the spin-dimension
-    m = _create_sigma(H.no, sigma, dtype, state.info.get("format", "csr"))
+    if H.spin.is_nambu:
+        no = H.no * 2
+    else:
+        no = H.no
+    m = _create_sigma(no, sigma, dtype, state.info.get("format", "csr"))
 
     def J(M, d):
         nonlocal m, J_axes

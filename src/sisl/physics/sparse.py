@@ -1048,8 +1048,101 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
             is_complex = self.dkind == "c"
             if self.spin.is_nambu:
-                raise NotImplementedError
-            if self.spin.is_spinorbit:
+                if is_complex:
+                    nv = 8
+                    # Hermitian parameters
+                    # The input order is [uu, dd, ud, du]
+                    paramsH = [
+                        [
+                            # H^ee
+                            p[0].conjugate(),
+                            p[1].conjugate(),
+                            p[3].conjugate(),
+                            p[2].conjugate(),
+                            # delta, note the singlet
+                            -p[4].conjugate(),
+                            p[5].conjugate(),
+                            p[6].conjugate(),
+                            p[7].conjugate(),
+                            # because it is already off-diagonal
+                            *p[8:],
+                        ]
+                        for p in params
+                    ]
+                else:
+                    nv = 16
+                    # Hermitian parameters
+                    # The input order is [Ruu, Rdd, Rud, Iud, Iuu, Idd, Rdu, idu]
+                    #                    [ RS,  IS, RTu, ITu, RTd, ITd, RT0, IT0]
+                    # delta, note the singlet!
+                    paramsH = [
+                        [
+                            p[0],
+                            p[1],
+                            p[6],
+                            -p[7],
+                            -p[4],
+                            -p[5],
+                            p[2],
+                            -p[3],
+                            -p[8],
+                            p[9],
+                            p[10],
+                            -p[11],
+                            p[12],
+                            -p[13],
+                            p[14],
+                            -p[15],
+                            *p[16:],
+                        ]
+                        for p in params
+                    ]
+                if not self.orthogonal:
+                    nv += 1
+
+                # ensure we have correct number of values
+                assert all(len(p) == nv for p in params)
+
+                if R[0] <= 0.1001:  # no atom closer than 0.1001 Ang!
+                    # We check that the the parameters here is Hermitian
+                    p = params[0]
+                    if is_complex:
+                        Me = np.array([[p[0], p[2]], [p[3], p[1]]], dtype_cplx)
+                        # do Delta
+                        p = p[4:]
+                        Md = np.array(
+                            [[p[1], p[0] + p[3]], [-p[0] + p[3], p[2]]], dtype_cplx
+                        )
+                    else:
+                        Me = np.array(
+                            [
+                                [p[0] + 1j * p[4], p[2] + 1j * p[3]],
+                                [p[6] + 1j * p[7], p[1] + 1j * p[5]],
+                            ],
+                            dtype_cplx,
+                        )
+                        # do Delta
+                        p = p[8:]
+                        Md = np.array(
+                            [
+                                [p[2] + 1j * p[3], p[0] + p[6] + 1j * (p[1] + p[7])],
+                                [-p[0] + p[6] + 1j * (-p[1] + p[7]), p[4] + 1j * p[5]],
+                            ],
+                            dtype_cplx,
+                        )
+                    if not np.allclose(Me, Me.T.conjugate()):
+                        warn(
+                            f"{self.__class__.__name__}.create_construct is NOT "
+                            "Hermitian for M^e on-site terms. This is your responsibility! "
+                            "The code will continue silently, be AWARE!"
+                        )
+                    if not np.allclose(Md, Md.T.conjugate()):
+                        warn(
+                            f"{self.__class__.__name__}.create_construct is NOT "
+                            "Hermitian for Delta on-site terms. This is your responsibility! "
+                            "The code will continue silently, be AWARE!"
+                        )
+            elif self.spin.is_spinorbit:
                 if is_complex:
                     nv = 4
                     # Hermitian parameters
@@ -1690,7 +1783,40 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         sp = self.spin
         D = new._csr._D
 
-        if sp.is_spinorbit:
+        if sp.is_nambu:
+            if hermitian and spin:
+                # conjugate the imaginary value and transpose spin-box
+                if self.dkind in ("f", "i"):
+                    # imaginary components (including transposing)
+                    #    12,11,22,21
+                    D[:, [3, 4, 5, 7]] = -D[:, [7, 4, 5, 3]]
+                    # R12 <-> R21
+                    D[:, [2, 6]] = D[:, [6, 2]]
+                    # real S, otherwise imaginary components of Delta
+                    D[:, [8, 11, 13, 15]] = -D[:, [8, 11, 13, 15]]
+                else:
+                    D[:, [0, 1, 2, 3]] = np.conj(D[:, [0, 1, 3, 2]])
+                    # delta values
+                    D[:, 4:8] = np.conj(D[:, 4:8])
+                    D[:, 4] = -D[:, 4]
+            elif hermitian:
+                # conjugate the imaginary value
+                if self.dkind in ("f", "i"):
+                    # imaginary components
+                    #    12,11,22,21
+                    D[:, [3, 4, 5, 7, 9, 11, 13, 15]] *= -1.0
+                else:
+                    D[:, :] = np.conj(D[:, :])
+            elif spin:
+                # transpose spin-box, 12 <-> 21
+                if self.dkind in ("f", "i"):
+                    D[:, [2, 3, 6, 7]] = D[:, [6, 7, 2, 3]]
+                    D[:, [8, 9]] = -D[:, [8, 9]]
+                else:
+                    D[:, [2, 3]] = D[:, [3, 2]]
+                    D[:, 4] = -D[:, 4]
+
+        elif sp.is_spinorbit:
             if hermitian and spin:
                 # conjugate the imaginary value and transpose spin-box
                 if self.dkind in ("f", "i"):
@@ -1751,7 +1877,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         D = new._csr._D
 
         # Apply Pauli-Y on the left and right of each spin-box
-        if sp.is_spinorbit:
+        if sp.is_nambu:
+            raise NotImplementedError
+
+        elif sp.is_spinorbit:
             if self.dkind in ("f", "i"):
                 # [R11, R22, R12, I12, I11, I22, R21, I21]
                 # [R11, R22] = [R22, R11]
@@ -1761,13 +1890,19 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 # [R12, R21] = -[R21, R12] (Y @ Y)
                 D[:, [4, 5, 2, 6]] = -D[:, [5, 4, 6, 2]]
             else:
-                raise NotImplementedError
+                # [R11, R22, R12, I12, I11, I22, R21, I21]
+                # [11, 22] = [22, 11]^*
+                D[:, [0, 1]] = np.conj(D[:, [1, 0]])
+                # [12, 21] = -[21, 12]^* (Y @ Y)
+                D[:, [2, 3]] = -np.conj(D[:, [3, 2]])
+
         elif sp.is_noncolinear:
             if self.dkind in ("f", "i"):
                 # [R11, R22, R12, I12]
                 D[:, 2] = -D[:, 2]
             else:
-                raise NotImplementedError
+                # [R11, R22, 12]
+                D[:, 2] = -np.conj(D[:, 2])
 
         return new
 
