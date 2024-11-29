@@ -231,6 +231,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
         projected DOS calculated at energies, has dimension ``(1, state.shape[1], len(E))``.
         For non-colinear calculations it will be ``(4, state.shape[1] // 2, len(E))``, ordered as
         indicated in the above list.
+        For Nambu calculations it will be ``(8, state.shape[1] // 4, len(E))``.
     """
     if isinstance(distribution, str):
         distribution = get_distribution(distribution)
@@ -243,11 +244,67 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
         if S.shape[1] == state.shape[1] // 2:
             spin = Spin("nc")
             S = S[::2, ::2]
+        elif S.shape[1] == state.shape[1] // 4:
+            spin = Spin("nambu")
+            S = S[::4, ::4]
         else:
             spin = Spin()
 
     # check for non-colinear (or SO)
-    if spin.kind > Spin.POLARIZED:
+    if spin.kind > Spin.SPINORBIT:
+        # Non colinear eigenvectors
+        if S.shape[1] == state.shape[1]:
+            # Since we are going to reshape the eigen-vectors
+            # to more easily get the mixed states, we can reduce the overlap matrix
+            S = S[::4, ::4]
+
+        # Initialize data
+        PDOS = empty([8, state.shape[1] // 4, len(E)], dtype=state.real.dtype)
+
+        # Do spin-box calculations:
+        #  PDOS[:4] = electron
+        #  PDOS[0] = total DOS (diagonal)
+        #  PDOS[1] = x == < psi | \sigma_x S | psi >
+        #  PDOS[2] = y == < psi | \sigma_y S | psi >
+        #  PDOS[3] = z == < psi | \sigma_z S | psi >
+        #  PDOS[4:] = hole
+
+        d = distribution(E - eig[0]).reshape(1, -1)
+        cs = conj(state[0]).reshape(-1, 4)
+        v = S @ state[0].reshape(-1, 4)
+        D1 = (cs * v).real  # uu,dd PDOS
+        PDOS[0, :, :] = D1[..., [0, 1]].sum(1).reshape(-1, 1) * d  # total DOS
+        PDOS[3, :, :] = (D1[:, 0] - D1[:, 1]).reshape(-1, 1) * d  # z-dos
+        PDOS[4, :, :] = D1[..., [2, 3]].sum(1).reshape(-1, 1) * d  # total DOS
+        PDOS[7, :, :] = (D1[:, 2] - D1[:, 3]).reshape(-1, 1) * d  # z-dos
+        D1 = (cs[:, 1] * v[:, 0]).reshape(-1, 1)  # d,u
+        D2 = (cs[:, 0] * v[:, 1]).reshape(-1, 1)  # u,d
+        PDOS[1, :, :] = (D1.real + D2.real) * d  # x-dos
+        PDOS[2, :, :] = (D2.imag - D1.imag) * d  # y-dos
+        D1 = (cs[:, 3] * v[:, 2]).reshape(-1, 1)  # d,u
+        D2 = (cs[:, 2] * v[:, 3]).reshape(-1, 1)  # u,d
+        PDOS[5, :, :] = (D1.real + D2.real) * d  # x-dos
+        PDOS[6, :, :] = (D2.imag - D1.imag) * d  # y-dos
+        for i in range(1, len(eig)):
+            d = distribution(E - eig[i]).reshape(1, -1)
+            cs = conj(state[i]).reshape(-1, 4)
+            v = S @ state[i].reshape(-1, 4)
+            D1 = (cs * v).real
+            PDOS[0, :, :] += D1[..., [0, 1]].sum(1).reshape(-1, 1) * d  # total DOS
+            PDOS[3, :, :] += (D1[:, 0] - D1[:, 1]).reshape(-1, 1) * d  # z-dos
+            PDOS[4, :, :] += D1[..., [2, 3]].sum(1).reshape(-1, 1) * d  # total DOS
+            PDOS[7, :, :] += (D1[:, 2] - D1[:, 3]).reshape(-1, 1) * d  # z-dos
+            D1 = (cs[:, 1] * v[:, 0]).reshape(-1, 1)  # d,u
+            D2 = (cs[:, 0] * v[:, 1]).reshape(-1, 1)  # u,d
+            PDOS[1, :, :] += (D1.real + D2.real) * d  # x-dos
+            PDOS[2, :, :] += (D2.imag - D1.imag) * d  # y-dos
+            D1 = (cs[:, 3] * v[:, 2]).reshape(-1, 1)  # d,u
+            D2 = (cs[:, 2] * v[:, 3]).reshape(-1, 1)  # u,d
+            PDOS[5, :, :] += (D1.real + D2.real) * d  # x-dos
+            PDOS[6, :, :] += (D2.imag - D1.imag) * d  # y-dos
+
+    elif spin.kind > Spin.POLARIZED:
+        # check for non-colinear (or SO)
         # Non colinear eigenvectors
         if S.shape[1] == state.shape[1]:
             # Since we are going to reshape the eigen-vectors
@@ -962,7 +1019,11 @@ def shc(
 
     dtype = eigenstate_kwargs.get("dtype", np.complex128)
 
-    m = _create_sigma(H.no, sigma, dtype, eigenstate_kwargs.get("format", "csr"))
+    if H.spin.is_nambu:
+        no = H.no * 2
+    else:
+        no = H.no
+    m = _create_sigma(no, sigma, dtype, eigenstate_kwargs.get("format", "csr"))
 
     # To reduce (heavily) the computational load, we pre-setup the
     # operators here.
@@ -1252,7 +1313,9 @@ def berry_phase(
 
 
 @set_module("sisl.physics.electron")
-def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
+def wavefunction(
+    v, grid, geometry=None, k=None, spinor=0, spin: Optional[Spin] = None, eta=None
+):
     r"""Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
     This routine calculates the real-space wave-function components in the
@@ -1316,7 +1379,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
        eigenstate object has been created from a parent object with a `Spin` object
        contained, *and* if the spin-configuration is non-colinear or spin-orbit coupling.
        Default to the first spinor component.
-    spin : Spin, optional
+    spin :
        specification of the spin configuration of the orbital coefficients. This only has
        influence for non-colinear wavefunctions where `spinor` choice is important.
     eta : bool, optional
@@ -1363,15 +1426,21 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
     if spin is None:
         if len(v) // 2 == geometry.no:
-            # We can see from the input that the vector *must* be a non-colinear calculation
+            # the input corresponds to a non-collinear calculation
             v = v.reshape(-1, 2)[:, spinor]
             info(
                 "wavefunction: assumes the input wavefunction coefficients to originate from a non-colinear calculation!"
             )
+        elif len(v) // 4 == geometry.no:
+            # the input corresponds to a NAMBU calculation
+            v = v.reshape(-1, 4)[:, spinor]
+            info(
+                "wavefunction: assumes the input wavefunction coefficients to originatefrom a nambu calculation!"
+            )
 
     elif spin.kind > Spin.POLARIZED:
-        # For non-colinear cases the user selects the spinor component.
-        v = v.reshape(-1, 2)[:, spinor]
+        # For non-colinear+nambu cases the user selects the spinor component.
+        v = v.reshape(-1, spin.spinor)[:, spinor]
 
     if len(v) != geometry.no:
         raise ValueError(

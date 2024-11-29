@@ -813,6 +813,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             csrDM = csr.tocsr(dim=0) * spinor[0] + csr.tocsr(dim=1) * spinor[1]
 
+        elif self.spin.is_nambu:
+            raise NotImplementedError("Nambu spin configuration not implemneted")
         else:
             csrDM = csr.tocsr(dim=0)
 

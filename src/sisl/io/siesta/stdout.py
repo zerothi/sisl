@@ -44,6 +44,8 @@ def _parse_spin(attr, instance, match):
     """Parse 'redata: Spin configuration *= <value>'"""
     opt = match.string.split("=")[-1].strip()
 
+    if opt.startswith("nambu"):
+        return Spin("nambu")
     if opt.startswith("spin-orbit"):
         return Spin("spin-orbit")
     if opt.startswith("collinear") or opt.startswith("colinear"):

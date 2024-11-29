@@ -15,6 +15,8 @@ we hit release version 1.0.0.
       import sisl
       sisl.geom.graphene
 
+- added Nambu spin configuration, this is still experimental
+
 ### Fixed
 - `projection` arguments of several functions has been streamlined
 

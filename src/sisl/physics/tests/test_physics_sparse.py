@@ -160,7 +160,7 @@ def test_sparse_orbital_bz_non_colinear():
     M.finalize()
 
     MT = M.transpose()
-    MH = M.transpose(True)
+    MH = M.transpose(hermitian=True)
 
     assert np.abs((M - MT)._csr._D).sum() != 0
     # For a non-collinear with construct we don't take
@@ -177,7 +177,7 @@ def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
     M.construct(([0.1, 1.44], [[0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]]))
     M.finalize()
 
-    M = (M + M.transpose(True)) * 0.5
+    M = (M + M.transpose(hermitian=True)) * 0.5
     MTRS = (M + M.trs()) * 0.5
 
     # This will in principle also work for M since the above parameters preserve
@@ -188,37 +188,115 @@ def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
     assert np.allclose(eig1, eig2)
 
 
-def test_sparse_orbital_bz_spin_orbit_warns_hermitian():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("SO"))
+def _so_real2cmplx(p):
+    return [p[0] + 1j * p[4], p[1] + 1j * p[5], p[2] + 1j * p[3], p[6] + 1j * p[7]]
+
+
+@pytest.mark.parametrize("dtype", [np.float64, np.complex128])
+def test_sparse_orbital_bz_spin_orbit_warns_hermitian(dtype):
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("SO"), dtype=dtype)
+
+    p0 = np.arange(1, 9) / 10
+    p1 = np.arange(2, 10) / 10
+
+    if dtype == np.complex128:
+        p0 = _so_real2cmplx(p0)
+        p1 = _so_real2cmplx(p1)
 
     with pytest.warns(SislWarning, match="Hermitian"):
-        M.construct(
-            (
-                [0.1, 1.44],
-                [
-                    [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-                ],
-            )
-        )
+        M.construct(([0.1, 1.44], [p0, p1]))
 
 
-def test_sparse_orbital_bz_spin_orbit():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("SO"))
+@pytest.mark.parametrize("dtype", [np.float64, np.complex128])
+def test_sparse_orbital_bz_spin_orbit(dtype):
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("SO"), dtype=dtype)
+
+    p0 = [0.1, 0.2, 0.3, 0.4, 0.0, 0.0, 0.3, -0.4]
+    p1 = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+
+    if dtype == np.complex128:
+        p0 = _so_real2cmplx(p0)
+        p1 = _so_real2cmplx(p1)
 
     M.construct(
         (
             [0.1, 1.44],
-            [
-                [0.1, 0.2, 0.3, 0.4, 0.0, 0.0, 0.3, -0.4],
-                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-            ],
+            [p0, p1],
         )
     )
     M.finalize()
 
     MT = M.transpose()
-    MH = M.transpose(True)
+    MH = M.transpose(hermitian=True)
+
+    assert np.abs((M - MT)._csr._D).sum() != 0
+    assert np.abs((M - MH)._csr._D).sum() == 0
+    assert np.abs((MT - MH)._csr._D).sum() != 0
+
+
+def _nambu_cmplx2real(p):
+    return [
+        p[0].real,
+        p[1].real,
+        p[2].real,
+        p[2].imag,
+        p[0].imag,
+        p[1].imag,
+        p[3].real,
+        p[3].imag,
+        p[4].real,
+        p[4].imag,
+        p[5].real,
+        p[5].imag,
+        p[6].real,
+        p[6].imag,
+        p[7].real,
+        p[7].imag,
+    ]
+
+
+@pytest.mark.parametrize("dtype", [np.float64, np.complex128])
+def test_sparse_orbital_bz_nambu(dtype):
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("nambu"), dtype=dtype)
+
+    p0 = [
+        0.1 + 1j * 0.0,
+        0.2 + 1j * 0.0,
+        0.3 + 1j * 0.4,
+        0.3 - 1j * 0.4,
+        # onsite S must have zero real
+        # onsite triplet states must have 0 imaginary
+        1j * 0.6,
+        0.3,
+        0.4,
+        0.3,
+    ]
+
+    p1 = [
+        0.2 + 1j * 0.6,
+        0.3 + 1j * 0.7,
+        0.4 + 1j * 0.5,
+        0.3 + 1j * 0.9,
+        0.3 + 1j * 0.7,
+        0.4 + 1j * 0.8,
+        0.5 + 1j * 0.6,
+        0.4 + 1j * 1.0,
+    ]
+
+    if dtype == np.float64:
+        p0 = _nambu_cmplx2real(p0)
+        p1 = _nambu_cmplx2real(p1)
+
+    M.construct(
+        (
+            [0.1, 1.44],
+            [p0, p1],
+        )
+    )
+    M.finalize()
+
+    MT = M.transpose()
+    MH = M.transpose(hermitian=True)
 
     assert np.abs((M - MT)._csr._D).sum() != 0
     assert np.abs((M - MH)._csr._D).sum() == 0
@@ -226,21 +304,26 @@ def test_sparse_orbital_bz_spin_orbit():
 
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
-def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin="SO")
+@pytest.mark.parametrize("dtype", [np.float64, np.complex128])
+def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem(dtype):
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="SO", dtype=dtype)
+
+    p0 = np.arange(1, 9) / 10
+    p1 = np.arange(2, 10) / 10
+
+    if dtype == np.complex128:
+        p0 = _so_real2cmplx(p0)
+        p1 = _so_real2cmplx(p1)
 
     M.construct(
         (
             [0.1, 1.44],
-            [
-                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-            ],
+            [p0, p1],
         )
     )
     M.finalize()
 
-    M = (M + M.transpose(True)) / 2
+    M = (M + M.transpose(hermitian=True)) / 2
     MTRS = (M + M.trs()) * 0.5
 
     # This will in principle also work for M since the above parameters preserve
@@ -251,22 +334,25 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
     assert np.allclose(eig1, eig2)
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
-@pytest.mark.xfail(reason="Construct does not impose hermitian property")
-def test_sparse_orbital_bz_spin_orbit_hermitian_not():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin="SO")
+@pytest.mark.parametrize("dtype", [np.float64, np.complex128])
+def test_sparse_orbital_bz_spin_orbit_hermitian_not(dtype):
+    M = SparseOrbitalBZSpin(geom.graphene(), spin="SO", dtype=dtype)
+
+    p0 = [0.1, 0.2, 0.3, 0.4, 0.0, 0.0, 0.3, -0.4]
+    p1 = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+
+    if dtype == np.complex128:
+        p0 = _so_real2cmplx(p0)
+        p1 = _so_real2cmplx(p1)
 
     M.construct(
         (
             [0.1, 1.44],
-            [
-                [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-                [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-            ],
+            [p0, p1],
         )
     )
     M.finalize()
-    new = (M + M.transpose(True)) / 2
+    new = (M + M.transpose(hermitian=True)) / 2
     assert np.abs((M - new)._csr._D).sum() == 0
 
 

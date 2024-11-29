@@ -25,6 +25,9 @@ def test_spin_init():
         "spin-orbit",
         "so",
         Spin.SPINORBIT,
+        "nambu",
+        "bdg",
+        Spin.NAMBU,
     ]:
         s = Spin(val)
         str(s)
@@ -37,20 +40,24 @@ def test_spin_comparisons():
     s2 = Spin("p")
     s3 = Spin("nc")
     s4 = Spin("so")
+    s5 = Spin("nambu")
 
     assert s1.kind == Spin.UNPOLARIZED
     assert s2.kind == Spin.POLARIZED
     assert s3.kind == Spin.NONCOLINEAR
     assert s4.kind == Spin.SPINORBIT
+    assert s5.kind == Spin.NAMBU
 
     assert s1 == s1.copy()
     assert s2 == s2.copy()
     assert s3 == s3.copy()
     assert s4 == s4.copy()
+    assert s5 == s5.copy()
 
     assert s1 < s2
     assert s2 < s3
     assert s3 < s4
+    assert s4 < s5
 
     assert s1 <= s2
     assert s2 <= s3
@@ -59,30 +66,42 @@ def test_spin_comparisons():
     assert s2 > s1
     assert s3 > s2
     assert s4 > s3
+    assert s5 > s4
 
     assert s2 >= s1
     assert s3 >= s2
     assert s4 >= s3
+    assert s5 >= s4
 
     assert s1.is_unpolarized
     assert not s1.is_polarized
     assert not s1.is_noncolinear
     assert not s1.is_spinorbit
+    assert not s1.is_nambu
 
     assert not s2.is_unpolarized
     assert s2.is_polarized
     assert not s2.is_noncolinear
     assert not s2.is_spinorbit
+    assert not s2.is_nambu
 
     assert not s3.is_unpolarized
     assert not s3.is_polarized
     assert s3.is_noncolinear
     assert not s3.is_spinorbit
+    assert not s3.is_nambu
 
     assert not s4.is_unpolarized
     assert not s4.is_polarized
     assert not s4.is_noncolinear
     assert s4.is_spinorbit
+    assert not s4.is_nambu
+
+    assert not s5.is_unpolarized
+    assert not s5.is_polarized
+    assert not s5.is_noncolinear
+    assert not s5.is_spinorbit
+    assert s5.is_nambu
 
 
 def test_spin_unaccepted_arg():

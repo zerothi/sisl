@@ -939,7 +939,13 @@ class RealSpaceSE(SelfEnergy):
         V_atoms = self.real_space_coupling(True)[1]
         orbs = P0.a2o(V_atoms, True)
         try:
-            if not P0.spin.is_diagonal:
+            if P0.spin.is_nambu:
+                # expand in case we have a non-colinear|spin-orbit
+                orbs = np.repeat(orbs, 4) * 4
+                orbs[1::4] += 1
+                orbs[2::4] += 2
+                orbs[3::4] += 3
+            elif not P0.spin.is_diagonal:
                 # expand in case we have a non-colinear|spin-orbit
                 orbs = np.repeat(orbs, 2) * 2
                 orbs[1::2] += 1
@@ -1438,7 +1444,13 @@ class RealSpaceSI(SelfEnergy):
         # Surface orbitals to put in the semi-infinite self-energy into.
         orbs = self.surface.geometry.a2o(atoms, True)
         try:
-            if not self.surface.spin.is_diagonal:
+            if self.surface.spin.is_nambu:
+                # expand in case we have a non-colinear|spin-orbit
+                orbs = np.repeat(orbs, 4) * 4
+                orbs[1::4] += 1
+                orbs[2::4] += 2
+                orbs[3::4] += 3
+            elif not self.surface.spin.is_diagonal:
                 # expand in case we have a non-colinear|spin-orbit
                 orbs = np.repeat(orbs, 2) * 2
                 orbs[1::2] += 1
@@ -1678,7 +1690,13 @@ class RealSpaceSI(SelfEnergy):
         V_atoms = self.real_space_coupling(True)[1]
         orbs = P0.a2o(V_atoms, True)
         try:
-            if not P0.spin.is_diagonal:
+            if P0.spin.is_nambu:
+                # expand in case we have a non-colinear|spin-orbit
+                orbs = np.repeat(orbs, 4) * 4
+                orbs[1::4] += 1
+                orbs[2::4] += 2
+                orbs[3::4] += 3
+            elif not P0.spin.is_diagonal:
                 # expand in case we have a non-colinear|spin-orbit
                 orbs = np.repeat(orbs, 2) * 2
                 orbs[1::2] += 1

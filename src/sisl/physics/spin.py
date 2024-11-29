@@ -8,6 +8,7 @@ from typing import Union
 import numpy as np
 
 from sisl._internal import set_module
+from sisl.messages import warn
 
 __all__ = ["Spin"]
 
@@ -27,6 +28,8 @@ class Spin:
     >>> Spin(Spin.NONCOLINEAR, dtype=np.complex128) == Spin("non-collinear") == Spin("nc")
     True
     >>> Spin(Spin.SPINORBIT, dtype=np.complex128) == Spin("spin-orbit") == Spin("so") == Spin("soc")
+    True
+    >>> Spin(Spin.NAMBU) == Spin("nambu") == Spin("bdg")
     True
 
     Note that a data-type may be associated with a spin-object. This is not to say
@@ -48,6 +51,8 @@ class Spin:
     NONCOLINEAR = 2
     #: Constant for a spin-orbit spin configuration
     SPINORBIT = 3
+    #: Constant for a Nambu spin configuration
+    NAMBU = 4
 
     #: The :math:`\boldsymbol\sigma_x` Pauli matrix
     X = np.array([[0, 1], [1, 0]], np.complex128)
@@ -67,8 +72,8 @@ class Spin:
             kind = kind.lower()
 
         kind = {
-            "unpolarized": Spin.UNPOLARIZED,
             "": Spin.UNPOLARIZED,
+            "unpolarized": Spin.UNPOLARIZED,
             Spin.UNPOLARIZED: Spin.UNPOLARIZED,
             "colinear": Spin.POLARIZED,
             "collinear": Spin.POLARIZED,
@@ -87,11 +92,19 @@ class Spin:
             "so": Spin.SPINORBIT,
             "soc": Spin.SPINORBIT,
             Spin.SPINORBIT: Spin.SPINORBIT,
+            "nambu": Spin.NAMBU,
+            "bdg": Spin.NAMBU,
+            Spin.NAMBU: Spin.NAMBU,
         }.get(kind)
         if kind is None:
             raise ValueError(
                 f"{self.__class__.__name__} initialization went wrong because of wrong "
                 "kind specification. Could not determine the kind of spin!"
+            )
+        if kind == Spin.NAMBU:
+            warn(
+                "Using untested Nambu spin-configuration, please be aware "
+                "that this is largely untested code!"
             )
 
         # Now assert the checks
@@ -104,7 +117,9 @@ class Spin:
             return f"{self.__class__.__name__}{{polarized}}"
         if self.is_noncolinear:
             return f"{self.__class__.__name__}{{non-colinear}}"
-        return f"{self.__class__.__name__}{{spin-orbit}}"
+        if self.is_spinorbit:
+            return f"{self.__class__.__name__}{{spin-orbit}}"
+        return f"{self.__class__.__name__}{{nambu}}"
 
     def copy(self):
         """Create a copy of the spin-object"""
@@ -125,6 +140,7 @@ class Spin:
                 self.POLARIZED: 2,
                 self.NONCOLINEAR: 3,
                 self.SPINORBIT: 4,
+                self.NAMBU: 8,
             }[self.kind]
 
         return {
@@ -132,13 +148,16 @@ class Spin:
             self.POLARIZED: 2,
             self.NONCOLINEAR: 4,
             self.SPINORBIT: 8,
+            self.NAMBU: 16,
         }[self.kind]
 
     @property
     def spinor(self) -> int:
-        """Number of spinor components (1 or 2)"""
+        """Number of spinor components (1, 2 or 4)"""
         if self.is_unpolarized:
             return 1
+        if self.is_nambu:
+            return 4
         return 2
 
     @property
@@ -177,6 +196,11 @@ class Spin:
     def is_spinorbit(self) -> bool:
         """True if the configuration is spin-orbit"""
         return self.kind == Spin.SPINORBIT
+
+    @property
+    def is_nambu(self) -> bool:
+        """True if the configuration is Nambu"""
+        return self.kind == Spin.NAMBU
 
     # Comparisons
     def __lt__(self, other) -> bool:
