@@ -1609,6 +1609,28 @@ column indices of the sparse elements
 
         return new
 
+    def astype(self, dtype, copy: bool = True) -> Self:
+        """Convert the stored data-type to something else
+
+        Parameters
+        ----------
+        dtype :
+            the new dtype for the sparse matrix
+        copy :
+            copy when needed, or do not copy when not needed.
+        """
+        old_dtype = np.dtype(self.dtype)
+        new_dtype = np.dtype(dtype)
+
+        if old_dtype == new_dtype:
+            if copy:
+                return self.copy()
+            return self
+
+        new = self.copy()
+        new._D = new._D.astype(dtype, copy=copy)
+        return new
+
     @classmethod
     def fromsp(cls, *sps, dtype=None):
         """Combine multiple single-dimension sparse matrices into one SparseCSR matrix

@@ -9,6 +9,9 @@ we hit release version 1.0.0.
 ## [0.15.3] - YYYY-MM-DD
 
 ### Added
+- `astype` for sparse matrices, enables one to change data-types, #865
+  This should be preferred over transform which can't do real->complex
+  of spin matrices.
 - added ADOS extraction of PDOS data in `sisl.viz`
 - enabled submodule access without imports:
 

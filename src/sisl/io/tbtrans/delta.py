@@ -437,18 +437,18 @@ class deltancSileTBtrans(SileCDFTBtrans):
         The input options for `TBtrans`_ determine whether this is a self-energy term
         or a Hamiltonian term.
         """
-        out_delta = delta.copy()
-        csr = out_delta._csr
-        if csr.nnz == 0:
+        delta = delta.copy()
+        if delta._csr.nnz == 0:
             raise SileError(
                 f"{self!s}.write_overlap cannot write a zero element sparse matrix!"
             )
 
         # convert to siesta thing and store
-        _csr_to_siesta(delta.geometry, csr, diag=False)
+        _csr_to_siesta(delta.geometry, delta._csr, diag=False)
         # delta should always write sorted matrices
-        csr.finalize(sort=True)
-        _mat_sisl2siesta(out_delta)
+        delta._csr.finalize(sort=True)
+
+        _mat_sisl2siesta(delta)
 
         # Ensure that the geometry is written
         self.write_geometry(delta.geometry)
@@ -465,17 +465,17 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Append the sparsity pattern
         # Create basis group
         if "n_col" in lvl.variables:
-            if len(lvl.dimensions["nnzs"]) != csr.nnz:
+            if len(lvl.dimensions["nnzs"]) != delta._csr.nnz:
                 raise ValueError(
                     "The sparsity pattern stored in delta *MUST* be equivalent for "
                     "all delta entries [nnz]."
                 )
-            if np.any(lvl.variables["n_col"][:] != csr.ncol[:]):
+            if np.any(lvl.variables["n_col"][:] != delta._csr.ncol[:]):
                 raise ValueError(
                     "The sparsity pattern stored in delta *MUST* be equivalent for "
                     "all delta entries [n_col]."
                 )
-            if np.any(lvl.variables["list_col"][:] != csr.col[:] + 1):
+            if np.any(lvl.variables["list_col"][:] != delta._csr.col[:] + 1):
                 raise ValueError(
                     "The sparsity pattern stored in delta *MUST* be equivalent for "
                     "all delta entries [list_col]."
@@ -489,20 +489,20 @@ class deltancSileTBtrans(SileCDFTBtrans):
                     "all delta entries [sc_off]."
                 )
         else:
-            self._crt_dim(lvl, "nnzs", csr.nnz)
+            self._crt_dim(lvl, "nnzs", delta._csr.nnz)
             v = self._crt_var(lvl, "n_col", "i4", ("no_u",))
             v.info = "Number of non-zero elements per row"
-            v[:] = csr.ncol[:]
+            v[:] = delta._csr.ncol[:]
             v = self._crt_var(
                 lvl,
                 "list_col",
                 "i4",
                 ("nnzs",),
-                chunksizes=(csr.nnz,),
+                chunksizes=(delta._csr.nnz,),
                 **self._cmp_args,
             )
             v.info = "Supercell column indices in the sparse format"
-            v[:] = csr.col[:] + 1  # correct for fortran indices
+            v[:] = delta._csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, "isc_off", "i4", ("n_s", "xyz"))
             v.info = "Index of supercell coordinates"
             v[:] = _siesta_sc_off(delta.geometry.lattice.nsc)
@@ -556,7 +556,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             csize = [1] * 4
 
         # Number of non-zero elements
-        csize[-1] = csr.nnz
+        csize[-1] = delta._csr.nnz
 
         if delta.spin.kind > delta.spin.POLARIZED:
             raise ValueError(
@@ -585,8 +585,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
             )
             for i in range(delta.spin.size(delta.dtype)):
                 sl[-2] = i
-                v1[sl] = csr._D[:, i].real * eV2Ry
-                v2[sl] = csr._D[:, i].imag * eV2Ry
+                v1[sl] = delta._csr._D[:, i].real * eV2Ry
+                v2[sl] = delta._csr._D[:, i].imag * eV2Ry
 
         else:
             v = self._crt_var(
@@ -600,7 +600,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             )
             for i in range(delta.spin.size(delta.dtype)):
                 sl[-2] = i
-                v[sl] = csr._D[:, i] * eV2Ry
+                v[sl] = delta._csr._D[:, i] * eV2Ry
 
     def _r_class(self, cls, **kwargs):
         """Reads a class model from a file"""
@@ -669,7 +669,9 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         # Convert from isc to sisl isc
         _csr_from_sc_off(C.geometry, lvl.variables["isc_off"][:, :], C._csr)
-        _mat_siesta2sisl(C, dtype=kwargs.get("dtype"))
+
+        _mat_siesta2sisl(C)
+        C = C.astype(dtype=kwargs.get("dtype", dtype), copy=False)
 
         return C
 

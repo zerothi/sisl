@@ -420,7 +420,8 @@ class tshsSileSiesta(onlysSileSiesta):
             H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
             H._csr._D[:, spin] = dS[:]
 
-        _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
+        _mat_siesta2sisl(H)
+        H = H.astype(dtype=kwargs.get("dtype"), copy=False)
 
         # Convert to sisl supercell
         # equivalent as _csr_from_siesta with explicit isc from file
@@ -445,8 +446,7 @@ class tshsSileSiesta(onlysSileSiesta):
         # we sort below, so no need to do it here
         # see onlysSileSiesta.read_overlap for .transpose()
         H = H.transpose(spin=False, sort=False)
-        csr = H._csr
-        if csr.nnz == 0:
+        if H._csr.nnz == 0:
             raise SileError(
                 f"{self!r}.write_hamiltonian cannot write "
                 "a zero element sparse matrix!"
@@ -455,9 +455,12 @@ class tshsSileSiesta(onlysSileSiesta):
         sort = kwargs.get("sort", True)
 
         # Convert to siesta CSR
-        _csr_to_siesta(H.geometry, csr, diag=True)
-        csr.finalize(sort=sort)
-        _mat_sisl2siesta(H, dtype=np.float64)
+        _csr_to_siesta(H.geometry, H._csr, diag=True)
+        H.finalize(sort=sort)
+
+        H = H.astype(dtype=np.float64, copy=False)
+        _mat_sisl2siesta(H)
+        csr = H._csr
 
         # Extract the data to pass to the fortran routine
         cell = H.geometry.cell
@@ -569,7 +572,8 @@ class dmSileSiesta(SileBinSiesta):
         # DM file does not contain overlap matrix... so neglect it for now.
         DM._csr._D[:, spin] = 0.0
 
-        _mat_siesta2sisl(DM, dtype=kwargs.get("dtype"))
+        _mat_siesta2sisl(DM)
+        DM = DM.astype(dtype=kwargs.get("dtype"), copy=False)
 
         # Convert the supercells to sisl supercells
         if nsc[0] != 0 or geom.no_s >= col.max():
@@ -588,20 +592,21 @@ class dmSileSiesta(SileBinSiesta):
     def write_density_matrix(self, DM, **kwargs):
         """Writes the density matrix to a siesta.DM file"""
         DM = DM.transpose(spin=False, sort=False)
-        csr = DM._csr
         # This ensures that we don"t have any *empty* elements
-        if csr.nnz == 0:
+        if DM._csr.nnz == 0:
             raise SileError(
                 f"{self!r}.write_density_matrix cannot write "
                 "a zero element sparse matrix!"
             )
 
-        _csr_to_siesta(DM.geometry, csr)
+        _csr_to_siesta(DM.geometry, DM._csr)
         # We do not really need to sort this one, but we do for consistency
         # of the interface.
-        csr.finalize(sort=kwargs.get("sort", True))
+        DM.finalize(sort=kwargs.get("sort", True))
 
-        _mat_sisl2siesta(DM, dtype=np.float64)
+        DM = DM.astype(dtype=np.float64, copy=False)
+        _mat_sisl2siesta(DM)
+        csr = DM._csr
 
         # Get DM
         if DM.orthogonal:
@@ -679,7 +684,8 @@ class tsdeSileSiesta(dmSileSiesta):
         # EDM file does not contain overlap matrix... so neglect it for now.
         EDM._csr._D[:, spin] = 0.0
 
-        _mat_siesta2sisl(EDM, dtype=kwargs.get("dtype"))
+        _mat_siesta2sisl(EDM)
+        EDM = EDM.astype(dtype=kwargs.get("dtype"), copy=False)
 
         # Convert the supercells to sisl supercells
         if nsc[0] != 0 or geom.no_s >= col.max():
@@ -737,8 +743,11 @@ class tsdeSileSiesta(dmSileSiesta):
         _csr_to_siesta(DM.geometry, EDM._csr)
         DM._csr.finalize(sort=sort)
         EDM._csr.finalize(sort=sort)
-        _mat_sisl2siesta(DM, dtype=np.float64)
-        _mat_sisl2siesta(EDM, dtype=np.float64)
+
+        DM = DM.astype(dtype=np.float64, copy=False)
+        _mat_sisl2siesta(DM)
+        EDM = EDM.astype(dtype=np.float64, copy=False)
+        _mat_sisl2siesta(EDM)
 
         # Ensure everything is correct
         if not (
@@ -1367,7 +1376,8 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
         H._csr._D[:, spin] = dS[:]
 
-        _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
+        _mat_siesta2sisl(H)
+        H = H.astype(dtype=kwargs.get("dtype"), copy=False)
 
         # Convert the supercells to sisl supercells
         if no_s // no == np.prod(geom.nsc):
@@ -1412,7 +1422,8 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
         H._csr._D[:, spin] = dS[:]
 
-        _mat_siesta2sisl(H, dtype=kwargs.get("dtype"))
+        _mat_siesta2sisl(H)
+        H = H.astype(dtype=kwargs.get("dtype"), copy=False)
 
         # Convert the supercells to sisl supercells
         _csr_from_sc_off(H.geometry, isc.T, H._csr)

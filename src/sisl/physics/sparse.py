@@ -802,6 +802,29 @@ class SparseOrbitalBZ(SparseOrbital):
         S = self.Sk(k=k, dtype=dtype, gauge=gauge)
         return lin.eigsh(P, M=S, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
+    def astype(self, dtype, copy: bool = True) -> Self:
+        """Convert the stored data-type to something else
+
+        Parameters
+        ----------
+        dtype :
+            the new dtype for the sparse matrix
+        copy :
+            copy when needed, or do not copy when not needed.
+        """
+        old_dtype = np.dtype(self.dtype)
+        new_dtype = np.dtype(dtype)
+
+        if old_dtype == new_dtype:
+            if copy:
+                return self.copy()
+            return self
+
+        new = self.copy()
+        new._csr = new._csr.astype(dtype, copy=copy)
+        new._reset()
+        return new
+
     def __getstate__(self):
         return {
             "sparseorbitalbz": super().__getstate__(),
@@ -1963,6 +1986,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         if dtype is None:
             dtype = self.dtype
+        else:
+            warn(
+                f"{self.__class__.__name__}.transform(dtype=...) is deprecated in favor "
+                f"of {self.__class__.__name__}.astype(...), please adapt your code."
+            )
 
         if spin is None:
             spin = self.spin
@@ -1993,6 +2021,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 matrix[-1, -1] = 1.0
 
             if spin.is_unpolarized and self.spin.size(self.dtype) > 1:
+                if np.dtype(matrix.dtype).kind == "i":
+                    matrix = matrix.astype(np.float64)
                 # average up and down components
                 matrix[0, [0, 1]] = 0.5
             elif spin.size(dtype) > 1 and self.spin.is_unpolarized:
@@ -2005,6 +2035,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
             if M != m and matrix.shape[0] == m and N != n and matrix.shape[1] == n:
                 # this means that the user wants to preserve the overlap
+                dtype = np.promote_types(dtype, matrix.dtype)
                 matrix_full = np.zeros([M, N], dtype=dtype)
                 matrix_full[:m, :n] = matrix
                 matrix_full[-1, -1] = 1.0
@@ -2019,6 +2050,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 f"matrix.shape={matrix.shape} and self.spin={N} ; out.spin={M}"
             )
 
+        # Define the dtype based on matrix
+        dtype = np.promote_types(dtype, matrix.dtype)
+
         new = self.__class__(
             self.geometry.copy(), spin=spin, dtype=dtype, nnzpr=1, orthogonal=orthogonal
         )
@@ -2030,6 +2064,158 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 new._csr[i, i, -1] = 1.0
 
         return new
+
+    def astype(self, dtype, *, copy: bool = True) -> Self:
+        """Convert the sparse matrix to a specific `dtype`
+
+        The data-conversion depends on the spin configuration of the system.
+        In practice this means that real valued arrays in non-colinear calculations
+        can be packed to complex valued arrays, which might be more intuitive.
+
+        Notes
+        -----
+        Historically, `sisl` was built with large inspiration from SIESTA.
+        In SIESTA the matrices are always stored in real valued arrays, meaning
+        that spin-orbit systems has 2x2x2 = 8 values to represent the spin-box.
+        However, this might as well be stored in 2x2 = 4 complex valued arrays.
+
+        Later versions of `sisl` might force non-colinear matrices to be stored
+        in complex arrays for consistency, but for now, both the real and the
+        complex valued arrays are allowed.
+
+        Parameters
+        ----------
+        dtype :
+            the resulting data-type of the returned new sparse matrix
+        copy:
+            whether the data should be copied (i.e. if `dtype` is not changed)
+        """
+        # Change details
+        old_dtype = np.dtype(self.dtype)
+        new_dtype = np.dtype(dtype)
+
+        if old_dtype == new_dtype:
+            if copy:
+                return self.copy()
+            return self
+
+        # Lets do the actual conversion.
+        # It all depends on the spin-configuration.
+        # The data-type is new, so we *have* to copy!
+        M = self.copy()
+        spin = M.spin
+        csr = M._csr
+        shape = csr._D.shape
+
+        def r2c(D, re, im):
+            return (D[..., re] + 1j * D[..., im]).astype(dtype, copy=False)
+
+        if old_dtype.kind in ("f", "i"):
+            if new_dtype.kind in ("f", "i"):
+                # this is just simple casting
+                csr._D = csr._D.astype(dtype)
+            elif new_dtype.kind == "c":
+                # we need to *collect* it
+                if spin.is_diagonal:
+                    # this is just simple casting,
+                    # each diagonal component has its own index
+                    csr._D = csr._D.astype(dtype)
+                elif spin.is_noncolinear:
+                    D = np.empty(shape[:-1] + (shape[-1] - 1,), dtype=dtype)
+                    # These should be real only anyways!
+                    D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
+                    D[..., 2] = r2c(csr._D, 2, 3)
+                    if D.shape[-1] > 4:
+                        D[..., 3:] = csr._D[..., 4:].astype(dtype)
+                    csr._D = D
+                elif spin.is_spinorbit:
+                    D = np.empty(shape[:-1] + (shape[-1] - 4,), dtype=dtype)
+                    D[..., 0] = r2c(csr._D, 0, 4)
+                    D[..., 1] = r2c(csr._D, 1, 5)
+                    D[..., 2] = r2c(csr._D, 2, 3)
+                    D[..., 3] = r2c(csr._D, 6, 7)
+                    if D.shape[-1] > 4:
+                        D[..., 4:] = csr._D[..., 8:].astype(dtype)
+                    csr._D = D
+                elif spin.is_nambu:
+                    D = np.empty(shape[:-1] + (shape[-1] - 8,), dtype=dtype)
+                    D[..., 0] = r2c(csr._D, 0, 4)
+                    D[..., 1] = r2c(csr._D, 1, 5)
+                    D[..., 2] = r2c(csr._D, 2, 3)
+                    D[..., 3] = r2c(csr._D, 6, 7)
+                    D[..., 4] = r2c(csr._D, 8, 9)  # S
+                    D[..., 5] = r2c(csr._D, 10, 11)  # Tuu
+                    D[..., 6] = r2c(csr._D, 12, 13)  # Tdd
+                    D[..., 7] = r2c(csr._D, 14, 15)  # T0
+                    if D.shape[-1] > 8:
+                        D[..., 8:] = csr._D[..., 16:].astype(dtype)
+                    csr._D = D
+                else:
+                    raise NotImplementedError("Unknown spin-type")
+            else:
+                raise NotImplementedError("Unknown datatype")
+
+        elif old_dtype.kind == "c":
+            if new_dtype.kind == "c":
+                # this is just simple casting
+                csr._D = csr._D.astype(dtype)
+            elif new_dtype.kind in ("f", "i"):
+                # we need to *collect it
+                if spin.is_diagonal:
+                    # this is just simple casting,
+                    # each diagonal component has its own index
+                    csr._D = csr._D.astype(dtype)
+                elif spin.is_noncolinear:
+                    D = np.empty(shape[:-1] + (shape[-1] + 1,), dtype=dtype)
+                    # These should be real only anyways!
+                    D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
+                    D[..., 2] = csr._D[..., 2].real.astype(dtype)
+                    D[..., 3] = csr._D[..., 2].imag.astype(dtype)
+                    if D.shape[-1] > 4:
+                        D[..., 4:] = csr._D[..., 3:].real.astype(dtype)
+                    csr._D = D
+                elif spin.is_spinorbit:
+                    D = np.empty(shape[:-1] + (shape[-1] + 4,), dtype=dtype)
+                    D[..., 0] = csr._D[..., 0].real.astype(dtype)
+                    D[..., 1] = csr._D[..., 1].real.astype(dtype)
+                    D[..., 2] = csr._D[..., 2].real.astype(dtype)
+                    D[..., 3] = csr._D[..., 2].imag.astype(dtype)
+                    D[..., 4] = csr._D[..., 0].imag.astype(dtype)
+                    D[..., 5] = csr._D[..., 1].imag.astype(dtype)
+                    D[..., 6] = csr._D[..., 3].real.astype(dtype)
+                    D[..., 7] = csr._D[..., 3].imag.astype(dtype)
+                    if D.shape[-1] > 8:
+                        D[..., 8:] = csr._D[..., 4:].real.astype(dtype)
+                    csr._D = D
+                elif spin.is_nambu:
+                    D = np.empty(shape[:-1] + (shape[-1] + 8,), dtype=dtype)
+                    D[..., 0] = csr._D[..., 0].real.astype(dtype)
+                    D[..., 1] = csr._D[..., 1].real.astype(dtype)
+                    D[..., 2] = csr._D[..., 2].real.astype(dtype)
+                    D[..., 3] = csr._D[..., 2].imag.astype(dtype)
+                    D[..., 4] = csr._D[..., 0].imag.astype(dtype)
+                    D[..., 5] = csr._D[..., 1].imag.astype(dtype)
+                    D[..., 6] = csr._D[..., 3].real.astype(dtype)
+                    D[..., 7] = csr._D[..., 3].imag.astype(dtype)
+                    D[..., 8] = csr._D[..., 4].real.astype(dtype)  # S
+                    D[..., 9] = csr._D[..., 4].imag.astype(dtype)
+                    D[..., 10] = csr._D[..., 5].real.astype(dtype)  # Tuu
+                    D[..., 11] = csr._D[..., 5].imag.astype(dtype)
+                    D[..., 12] = csr._D[..., 6].real.astype(dtype)  # Tdd
+                    D[..., 13] = csr._D[..., 6].imag.astype(dtype)
+                    D[..., 14] = csr._D[..., 7].real.astype(dtype)  # T0
+                    D[..., 15] = csr._D[..., 7].imag.astype(dtype)
+                    if D.shape[-1] > 16:
+                        D[..., 16:] = csr._D[..., 8:].real.astype(dtype)
+                    csr._D = D
+                else:
+                    raise NotImplementedError("Unknown spin-type")
+            else:
+                raise NotImplementedError("Unknown datatype")
+
+        # Resetting M is necessary to reflect the new shape
+        M._reset()
+        return M
 
     def __getstate__(self):
         return {

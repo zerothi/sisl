@@ -7,7 +7,6 @@ import numpy as np
 import pytest
 
 import sisl
-from sisl.io.siesta._help import _mat2dtype
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
@@ -51,11 +50,9 @@ def test_non_colinear(sisl_tmp, sort, matrix, ext, dtype, read_dtype):
     assert M._csr.spsame(M2._csr)
     assert M._csr.spsame(M3._csr)
 
-    from sisl.io.siesta._help import _mat2dtype
-
     # Convert to the same dtype
-    _mat2dtype(M2, dtype)
-    _mat2dtype(M3, dtype)
+    M2 = M2.astype(dtype)
+    M3 = M3.astype(dtype)
     if M.orthogonal and not M2.orthogonal:
         assert np.allclose(M._csr._D, M2._csr._D[..., :-1])
     else:
@@ -104,8 +101,8 @@ def test_spin_orbit(sisl_tmp, sort, matrix, ext, dtype, read_dtype):
     assert M._csr.spsame(M3._csr)
 
     # Convert to the same dtype
-    _mat2dtype(M2, dtype)
-    _mat2dtype(M3, dtype)
+    M2 = M2.astype(dtype)
+    M3 = M3.astype(dtype)
     if M.orthogonal and not M2.orthogonal:
         assert np.allclose(M._csr._D, M2._csr._D[..., :-1])
     else:

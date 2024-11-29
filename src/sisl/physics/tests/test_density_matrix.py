@@ -608,7 +608,7 @@ class TestDensityMatrix:
             D[ia, ia] = a
         Dcsr = [D.tocsr(i) for i in range(D.shape[2])]
 
-        Dt = D.transform(spin="unpolarized", dtype=np.float32)
+        Dt = D.transform(spin="unpolarized").astype(np.float32)
         assert np.abs(0.5 * Dcsr[0] + 0.5 * Dcsr[1] - Dt.tocsr(0)).sum() == 0
 
         Dt = D.transform(spin="polarized", orthogonal=False)
@@ -630,7 +630,7 @@ class TestDensityMatrix:
         for ia in setup.g:
             D[ia, ia] = a
 
-        Dt = D.transform(spin="unpolarized", dtype=np.float32)
+        Dt = D.transform(spin="unpolarized").astype(np.float32)
         assert np.abs(0.5 * D.tocsr(0) + 0.5 * D.tocsr(1) - Dt.tocsr(0)).sum() == 0
         assert np.abs(D.tocsr(-1) - Dt.tocsr(-1)).sum() == 0
         Dt = D.transform(spin="polarized")
