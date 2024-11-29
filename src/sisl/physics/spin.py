@@ -8,6 +8,7 @@ from typing import Union
 import numpy as np
 
 from sisl._internal import set_module
+from sisl.messages import warn
 
 __all__ = ["Spin"]
 
@@ -99,6 +100,11 @@ class Spin:
             raise ValueError(
                 f"{self.__class__.__name__} initialization went wrong because of wrong "
                 "kind specification. Could not determine the kind of spin!"
+            )
+        if kind == Spin.NAMBU:
+            warn(
+                "Using untested Nambu spin-configuration, please be aware "
+                "that this is largely untested code!"
             )
 
         # Now assert the checks
