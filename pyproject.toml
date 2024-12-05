@@ -196,7 +196,7 @@ test = [
 ]
 
 docs = [
-    "sphinx<8",
+    "sphinx<9",
     "nbsphinx",
     "sphinx-rtd-theme",
     "sphinx-design",
