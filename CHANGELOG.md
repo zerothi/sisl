@@ -19,6 +19,12 @@ we hit release version 1.0.0.
       sisl.geom.graphene
 
 - added Nambu spin configuration, this is still experimental
+- enabled `...` when extracting slices of MD steps in siesta output
+  files.
+  Here it is the same as `:`. But it also allows
+  inline arguments: `read_scf(imd=...)` where `imd=:` is not
+  allowed, partly fixes #835
+- enabled `...` for `atoms=` arguments. Selects all atoms.
 
 ### Fixed
 - `projection` arguments of several functions has been streamlined

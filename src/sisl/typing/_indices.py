@@ -94,3 +94,11 @@ OrbitalsIndex = Union[
     None,
 ]
 """Indexing orbitals via various construct methods"""
+
+try:
+    from types import EllipsisType
+
+    AtomsIndex = Union[AtomsIndex, EllipsisType]
+    OrbitalsIndex = Union[OrbitalsIndex, EllipsisType]
+except ImportError:
+    pass

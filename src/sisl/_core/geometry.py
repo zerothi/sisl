@@ -366,8 +366,11 @@ class Geometry(
         - name -> self._names[name]
         - `Atom` -> self.atoms.index(atom)
         - range/list/ndarray -> ndarray
+        - `...` -> ndarray
         """
         if atoms is None:
+            return np.arange(self.na)
+        elif atoms is Ellipsis:
             return np.arange(self.na)
         atoms = _a.asarray(atoms)
         if atoms.size == 0:
@@ -451,6 +454,8 @@ class Geometry(
         - dict -> {atom: sub_orbital}
         """
         if orbitals is None:
+            return np.arange(self.no)
+        elif orbitals is Ellipsis:
             return np.arange(self.no)
         orbitals = _a.asarray(orbitals)
         if orbitals.size == 0:

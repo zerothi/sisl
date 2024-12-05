@@ -830,7 +830,7 @@ class stdoutSileSiesta(SileSiesta):
     def read_scf(
         self,
         key: str = "scf",
-        iscf: Optional[int] = -1,
+        iscf: Optional[Union[int, Ellipsis]] = -1,
         as_dataframe: bool = False,
         ret_header: bool = False,
     ):
@@ -842,7 +842,7 @@ class stdoutSileSiesta(SileSiesta):
             parse SCF information from Siesta SCF or TranSiesta SCF
         iscf :
             which SCF cycle should be stored. If ``-1`` only the final SCF step is stored,
-            for None *all* SCF cycles are returned. When `iscf` values queried are not found they
+            for `...`/`None` *all* SCF cycles are returned. When `iscf` values queried are not found they
             will be truncated to the nearest SCF step.
         as_dataframe:
             whether the information should be returned as a `pandas.DataFrame`. The advantage of this
@@ -856,7 +856,9 @@ class stdoutSileSiesta(SileSiesta):
         # These are the properties that are written in SIESTA scf
         props = ["iscf", "Eharris", "E_KS", "FreeEng", "dDmax", "Ef", "dHmax"]
 
-        if not iscf is None:
+        if iscf is Ellipsis:
+            iscf = None
+        elif iscf is not None:
             if iscf == 0:
                 raise ValueError(
                     f"{self.__class__.__name__}.read_scf requires iscf argument to *not* be 0!"
@@ -1086,8 +1088,8 @@ class stdoutSileSiesta(SileSiesta):
     def read_charge(
         self,
         name: Literal["voronoi", "hirshfeld", "mulliken", "mulliken:<5.2"],
-        iscf=Opt.ANY,
-        imd=Opt.ANY,
+        iscf: Union[Opt, int, Ellipsis] = Opt.ANY,
+        imd: Union[Opt, int, Ellipsis] = Opt.ANY,
         key_scf: str = "scf",
         as_dataframe: bool = False,
     ):
@@ -1129,15 +1131,15 @@ class stdoutSileSiesta(SileSiesta):
         ----------
         name:
             the name of the charges that you want to read
-        iscf: int or Opt, optional
+        iscf: int or Opt or `...`, optional
             index (0-based) of the scf iteration you want the charges for.
-            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then
+            If the enum specifier `Opt.ANY` or `Opt.ALL`/`...` are used, then
             the returned quantities depend on what is present.
             If ``None/Opt.NONE`` it will not return any SCF charges.
             If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
         imd: int or Opt, optional
             index (0-based) of the md step you want the charges for.
-            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then
+            If the enum specifier `Opt.ANY` or `Opt.ALL`/`...` are used, then
             the returned quantities depend on what is present.
             If ``None/Opt.NONE`` it will not return any MD charges.
             If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
@@ -1570,9 +1572,9 @@ class stdoutSileSiesta(SileSiesta):
                 md_scf_charge = pd.concat(
                     [
                         pd.concat(
-                            iscf, keys=pd.RangeIndex(1, len(iscf) + 1, name="iscf")
+                            iscf_, keys=pd.RangeIndex(1, len(iscf_) + 1, name="iscf")
                         )
-                        for iscf in md_scf_charge
+                        for iscf_ in md_scf_charge
                     ],
                     keys=pd.RangeIndex(1, len(md_scf_charge) + 1, name="imd"),
                 )
@@ -1607,6 +1609,9 @@ class stdoutSileSiesta(SileSiesta):
             flag :
                 corrected flag
             """
+            if flag is Ellipsis:
+                flag = Opt.ALL
+
             if isinstance(flag, Opt):
                 # correct flag depending on what `found` is
                 # If the values have been found we
