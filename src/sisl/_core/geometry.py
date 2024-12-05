@@ -471,7 +471,7 @@ class Geometry(
         if start is None:
             start = 0
         if stop is None:
-            stop = self.na
+            stop = self.no
         if step is None:
             step = 1
         return np.arange(start, stop, step)

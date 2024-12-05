@@ -22,6 +22,8 @@ we hit release version 1.0.0.
 
 ### Fixed
 - `projection` arguments of several functions has been streamlined
+- `orbitals` arguments with slices without ends returned up to `geometry.na`,
+  now it correctly returns up to the maximum number of orbitals.
 
 ### Changed
 - internal Cython code for performance improvements.
