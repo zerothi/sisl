@@ -1654,6 +1654,11 @@ def test_geometry_sort_int():
         assert np.all(np.diff(bi.fxyz[ix, 1] * bi.lattice.length[i]) <= atol)
 
 
+def test_geometry_ellipsis():
+    gr = sisl_geom.graphene()
+    assert np.allclose(gr.axyz(...), gr.axyz(None))
+
+
 def test_geometry_sort_atom():
     bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
 

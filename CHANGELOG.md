@@ -19,6 +19,12 @@ we hit release version 1.0.0.
       sisl.geom.graphene
 
 - added Nambu spin configuration, this is still experimental
+- enabled `...` when extracting slices of MD steps in siesta output
+  files.
+  Here it is the same as `:`. But it also allows
+  inline arguments: `read_scf(imd=...)` where `imd=:` is not
+  allowed, partly fixes #835
+- enabled `...` for `atoms=` arguments. Selects all atoms.
 
 ### Fixed
 - `projection` arguments of several functions has been streamlined
@@ -29,10 +35,6 @@ we hit release version 1.0.0.
   with *many* edges in the sparse matrix, but a perf. hit for very
   small TB matrices.
 - dtype removed from `Spin` class
-- enabled `...` when extracting slices of MD steps.
-  Here it is the same as `:`. But it also allows
-  inline arguments: `read_scf(imd=...)` where `imd=:` is not
-  allowed, partly fixes #835
 
 
 ## [0.15.2] - 2024-11-06

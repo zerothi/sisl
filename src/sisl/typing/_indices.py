@@ -78,6 +78,7 @@ AtomsIndex = Union[
     "GenericCategory",
     "Shape",
     bool,  # for all or none
+    Ellipsis,  # for all atoms
     None,  # typically used to default for all
 ]
 """Indexing atoms via various construct methods"""
@@ -91,6 +92,7 @@ OrbitalsIndex = Union[
     "AtomCategory",  # gets expended to orbitals on the atoms
     "Shape",
     bool,
+    Ellipsis,  # for all orbitals
     None,
 ]
 """Indexing orbitals via various construct methods"""
