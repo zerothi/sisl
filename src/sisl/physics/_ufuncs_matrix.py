@@ -23,7 +23,7 @@ def matrix_at_k(
     k: KPoint = (0, 0, 0),
     *args,
     dtype=None,
-    gauge: GaugeType = "cell",
+    gauge: GaugeType = "lattice",
     format: str = "csr",
     **kwargs,
 ):
@@ -31,12 +31,12 @@ def matrix_at_k(
 
     Fold the auxilliary supercell matrix elements into the primary cell by adding a phase factor:
 
-    When `gauge` is ``cell`` the matrix is folded like:
+    When `gauge` is ``lattice`` the matrix is folded like:
 
     .. math::
         \mathbf M(\mathbf k) = \sum_{\mathbf{k}} \mathbf M^{\mathrm{sc}_i} e^{i \mathbf R_{\mathrm{sc}_i} \cdot \mathbf k}
 
-    when `gauge` is ``atom`` the matrix is folded with the interatomic distances, like:
+    when `gauge` is ``atomic`` the matrix is folded with the interatomic distances, like:
 
     .. math::
         \mathbf M(\mathbf k) = \sum_{\mathbf{k}} \mathbf M^{\mathrm{sc}_i} e^{i (\mathbf r_i - \mathbf r_j) \cdot \mathbf k}
@@ -48,7 +48,8 @@ def matrix_at_k(
     dtype : numpy.dtype, optional
        default to `numpy.complex128`
     gauge :
-       chosen gauge, either the lattice gauge (``cell``), or the interatomic distance gauge (``atom``).
+       chosen gauge, either the lattice gauge (``lattice``), or the interatomic distance
+       gauge (``atomic``).
     format : {"csr", "array", "coo", ...}
        the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
        however if one always requires operations on dense matrices, one can always
@@ -70,7 +71,7 @@ def overlap_at_k(
     k: KPoint = (0, 0, 0),
     *args,
     dtype=None,
-    gauge: GaugeType = "cell",
+    gauge: GaugeType = "lattice",
     format: str = "csr",
     **kwargs,
 ):
@@ -78,12 +79,12 @@ def overlap_at_k(
 
     Fold the auxilliary supercell overlap matrix elements into the primary cell by adding a phase factor:
 
-    When `gauge` is ``cell`` the overlap matrix is folded like:
+    When `gauge` is ``lattice`` the overlap matrix is folded like:
 
     .. math::
         \mathbf S(\mathbf k) = \sum_{\mathbf{k}} \mathbf S^{\mathrm{sc}_i} e^{i \mathbf R_{\mathrm{sc}_i} \cdot \mathbf k}
 
-    when `gauge` is ``atom`` the overlap matrix is folded with the interatomic distances, like:
+    when `gauge` is ``atomic`` the overlap matrix is folded with the interatomic distances, like:
 
     .. math::
         \mathbf S(\mathbf k) = \sum_{\mathbf{k}} \mathbf S^{\mathrm{sc}_i} e^{i (\mathbf r_i - \mathbf r_j) \cdot \mathbf k}
@@ -95,7 +96,8 @@ def overlap_at_k(
     dtype : numpy.dtype, optional
        default to `numpy.complex128`
     gauge :
-       chosen gauge, either the lattice gauge (``cell``), or the interatomic distance gauge (``atom``).
+       chosen gauge, either the lattice gauge (``lattice``), or the interatomic distance
+       gauge (``atomic``).
     format : {"csr", "array", "coo", ...}
        the returned format of the overlap matrix, defaulting to the `scipy.sparse.csr_matrix`,
        however if one always requires operations on dense matrices, one can always

@@ -28,17 +28,17 @@ def _phase_k(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
         p_opt = -1
         phases = np.empty([0], dtype=dtype)
 
-    elif gauge == "atom":
+    elif gauge == "atomic":
         M.finalize()
         phases = phase_rij(M.Rij()._csr._D, sc, k, dtype)
         p_opt = 0
 
-    elif gauge == "cell":
+    elif gauge == "lattice":
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
 
     else:
-        raise ValueError("phase_k: gauge must be in [cell, atom]")
+        raise ValueError("phase_k: gauge must be in [lattice, atomic]")
 
     return p_opt, phases
 

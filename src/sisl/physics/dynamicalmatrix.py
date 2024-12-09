@@ -59,7 +59,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -93,8 +93,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance
+        gauge :
+           the chosen gauge, `lattice` for lattice vector gauge, and `atomic` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -119,7 +119,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -154,8 +154,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the data type of the returned matrix. Do NOT request non-complex
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
-        gauge : {'cell', 'orbital'}
-           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance
+        gauge :
+           the chosen gauge, `lattice` for lattice vector gauge, and `atomic` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -178,7 +178,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -214,7 +214,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
+           the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -291,7 +291,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         del d_uc
 
     def eigenvalue(
-        self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs
+        self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs
     ) -> EigenvaluePhonon:
         """Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
 
@@ -299,7 +299,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         ----------
         k : array_like*3, optional
             the k-point at which to evaluate the eigenvalues at
-        gauge : str, optional
+        gauge :
             the gauge used for calculating the eigenvalues
         sparse : bool, optional
             if ``True``, `eigsh` will be called, else `eigh` will be
@@ -324,7 +324,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
     def eigenmode(
-        self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs
+        self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs
     ) -> EigenmodePhonon:
         r"""Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
 
@@ -336,7 +336,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         ----------
         k : array_like*3, optional
             the k-point at which to evaluate the eigenmodes at
-        gauge : str, optional
+        gauge :
             the gauge used for calculating the eigenmodes
         sparse : bool, optional
             if ``True``, `eigsh` will be called, else `eigh` will be

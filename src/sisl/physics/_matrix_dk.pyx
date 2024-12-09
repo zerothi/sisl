@@ -26,18 +26,20 @@ def _phase_dk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
     # See _phase.pyx, we are using exp(i k.R/r)
     #  i R
 
-    if gauge == 'atom':
+    if gauge == "atomic":
         M.finalize()
         rij = M.Rij()._csr._D
         iRs = (1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
         del rij
         p_opt = 0
 
-    elif gauge == 'cell':
+    elif gauge == "lattice":
         iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
         iRs = (1j * np.dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
         p_opt = 1
 
+    else:
+        raise ValueError("phase_dk: gauge must be in [lattice, atomic]")
 
     assert p_opt >= 0, "Not implemented"
 

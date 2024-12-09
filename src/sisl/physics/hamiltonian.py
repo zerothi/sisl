@@ -108,7 +108,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -120,7 +120,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \mathbf H(\mathbf k) = \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -143,7 +143,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
+           the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -173,7 +173,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -185,7 +185,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \nabla_{\mathbf k} \mathbf H_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -209,7 +209,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
+           the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -236,7 +236,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -248,7 +248,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \nabla_{\mathbf k^2} \mathbf H_{\alpha\beta}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -272,7 +272,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
+           the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -335,7 +335,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             for i in range(nspin):
                 self._csr._D[:, i].real += self._csr._D[:, self.S_idx].real * E[i]
 
-    def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):
+    def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs):
         """Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`
 
         Parameters
@@ -369,14 +369,14 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             e = self.eigh(k, gauge, eigvals_only=True, **kwargs)
         info = {"k": k, "gauge": gauge}
-        for name in ["spin"]:
+        for name in ("spin",):
             if name in kwargs:
                 info[name] = kwargs[name]
         if not format is None:
             info["format"] = format
         return EigenvalueElectron(e, self, **info)
 
-    def eigenstate(self, k=(0, 0, 0), gauge: GaugeType = "cell", **kwargs):
+    def eigenstate(self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs):
         """Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates
 
         Parameters
@@ -410,7 +410,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
         info = {"k": k, "gauge": gauge}
-        for name in ["spin"]:
+        for name in ("spin",):
             if name in kwargs:
                 info[name] = kwargs[name]
         if not format is None:

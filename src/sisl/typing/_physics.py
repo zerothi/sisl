@@ -15,7 +15,7 @@ __all__ = [
     "ProjectionTypeHadamardAtoms",
 ]
 
-GaugeType = Literal["cell", "atom"]
+GaugeType = Literal["lattice", "atomic"]
 
 ProjectionTypeMatrix = Literal["matrix", "ij"]
 ProjectionTypeTrace = Literal["trace", "sum"]

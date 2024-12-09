@@ -1222,10 +1222,10 @@ def berry_phase(
             pass
 
     else:
-        gauge = eigenstate_kwargs.get("gauge", "cell")
+        gauge = eigenstate_kwargs.get("gauge", "lattice")
 
         def _lowdin(state):
-            """change state to the lowdin state, assuming everything is in R gauge
+            """change state to the lowdin state, assuming everything is in lattice gauge
             So needs to be done before changing gauge"""
             S12 = sqrth(
                 state.parent.Sk(state.info["k"], gauge=gauge, format="array"),
@@ -1348,7 +1348,7 @@ def wavefunction(
 
     Notes
     -----
-    Currently this method only works for `v` being coefficients of the gauge="cell" method. In case
+    Currently this method only works for `v` being coefficients of the ``gauge="lattice"`` method. In case
     you are passing a `v` with the incorrect gauge you will find a phase-shift according to:
 
     .. math::
@@ -1362,7 +1362,7 @@ def wavefunction(
     v : array_like
        coefficients for the orbital expansion on the real-space grid.
        If `v` is a complex array then the `grid` *must* be complex as well. The coefficients
-       must be using the ``R`` gauge.
+       must be using the *lattice* gauge.
     grid : Grid
        grid on which the wavefunction will be plotted.
        If multiple eigenstates are in this object, they will be summed.
@@ -1846,8 +1846,8 @@ class _electron_State:
             # at least this makes it easier to parse
             grid = Grid(grid, geometry=geometry, dtype=self.dtype)
 
-        # Ensure we are dealing with the R gauge
-        self.change_gauge("cell")
+        # Ensure we are dealing with the lattice gauge
+        self.change_gauge("lattice")
 
         # Retrieve k
         k = self.info.get("k", _a.zerosd(3))

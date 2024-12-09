@@ -312,7 +312,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
         _dim=0,
     ):
@@ -334,7 +334,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
         _dim=0,
     ):
@@ -356,7 +356,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
         _dim=0,
     ):
@@ -378,7 +378,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
         *args,
         **kwargs,
@@ -390,7 +390,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -413,8 +413,7 @@ class SparseOrbitalBZ(SparseOrbital):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
-           gauge.
+           the chosen gauge
         format : {"csr", "array", "matrix", "coo", ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
@@ -439,7 +438,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
         *args,
         **kwargs,
@@ -471,7 +470,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k`.
@@ -491,7 +490,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
         *args,
         **kwargs,
@@ -503,7 +502,7 @@ class SparseOrbitalBZ(SparseOrbital):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -527,8 +526,7 @@ class SparseOrbitalBZ(SparseOrbital):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
-           gauge.
+           the chosen gauge.
         format : {"csr", "array", "matrix", "coo", ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
            however if one always requires operations on dense matrices, one can always
@@ -550,7 +548,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` differentiated with respect to `k`
@@ -570,7 +568,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` for non-collinear spin, differentiated with respect to `k`
@@ -593,7 +591,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
         *args,
         **kwargs,
@@ -652,7 +650,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` double differentiated with respect to `k`
@@ -672,7 +670,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` for non-collinear spin, differentiated with respect to `k`
@@ -695,7 +693,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` for Nambu spin, differentiated with respect to `k`
@@ -717,7 +715,7 @@ class SparseOrbitalBZ(SparseOrbital):
     def eig(
         self,
         k: KPoint = (0, 0, 0),
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
     ):
@@ -743,7 +741,7 @@ class SparseOrbitalBZ(SparseOrbital):
     def eigh(
         self,
         k: KPoint = (0, 0, 0),
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
     ):
@@ -766,7 +764,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self,
         k: KPoint = (0, 0, 0),
         n: int = 1,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
     ):
@@ -1290,7 +1288,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k`
@@ -1311,7 +1309,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k: KPoint = (0, 0, 0),
         spin=0,
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a polarized system
@@ -1333,7 +1331,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system
@@ -1354,7 +1352,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system
@@ -1375,7 +1373,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
@@ -1396,7 +1394,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k`, differentiated with respect to `k`
@@ -1417,7 +1415,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         k: KPoint = (0, 0, 0),
         spin=0,
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k`, differentiated with respect to `k`
@@ -1439,7 +1437,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system, differentiated with respect to `k`
@@ -1460,7 +1458,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system, differentiated with respect to `k`
@@ -1481,7 +1479,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu spin system, differentiated with respect to `k`
@@ -1502,7 +1500,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system, differentiated with respect to `k` twice
@@ -1523,7 +1521,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system, differentiated with respect to `k`
@@ -1544,7 +1542,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system, differentiated with respect to `k`
@@ -1565,7 +1563,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k`.
@@ -1585,7 +1583,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system
@@ -1606,7 +1604,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
@@ -1627,7 +1625,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system
@@ -1650,7 +1648,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
         r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
@@ -1672,7 +1670,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     def eig(
         self,
         k: KPoint = (0, 0, 0),
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
     ):
@@ -1710,7 +1708,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     def eigh(
         self,
         k: KPoint = (0, 0, 0),
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
     ):
@@ -1745,7 +1743,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         self,
         k: KPoint = (0, 0, 0),
         n: int = 1,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
     ):

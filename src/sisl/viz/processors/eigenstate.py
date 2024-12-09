@@ -179,7 +179,7 @@ def project_wavefunction(
     grid = create_wf_grid(eigenstate, grid_prec=grid_prec, grid=grid, geometry=geometry)
 
     # Ensure we are dealing with the cell gauge
-    eigenstate.change_gauge("cell")
+    eigenstate.change_gauge("lattice")
 
     # Finally, insert the wavefunction values into the grid.
     sisl.physics.electron.wavefunction(

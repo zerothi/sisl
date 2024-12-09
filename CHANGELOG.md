@@ -25,6 +25,8 @@ we hit release version 1.0.0.
   inline arguments: `read_scf(imd=...)` where `imd=:` is not
   allowed, partly fixes #835
 - enabled `...` for `atoms=` arguments. Selects all atoms.
+- clarified gauge, lattice vs. atomic is clearer than cell vs. atom.
+  The old values are still respected.
 
 ### Fixed
 - `projection` arguments of several functions has been streamlined

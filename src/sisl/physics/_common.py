@@ -11,13 +11,15 @@ __all__ = ["comply_gauge", "comply_projection"]
 def comply_gauge(gauge: GaugeType) -> str:
     """Comply the gauge to one of two words: atom | cell"""
     return {
-        "R": "cell",
-        "cell": "cell",
-        "r": "atom",
-        "orbital": "atom",
-        "orbitals": "atom",
-        "atom": "atom",
-        "atoms": "atom",
+        "R": "lattice",
+        "cell": "lattice",
+        "lattice": "lattice",
+        "r": "atomic",
+        "orbital": "atomic",
+        "orbitals": "atomic",
+        "atom": "atomic",
+        "atoms": "atomic",
+        "atomic": "atomic",
     }[gauge]
 
 

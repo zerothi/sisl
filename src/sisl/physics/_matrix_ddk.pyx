@@ -28,7 +28,7 @@ def _phase_ddk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
     # two dependent variables
     # We always do the Voigt representation
     #  Rd = dx^2, dy^2, dz^2, dzy, dxz, dyx
-    if gauge == 'atom':
+    if gauge == "atomic":
         M.finalize()
         rij = M.Rij()._csr._D
         phases = phase_rij(rij, sc, k, dtype).reshape(-1, 1)
@@ -38,7 +38,7 @@ def _phase_ddk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
         del rij, phases
         p_opt = 0
 
-    elif gauge == 'cell':
+    elif gauge == "lattice":
         phases = phase_rsc(sc, k, dtype).reshape(-1, 1)
         Rs = np.dot(sc.sc_off, sc.cell)
         Rd = - (Rs * Rs * phases).astype(dtype, copy=False)
@@ -46,6 +46,8 @@ def _phase_ddk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
         Ro *= np.roll(Rs, -1, axis=1) # y, z, x
         del phases, Rs
         p_opt = 1
+    else:
+        raise ValueError("phase_ddk: gauge must be in [lattice, atomic]")
 
     assert p_opt >= 0, "Not implemented"
 

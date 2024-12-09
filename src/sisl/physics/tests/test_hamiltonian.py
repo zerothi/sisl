@@ -239,11 +239,11 @@ class TestHamiltonian:
         H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
 
         # Try with different gauges
-        for gauge in ("cell", "R"):
-            assert H.eigenstate(gauge=gauge).info["gauge"] == "cell"
+        for gauge in ("cell", "R", "lattice"):
+            assert H.eigenstate(gauge=gauge).info["gauge"] == "lattice"
 
-        for gauge in ("atom", "atoms", "atom", "orbitals", "r"):
-            assert H.eigenstate(gauge=gauge).info["gauge"] == "atom"
+        for gauge in ("atom", "atoms", "atom", "orbitals", "r", "atomic"):
+            assert H.eigenstate(gauge=gauge).info["gauge"] == "atomic"
 
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.15, 0.15, 0.15]])
     def test_Hk_format(self, setup, k):

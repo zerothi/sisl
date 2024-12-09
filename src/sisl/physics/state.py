@@ -986,7 +986,8 @@ state coefficients
 
             \tilde C_\alpha = e^{i\mathbf k\mathbf r_\alpha} C_\alpha
 
-        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``atom`` and ``cell`` gauge, respectively.
+        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``atomic`` and
+        ``lattice`` gauge, respectively.
 
         Parameters
         ----------
@@ -1026,12 +1027,14 @@ state coefficients
             if self.shape[1] == g.no * 2:
                 phase = np.repeat(phase, 2)
 
-        if gauge == "atom":
+        if gauge == "atomic":
             # R -> r gauge tranformation.
             self.state *= exp(-1j * phase).reshape(1, -1)
-        elif gauge == "cell":
+        elif gauge == "lattice":
             # r -> R gauge tranformation.
             self.state *= exp(1j * phase).reshape(1, -1)
+        else:
+            raise ValueError("change_gauge: gauge must be in [lattice, atomic]")
 
     # def toStateC(self, norm=1.):
     #     r""" Transforms the states into normalized values equal to `norm` and specifies the coefficients in `StateC` as the norm

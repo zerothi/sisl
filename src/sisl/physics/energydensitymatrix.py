@@ -105,7 +105,7 @@ class EnergyDensityMatrix(_densitymatrix):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -117,7 +117,7 @@ class EnergyDensityMatrix(_densitymatrix):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \mathbf E(\mathbf k) = \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -140,7 +140,7 @@ class EnergyDensityMatrix(_densitymatrix):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
+           the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -169,7 +169,7 @@ class EnergyDensityMatrix(_densitymatrix):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -181,7 +181,7 @@ class EnergyDensityMatrix(_densitymatrix):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \nabla_{\mathbf k} \mathbf E_\alpha(\mathbf k) = i\mathbf R_\alpha \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -205,7 +205,7 @@ class EnergyDensityMatrix(_densitymatrix):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
+           the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
@@ -232,7 +232,7 @@ class EnergyDensityMatrix(_densitymatrix):
         self,
         k=(0, 0, 0),
         dtype=None,
-        gauge: GaugeType = "cell",
+        gauge: GaugeType = "lattice",
         format="csr",
         *args,
         **kwargs,
@@ -244,7 +244,7 @@ class EnergyDensityMatrix(_densitymatrix):
         Notes
         -----
 
-        Currently the implemented gauge for the k-point is the cell vector gauge:
+        Currently the implemented gauge for the k-point is the lattice vector gauge:
 
         .. math::
            \nabla_{\mathbf k^2} \mathbf E_{\alpha\beta}(\mathbf k) = -\mathbf R_\alpha\mathbf R_\beta \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}
@@ -268,7 +268,7 @@ class EnergyDensityMatrix(_densitymatrix):
            data-type for non-Gamma k.
            The default data-type is `numpy.complex128`
         gauge :
-           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
+           the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
            the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
