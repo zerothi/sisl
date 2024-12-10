@@ -49,6 +49,8 @@ from github import Github
 if sys.version_info[:2] < (3, 6):
     raise RuntimeError("Python version must be >= 3.6")
 
+DISCARD_AUTHORS = ("Homu", "lgtm-com[bot]", "dependabot[bot]")
+
 this_repo = Repo(os.path.join(os.path.dirname(__file__), ".."))
 
 author_msg = """
@@ -74,7 +76,7 @@ def get_authors(revision_range):
     pre = set(re.findall(pat, this_repo.git.shortlog("-s", lst_release), re.M))
 
     # Homu is the author of auto merges, clean him out.
-    for discard_author in ("Homu", "lgtm-com[bot]", "dependabot[bot]"):
+    for discard_author in DISCARD_AUTHORS:
         cur.discard(discard_author)
         pre.discard(discard_author)
 
@@ -114,12 +116,16 @@ def get_pull_requests(repo, revision_range):
         # there is a problem in the repo about referencing the first
         # pr (which is actually an issue). So we jush let it go.
         del prnums[0]
+
     prs = []
     for n in prnums:
+        import pprint
+
         try:
             prs.append(repo.get_pull(n))
         except BaseException:
             pass
+
     return prs
 
 
@@ -272,22 +278,43 @@ def main(token, revision_range, format="md"):
     else:
         pull_msg = "* #{0}: {2}"
 
+    # split into actual and maintenance PR's
+    code_pull_requests = filter(
+        lambda pr: pr.user.login not in DISCARD_AUTHORS, pull_requests
+    )
+    code_pull_requests = list(code_pull_requests)
+    maint_pull_requests = filter(
+        lambda pr: pr.user.login in DISCARD_AUTHORS, pull_requests
+    )
+    maint_pull_requests = list(maint_pull_requests)
+
+    def shorten(string, max_len: int = 80):
+        if len(string) > max_len:
+            remainder = re.sub("\\s.*$", "...", string[max_len - 20 :])
+            if len(remainder) > 20:
+                return string[:max_len] + "..."
+            else:
+                return string[: max_len - 20] + remainder
+        return string
+
     print()
     print(heading("Pull requests merged", 1, format))
-    print(pull_request_msg % len(pull_requests))
+    print(pull_request_msg % len(code_pull_requests))
 
-    for pull in pull_requests:
-        title = re.sub("\\s+", " ", pull.title.strip())
-        if len(title) > 60:
-            remainder = re.sub("\\s.*$", "...", title[60:])
-            if len(remainder) > 20:
-                title = title[:80] + "..."
-            else:
-                title = title[:60] + remainder
+    for pull in code_pull_requests:
+        title = shorten(re.sub("\\s+", " ", pull.title.strip()))
+        print(pull_msg.format(pull.number, pull.html_url, title))
+
+    print()
+    print(heading("Maintenance pull requests merged", 2, format))
+    print(pull_request_msg % len(maint_pull_requests))
+    for pull in maint_pull_requests:
+        title = shorten(re.sub("\\s+", " ", pull.title.strip()))
         print(pull_msg.format(pull.number, pull.html_url, title))
 
     if len(changelog) > 0:
         print()
+        print(heading("Changelog", 1, format))
         print(changelog)
 
 
