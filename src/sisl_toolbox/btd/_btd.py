@@ -488,7 +488,22 @@ class DeviceGreen:
 
     Consider a regular 2 electrode setup with transport direction
     along the 3rd lattice vector. Then the following example may
-    be used to calculate the eigen-channels:
+    be used to calculate the eigen-channels.
+
+    The below short-form of reading all variables should cover most variables
+    encountered in the FDF file.
+
+    .. code-block:: python
+
+       G = DeviceGreen.from_fdf("RUN.fdf")
+
+       # Calculate the scattering state from the left electrode
+       # and then the eigen channels to the right electrode
+       state = G.scattering_state("Left", E=0.1)
+       eig_channel = G.eigenchannel(state, "Right")
+
+    The above ``DeviceGreen.from_fdf`` is a short-hand for something
+    like the below (it actually does more than that, so prefer the `from_fdf`):
 
     .. code-block:: python
 
@@ -512,26 +527,20 @@ class DeviceGreen:
        H_elec.shift(tbt.mu("Left"))
        left = DownfoldSelfEnergy("Left", s.RecursiveSI(H_elec, "-C", eta=tbt.eta("Left"),
                                  tbt, H)
-       H_elec.shift(tbt.mu("Right") - tbt.mu("Left"))
+       H_elec.shift(tbt.mu("Right"))
        left = DownfoldSelfEnergy("Right", s.RecursiveSI(H_elec, "+C", eta=tbt.eta("Right"),
                                  tbt, H)
 
        G = DeviceGreen(H, [left, right], tbt)
 
-       # Calculate the scattering state from the left electrode
-       # and then the eigen channels to the right electrode
-       state = G.scattering_state("Left", E=0.1)
-       eig_channel = G.eigenchannel(state, "Right")
 
-    To make this easier there exists a short-hand version that does the
-    above:
+    Notes
+    -----
 
-    .. code-block:: python
-
-       G = DeviceGreen.from_fdf("RUN.fdf")
-
-    which reads all variables from the FDF file and parses them accordingly.
-    This does not take all things into consideration, but should cover most problems.
+    Currently one cannot use these classes to calculate the
+    scattering-states/eigenchannels for the spin-down component of a polarized
+    calculation. One has to explicitly remove the spin-up component of the Hamiltonians
+    before doing the calculations.
     """
 
     # TODO we should speed this up by overwriting A with the inverse once
