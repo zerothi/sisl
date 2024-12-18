@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from abc import abstractmethod
 from collections.abc import Callable
 from functools import singledispatchmethod
 from typing import Literal, Optional
@@ -306,6 +307,16 @@ coefficients retained in this object
             deg.append(np.append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
 
+    @abstractmethod
+    def sub(self, *args, **kwargs):
+        """Return a subset of this instance"""
+        # defined in _ufuncs_*.py
+
+    @abstractmethod
+    def remove(self, *args, **kwargs):
+        """Return a subset of this instance, by removing some elements"""
+        # defined in _ufuncs_*.py
+
     def __getitem__(self, key):
         """Return a new coefficient object with only one associated coefficient
 
@@ -403,6 +414,14 @@ state coefficients
     def shape(self):
         """Returns the shape of the state"""
         return self.state.shape
+
+    @abstractmethod
+    def sub(self, *args, **kwargs):
+        """Return a subset of this instance"""
+
+    @abstractmethod
+    def remove(self, *args, **kwargs):
+        """Return a subset of this instance, by removing some elements"""
 
     def translate(self, isc):
         r"""Translate the vectors to a new unit-cell position

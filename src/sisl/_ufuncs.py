@@ -35,6 +35,12 @@ def register_sisl_function(name: str, cls: type, module: Optional[str] = None):
 
         old_method = getattr(cls, name, None)
         if old_method is not None:
+            # Check if it is abstract, in which case we can overwrite it
+            if getattr(old_method, "__isabstractmethod__", False):
+                # If it is abstract, allow to overwrite it!
+                old_method = None
+
+        if old_method is not None:
             # Check that the attribute is actually created on the class it-self
             # This will prohibit warn against functions for derived classes
             if old_method.__qualname__.startswith(cls.__name__):

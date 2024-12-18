@@ -46,7 +46,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import reduce
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -108,7 +108,7 @@ from .state import Coefficient, State, StateC, _FakeMatrix
 
 __all__ = ["DOS", "PDOS", "COP"]
 __all__ += ["spin_moment", "spin_contamination"]
-__all__ += ["berry_phase", "berry_curvature"]
+__all__ += ["berry_phase"]
 __all__ += ["ahc", "shc", "conductivity"]
 __all__ += ["wavefunction"]
 __all__ += ["CoefficientElectron", "StateElectron", "StateCElectron"]
@@ -1106,15 +1106,15 @@ def conductivity(
 
 @set_module("sisl.physics.electron")
 def berry_phase(
-    contour,
+    contour: BrillouinZone,
     sub=None,
     eigvals: bool = False,
     closed: bool = True,
-    method="berry",
+    method: Literal["berry", "zak", "berry:svd", "zak:svd"] = "berry",
     *,
     ret_overlap: bool = False,
-    eigenstate_kwargs=None,
-    apply_kwargs=None,
+    eigenstate_kwargs: Optional[dict[str, Any]] = None,
+    apply_kwargs: Optional[dict[str, Any]] = None,
 ):
     r""" Calculate the Berry-phase on a loop path
 
@@ -1138,7 +1138,7 @@ def berry_phase(
 
     Parameters
     ----------
-    contour : BrillouinZone
+    contour :
        containing the closed contour and has the ``contour.parent`` as an instance of Hamiltonian. The
        first and last k-point must not be the same.
     sub : None or list of int, optional
@@ -1148,7 +1148,7 @@ def berry_phase(
     closed :
        whether or not to include the connection of the last and first points in the loop
        Forced true for Zak-phase calculations.
-    method : {"berry", "zak"}
+    method :
        "berry" will return the usual integral of the Berry connection over the specified contour
        "zak" will compute the Zak phase for 1D systems by performing
        a closed loop integration, see :cite:`Zak1989`.
@@ -1159,10 +1159,10 @@ def berry_phase(
     eigenstate_kwargs : dict, optional
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass ``k`` as that is already used.
-    eigenstate_kwargs : dict, optional
+    eigenstate_kwargs :
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass ``k`` as that is already used.
-    apply_kwargs : dict, optional
+    apply_kwargs :
        keyword arguments passed directly to ``contour.apply(**apply_kwargs)``.
 
     Notes
