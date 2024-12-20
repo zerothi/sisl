@@ -4415,7 +4415,7 @@ class Geometry(
             nargs=1,
             metavar="SORT",
             action=Sort,
-            help='Semi-colon separated options for sort, please always encapsulate in quotation ["axis=0;descend;lattice=(1, 2);group=Z"].',
+            help='Semi-colon separated options for sort, please always encapsulate in quotation ["axes=0;descend;lattice=(1, 2);group=Z"].',
         )
 
         # Print some common information about the

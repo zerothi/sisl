@@ -110,7 +110,7 @@ def nanoribbon(
         ribbon.set_lattice([ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]])
 
         # Sort along x, then y
-        ribbon = ribbon.sort(axis=(0, 1))
+        ribbon = ribbon.sort(axes=(0, 1))
 
         if kind == "chiral":
             # continue with the zigzag ribbon as building block

@@ -1608,18 +1608,18 @@ def test_geometry_sort_simple():
     atol = 1e-9
 
     for i in [0, 1, 2]:
-        s = bi.sort(axis=i)
+        s = bi.sort(axes=i)
         assert np.all(np.diff(s.xyz[:, i]) >= -atol)
         s = bi.sort(lattice=i)
         assert np.all(np.diff(s.fxyz[:, i] * bi.lattice.length[i]) >= -atol)
 
-    s, idx = bi.sort(axis=0, lattice=1, ret_atoms=True)
+    s, idx = bi.sort(axes=0, lattice=1, ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
 
     s, idx = bi.sort(
-        axis=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atoms=True
+        axes=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atoms=True
     )
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
@@ -1635,18 +1635,18 @@ def test_geometry_sort_int():
     atol = 1e-9
 
     for i in [0, 1, 2]:
-        s = bi.sort(axis0=i)
+        s = bi.sort(axes0=i)
         assert np.all(np.diff(s.xyz[:, i]) >= -atol)
         s = bi.sort(lattice3=i)
         assert np.all(np.diff(s.fxyz[:, i] * bi.lattice.length[i]) >= -atol)
 
-    s, idx = bi.sort(axis12314=0, lattice0=1, ret_atoms=True)
+    s, idx = bi.sort(axes12314=0, lattice0=1, ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
 
     s, idx = bi.sort(
-        ascending1=True, axis15=0, ascending0=False, lattice235=1, ret_atoms=True
+        ascending1=True, axes15=0, ascending0=False, lattice235=1, ret_atoms=True
     )
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
